@@ -64,6 +64,11 @@ export default function AppLayout() {
                 {t('nav.diplomacy')}
               </NavLink>
             )}
+            {can('evt:portal') && (
+              <NavLink to="/protocol" className={navClass}>
+                {t('nav.protocol')}
+              </NavLink>
+            )}
             <NavLink to="/profile" className={navClass}>
               {t('nav.profile')}
             </NavLink>
@@ -95,6 +100,11 @@ export default function AppLayout() {
             {(can('dip:review') || can('dip:admin')) && (
               <NavLink to="/admin/dip/review" className={navClass}>
                 {t('nav.diplomacyAdmin')}
+              </NavLink>
+            )}
+            {(can('evt:review') || can('evt:manage') || can('evt:checkin')) && (
+              <NavLink to={can('evt:review') || can('evt:manage') ? '/protocol/admin/review' : '/protocol/admin/checkin'} className={navClass}>
+                {t('nav.protocolAdmin')}
               </NavLink>
             )}
           </nav>

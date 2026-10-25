@@ -76,6 +76,52 @@ import AdminDipVerify from './pages/dip/admin/AdminDipVerify.jsx';
 import AdminDipConfig from './pages/dip/admin/AdminDipConfig.jsx';
 import AdminDipStats from './pages/dip/admin/AdminDipStats.jsx';
 import AdminDipAudit from './pages/dip/admin/AdminDipAudit.jsx';
+// 奶龙国皇家居民登记署
+import ResidentShell from './pages/resident/ResidentShell.jsx';
+import ResidentHome from './pages/resident/ResidentHome.jsx';
+import ResidentGuide from './pages/resident/ResidentGuide.jsx';
+import ResidentApply from './pages/resident/ResidentApply.jsx';
+import ResidentMyApplications from './pages/resident/ResidentMyApplications.jsx';
+import ResidentApplicationDetail from './pages/resident/ResidentApplicationDetail.jsx';
+import ResidentCard from './pages/resident/ResidentCard.jsx';
+import ResidentChanges from './pages/resident/ResidentChanges.jsx';
+import ResidentBenefits from './pages/resident/ResidentBenefits.jsx';
+import ResidentMessages from './pages/resident/ResidentMessages.jsx';
+import ResidentVerify from './pages/resident/ResidentVerify.jsx';
+import AdminResReview from './pages/resident/admin/AdminResReview.jsx';
+import AdminResChanges from './pages/resident/admin/AdminResChanges.jsx';
+import AdminResCards from './pages/resident/admin/AdminResCards.jsx';
+import AdminResResidents from './pages/resident/admin/AdminResResidents.jsx';
+import AdminResVerify from './pages/resident/admin/AdminResVerify.jsx';
+import AdminResTypes from './pages/resident/admin/AdminResTypes.jsx';
+import AdminResNotices from './pages/resident/admin/AdminResNotices.jsx';
+import AdminResRisk from './pages/resident/admin/AdminResRisk.jsx';
+import AdminResStats from './pages/resident/admin/AdminResStats.jsx';
+import AdminResSettings from './pages/resident/admin/AdminResSettings.jsx';
+import AdminResAudit from './pages/resident/admin/AdminResAudit.jsx';
+// 奶龙国皇家礼宾与活动署
+import ProtocolShell from './pages/protocol/ProtocolShell.jsx';
+import ProtocolHome from './pages/protocol/ProtocolHome.jsx';
+import ProtocolEvents from './pages/protocol/ProtocolEvents.jsx';
+import ProtocolEventDetail from './pages/protocol/ProtocolEventDetail.jsx';
+import ProtocolApply from './pages/protocol/ProtocolApply.jsx';
+import ProtocolMyRegistrations from './pages/protocol/ProtocolMyRegistrations.jsx';
+import ProtocolInvitations from './pages/protocol/ProtocolInvitations.jsx';
+import ProtocolPasses from './pages/protocol/ProtocolPasses.jsx';
+import ProtocolHosts from './pages/protocol/ProtocolHosts.jsx';
+import ProtocolCourtesy from './pages/protocol/ProtocolCourtesy.jsx';
+import ProtocolMessages from './pages/protocol/ProtocolMessages.jsx';
+import ProtocolHelp from './pages/protocol/ProtocolHelp.jsx';
+import ProtocolVerify from './pages/protocol/ProtocolVerify.jsx';
+import AdminProtocolReview from './pages/protocol/admin/AdminProtocolReview.jsx';
+import AdminProtocolEvents from './pages/protocol/admin/AdminProtocolEvents.jsx';
+import AdminProtocolIssuance from './pages/protocol/admin/AdminProtocolIssuance.jsx';
+import AdminProtocolHosts from './pages/protocol/admin/AdminProtocolHosts.jsx';
+import AdminProtocolCourtesy from './pages/protocol/admin/AdminProtocolCourtesy.jsx';
+import AdminProtocolCheckin from './pages/protocol/admin/AdminProtocolCheckin.jsx';
+import AdminProtocolManage from './pages/protocol/admin/AdminProtocolManage.jsx';
+import AdminProtocolStats from './pages/protocol/admin/AdminProtocolStats.jsx';
+import AdminProtocolAudit from './pages/protocol/admin/AdminProtocolAudit.jsx';
 
 function NotFound() {
   const { t } = useTranslation();
@@ -104,6 +150,10 @@ export default function App() {
       {/* 外交署验真中心(编号/token,公开) */}
       <Route path="/dip/verify" element={<DipVerify />} />
       <Route path="/dip-verify" element={<DipVerify />} />
+      {/* 皇家居民登记署验真页(公开) */}
+      <Route path="/resident/verify" element={<ResidentVerify />} />
+      {/* 礼宾与活动署验真中心(公开) */}
+      <Route path="/protocol/verify" element={<ProtocolVerify />} />
       <Route
         element={
           <RequireAuth>
@@ -589,6 +639,207 @@ export default function App() {
             </RequirePermission>
           }
         />
+        {/* 奶龙国皇家居民登记署(用户端) */}
+        <Route
+          path="/resident"
+          element={
+            <ResidentShell>
+              <ResidentHome />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/guide"
+          element={
+            <ResidentShell>
+              <ResidentGuide />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/apply"
+          element={
+            <ResidentShell>
+              <ResidentApply />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/apply/:typeCode"
+          element={
+            <ResidentShell>
+              <ResidentApply />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/applications"
+          element={
+            <ResidentShell>
+              <ResidentMyApplications />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/applications/:id"
+          element={
+            <ResidentShell>
+              <ResidentApplicationDetail />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/applications/:id/edit"
+          element={
+            <ResidentShell>
+              <ResidentApply />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/card"
+          element={
+            <ResidentShell>
+              <ResidentCard />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/changes"
+          element={
+            <ResidentShell>
+              <ResidentChanges />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/benefits"
+          element={
+            <ResidentShell>
+              <ResidentBenefits />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/messages"
+          element={
+            <ResidentShell>
+              <ResidentMessages />
+            </ResidentShell>
+          }
+        />
+        {/* 奶龙国皇家居民登记署(管理端) */}
+        <Route
+          path="/resident/admin/review"
+          element={
+            <ResidentShell permission="res:review">
+              <AdminResReview />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/changes"
+          element={
+            <ResidentShell permission="res:review">
+              <AdminResChanges />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/cards"
+          element={
+            <ResidentShell permission="res:review">
+              <AdminResCards />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/residents"
+          element={
+            <ResidentShell permission="res:review">
+              <AdminResResidents />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/verify"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResVerify />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/types"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResTypes />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/notices"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResNotices />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/risk"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResRisk />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/stats"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResStats />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/settings"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResSettings />
+            </ResidentShell>
+          }
+        />
+        <Route
+          path="/resident/admin/audit"
+          element={
+            <ResidentShell permission="res:manage">
+              <AdminResAudit />
+            </ResidentShell>
+          }
+        />
+        {/* 奶龙国皇家礼宾与活动署:前台 */}
+        <Route path="/protocol" element={<ProtocolShell><ProtocolHome /></ProtocolShell>} />
+        <Route path="/protocol/events" element={<ProtocolShell><ProtocolEvents /></ProtocolShell>} />
+        <Route path="/protocol/events/:no" element={<ProtocolShell><ProtocolEventDetail /></ProtocolShell>} />
+        <Route path="/protocol/events/:no/apply" element={<ProtocolShell><ProtocolApply /></ProtocolShell>} />
+        <Route path="/protocol/registrations" element={<ProtocolShell><ProtocolMyRegistrations /></ProtocolShell>} />
+        <Route path="/protocol/registrations/:id" element={<ProtocolShell><ProtocolMyRegistrations /></ProtocolShell>} />
+        <Route path="/protocol/registrations/:id/edit" element={<ProtocolShell><ProtocolApply /></ProtocolShell>} />
+        <Route path="/protocol/invitations" element={<ProtocolShell><ProtocolInvitations /></ProtocolShell>} />
+        <Route path="/protocol/passes" element={<ProtocolShell><ProtocolPasses /></ProtocolShell>} />
+        <Route path="/protocol/hosts" element={<ProtocolShell><ProtocolHosts /></ProtocolShell>} />
+        <Route path="/protocol/courtesy" element={<ProtocolShell><ProtocolCourtesy /></ProtocolShell>} />
+        <Route path="/protocol/messages" element={<ProtocolShell><ProtocolMessages /></ProtocolShell>} />
+        <Route path="/protocol/help" element={<ProtocolShell><ProtocolHelp /></ProtocolShell>} />
+        <Route path="/protocol/admin/review" element={<ProtocolShell variant="admin" permission="evt:review"><AdminProtocolReview /></ProtocolShell>} />
+        <Route path="/protocol/admin/events" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolEvents /></ProtocolShell>} />
+        <Route path="/protocol/admin/issuance" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolIssuance /></ProtocolShell>} />
+        <Route path="/protocol/admin/hosts" element={<ProtocolShell variant="admin" permission="evt:review"><AdminProtocolHosts /></ProtocolShell>} />
+        <Route path="/protocol/admin/courtesy" element={<ProtocolShell variant="admin" permission="evt:review"><AdminProtocolCourtesy /></ProtocolShell>} />
+        <Route path="/protocol/admin/checkin" element={<ProtocolShell variant="admin" permission="evt:checkin"><AdminProtocolCheckin /></ProtocolShell>} />
+        <Route path="/protocol/admin/manage" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolManage /></ProtocolShell>} />
+        <Route path="/protocol/admin/stats" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolStats /></ProtocolShell>} />
+        <Route path="/protocol/admin/audit" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolAudit /></ProtocolShell>} />
       </Route>
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />

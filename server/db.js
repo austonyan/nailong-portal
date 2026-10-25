@@ -228,6 +228,258 @@ CREATE TABLE IF NOT EXISTS visa_config (
 );
 `);
 
+// ---------------------------------------------------------------------------
+// 奶龍國皇家申訴與監察署 (appeal service) — 申诉/复核/投诉建议/工单/决定书
+// 申诉状态机: draft → pending_accept → (accepted | rejected | withdrawn)
+//   accepted ⇄ processing; accepted/processing → supplement_required → processing | closed(超时)
+//   accepted/processing → resolved(维持/撤销/变更/转交)
+// 复核状态机: pending → reviewing → completed(一次终局)
+// 投诉建议: pending_accept → processing → replied → closed
+// 工单: pending ⇄ processing → replied → closed | escalated
+// ---------------------------------------------------------------------------
+db.exec(`
+CREATE TABLE IF NOT EXISTS appeal_appeals (
+  id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+  code                 TEXT NOT NULL UNIQUE,
+  user_id              INTEGER NOT NULL REFERENCES users(id),
+  biz_type             TEXT NOT NULL CHECK (biz_type IN ('visa','immigration','resident','diplomatic','document')),
+  biz_code             TEXT NOT NULL,
+  biz_status           TEXT NOT NULL DEFAULT 'unverified',
+  status               TEXT NOT NULL DEFAULT 'draft'
+                       CHECK (status IN ('draft','pending_accept','accepted','processing','supplement_required','resolved','rejected','withdrawn','closed')),
+  priority             TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low','normal','high','urgent')),
+  reason               TEXT NOT NULL DEFAULT '',
+  expected             TEXT NOT NULL DEFAULT '',
+  contact              TEXT NOT NULL DEFAULT '',
+  entertainment_agreed INTEGER NOT NULL DEFAULT 0,
+  accept_note          TEXT NOT NULL DEFAULT '',
+  reject_reason        TEXT,
+  supplement_note      TEXT NOT NULL DEFAULT '',
+  supplement_deadline  TEXT,
+  decision_type        TEXT CHECK (decision_type IN ('maintain','undo','change','transfer')),
+  decision_reason      TEXT NOT NULL DEFAULT '',
+  decision_basis       TEXT NOT NULL DEFAULT '',
+  assigned_to          INTEGER,
+  handler_name         TEXT NOT NULL DEFAULT '',
+  evaluation_rating    INTEGER,
+  evaluation_comment   TEXT NOT NULL DEFAULT '',
+  merged_into          TEXT NOT NULL DEFAULT '',
+  created_at           TEXT NOT NULL,
+  updated_at           TEXT NOT NULL,
+  submitted_at         TEXT,
+  accepted_at          TEXT,
+  resolved_at          TEXT,
+  decided_at           TEXT,
+  closed_at            TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_app_user ON appeal_appeals (user_id, status);
+CREATE INDEX IF NOT EXISTS idx_appeal_app_status ON appeal_appeals (status, submitted_at);
+CREATE INDEX IF NOT EXISTS idx_appeal_app_dup ON appeal_appeals (user_id, biz_type, biz_code);
+
+CREATE TABLE IF NOT EXISTS appeal_materials (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  owner_type TEXT NOT NULL CHECK (owner_type IN ('appeal','review','complaint','ticket')),
+  owner_id   INTEGER NOT NULL,
+  user_id    INTEGER NOT NULL,
+  kind       TEXT NOT NULL DEFAULT 'other' CHECK (kind IN ('screenshot','proof','other')),
+  origin     TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial','supplement')),
+  filename   TEXT NOT NULL,
+  mime       TEXT NOT NULL,
+  size       INTEGER NOT NULL,
+  path       TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_mat_owner ON appeal_materials (owner_type, owner_id);
+CREATE INDEX IF NOT EXISTS idx_appeal_mat_user ON appeal_materials (user_id);
+
+CREATE TABLE IF NOT EXISTS appeal_reviews (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  code            TEXT NOT NULL UNIQUE,
+  appeal_id       INTEGER NOT NULL REFERENCES appeal_appeals(id),
+  appeal_code     TEXT NOT NULL,
+  user_id         INTEGER NOT NULL REFERENCES users(id),
+  reason          TEXT NOT NULL DEFAULT '',
+  status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewing','completed')),
+  decision_type   TEXT CHECK (decision_type IN ('maintain','undo','change')),
+  decision_reason TEXT NOT NULL DEFAULT '',
+  decided_id      INTEGER,
+  decided_name    TEXT NOT NULL DEFAULT '',
+  created_at      TEXT NOT NULL,
+  updated_at      TEXT NOT NULL,
+  submitted_at    TEXT,
+  decided_at      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_rev_appeal ON appeal_reviews (appeal_id);
+CREATE INDEX IF NOT EXISTS idx_appeal_rev_user ON appeal_reviews (user_id, status);
+
+CREATE TABLE IF NOT EXISTS appeal_complaints (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  code          TEXT NOT NULL UNIQUE,
+  user_id       INTEGER NOT NULL REFERENCES users(id),
+  kind          TEXT NOT NULL CHECK (kind IN ('complaint','suggestion')),
+  category      TEXT NOT NULL CHECK (category IN ('attitude','process','notice','staff','system','other','feature','experience','content')),
+  anonymous     INTEGER NOT NULL DEFAULT 0,
+  content       TEXT NOT NULL DEFAULT '',
+  contact       TEXT NOT NULL DEFAULT '',
+  status        TEXT NOT NULL DEFAULT 'pending_accept' CHECK (status IN ('pending_accept','processing','replied','closed')),
+  reply         TEXT,
+  replied_id    INTEGER,
+  replied_name  TEXT NOT NULL DEFAULT '',
+  replied_at    TEXT,
+  rating        INTEGER,
+  rating_comment TEXT NOT NULL DEFAULT '',
+  created_at    TEXT NOT NULL,
+  updated_at    TEXT NOT NULL,
+  submitted_at  TEXT,
+  closed_at     TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_cmp_user ON appeal_complaints (user_id, status);
+
+CREATE TABLE IF NOT EXISTS appeal_tickets (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  code        TEXT NOT NULL UNIQUE,
+  user_id     INTEGER NOT NULL REFERENCES users(id),
+  category    TEXT NOT NULL CHECK (category IN ('consult','account','bug')),
+  priority    TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low','normal','high')),
+  title       TEXT NOT NULL DEFAULT '',
+  content     TEXT NOT NULL DEFAULT '',
+  status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','processing','replied','closed','escalated')),
+  created_at  TEXT NOT NULL,
+  updated_at  TEXT NOT NULL,
+  submitted_at TEXT,
+  closed_at   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_tkt_user ON appeal_tickets (user_id, status);
+
+CREATE TABLE IF NOT EXISTS appeal_ticket_replies (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  ticket_id  INTEGER NOT NULL REFERENCES appeal_tickets(id) ON DELETE CASCADE,
+  user_id    INTEGER NOT NULL,
+  is_staff   INTEGER NOT NULL DEFAULT 0,
+  staff_name TEXT NOT NULL DEFAULT '',
+  content    TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_tkt_rep ON appeal_ticket_replies (ticket_id);
+
+CREATE TABLE IF NOT EXISTS appeal_records (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  target_type TEXT NOT NULL CHECK (target_type IN ('appeal','review','complaint','ticket')),
+  target_id   INTEGER NOT NULL,
+  actor_id    INTEGER,
+  actor_name  TEXT NOT NULL DEFAULT '',
+  action      TEXT NOT NULL,
+  comment     TEXT NOT NULL DEFAULT '',
+  created_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_rec_target ON appeal_records (target_type, target_id);
+
+CREATE TABLE IF NOT EXISTS appeal_decisions (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  code         TEXT NOT NULL UNIQUE,
+  appeal_id    INTEGER NOT NULL REFERENCES appeal_appeals(id),
+  appeal_code  TEXT NOT NULL,
+  review_id    INTEGER REFERENCES appeal_reviews(id),
+  review_code  TEXT NOT NULL DEFAULT '',
+  user_id      INTEGER NOT NULL REFERENCES users(id),
+  biz_type     TEXT NOT NULL,
+  decision_type TEXT NOT NULL CHECK (decision_type IN ('maintain','undo','change','transfer')),
+  reason       TEXT NOT NULL DEFAULT '',
+  basis        TEXT NOT NULL DEFAULT '',
+  status       TEXT NOT NULL DEFAULT 'valid' CHECK (status IN ('valid','voided','expired')),
+  effective_at TEXT NOT NULL,
+  voided_at    TEXT,
+  verify_token TEXT NOT NULL UNIQUE,
+  cert_code    TEXT NOT NULL DEFAULT '',
+  created_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_dec_user ON appeal_decisions (user_id, status);
+CREATE INDEX IF NOT EXISTS idx_appeal_dec_appeal ON appeal_decisions (appeal_id);
+
+CREATE TABLE IF NOT EXISTS appeal_notices (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  title      TEXT NOT NULL,
+  body       TEXT NOT NULL DEFAULT '',
+  level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
+  enabled    INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appeal_messages (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id     INTEGER NOT NULL,
+  target_type TEXT,
+  target_id   INTEGER,
+  type        TEXT NOT NULL DEFAULT 'system',
+  params      TEXT NOT NULL DEFAULT '{}',
+  read        INTEGER NOT NULL DEFAULT 0,
+  archived    INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_appeal_msg_user ON appeal_messages (user_id, archived, read);
+
+CREATE TABLE IF NOT EXISTS appeal_audit (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  actor_id    INTEGER,
+  actor_name  TEXT NOT NULL DEFAULT '',
+  action      TEXT NOT NULL,
+  target_type TEXT NOT NULL DEFAULT '',
+  target_id   TEXT NOT NULL DEFAULT '',
+  detail      TEXT NOT NULL DEFAULT '',
+  created_at  TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appeal_verify_logs (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  query      TEXT NOT NULL DEFAULT '',
+  ip         TEXT NOT NULL DEFAULT '',
+  result     TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appeal_blacklist (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id    INTEGER NOT NULL UNIQUE REFERENCES users(id),
+  scope      TEXT NOT NULL DEFAULT 'all' CHECK (scope IN ('appeal','complaint','all')),
+  reason     TEXT NOT NULL DEFAULT '',
+  created_by TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appeal_config (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appeal_publicity (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  title       TEXT NOT NULL,
+  body        TEXT NOT NULL DEFAULT '',
+  kind        TEXT NOT NULL DEFAULT 'case' CHECK (kind IN ('stats','case','report')),
+  status      TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published','offline')),
+  published_at TEXT,
+  created_at  TEXT NOT NULL,
+  updated_at  TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appeal_msg_templates (
+  type    TEXT PRIMARY KEY,
+  title   TEXT NOT NULL,
+  body    TEXT NOT NULL DEFAULT '',
+  enabled INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS appeal_inspect_reports (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  title      TEXT NOT NULL,
+  kind       TEXT NOT NULL DEFAULT 'quality' CHECK (kind IN ('quality','anomaly','consistency')),
+  content    TEXT NOT NULL DEFAULT '',
+  created_by TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+`);
+
 // Lightweight migration for databases created before a schema change. Only
 // additive column changes live here — new tables are covered by CREATE above.
 function migrate() {
@@ -255,13 +507,22 @@ export const PERMISSIONS = [
   { key: 'visa:apply', name: '签注申请', description: '提交与查看签注申请', grp: 'visa' },
   { key: 'visa:review', name: '签注审核', description: '审核签注申请、签发与管理签注', grp: 'visa' },
   { key: 'visa:manage', name: '签注管理', description: '管理签注类型、公告、配置与风控', grp: 'visa' },
+  { key: 'appeal:apply', name: '申诉监察访问', description: '提交与查看申诉、复核、投诉建议与工单', grp: 'appeal' },
+  { key: 'appeal:process', name: '申诉处理', description: '受理、分派、补件与处理决定;处理投诉建议与工单', grp: 'appeal' },
+  { key: 'appeal:review', name: '申诉复核', description: '复核申诉处理决定(一次终局)', grp: 'appeal' },
+  { key: 'appeal:inspect', name: '监察抽查', description: '监察申诉处理时效与质量(只读分析)', grp: 'appeal' },
+  { key: 'appeal:manage', name: '申诉署管理', description: '公告、公示、模板、黑名单、配置、统计与审计', grp: 'appeal' },
 ];
 
 const ROLES = [
   { key: 'admin', name: '管理员', description: '拥有全部权限的系统角色', is_system: 1, permissions: '*' },
-  { key: 'user', name: '普通用户', description: '默认角色,可访问门户与申请签注', is_system: 1, permissions: ['portal:access', 'visa:apply'] },
+  { key: 'user', name: '普通用户', description: '默认角色,可访问门户、申请签注与提交申诉', is_system: 1, permissions: ['portal:access', 'visa:apply', 'appeal:apply'] },
   { key: 'visa_reviewer', name: '签注审核员', description: '审核签注申请并签发电子签注(队列隔离,不含门户管理)', is_system: 1, permissions: ['portal:access', 'visa:apply', 'visa:review'] },
   { key: 'visa_admin', name: '签注管理员', description: '签注审核与签注配置管理', is_system: 1, permissions: ['portal:access', 'visa:apply', 'visa:review', 'visa:manage'] },
+  { key: 'appeal_processor', name: '申诉处理员', description: '受理与处理申诉、投诉建议与工单(队列隔离)', is_system: 1, permissions: ['portal:access', 'appeal:apply', 'appeal:process'] },
+  { key: 'appeal_reviewer', name: '申诉复核员', description: '复核申诉处理决定(一次终局,队列隔离)', is_system: 1, permissions: ['portal:access', 'appeal:apply', 'appeal:process', 'appeal:review'] },
+  { key: 'appeal_inspector', name: '申诉监察员', description: '监察申诉处理时效与质量(只读,队列隔离)', is_system: 1, permissions: ['portal:access', 'appeal:apply', 'appeal:inspect'] },
+  { key: 'appeal_admin', name: '申诉署管理员', description: '申诉署全部权限:处理、复核、监察与管理', is_system: 1, permissions: ['portal:access', 'appeal:apply', 'appeal:process', 'appeal:review', 'appeal:inspect', 'appeal:manage'] },
 ];
 
 function seed() {
@@ -387,6 +648,73 @@ function seed() {
     };
     const insertConfig = db.prepare('INSERT OR IGNORE INTO visa_config (key, value) VALUES (?, ?)');
     for (const [k, v] of Object.entries(defaults)) insertConfig.run(k, v);
+
+    // The appeal service is part of this codebase: make sure it always exists.
+    db.prepare(
+      `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
+       VALUES ('appeal', '奶龍國皇家申訴與監察署', '结果申诉、复核申请、投诉建议、工单客服与决定书验真', '/appeal', 'ShieldIcon', 'app-yellow', 'appeal:apply', 'internal_sso', 1, -2, @now, @now)`
+    ).run({ now: now() });
+
+    if (db.prepare('SELECT COUNT(*) AS n FROM appeal_notices').get().n === 0) {
+      const insertNotice = db.prepare(
+        `INSERT INTO appeal_notices (title, body, level, enabled, created_at, updated_at)
+         VALUES (@title, @body, @level, 1, @now, @now)`
+      );
+      insertNotice.run({
+        title: '申诉受理范围与时效说明',
+        body: '本署受理对签注、入境、居民登记、外交身份、文书认证五类业务结果不服提起的结果申诉,以及已处理申诉的复核申请。申诉提交后约 48 小时内受理,复核为一次终局。本平台为虚构娱乐项目,不构成现实法律救济或行政申诉。',
+        level: 'policy',
+        now: now(),
+      });
+      insertNotice.run({
+        title: '谨防冒充申诉诈骗',
+        body: '本署受理申诉与复核完全免费,不收取任何费用,也不承诺任何现实效力。任何"收费加急""保证撤销原结果"的行为均为诈骗。',
+        level: 'info',
+        now: now(),
+      });
+    }
+
+    if (db.prepare('SELECT COUNT(*) AS n FROM appeal_msg_templates').get().n === 0) {
+      const insertTpl = db.prepare('INSERT INTO appeal_msg_templates (type, title, body) VALUES (?, ?, ?)');
+      [
+        ['appeal_submitted', '申诉 {{code}} 已提交', '你的申诉已进入待受理队列,请耐心等待受理通知。'],
+        ['appeal_accepted', '申诉 {{code}} 已受理', '你的申诉已被受理,将按处理时限推进,处理结果将以决定书形式通知。'],
+        ['appeal_accept_rejected', '申诉 {{code}} 不予受理', '受理说明:{{reason}}。可在复核时效内对处理结果申请复核。'],
+        ['appeal_supplement_required', '申诉 {{code}} 需要补件', '补件说明:{{comment}}。请在 {{deadline}} 前在线补交,逾期申诉将自动关闭。'],
+        ['appeal_supplemented', '申诉 {{code}} 补件已提交', '你补交的材料已随申诉重新进入处理流程。'],
+        ['appeal_resolved', '申诉 {{code}} 已有处理决定', '处理决定已生成决定书,可到"我的决定书"查看、下载或验真。'],
+        ['appeal_withdrawn', '申诉 {{code}} 已撤回', '你已撤回该申诉。'],
+        ['appeal_closed', '申诉 {{code}} 已关闭', '补件期限已过,申诉自动关闭。'],
+        ['appeal_merged', '申诉 {{code}} 已合并', '该申诉与 {{targetCode}} 属重复申诉,已合并处理,请以目标申诉为准。'],
+        ['appeal_reopened', '申诉 {{code}} 经复核重新处理', '复核 {{reviewCode}} 撤销了原不予受理决定,申诉已重新进入处理流程。'],
+        ['review_submitted', '复核 {{code}} 已提交', '对申诉 {{appealCode}} 的复核申请已提交,复核为一次终局。'],
+        ['review_accepted', '复核 {{code}} 已受理', '复核进入复核中,复核决定将生成新的决定书。'],
+        ['review_completed', '复核 {{code}} 已完成', '复核决定已生成,可到"我的决定书"查看。复核为一次终局。'],
+        ['decision_issued', '处理决定书 {{code}} 已生成', '关联申诉 {{appealCode}}。可在"我的决定书"查看、下载或验真。'],
+        ['complaint_submitted', '投诉建议 {{code}} 已提交', '你的投诉或建议已提交,处理完成后将回复通知。'],
+        ['complaint_replied', '投诉建议 {{code}} 已回复', '处理人员已回复,请到详情页查看回复内容并评价。'],
+        ['complaint_closed', '投诉建议 {{code}} 已关闭', '该投诉建议已办结归档。'],
+        ['complaint_escalated', '投诉建议 {{code}} 转申诉指引', '该事项适合走结果申诉流程,请准备关联业务编号后到"我要申诉"提交。'],
+        ['ticket_replied', '工单 {{code}} 有新回复', '客服已回复你的工单,请到工单详情查看。'],
+        ['ticket_escalated', '工单 {{code}} 已升级', '你的工单已升级处理,请留意后续回复。'],
+        ['ticket_closed', '工单 {{code}} 已关闭', '工单已办结。如仍有问题可重新提交。'],
+      ].forEach(([type, title, body]) => insertTpl.run(type, title, body));
+    }
+
+    const appealDefaults = {
+      'appeal.appeal_prefix': 'NAA',
+      'appeal.review_prefix': 'NAR',
+      'appeal.complaint_prefix': 'NAC',
+      'appeal.ticket_prefix': 'NAT',
+      'appeal.decision_prefix': 'NAD',
+      'appeal.supplement_days': '7',
+      'appeal.review_days': '15',
+      'appeal.accept_sla_hours': '48',
+      'appeal.resolve_sla_hours': '120',
+      'appeal.verify_limit_per_5min': '30',
+    };
+    const insertAppealConfig = db.prepare('INSERT OR IGNORE INTO appeal_config (key, value) VALUES (?, ?)');
+    for (const [k, v] of Object.entries(appealDefaults)) insertAppealConfig.run(k, v);
   });
   run();
 }

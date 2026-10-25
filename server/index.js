@@ -16,6 +16,14 @@ import immigrationAdminRoutes from './immigration/admin.js';
 import dipRoutes from './dip/routes.js';
 import dipAdminRoutes from './dip/admin.js';
 import dipInterRoutes from './dip/inter.js';
+import residentRoutes from './resident/routes.js';
+import residentAdminRoutes from './resident/admin.js';
+import residentInterRoutes from './resident/inter.js';
+import protocolRoutes from './protocol/routes.js';
+import protocolAdminRoutes from './protocol/admin.js';
+import protocolInterRoutes from './protocol/inter.js';
+import appealRoutes from './routes/appeal.js';
+import appealAdminRoutes from './routes/appealAdmin.js';
 import { ApiError } from './http.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,6 +47,17 @@ app.use('/api/immigration', immigrationRoutes);
 app.use('/api/dip/inter', dipInterRoutes);
 app.use('/api/dip/admin', dipAdminRoutes);
 app.use('/api/dip', dipRoutes);
+// 居民登记署:inter → admin → 用户路由(顺序与其他署一致)
+app.use('/api/resident/inter', residentInterRoutes);
+app.use('/api/resident/admin', residentAdminRoutes);
+app.use('/api/resident', residentRoutes);
+// 礼宾与活动署:inter → admin → 用户路由(顺序与其他署一致)
+app.use('/api/protocol/inter', protocolInterRoutes);
+app.use('/api/protocol/admin', protocolAdminRoutes);
+app.use('/api/protocol', protocolRoutes);
+// 皇家申诉与监察署:admin → 用户路由(公开验真接口在用户路由内注册于鉴权段之前)
+app.use('/api/appeal/admin', appealAdminRoutes);
+app.use('/api/appeal', appealRoutes);
 
 app.use('/api', (_req, res) => res.status(404).json({ code: 'NOT_FOUND', message: 'Unknown API endpoint' }));
 

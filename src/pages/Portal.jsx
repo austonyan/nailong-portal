@@ -131,7 +131,8 @@ export default function Portal() {
               type="primary"
               onClick={() => {
                 const target = ssoService;
-                sessionStorage.setItem('nailong.visa.sso', '1');
+                // 通用站内服务 SSO 标志:签注署(nailong.visa.sso)等沿用既有键
+                sessionStorage.setItem(`nailong.${target?.key}.sso`, '1');
                 setSsoService(null);
                 if (target) navigate(target.url);
               }}
