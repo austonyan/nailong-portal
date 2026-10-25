@@ -44,7 +44,7 @@ router.get('/', requirePermission('users:read'), (req, res) => {
   const query = typeof req.query.query === 'string' ? req.query.query.trim() : '';
   const like = `%${query}%`;
   const where = query
-    ? 'WHERE username LIKE ? OR display_name LIKE ? OR IFNULL(email, "") LIKE ?'
+    ? "WHERE username LIKE ? OR display_name LIKE ? OR IFNULL(email, '') LIKE ?"
     : '';
   const args = query ? [like, like, like] : [];
 

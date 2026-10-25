@@ -1,0 +1,281 @@
+// 虚构代表处管理: 代表处 CRUD / 状态(开放·关闭·维护) / 公告发布编辑下线。
+import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button, Card, Form, FormItem, Input, Modal, Notification, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { PlusIcon } from 'naive-icons';
+import { api } from '../../../api/client.js';
+import { DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+
+function OfficeModal({ initial, onClose, onSaved }) {
+  const { t } = useTranslation();
+  const [form] = useForm();
+  const [busy, setBusy] = useState(false);
+  const editing = !!initial?.id;
+
+  useEffect(() => {
+    if (initial) {
+      form.setFieldsValue({
+        code: initial.code,
+        name: initial.name,
+        location: initial.location,
+        openHours: initial.openHours,
+        intro: initial.intro,
+        contact: initial.contact,
+        services: initial.services,
+      });
+    }
+  }, [initial, form]);
+
+  const save = async () => {
+    const values = await form.validateFields();
+    setBusy(true);
+    try {
+      const payload = {
+        ...values,
+        intro: values.intro?.trim() ?? '',
+        contact: values.contact?.trim() ?? '',
+        services: values.services?.trim() ?? '',
+      };
+      if (editing) await api.patch(`/dip/admin/offices/${initial.id}`, payload);
+      else await api.post('/dip/admin/offices', payload);
+      Notification.success(t('common.save'));
+      onSaved();
+      onClose();
+    } catch (err) {
+      toastDipError(t, err);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      open
+      title={editing ? t('dip.office.editTitle', { name: initial.name }) : t('dip.office.createTitle')}
+      onClose={onClose}
+      typewriter={false}
+      width={560}
+      footer={
+        <>
+          <Button onClick={onClose}>{t('common.cancel')}</Button>
+          <Button type="primary" loading={busy} onClick={save}>{t('common.save')}</Button>
+        </>
+      }
+    >
+      <Form form={form} layout="vertical">
+        <div className="dip-form-row">
+          <FormItem name="code" label={t('dip.office.code')} rules={[{ required: true }]} help={t('dip.office.codeTip')}>
+            <Input maxLength={20} disabled={editing} placeholder="OFC_CENTRAL" />
+          </FormItem>
+          <FormItem name="name" label={t('dip.office.name')} rules={[{ required: true }]}>
+            <Input maxLength={40} placeholder={t('dip.office.namePlaceholder')} />
+          </FormItem>
+        </div>
+        <FormItem name="location" label={t('dip.office.location')}>
+          <Input maxLength={80} placeholder={t('dip.office.locationPlaceholder')} />
+        </FormItem>
+        <FormItem name="openHours" label={t('dip.office.hours')}>
+          <Input maxLength={80} placeholder={t('dip.office.hoursPlaceholder')} />
+        </FormItem>
+        <FormItem name="intro" label={t('dip.office.intro')}>
+          <TextArea rows={3} maxLength={500} />
+        </FormItem>
+        <FormItem name="contact" label={t('dip.office.contact')}>
+          <Input maxLength={200} placeholder={t('dip.office.contactPlaceholder')} />
+        </FormItem>
+        <FormItem name="services" label={t('dip.office.services')}>
+          <Input maxLength={300} />
+        </FormItem>
+      </Form>
+    </Modal>
+  );
+}
+
+function NoticeModal({ initial, offices, onClose, onSaved }) {
+  const { t } = useTranslation();
+  const [form] = useForm();
+  const [busy, setBusy] = useState(false);
+  const editing = !!initial?.id;
+
+  useEffect(() => {
+    if (initial) {
+      form.setFieldsValue({ title: initial.title, body: initial.body, level: initial.level ?? 'info', officeId: initial.officeId ? String(initial.officeId) : '' });
+    }
+  }, [initial, form]);
+
+  const save = async () => {
+    const values = await form.validateFields();
+    setBusy(true);
+    try {
+      const payload = { title: values.title, body: values.body, level: values.level, officeId: values.officeId ? Number(values.officeId) : null };
+      if (editing) await api.patch(`/dip/admin/notices/${initial.id}`, payload);
+      else await api.post('/dip/admin/notices', payload);
+      Notification.success(t('common.save'));
+      onSaved();
+      onClose();
+    } catch (err) {
+      toastDipError(t, err);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      open
+      title={editing ? t('dip.notice.editTitle') : t('dip.notice.createTitle')}
+      onClose={onClose}
+      typewriter={false}
+      width={520}
+      footer={
+        <>
+          <Button onClick={onClose}>{t('common.cancel')}</Button>
+          <Button type="primary" loading={busy} onClick={save}>{t('common.save')}</Button>
+        </>
+      }
+    >
+      <Form form={form} layout="vertical">
+        <FormItem name="title" label={t('dip.notice.title')} rules={[{ required: true }]}>
+          <Input maxLength={80} />
+        </FormItem>
+        <FormItem name="body" label={t('dip.notice.body')} rules={[{ required: true }]}>
+          <TextArea rows={4} maxLength={1000} />
+        </FormItem>
+        <div className="dip-form-row">
+          <FormItem name="level" label={t('dip.notice.level')}>
+            <Select options={['info', 'warning', 'critical'].map((l) => ({ key: l, label: t(`dip.level.${l}`) }))} />
+          </FormItem>
+          <FormItem name="officeId" label={t('dip.notice.office')} help={t('dip.notice.officeTip')}>
+            <Select
+              options={[{ key: '', label: t('dip.notice.officeAll') }, ...offices.map((o) => ({ key: String(o.id), label: o.name }))]}
+            />
+          </FormItem>
+        </div>
+      </Form>
+    </Modal>
+  );
+}
+
+export default function AdminDipOffices() {
+  const { t } = useTranslation();
+  const [offices, setOffices] = useState(null);
+  const [notices, setNotices] = useState(null);
+  const [officeModal, setOfficeModal] = useState(null);
+  const [noticeModal, setNoticeModal] = useState(null);
+
+  const load = useCallback(() => {
+    api
+      .get('/dip/admin/offices')
+      .then((data) => setOffices(data.items))
+      .catch((err) => {
+        toastDipError(t, err);
+        setOffices([]);
+      });
+    api
+      .get('/dip/admin/notices')
+      .then((data) => setNotices(data.items))
+      .catch((err) => {
+        toastDipError(t, err);
+        setNotices([]);
+      });
+  }, [t]);
+
+  useEffect(load, [load]);
+
+  const setOfficeStatus = async (row, status) => {
+    try {
+      await api.post(`/dip/admin/offices/${row.id}/status`, { status });
+      Notification.success(t('common.save'));
+      load();
+    } catch (err) {
+      toastDipError(t, err);
+    }
+  };
+
+  const offlineNotice = async (row) => {
+    try {
+      await api.post(`/dip/admin/notices/${row.id}/offline`);
+      load();
+    } catch (err) {
+      toastDipError(t, err);
+    }
+  };
+
+  const deleteNotice = async (row) => {
+    try {
+      await api.del(`/dip/admin/notices/${row.id}`);
+      load();
+    } catch (err) {
+      toastDipError(t, err);
+    }
+  };
+
+  const officeColumns = [
+    { title: t('dip.office.code'), dataIndex: 'code', width: 130 },
+    { title: t('dip.office.name'), dataIndex: 'name', width: 150 },
+    { title: t('dip.office.location'), dataIndex: 'location', width: 170 },
+    { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
+    {
+      title: t('common.actions'),
+      width: 280,
+      render: (_, r) => (
+        <div className="table-actions">
+          <Button size="small" onClick={() => setOfficeModal(r)}>{t('common.edit')}</Button>
+          {r.status !== 'open' && <Button type="primary" size="small" onClick={() => setOfficeStatus(r, 'open')}>{t('dip.office.open')}</Button>}
+          {r.status !== 'maintenance' && <Button size="small" onClick={() => setOfficeStatus(r, 'maintenance')}>{t('dip.office.maintenance')}</Button>}
+          {r.status !== 'closed' && <Button type="default" size="small" danger onClick={() => setOfficeStatus(r, 'closed')}>{t('dip.office.close')}</Button>}
+        </div>
+      ),
+    },
+  ];
+
+  const noticeColumns = [
+    { title: t('dip.notice.title'), dataIndex: 'title', width: 200 },
+    { title: t('dip.notice.office'), dataIndex: 'officeName', width: 130, render: (v) => v || t('dip.notice.officeAll') },
+    { title: t('dip.notice.level'), dataIndex: 'level', width: 90, render: (v) => t(`dip.level.${v}`) },
+    {
+      title: t('common.status'),
+      dataIndex: 'status',
+      width: 90,
+      render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('dip.notice.published')}</Tag> : <Tag>{t('dip.notice.offline')}</Tag>),
+    },
+    { title: t('dip.notice.publishedAt'), dataIndex: 'publishedAt', width: 150, render: (v) => fmtDateTime(v) },
+    {
+      title: t('common.actions'),
+      width: 240,
+      render: (_, r) => (
+        <div className="table-actions">
+          <Button size="small" onClick={() => setNoticeModal(r)}>{t('common.edit')}</Button>
+          {r.status === 'published' && <Button size="small" onClick={() => offlineNotice(r)}>{t('dip.notice.offlineAction')}</Button>}
+          <Button type="default" size="small" danger onClick={() => deleteNotice(r)}>{t('common.delete')}</Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="dip-page">
+      <DipAdminNav />
+      <div className="page-header">
+        <Title size="middle" color="purple">{t('dip.office.adminTitle')}</Title>
+        <Tag color="app-red" variant="soft">{t('dip.office.fictionTag')}</Tag>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => setOfficeModal({})}>{t('dip.office.create')}</Button>
+      </div>
+
+      <Card>
+        <Table columns={officeColumns} dataSource={offices ?? []} loading={offices === null} rowKey="id" pagination={false} />
+      </Card>
+
+      <div className="page-header">
+        <Title size="middle">{t('dip.notice.adminTitle')}</Title>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeModal({})}>{t('dip.notice.publish')}</Button>
+      </div>
+      <Card>
+        <Table columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} />
+      </Card>
+
+      {officeModal !== null && <OfficeModal initial={officeModal} onClose={() => setOfficeModal(null)} onSaved={load} />}
+      {noticeModal !== null && <NoticeModal initial={noticeModal} offices={offices ?? []} onClose={() => setNoticeModal(null)} onSaved={load} />}
+    </div>
+  );
+}

@@ -13,6 +13,9 @@ import visaInterRoutes from './routes/visaInter.js';
 import docsRoutes from './routes/docs.js';
 import immigrationRoutes from './immigration/routes.js';
 import immigrationAdminRoutes from './immigration/admin.js';
+import dipRoutes from './dip/routes.js';
+import dipAdminRoutes from './dip/admin.js';
+import dipInterRoutes from './dip/inter.js';
 import { ApiError } from './http.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -32,6 +35,10 @@ app.use('/api/visa', visaRoutes);
 app.use('/api/docs', docsRoutes);
 app.use('/api/immigration/admin', immigrationAdminRoutes);
 app.use('/api/immigration', immigrationRoutes);
+// 外交署:inter → admin → 用户路由(顺序与其他署一致)
+app.use('/api/dip/inter', dipInterRoutes);
+app.use('/api/dip/admin', dipAdminRoutes);
+app.use('/api/dip', dipRoutes);
 
 app.use('/api', (_req, res) => res.status(404).json({ code: 'NOT_FOUND', message: 'Unknown API endpoint' }));
 

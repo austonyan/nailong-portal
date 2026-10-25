@@ -58,6 +58,24 @@ import AdminImVerify from './pages/immigration/admin/AdminImVerify.jsx';
 import AdminImRecords from './pages/immigration/admin/AdminImRecords.jsx';
 import AdminImStats from './pages/immigration/admin/AdminImStats.jsx';
 import AdminImAudit from './pages/immigration/admin/AdminImAudit.jsx';
+// 奶龙国皇家外交事务署
+import DipShell from './pages/dip/DipShell.jsx';
+import DipHome from './pages/dip/DipHome.jsx';
+import DipApply from './pages/dip/DipApply.jsx';
+import DipRelations from './pages/dip/DipRelations.jsx';
+import DipIdentity from './pages/dip/DipIdentity.jsx';
+import DipAgreements from './pages/dip/DipAgreements.jsx';
+import DipCourtesies from './pages/dip/DipCourtesies.jsx';
+import DipOffices from './pages/dip/DipOffices.jsx';
+import DipMessages from './pages/dip/DipMessages.jsx';
+import DipVerify from './pages/dip/DipVerify.jsx';
+import AdminDipReview from './pages/dip/admin/AdminDipReview.jsx';
+import AdminDipAgreements from './pages/dip/admin/AdminDipAgreements.jsx';
+import AdminDipOffices from './pages/dip/admin/AdminDipOffices.jsx';
+import AdminDipVerify from './pages/dip/admin/AdminDipVerify.jsx';
+import AdminDipConfig from './pages/dip/admin/AdminDipConfig.jsx';
+import AdminDipStats from './pages/dip/admin/AdminDipStats.jsx';
+import AdminDipAudit from './pages/dip/admin/AdminDipAudit.jsx';
 
 function NotFound() {
   const { t } = useTranslation();
@@ -83,6 +101,9 @@ export default function App() {
       <Route path="/visa/verify" element={<VisaVerify />} />
       {/* 皇家口岸入境署验真页(二维码 token,公开) */}
       <Route path="/immigration/verify" element={<ImmigrationVerify />} />
+      {/* 外交署验真中心(编号/token,公开) */}
+      <Route path="/dip/verify" element={<DipVerify />} />
+      <Route path="/dip-verify" element={<DipVerify />} />
       <Route
         element={
           <RequireAuth>
@@ -393,6 +414,178 @@ export default function App() {
           element={
             <RequirePermission permission="imm:admin">
               <AdminImAudit />
+            </RequirePermission>
+          }
+        />
+        {/* 奶龙国皇家外交事务署(用户端) */}
+        <Route
+          path="/dip"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipHome />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/apply"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipApply />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/apply/:id"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipApply />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/relations"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipRelations />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/identity"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipIdentity />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/identity/:id"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipIdentity />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/agreements"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipAgreements />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/courtesies"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipCourtesies />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/offices"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipOffices />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/dip/messages"
+          element={
+            <RequirePermission permission="dip:portal">
+              <DipShell>
+                <DipMessages />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        {/* 奶龙国皇家外交事务署(管理端) */}
+        <Route
+          path="/admin/dip/review"
+          element={
+            <RequirePermission permission="dip:review">
+              <DipShell permission="dip:review">
+                <AdminDipReview />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/dip/agreements"
+          element={
+            <RequirePermission permission="dip:admin">
+              <DipShell permission="dip:admin">
+                <AdminDipAgreements />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/dip/offices"
+          element={
+            <RequirePermission permission="dip:admin">
+              <DipShell permission="dip:admin">
+                <AdminDipOffices />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/dip/verify"
+          element={
+            <RequirePermission permission="dip:admin">
+              <DipShell permission="dip:admin">
+                <AdminDipVerify />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/dip/config"
+          element={
+            <RequirePermission permission="dip:admin">
+              <DipShell permission="dip:admin">
+                <AdminDipConfig />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/dip/stats"
+          element={
+            <RequirePermission permission="dip:admin">
+              <DipShell permission="dip:admin">
+                <AdminDipStats />
+              </DipShell>
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/dip/audit"
+          element={
+            <RequirePermission permission="dip:admin">
+              <DipShell permission="dip:admin">
+                <AdminDipAudit />
+              </DipShell>
             </RequirePermission>
           }
         />

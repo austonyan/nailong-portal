@@ -2854,3 +2854,809 @@ h3 {
   word-break: break-all;
   color: var(--animal-text-color-muted);
 }
+
+/* ---------- 奶龙国皇家外交事务署 (diplomacy service) ---------- */
+
+.dip-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dip-subnav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 6px;
+  background: var(--animal-primary-color-bg);
+  border-radius: 999px;
+}
+
+.dip-subnav-link {
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--animal-text-color-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.dip-subnav-link:hover {
+  color: var(--animal-primary-color);
+  background: var(--animal-bg-color);
+}
+
+.dip-subnav-link.active {
+  color: #fff;
+  background: var(--animal-primary-color);
+  font-weight: 600;
+}
+
+.dip-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dip-banner-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dip-banner-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+}
+
+.dip-banner-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.dip-banner-sub {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.dip-disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 2px dashed var(--animal-warning-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.dip-disclaimer-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--animal-text-color);
+}
+
+.dip-disclaimer-text {
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.dip-hero-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.dip-scam-card .dip-scam-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.dip-scam-card .dip-scam-inner p {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.dip-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dip-notice-list,
+.dip-agreement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dip-notice-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dip-notice-time {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.dip-notice-body {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--animal-text-color);
+}
+
+.dip-service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.dip-service-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border-radius: 18px;
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  transition: transform var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.dip-service-card:hover {
+  transform: translateY(-2px);
+  color: var(--animal-primary-color);
+}
+
+.dip-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.dip-guide-card h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.dip-guide-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.dip-quick-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dip-home-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.dip-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 16px;
+}
+
+.dip-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: var(--animal-border-width) solid var(--animal-border-color-light);
+  border-radius: 14px;
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color);
+  font-family: var(--animal-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  resize: vertical;
+}
+
+.dip-textarea:focus {
+  outline: none;
+  border-color: var(--animal-primary-color);
+}
+
+.dip-form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dip-type-guide {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--animal-bg-color-secondary);
+  font-size: 13px;
+}
+
+.dip-agree-row {
+  margin-top: 12px;
+}
+
+.dip-confirm-list {
+  margin: 0;
+  font-size: 14px;
+}
+
+.dip-confirm-list p {
+  margin: 0 0 6px;
+}
+
+.dip-info-row {
+  display: flex;
+  gap: 10px;
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.dip-info-label {
+  flex-shrink: 0;
+  width: 110px;
+  color: var(--animal-text-color-secondary);
+  font-size: 13px;
+}
+
+.dip-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dip-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dip-reject-card b {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.dip-timeline {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dip-timeline li {
+  padding-left: 14px;
+  border-left: 3px solid var(--animal-primary-color-bg);
+}
+
+.dip-timeline-action {
+  font-weight: 600;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.dip-timeline-note {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.dip-detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dip-materials {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.dip-material-list,
+.dip-material-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dip-material-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.dip-material-name {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--animal-primary-color);
+  font-family: var(--animal-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dip-material-upload {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dip-check-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.dip-check-row > :first-child {
+  flex: 1;
+  min-width: 220px;
+}
+
+.dip-eligibility-result {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dip-agreement-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dip-agreement-parties {
+  margin: 6px 0 2px;
+  font-weight: 700;
+}
+
+.dip-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.dip-courtesy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.dip-courtesy-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.dip-courtesy-card p {
+  margin: 0;
+}
+
+.dip-office-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.dip-office-card p {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.dip-office-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dip-office-notice {
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--animal-bg-color-secondary);
+  margin-top: 10px;
+}
+
+.dip-msg-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dip-msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dip-msg-unread {
+  border: 2px solid var(--animal-warning-color);
+}
+
+.dip-msg-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dip-msg-head .muted-text {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.dip-msg-body {
+  margin: 8px 0;
+  font-size: 14px;
+  color: var(--animal-text-color);
+}
+
+.dip-msg-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.dip-verify-card {
+  width: min(520px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dip-verify-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dip-verify-form {
+  margin-top: 4px;
+}
+
+.dip-verify-hint {
+  font-size: 12px;
+}
+
+.dip-verify-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--animal-bg-color-secondary);
+}
+
+.dip-verify-kind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.dip-verify-no {
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.dip-verify-fields p {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.dip-verify-invalid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dip-verify-disclaimer {
+  font-size: 12px;
+}
+
+.dip-visa-channel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dip-visa-channel-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dip-hint-card p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.dip-admin-filter {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.dip-admin-filter > :first-child {
+  min-width: 220px;
+}
+
+.dip-material-links a {
+  color: var(--animal-primary-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dip-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.dip-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.dip-stat-value {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.dip-stat-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.dip-trend {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.dip-trend-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.dip-trend-count {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.dip-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px 18px;
+  margin-bottom: 12px;
+}
+
+.dip-setting-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.dip-config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dip-config-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dip-config-guide .dip-info-label {
+  width: auto;
+}
+
+.dip-switch-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dip-audit-detail {
+  font-size: 12px;
+  color: var(--animal-text-color-secondary);
+  word-break: break-all;
+}
+
+/* 外交身份卡(打印友好) */
+.dip-id-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 2px solid var(--animal-primary-color);
+  padding: 16px 18px;
+  background: var(--animal-bg-color);
+}
+
+.dip-id-card-muted {
+  filter: grayscale(0.6);
+  opacity: 0.85;
+}
+
+.dip-id-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px dashed var(--animal-border-color-light);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.dip-id-card-office {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.dip-id-card-type {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--animal-primary-color);
+}
+
+.dip-id-card-body {
+  display: flex;
+  gap: 14px;
+}
+
+.dip-id-card-main {
+  flex: 1;
+}
+
+.dip-id-card-main p {
+  margin: 2px 0;
+}
+
+.dip-id-card-entity {
+  font-weight: 700;
+}
+
+.dip-id-card-holder {
+  font-size: 15px;
+}
+
+.dip-id-card-no {
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: var(--animal-text-color-secondary);
+  font-size: 13px;
+}
+
+.dip-id-card-term {
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.dip-id-card-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dip-card-qr {
+  border-radius: 8px;
+}
+
+.dip-id-card-scan {
+  font-size: 11px;
+  color: var(--animal-text-color-secondary);
+}
+
+.dip-id-card-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--animal-text-color-secondary);
+  opacity: 0.08;
+  transform: rotate(-18deg);
+  letter-spacing: 4px;
+}
+
+.dip-id-card-disclaimer {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--animal-text-color-muted);
+}
+
+.dip-sso-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dip-sso-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dip-sso-name {
+  font-weight: 700;
+}
+
+.dip-sso-account {
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+@media print {
+  .app-header,
+  .app-footer,
+  .app-nav,
+  .dip-banner,
+  .dip-subnav,
+  .dip-disclaimer {
+    display: none !important;
+  }
+
+  .dip-print-area {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    z-index: 9999;
+  }
+}
