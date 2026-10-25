@@ -3454,7 +3454,7 @@
       "count": "数量",
       "auditTitle": "审计日志",
       "auditActor": "操作人",
-      "auditAction": "操作",
+      "auditAction": "操作类型",
       "auditTarget": "对象",
       "action_approve": "通过报名",
       "action_reject": "拒绝报名",

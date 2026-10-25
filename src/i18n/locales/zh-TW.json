@@ -2745,9 +2745,9 @@
       "messages": "訊息",
       "help": "幫助",
       "verify": "驗真查詢",
-      "workbench": "管理臺",
-      "frontDesk": "返回前臺",
-      "review": "報名稽核",
+      "workbench": "管理台",
+      "frontDesk": "返回前台",
+      "review": "報名審核",
       "adminEvents": "活動管理",
       "issuance": "邀請函與憑證",
       "adminHosts": "接待方管理",
@@ -2797,8 +2797,8 @@
       "ongoing": "進行中",
       "ended": "已結束",
       "cancelled": "已取消",
-      "pending_review": "待稽核",
-      "approved": "已透過",
+      "pending_review": "待審核",
+      "approved": "已通過",
       "waitlisted": "候補",
       "rejected": "已拒絕",
       "checked_in": "已簽到",
@@ -2824,7 +2824,7 @@
       "missing": "缺少編號",
       "reserved": "聯動預留(未啟用)",
       "verified": "已校驗",
-      "invalid": "校驗未透過",
+      "invalid": "校驗未通過",
       "unavailable": "對方服務未開放"
     },
     "hostType": {
@@ -2881,8 +2881,8 @@
     "history": {
       "registration_draft": "儲存草稿",
       "registration_submit": "提交報名",
-      "registration_approve": "稽核透過",
-      "registration_reject": "稽核拒絕",
+      "registration_approve": "審核通過",
+      "registration_reject": "審核拒絕",
       "registration_waitlist": "進入候補",
       "registration_cancel": "取消報名",
       "registration_promote": "候補轉正",
@@ -2901,7 +2901,7 @@
       "certNo": "認證證書編號",
       "checkedInAt": "簽到時間",
       "code": "編碼",
-      "comment": "稽核意見",
+      "comment": "審核意見",
       "companionName": "隨行暱稱",
       "companions": "隨行人員",
       "conditions": "報名條件",
@@ -2944,7 +2944,7 @@
       "relation": "關係",
       "reply": "回覆",
       "requirements": "資格要求",
-      "reviewNote": "稽核記錄",
+      "reviewNote": "審核記錄",
       "schedule": "日程",
       "sortOrder": "排序",
       "source": "來源",
@@ -2977,7 +2977,7 @@
       "verifyEntry": "驗真中心",
       "statOpen": "{{count}} 場活動開放報名",
       "statTypes": "{{count}} 個活動分類",
-      "statHours": "稽核約 {{hours}} 小時",
+      "statHours": "審核約 {{hours}} 小時",
       "notices": "署內公告",
       "categories": "活動分類",
       "categoriesSub": "文化交流、慶典、展覽、社群活動、外交活動與居民專屬活動。",
@@ -3011,7 +3011,7 @@
       "guide_invitation": "邀請函怎麼用",
       "guide_invitation_body": "收到邀請後可接受或拒絕,下載列印版;報名時填寫邀請函編號,亦可作為簽註材料(聯動預留)。",
       "guide_pass": "活動憑證怎麼驗",
-      "guide_pass_body": "報名透過後自動生成活動憑證。憑編號或二維碼簽到,也可在驗真中心查詢狀態。",
+      "guide_pass_body": "報名通過後自動生成活動憑證。憑編號或二維碼簽到,也可在驗真中心查詢狀態。",
       "guide_rules": "報名與禮遇規則",
       "guide_rules_body": "報名免費、資訊虛構、禁止重複佔名額;禮遇僅為趣味記錄,不承諾現實接待。",
       "learnMore": "瞭解更多",
@@ -3077,7 +3077,7 @@
       "uploadDone": "材料已上傳",
       "noMaterials": "尚未上傳材料",
       "summary": "報名摘要",
-      "summaryTip": "提交前請核對資訊;提交後將進入待稽核佇列。",
+      "summaryTip": "提交前請核對資訊;提交後將進入待審核佇列。",
       "requiredHint": "請填寫暱稱與聯絡方式",
       "confirmTitle": "提交前確認",
       "declarationCheck": "我已閱讀並同意娛樂宣告",
@@ -3088,7 +3088,7 @@
     },
     "my": {
       "title": "我的報名",
-      "subtitle": "檢視報名狀態、材料、稽核記錄與活動憑證。",
+      "subtitle": "檢視報名狀態、材料、審核記錄與活動憑證。",
       "empty": "還沒有報名記錄",
       "eventInfo": "活動資訊",
       "formInfo": "報名資訊",
@@ -3096,7 +3096,7 @@
       "timeline": "狀態軌跡",
       "viewPass": "檢視憑證",
       "cancelTitle": "取消報名",
-      "cancelTip": "取消後將釋放名額;若你已透過稽核,活動憑證會同步作廢。",
+      "cancelTip": "取消後將釋放名額;若你已通過審核,活動憑證會同步作廢。",
       "cancelled": "報名已取消"
     },
     "invitations": {
@@ -3119,7 +3119,7 @@
     },
     "passes": {
       "title": "我的活動憑證",
-      "subtitle": "報名透過後生成電子票,憑編號或二維碼簽到。",
+      "subtitle": "報名通過後生成電子票,憑編號或二維碼簽到。",
       "empty": "暫無活動憑證",
       "holder": "持票人",
       "kind": "活動憑證 · 電子票",
@@ -3135,7 +3135,7 @@
     "hosts": {
       "title": "接待方認證",
       "subtitle": "活動組織方、社群團體、外交接待方與居民團體的虛構認證。",
-      "intro": "認證透過後可獲得接待方編號與認證證書,並可按許可權發起邀請函、釋出活動(聯動預留)。",
+      "intro": "認證通過後可獲得接待方編號與認證證書,並可按權限發起邀請函、發布活動(聯動預留)。",
       "applyTitle": "申請接待方認證",
       "empty": "還沒有接待方申請",
       "unnamed": "未命名接待方",
@@ -3144,18 +3144,18 @@
       "contactPlaceholder": "郵箱或虛構聯絡方式",
       "introPlaceholder": "介紹你的團體、活動計劃與社群證明(虛構)",
       "materialTip": "請至少上傳 1 份介紹信、活動計劃或社群證明。",
-      "saveFirst": "請先儲存草稿,再上傳材料並提交稽核。",
+      "saveFirst": "請先儲存草稿,再上傳材料並提交審核。",
       "draftSaved": "草稿已儲存",
-      "submitted": "已提交稽核",
+      "submitted": "已提交審核",
       "deleteConfirm": "確定刪除這份接待方草稿嗎?",
       "supplementTip": "補件:{{note}},截止 {{date}}",
       "certTitle": "接待方認證證書",
       "certBody": "茲證明“{{name}}”已完成奶龍國皇家禮賓與活動署接待方認證。",
       "certLink": "認證證書與文書認證署聯動簽發(預留)",
-      "canPublish": "可釋出活動",
+      "canPublish": "可發布活動",
       "canInvite": "可發起邀請函",
       "rulesTitle": "認證規則",
-      "rules": "認證免費,材料僅用於虛構稽核;認證後如違反規則可被凍結或撤銷。接待方編號與證書可在驗真中心查詢。"
+      "rules": "認證免費,材料僅用於虛構審核;認證後如違反規則可被凍結或撤銷。接待方編號與證書可在驗真中心查詢。"
     },
     "courtesy": {
       "title": "禮賓服務",
@@ -3187,7 +3187,7 @@
     },
     "messages": {
       "title": "訊息與幫助",
-      "subtitle": "報名、稽核、候補轉正、活動變更、邀請函與憑證通知。",
+      "subtitle": "報名、審核、候補轉正、活動變更、邀請函與憑證通知。",
       "inbox": "收件箱({{count}})",
       "archivedTab": "已歸檔",
       "archive": "歸檔",
@@ -3227,8 +3227,8 @@
       "privacyBody": "聯絡方式與隨行人員僅用於本次活動通知,不在驗真頁展示;可申請登出並刪除個人報名資料。",
       "faq": {
         "applyTime": {
-          "q": "報名要稽核多久?",
-          "a": "通常在 48 小時內完成稽核;高峰期可能延長,請留意站內信。"
+          "q": "報名要審核多久?",
+          "a": "通常在 48 小時內完成審核;高峰期可能延長,請留意站內信。"
         },
         "invitationVisa": {
           "q": "邀請函能否用於簽註?",
@@ -3236,7 +3236,7 @@
         },
         "passUsage": {
           "q": "活動憑證怎麼用?",
-          "a": "報名透過後自動生成。活動當日出示憑證編號或二維碼簽到,憑證不可轉讓。"
+          "a": "報名通過後自動生成。活動當日出示憑證編號或二維碼簽到,憑證不可轉讓。"
         },
         "waitlist": {
           "q": "名額滿了怎麼辦?",
@@ -3244,7 +3244,7 @@
         },
         "host": {
           "q": "接待方認證有什麼用?",
-          "a": "認證後可獲得接待方編號與證書,並可按許可權發起邀請函或釋出活動(聯動預留)。"
+          "a": "認證後可獲得接待方編號與證書,並可按權限發起邀請函或發布活動(聯動預留)。"
         },
         "courtesy": {
           "q": "禮遇有現實效力嗎?",
@@ -3288,7 +3288,7 @@
       },
       "waitlist": {
         "q": "候補如何轉正?",
-        "a": "有已透過報名取消時,系統按候補順序自動轉正並透過站內信通知。"
+        "a": "有已通過報名取消時,系統按候補順序自動轉正並透過站內信通知。"
       },
       "identity": {
         "q": "居民 / 外交身份如何校驗?",
@@ -3296,7 +3296,7 @@
       }
     },
     "config": {
-      "review_hours_hint": "稽核時長提示(小時)",
+      "review_hours_hint": "審核時長提示(小時)",
       "supplement_days": "補件期限(天)",
       "verify_limit_per_5min": "驗真限流(次/5分鐘)",
       "max_companions": "最大隨行人數",
@@ -3315,9 +3315,9 @@
       "disclaimer_text": "娛樂宣告全文"
     },
     "admin": {
-      "reviewTitle": "報名稽核工作臺",
-      "reviewSubtitle": "佇列隔離:活動稽核員只能看到報名、接待方與禮遇佇列。",
-      "eventsTitle": "活動釋出與管理",
+      "reviewTitle": "報名審核工作台",
+      "reviewSubtitle": "佇列隔離:活動審核員只能看到報名、接待方與禮遇佇列。",
+      "eventsTitle": "活動發布與管理",
       "createEvent": "新建活動",
       "editEvent": "編輯活動",
       "eventsEmpty": "暫無活動",
@@ -3333,7 +3333,7 @@
       "filterAction": "按操作篩選",
       "queueEmpty": "當前佇列為空",
       "checkinEmpty": "暫無簽到記錄",
-      "approve": "透過",
+      "approve": "通過",
       "reject": "拒絕",
       "waitlist": "轉為候補",
       "promote": "候補轉正",
@@ -3342,7 +3342,7 @@
       "freeze": "凍結",
       "unfreeze": "解凍",
       "revokeHost": "撤銷認證",
-      "publish": "釋出活動",
+      "publish": "發布活動",
       "closeReg": "截止報名",
       "startEvent": "開始活動",
       "endEvent": "結束活動",
@@ -3351,14 +3351,14 @@
       "deleteEventTitle": "刪除活動",
       "deleteEventTip": "僅草稿或已取消活動可刪除;刪除後不在列表中顯示。",
       "notices": "活動公告",
-      "addNotice": "釋出公告",
-      "noticeAdded": "公告已釋出",
+      "addNotice": "發布公告",
+      "noticeAdded": "公告已發布",
       "eventCreated": "活動已建立",
       "eventDeleted": "活動已刪除",
       "statusChangeTip": "狀態變更將立即生效,並可能觸發站內信通知。",
       "formAndIdentity": "報名資訊與身份校驗",
       "passIssued": "活動憑證 {{no}} · {{status}}",
-      "approveTip": "透過後自動生成活動憑證並通知報名者;名額已滿時會自動轉入候補。",
+      "approveTip": "通過後自動生成活動憑證並通知報名者;名額已滿時會自動轉入候補。",
       "becameWaitlist": "名額已滿,已自動轉入候補",
       "issuanceTitle": "邀請函與活動憑證",
       "issuanceSubtitle": "定向邀請、撤銷、憑證作廢與補發。",
@@ -3372,12 +3372,12 @@
       "voidTitle": "作廢活動憑證",
       "reissueTitle": "補發活動憑證",
       "hostsTitle": "接待方認證管理",
-      "hostsSubtitle": "稽核接待方申請、補件、凍結、撤銷與許可權配置。",
-      "hostPermissions": "接待方許可權",
-      "hostActionTip": "凍結、撤銷與許可權配置均記錄審計日誌。",
+      "hostsSubtitle": "審核接待方申請、補件、凍結、撤銷與權限配置。",
+      "hostPermissions": "接待方權限",
+      "hostActionTip": "凍結、撤銷與權限配置均記錄審計日誌。",
       "courtesyTitle": "禮遇管理",
-      "courtesySubtitle": "禮遇型別配置、禮遇申請稽核與使用記錄。",
-      "applicationsTab": "申請稽核",
+      "courtesySubtitle": "禮遇型別配置、禮遇申請審核與使用記錄。",
+      "applicationsTab": "申請審核",
       "typesTab": "型別配置",
       "recordsTab": "使用記錄",
       "addType": "新建型別",
@@ -3441,7 +3441,7 @@
       "metricVerifyValid": "其中有效 {{count}}",
       "metricCheckins": "簽到人次",
       "rates": "關鍵比率",
-      "approvalRate": "透過率",
+      "approvalRate": "通過率",
       "waitlistRate": "候補率",
       "rejectRate": "拒絕率",
       "checkinRate": "簽到率",
@@ -3454,16 +3454,16 @@
       "count": "數量",
       "auditTitle": "審計日誌",
       "auditActor": "操作人",
-      "auditAction": "操作",
+      "auditAction": "操作類型",
       "auditTarget": "物件",
-      "action_approve": "透過報名",
+      "action_approve": "通過報名",
       "action_reject": "拒絕報名",
       "action_waitlist": "轉入候補",
       "action_promote": "候補轉正",
-      "courtesyAction_approve": "透過禮遇申請",
+      "courtesyAction_approve": "通過禮遇申請",
       "courtesyAction_reject": "拒絕禮遇申請",
       "courtesyAction_used": "標記禮遇已使用",
-      "hostAction_approve": "透過接待方認證",
+      "hostAction_approve": "通過接待方認證",
       "hostAction_reject": "駁回接待方認證",
       "hostAction_supplement": "要求補件",
       "hostAction_freeze": "凍結接待方",

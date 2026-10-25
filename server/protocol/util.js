@@ -736,7 +736,7 @@ export function issuePass(registration, { reissuedFrom = '' } = {}) {
     {
       passNo,
       event: event.title,
-      startsAt: event.starts_at || '',
+      startsAt: event.starts_at ? String(event.starts_at).replace('T', ' ').slice(0, 16) : '',
       venue: event.venue_name || '',
     },
     { eventId: event.id, passNo }

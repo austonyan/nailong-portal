@@ -155,7 +155,7 @@ export default function AdminProtocolIssuance() {
     { title: t('protocol.field.type'), dataIndex: 'typeName', width: 120 },
     { title: t('protocol.field.invitee'), width: 120, render: (_, r) => r.displayName || r.username },
     { title: t('common.status'), dataIndex: 'status', width: 90, render: (v) => <StatusTag status={v} /> },
-    { title: t('protocol.invitations.validUntil'), dataIndex: 'validUntil', width: 150, render: fmtDateTime },
+    { title: t('protocol.field.validUntil'), dataIndex: 'validUntil', width: 150, render: fmtDateTime },
     {
       title: t('common.actions'),
       render: (_, row) =>

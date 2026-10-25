@@ -1295,6 +1295,7 @@ router.get('/stats', manager, (_req, res) => {
 router.get('/export/:kind', manager, (req, res) => {
   const kind = req.params.kind;
   const ts = now().slice(0, 10);
+  audit(req.user, 'export_csv', 'export', kind, {});
   if (kind === 'registrations') {
     const rows = db
       .prepare(
