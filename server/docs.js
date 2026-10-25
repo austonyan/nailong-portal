@@ -48,7 +48,6 @@ CREATE TABLE IF NOT EXISTS doc_applications (
   purpose              TEXT NOT NULL DEFAULT 'display'
                        CHECK (purpose IN ('display','collect','event','entry_aux','other')),
   form_data            TEXT NOT NULL DEFAULT '{}',
-  entertainment_agreed INTEGER NOT NULL DEFAULT 0,
   supplement_note      TEXT NOT NULL DEFAULT '',
   supplement_deadline  TEXT,
   reject_code          TEXT,
@@ -372,7 +371,7 @@ function seedDocs() {
       );
       insertNotice.run({
         title: '六类文书认证全面开放',
-        body: '皇家文书与认证署现已开放签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书六类文书的在线认证申请,审核预计 72 小时内完成。本平台为虚构娱乐项目。',
+        body: '皇家文书与认证署现已开放签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书六类文书的在线认证申请,审核预计 72 小时内完成。',
         level: 'event',
         now: now(),
       });
@@ -384,7 +383,7 @@ function seedDocs() {
       });
       insertNotice.run({
         title: '谨防冒充认证诈骗',
-        body: '本署认证完全免费:不收取任何费用,不承诺任何现实效力,不出具任何现实法律文件。所有认证结果仅代表奶龙国虚构世界内的娱乐设定。"虚构娱乐·无现实效力"是每份文书的固定水印。',
+        body: '本署认证完全免费:不收取任何费用,请勿相信任何收费代办或"保证通过"的说法。',
         level: 'info',
         now: now(),
       });
@@ -400,7 +399,6 @@ function seedDocs() {
       'docs.upload_max_mb': '10',
       'docs.seal_enabled': '1',
       'docs.issuer_name': '奶龍國皇家文書與認證署',
-      'docs.watermark_text': '虚构娱乐 · 无现实效力',
     };
     const insertConfig = db.prepare('INSERT OR IGNORE INTO doc_config (key, value) VALUES (?, ?)');
     for (const [k, v] of Object.entries(defaults)) insertConfig.run(k, v);
@@ -652,7 +650,6 @@ export function serializeApplication(row) {
     bizCheck: parseMaybeJson(row.biz_check, {}),
     purpose: row.purpose,
     formData: parseMaybeJson(row.form_data, {}),
-    entertainmentAgreed: !!row.entertainment_agreed,
     supplementNote: row.supplement_note,
     supplementDeadline: row.supplement_deadline,
     rejectCode: row.reject_code,

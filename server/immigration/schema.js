@@ -68,7 +68,6 @@ export function ensureImmigrationSchema() {
     items         TEXT NOT NULL DEFAULT '[]',
     status        TEXT NOT NULL DEFAULT 'draft'
                   CHECK (status IN ('draft', 'pending', 'supplement', 'approved', 'rejected', 'entered', 'exited', 'withdrawn')),
-    confirm_entertainment INTEGER NOT NULL DEFAULT 0,
     supplement_request TEXT,
     supplement_content TEXT,
     reject_reason  TEXT,
@@ -280,7 +279,7 @@ const MESSAGE_TEMPLATES = [
   {
     code: 'pass_code',
     title: '通关码已生成:{{no}}',
-    body: '申报 {{no}} 的通关码 {{codeNo}} 已生成,请前往"我的通关码"查看二维码。通关码仅供娱乐,不产生现实出入境效力。',
+    body: '申报 {{no}} 的通关码 {{codeNo}} 已生成,请前往"我的通关码"查看二维码。',
     variables: 'no, codeNo',
   },
   {
@@ -295,16 +294,6 @@ const MESSAGE_TEMPLATES = [
     body: '你的入境记录 {{recordNo}} 计划停留 {{days}} 天即将到期,记得办理趣味出境登记哦。',
     variables: 'recordNo, days',
   },
-];
-
-const DEFAULT_SETTINGS = [
-  { key: 'disclaimer_version', value: '1' },
-  {
-    key: 'disclaimer_text',
-    value:
-      '皇家口岸入境署为奶龙岛趣味虚构单位:全部口岸、申报、签注与出入境记录均为娱乐内容,不产生也不代表任何现实出入境效力。通关全程免费,任何索取费用的行为均为诈骗。',
-  },
-  { key: 'stamp_watermark', value: '仅供娱乐 · 无现实效力' },
 ];
 
 function seedImmigration() {
@@ -371,7 +360,7 @@ function seedImmigration() {
       insertAnn.run(
         null,
         '口岸通关须知(必读)',
-        '入境需持有效趣味签注;通关码一人一码,截图转发无效;全程免费,不收取任何"通关费"。本口岸全部内容均为娱乐设定。',
+        '入境需持有效趣味签注;通关码一人一码,截图转发无效;全程免费,不收取任何"通关费"。',
         'info',
         ts,
         ts,
@@ -394,9 +383,6 @@ function seedImmigration() {
        VALUES (@code, @title, @body, @variables, 1, @ts)`
     );
     for (const t of MESSAGE_TEMPLATES) insertTemplate.run({ ...t, title: t.title, body: t.body, ts });
-
-    const insertSetting = db.prepare('INSERT OR IGNORE INTO im_settings (key, value, updated_at) VALUES (?, ?, ?)');
-    for (const s of DEFAULT_SETTINGS) insertSetting.run(s.key, s.value, ts);
   });
   run();
 }

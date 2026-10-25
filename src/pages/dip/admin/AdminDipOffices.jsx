@@ -258,7 +258,6 @@ export default function AdminDipOffices() {
       <DipAdminNav />
       <div className="page-header">
         <Title size="middle" color="purple">{t('dip.office.adminTitle')}</Title>
-        <Tag color="app-red" variant="soft">{t('dip.office.fictionTag')}</Tag>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setOfficeModal({})}>{t('dip.office.create')}</Button>
       </div>
 

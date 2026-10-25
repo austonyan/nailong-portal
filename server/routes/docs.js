@@ -179,10 +179,10 @@ router.post('/verify', (req, res) => {
   if (D.isValidCertNoFormat(raw)) {
     const cert = db.prepare('SELECT * FROM doc_certificates WHERE cert_no = ?').get(raw);
     if (cert) {
-      finish('found', { ...D.maskCertificate(cert, D.getTypeRow(cert.type_code)), disclaimer: true });
+      finish('found', D.maskCertificate(cert, D.getTypeRow(cert.type_code)));
       return;
     }
-    finish('not_found', { found: false, disclaimer: true });
+    finish('not_found', { found: false });
     return;
   }
 
@@ -198,12 +198,11 @@ router.post('/verify', (req, res) => {
         appNo: app.app_no,
         status: app.status,
         certificate: D.maskCertificate(D.getCertRowByApplication(app.id), D.getTypeRow(app.type_code)),
-        disclaimer: true,
       });
       return;
     }
   }
-  finish('not_found', { found: false, disclaimer: true });
+  finish('not_found', { found: false });
 });
 
 router.get('/verify/mine', authenticate, (req, res) => {
@@ -254,13 +253,11 @@ function validatePayload(typeRow, body, { forSubmit }) {
     }
   }
 
-  const agreed = !!body.agreed;
   if (forSubmit) {
     if (!nickname) throw badRequest('VALIDATION_ERROR', 'nickname is required');
     if (typeRow.biz_required && !bizNo) throw badRequest('VALIDATION_ERROR', `${typeRow.biz_no_label || 'bizNo'} is required`);
-    if (!agreed) throw badRequest('DOC_DECLARATION_REQUIRED', 'entertainment declaration must be accepted');
   }
-  return { nickname, contact, bizNo, purpose, formData, agreed };
+  return { nickname, contact, bizNo, purpose, formData };
 }
 
 function materialCounts(appId) {
@@ -280,8 +277,8 @@ router.post('/applications', applyAuth, (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO doc_applications (app_no, user_id, type_code, status, nickname, contact, biz_no, purpose, form_data, entertainment_agreed, created_at, updated_at)
-       VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO doc_applications (app_no, user_id, type_code, status, nickname, contact, biz_no, purpose, form_data, created_at, updated_at)
+       VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       D.nextApplicationNo(),
@@ -292,7 +289,6 @@ router.post('/applications', applyAuth, (req, res) => {
       payload.bizNo,
       payload.purpose,
       JSON.stringify(payload.formData),
-      payload.agreed ? 1 : 0,
       ts,
       ts
     );
@@ -311,7 +307,7 @@ router.patch('/applications/:id', applyAuth, (req, res) => {
 
   const payload = validatePayload(typeRow, req.body, { forSubmit: false });
   db.prepare(
-    `UPDATE doc_applications SET nickname = ?, contact = ?, biz_no = ?, purpose = ?, form_data = ?, entertainment_agreed = ?, updated_at = ?
+    `UPDATE doc_applications SET nickname = ?, contact = ?, biz_no = ?, purpose = ?, form_data = ?, updated_at = ?
      WHERE id = ?`
   ).run(
     payload.nickname,
@@ -319,7 +315,6 @@ router.patch('/applications/:id', applyAuth, (req, res) => {
     payload.bizNo,
     payload.purpose,
     JSON.stringify(payload.formData),
-    payload.agreed ? 1 : 0,
     now(),
     app.id
   );
@@ -366,7 +361,7 @@ router.post('/applications/:id/submit', applyAuth, (req, res) => {
   const ts = now();
   db.prepare(
     `UPDATE doc_applications
-     SET status = 'pending', nickname = ?, contact = ?, biz_no = ?, purpose = ?, form_data = ?, entertainment_agreed = 1,
+     SET status = 'pending', nickname = ?, contact = ?, biz_no = ?, purpose = ?, form_data = ?,
          biz_check = ?, submitted_at = ?, updated_at = ?, reject_code = NULL, reject_comment = NULL
      WHERE id = ?`
   ).run(
@@ -566,7 +561,6 @@ router.get('/certificates/:id', applyAuth, (req, res) => {
       typeName: row.type_name ?? cert.type_code,
       application: serializeApplicationDetail(D.getApplicationRow(cert.application_id)),
       issuer: D.getConfig('docs.issuer_name', '奶龍國皇家文書與認證署'),
-      watermark: D.getConfig('docs.watermark_text', '虚构娱乐 · 无现实效力'),
       sealEnabled: D.getConfig('docs.seal_enabled', '1') === '1',
     },
   });
@@ -1029,7 +1023,6 @@ const CONFIG_WHITELIST = new Set([
   'docs.upload_max_mb',
   'docs.seal_enabled',
   'docs.issuer_name',
-  'docs.watermark_text',
 ]);
 
 router.get('/admin/config', manageAuth, (_req, res) => {
@@ -1049,7 +1042,7 @@ router.patch('/admin/config', manageAuth, (req, res) => {
       v = String(Math.round(n));
     }
     if (key === 'docs.seal_enabled') v = value ? '1' : '0';
-    if ((key === 'docs.issuer_name' || key === 'docs.watermark_text') && !v) continue;
+    if (key === 'docs.issuer_name' && !v) continue;
     if (key.endsWith('_prefix')) {
       const prefix = v.toUpperCase();
       if (!/^[A-Z0-9]{2,8}$/.test(prefix)) throw badRequest('VALIDATION_ERROR', 'prefix must be 2-8 letters/digits');

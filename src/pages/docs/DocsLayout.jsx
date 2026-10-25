@@ -47,11 +47,6 @@ export default function DocsLayout() {
         <p className="muted-text docs-hero-sub">{t('docs.subtitle', { name })}</p>
       </div>
 
-      <div className="docs-disclaimer" role="note">
-        <ShieldIcon size={18} />
-        <span>{t('docs.disclaimer')}</span>
-      </div>
-
       <nav className="docs-subnav" aria-label={t('docs.title')}>
         {TABS.map((tab) => (
           <NavLink key={tab.key} to={tab.to} end={tab.end} className={({ isActive }) => (isActive ? 'docs-tab active' : 'docs-tab')}>

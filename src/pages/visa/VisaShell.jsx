@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { Avatar, Button, Card, Modal } from 'animal-island-ui';
 import { BadgeCheckIcon } from 'naive-icons';
 import { useAuth } from '../../auth/AuthContext.jsx';
 
@@ -51,9 +51,6 @@ export default function VisaShell({ permission, children }) {
             <div className="visa-office-sub">{t('visa.officeSub')}</div>
           </div>
         </div>
-        <Tag color="app-yellow" variant="soft">
-          {t('visa.disclaimerTag')}
-        </Tag>
       </div>
 
       <nav className="visa-nav" aria-label={t('visa.officeName')}>

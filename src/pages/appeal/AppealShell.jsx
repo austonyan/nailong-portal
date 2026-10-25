@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { Avatar, Button, Card, Modal } from 'animal-island-ui';
 import { ShieldIcon } from 'naive-icons';
 import { useAuth } from '../../auth/AuthContext.jsx';
 
@@ -51,9 +51,6 @@ export default function AppealShell({ permission, children }) {
             <div className="appeal-office-sub">{t('appeal.officeSub')}</div>
           </div>
         </div>
-        <Tag color="app-yellow" variant="soft">
-          {t('appeal.disclaimerTag')}
-        </Tag>
       </div>
 
       <nav className="appeal-nav" aria-label={t('appeal.officeName')}>

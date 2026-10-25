@@ -302,7 +302,6 @@ export function serializeRegistration(row) {
     companions: safeJson(row.companions, []),
     note: row.note,
     invitationNo: row.invitation_no,
-    entertainmentAgreed: !!row.entertainment_agreed,
     rejectCode: row.reject_code,
     rejectComment: row.reject_comment,
     reviewNote: row.review_note,

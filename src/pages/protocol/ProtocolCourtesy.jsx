@@ -186,11 +186,6 @@ export default function ProtocolCourtesy() {
         </Card>
       </section>
 
-      <Card type="dashed" className="protocol-disclaimer-card">
-        <ShieldIcon size={18} />
-        <p>{t('protocol.courtesy.notPromise')}</p>
-      </Card>
-
       <Modal
         open={applyOpen}
         title={t('protocol.courtesy.applyTitle')}

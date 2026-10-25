@@ -116,7 +116,6 @@ CREATE TABLE IF NOT EXISTS visa_applications (
   inviter_name         TEXT NOT NULL DEFAULT '',
   inviter_contact      TEXT NOT NULL DEFAULT '',
   companions           TEXT NOT NULL DEFAULT '',
-  entertainment_agreed INTEGER NOT NULL DEFAULT 0,
   supplement_note      TEXT NOT NULL DEFAULT '',
   supplement_deadline  TEXT,
   reject_code          TEXT,
@@ -251,7 +250,6 @@ CREATE TABLE IF NOT EXISTS appeal_appeals (
   reason               TEXT NOT NULL DEFAULT '',
   expected             TEXT NOT NULL DEFAULT '',
   contact              TEXT NOT NULL DEFAULT '',
-  entertainment_agreed INTEGER NOT NULL DEFAULT 0,
   accept_note          TEXT NOT NULL DEFAULT '',
   reject_reason        TEXT,
   supplement_note      TEXT NOT NULL DEFAULT '',
@@ -596,7 +594,7 @@ function seed() {
         name: '旅游签注',
         description: '来奶龙国观光、度假、打卡奶龙雕像的最经典签注',
         guide:
-          '适用于以观光游览为目的进入奶龙国的旅行者。单次停留最长 30 天,签发后 90 天内有效,不可续签(娱乐设定)。需准备:头像照片、行程说明;邀请函为选填。',
+          '适用于以观光游览为目的进入奶龙国的旅行者。单次停留最长 30 天,签发后 90 天内有效,不可续签。需准备:头像照片、行程说明;邀请函为选填。',
         stay_days: 30,
         valid_days: 90,
         renewable: 0,
@@ -627,13 +625,13 @@ function seed() {
       );
       insertNotice.run({
         title: '旅游签注开放申请',
-        body: '奶龍國簽註申請署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。本平台为虚构娱乐项目,不核验真实身份。',
+        body: '奶龍國簽註申請署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。',
         level: 'policy',
         now: now(),
       });
       insertNotice.run({
         title: '谨防冒充办证诈骗',
-        body: '本署办证完全免费,任何收费办证、承诺"现实效力"的行为均为诈骗。签注仅在奶龙国虚构世界内使用。',
+        body: '本署办证完全免费,任何收费办证的行为均为诈骗。',
         level: 'info',
         now: now(),
       });
@@ -662,7 +660,7 @@ function seed() {
       );
       insertNotice.run({
         title: '申诉受理范围与时效说明',
-        body: '本署受理对签注、入境、居民登记、外交身份、文书认证五类业务结果不服提起的结果申诉,以及已处理申诉的复核申请。申诉提交后约 48 小时内受理,复核为一次终局。本平台为虚构娱乐项目,不构成现实法律救济或行政申诉。',
+        body: '本署受理对签注、入境、居民登记、外交身份、文书认证五类业务结果不服提起的结果申诉,以及已处理申诉的复核申请。申诉提交后约 48 小时内受理,复核为一次终局。',
         level: 'policy',
         now: now(),
       });

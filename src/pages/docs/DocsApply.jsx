@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, Card, Checkbox, Divider, Input, Modal, Notification, Radio, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Notification, Radio, Tag, Title, Upload } from 'animal-island-ui';
 import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
@@ -12,7 +12,6 @@ const emptyForm = {
   bizNo: '',
   purpose: 'display',
   formData: {},
-  agreed: false,
 };
 
 export default function DocsApply() {
@@ -71,7 +70,6 @@ export default function DocsApply() {
           bizNo: item.bizNo || '',
           purpose: item.purpose || 'display',
           formData: item.formData || {},
-          agreed: !!item.entertainmentAgreed,
         });
       })
       .catch((err) => Notification.error(t(`api.${err.code}`, { defaultValue: err.message })));
@@ -91,7 +89,6 @@ export default function DocsApply() {
       bizNo: form.bizNo,
       purpose: form.purpose,
       formData: form.formData,
-      agreed: form.agreed,
     }),
     [typeCode, form]
   );
@@ -160,7 +157,6 @@ export default function DocsApply() {
     for (const m of type.materials || []) {
       if (m.required && materialsOf(m.key).length === 0) return t('docs.apply.materialRequired', { label: m.label });
     }
-    if (!form.agreed) return t('docs.apply.agreeRequired');
     return null;
   };
 
@@ -179,7 +175,7 @@ export default function DocsApply() {
         const d = await api.post('/docs/applications', payload());
         id = d.item.id;
       }
-      const d = await api.post(`/docs/applications/${id}/submit`, { agreed: true });
+      const d = await api.post(`/docs/applications/${id}/submit`, {});
       Notification.success(t('docs.apply.submitted', { no: d.item.appNo }));
       setConfirming(false);
       navigate(`/docs/applications/${d.item.id}`);
@@ -349,14 +345,6 @@ export default function DocsApply() {
           </Card>
 
           <Card className="docs-block">
-            <h3 className="docs-block-title">{t('docs.apply.step4')}</h3>
-            <Checkbox
-              value={form.agreed ? ['agreed'] : []}
-              onChange={(vals) => setField('agreed', vals.includes('agreed'))}
-              direction="vertical"
-              options={[{ label: t('docs.apply.declaration'), value: 'agreed' }]}
-            />
-            <Divider type="hairline" />
             <div className="docs-apply-actions">
               <Button onClick={() => saveDraft()} loading={saving} icon={<SaveIcon />}>
                 {t('docs.apply.saveDraft')}
@@ -408,7 +396,6 @@ export default function DocsApply() {
               <dt>{t('docs.apply.materialsCount')}</dt>
               <dd>{materials.length}</dd>
             </dl>
-            <p className="docs-confirm-declare">{t('docs.apply.declaration')}</p>
           </div>
         )}
       </Modal>

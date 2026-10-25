@@ -91,7 +91,7 @@ async function fullFlow(adminToken, userToken) {
   const put = await api(`/resident/applications/${appId}`, { method: 'PUT', token: userToken, body: FIELDS });
   check('保存申请信息', put.status === 200);
 
-  const missingAvatar = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: true } });
+  const missingAvatar = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('缺头像时拒绝提交', missingAvatar.status === 400 && missingAvatar.data.code === 'RES_AVATAR_REQUIRED');
 
   const up = await upload(userToken, appId, 'avatar', 'avatar.png');
@@ -100,13 +100,10 @@ async function fullFlow(adminToken, userToken) {
   const badType = await upload(userToken, appId, 'other', 'evil.bin', 'application/octet-stream');
   check('拒绝非白名单类型', badType.status === 400 || badType.status === 413, JSON.stringify(badType.data));
 
-  const noAgree = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: false } });
-  check('未勾选娱乐声明拒绝提交', noAgree.status === 400 && noAgree.data.code === 'RES_AGREEMENT_REQUIRED');
-
-  const noPurpose = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, purposes: [], entertainmentAgreed: true } });
+  const noPurpose = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, purposes: [] } });
   check('缺少登记用途拒绝提交', noPurpose.status === 400 && noPurpose.data.code === 'RES_PURPOSE_REQUIRED');
 
-  const submitted = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: true } });
+  const submitted = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('提交成功进入待审核', submitted.status === 200 && submitted.data.application.status === 'pending_review');
 
   const msg = await api('/resident/messages', { token: userToken });
@@ -184,7 +181,7 @@ async function fullFlow(adminToken, userToken) {
   const app2 = await api('/resident/applications', { method: 'POST', token: user2Token, body: { typeCode: 'TEMPORARY' } });
   const app2Id = app2.data.application.id;
   await upload(user2Token, app2Id, 'avatar', 'a.png');
-  await api(`/resident/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS, nickname: `岛民乙${stamp}`, entertainmentAgreed: true } });
+  await api(`/resident/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS, nickname: `岛民乙${stamp}` } });
   const reject = await api(`/resident/admin/applications/${app2Id}/reject`, {
     method: 'POST', token: adminToken, body: { reasonCode: 'false_info', comment: '简介与用途不符' },
   });

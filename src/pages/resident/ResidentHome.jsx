@@ -1,6 +1,6 @@
-// 居民登记署首页:署内公告、居民类型展示、办事指南、快速入口、防诈骗提示。
+// 居民登记署首页:署内公告、居民类型展示、办事指南、快速入口。
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
 import { BadgeCheckIcon, BellIcon, ClipboardIcon, HelpCircleIcon, ListIcon, SearchIcon, ShieldIcon } from 'naive-icons';
@@ -197,14 +197,6 @@ export default function ResidentHome() {
           ))}
         </div>
       </section>
-
-      <Card color="app-yellow" className="res-fraud-card">
-        <b>{t('res.fraud.title')}</b>
-        <p>{home?.disclaimerText || t('res.disclaimer.default')}</p>
-        <Link to="/resident/guide" className="res-link">
-          {t('res.fraud.more')}
-        </Link>
-      </Card>
 
       <div className="res-center-btn">
         <Button type="primary" size="large" onClick={() => navigate('/resident/apply')}>

@@ -84,7 +84,6 @@ check(
     overview.data.courtesyTypes.length > 0,
   JSON.stringify(overview.data).slice(0, 200)
 );
-check('首页:娱乐声明文本', !!overview.data.disclaimer?.text && overview.data.disclaimer.text.length > 20);
 
 // --- 建交申请闭环 -----------------------------------------------------------
 const created = await api('/dip/relations', {
@@ -98,9 +97,6 @@ const rel = created.data.relation;
 const up = await upload(userToken, 'relation', rel.id);
 check('上传建交材料', up.status === 201 && up.data.material?.origin === 'initial', JSON.stringify(up.data).slice(0, 150));
 
-const noAgree = await api(`/dip/relations/${rel.id}/submit`, { method: 'POST', token: userToken, body: {} });
-check('未勾选娱乐声明拒绝提交', noAgree.status === 400 && noAgree.data.code === 'DIP_CONFIRM_REQUIRED', JSON.stringify(noAgree.data));
-
 const badTypeRes = await fetch(`${base}/api/dip/materials/relation/${rel.id}`, {
   method: 'POST',
   headers: { Authorization: `Bearer ${userToken}` },
@@ -108,12 +104,12 @@ const badTypeRes = await fetch(`${base}/api/dip/materials/relation/${rel.id}`, {
 });
 check('拒绝非白名单文件类型', badTypeRes.status === 400, String(badTypeRes.status));
 
-const submitted = await api(`/dip/relations/${rel.id}/submit`, { method: 'POST', token: userToken, body: { confirmEntertainment: true } });
+const submitted = await api(`/dip/relations/${rel.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('提交进入待审核', submitted.status === 200 && submitted.data.relation.status === 'pending_review');
 
 const dup = await api('/dip/relations', { method: 'POST', token: userToken, body: { objectType: 'VIRTUAL_NATION', relationType: 'FORMAL', entityName: `${ENTITY}2`, repNickname: '喵大使', contact: 'cat@example.com', reason: 'x', purpose: 'display' } });
 await upload(userToken, 'relation', dup.data.relation.id);
-const dupSubmit = await api(`/dip/relations/${dup.data.relation.id}/submit`, { method: 'POST', token: userToken, body: { confirmEntertainment: true } });
+const dupSubmit = await api(`/dip/relations/${dup.data.relation.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('重复在途申请被拦截', dupSubmit.status === 409 && dupSubmit.data.code === 'DIP_DUPLICATE', JSON.stringify(dupSubmit.data));
 
 const queue = await api('/dip/admin/relations?status=pending_review', { token: adminToken });
@@ -144,11 +140,11 @@ const idtCreated = await api('/dip/identities', {
 check('创建身份草稿', idtCreated.status === 201 && /^NLE/.test(idtCreated.data.identity?.no || '') && idtCreated.data.identity.entityName === ENTITY);
 const idt = idtCreated.data.identity;
 
-const idtNoMat = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: { confirmEntertainment: true } });
+const idtNoMat = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('缺任命书拒绝提交', idtNoMat.status === 400 && idtNoMat.data.code === 'DIP_MATERIAL_REQUIRED');
 
 await upload(userToken, 'identity', idt.id, 'appointment.png');
-const idtSubmitted = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: { confirmEntertainment: true } });
+const idtSubmitted = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('身份提交进入待审核', idtSubmitted.status === 200 && idtSubmitted.data.identity.status === 'pending_review');
 
 const idtApprove = await api(`/dip/admin/identities/${idt.id}/approve`, { method: 'POST', token: adminToken, body: { note: '任命书齐全' } });
@@ -225,7 +221,7 @@ check('失效身份验真为无效', verifyAfter.data.found && verifyAfter.data.
 // --- 驳回路径(用户 B) ------------------------------------------------------
 const relB = await api('/dip/relations', { method: 'POST', token: user2Token, body: { objectType: 'VIRTUAL_NATION', relationType: 'FORMAL', entityName: `汪星共和国${stamp}`, repNickname: '汪大使', contact: 'dog@example.com', reason: '汪!', purpose: 'display' } });
 await upload(user2Token, 'relation', relB.data.relation.id);
-await api(`/dip/relations/${relB.data.relation.id}/submit`, { method: 'POST', token: user2Token, body: { confirmEntertainment: true } });
+await api(`/dip/relations/${relB.data.relation.id}/submit`, { method: 'POST', token: user2Token, body: {} });
 const reject = await api(`/dip/admin/relations/${relB.data.relation.id}/reject`, {
   method: 'POST',
   token: adminToken,
@@ -280,9 +276,9 @@ check('类型与配置读取', config.status === 200 && config.data.objectTypes.
 const settingsPut = await api('/dip/admin/config/settings', {
   method: 'PUT',
   token: adminToken,
-  body: { items: [{ key: 'verify_limit_per_5min', value: '30' }, { key: 'watermark_text', value: '仅供娱乐 · 非真实外交' }] },
+  body: { items: [{ key: 'verify_limit_per_5min', value: '30' }] },
 });
-check('限流/水印配置保存', settingsPut.status === 200);
+check('限流配置保存', settingsPut.status === 200);
 
 const templates = await api('/dip/admin/templates', { token: adminToken });
 check('消息模板列表', templates.status === 200 && templates.data.items.length >= 10);

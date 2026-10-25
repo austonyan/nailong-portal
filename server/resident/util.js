@@ -224,7 +224,6 @@ export function serializeApplication(row) {
     virtualAddress: row.virtual_address,
     bio: row.bio,
     purposes: parseMaybeJson(row.purposes),
-    entertainmentAgreed: !!row.entertainment_agreed,
     supplementNote: row.supplement_note,
     supplementDeadline: row.supplement_deadline,
     rejectCode: row.reject_code,

@@ -153,7 +153,6 @@ router.get('/overview', reviewer, (req, res) => {
     validInvitations: db.prepare("SELECT COUNT(*) AS n FROM pro_invitations WHERE status = 'valid'").get().n,
     validPasses: db.prepare("SELECT COUNT(*) AS n FROM pro_passes WHERE status = 'pending'").get().n,
     unreadMessages: db.prepare('SELECT COUNT(*) AS n FROM pro_messages WHERE user_id = ? AND read = 0 AND archived = 0').get(req.user.id).n,
-    disclaimerVersion: getConfig('disclaimer_version'),
   });
 });
 
@@ -1119,10 +1118,6 @@ router.post('/tickets/:id/close', manager, (req, res) => {
 // ---------------------------------------------------------------------------
 
 const EDITABLE_CONFIG = new Set([
-  'disclaimer_text',
-  'disclaimer_version',
-  'watermark_text',
-  'pass_statement',
   'review_hours_hint',
   'supplement_days',
   'verify_limit_per_5min',

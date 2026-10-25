@@ -8,7 +8,7 @@ import multer from 'multer';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, notFound, readString, forbidden } from '../http.js';
-import { ensureImmigrationSchema, getSetting } from './schema.js';
+import { ensureImmigrationSchema } from './schema.js';
 import {
   assertNoDuplicate,
   assertNotBlocked,
@@ -131,7 +131,6 @@ function serializeDeclaration(row, { detail = false } = {}) {
     updatedAt: row.updated_at,
   };
   if (!detail) return base;
-  base.confirmEntertainment = !!row.confirm_entertainment;
   base.events = db
     .prepare(
       `SELECT e.action, e.note, e.created_at, u.display_name AS actor
@@ -190,8 +189,6 @@ router.get('/overview', ...portalOnly, (req, res) => {
     ports,
     announcements,
     crowding: crowding(),
-    disclaimer: { version: getSetting('disclaimer_version'), text: getSetting('disclaimer_text') },
-    stampWatermark: getSetting('stamp_watermark'),
     my: {
       pending: myCounts.find((c) => c.status === 'pending')?.n ?? 0,
       approved: myCounts.find((c) => c.status === 'approved')?.n ?? 0,
@@ -384,10 +381,6 @@ router.post('/declarations/:id/submit', ...portalOnly, (req, res) => {
     throw badRequest('IMM_INCOMPLETE', 'Declaration is incomplete');
   }
   if (!row.visa_no) throw badRequest('IMM_VISA_REQUIRED', 'Link a valid visa before submitting');
-  if (!req.body?.confirmEntertainment) {
-    throw badRequest('IMM_CONFIRM_REQUIRED', 'The entertainment disclaimer must be accepted');
-  }
-
   const check = checkVisa(row.visa_no, req.user);
   if (check.result !== 'valid') {
     throw badRequest(VISA_ERROR_CODE[check.result] || 'IMM_VISA_INVALID', `Visa check failed: ${check.result}`);
@@ -396,7 +389,7 @@ router.post('/declarations/:id/submit', ...portalOnly, (req, res) => {
   const ts = now();
   db.prepare(
     `UPDATE im_declarations
-     SET status = 'pending', confirm_entertainment = 1, visa_result = ?, visa_checked_at = ?, submitted_at = ?, updated_at = ?
+     SET status = 'pending', visa_result = ?, visa_checked_at = ?, submitted_at = ?, updated_at = ?
      WHERE id = ?`
   ).run(check.result, check.checkedAt, ts, ts, row.id);
   logEvent(row.id, 'submit', req.user.id, `签注校验:${check.result}`);

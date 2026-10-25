@@ -195,7 +195,6 @@ export function serializeAppeal(row) {
     decisionReason: row.decision_reason,
     decisionBasis: row.decision_basis,
     handlerName: row.handler_name,
-    entertainmentAgreed: !!row.entertainment_agreed,
     evaluationRating: row.evaluation_rating,
     evaluationComment: row.evaluation_comment,
     mergedInto: row.merged_into,

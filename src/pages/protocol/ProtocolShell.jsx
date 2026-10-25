@@ -76,9 +76,6 @@ export default function ProtocolShell({ permission, variant = 'user', children }
           </div>
         </div>
         <div className="protocol-banner-right">
-          <Tag color="app-yellow" variant="soft">
-            {t('protocol.disclaimerTag')}
-          </Tag>
           {variant === 'admin' ? (
             <Button type="text" size="small" onClick={() => navigate('/protocol')}>
               {t('protocol.nav.frontDesk')}

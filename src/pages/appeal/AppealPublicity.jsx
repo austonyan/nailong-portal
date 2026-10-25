@@ -1,5 +1,5 @@
 // 处理公示:脱敏统计(申诉量/受理率/时长/结果分布)、典型案例与质量报告,
-// 不含申诉人信息与敏感细节,公示内容均带娱乐声明。
+// 不含申诉人信息与敏感细节。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Tag, Title } from 'animal-island-ui';
@@ -68,7 +68,6 @@ export default function AppealPublicity() {
               </Tag>
             ))}
           </div>
-          <p className="muted-text appeal-pub-disclaimer">{t('appeal.publicity.statsDisclaimer')}</p>
         </Card>
       )}
 
@@ -96,9 +95,6 @@ export default function AppealPublicity() {
         </Card>
       ))}
 
-      <Card type="dashed" className="appeal-disclaimer-card">
-        <p>{t('appeal.publicity.disclaimer')}</p>
-      </Card>
     </div>
   );
 }

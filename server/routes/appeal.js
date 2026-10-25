@@ -169,7 +169,7 @@ router.get('/verify', (req, res) => {
     result.found ? `${result.kind}:${result.status}` : 'not_found',
     now()
   );
-  res.json({ ...result, disclaimer: true });
+  res.json(result);
 });
 
 // Everything below requires a signed-in user with the apply permission.
@@ -306,9 +306,6 @@ router.post('/appeals/:id/submit', (req, res) => {
   if (db.prepare('SELECT 1 FROM appeal_blacklist WHERE user_id = ? AND scope IN (?, ?)').get(req.user.id, 'appeal', 'all')) {
     throw forbidden('APPEAL_BLACKLISTED', 'Account is restricted from appealing');
   }
-  if (req.body?.entertainmentAgreed !== true) {
-    throw badRequest('APPEAL_AGREEMENT_REQUIRED', 'Entertainment disclaimer must be accepted');
-  }
   const dup = db
     .prepare(
       `SELECT code FROM appeal_appeals WHERE user_id = ? AND biz_type = ? AND biz_code = ? AND status IN ${APPEAL_OPEN}`
@@ -325,7 +322,7 @@ router.post('/appeals/:id/submit', (req, res) => {
   }
   const ts = now();
   db.prepare(
-    "UPDATE appeal_appeals SET status = 'pending_accept', entertainment_agreed = 1, submitted_at = ?, updated_at = ? WHERE id = ?"
+    "UPDATE appeal_appeals SET status = 'pending_accept', submitted_at = ?, updated_at = ? WHERE id = ?"
   ).run(ts, ts, row.id);
   record('appeal', row.id, req.user, 'submit');
   sendMsg(req.user.id, 'appeal', row.id, 'appeal_submitted', { code: row.code });
@@ -685,7 +682,6 @@ router.get('/publicity/stats', (_req, res) => {
     bizDistribution: bizDist,
     reviewTotal,
     reviewCompleted,
-    disclaimer: true,
   });
 });
 

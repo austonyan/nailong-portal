@@ -1,12 +1,11 @@
 // 结果申诉表单:选择业务与编号 → 建草稿 → 填写理由/期望/联系方式 → 材料 →
-// 提交前确认(预览 + 娱乐声明勾选)→ 生成申诉编号。/appeal/apply/:id 编辑草稿。
+// 提交前确认(预览)→ 生成申诉编号。/appeal/apply/:id 编辑草稿。
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
   Card,
-  Checkbox,
   Form,
   FormItem,
   Input,
@@ -36,7 +35,6 @@ export default function AppealApply() {
   const [hints, setHints] = useState({ supplementDays: 7, reviewDays: 15, acceptSlaHours: 48 });
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmAgree, setConfirmAgree] = useState([]);
   const [submitted, setSubmitted] = useState(null);
   const creatingRef = useRef(false);
 
@@ -123,7 +121,6 @@ export default function AppealApply() {
     try {
       await form.validateFields();
       await saveDraft(true);
-      setConfirmAgree([]);
       setConfirmOpen(true);
     } catch {
       // 表单校验失败,FormItem 已显示错误
@@ -134,7 +131,7 @@ export default function AppealApply() {
     if (!appeal) return;
     setBusy(true);
     try {
-      const data = await api.post(`/appeal/appeals/${appeal.id}/submit`, { entertainmentAgreed: true });
+      const data = await api.post(`/appeal/appeals/${appeal.id}/submit`, {});
       setSubmitted(data.appeal);
       setConfirmOpen(false);
       Notification.success(t('appeal.apply.submitSuccess'));
@@ -279,7 +276,7 @@ export default function AppealApply() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={confirmAgree.length !== 1} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit}>
               {t('appeal.apply.submit')}
             </Button>
           </>
@@ -314,11 +311,6 @@ export default function AppealApply() {
               </dd>
             </div>
           </dl>
-          <Checkbox
-            options={[{ label: t('appeal.apply.confirmAgree'), value: 'ok' }]}
-            value={confirmAgree}
-            onChange={setConfirmAgree}
-          />
         </div>
       </Modal>
     </div>

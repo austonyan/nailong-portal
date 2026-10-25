@@ -130,7 +130,6 @@ function RelationDrawer({ id, onChanged }) {
         <InfoRow label={t('dip.apply.courtesies')}>
           {(r.courtesies ?? []).map((c) => t(`dip.courtesy.${c}`, { defaultValue: c })).join('、') || '-'}
         </InfoRow>
-        <InfoRow label={t('dip.admin.entertainmentAgreed')}>{r.entertainmentAgreed ? t('common.yes') : t('common.no')}</InfoRow>
         {r.supplementNote && <InfoRow label={t('dip.relation.supplementRequired')}>{r.supplementNote}</InfoRow>}
         {r.severReason && <InfoRow label={t('dip.relation.severRequest')}>{r.severReason}</InfoRow>}
       </Card>
@@ -292,7 +291,6 @@ function IdentityDrawer({ id, onChanged }) {
         <InfoRow label={t('dip.identity.title')}>{d.title || '-'}</InfoRow>
         <InfoRow label={t('dip.identity.term')}>{(d.termStart ?? '').slice(0, 10)} ~ {(d.termEnd ?? '').slice(0, 10)}</InfoRow>
         {d.inactiveReason && <InfoRow label={t('dip.identity.inactiveReason')}>{d.inactiveReason}</InfoRow>}
-        <InfoRow label={t('dip.admin.entertainmentAgreed')}>{d.entertainmentAgreed ? t('common.yes') : t('common.no')}</InfoRow>
       </Card>
 
       <Card>

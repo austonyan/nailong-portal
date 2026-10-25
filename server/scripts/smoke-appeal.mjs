@@ -100,10 +100,8 @@ async function main() {
   const badFile = await upload(userToken, 'appeal', appealId, 'other', 'evil.bin', 'application/octet-stream');
   check('拒绝非白名单类型', badFile.status === 400, JSON.stringify(badFile.data));
 
-  const noAgree = await api(`/appeal/appeals/${appealId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: false } });
-  check('未勾选娱乐声明拒绝提交', noAgree.status === 400 && noAgree.data.code === 'APPEAL_AGREEMENT_REQUIRED');
 
-  const submitted = await api(`/appeal/appeals/${appealId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: true } });
+  const submitted = await api(`/appeal/appeals/${appealId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('提交成功进入待受理', submitted.status === 200 && submitted.data.appeal.status === 'pending_accept');
 
   const msg = await api('/appeal/messages', { token: userToken });
@@ -112,7 +110,7 @@ async function main() {
   // 重复申诉:同用户同业务同编号
   const dupDraft = await api('/appeal/appeals', { method: 'POST', token: userToken, body: { bizType: 'visa', bizCode: FIELDS.bizCode } });
   await api(`/appeal/appeals/${dupDraft.data.appeal.id}`, { method: 'PUT', token: userToken, body: FIELDS });
-  const dup = await api(`/appeal/appeals/${dupDraft.data.appeal.id}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: true } });
+  const dup = await api(`/appeal/appeals/${dupDraft.data.appeal.id}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('重复申诉被拦截', dup.status === 400 && dup.data.code === 'APPEAL_DUPLICATE', JSON.stringify(dup.data));
 
   // 管理:队列 → 受理 → 要求补件 → 补件 → 决定(维持)
@@ -217,29 +215,25 @@ async function main() {
   const tClose = await api(`/appeal/tickets/${ticketId}/close`, { method: 'POST', token: userToken, body: {} });
   check('工单用户关闭', tClose.status === 200);
 
-  // 公示:缺娱乐声明的发布被拦截,带声明的发布成功
+  // 公示:发布成功
   const pub = await api('/appeal/admin/publicity', {
     method: 'POST', token: adminToken,
     body: { kind: 'case', title: '典型案例:复核变更原结果', body: '某签注申诉经复核采纳新证据,原结果被变更。(脱敏发布)' },
   });
   const pubId = pub.data.id;
-  const badPub = await api(`/appeal/admin/publicity/${pubId}`, { method: 'PATCH', token: adminToken, body: { status: 'published' } });
-  check('公示缺娱乐声明拦截', badPub.status === 400 && badPub.data.code === 'APPEAL_PUBLICITY_DISCLAIMER');
-  const goodPub = await api(`/appeal/admin/publicity/${pubId}`, {
-    method: 'PATCH', token: adminToken, body: { status: 'published', body: '某签注申诉经复核采纳新证据,原结果被变更。(脱敏发布,虚构娱乐内容)' },
-  });
+  const goodPub = await api(`/appeal/admin/publicity/${pubId}`, { method: 'PATCH', token: adminToken, body: { status: 'published' } });
   check('公示发布成功', goodPub.status === 200);
   const pubList = await api('/appeal/publicity', { token: userToken });
   check('用户可见已发布公示', pubList.data.items.some((p) => p.id === pubId && p.status === 'published'));
   const pubStats = await api('/appeal/publicity/stats', { token: userToken });
-  check('公示统计(脱敏)', pubStats.status === 200 && pubStats.data.disclaimer === true && pubStats.data.submitted >= 1);
+  check('公示统计(脱敏)', pubStats.status === 200 && pubStats.data.submitted >= 1);
 
   // 黑名单:scope=appeal 阻止申诉提交,不阻止投诉
   const { token: user3Token, id: user3Id } = await register('c');
   const d3 = await api('/appeal/appeals', { method: 'POST', token: user3Token, body: { bizType: 'visa', bizCode: `NLA-${stamp}-BBB222` } });
   check('拉黑前可建草稿', d3.status === 201);
   await api('/appeal/admin/blacklist', { method: 'POST', token: adminToken, body: { userId: user3Id, scope: 'appeal', reason: '测试恶意申诉' } });
-  const s3 = await api(`/appeal/appeals/${d3.data.appeal.id}/submit`, { method: 'POST', token: user3Token, body: { ...FIELDS, bizCode: `NLA-${stamp}-BBB222`, entertainmentAgreed: true } });
+  const s3 = await api(`/appeal/appeals/${d3.data.appeal.id}/submit`, { method: 'POST', token: user3Token, body: { ...FIELDS, bizCode: `NLA-${stamp}-BBB222` } });
   check('黑名单用户禁止申诉', s3.status === 403 && s3.data.code === 'APPEAL_BLACKLISTED', JSON.stringify(s3.data));
   const c3 = await api('/appeal/complaints', { method: 'POST', token: user3Token, body: { kind: 'complaint', category: 'other', content: '申诉入口被限制,想了解原因', anonymous: false, contact: 'c@example.com' } });
   check('黑名单 scope=appeal 不影响投诉', c3.status === 201);
@@ -251,7 +245,7 @@ async function main() {
   const f1 = { ...FIELDS, bizType: 'immigration', bizCode: `IMM-${stamp}-CCC333`, reason: '入境申报被拒,请求复核' };
   await api(`/appeal/appeals/${m1.data.appeal.id}`, { method: 'PUT', token: user2Token, body: f1 });
   await api(`/appeal/appeals/${m2.data.appeal.id}`, { method: 'PUT', token: user2Token, body: f1 });
-  await api(`/appeal/appeals/${m1.data.appeal.id}/submit`, { method: 'POST', token: user2Token, body: { ...f1, entertainmentAgreed: true } });
+  await api(`/appeal/appeals/${m1.data.appeal.id}/submit`, { method: 'POST', token: user2Token, body: { ...f1 } });
   const merged = await api('/appeal/admin/appeals/merge', {
     method: 'POST', token: adminToken, body: { sourceId: m2.data.appeal.id, targetId: m1.data.appeal.id },
   });
@@ -270,7 +264,7 @@ async function main() {
   check('监察抽查预留接口', sampling.status === 200 && sampling.data.reserved === true);
   const report = await api('/appeal/admin/inspect/reports', {
     method: 'POST', token: adminToken,
-    body: { kind: 'quality', title: '季度申诉处理质量报告', content: '平均受理时长与决定时长均在 SLA 内,处理结果分布均衡。(虚构娱乐数据)' },
+    body: { kind: 'quality', title: '季度申诉处理质量报告', content: '平均受理时长与决定时长均在 SLA 内,处理结果分布均衡。' },
   });
   check('监察报告生成', report.status === 201);
 

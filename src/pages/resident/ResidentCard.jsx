@@ -102,9 +102,6 @@ export default function ResidentCard() {
       </div>
 
       <div className="res-card" data-status={card.status}>
-        <div className="res-card-watermark" aria-hidden>
-          {data.watermark || t('res.card.watermarkSample')}
-        </div>
         <div className="res-card-head">
           <div>
             <div className="res-card-issuer">{t('res.officeName')}</div>
@@ -154,9 +151,6 @@ export default function ResidentCard() {
             <ResQr value={verifyUrl} size={132} />
             <span className="muted-text">{t('res.card.qrTip')}</span>
           </div>
-        </div>
-        <div className="res-card-footer">
-          <span>{data.statement || t('res.disclaimer.short')}</span>
         </div>
       </div>
 

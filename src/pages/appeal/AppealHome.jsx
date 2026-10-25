@@ -1,4 +1,4 @@
-// 申诉与监察署首页:署内公告、服务目录、办事指南、快速入口与娱乐/防诈提示。
+// 申诉与监察署首页:署内公告、服务目录、办事指南与快速入口。
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -179,9 +179,6 @@ export default function AppealHome() {
         </Card>
       </section>
 
-      <Card type="dashed" className="appeal-disclaimer-card">
-        <p>{t('appeal.disclaimerLong')}</p>
-      </Card>
     </div>
   );
 }

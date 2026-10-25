@@ -27,9 +27,6 @@ const REJECT_REASONS = new Set(['info_missing', 'info_false', 'duplicate', 'type
 const OFFICE_STATUSES = new Set(['open', 'closed', 'maintenance']);
 const AGREEMENT_TYPES = new Set(['entry_courtesy', 'visa_waiver', 'event_pass']);
 const EDITABLE_SETTINGS = new Set([
-  'disclaimer_text',
-  'disclaimer_version',
-  'watermark_text',
   'supplement_days',
   'review_hours_hint',
   'verify_limit_per_5min',
@@ -60,7 +57,6 @@ function relationDetail(row) {
     courtesies: JSON.parse(row.courtesies || '[]'),
     purpose: row.purpose,
     status: row.status,
-    entertainmentAgreed: !!row.entertainment_agreed,
     supplementNote: row.supplement_note,
     supplementDeadline: row.supplement_deadline,
     supplementContent: row.supplement_content,
@@ -286,7 +282,6 @@ function identityDetail(row) {
     termEnd: row.term_end,
     status: row.status,
     inactiveReason: row.inactive_reason,
-    entertainmentAgreed: !!row.entertainment_agreed,
     supplementNote: row.supplement_note,
     supplementDeadline: row.supplement_deadline,
     supplementContent: row.supplement_content,

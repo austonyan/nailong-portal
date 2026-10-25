@@ -115,7 +115,6 @@ export default function DipVerify() {
                 </Tag>
               </>
             )}
-            <p className="muted-text dip-verify-disclaimer">{result.disclaimer}</p>
           </div>
         )}
 

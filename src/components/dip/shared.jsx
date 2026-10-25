@@ -1,5 +1,5 @@
 // 奶龙国皇家外交事务署 — shared UI atoms: status tags, sub-navigation,
-// disclaimer banner, QR canvas, CSV export helpers and the error toast mapper.
+// QR canvas, CSV export helpers and the error toast mapper.
 /* eslint-disable react/only-export-components */
 import { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -158,16 +158,5 @@ export function DipAdminNav() {
         </NavLink>
       ))}
     </nav>
-  );
-}
-
-// 娱乐声明 + 防诈骗统一提示条(所有外交署页面可见)。
-export function DisclaimerBanner({ text }) {
-  const { t } = useTranslation();
-  return (
-    <div className="dip-disclaimer" role="note">
-      <span className="dip-disclaimer-title">{t('dip.disclaimer.title')}</span>
-      <span className="dip-disclaimer-text">{text ?? t('dip.disclaimer.default')}</span>
-    </div>
   );
 }

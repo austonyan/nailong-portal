@@ -69,7 +69,7 @@ export function normalizeDocNo(text) {
 }
 
 // 证书画布导出 PNG(下载图片用): 按证书字段重绘,不截图 DOM。
-export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer, watermark, sealEnabled }) {
+export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer, sealEnabled }) {
   const W = 960;
   const H = 660;
   const canvas = document.createElement('canvas');
@@ -98,20 +98,6 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
   ctx.strokeStyle = yellow;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(28, 28, W - 56, H - 56);
-
-  // 斜向水印
-  ctx.save();
-  ctx.globalAlpha = 0.08;
-  ctx.fillStyle = text;
-  ctx.font = '600 22px "Noto Sans SC", sans-serif';
-  ctx.translate(W / 2, H / 2);
-  ctx.rotate(-Math.PI / 9);
-  for (let row = -4; row <= 4; row += 1) {
-    for (let col = -3; col <= 3; col += 1) {
-      ctx.fillText(watermark || '', col * 320 - 160, row * 90);
-    }
-  }
-  ctx.restore();
 
   // 标题
   ctx.textAlign = 'center';
@@ -167,16 +153,8 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
     ctx.fillText('认证署', cx, cy - 10);
     ctx.font = '900 20px "Noto Sans SC", sans-serif';
     ctx.fillText('认证专用章', cx, cy + 24);
-    ctx.font = '600 12px "Noto Sans SC", sans-serif';
-    ctx.fillText('FICTIONAL · ENTERTAINMENT', cx, cy + 48);
     ctx.restore();
   }
-
-  // 底部声明
-  ctx.textAlign = 'center';
-  ctx.fillStyle = muted;
-  ctx.font = '500 14px "Noto Sans SC", sans-serif';
-  ctx.fillText(watermark || '', W / 2, H - 52);
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
   saveBlob(blob, `${cert.certNo}.png`);

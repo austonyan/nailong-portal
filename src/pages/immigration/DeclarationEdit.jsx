@@ -7,7 +7,7 @@ import {
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { DisclaimerBanner, ImNav } from '../../components/immigration/shared.jsx';
+import { ImNav } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 
 const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
@@ -29,7 +29,6 @@ export default function DeclarationEdit() {
   const [quantities, setQuantities] = useState({});
   const [itemsError, setItemsError] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const [agree, setAgree] = useState(false);
   const [attachments, setAttachments] = useState([]);
 
   const applyDeclaration = useCallback(
@@ -149,10 +148,6 @@ export default function DeclarationEdit() {
   };
 
   const doSubmit = async () => {
-    if (!agree) {
-      Notification.warning(t('imm.declare.agreeFirst'));
-      return;
-    }
     setBusy(true);
     try {
       const current = await persistDraft();
@@ -160,7 +155,7 @@ export default function DeclarationEdit() {
         setConfirming(false);
         return;
       }
-      const data = await api.post(`/immigration/declarations/${current.id}/submit`, { confirmEntertainment: true });
+      const data = await api.post(`/immigration/declarations/${current.id}/submit`, {});
       Notification.success(t('imm.declare.submitted', { no: data.declaration.no }));
       setConfirming(false);
       navigate('/immigration/declarations');
@@ -177,7 +172,6 @@ export default function DeclarationEdit() {
       return;
     }
     setItemsError(false);
-    setAgree(false);
     setConfirming(true);
   };
 
@@ -333,14 +327,6 @@ export default function DeclarationEdit() {
           <p><b>{t('imm.declare.address')}:</b> {preview.address || '-'}</p>
           <p><b>{t('imm.declare.visaNo')}:</b> {preview.visaNo}</p>
           <p><b>{t('imm.declare.items')}:</b> {selectedQtyItems.map((i) => `${t(`imm.item.${i.key}`)} x${i.qty}`).join(', ') || '-'}</p>
-        </div>
-        <DisclaimerBanner />
-        <div className="im-agree-row">
-          <Checkbox
-            options={[{ label: t('imm.declare.agreeLabel'), value: 'agree' }]}
-            value={agree ? ['agree'] : []}
-            onChange={(vals) => setAgree(vals.includes('agree'))}
-          />
         </div>
       </Modal>
     </div>

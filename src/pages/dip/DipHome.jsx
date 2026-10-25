@@ -1,4 +1,4 @@
-// 外交事务署首页: 署内公告 / 服务目录 / 办事指南 / 快速入口 / 娱乐声明与防诈骗。
+// 外交事务署首页: 署内公告 / 服务目录 / 办事指南 / 快速入口。
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,6 @@ import {
   MailIcon,
   MapIcon,
   SearchIcon,
-  ShieldIcon,
   UsersIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -68,16 +67,6 @@ export default function DipHome() {
           </Link>
         </div>
       </div>
-
-      <Card color="app-yellow" className="dip-scam-card">
-        <div className="dip-scam-inner">
-          <ShieldIcon size={22} />
-          <div>
-            <b>{t('dip.home.declarationTitle')}</b>
-            <p>{data?.disclaimer?.text ?? t('dip.disclaimer.default')}</p>
-          </div>
-        </div>
-      </Card>
 
       <div className="dip-section">
         <Title size="middle">{t('dip.home.notices')}</Title>

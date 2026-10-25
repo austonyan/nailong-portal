@@ -1,4 +1,4 @@
-// 署内配置:活动类型与表单规则、声明/前缀配置、署内公告、站内信模板,
+// 署内配置:活动类型与表单规则、前缀配置、署内公告、站内信模板,
 // 以及验真/风控/工单报表面板。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,10 +37,6 @@ const CONFIG_KEYS = [
   'prefix.host',
   'prefix.host_cert',
   'prefix.courtesy',
-  'watermark_text',
-  'pass_statement',
-  'disclaimer_version',
-  'disclaimer_text',
 ];
 
 const EMPTY_TYPE = {
@@ -279,11 +275,7 @@ export default function AdminProtocolManage() {
               <strong>{t(`protocol.config.${key}`, { defaultValue: key })}</strong>
               <code>{key}</code>
             </div>
-            {['disclaimer_text', 'pass_statement'].includes(key) ? (
-              <TextArea rows={3} value={config[key] ?? ''} onChange={(e) => setConfig((p) => ({ ...p, [key]: e.target.value }))} />
-            ) : (
-              <Input value={config[key] ?? ''} onChange={(e) => setConfig((p) => ({ ...p, [key]: e.target.value }))} />
-            )}
+            <Input value={config[key] ?? ''} onChange={(e) => setConfig((p) => ({ ...p, [key]: e.target.value }))} />
             <Button type="dashed" size="small" onClick={() => saveConfig(key)}>{t('protocol.action.save')}</Button>
           </div>
         ))}

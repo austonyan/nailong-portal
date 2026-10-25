@@ -94,7 +94,6 @@
     "VISA_NOT_EDITABLE": "目前狀態不能再修改",
     "VISA_RATE_LIMITED": "操作太頻繁,請稍等一分鐘再試",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在審核中的申請",
-    "VISA_AGREEMENT_REQUIRED": "請先勾選娛樂聲明",
     "VISA_AVATAR_REQUIRED": "需要至少上傳一張頭像",
     "VISA_INVALID_TRANSITION": "目前狀態無法執行該操作",
     "VISA_SUPPLEMENT_EXPIRED": "補件期限已過",
@@ -110,7 +109,6 @@
     "SERVICE_DISABLED": "服務間介面未啟用",
     "SERVICE_FORBIDDEN": "服務權杖無效",
     "DOC_TYPE_UNAVAILABLE": "該文書類型暫不可申請",
-    "DOC_DECLARATION_REQUIRED": "請先勾選娛樂聲明",
     "DOC_RATE_LIMITED": "操作太頻繁了,請明天再試",
     "DOC_DUPLICATE": "存在重複的在途申請或有效文書",
     "DOC_BLACKLISTED": "帳號已被限制申請認證,請聯絡管理員",
@@ -133,14 +131,12 @@
     "IMM_VISA_USED": "該簽注已使用過,不能重複使用",
     "IMM_VISA_NOT_FOUND": "簽注署暫無此簽注記錄(聯動未開放)",
     "IMM_VISA_REQUIRED": "請先關聯有效簽注",
-    "IMM_CONFIRM_REQUIRED": "請先勾選娛樂聲明",
     "IMM_INCOMPLETE": "申報資訊不完整,請補全後再提交",
     "IMM_FILE_TOO_LARGE": "檔案超過 5MB 上限",
     "IMM_FILE_TYPE": "僅支援圖片與 PDF 檔案",
     "DIP_RATE_LIMITED": "操作太頻繁,請稍後再試",
     "DIP_INVALID_STATE": "目前狀態不允許該操作",
     "DIP_INCOMPLETE": "申請資訊不完整",
-    "DIP_CONFIRM_REQUIRED": "請先勾選娛樂聲明",
     "DIP_MATERIAL_REQUIRED": "請至少上傳一份材料",
     "DIP_TYPE_CLOSED": "該類型暫未開放申請",
     "DIP_DUPLICATE": "已有進行中的申請,請勿重複提交",
@@ -160,7 +156,6 @@
     "RES_BLACKLISTED": "該帳號已被限制登記",
     "RES_IDENTITY_EXISTS": "該帳號已持有居民身分",
     "RES_TOO_MANY_ACTIVE": "你有太多進行中的申請",
-    "RES_AGREEMENT_REQUIRED": "請先勾選娛樂聲明",
     "RES_AVATAR_REQUIRED": "需要至少上傳一張頭像",
     "RES_PROOF_REQUIRED": "該類型需要上傳地址證明",
     "RES_RATE_LIMITED": "操作太頻繁,請稍等一分鐘再試",
@@ -189,7 +184,6 @@
     "EVT_RESIDENT_ONLY": "該活動僅限居民報名",
     "EVT_DIPLOMATIC_ONLY": "該活動僅限外交身份報名",
     "EVT_IDENTITY_INVALID": "身份編號校驗未透過",
-    "EVT_DECLARATION_REQUIRED": "請先勾選娛樂宣告",
     "EVT_INVITATION_INVALID": "邀請函無效或已使用",
     "EVT_INVITATION_EVENT": "邀請函不屬於該活動",
     "EVT_INVITATION_TYPE": "邀請函型別與活動不匹配",
@@ -275,10 +269,7 @@
   },
   "visa": {
     "officeName": "奶龍國簽註申請署",
-    "officeSub": "Nailong National Endorsement Office · 虛構娛樂機構",
-    "disclaimerTag": "娛樂聲明",
-    "disclaimerShort": "本簽註為虛構娛樂作品,不具任何現實效力",
-    "disclaimerLong": "娛樂聲明:奶龍國及其簽註申請署均為虛構創作。本平台不核驗真實身份,簽註不具任何現實法律效力,不可用於任何現實場合。請勿相信任何收費辦證或「保證通過」的說法。",
+    "officeSub": "Nailong National Endorsement Office",
     "back": "返回",
     "backHome": "回首頁",
     "sso": {
@@ -371,8 +362,8 @@
       "quizHint": "趣味三連問,答完就能出發(本平台不核驗真實身份)",
       "quizDone": "自檢完成,看起來你很適合來奶龍島!",
       "agreementTitle": "隱私政策與使用者協議",
-      "agreePrivacy": "我已閱讀並同意《隱私政策》:平台僅收集暱稱與虛構資訊用於娛樂演繹",
-      "agreeTerms": "我已閱讀並同意《使用者協議》:簽註僅供娛樂,不可用於現實用途",
+      "agreePrivacy": "我已閱讀並同意《隱私政策》",
+      "agreeTerms": "我已閱讀並同意《使用者協議》",
       "start": "開始填寫申請"
     },
     "quiz": {
@@ -424,7 +415,6 @@
       "submit": "提交申請",
       "submitSuccess": "申請已提交",
       "confirmTitle": "提交前確認",
-      "confirmAgree": "我確認以上資訊為虛構娛樂內容,並同意《娛樂聲明》",
       "materialsCount": "已上傳 {{count}} 份材料",
       "submittedTitle": "提交成功!",
       "submittedNo": "申請編號:{{no}}",
@@ -517,7 +507,6 @@
       "issuedAt": "簽發日期",
       "validUntil": "有效期至",
       "issuer": "簽發機構",
-      "watermark": "奶龍國 · 娛樂專用",
       "print": "列印 / 保存 PDF",
       "verifyLink": "開啟驗真連結",
       "copyLink": "複製驗真連結",
@@ -530,8 +519,7 @@
       "placeholder": "例如:NLT-261025-XXXXXXXX",
       "action": "驗真",
       "limitTip": "為防枚舉,同一來源每 5 分鐘最多查詢 30 次",
-      "notFound": "沒有查到對應簽註。請核對編號,或聯絡持有人確認。",
-      "disclaimer": "驗真結果僅供娛樂參考。本簽註為虛構作品,不具任何現實效力。"
+      "notFound": "沒有查到對應簽註。請核對編號,或聯絡持有人確認。"
     },
     "msgType": {
       "submitted": "提交成功",
@@ -691,7 +679,6 @@
   "docs": {
     "title": "奶龍國皇家文書與認證署",
     "subtitle": "歡迎來到皇家文書與認證署,{{name}}!在這裡為你的冒險出具認證。",
-    "disclaimer": "本署為奶龍國虛構娛樂設定:所有文書僅代表虛構世界內的娛樂成就,不具任何現實效力,請勿用於現實用途。",
     "tab": {
       "home": "署內首頁",
       "types": "文書類型",
@@ -770,8 +757,6 @@
       },
       "antifraudTitle": "防詐騙提示",
       "antifraudBody": "本署認證完全免費:不收取任何費用、不承諾任何現實效力。任何自稱「收費代辦認證」的行為都是詐騙。",
-      "entertainmentTitle": "娛樂聲明",
-      "entertainmentBody": "本署及全部認證文書均為虛構娛樂設定,僅代表奶龍國虛擬世界內的成就,不具備任何現實法律效力。",
       "notices": "署內公告",
       "catalog": "服務目錄",
       "guide": "辦事指南與常見問題",
@@ -799,7 +784,7 @@
       "shownBody": "認證文書會展示:文書編號、文書類型、持有人暱稱、關聯業務編號、認證機構、認證日期與有效期。驗真查詢只返回去敏資訊,不含暱稱與業務編號。",
       "faqTitle": "常見問題",
       "faq1q": "認證文書具有現實效力嗎?",
-      "faq1a": "沒有。所有文書都是虛構娛樂設定,僅代表奶龍國虛擬世界內的成就,不能用於任何現實證明。每份文書都印有「虛構娛樂·無現實效力」浮水印。",
+      "faq1a": "沒有。所有文書都是虛構娛樂設定,僅代表奶龍國虛擬世界內的成就,不能用於任何現實證明。",
       "faq2q": "關聯業務編號填錯了怎麼辦?",
       "faq2a": "草稿階段可以隨時修改;已提交的申請如被駁回,可以按駁回原因重新申請。請在提交前仔細核對編號。",
       "faq3q": "我可以同時有多份同類文書嗎?",
@@ -811,7 +796,6 @@
       "step1": "第 1 步 · 選擇文書類型",
       "step2": "第 2 步 · 填寫申請資訊",
       "step3": "第 3 步 · 上傳材料",
-      "step4": "第 4 步 · 娛樂聲明與提交",
       "nickname": "申請人暱稱",
       "nicknamePh": "將展示在認證文書上",
       "contact": "聯絡方式",
@@ -832,9 +816,7 @@
       "bizRequired": "請填寫{{label}}",
       "fieldRequired": "請填寫「{{label}}」",
       "materialRequired": "請上傳「{{label}}」",
-      "agreeRequired": "請先勾選娛樂聲明",
       "typeLocked": "草稿已建立,類型不可更改;如需其他類型請新建申請。",
-      "declaration": "我已知曉並同意:本次認證為奶龍國虛構娛樂設定,文書不具任何現實效力,本人不將其用於現實用途。",
       "confirmTitle": "提交前確認",
       "confirmTip": "請核對以下資訊;提交後將進入認證佇列,草稿資訊將被鎖定。",
       "confirmSubmit": "確認提交",
@@ -891,8 +873,7 @@
       "downloadPdf": "下載 PDF",
       "verifyEntry": "去驗真",
       "exportFailed": "匯出失敗,請重試",
-      "ariaLabel": "認證文書 {{no}}",
-      "watermarkFallback": "虛構娛樂 · 無現實效力"
+      "ariaLabel": "認證文書 {{no}}"
     },
     "certList": {
       "title": "我的認證文書",
@@ -903,9 +884,8 @@
       "certStatus": "文書狀態",
       "revokedTitle": "文書已被撤銷",
       "tipsTitle": "使用須知",
-      "tip1": "文書僅限奶龍國虛構世界內使用,不具備任何現實效力。",
-      "tip2": "任何人可憑文書編號在驗真中心查驗真偽,查詢結果不包含個人資訊。",
-      "tip3": "「下載 PDF」會開啟系統列印對話框,選擇「另存為 PDF」即可儲存。"
+      "tip1": "任何人可憑文書編號在驗真中心查驗真偽,查詢結果不包含個人資訊。",
+      "tip2": "「下載 PDF」會開啟系統列印對話框,選擇「另存為 PDF」即可儲存。"
     },
     "verify": {
       "title": "文書驗真中心",
@@ -922,8 +902,6 @@
       "selfTitle": "這是你自己的申請 {{no}}",
       "selfNoCert": "該申請尚未簽發文書。",
       "issuer": "認證機構",
-      "disclaimerTitle": "驗真結果僅限娛樂參考",
-      "disclaimerBody": "驗真結果僅說明文書在奶龍國虛構設定中的狀態,不代表任何現實事實;本站不為任何現實用途提供證明。",
       "historyTitle": "我的驗真記錄",
       "historyEmpty": "暫無驗真記錄",
       "historyQuery": "查詢編號",
@@ -1105,8 +1083,6 @@
         "verifyLimitTip": "防止列舉掃描的查詢頻率上限",
         "seal": "電子印章",
         "issuer": "認證機構名稱",
-        "watermark": "浮水印/聲明文案",
-        "watermarkTip": "展示在文書與驗真結果頁",
         "riskTitle": "風控與黑名單",
         "riskTip": "黑名單使用者無法建立或提交認證申請;重複申請與頻率限制始終生效。",
         "blacklistAdd": "加入黑名單",
@@ -1183,16 +1159,12 @@
       "messages": "訊息",
       "help": "協助"
     },
-    "disclaimer": {
-      "title": "娛樂聲明 · 防詐騙",
-      "default": "皇家口岸為奶龍島趣味虛構單位,全部內容僅供娛樂,不產生任何現實出入境效力;通關全程免費,索要費用均為詐騙。"
-    },
     "home": {
       "hero": "皇家口岸入境署",
       "tagline": "歡迎來到奶龍島唯一官方(自封)入境口岸,蓋章啦!",
       "portStatus": "口岸狀態",
       "crowding": "趣味擁擠度",
-      "crowdingTip": "根據待檢申報數量估算,僅供娛樂參考",
+      "crowdingTip": "根據待檢申報數量估算",
       "myImmigration": "我的入境",
       "inReview": "審核中",
       "passReady": "待通關",
@@ -1258,7 +1230,7 @@
       },
       "realEffect": {
         "q": "這些記錄有現實效力嗎?",
-        "a": "沒有。皇家口岸、簽注、通關碼與出入境記錄全部為娛樂設定,蓋章上寫著「無現實效力」喔。"
+        "a": "沒有。皇家口岸、簽注、通關碼與出入境記錄全部為娛樂設定"
       }
     },
     "ports": {
@@ -1310,8 +1282,6 @@
       "confirmTitle": "提交前確認",
       "submit": "確認提交",
       "submitted": "申報 {{no}} 已提交,請等待邊檢審核",
-      "agreeFirst": "請先閱讀並勾選娛樂聲明",
-      "agreeLabel": "我已知悉本申報為娛樂內容,不產生現實出入境效力,並保證資訊真實(虛構地真實)",
       "required": "請填寫此欄位"
     },
     "purpose": {
@@ -1403,7 +1373,6 @@
       "stamp": "入境章",
       "entryStamp": "入境紀念章",
       "stampAria": "虛構入境章",
-      "watermark": "僅供娛樂 · 無現實效力",
       "registerExit": "出境登記",
       "exitTitle": "出境登記 {{no}}",
       "confirmExit": "確認出境",
@@ -1493,7 +1462,6 @@
       "portsTitle": "口岸與通道管理",
       "tabPorts": "口岸與通道",
       "tabAnnouncements": "公告管理",
-      "tabSettings": "聲明與浮水印",
       "openHours": "通關時間",
       "channels": "通道",
       "addChannel": "新增通道",
@@ -1512,9 +1480,6 @@
       "editAnn": "編輯公告",
       "published": "已發布",
       "takeOffline": "下線",
-      "disclaimerText": "娛樂聲明文案",
-      "watermark": "入境章浮水印文案",
-      "disclaimerVersion": "聲明版本號",
       "review": {
         "title": "邊檢審核工作台",
         "queueNote": "邊檢員只處理入境申報佇列,與簽注審核佇列相互隔離。",
@@ -1625,7 +1590,6 @@
   "res": {
     "officeName": "奶龍國皇家居民登記署",
     "officeSub": "登記成為奶龍國居民 · 領取電子居民卡",
-    "disclaimerTag": "虛構娛樂 · 免費登記",
     "back": "返回",
     "backHome": "回署內首頁",
     "nav": {
@@ -1645,16 +1609,6 @@
       "title": "居民署身分確認",
       "confirm": "確認進入",
       "tip": "進入即表示你同意以目前帳號身分使用皇家居民登記署。居民身分與帳號一一對應,登記資訊僅用於奶龍國虛構世界。"
-    },
-    "disclaimer": {
-      "title": "娛樂聲明",
-      "default": "皇家居民登記署為奶龍島趣味虛構單位:登記全程免費,不核驗現實身分,居民身分不產生任何現實法律效力。",
-      "short": "本卡為虛構娛樂身分憑證,無現實效力"
-    },
-    "fraud": {
-      "title": "防詐騙提示",
-      "body": "居民登記完全免費。任何收取「登記費」「工本費」、代辦「永久居民」或承諾「現實身分效力」的行為均為詐騙。",
-      "more": "查看辦事指南 ›"
     },
     "nav_label": "居民署導覽",
     "home": {
@@ -1803,7 +1757,6 @@
       "uploadProof": "上傳地址證明",
       "uploadOther": "點擊或拖曳上傳其他材料",
       "confirmTitle": "提交前確認",
-      "confirmAgree": "我已知悉:本登記為虛構娛樂項目,不產生現實效力,登記免費且資訊僅用於奶龍國。",
       "materialsCount": "共 {{count}} 個材料"
     },
     "myApps": {
@@ -1870,7 +1823,6 @@
       "statusLabel": "卡片狀態",
       "issuer": "登記機構",
       "qrTip": "掃碼驗真",
-      "watermarkSample": "僅供娛樂 · 無現實效力",
       "linkCopied": "驗真連結已複製",
       "print": "下載 PDF / 列印",
       "verifyLink": "開啟驗真頁",
@@ -1989,8 +1941,7 @@
       "placeholder": "居民編號 / 申請編號,如 NRC-… 或 NRR-…",
       "action": "驗真",
       "limitTip": "為防枚舉,驗真有頻率限制;結果僅顯示去識別化資訊。",
-      "notFound": "未找到對應的居民卡,請檢查編號",
-      "disclaimer": "驗真結果僅包含去識別化的居民卡資訊,不含任何聯絡方式與地址。本服務為虛構娛樂項目,驗真結果無現實效力。"
+      "notFound": "未找到對應的居民卡,請檢查編號"
     },
     "field": {
       "appNo": "申請編號",
@@ -2162,14 +2113,7 @@
         "supplementDays": "補件期限(天)",
         "reviewHours": "審核時長提示(小時)",
         "maxActive": "同時在審申請上限",
-        "oneIdentity": "一號一身分(1 開啟 / 0 關閉)",
-        "templateTitle": "居民卡範本",
-        "watermark": "防偽浮水印文案",
-        "statement": "卡片底部聲明",
-        "disclaimerTitle": "娛樂聲明與防詐騙提示",
-        "disclaimerTip": "顯示在居民署所有頁面;修改文案時請同步提升版本號。",
-        "disclaimerVersion": "聲明版本",
-        "disclaimerText": "聲明文案"
+        "oneIdentity": "一號一身分(1 開啟 / 0 關閉)"
       }
     },
     "msgTpl": {
@@ -2194,7 +2138,6 @@
   "dip": {
     "officeName": "奶龍國皇家外交事務署",
     "officeSub": "虛構建交 · 外交身分 · 互免協議 · 驗真",
-    "disclaimerTag": "虛構機構 · 娛樂設定",
     "sso": {
       "title": "進入皇家外交事務署",
       "confirm": "確認進入",
@@ -2211,10 +2154,6 @@
       "offices": "代表處",
       "messages": "站內信",
       "verifyEntry": "驗真中心"
-    },
-    "disclaimer": {
-      "title": "娛樂聲明與防詐騙提示",
-      "default": "本署不涉及真實國家與外交關係:全部建交、外交身分、互免協議與禮遇均為虛構娛樂內容,不產生任何現實效力。建交全程免費,任何索取費用的行為均為詐騙。"
     },
     "status": {
       "draft": "草稿",
@@ -2323,8 +2262,6 @@
       "confirmTitle": "提交前確認",
       "submit": "提交申請",
       "submitted": "已提交,建交申請編號 {no}",
-      "agreeFirst": "請先勾選娛樂聲明",
-      "agreeLabel": "我已知悉本申請為虛構娛樂內容,不涉及真實國家與外交關係",
       "required": "必填",
       "materialCount": "{count} 份"
     },
@@ -2382,7 +2319,6 @@
       "cardTitle": "外交身分卡",
       "print": "下載 / 列印",
       "scanVerify": "掃碼驗真",
-      "cardDisclaimer": "本卡為虛構娛樂內容,不代表任何真實外交身分。",
       "no": "身分編號",
       "materialTip": "需上傳任命書(虛構)或介紹信等材料,圖片/PDF,≤5MB。",
       "confirmTip": "提交後將進入外交審核佇列,審核時將校驗關聯建交關係的有效性。",
@@ -2503,7 +2439,6 @@
     },
     "office": {
       "pageTitle": "使領館 / 代表處",
-      "fictionTag": "虛構代表處 · 非真實使領館",
       "detailTitle": "代表處詳情",
       "location": "所在地點(虛構)",
       "hours": "開放時間",
@@ -2542,8 +2477,7 @@
     },
     "home": {
       "hero": "以趣味與友誼之名,與世界建立虛構外交關係",
-      "heroSub": "建交申請 · 外交身分登記 · 互免協議 · 驗真查詢,全部為奶龍島娛樂設定。",
-      "declarationTitle": "娛樂聲明:本署不涉及真實國家與外交關係",
+      "heroSub": "建交申請 · 外交身分登記 · 互免協議 · 驗真查詢",
       "notices": "署內公告",
       "services": "服務目錄",
       "service": {
@@ -2624,7 +2558,6 @@
       "unfrozen": "已解凍",
       "revoke": "註銷",
       "revoked": "已註銷",
-      "entertainmentAgreed": "已勾選娛樂聲明",
       "risk": "風控",
       "risk_clean": "無異常",
       "risk_repeat_reject": "多次被拒",
@@ -2677,9 +2610,7 @@
       "supplementDays": "補件期限(天)",
       "reviewHours": "審核時長提示(小時)",
       "verifyLimit": "驗真限流(次/5分鐘)",
-      "maxIdentities": "單人 concurrent 身分上限",
-      "watermark": "身分卡浮水印文案",
-      "disclaimerText": "娛樂聲明文案"
+      "maxIdentities": "單人 concurrent 身分上限"
     },
     "stats": {
       "title": "統計與報表",
@@ -2728,10 +2659,6 @@
   "protocol": {
     "officeName": "奶龍國皇家禮賓與活動署",
     "officeSub": "活動 · 邀請函 · 活動憑證 · 禮賓服務",
-    "disclaimerTag": "虛構娛樂 · 無現實效力",
-    "disclaimerShort": "本署為虛構娛樂單位",
-    "disclaimerLong": "奶龍國皇家禮賓與活動署為虛構娛樂單位:全部活動、邀請函、活動憑證、接待方認證與禮賓服務均為奶龍島世界觀內的趣味內容,不產生任何現實效力,不承諾現實入場、接待或禮遇。報名與認證全程免費。",
-    "entertainmentNotice": "娛樂宣告",
     "scamTitle": "防詐騙提示",
     "scamBody": "本署活動報名與認證完全免費。任何“收費報名”“內部名額”“承諾現實入場或禮遇”的說法都是詐騙,請勿相信。",
     "nav": {
@@ -3080,9 +3007,6 @@
       "summaryTip": "提交前請核對資訊;提交後將進入待審核佇列。",
       "requiredHint": "請填寫暱稱與聯絡方式",
       "confirmTitle": "提交前確認",
-      "declarationCheck": "我已閱讀並同意娛樂宣告",
-      "declarationRequired": "請先勾選娛樂宣告",
-      "declarationText": "我確認本次報名為奶龍國虛構娛樂活動,所填資訊為虛構內容;活動不產生現實效力,不承諾現實入場或禮遇,報名全程免費。",
       "draftSaved": "草稿已儲存",
       "submitSuccess": "報名已提交:{{no}}"
     },
@@ -3124,8 +3048,6 @@
       "holder": "持票人",
       "kind": "活動憑證 · 電子票",
       "qrTip": "掃碼驗真(僅含編號,不含個人資訊)",
-      "statement": "本憑證為虛構娛樂活動的電子紀念票,不構成任何現實入場資格。",
-      "watermark": "僅供娛樂",
       "checkinTip": "活動當日請出示憑證編號或二維碼;憑證不可轉讓,作廢後無法簽到。",
       "statusNote_pending": "待使用 · 活動當日可簽到",
       "statusNote_used": "已使用 · 已簽到",
@@ -3269,7 +3191,6 @@
       "valid": "有效",
       "invalid": "無效",
       "notFound": "未查詢到該編號,請核對後重試。",
-      "disclaimer": "驗真結果僅為奶龍國虛構娛樂內容,不構成任何現實憑證。",
       "visaUsable": "該邀請函有效,可作為簽註申請材料(聯動預留)。",
       "antiEnum": "防列舉提示:系統會記錄驗真來源並對高頻查詢限流;編號不可猜測,請勿嘗試遍歷。"
     },
@@ -3308,11 +3229,7 @@
       "prefix.pass": "憑證編號字首",
       "prefix.host": "接待方編號字首",
       "prefix.host_cert": "認證證書編號字首",
-      "prefix.courtesy": "禮遇編號字首",
-      "watermark_text": "水印文案",
-      "pass_statement": "活動憑證宣告",
-      "disclaimer_version": "娛樂宣告版本",
-      "disclaimer_text": "娛樂宣告全文"
+      "prefix.courtesy": "禮遇編號字首"
     },
     "admin": {
       "reviewTitle": "報名審核工作台",

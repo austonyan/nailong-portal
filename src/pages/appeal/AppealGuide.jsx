@@ -97,9 +97,6 @@ export default function AppealGuide() {
         </Button>
       </div>
 
-      <Card type="dashed" className="appeal-disclaimer-card">
-        <p>{t('appeal.disclaimerLong')}</p>
-      </Card>
     </div>
   );
 }

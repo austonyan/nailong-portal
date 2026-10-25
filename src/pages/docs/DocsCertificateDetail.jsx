@@ -82,7 +82,6 @@ export default function DocsCertificateDetail() {
                 typeName: item.typeName,
                 bizNoLabel: item.application?.type?.bizNoLabel,
                 issuer: item.issuer,
-                watermark: item.watermark,
                 sealEnabled: item.sealEnabled,
               }).catch(() => Notification.error(t('docs.cert.exportFailed')))
             }
@@ -104,7 +103,6 @@ export default function DocsCertificateDetail() {
           typeName={item.typeName}
           bizNoLabel={item.application?.type?.bizNoLabel}
           issuer={item.issuer}
-          watermark={item.watermark}
           sealEnabled={item.sealEnabled}
         />
       </div>
@@ -121,7 +119,6 @@ export default function DocsCertificateDetail() {
         <ul className="docs-tips">
           <li>{t('docs.certDetail.tip1')}</li>
           <li>{t('docs.certDetail.tip2')}</li>
-          <li>{t('docs.certDetail.tip3')}</li>
         </ul>
       </Card>
     </div>

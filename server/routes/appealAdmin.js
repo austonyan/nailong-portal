@@ -693,11 +693,6 @@ manageRouter.patch('/publicity/:id', (req, res) => {
   let status = row.status;
   if (req.body?.status !== undefined) {
     status = ['draft', 'published', 'offline'].includes(req.body.status) ? req.body.status : row.status;
-    if (status === 'published' && row.status !== 'published') {
-      // 发布前合规检查:标题与正文必须带娱乐声明
-      const marked = /娱乐|虛構|虚构|entertainment/i.test(`${title}${body}`);
-      if (!marked) throw badRequest('APPEAL_PUBLICITY_DISCLAIMER', 'Published content must carry the entertainment disclaimer');
-    }
   }
   db.prepare('UPDATE appeal_publicity SET title = ?, body = ?, status = ?, published_at = ?, updated_at = ? WHERE id = ?').run(
     title, body, status, status === 'published' ? row.published_at ?? now() : row.published_at, now(), row.id

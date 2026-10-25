@@ -95,9 +95,6 @@ function EvisaCard({ permit }) {
   const { t } = useTranslation();
   return (
     <div className="evisa-card" data-status={permit.status}>
-      <div className="evisa-watermark" aria-hidden>
-        {t('visa.permit.watermark')}
-      </div>
       <div className="evisa-head">
         <div>
           <div className="evisa-issuer">{t('visa.officeName')}</div>
@@ -132,9 +129,6 @@ function EvisaCard({ permit }) {
           <span className="evisa-label">{t('visa.field.appNo')}</span>
           <span className="evisa-value">{permit.appNo}</span>
         </div>
-      </div>
-      <div className="evisa-footer">
-        <span>{t('visa.disclaimerShort')}</span>
       </div>
     </div>
   );

@@ -219,10 +219,6 @@ export default function ProtocolEventDetail() {
         </div>
       </Card>
 
-      <Card type="dashed" className="protocol-disclaimer-card">
-        <strong>{t('protocol.entertainmentNotice')}</strong>
-        <p>{data.disclaimer || t('protocol.disclaimerLong')}</p>
-      </Card>
     </div>
   );
 }

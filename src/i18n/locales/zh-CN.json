@@ -94,7 +94,6 @@
     "VISA_NOT_EDITABLE": "当前状态不能再修改",
     "VISA_RATE_LIMITED": "操作太频繁,请稍等一分钟再试",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在审核中的申请",
-    "VISA_AGREEMENT_REQUIRED": "请先勾选娱乐声明",
     "VISA_AVATAR_REQUIRED": "需要至少上传一张头像",
     "VISA_INVALID_TRANSITION": "当前状态无法执行该操作",
     "VISA_SUPPLEMENT_EXPIRED": "补件期限已过",
@@ -110,7 +109,6 @@
     "SERVICE_DISABLED": "服务间接口未启用",
     "SERVICE_FORBIDDEN": "服务令牌无效",
     "DOC_TYPE_UNAVAILABLE": "该文书类型暂不可申请",
-    "DOC_DECLARATION_REQUIRED": "请先勾选娱乐声明",
     "DOC_RATE_LIMITED": "操作太频繁了,请明天再试",
     "DOC_DUPLICATE": "存在重复的在途申请或有效文书",
     "DOC_BLACKLISTED": "账号已被限制申请认证,请联系管理员",
@@ -133,14 +131,12 @@
     "IMM_VISA_USED": "该签注已使用过,不能重复使用",
     "IMM_VISA_NOT_FOUND": "签注署暂无此签注记录(联动未开放)",
     "IMM_VISA_REQUIRED": "请先关联有效签注",
-    "IMM_CONFIRM_REQUIRED": "请先勾选娱乐声明",
     "IMM_INCOMPLETE": "申报信息不完整,请补全后再提交",
     "IMM_FILE_TOO_LARGE": "文件超过 5MB 上限",
     "IMM_FILE_TYPE": "仅支持图片与 PDF 文件",
     "DIP_RATE_LIMITED": "操作太频繁,请稍后再试",
     "DIP_INVALID_STATE": "当前状态不允许该操作",
     "DIP_INCOMPLETE": "申请信息不完整",
-    "DIP_CONFIRM_REQUIRED": "请先勾选娱乐声明",
     "DIP_MATERIAL_REQUIRED": "请至少上传一份材料",
     "DIP_TYPE_CLOSED": "该类型暂未开放申请",
     "DIP_DUPLICATE": "已有进行中的申请,请勿重复提交",
@@ -160,7 +156,6 @@
     "RES_BLACKLISTED": "该账号已被限制登记",
     "RES_IDENTITY_EXISTS": "该账号已持有居民身份",
     "RES_TOO_MANY_ACTIVE": "你有太多进行中的申请",
-    "RES_AGREEMENT_REQUIRED": "请先勾选娱乐声明",
     "RES_AVATAR_REQUIRED": "需要至少上传一张头像",
     "RES_PROOF_REQUIRED": "该类型需要上传地址证明",
     "RES_RATE_LIMITED": "操作太频繁,请稍等一分钟再试",
@@ -189,7 +184,6 @@
     "EVT_RESIDENT_ONLY": "该活动仅限居民报名",
     "EVT_DIPLOMATIC_ONLY": "该活动仅限外交身份报名",
     "EVT_IDENTITY_INVALID": "身份编号校验未通过",
-    "EVT_DECLARATION_REQUIRED": "请先勾选娱乐声明",
     "EVT_INVITATION_INVALID": "邀请函无效或已使用",
     "EVT_INVITATION_EVENT": "邀请函不属于该活动",
     "EVT_INVITATION_TYPE": "邀请函类型与活动不匹配",
@@ -275,10 +269,7 @@
   },
   "visa": {
     "officeName": "奶龍國簽註申請署",
-    "officeSub": "Nailong National Endorsement Office · 虚构娱乐机构",
-    "disclaimerTag": "娱乐声明",
-    "disclaimerShort": "本签注为虚构娱乐作品,不具任何现实效力",
-    "disclaimerLong": "娱乐声明:奶龙国及其签注申请署均为虚构创作。本平台不核验真实身份,签注不具任何现实法律效力,不可用于任何现实场合。请勿相信任何收费办证或\"保证通过\"的说法。",
+    "officeSub": "Nailong National Endorsement Office",
     "back": "返回",
     "backHome": "回首页",
     "sso": {
@@ -371,8 +362,8 @@
       "quizHint": "趣味三连问,答完就能出发(本平台不核验真实身份)",
       "quizDone": "自检完成,看起来你很适合来奶龙岛!",
       "agreementTitle": "隐私政策与用户协议",
-      "agreePrivacy": "我已阅读并同意《隐私政策》:平台仅收集昵称与虚构信息用于娱乐演绎",
-      "agreeTerms": "我已阅读并同意《用户协议》:签注仅供娱乐,不可用于现实用途",
+      "agreePrivacy": "我已阅读并同意《隐私政策》",
+      "agreeTerms": "我已阅读并同意《用户协议》",
       "start": "开始填写申请"
     },
     "quiz": {
@@ -424,7 +415,6 @@
       "submit": "提交申请",
       "submitSuccess": "申请已提交",
       "confirmTitle": "提交前确认",
-      "confirmAgree": "我确认以上信息为虚构娱乐内容,并同意《娱乐声明》",
       "materialsCount": "已上传 {{count}} 份材料",
       "submittedTitle": "提交成功!",
       "submittedNo": "申请编号:{{no}}",
@@ -517,7 +507,6 @@
       "issuedAt": "签发日期",
       "validUntil": "有效期至",
       "issuer": "签发机构",
-      "watermark": "奶龍國 · 娛樂專用",
       "print": "打印 / 保存 PDF",
       "verifyLink": "打开验真链接",
       "copyLink": "复制验真链接",
@@ -530,8 +519,7 @@
       "placeholder": "例如:NLT-261025-XXXXXXXX",
       "action": "验真",
       "limitTip": "为防枚举,同一来源每 5 分钟最多查询 30 次",
-      "notFound": "没有查到对应签注。请核对编号,或联系持有人确认。",
-      "disclaimer": "验真结果仅供娱乐参考。本签注为虚构作品,不具任何现实效力。"
+      "notFound": "没有查到对应签注。请核对编号,或联系持有人确认。"
     },
     "msgType": {
       "submitted": "提交成功",
@@ -691,7 +679,6 @@
   "docs": {
     "title": "奶龙国皇家文书与认证署",
     "subtitle": "欢迎来到皇家文书与认证署,{{name}}!在这里为你的冒险出具认证。",
-    "disclaimer": "本署为奶龙国虚构娱乐设定:所有文书仅代表虚构世界内的娱乐成就,不具任何现实效力,请勿用于现实用途。",
     "tab": {
       "home": "署内首页",
       "types": "文书类型",
@@ -770,8 +757,6 @@
       },
       "antifraudTitle": "防诈骗提示",
       "antifraudBody": "本署认证完全免费:不收取任何费用、不承诺任何现实效力。任何自称\"收费代办认证\"的行为都是诈骗。",
-      "entertainmentTitle": "娱乐声明",
-      "entertainmentBody": "本署及全部认证文书均为虚构娱乐设定,仅代表奶龙国虚拟世界内的成就,不具备任何现实法律效力。",
       "notices": "署内公告",
       "catalog": "服务目录",
       "guide": "办事指南与常见问题",
@@ -799,7 +784,7 @@
       "shownBody": "认证文书会展示:文书编号、文书类型、持有人昵称、关联业务编号、认证机构、认证日期与有效期。验真查询只返回脱敏信息,不含昵称与业务编号。",
       "faqTitle": "常见问题",
       "faq1q": "认证文书具有现实效力吗?",
-      "faq1a": "没有。所有文书都是虚构娱乐设定,仅代表奶龙国虚拟世界内的成就,不能用于任何现实证明。每份文书都印有\"虚构娱乐·无现实效力\"水印。",
+      "faq1a": "没有。所有文书都是虚构娱乐设定,仅代表奶龙国虚拟世界内的成就,不能用于任何现实证明。",
       "faq2q": "关联业务编号填错了怎么办?",
       "faq2a": "草稿阶段可以随时修改;已提交的申请如被驳回,可以按驳回原因重新申请。请在提交前仔细核对编号。",
       "faq3q": "我可以同时有多份同类文书吗?",
@@ -811,7 +796,6 @@
       "step1": "第 1 步 · 选择文书类型",
       "step2": "第 2 步 · 填写申请信息",
       "step3": "第 3 步 · 上传材料",
-      "step4": "第 4 步 · 娱乐声明与提交",
       "nickname": "申请人昵称",
       "nicknamePh": "将展示在认证文书上",
       "contact": "联系方式",
@@ -832,9 +816,7 @@
       "bizRequired": "请填写{{label}}",
       "fieldRequired": "请填写「{{label}}」",
       "materialRequired": "请上传「{{label}}」",
-      "agreeRequired": "请先勾选娱乐声明",
       "typeLocked": "草稿已创建,类型不可更改;如需其他类型请新建申请。",
-      "declaration": "我已知晓并同意:本次认证为奶龙国虚构娱乐设定,文书不具任何现实效力,本人不将其用于现实用途。",
       "confirmTitle": "提交前确认",
       "confirmTip": "请核对以下信息;提交后将进入认证队列,草稿信息将被锁定。",
       "confirmSubmit": "确认提交",
@@ -891,8 +873,7 @@
       "downloadPdf": "下载 PDF",
       "verifyEntry": "去验真",
       "exportFailed": "导出失败,请重试",
-      "ariaLabel": "认证文书 {{no}}",
-      "watermarkFallback": "虚构娱乐 · 无现实效力"
+      "ariaLabel": "认证文书 {{no}}"
     },
     "certList": {
       "title": "我的认证文书",
@@ -903,9 +884,8 @@
       "certStatus": "文书状态",
       "revokedTitle": "文书已被撤销",
       "tipsTitle": "使用须知",
-      "tip1": "文书仅限奶龙国虚构世界内使用,不具备任何现实效力。",
-      "tip2": "任何人可凭文书编号在验真中心查验真伪,查询结果不包含个人信息。",
-      "tip3": "\"下载 PDF\"会打开系统打印对话框,选择\"另存为 PDF\"即可保存。"
+      "tip1": "任何人可凭文书编号在验真中心查验真伪,查询结果不包含个人信息。",
+      "tip2": "\"下载 PDF\"会打开系统打印对话框,选择\"另存为 PDF\"即可保存。"
     },
     "verify": {
       "title": "文书验真中心",
@@ -922,8 +902,6 @@
       "selfTitle": "这是你自己的申请 {{no}}",
       "selfNoCert": "该申请尚未签发文书。",
       "issuer": "认证机构",
-      "disclaimerTitle": "验真结果仅限娱乐参考",
-      "disclaimerBody": "验真结果仅说明文书在奶龙国虚构设定中的状态,不代表任何现实事实;本站不为任何现实用途提供证明。",
       "historyTitle": "我的验真记录",
       "historyEmpty": "暂无验真记录",
       "historyQuery": "查询编号",
@@ -1105,8 +1083,6 @@
         "verifyLimitTip": "防止枚举扫描的查询频率上限",
         "seal": "电子印章",
         "issuer": "认证机构名称",
-        "watermark": "水印/声明文案",
-        "watermarkTip": "展示在文书与验真结果页",
         "riskTitle": "风控与黑名单",
         "riskTip": "黑名单用户无法创建或提交认证申请;重复申请与频率限制始终生效。",
         "blacklistAdd": "加入黑名单",
@@ -1183,16 +1159,12 @@
       "messages": "消息",
       "help": "帮助"
     },
-    "disclaimer": {
-      "title": "娱乐声明 · 防诈骗",
-      "default": "皇家口岸为奶龙岛趣味虚构单位,全部内容仅供娱乐,不产生任何现实出入境效力;通关全程免费,索要费用均为诈骗。"
-    },
     "home": {
       "hero": "皇家口岸入境署",
       "tagline": "欢迎来到奶龙岛唯一官方(自封)入境口岸,盖章啦!",
       "portStatus": "口岸状态",
       "crowding": "趣味拥挤度",
-      "crowdingTip": "根据待检申报数量估算,仅供娱乐参考",
+      "crowdingTip": "根据待检申报数量估算",
       "myImmigration": "我的入境",
       "inReview": "审核中",
       "passReady": "待通关",
@@ -1258,7 +1230,7 @@
       },
       "realEffect": {
         "q": "这些记录有现实效力吗?",
-        "a": "没有。皇家口岸、签注、通关码与出入境记录全部为娱乐设定,盖章上写着\"无现实效力\"哦。"
+        "a": "没有。皇家口岸、签注、通关码与出入境记录全部为娱乐设定"
       }
     },
     "ports": {
@@ -1310,8 +1282,6 @@
       "confirmTitle": "提交前确认",
       "submit": "确认提交",
       "submitted": "申报 {{no}} 已提交,请等待边检审核",
-      "agreeFirst": "请先阅读并勾选娱乐声明",
-      "agreeLabel": "我已知悉本申报为娱乐内容,不产生现实出入境效力,并保证信息真实(虚构地真实)",
       "required": "请填写此字段"
     },
     "purpose": {
@@ -1403,7 +1373,6 @@
       "stamp": "入境章",
       "entryStamp": "入境纪念章",
       "stampAria": "虚构入境章",
-      "watermark": "仅供娱乐 · 无现实效力",
       "registerExit": "出境登记",
       "exitTitle": "出境登记 {{no}}",
       "confirmExit": "确认出境",
@@ -1493,7 +1462,6 @@
       "portsTitle": "口岸与通道管理",
       "tabPorts": "口岸与通道",
       "tabAnnouncements": "公告管理",
-      "tabSettings": "声明与水印",
       "openHours": "通关时间",
       "channels": "通道",
       "addChannel": "添加通道",
@@ -1512,9 +1480,6 @@
       "editAnn": "编辑公告",
       "published": "已发布",
       "takeOffline": "下线",
-      "disclaimerText": "娱乐声明文案",
-      "watermark": "入境章水印文案",
-      "disclaimerVersion": "声明版本号",
       "review": {
         "title": "边检审核工作台",
         "queueNote": "边检员只处理入境申报队列,与签注审核队列相互隔离。",
@@ -1625,7 +1590,6 @@
   "res": {
     "officeName": "奶龙国皇家居民登记署",
     "officeSub": "登记成为奶龙国居民 · 领取电子居民卡",
-    "disclaimerTag": "虚构娱乐 · 免费登记",
     "back": "返回",
     "backHome": "回署内首页",
     "nav": {
@@ -1645,16 +1609,6 @@
       "title": "居民署身份确认",
       "confirm": "确认进入",
       "tip": "进入即表示你同意以当前账号身份使用皇家居民登记署。居民身份与账号一一对应,登记信息仅用于奶龙国虚构世界。"
-    },
-    "disclaimer": {
-      "title": "娱乐声明",
-      "default": "皇家居民登记署为奶龙岛趣味虚构单位:登记全程免费,不核验现实身份,居民身份不产生任何现实法律效力。",
-      "short": "本卡为虚构娱乐身份凭证,无现实效力"
-    },
-    "fraud": {
-      "title": "防诈骗提示",
-      "body": "居民登记完全免费。任何收取“登记费”“工本费”、代办“永久居民”或承诺“现实身份效力”的行为均为诈骗。",
-      "more": "查看办事指南 ›"
     },
     "nav_label": "居民署导航",
     "home": {
@@ -1803,7 +1757,6 @@
       "uploadProof": "上传地址证明",
       "uploadOther": "点击或拖拽上传其他材料",
       "confirmTitle": "提交前确认",
-      "confirmAgree": "我已知悉:本登记为虚构娱乐项目,不产生现实效力,登记免费且信息仅用于奶龙国。",
       "materialsCount": "共 {{count}} 个材料"
     },
     "myApps": {
@@ -1870,7 +1823,6 @@
       "statusLabel": "卡片状态",
       "issuer": "登记机构",
       "qrTip": "扫码验真",
-      "watermarkSample": "仅供娱乐 · 无现实效力",
       "linkCopied": "验真链接已复制",
       "print": "下载 PDF / 打印",
       "verifyLink": "打开验真页",
@@ -1989,8 +1941,7 @@
       "placeholder": "居民编号 / 申请编号,如 NRC-… 或 NRR-…",
       "action": "验真",
       "limitTip": "为防枚举,验真有频率限制;结果仅展示脱敏信息。",
-      "notFound": "未找到对应的居民卡,请检查编号",
-      "disclaimer": "验真结果仅包含脱敏的居民卡信息,不含任何联系方式与地址。本服务为虚构娱乐项目,验真结果无现实效力。"
+      "notFound": "未找到对应的居民卡,请检查编号"
     },
     "field": {
       "appNo": "申请编号",
@@ -2162,14 +2113,7 @@
         "supplementDays": "补件期限(天)",
         "reviewHours": "审核时长提示(小时)",
         "maxActive": "同时在审申请上限",
-        "oneIdentity": "一号一身份(1 开启 / 0 关闭)",
-        "templateTitle": "居民卡模板",
-        "watermark": "防伪水印文案",
-        "statement": "卡片底部声明",
-        "disclaimerTitle": "娱乐声明与防诈骗提示",
-        "disclaimerTip": "展示在居民署所有页面;修改文案时请同步提升版本号。",
-        "disclaimerVersion": "声明版本",
-        "disclaimerText": "声明文案"
+        "oneIdentity": "一号一身份(1 开启 / 0 关闭)"
       }
     },
     "msgTpl": {
@@ -2194,7 +2138,6 @@
   "dip": {
     "officeName": "奶龙国皇家外交事务署",
     "officeSub": "虚构建交 · 外交身份 · 互免协议 · 验真",
-    "disclaimerTag": "虚构机构 · 娱乐设定",
     "sso": {
       "title": "进入皇家外交事务署",
       "confirm": "确认进入",
@@ -2211,10 +2154,6 @@
       "offices": "代表处",
       "messages": "站内信",
       "verifyEntry": "验真中心"
-    },
-    "disclaimer": {
-      "title": "娱乐声明与防诈骗提示",
-      "default": "本署不涉及真实国家与外交关系:全部建交、外交身份、互免协议与礼遇均为虚构娱乐内容,不产生任何现实效力。建交全程免费,任何索取费用的行为均为诈骗。"
     },
     "status": {
       "draft": "草稿",
@@ -2323,8 +2262,6 @@
       "confirmTitle": "提交前确认",
       "submit": "提交申请",
       "submitted": "已提交,建交申请编号 {no}",
-      "agreeFirst": "请先勾选娱乐声明",
-      "agreeLabel": "我已知悉本申请为虚构娱乐内容,不涉及真实国家与外交关系",
       "required": "必填",
       "materialCount": "{count} 份"
     },
@@ -2382,7 +2319,6 @@
       "cardTitle": "外交身份卡",
       "print": "下载 / 打印",
       "scanVerify": "扫码验真",
-      "cardDisclaimer": "本卡为虚构娱乐内容,不代表任何真实外交身份。",
       "no": "身份编号",
       "materialTip": "需上传任命书(虚构)或介绍信等材料,图片/PDF,≤5MB。",
       "confirmTip": "提交后将进入外交审核队列,审核时将校验关联建交关系的有效性。",
@@ -2503,7 +2439,6 @@
     },
     "office": {
       "pageTitle": "使领馆 / 代表处",
-      "fictionTag": "虚构代表处 · 非真实使领馆",
       "detailTitle": "代表处详情",
       "location": "所在地点(虚构)",
       "hours": "开放时间",
@@ -2542,8 +2477,7 @@
     },
     "home": {
       "hero": "以趣味与友谊之名,与世界建立虚构外交关系",
-      "heroSub": "建交申请 · 外交身份登记 · 互免协议 · 验真查询,全部为奶龙岛娱乐设定。",
-      "declarationTitle": "娱乐声明:本署不涉及真实国家与外交关系",
+      "heroSub": "建交申请 · 外交身份登记 · 互免协议 · 验真查询",
       "notices": "署内公告",
       "services": "服务目录",
       "service": {
@@ -2624,7 +2558,6 @@
       "unfrozen": "已解冻",
       "revoke": "注销",
       "revoked": "已注销",
-      "entertainmentAgreed": "已勾选娱乐声明",
       "risk": "风控",
       "risk_clean": "无异常",
       "risk_repeat_reject": "多次被拒",
@@ -2677,9 +2610,7 @@
       "supplementDays": "补件期限(天)",
       "reviewHours": "审核时长提示(小时)",
       "verifyLimit": "验真限流(次/5分钟)",
-      "maxIdentities": "单人 concurrent 身份上限",
-      "watermark": "身份卡水印文案",
-      "disclaimerText": "娱乐声明文案"
+      "maxIdentities": "单人 concurrent 身份上限"
     },
     "stats": {
       "title": "统计与报表",
@@ -2728,10 +2659,6 @@
   "protocol": {
     "officeName": "奶龙国皇家礼宾与活动署",
     "officeSub": "活动 · 邀请函 · 活动凭证 · 礼宾服务",
-    "disclaimerTag": "虚构娱乐 · 无现实效力",
-    "disclaimerShort": "本署为虚构娱乐单位",
-    "disclaimerLong": "奶龙国皇家礼宾与活动署为虚构娱乐单位:全部活动、邀请函、活动凭证、接待方认证与礼宾服务均为奶龙岛世界观内的趣味内容,不产生任何现实效力,不承诺现实入场、接待或礼遇。报名与认证全程免费。",
-    "entertainmentNotice": "娱乐声明",
     "scamTitle": "防诈骗提示",
     "scamBody": "本署活动报名与认证完全免费。任何“收费报名”“内部名额”“承诺现实入场或礼遇”的说法都是诈骗,请勿相信。",
     "nav": {
@@ -3080,9 +3007,6 @@
       "summaryTip": "提交前请核对信息;提交后将进入待审核队列。",
       "requiredHint": "请填写昵称与联系方式",
       "confirmTitle": "提交前确认",
-      "declarationCheck": "我已阅读并同意娱乐声明",
-      "declarationRequired": "请先勾选娱乐声明",
-      "declarationText": "我确认本次报名为奶龙国虚构娱乐活动,所填信息为虚构内容;活动不产生现实效力,不承诺现实入场或礼遇,报名全程免费。",
       "draftSaved": "草稿已保存",
       "submitSuccess": "报名已提交:{{no}}"
     },
@@ -3124,8 +3048,6 @@
       "holder": "持票人",
       "kind": "活动凭证 · 电子票",
       "qrTip": "扫码验真(仅含编号,不含个人信息)",
-      "statement": "本凭证为虚构娱乐活动的电子纪念票,不构成任何现实入场资格。",
-      "watermark": "仅供娱乐",
       "checkinTip": "活动当日请出示凭证编号或二维码;凭证不可转让,作废后无法签到。",
       "statusNote_pending": "待使用 · 活动当日可签到",
       "statusNote_used": "已使用 · 已签到",
@@ -3269,7 +3191,6 @@
       "valid": "有效",
       "invalid": "无效",
       "notFound": "未查询到该编号,请核对后重试。",
-      "disclaimer": "验真结果仅为奶龙国虚构娱乐内容,不构成任何现实凭证。",
       "visaUsable": "该邀请函有效,可作为签注申请材料(联动预留)。",
       "antiEnum": "防枚举提示:系统会记录验真来源并对高频查询限流;编号不可猜测,请勿尝试遍历。"
     },
@@ -3308,11 +3229,7 @@
       "prefix.pass": "凭证编号前缀",
       "prefix.host": "接待方编号前缀",
       "prefix.host_cert": "认证证书编号前缀",
-      "prefix.courtesy": "礼遇编号前缀",
-      "watermark_text": "水印文案",
-      "pass_statement": "活动凭证声明",
-      "disclaimer_version": "娱乐声明版本",
-      "disclaimer_text": "娱乐声明全文"
+      "prefix.courtesy": "礼遇编号前缀"
     },
     "admin": {
       "reviewTitle": "报名审核工作台",
@@ -3394,7 +3311,7 @@
       "checkinSuccess": "签到成功",
       "checkoutSuccess": "签退成功",
       "manageTitle": "署内配置",
-      "manageSubtitle": "活动类型与规则、声明、公告、消息模板、验真风控与报表。",
+      "manageSubtitle": "活动类型与规则、公告、消息模板、验真风控与报表。",
       "eventTypesTab": "活动类型",
       "configTab": "参数配置",
       "noticesTab": "署内公告",

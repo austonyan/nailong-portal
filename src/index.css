@@ -542,11 +542,6 @@ h3 {
   font-weight: 600;
 }
 
-.visa-disclaimer-card {
-  margin-top: 20px;
-  font-size: 12px;
-}
-
 .visa-verify-page {
   min-height: 100vh;
   background: var(--animal-bg-color);
@@ -615,14 +610,6 @@ h3 {
   align-items: center;
   gap: 8px;
   padding: 12px 0;
-}
-
-.visa-verify-disclaimer {
-  margin-top: 16px;
-  border-top: var(--animal-border-width) dashed var(--animal-border-color);
-  padding-top: 10px;
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
 }
 
 .visa-guide-page,
@@ -897,21 +884,6 @@ h3 {
   opacity: 0.75;
 }
 
-.evisa-watermark {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 64px;
-  font-weight: 900;
-  color: var(--animal-primary-color);
-  opacity: 0.08;
-  transform: rotate(-18deg);
-  pointer-events: none;
-  user-select: none;
-}
-
 .evisa-head {
   display: flex;
   justify-content: space-between;
@@ -1175,23 +1147,6 @@ h3 {
   margin: 0;
   font-size: 22px;
   font-weight: 800;
-}
-
-.docs-disclaimer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border: var(--animal-border-width) solid var(--animal-warning-color);
-  border-radius: var(--animal-border-radius-lg);
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-text-color-secondary);
-  font-size: 13px;
-}
-
-.docs-disclaimer svg {
-  flex-shrink: 0;
-  color: var(--animal-warning-color);
 }
 
 .docs-subnav {
@@ -1699,21 +1654,6 @@ h3 {
   pointer-events: none;
 }
 
-.doc-cert-watermark {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  place-items: center;
-  transform: rotate(-18deg) scale(1.25);
-  opacity: 0.07;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--animal-text-color);
-  pointer-events: none;
-  user-select: none;
-}
-
 .doc-cert-head {
   position: relative;
   text-align: center;
@@ -2106,27 +2046,6 @@ h3 {
   margin: 12px 0 0;
   color: var(--animal-text-color-secondary);
   font-size: 15px;
-}
-
-.im-disclaimer {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 18px;
-  border-radius: 14px;
-  border: 2px dashed var(--animal-warning-color, #f5c31c);
-  background: var(--animal-primary-color-bg);
-}
-
-.im-disclaimer-title {
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--animal-text-color);
-}
-
-.im-disclaimer-text {
-  font-size: 13px;
-  color: var(--animal-text-color-secondary);
 }
 
 .im-home-status {
@@ -2619,21 +2538,6 @@ h3 {
   font-size: 10px;
 }
 
-.im-stamp-watermark {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--animal-text-color-muted);
-  opacity: 0.5;
-  transform: rotate(-14deg);
-  pointer-events: none;
-  white-space: nowrap;
-}
-
 .im-records-note {
   margin-top: -6px;
 }
@@ -2928,27 +2832,6 @@ h3 {
 .dip-banner-sub {
   font-size: 12px;
   color: var(--animal-text-color-muted);
-}
-
-.dip-disclaimer {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 18px;
-  border-radius: 14px;
-  border: 2px dashed var(--animal-warning-color);
-  background: var(--animal-primary-color-bg);
-}
-
-.dip-disclaimer-title {
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--animal-text-color);
-}
-
-.dip-disclaimer-text {
-  font-size: 13px;
-  color: var(--animal-text-color-secondary);
 }
 
 .dip-hero-actions {
@@ -3388,10 +3271,6 @@ h3 {
   gap: 10px;
 }
 
-.dip-verify-disclaimer {
-  font-size: 12px;
-}
-
 .dip-visa-channel {
   display: flex;
   flex-direction: column;
@@ -3598,27 +3477,6 @@ h3 {
   color: var(--animal-text-color-secondary);
 }
 
-.dip-id-card-watermark {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  font-size: 30px;
-  font-weight: 800;
-  color: var(--animal-text-color-secondary);
-  opacity: 0.08;
-  transform: rotate(-18deg);
-  letter-spacing: 4px;
-}
-
-.dip-id-card-disclaimer {
-  margin: 10px 0 0;
-  font-size: 11px;
-  color: var(--animal-text-color-muted);
-}
-
 .dip-sso-body {
   display: flex;
   flex-direction: column;
@@ -3646,9 +3504,7 @@ h3 {
   .app-nav,
   .dip-banner,
   .dip-subnav,
-  .dip-disclaimer {
-    display: none !important;
-  }
+  
 
   .dip-print-area {
     position: fixed;
@@ -3738,28 +3594,6 @@ h3 {
 .res-admin-nav {
   padding-top: 2px;
   border-top: var(--animal-border-width) dashed var(--animal-border-color);
-}
-
-.res-disclaimer {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-  border: var(--animal-border-width) solid var(--animal-warning-color, #f0a020);
-  background: var(--animal-warning-color-bg, var(--animal-primary-color-bg));
-  border-radius: var(--animal-border-radius-md);
-  padding: 10px 14px;
-  margin-bottom: 16px;
-  font-size: 13px;
-}
-
-.res-disclaimer-title {
-  font-weight: 800;
-  color: var(--animal-warning-color, #f0a020);
-}
-
-.res-disclaimer-text {
-  color: var(--animal-text-color-secondary);
 }
 
 .res-hero {
@@ -4228,21 +4062,6 @@ h3 {
   opacity: 0.75;
 }
 
-.res-card-watermark {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 52px;
-  font-weight: 900;
-  color: var(--animal-primary-color);
-  opacity: 0.08;
-  transform: rotate(-18deg);
-  pointer-events: none;
-  user-select: none;
-}
-
 .res-card-head {
   display: flex;
   justify-content: space-between;
@@ -4559,17 +4378,6 @@ h3 {
   padding: 16px 0;
 }
 
-.res-verify-disclaimer {
-  border-top: var(--animal-border-width) dashed var(--animal-border-color);
-  padding-top: 10px;
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.res-verify-disclaimer p {
-  margin: 0;
-}
-
 /* 管理端 */
 
 .res-admin-page {
@@ -4826,22 +4634,10 @@ h3 {
   color: var(--animal-text-color-muted);
 }
 
-.res-disclaimer-version {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.res-disclaimer-version input {
-  max-width: 120px;
-}
-
 @media print {
   .res-nav,
   .res-admin-nav,
   .res-office-banner,
-  .res-disclaimer,
   .res-card-actions,
   .page-header,
   .res-card-meta,
@@ -5055,16 +4851,6 @@ h3 {
   gap: 10px;
   margin-top: 14px;
   color: var(--animal-text-color-secondary);
-}
-
-.appeal-disclaimer-card {
-  margin-top: 8px;
-}
-
-.appeal-disclaimer-card p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--animal-text-color-muted);
 }
 
 .appeal-guide-page,
@@ -5478,11 +5264,6 @@ h3 {
   margin-top: 12px;
 }
 
-.appeal-pub-disclaimer {
-  margin-top: 10px;
-  font-size: 12px;
-}
-
 .appeal-stats-tables {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -5541,21 +5322,6 @@ h3 {
   overflow: hidden;
 }
 
-.appeal-doc-watermark {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 56px;
-  font-weight: 900;
-  letter-spacing: 12px;
-  color: color-mix(in srgb, var(--animal-warning-color) 22%, transparent);
-  transform: rotate(-24deg);
-  pointer-events: none;
-  user-select: none;
-}
-
 .appeal-doc-head {
   text-align: center;
   margin-bottom: 18px;
@@ -5573,13 +5339,6 @@ h3 {
   align-items: flex-end;
   gap: 18px;
   margin-top: 24px;
-}
-
-.appeal-doc-disclaimer p {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-  max-width: 420px;
 }
 
 .appeal-doc-qr {
@@ -5657,20 +5416,13 @@ h3 {
   padding: 12px 0;
 }
 
-.appeal-verify-disclaimer {
-  margin: 14px 0 0;
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 @media print {
   .app-header,
   .app-footer,
   .appeal-office-banner,
   .appeal-nav,
   .appeal-doc-toolbar,
-  .no-print,
-  .appeal-disclaimer-card {
+  .no-print {
     display: none !important;
   }
 

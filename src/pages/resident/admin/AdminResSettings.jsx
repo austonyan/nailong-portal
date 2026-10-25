@@ -1,12 +1,12 @@
-// 署内设置:编号规则、审核/补件参数、居民卡模板(水印/声明)与娱乐声明版本。
+// 署内设置:编号规则、审核/补件参数。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Notification, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Notification, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
-import { TextArea, toastResError } from '../shared.jsx';
+import { toastResError } from '../shared.jsx';
 
-// 可编辑配置(编号规则 + 流程参数);卡模板与声明单独成块。
+// 可编辑配置(编号规则 + 流程参数)。
 const CONFIG_FIELDS = [
   { key: 'res.app_no_prefix', label: 'res.admin.settings.appPrefix' },
   { key: 'res.card_no_prefix', label: 'res.admin.settings.cardPrefix' },
@@ -42,10 +42,6 @@ export default function AdminResSettings() {
     try {
       const body = {};
       for (const field of CONFIG_FIELDS) body[field.key] = config[field.key] ?? '';
-      body['res.card_watermark'] = config['res.card_watermark'] ?? '';
-      body['res.card_statement'] = config['res.card_statement'] ?? '';
-      body['res.disclaimer_text'] = config['res.disclaimer_text'] ?? '';
-      body['res.disclaimer_version'] = config['res.disclaimer_version'] ?? '1';
       await api.put('/resident/admin/config', body);
       Notification.success(t('common.save'));
       load();
@@ -75,38 +71,6 @@ export default function AdminResSettings() {
               <Input size="large" value={config[field.key] ?? ''} onChange={(e) => setField(field.key, e.target.value)} />
             </label>
           ))}
-        </div>
-      </Card>
-
-      <Card className="res-info-card">
-        <h4>{t('res.admin.settings.templateTitle')}</h4>
-        <div className="res-type-form">
-          <label>
-            <span>{t('res.admin.settings.watermark')}</span>
-            <Input size="large" value={config['res.card_watermark'] ?? ''} onChange={(e) => setField('res.card_watermark', e.target.value)} />
-          </label>
-          <label>
-            <span>{t('res.admin.settings.statement')}</span>
-            <TextArea rows={3} maxLength={300} value={config['res.card_statement'] ?? ''} onChange={(e) => setField('res.card_statement', e.target.value)} />
-          </label>
-        </div>
-      </Card>
-
-      <Card className="res-info-card">
-        <h4>{t('res.admin.settings.disclaimerTitle')}</h4>
-        <p className="muted-text">{t('res.admin.settings.disclaimerTip')}</p>
-        <div className="res-type-form">
-          <div className="res-disclaimer-version">
-            <span>{t('res.admin.settings.disclaimerVersion')}</span>
-            <Tag color="app-yellow" variant="soft">
-              v{config['res.disclaimer_version'] || '1'}
-            </Tag>
-            <Input size="large" value={config['res.disclaimer_version'] ?? ''} onChange={(e) => setField('res.disclaimer_version', e.target.value)} />
-          </div>
-          <label>
-            <span>{t('res.admin.settings.disclaimerText')}</span>
-            <TextArea rows={4} maxLength={500} value={config['res.disclaimer_text'] ?? ''} onChange={(e) => setField('res.disclaimer_text', e.target.value)} />
-          </label>
         </div>
       </Card>
 

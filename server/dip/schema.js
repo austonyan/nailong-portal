@@ -77,7 +77,6 @@ export function ensureDipSchema() {
     purpose              TEXT NOT NULL DEFAULT 'display' CHECK (purpose IN ('display', 'cooperation', 'visa_channel')),
     status               TEXT NOT NULL DEFAULT 'draft'
                          CHECK (status IN ('draft','pending_review','supplement_required','established','rejected','suspended','severed','withdrawn','sever_requested')),
-    entertainment_agreed INTEGER NOT NULL DEFAULT 0,
     supplement_note      TEXT NOT NULL DEFAULT '',
     supplement_deadline  TEXT,
     supplement_content   TEXT,
@@ -116,7 +115,6 @@ export function ensureDipSchema() {
     verify_token         TEXT,
     status               TEXT NOT NULL DEFAULT 'draft'
                          CHECK (status IN ('draft','pending_review','supplement_required','active','frozen','expired','revoked','rejected','withdrawn')),
-    entertainment_agreed INTEGER NOT NULL DEFAULT 0,
     inactive_reason      TEXT NOT NULL DEFAULT '',
     supplement_note      TEXT NOT NULL DEFAULT '',
     supplement_deadline  TEXT,
@@ -390,7 +388,7 @@ const MESSAGE_TEMPLATES = [
   {
     code: 'identity_renew',
     title: '外交身份即将到期:{{no}}',
-    body: '外交身份 {{no}} 将于 {{termEnd}} 到期,如需继续履职请在到期后重新登记(娱乐设定,暂不支持自动续期)。',
+    body: '外交身份 {{no}} 将于 {{termEnd}} 到期,如需继续履职请在到期后重新登记(暂不支持自动续期)。',
     variables: 'no, termEnd',
   },
   {
@@ -408,13 +406,6 @@ const MESSAGE_TEMPLATES = [
 ];
 
 const DEFAULT_SETTINGS = [
-  { key: 'disclaimer_version', value: '1' },
-  {
-    key: 'disclaimer_text',
-    value:
-      '奶龙国皇家外交事务署为奶龙岛趣味虚构单位:全部建交关系、外交身份、互免协议与代表处均为娱乐内容,不涉及任何真实国家与外交关系,不产生现实外交效力。建交全程免费,任何索取"建交费""活动费"的行为均为诈骗。',
-  },
-  { key: 'watermark_text', value: '仅供娱乐 · 非真实外交' },
   { key: 'supplement_days', value: '7' },
   { key: 'review_hours_hint', value: '72' },
   { key: 'verify_limit_per_5min', value: '30' },
@@ -553,19 +544,19 @@ function seedDiplomacy() {
       );
       insertNotice.run({
         title: '建交通道正式开放',
-        body: '皇家外交事务署现开放"虚构国家 × 正式建交"在线申请,审核预计 72 小时内完成。本署为虚构娱乐项目,不核验真实身份,建交不产生任何现实外交效力。',
+        body: '皇家外交事务署现开放"虚构国家 × 正式建交"在线申请,审核预计 72 小时内完成。',
         level: 'info',
         ts,
       });
       insertNotice.run({
         title: '外交身份登记须知(必读)',
-        body: '外交身份须关联一条已建交关系;任期最长 365 天;冻结/注销后外交签注与礼遇资格同步失效。全部身份均为娱乐设定。',
+        body: '外交身份须关联一条已建交关系;任期最长 365 天;冻结/注销后外交签注与礼遇资格同步失效。',
         level: 'warning',
         ts,
       });
       insertNotice.run({
         title: '虚拟礼遇说明',
-        body: '外交礼遇(入境礼遇通道、活动优先邀请、优先审核)仅在奶龙岛虚构世界内有效,以趣味徽章与记录形式呈现,不承诺任何现实礼遇。',
+        body: '外交礼遇(入境礼遇通道、活动优先邀请、优先审核)以趣味徽章与记录形式呈现。',
         level: 'info',
         ts,
       });

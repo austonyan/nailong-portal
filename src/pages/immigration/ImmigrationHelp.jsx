@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card, Collapse, Divider, Title } from 'animal-island-ui';
 import { ChatIcon, HelpCircleIcon, ShieldIcon } from 'naive-icons';
-import { DisclaimerBanner, ImNav } from '../../components/immigration/shared.jsx';
+import { ImNav } from '../../components/immigration/shared.jsx';
 
 const FAQ_KEYS = ['visaInvalid', 'passUsage', 'recordsWhere', 'fee', 'privacy', 'realEffect'];
 
@@ -59,8 +59,6 @@ export default function ImmigrationHelp() {
           </Card>
         </div>
       </section>
-
-      <DisclaimerBanner />
     </div>
   );
 }

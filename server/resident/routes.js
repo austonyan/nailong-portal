@@ -192,7 +192,7 @@ router.get('/verify', (req, res) => {
     'web',
     now()
   );
-  res.json({ ...result, disclaimer: true });
+  res.json(result);
 });
 
 // Everything below requires a signed-in user with the portal permission.
@@ -227,8 +227,6 @@ router.get('/home', (req, res) => {
     myApplication: myApp ? serializeApplication(myApp) : null,
     myCard: myCard ? serializeCard(myCard) : null,
     reviewHoursHint: getConfigNumber('res.review_hours_hint', 72),
-    disclaimerText: getConfig('res.disclaimer_text', ''),
-    disclaimerVersion: getConfig('res.disclaimer_version', '1'),
     unread,
   });
 });
@@ -316,9 +314,6 @@ router.post('/applications/:id/submit', (req, res) => {
   const app = loadOwnApplication(req);
   if (app.status !== 'draft') throw badRequest('RES_NOT_EDITABLE', 'Application already submitted');
   assertCanApply(req.user.id, { excludeDrafts: true });
-  if (req.body?.entertainmentAgreed !== true) {
-    throw badRequest('RES_AGREEMENT_REQUIRED', 'Entertainment disclaimer must be accepted');
-  }
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(app.type_code);
   const fields = validateApplicationFields({ ...serializeApplication(app), ...req.body });
   const purposes = fields.purposes ?? JSON.parse(app.purposes || '[]');
@@ -339,7 +334,7 @@ router.post('/applications/:id/submit', (req, res) => {
   }
   db.prepare(
     `UPDATE res_applications SET nickname=@nickname, contact=@contact, virtual_address=@virtualAddress, bio=@bio,
-     purposes=@purposes, entertainment_agreed=1, status='pending_review', review_stage='initial',
+     purposes=@purposes, status='pending_review', review_stage='initial',
      submitted_at=@ts, updated_at=@ts WHERE id=@id`
   ).run({
     nickname: fields.nickname,
@@ -500,8 +495,6 @@ router.get('/card', (req, res) => {
   res.json({
     card: { ...serializeCard(card), appNo: app?.app_no, typeName: typeRow?.name ?? card.type_code },
     resident: resident ? serializeResident(resident) : null,
-    watermark: getConfig('res.card_watermark', ''),
-    statement: getConfig('res.card_statement', ''),
     pendingChanges: changes,
   });
 });

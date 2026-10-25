@@ -90,10 +90,7 @@ check('上传报名材料', up.status === 201, JSON.stringify(up.data));
 const badFile = await upload(token, 'registration', regId, 'other', 'evil.bin', 'application/octet-stream');
 check('拒绝非白名单文件', badFile.status === 400 && badFile.data.code === 'EVT_FILE_TYPE');
 
-const noAgree = await api(`/protocol/registrations/${regId}/submit`, { method: 'POST', token, body: { entertainmentAgreed: false } });
-check('未勾选娱乐声明拒绝提交', noAgree.status === 400 && noAgree.data.code === 'EVT_DECLARATION_REQUIRED');
-
-const submitted = await api(`/protocol/registrations/${regId}/submit`, { method: 'POST', token, body: { entertainmentAgreed: true } });
+const submitted = await api(`/protocol/registrations/${regId}/submit`, { method: 'POST', token, body: {} });
 check('提交报名进入待审核', submitted.status === 200 && submitted.data.registration.status === 'pending_review');
 
 const duplicate = await api('/protocol/registrations', { method: 'POST', token, body: { eventId: event.id } });

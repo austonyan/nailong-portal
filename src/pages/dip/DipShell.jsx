@@ -3,10 +3,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { Avatar, Button, Card, Modal } from 'animal-island-ui';
 import { CompassIcon } from 'naive-icons';
 import { useAuth } from '../../auth/AuthContext.jsx';
-import { DisclaimerBanner } from '../../components/dip/shared.jsx';
 
 const SSO_FLAG = 'nailong.dip.sso';
 
@@ -50,12 +49,7 @@ export default function DipShell({ permission, children }) {
             <div className="dip-banner-sub">{t('dip.officeSub')}</div>
           </div>
         </div>
-        <Tag color="app-yellow" variant="soft">
-          {t('dip.disclaimerTag')}
-        </Tag>
       </div>
-
-      <DisclaimerBanner />
 
       {children}
 

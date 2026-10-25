@@ -204,7 +204,7 @@ export default function ProtocolHosts() {
         )}
       </div>
 
-      <Card type="dashed" className="protocol-disclaimer-card">
+      <Card type="dashed" className="protocol-tip-card">
         <strong>{t('protocol.hosts.rulesTitle')}</strong>
         <p>{t('protocol.hosts.rules')}</p>
       </Card>

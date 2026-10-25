@@ -1,11 +1,10 @@
 // 互免协议: 公示列表 / 详情 / 我的互免资格查询 / 常见问题。
-// 仅供娱乐展示,不承诺现实效力。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Collapse, Input, Notification, Tag, Title } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, DisclaimerBanner, StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
 
 const FAQ_KEYS = ['effect', 'fee', 'reality'];
 
@@ -50,8 +49,6 @@ export default function DipAgreements() {
       <div className="page-header">
         <Title size="middle" color="purple">{t('dip.agreement.title')}</Title>
       </div>
-
-      <DisclaimerBanner />
 
       <Card>
         <Title size="small">{t('dip.agreement.checkTitle')}</Title>

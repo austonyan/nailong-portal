@@ -173,7 +173,7 @@ router.get('/verify', (req, res) => {
     result.found ? (result.valid ? 'valid' : result.status) : 'not_found',
     now()
   );
-  res.json({ ...result, disclaimer: true });
+  res.json(result);
 });
 
 // Everything below requires a signed-in user with the apply permission.
@@ -277,9 +277,6 @@ router.post('/applications/:id/submit', (req, res) => {
     .prepare(`SELECT COUNT(*) AS n FROM visa_applications WHERE user_id = ? AND status IN ('pending_review','supplement_required')`)
     .get(req.user.id).n;
   if (active >= 3) throw badRequest('VISA_TOO_MANY_ACTIVE', 'Too many applications under review');
-  if (req.body?.entertainmentAgreed !== true) {
-    throw badRequest('VISA_AGREEMENT_REQUIRED', 'Entertainment disclaimer must be accepted');
-  }
   const fields = validateApplicationFields({ ...serializeApplication(app), ...req.body });
   const materials = db.prepare('SELECT * FROM visa_materials WHERE application_id = ?').all(app.id);
   if (!materials.some((m) => m.kind === 'avatar')) {
@@ -292,7 +289,7 @@ router.post('/applications/:id/submit', (req, res) => {
   db.prepare(
     `UPDATE visa_applications SET nickname=@nickname, contact=@contact, virtual_id=@virtualId, purpose=@purpose,
      plan_arrive=@planArrive, plan_leave=@planLeave, itinerary=@itinerary, inviter_name=@inviterName,
-     inviter_contact=@inviterContact, companions=@companions, entertainment_agreed=1,
+     inviter_contact=@inviterContact, companions=@companions,
      status='pending_review', review_stage='initial', submitted_at=@ts, updated_at=@ts WHERE id=@id`
   ).run({ ...fields, ts: now(), id: app.id });
   sendMsg(req.user.id, app.id, 'submitted', {

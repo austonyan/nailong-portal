@@ -134,7 +134,6 @@ function serializeRelation(row, { detail = false } = {}) {
     updatedAt: row.updated_at,
   };
   if (!detail) return base;
-  base.entertainmentAgreed = !!row.entertainment_agreed;
   base.events = db
     .prepare(
       `SELECT e.action, e.note, e.created_at, u.display_name AS actor
@@ -181,7 +180,6 @@ function serializeIdentity(row, { detail = false } = {}) {
     updatedAt: row.updated_at,
   };
   if (!detail) return base;
-  base.entertainmentAgreed = !!row.entertainment_agreed;
   base.events = db
     .prepare(
       `SELECT e.action, e.note, e.created_at, u.display_name AS actor
@@ -253,8 +251,6 @@ router.get('/overview', ...portalOnly, (req, res) => {
     courtesyTypes,
     agreementsActive: agreementCount,
     reviewHoursHint: getSettingInt('review_hours_hint', 72),
-    disclaimer: { version: getSetting('disclaimer_version'), text: getSetting('disclaimer_text') },
-    watermark: getSetting('watermark_text'),
     my: counts,
   });
 });
@@ -396,12 +392,9 @@ router.post('/relations/:id/submit', ...portalOnly, (req, res) => {
     .prepare("SELECT COUNT(*) AS n FROM dip_materials WHERE owner_type = 'relation' AND owner_id = ? AND deleted_at IS NULL")
     .get(row.id).n;
   if (materials < 1) throw badRequest('DIP_MATERIAL_REQUIRED', 'At least one supporting material is required');
-  if (!req.body?.confirmEntertainment) {
-    throw badRequest('DIP_CONFIRM_REQUIRED', 'The entertainment disclaimer must be accepted');
-  }
   const ts = now();
   db.prepare(
-    "UPDATE dip_relations SET status = 'pending_review', entertainment_agreed = 1, submitted_at = ?, updated_at = ? WHERE id = ?"
+    "UPDATE dip_relations SET status = 'pending_review', submitted_at = ?, updated_at = ? WHERE id = ?"
   ).run(ts, ts, row.id);
   logEvent('relation', row.id, 'submit', req.user.id, '');
   notify(req.user.id, 'relation_submitted', { no: row.no, hours: getSettingInt('review_hours_hint', 72) }, { relationNo: row.no });
@@ -478,7 +471,7 @@ router.get('/identities/:id', ...portalOnly, (req, res) => {
   res.json({ identity: serializeIdentity(row, { detail: true }) });
 });
 
-// 外交身份卡(含验真 token 的二维码路径 + 水印文案)
+// 外交身份卡(含验真 token 的二维码路径)
 router.get('/identities/:id/card', ...portalOnly, (req, res) => {
   const row = ownIdentity(req, req.params.id);
   const typeName = db.prepare('SELECT name FROM dip_identity_types WHERE code = ?').get(row.identity_type)?.name || row.identity_type;
@@ -494,8 +487,6 @@ router.get('/identities/:id/card', ...portalOnly, (req, res) => {
       termEnd: row.term_end,
       status: row.status,
       verifyPath: row.verify_token ? `/dip/verify?token=${row.verify_token}` : null,
-      watermark: getSetting('watermark_text'),
-      disclaimer: getSetting('disclaimer_text'),
     },
   });
 });
@@ -616,12 +607,9 @@ router.post('/identities/:id/submit', ...portalOnly, (req, res) => {
     .prepare("SELECT COUNT(*) AS n FROM dip_materials WHERE owner_type = 'identity' AND owner_id = ? AND deleted_at IS NULL")
     .get(row.id).n;
   if (materials < 1) throw badRequest('DIP_MATERIAL_REQUIRED', 'At least one supporting material (appointment letter) is required');
-  if (!req.body?.confirmEntertainment) {
-    throw badRequest('DIP_CONFIRM_REQUIRED', 'The entertainment disclaimer must be accepted');
-  }
   const ts = now();
   db.prepare(
-    "UPDATE dip_identities SET status = 'pending_review', entertainment_agreed = 1, submitted_at = ?, updated_at = ? WHERE id = ?"
+    "UPDATE dip_identities SET status = 'pending_review', submitted_at = ?, updated_at = ? WHERE id = ?"
   ).run(ts, ts, row.id);
   logEvent('identity', row.id, 'submit', req.user.id, '');
   notify(req.user.id, 'identity_submitted', { no: row.no, hours: getSettingInt('review_hours_hint', 72) }, { identityNo: row.no });
@@ -808,12 +796,11 @@ router.post('/agreements/eligibility', ...portalOnly, (req, res) => {
       effectiveFrom: r.effective_from,
       effectiveTo: r.effective_to,
     })),
-    disclaimer: '互免协议仅供娱乐展示,不承诺现实效力。',
   });
 });
 
 // ---------------------------------------------------------------------------
-// Offices (虚构代表处展示)
+// Offices (代表处展示)
 // ---------------------------------------------------------------------------
 
 router.get('/offices', ...portalOnly, (_req, res) => {
@@ -976,9 +963,9 @@ router.post('/verify', (req, res) => {
   const result = publicVerify(code, req.ip);
   if (!result) {
     // 防枚举: 统一返回 not_found,不区分编号格式错误
-    return res.json({ found: false, disclaimer: getSetting('disclaimer_text') });
+    return res.json({ found: false });
   }
-  res.json({ found: true, item: result, disclaimer: getSetting('disclaimer_text') });
+  res.json({ found: true, item: result });
 });
 
 // 扫码验真(身份卡二维码 token)
@@ -995,8 +982,8 @@ router.get('/verify', (req, res) => {
     row ? (row.status === 'active' ? 'valid' : `status_${row.status}`) : 'not_found',
     now()
   );
-  if (!row) return res.json({ found: false, disclaimer: getSetting('disclaimer_text') });
-  res.json({ found: true, item: maskIdentity(row), disclaimer: getSetting('disclaimer_text') });
+  if (!row) return res.json({ found: false });
+  res.json({ found: true, item: maskIdentity(row) });
 });
 
 export default router;

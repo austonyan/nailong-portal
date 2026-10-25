@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Checkbox, Drawer, Form, FormItem, Input, Modal, Notification, Select, Table, Tag, Title, useForm,
+  Button, Card, Drawer, Form, FormItem, Input, Modal, Notification, Select, Table, Tag, Title, useForm,
 } from 'animal-island-ui';
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
-  DisclaimerBanner, DipNav, DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
+  DipNav, DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
 } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 
@@ -22,7 +22,7 @@ function InfoRow({ label, children }) {
   );
 }
 
-// 外交身份卡: 编号 / 类型 / 所属实体 / 任期 / 水印 / 娱乐声明 / 二维码验真。
+// 外交身份卡: 编号 / 类型 / 所属实体 / 任期 / 二维码验真。
 function IdentityCardModal({ id, open, onClose }) {
   const { t } = useTranslation();
   const [card, setCard] = useState(null);
@@ -69,8 +69,6 @@ function IdentityCardModal({ id, open, onClose }) {
                 <span className="dip-id-card-scan">{t('dip.identity.scanVerify')}</span>
               </div>
             </div>
-            <div className="dip-id-card-watermark">{card.watermark}</div>
-            <p className="dip-id-card-disclaimer">{card.disclaimer}</p>
           </div>
         </div>
       )}
@@ -191,7 +189,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
             <Button
               danger
               loading={busy}
-              onClick={() => post(`/dip/identities/${d.id}/submit`, { confirmEntertainment: true }, t('dip.identity.submitted', { no: d.no }))}
+              onClick={() => post(`/dip/identities/${d.id}/submit`, {}, t('dip.identity.submitted', { no: d.no }))}
             >
               {t('dip.apply.submit')}
             </Button>
@@ -219,7 +217,6 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
   const [decl, setDecl] = useState(null);
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const [agree, setAgree] = useState(false);
   const [materials, setMaterials] = useState([]);
 
   const established = relations.filter((r) => r.status === 'established');
@@ -267,14 +264,10 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
   };
 
   const doSubmit = async () => {
-    if (!agree) {
-      Notification.warning(t('dip.apply.agreeFirst'));
-      return;
-    }
     setBusy(true);
     try {
       const current = await persistDraft();
-      const data = await api.post(`/dip/identities/${current.id}/submit`, { confirmEntertainment: true });
+      const data = await api.post(`/dip/identities/${current.id}/submit`, {});
       Notification.success(t('dip.identity.submitted', { no: data.identity.no }));
       setConfirming(false);
       onSaved();
@@ -296,7 +289,7 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
           </p>
         </Card>
       )}
-      <Form form={form} layout="vertical" onFinish={() => { setAgree(false); setConfirming(true); }}>
+      <Form form={form} layout="vertical" onFinish={() => setConfirming(true)}>
         <div className="dip-form-row">
           <FormItem name="identityType" label={t('dip.identity.type')} rules={[{ required: true, message: t('dip.apply.required') }]}>
             <Select
@@ -388,14 +381,6 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
         typewriter={false}
       >
         <p>{t('dip.identity.confirmTip')}</p>
-        <DisclaimerBanner />
-        <div className="dip-agree-row">
-          <Checkbox
-            options={[{ label: t('dip.apply.agreeLabel'), value: 'agree' }]}
-            value={agree ? ['agree'] : []}
-            onChange={(vals) => setAgree(vals.includes('agree'))}
-          />
-        </div>
       </Modal>
     </Card>
   );

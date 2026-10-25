@@ -1,11 +1,10 @@
-// 使领馆/代表处展示: 虚构代表处列表 + 详情(简介/联系方式/服务事项/公告)。
-// 显著标注"虚构代表处·非真实使领馆"。
+// 使领馆/代表处展示: 代表处列表 + 详情(简介/联系方式/服务事项/公告)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Drawer, Tag, Title } from 'animal-island-ui';
 import { HomeIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, DipLevelTag, DisclaimerBanner, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, DipLevelTag, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 
 export default function DipOffices() {
   const { t } = useTranslation();
@@ -39,10 +38,7 @@ export default function DipOffices() {
       <DipNav />
       <div className="page-header">
         <Title size="middle" color="purple">{t('dip.office.pageTitle')}</Title>
-        <Tag color="app-red" variant="soft">{t('dip.office.fictionTag')}</Tag>
       </div>
-
-      <DisclaimerBanner />
 
       <div className="dip-office-grid">
         {(items ?? []).map((o) => (
@@ -68,7 +64,6 @@ export default function DipOffices() {
             <div className="dip-detail-head">
               <Tag color="app-blue" variant="soft">{detail.office.code}</Tag>
               <StatusInline status={detail.office.status} />
-              <Tag color="app-red" variant="dashed">{t('dip.office.fictionTag')}</Tag>
             </div>
             <Card>
               <p className="dip-info-row"><span className="dip-info-label">{t('dip.office.location')}</span><span>{detail.office.location}</span></p>

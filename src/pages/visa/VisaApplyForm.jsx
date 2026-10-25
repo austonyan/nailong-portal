@@ -1,11 +1,10 @@
-// 在线申请表单:草稿保存、材料上传、提交前确认(预览 + 娱乐声明勾选)。
+// 在线申请表单:草稿保存、材料上传、提交前确认(预览)。
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
   Card,
-  Checkbox,
   DatePicker,
   Form,
   FormItem,
@@ -37,7 +36,6 @@ export default function VisaApplyForm() {
   const [reviewHours, setReviewHours] = useState(72);
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmAgree, setConfirmAgree] = useState([]);
   const [submitted, setSubmitted] = useState(null);
   const createdRef = useRef(false);
 
@@ -163,7 +161,7 @@ export default function VisaApplyForm() {
     setBusy(true);
     try {
       const values = await form.getFieldsValue();
-      const data = await api.post(`/visa/applications/${appId}/submit`, { ...values, entertainmentAgreed: true });
+      const data = await api.post(`/visa/applications/${appId}/submit`, values);
       setSubmitted(data.application);
       setConfirmOpen(false);
       Notification.success(t('visa.form.submitSuccess'));
@@ -338,7 +336,7 @@ export default function VisaApplyForm() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={confirmAgree.length !== 1} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit}>
               {t('visa.form.submit')}
             </Button>
           </>
@@ -365,11 +363,6 @@ export default function VisaApplyForm() {
               <dd>{t('visa.form.materialsCount', { count: materials.length })}</dd>
             </div>
           </dl>
-          <Checkbox
-            options={[{ label: t('visa.form.confirmAgree'), value: 'ok' }]}
-            value={confirmAgree}
-            onChange={setConfirmAgree}
-          />
         </div>
       </Modal>
     </div>

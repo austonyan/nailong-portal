@@ -1,11 +1,10 @@
 // 外交礼遇: 礼遇类型说明 / 凭外交身份编号查资格 / 我的使用记录。
-// 全部为趣味化礼遇,不承诺现实礼遇。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, DisclaimerBanner, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 
 export default function DipCourtesies() {
   const { t } = useTranslation();
@@ -55,8 +54,6 @@ export default function DipCourtesies() {
       <div className="page-header">
         <Title size="middle" color="purple">{t('dip.courtesy.title')}</Title>
       </div>
-
-      <DisclaimerBanner />
 
       <Card>
         <Title size="small">{t('dip.courtesy.typesTitle')}</Title>

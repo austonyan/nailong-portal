@@ -4,7 +4,7 @@ import { Button, Card, Modal, Table, Tag, Title } from 'animal-island-ui';
 import { ClockIcon, DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { DisclaimerBanner, ImNav, PassQr, StatusTag, downloadDataUrl } from '../../components/immigration/shared.jsx';
+import { ImNav, PassQr, StatusTag, downloadDataUrl } from '../../components/immigration/shared.jsx';
 
 function PassCodeModal({ passCode, onClose }) {
   const { t } = useTranslation();
@@ -60,7 +60,6 @@ function PassCodeModal({ passCode, onClose }) {
           </p>
           <p>{t('imm.pass.status')}: <StatusTag value={passCode.status} /></p>
         </div>
-        <DisclaimerBanner />
         <p className="muted-text">{t('imm.pass.qrTip')}</p>
       </div>
     </Modal>

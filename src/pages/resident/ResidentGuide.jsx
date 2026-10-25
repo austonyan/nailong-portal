@@ -148,9 +148,6 @@ function SampleCard({ type }) {
   const { t } = useTranslation();
   return (
     <div className="res-card res-card-sample" data-status="sample">
-      <div className="res-card-watermark" aria-hidden>
-        {t('res.card.watermarkSample')}
-      </div>
       <div className="res-card-head">
         <div>
           <div className="res-card-issuer">{t('res.officeName')}</div>
@@ -185,9 +182,6 @@ function SampleCard({ type }) {
           <span className="res-card-label">{t('res.card.issuer')}</span>
           <span className="res-card-value">{t('res.officeName')}</span>
         </div>
-      </div>
-      <div className="res-card-footer">
-        <span>{t('res.disclaimer.short')}</span>
       </div>
     </div>
   );

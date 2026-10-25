@@ -88,7 +88,7 @@ async function fullFlow(adminToken, userToken) {
   const put = await api(`/visa/applications/${appId}`, { method: 'PUT', token: userToken, body: FIELDS });
   check('保存申请信息', put.status === 200);
 
-  const missingAvatar = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: true } });
+  const missingAvatar = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('缺头像时拒绝提交', missingAvatar.status === 400 && missingAvatar.data.code === 'VISA_AVATAR_REQUIRED');
 
   const up = await upload(userToken, appId, 'avatar', 'avatar.png');
@@ -97,10 +97,7 @@ async function fullFlow(adminToken, userToken) {
   const badType = await upload(userToken, appId, 'other', 'evil.bin', 'application/octet-stream');
   check('拒绝非白名单类型', badType.status === 400 || badType.status === 413, JSON.stringify(badType.data));
 
-  const noAgree = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: false } });
-  check('未勾选娱乐声明拒绝提交', noAgree.status === 400 && noAgree.data.code === 'VISA_AGREEMENT_REQUIRED');
-
-  const submitted = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, entertainmentAgreed: true } });
+  const submitted = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('提交成功进入待审核', submitted.status === 200 && submitted.data.application.status === 'pending_review');
 
   const msg = await api('/visa/messages', { token: userToken });
@@ -149,7 +146,7 @@ async function fullFlow(adminToken, userToken) {
   const app2 = await api('/visa/applications', { method: 'POST', token: user2Token, body: { typeCode: 'TOURIST' } });
   const app2Id = app2.data.application.id;
   await upload(user2Token, app2Id, 'avatar', 'a.png');
-  await api(`/visa/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS, entertainmentAgreed: true } });
+  await api(`/visa/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS } });
   const reject = await api(`/visa/admin/applications/${app2Id}/reject`, {
     method: 'POST', token: adminToken, body: { reasonCode: 'info_mismatch', comment: '行程描述与目的不符' },
   });

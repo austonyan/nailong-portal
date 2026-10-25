@@ -92,17 +92,10 @@ async function main() {
   });
   check('edit draft', edit.status === 200 && edit.data.declaration?.companions === 2);
 
-  const noConfirm = await api(`/immigration/declarations/${declId}/submit`, {
-    method: 'POST',
-    token: user,
-    body: { confirmEntertainment: false },
-  });
-  check('submit without disclaimer blocked', noConfirm.status === 400 && noConfirm.data.code === 'IMM_CONFIRM_REQUIRED');
-
   const submitted = await api(`/immigration/declarations/${declId}/submit`, {
     method: 'POST',
     token: user,
-    body: { confirmEntertainment: true },
+    body: {},
   });
   check('submit -> pending', submitted.status === 200 && submitted.data.declaration?.status === 'pending');
 
@@ -114,7 +107,7 @@ async function main() {
     },
   });
   const dupSubmit = dup.data.declaration
-    ? await api(`/immigration/declarations/${dup.data.declaration.id}/submit`, { method: 'POST', token: user, body: { confirmEntertainment: true } })
+    ? await api(`/immigration/declarations/${dup.data.declaration.id}/submit`, { method: 'POST', token: user, body: {} })
     : null;
   check('duplicate active declaration blocked', dupSubmit?.data?.code === 'IMM_DUPLICATE');
 

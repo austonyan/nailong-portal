@@ -5,7 +5,6 @@ import { Background, Button, Card, Collapse, Divider, Notification, Tag, Title, 
 import {
   AlertTriangleIcon,
   BadgeCheckIcon,
-  BellIcon,
   CalendarIcon,
   ClipboardIcon,
   HelpCircleIcon,
@@ -85,13 +84,6 @@ export default function DocsHome() {
             <strong>{t('docs.home.antifraudTitle')}</strong>
           </div>
           <p>{t('docs.home.antifraudBody')}</p>
-        </Card>
-        <Card color="default" className="docs-band-card">
-          <div className="docs-band-head">
-            <BellIcon size={20} />
-            <strong>{t('docs.home.entertainmentTitle')}</strong>
-          </div>
-          <p>{t('docs.home.entertainmentBody')}</p>
         </Card>
       </div>
 

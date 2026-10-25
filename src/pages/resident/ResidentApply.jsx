@@ -1,4 +1,4 @@
-// 居民登记申请:选择类型 → 填写信息(草稿/材料)→ 提交前确认(预览 + 娱乐声明)。
+// 居民登记申请:选择类型 → 填写信息(草稿/材料)→ 提交前确认(预览)。
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,6 @@ export default function ResidentApply() {
   const [reviewHours, setReviewHours] = useState(72);
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmAgree, setConfirmAgree] = useState([]);
   const [purposes, setPurposes] = useState([]);
   const [submitted, setSubmitted] = useState(null);
   const createdRef = useRef(false);
@@ -138,7 +137,6 @@ export default function ResidentApply() {
         return;
       }
       await saveDraft(true);
-      setConfirmAgree([]);
       setConfirmOpen(true);
     } catch {
       // 表单校验失败,FormItem 已显示错误
@@ -149,7 +147,7 @@ export default function ResidentApply() {
     setBusy(true);
     try {
       const values = await form.getFieldsValue();
-      const data = await api.post(`/resident/applications/${appId}/submit`, { ...values, entertainmentAgreed: true });
+      const data = await api.post(`/resident/applications/${appId}/submit`, values);
       setSubmitted(data.application);
       setConfirmOpen(false);
       Notification.success(t('res.form.submitSuccess'));
@@ -314,7 +312,7 @@ export default function ResidentApply() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={confirmAgree.length !== 1} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit}>
               {t('res.form.submit')}
             </Button>
           </>
@@ -343,11 +341,6 @@ export default function ResidentApply() {
               <dd>{t('res.form.materialsCount', { count: materials.length })}</dd>
             </div>
           </dl>
-          <Checkbox
-            options={[{ label: t('res.form.confirmAgree'), value: 'ok' }]}
-            value={confirmAgree}
-            onChange={setConfirmAgree}
-          />
         </div>
       </Modal>
     </div>

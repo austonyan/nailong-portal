@@ -336,7 +336,6 @@ function serializeAdminDeclaration(row) {
     visaCheckedAt: row.visa_checked_at,
     items: JSON.parse(row.items || '[]'),
     status: row.status,
-    confirmEntertainment: !!row.confirm_entertainment,
     supplementRequest: row.supplement_request,
     supplementContent: row.supplement_content,
     rejectReason: row.reject_reason,
@@ -814,27 +813,6 @@ router.get('/messages', ...adminOnly, (req, res) => {
     )
     .all(...params, pageSize, offset);
   res.json({ items: rows, total, page, pageSize });
-});
-
-const EDITABLE_SETTINGS = new Set(['disclaimer_text', 'stamp_watermark', 'disclaimer_version']);
-
-router.get('/settings', ...adminOnly, (_req, res) => {
-  const rows = db.prepare('SELECT key, value, updated_at FROM im_settings ORDER BY key').all();
-  res.json({ items: rows });
-});
-
-router.put('/settings', ...adminOnly, (req, res) => {
-  const entries = Array.isArray(req.body?.items) ? req.body.items : [];
-  for (const entry of entries) {
-    if (!EDITABLE_SETTINGS.has(entry.key)) continue;
-    db.prepare('UPDATE im_settings SET value = ?, updated_at = ? WHERE key = ?').run(
-      String(entry.value ?? '').slice(0, 500),
-      now(),
-      entry.key
-    );
-  }
-  audit(req.user.id, 'im:settings.update', 'settings', '', { keys: entries.map((e) => e.key) });
-  res.json({ ok: true });
 });
 
 export default router;

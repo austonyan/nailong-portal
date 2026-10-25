@@ -44,7 +44,6 @@ export default function ProtocolPasses() {
       <div className="protocol-pass-grid">
         {(items ?? []).map((pass) => (
           <div key={pass.id} className="protocol-pass-card" data-status={pass.status}>
-            <div className="protocol-pass-watermark">{t('protocol.passes.watermark')}</div>
             <div className="protocol-pass-head">
               <div>
                 <div className="protocol-pass-issuer">{t('protocol.officeName')}</div>
@@ -71,7 +70,6 @@ export default function ProtocolPasses() {
               </div>
             </div>
             <div className="protocol-pass-foot">
-              <p>{t('protocol.passes.statement')}</p>
               <div className="protocol-pass-actions">
                 <Button type="default" size="small" icon={<DownloadIcon />} onClick={() => download(pass)}>
                   {t('protocol.action.download')}
@@ -99,8 +97,7 @@ export default function ProtocolPasses() {
         )}
       </div>
 
-      <Card type="dashed" className="protocol-disclaimer-card">
-        <strong>{t('protocol.entertainmentNotice')}</strong>
+      <Card type="dashed" className="protocol-tip-card">
         <p>{t('protocol.passes.checkinTip')}</p>
       </Card>
     </div>

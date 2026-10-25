@@ -56,10 +56,6 @@ export default function ProtocolHelp() {
         </Card>
       </div>
 
-      <Card type="dashed" className="protocol-disclaimer-card">
-        <strong>{t('protocol.entertainmentNotice')}</strong>
-        <p>{t('protocol.disclaimerLong')}</p>
-      </Card>
     </div>
   );
 }

@@ -184,7 +184,6 @@ function applyFields(row, body) {
   }
   if (body.identityNo !== undefined) row.identity_no = str(body.identityNo, 40).toUpperCase();
   if (body.invitationNo !== undefined) row.invitation_no = str(body.invitationNo, 40).toUpperCase();
-  if (body.entertainmentAgreed !== undefined) row.entertainment_agreed = body.entertainmentAgreed ? 1 : 0;
 
   if (body.companions !== undefined) {
     row.companions = JSON.stringify(normalizeCompanions(body.companions, maxCompanions));
@@ -243,8 +242,6 @@ router.get('/verify', (req, res) => {
   res.json({
     found: !!item,
     item,
-    disclaimer: getConfig('disclaimer_text'),
-    watermark: getConfig('watermark_text'),
     limit: getConfigInt('verify_limit_per_5min', 30),
   });
 });
@@ -292,9 +289,6 @@ router.get('/home', (req, res) => {
     courtesyTypes,
     reviewHoursHint: getConfigInt('review_hours_hint', 48),
     maxCompanions: getConfigInt('max_companions', 3),
-    disclaimer: getConfig('disclaimer_text'),
-    disclaimerVersion: getConfig('disclaimer_version'),
-    watermark: getConfig('watermark_text'),
     linkageEnabled: getConfig('linkage_enabled') === '1',
   });
 });
@@ -354,7 +348,6 @@ router.get('/events/:no', (req, res) => {
     myRegistration: mine ? serializeRegistration(mine) : null,
     myPass: serializePass(pass),
     myInvitation: serializeInvitation(invitation),
-    disclaimer: getConfig('disclaimer_text'),
   });
 });
 
@@ -427,14 +420,13 @@ router.post('/registrations', (req, res) => {
     companions: '[]',
     note: '',
     invitation_no: '',
-    entertainment_agreed: 0,
   };
   applyFields(row, req.body || {});
   const info = db
     .prepare(
       `INSERT INTO pro_registrations (reg_no, user_id, event_id, status, nickname, contact, identity_type, identity_no,
-         identity_check, party_size, companions, note, invitation_no, entertainment_agreed, created_at, updated_at)
-       VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, 'not_required', ?, ?, ?, ?, ?, ?, ?)`
+         identity_check, party_size, companions, note, invitation_no, created_at, updated_at)
+       VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, 'not_required', ?, ?, ?, ?, ?, ?)`
     )
     .run(
       regNo,
@@ -448,7 +440,6 @@ router.post('/registrations', (req, res) => {
       row.companions,
       row.note,
       row.invitation_no,
-      row.entertainment_agreed,
       ts,
       ts
     );
@@ -463,7 +454,7 @@ router.patch('/registrations/:id', (req, res) => {
   const row = applyFields(reg, req.body || {});
   db.prepare(
     `UPDATE pro_registrations SET nickname = ?, contact = ?, identity_type = ?, identity_no = ?, party_size = ?,
-       companions = ?, note = ?, invitation_no = ?, entertainment_agreed = ?, updated_at = ? WHERE id = ?`
+       companions = ?, note = ?, invitation_no = ?, updated_at = ? WHERE id = ?`
   ).run(
     row.nickname,
     row.contact,
@@ -473,7 +464,6 @@ router.patch('/registrations/:id', (req, res) => {
     row.companions,
     row.note,
     row.invitation_no,
-    row.entertainment_agreed,
     now(),
     reg.id
   );
@@ -521,8 +511,6 @@ router.post('/registrations/:id/submit', (req, res) => {
   const identity = checkIdentity(row.identity_type, row.identity_no, req.user.id);
   if (!identity.valid) throw conflict('EVT_IDENTITY_INVALID', 'Identity number could not be validated');
 
-  if (!row.entertainment_agreed) throw badRequest('EVT_DECLARATION_REQUIRED', 'Entertainment declaration must be accepted');
-
   // Invitation: belongs to this user + this event and must still be valid.
   let invitation = null;
   if (row.invitation_no) {
@@ -552,7 +540,7 @@ router.post('/registrations/:id/submit', (req, res) => {
   const ts = now();
   db.prepare(
     `UPDATE pro_registrations SET nickname = ?, contact = ?, identity_type = ?, identity_no = ?, identity_check = ?,
-       party_size = ?, companions = ?, note = ?, invitation_no = ?, entertainment_agreed = ?, status = 'pending_review',
+       party_size = ?, companions = ?, note = ?, invitation_no = ?, status = 'pending_review',
        submitted_at = ?, updated_at = ? WHERE id = ?`
   ).run(
     row.nickname,
@@ -564,7 +552,6 @@ router.post('/registrations/:id/submit', (req, res) => {
     row.companions,
     row.note,
     row.invitation_no,
-    row.entertainment_agreed,
     ts,
     ts,
     reg.id
@@ -747,8 +734,6 @@ router.get('/invitations/:id/file', async (req, res) => {
       title: inv.typeName,
       no: inv.inviteNo,
       qr,
-      watermark: getConfig('watermark_text') || '仅供娱乐',
-      statement: getConfig('disclaimer_text') || '',
       rows: [
         ['活动名称', inv.eventTitle],
         ['邀请人 / 接待方', inv.inviterName || '皇家礼宾与活动署'],
@@ -778,8 +763,6 @@ router.get('/passes/:id', (req, res) => {
   res.json({
     pass: serializePass(row),
     registration: reg ? serializeRegistration(reg) : null,
-    watermark: getConfig('watermark_text'),
-    statement: getConfig('pass_statement'),
   });
 });
 
@@ -799,8 +782,6 @@ router.get('/passes/:id/file', async (req, res) => {
       title: '活动凭证 · 电子票',
       no: pass.passNo,
       qr,
-      watermark: getConfig('watermark_text') || '仅供娱乐',
-      statement: getConfig('pass_statement') || '',
       rows: [
         ['活动名称', pass.eventTitle],
         ['活动时间', pass.eventStartsAt ? String(pass.eventStartsAt).replace('T', ' ').slice(0, 16) : '-'],
@@ -1066,12 +1047,11 @@ function esc(value) {
     .replace(/"/g, '&quot;');
 }
 
-function printDocument({ title, no, qr, watermark, statement, rows }) {
+function printDocument({ title, no, qr, rows }) {
   return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>${esc(no)}</title>
 <style>
   body{margin:0;padding:32px;background:#f7f3df;color:#725d42;font-family:"Noto Sans SC",system-ui,sans-serif}
   .doc{position:relative;max-width:720px;margin:0 auto;background:#fffdf2;border:2px solid #19c8b9;border-radius:24px;padding:32px;overflow:hidden}
-  .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:900;color:#19c8b9;opacity:.08;transform:rotate(-18deg);pointer-events:none}
   h1{font-size:24px;margin:0 0 4px}
   .office{font-size:12px;color:#8f734f;margin-bottom:16px}
   .no{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:20px}
@@ -1080,16 +1060,14 @@ function printDocument({ title, no, qr, watermark, statement, rows }) {
   .value{font-size:15px;font-weight:600}
   .qr{display:flex;gap:20px;align-items:center;margin-top:24px}
   .qr img{width:160px;height:160px;border-radius:12px;background:#fff}
-  .statement{margin-top:24px;padding-top:12px;border-top:1px dashed #d5c3a2;font-size:11px;line-height:1.6;color:#8f734f}
   @media print{body{background:#fff;padding:0}.doc{border-color:#19c8b9}}
-</style></head><body><div class="doc"><div class="wm">${esc(watermark)}</div>
-<h1>${esc(title)}</h1><div class="office">奶龙国皇家礼宾与活动署 · 虚构娱乐凭证</div>
+</style></head><body><div class="doc">
+<h1>${esc(title)}</h1><div class="office">奶龙国皇家礼宾与活动署</div>
 <div class="no">${esc(no)}</div>
 <div class="grid">${rows
     .map(([label, value]) => `<div><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`)
     .join('')}</div>
-<div class="qr"><img src="${qr}" alt="verify"><div><div class="label">验真二维码</div><div class="value" style="font-size:12px;word-break:break-all">${esc(watermark)}</div></div></div>
-<div class="statement">${esc(statement)}</div>
+<div class="qr"><img src="${qr}" alt="verify"><div><div class="label">验真二维码</div></div></div>
 </div></body></html>`;
 }
 

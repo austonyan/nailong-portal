@@ -1,5 +1,5 @@
 // 验真中心(公开页):邀请函 / 活动凭证 / 接待方编号或二维码 token 验真。
-// 结果脱敏,不展示联系方式与随行人员;带娱乐声明、限流与防枚举提示。
+// 结果脱敏,不展示联系方式与随行人员;带限流与防枚举提示。
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -109,14 +109,10 @@ export default function ProtocolVerify() {
               <p>{t('protocol.verify.notFound')}</p>
             </div>
           )}
-          <div className="protocol-verify-disclaimer">
-            <p>{result.disclaimer || t('protocol.disclaimerLong')}</p>
-            <p className="muted-text">{t('protocol.verify.disclaimer')}</p>
-          </div>
         </Card>
       )}
 
-      <Card type="dashed" className="protocol-disclaimer-card">
+      <Card type="dashed" className="protocol-tip-card">
         <p>{t('protocol.verify.antiEnum')}</p>
       </Card>
     </div>

@@ -144,7 +144,7 @@ function RelationDetail({ id, onClose, onChanged }) {
             <Button
               danger
               loading={busy}
-              onClick={() => post(`/dip/relations/${r.id}/submit`, { confirmEntertainment: true }, t('dip.apply.submitted', { no: r.no }))}
+              onClick={() => post(`/dip/relations/${r.id}/submit`, {}, t('dip.apply.submitted', { no: r.no }))}
             >
               {t('dip.apply.submit')}
             </Button>

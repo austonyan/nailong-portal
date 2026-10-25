@@ -93,7 +93,6 @@ export function ensureProtocolSchema() {
     companions           TEXT NOT NULL DEFAULT '[]',
     note                 TEXT NOT NULL DEFAULT '',
     invitation_no        TEXT NOT NULL DEFAULT '',
-    entertainment_agreed INTEGER NOT NULL DEFAULT 0,
     reject_code          TEXT,
     reject_comment       TEXT NOT NULL DEFAULT '',
     review_note          TEXT NOT NULL DEFAULT '',
@@ -386,7 +385,7 @@ const MESSAGE_TEMPLATES = [
   { code: 'host_rejected', title: '接待方认证未通过:{{no}}', body: '很遗憾,接待方认证 {{no}} 未通过(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
   { code: 'host_supplement', title: '接待方认证补件通知:{{no}}', body: '接待方认证 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在线补交。', variables: 'no, note, deadline' },
   { code: 'courtesy_submitted', title: '礼遇申请已提交:{{no}}', body: '礼宾服务申请 {{no}} 已提交,预计 {{hours}} 小时内完成审核。', variables: 'no, hours' },
-  { code: 'courtesy_approved', title: '礼遇申请已通过:{{no}}', body: '礼宾服务申请 {{no}} 已通过({{typeName}}),有效期至 {{validUntil}}。礼遇仅为虚构趣味记录,不承诺现实礼遇。', variables: 'no, typeName, validUntil' },
+  { code: 'courtesy_approved', title: '礼遇申请已通过:{{no}}', body: '礼宾服务申请 {{no}} 已通过({{typeName}}),有效期至 {{validUntil}}。', variables: 'no, typeName, validUntil' },
   { code: 'courtesy_rejected', title: '礼遇申请未通过:{{no}}', body: '很遗憾,礼宾服务申请 {{no}} 未通过(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
   { code: 'checkin_done', title: '签到成功:{{event}}', body: '你已成功签到活动"{{event}}"(凭证 {{passNo}}),签到时间 {{time}}。祝你在奶龙岛玩得开心!', variables: 'event, passNo, time' },
   { code: 'ticket_replied', title: '工单回复:{{subject}}', body: '你的工单"{{subject}}"已收到回复:{{reply}}', variables: 'subject, reply' },
@@ -406,11 +405,6 @@ const DEFAULT_CONFIG = {
   'max_companions': '3',
   'max_active_registrations': '5',
   'linkage_enabled': '0',
-  'watermark_text': '仅供娱乐 · 非真实活动',
-  'pass_statement': '本凭证为奶龙国虚构娱乐活动的电子纪念票,不构成任何现实入场资格。',
-  'disclaimer_version': '1',
-  'disclaimer_text':
-    '奶龙国皇家礼宾与活动署为虚构娱乐单位:所有活动、邀请函、活动凭证、接待方认证与礼宾服务均为奶龙岛世界观内的趣味内容,不产生任何现实效力,不承诺现实入场、接待或礼遇。报名与认证全程免费,任何收费代办、售卖"内部名额"的行为均为诈骗。',
 };
 
 function addDays(days, hour = 10) {
@@ -506,7 +500,7 @@ function seedProtocol() {
         {
           event_no: 'NJE-SEED-CULTURE', type_code: 'CULTURE', title: '奶龙岛春日文化交流周',
           subtitle: '和来自各虚构城邦的朋友交换故事',
-          description: '为期三天的虚构文化交流:故事接龙、手作展览与语言角。所有环节均为奶龙岛娱乐设定,不涉及任何现实活动。',
+          description: '为期三天的文化交流:故事接龙、手作展览与语言角。',
           schedule: schedule([{ time: '第 1 天 10:00', title: '开场故事会' }, { time: '第 1 天 14:00', title: '语言角:奶龙语入门' }, { time: '第 2 天 10:00', title: '手作交换市集' }, { time: '第 3 天 15:00', title: '闭幕分享会' }]),
           venue_name: '中央广场故事亭(虚构)', venue_note: '位于奶龙雕像东侧 30 米,现场有蓝色气球指引。',
           capacity: 60, registration_deadline: addDays(5, 18), starts_at: addDays(7), ends_at: addDays(9, 18),
@@ -521,7 +515,7 @@ function seedProtocol() {
           venue_name: '中央大街 → 庆典广场(虚构)', venue_note: '建议提前 30 分钟到场,沿街均有工作人员指引。',
           capacity: 120, registration_deadline: addDays(15, 18), starts_at: addDays(18, 16), ends_at: addDays(18, 22),
           conditions: '所有门户注册用户;未成年人需随行成年人陪同(虚构要求)。', materials: '[]',
-          notice: '烟花为虚构设定,现场不燃放任何真实烟花。', cover_color: 'app-orange',
+          notice: '现场不燃放烟花。', cover_color: 'app-orange',
         },
         {
           event_no: 'NJE-SEED-EXHIBITION', type_code: 'EXHIBITION', title: '虚构港手作展',
@@ -532,7 +526,7 @@ function seedProtocol() {
           capacity: 40, registration_deadline: addDays(2, 18), starts_at: addDays(3), ends_at: addDays(12, 18),
           conditions: '所有门户注册用户;报名时请上传一张观展介绍信或过往活动凭证(图片/PDF,可选)。',
           materials: JSON.stringify([{ kind: 'intro', label: '介绍信', required: 0 }]),
-          notice: '展品均为虚构创作,请勿触摸。', cover_color: 'app-blue',
+          notice: '请勿触摸展品。', cover_color: 'app-blue',
         },
         {
           event_no: 'NJE-SEED-COMMUNITY', type_code: 'COMMUNITY', title: '社区花园共创日',
@@ -552,7 +546,7 @@ function seedProtocol() {
           venue_name: '皇家礼宾厅(虚构)', venue_note: '凭邀请函或外交身份编号从东侧礼宾通道入场。',
           capacity: 24, registration_deadline: addDays(24, 18), starts_at: addDays(28, 18), ends_at: addDays(28, 21),
           conditions: '仅限已完成外交身份登记的来宾;报名时填写外交身份编号。', materials: '[]',
-          notice: '本活动为虚构外交礼遇场景,不涉及真实外事活动。', cover_color: 'purple',
+          notice: '仅限受邀使团成员参加,凭邀请函或外交身份编号入场。', cover_color: 'purple',
           diplomatic_only: 1,
         },
         {
@@ -591,17 +585,17 @@ function seedProtocol() {
       );
       insertNotice.run(
         '礼宾与活动署正式开放',
-        '活动报名、邀请函、活动凭证、接待方认证与礼宾服务现已开放。本署为虚构娱乐项目,全部活动与礼遇均无现实效力。',
+        '活动报名、邀请函、活动凭证、接待方认证与礼宾服务现已开放。',
         'policy', ts, ts
       );
       insertNotice.run(
         '报名须知(必读)',
-        '报名免费;请使用昵称与虚构信息;名额有限时进入候补;重复报名或恶意占名额将被限制。提交前请勾选娱乐声明。',
+        '报名免费;请使用昵称报名;名额有限时进入候补;重复报名或恶意占名额将被限制。',
         'info', ts, ts
       );
       insertNotice.run(
         '礼宾服务说明',
-        '礼宾服务仅面向外宾接待、居民礼遇、外交礼遇与活动礼宾通道等虚构场景,以趣味记录形式呈现,不承诺任何现实接待或礼遇。',
+        '礼宾服务面向外宾接待、居民礼遇、外交礼遇与活动礼宾通道,以趣味记录形式呈现。',
         'info', ts, ts
       );
       insertNotice.run(

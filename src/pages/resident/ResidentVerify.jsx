@@ -1,5 +1,5 @@
 // 验真中心(公开页):输入居民编号/申请编号或通过链接 token 验真。
-// 结果脱敏,不展示持有人个人信息;带娱乐声明与限流提示。
+// 结果脱敏,不展示持有人个人信息;带限流提示。
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -114,9 +114,6 @@ export default function ResidentVerify() {
               <p>{t('res.verify.notFound')}</p>
             </div>
           )}
-          <div className="res-verify-disclaimer">
-            <p>{t('res.verify.disclaimer')}</p>
-          </div>
         </Card>
       )}
     </div>

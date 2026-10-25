@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Button, Card, Form, FormItem, Input, Modal, Notification, Select, Switch, Table, Tabs, Tag, Title, useForm,
 } from 'animal-island-ui';
-import { EditIcon, PlusIcon, SettingsIcon } from 'naive-icons';
+import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
@@ -328,55 +328,6 @@ function AnnouncementsTab() {
   );
 }
 
-function SettingsTab() {
-  const { t } = useTranslation();
-  const [disclaimerText, setDisclaimerText] = useState('');
-  const [watermark, setWatermark] = useState('');
-  const [version, setVersion] = useState('1');
-
-  useEffect(() => {
-    api
-      .get('/immigration/admin/settings')
-      .then((data) => {
-        setDisclaimerText(data.items.find((s) => s.key === 'disclaimer_text')?.value ?? '');
-        setWatermark(data.items.find((s) => s.key === 'stamp_watermark')?.value ?? '');
-        setVersion(data.items.find((s) => s.key === 'disclaimer_version')?.value ?? '1');
-      })
-      .catch(toastApiError);
-  }, []);
-
-  const save = async () => {
-    try {
-      await api.put('/immigration/admin/settings', {
-        items: [
-          { key: 'disclaimer_text', value: disclaimerText },
-          { key: 'stamp_watermark', value: watermark },
-          { key: 'disclaimer_version', value: version },
-        ],
-      });
-      Notification.success(t('common.save'));
-    } catch (err) {
-      toastApiError(err);
-    }
-  };
-
-  return (
-    <Card>
-      <div className="im-settings-form">
-        <label className="im-field-label">{t('imm.admin.disclaimerText')}</label>
-        <Input size="large" value={disclaimerText} onChange={(e) => setDisclaimerText(e.target.value)} maxLength={500} />
-        <label className="im-field-label">{t('imm.admin.watermark')}</label>
-        <Input size="large" value={watermark} onChange={(e) => setWatermark(e.target.value)} maxLength={60} />
-        <label className="im-field-label">{t('imm.admin.disclaimerVersion')}</label>
-        <Input size="large" type="number" value={version} onChange={(e) => setVersion(e.target.value)} style={{ width: 120 }} />
-        <div>
-          <Button type="primary" icon={<SettingsIcon />} onClick={save}>{t('common.save')}</Button>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
 export default function AdminImPorts() {
   const { t } = useTranslation();
   return (
@@ -392,7 +343,6 @@ export default function AdminImPorts() {
           items={[
             { key: 'ports', label: t('imm.admin.tabPorts'), children: <PortsTab /> },
             { key: 'announcements', label: t('imm.admin.tabAnnouncements'), children: <AnnouncementsTab /> },
-            { key: 'settings', label: t('imm.admin.tabSettings'), children: <SettingsTab /> },
           ]}
         />
       </Card>

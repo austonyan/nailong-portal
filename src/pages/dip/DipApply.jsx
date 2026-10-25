@@ -1,4 +1,4 @@
-// 建交申请: 类型选择 → 信息表单 → 材料 → 确认(娱乐声明勾选) → 提交。
+// 建交申请: 类型选择 → 信息表单 → 材料 → 确认 → 提交。
 // 支持草稿保存/编辑,支持 ?from=<id> 预填重新申请。
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -7,7 +7,7 @@ import {
   Button, Card, Checkbox, Form, FormItem, Input, Modal, Notification, Radio, Select, Tag, Title, useForm,
 } from 'animal-island-ui';
 import { api } from '../../api/client.js';
-import { DipNav, DisclaimerBanner, TextArea, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, TextArea, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 
 const PURPOSES = ['display', 'cooperation', 'visa_channel'];
@@ -24,7 +24,6 @@ export default function DipApply() {
   const [decl, setDecl] = useState(null);
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const [agree, setAgree] = useState(false);
   const [courtesies, setCourtesies] = useState([]);
   const [materials, setMaterials] = useState([]);
 
@@ -119,14 +118,10 @@ export default function DipApply() {
   };
 
   const doSubmit = async () => {
-    if (!agree) {
-      Notification.warning(t('dip.apply.agreeFirst'));
-      return;
-    }
     setBusy(true);
     try {
       const current = await persistDraft();
-      const data = await api.post(`/dip/relations/${current.id}/submit`, { confirmEntertainment: true });
+      const data = await api.post(`/dip/relations/${current.id}/submit`, {});
       Notification.success(t('dip.apply.submitted', { no: data.relation.no }));
       setConfirming(false);
       navigate('/dip/relations');
@@ -138,7 +133,6 @@ export default function DipApply() {
   };
 
   const openConfirm = () => {
-    setAgree(false);
     setConfirming(true);
   };
 
@@ -254,14 +248,6 @@ export default function DipApply() {
           <p><b>{t('dip.apply.purpose')}:</b> {t(`dip.purpose.${preview.purpose ?? 'display'}`)}</p>
           <p><b>{t('dip.apply.courtesies')}:</b> {(courtesies.length ? courtesies.map((c) => t(`dip.courtesy.${c}`, { defaultValue: c })).join('、') : '-')}</p>
           <p><b>{t('dip.material.title')}:</b> {t('dip.apply.materialCount', { count: materials.length })}</p>
-        </div>
-        <DisclaimerBanner />
-        <div className="dip-agree-row">
-          <Checkbox
-            options={[{ label: t('dip.apply.agreeLabel'), value: 'agree' }]}
-            value={agree ? ['agree'] : []}
-            onChange={(vals) => setAgree(vals.includes('agree'))}
-          />
         </div>
       </Modal>
     </div>

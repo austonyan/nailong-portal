@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import {
   Button,
   Card,
-  Checkbox,
   Input,
   Modal,
   Radio,
@@ -14,7 +13,7 @@ import {
   Title,
   Upload,
 } from 'animal-island-ui';
-import { AlertTriangleIcon, EyeIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
+import { EyeIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
   TextArea,
@@ -58,7 +57,6 @@ export default function ProtocolApply() {
   const [materials, setMaterials] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [kind, setKind] = useState('other');
-  const [declared, setDeclared] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loadError, setLoadError] = useState('');
@@ -153,15 +151,10 @@ export default function ProtocolApply() {
       toastError(t('protocol.apply.requiredHint'));
       return;
     }
-    setDeclared(false);
     setConfirmOpen(true);
   };
 
   const submit = async () => {
-    if (!declared) {
-      toastError(t('protocol.apply.declarationRequired'));
-      return;
-    }
     setBusy(true);
     try {
       let reg = draft;
@@ -172,7 +165,7 @@ export default function ProtocolApply() {
         const data = await api.patch(`/protocol/registrations/${reg.id}`, payload());
         reg = data.registration;
       }
-      const data = await api.post(`/protocol/registrations/${reg.id}/submit`, { entertainmentAgreed: true });
+      const data = await api.post(`/protocol/registrations/${reg.id}/submit`, {});
       toastSuccess(t('protocol.apply.submitSuccess', { no: data.registration.regNo }));
       setConfirmOpen(false);
       navigate(`/protocol/registrations/${data.registration.id}`, { replace: true });
@@ -407,15 +400,6 @@ export default function ProtocolApply() {
               </div>
             )}
           </Card>
-          <Card color="app-yellow">
-            <div className="protocol-scam-inner">
-              <AlertTriangleIcon size={20} />
-              <div>
-                <strong>{t('protocol.entertainmentNotice')}</strong>
-                <p>{t('protocol.apply.declarationText')}</p>
-              </div>
-            </div>
-          </Card>
         </aside>
       </div>
 
@@ -427,7 +411,7 @@ export default function ProtocolApply() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('protocol.action.back')}</Button>
-            <Button type="primary" loading={busy} disabled={!declared} onClick={submit}>
+            <Button type="primary" loading={busy} onClick={submit}>
               {t('protocol.action.confirmSubmit')}
             </Button>
           </>
@@ -441,12 +425,6 @@ export default function ProtocolApply() {
           <div className="protocol-summary-row"><span>{t('protocol.field.companions')}</span><strong>{form.companions.map((c) => c.nickname).filter(Boolean).join('、') || '-'}</strong></div>
           <div className="protocol-summary-row"><span>{t('protocol.field.materials')}</span><strong>{materials.length}</strong></div>
           {form.note && <p className="protocol-preline">{form.note}</p>}
-          <Checkbox
-            options={[{ label: t('protocol.apply.declarationCheck'), value: 'agree' }]}
-            value={declared ? ['agree'] : []}
-            onChange={(v) => setDeclared(v.includes('agree'))}
-          />
-          <p className="muted-text">{t('protocol.apply.declarationText')}</p>
         </div>
       </Modal>
     </div>

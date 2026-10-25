@@ -1,4 +1,4 @@
-// 处理决定书(虚拟文书):水印、娱乐声明、二维码验真与打印(打印 CSS)。
+// 处理决定书:二维码验真与打印(打印 CSS)。
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +51,6 @@ export default function AppealDecisionDoc() {
       </div>
 
       <Card className="appeal-doc-paper">
-        <div className="appeal-doc-watermark">{t('appeal.doc.watermark')}</div>
         <div className="appeal-doc-head">
           <h2>{t('appeal.doc.title')}</h2>
           <p className="muted-text">{t('appeal.officeName')} · {t('appeal.officeSub')}</p>
@@ -97,8 +96,7 @@ export default function AppealDecisionDoc() {
           )}
         </dl>
         <div className="appeal-doc-footer">
-          <div className="appeal-doc-disclaimer">
-            <p>{t('appeal.doc.disclaimer')}</p>
+          <div className="appeal-doc-footer-note">
             <p className="muted-text">{t('appeal.doc.verifyTip', { no: doc.code })}</p>
           </div>
           {qr && <img className="appeal-doc-qr" src={qr} alt={t('appeal.doc.qrAlt')} />}

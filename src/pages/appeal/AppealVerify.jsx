@@ -1,5 +1,5 @@
 // 验真中心(公开):申诉编号/复核编号/决定书编号查询,二维码 token 验真,
-// 脱敏展示,限流与防枚举提示,结果页带娱乐声明。
+// 脱敏展示,限流与防枚举提示。
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Tag, Title } from 'animal-island-ui';
@@ -120,7 +120,7 @@ export default function AppealVerify() {
                   <dd>{t('appeal.officeName')}</dd>
                 </div>
               </dl>
-              <p className="muted-text appeal-verify-disclaimer">{t('appeal.verify.maskTip')}</p>
+              <p className="muted-text">{t('appeal.verify.maskTip')}</p>
             </>
           ) : (
             <div className="appeal-verify-missing">
@@ -128,7 +128,6 @@ export default function AppealVerify() {
               <p className="muted-text">{t('appeal.verify.notFoundTip')}</p>
             </div>
           )}
-          <p className="muted-text appeal-verify-disclaimer">{t('appeal.verify.disclaimer')}</p>
         </Card>
       )}
     </div>

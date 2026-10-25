@@ -6,7 +6,7 @@ import { BellIcon, CodeIcon, CompassIcon, FileIcon, ListIcon, MapIcon } from 'na
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { AnnouncementLevelTag, CrowdMeter, DisclaimerBanner, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { AnnouncementLevelTag, CrowdMeter, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
 
 const QUICK_ENTRIES = [
   { to: '/immigration/declare', key: 'declare', icon: FileIcon, color: 'app-teal' },
@@ -55,8 +55,6 @@ export default function ImmigrationHome() {
         </Typewriter>
         <p className="muted-text">{t('auth.welcomeBack', { name: displayName })}</p>
       </Background>
-
-      <DisclaimerBanner text={overview?.disclaimer?.text} />
 
       <section className="im-home-status">
         <Card className="im-status-card" color={port?.status === 'open' ? 'app-teal' : 'app-orange'}>

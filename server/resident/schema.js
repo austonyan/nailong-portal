@@ -43,7 +43,6 @@ export function ensureResidentSchema() {
     virtual_address      TEXT NOT NULL DEFAULT '',
     bio                  TEXT NOT NULL DEFAULT '',
     purposes             TEXT NOT NULL DEFAULT '[]',
-    entertainment_agreed INTEGER NOT NULL DEFAULT 0,
     supplement_note      TEXT NOT NULL DEFAULT '',
     supplement_deadline  TEXT,
     reject_code          TEXT,
@@ -250,11 +249,6 @@ const DEFAULT_CONFIG = {
   'res.max_active_applications': '1',
   'res.card_remind_days': '30',
   'res.one_identity_per_account': '1',
-  'res.card_watermark': '仅供娱乐 · 无现实效力',
-  'res.card_statement': '本卡为奶龙国虚构娱乐身份凭证,仅代表奶龙国虚构世界的居民身份,不产生任何现实法律效力。',
-  'res.disclaimer_text':
-    '奶龙国皇家居民登记署为虚构娱乐单位:登记免费,任何收取"登记费""工本费"或承诺"现实身份效力"的行为均为诈骗。居民身份仅存在于奶龙国虚构世界中。',
-  'res.disclaimer_version': '1',
 };
 
 function seedResident() {
@@ -349,12 +343,12 @@ function seedResident() {
       );
       insertNotice.run(
         '居民登记开放申请',
-        '奶龙国皇家居民登记署现已开放"临时居民"在线登记,审核预计 72 小时内完成。本署为虚构娱乐项目,不核验现实身份。',
+        '奶龙国皇家居民登记署现已开放"临时居民"在线登记,审核预计 72 小时内完成。',
         'policy', ts, ts
       );
       insertNotice.run(
         '谨防冒充登记诈骗',
-        '居民登记完全免费。任何收费登记、代办"永久居民"、承诺"现实身份效力"的行为均为诈骗,请勿相信。',
+        '居民登记完全免费。任何收费登记、代办"永久居民"的行为均为诈骗,请勿相信。',
         'info', ts, ts
       );
     }

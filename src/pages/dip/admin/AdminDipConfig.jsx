@@ -1,5 +1,5 @@
 // 外交署配置: 建交对象类型 / 建交类型 / 外交身份类型 / 礼遇类型 + 全局设置
-// (编号规则、补件天数、限流、声明文本、水印)。
+// (编号规则、补件天数、限流)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
@@ -67,7 +67,6 @@ const SETTINGS_ROWS = [
   { key: 'review_hours_hint', label: 'dip.config.reviewHours' },
   { key: 'verify_limit_per_5min', label: 'dip.config.verifyLimit' },
   { key: 'max_identities_per_user', label: 'dip.config.maxIdentities' },
-  { key: 'watermark_text', label: 'dip.config.watermark' },
 ];
 
 export default function AdminDipConfig() {
@@ -75,7 +74,6 @@ export default function AdminDipConfig() {
   const [data, setData] = useState(null);
   const [editType, setEditType] = useState(null); // { kind, row }
   const [settings, setSettings] = useState({});
-  const [disclaimerText, setDisclaimerText] = useState('');
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(() => {
@@ -86,7 +84,6 @@ export default function AdminDipConfig() {
         const map = {};
         for (const s of d.settings ?? []) map[s.key] = s.value;
         setSettings(map);
-        setDisclaimerText(map.disclaimer_text ?? '');
       })
       .catch((err) => toastDipError(t, err));
   }, [t]);
@@ -107,7 +104,6 @@ export default function AdminDipConfig() {
     setBusy(true);
     try {
       const items = SETTINGS_ROWS.map((r) => ({ key: r.key, value: settings[r.key] ?? '' }));
-      items.push({ key: 'disclaimer_text', value: disclaimerText });
       await api.put('/dip/admin/config/settings', { items });
       Notification.success(t('common.save'));
       load();
@@ -206,10 +202,6 @@ export default function AdminDipConfig() {
             </label>
           ))}
         </div>
-        <p className="dip-config-guide">
-          <span className="dip-info-label">{t('dip.config.disclaimerText')}</span>
-          <TextArea rows={4} value={disclaimerText} onChange={(e) => setDisclaimerText(e.target.value)} maxLength={500} />
-        </p>
         <div className="dip-form-actions">
           <Button type="primary" loading={busy} onClick={saveSettings}>{t('common.save')}</Button>
         </div>

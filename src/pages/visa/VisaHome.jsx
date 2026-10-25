@@ -184,9 +184,6 @@ export default function VisaHome() {
         </Card>
       </section>
 
-      <Card type="dashed" className="visa-disclaimer-card">
-        <p>{t('visa.disclaimerLong')}</p>
-      </Card>
     </div>
   );
 }

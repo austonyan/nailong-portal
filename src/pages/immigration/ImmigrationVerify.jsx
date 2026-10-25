@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { Button, Card, Notification, Tag } from 'animal-island-ui';
 import { ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DisclaimerBanner } from '../../components/immigration/shared.jsx';
 
 const STATUS_COLOR = {
   unused: 'app-green',
@@ -59,7 +58,6 @@ export default function ImmigrationVerify() {
             )}
           </div>
         )}
-        <DisclaimerBanner />
         <Link to="/login">
           <Button type="text" size="small">{t('imm.verify.toLogin')}</Button>
         </Link>

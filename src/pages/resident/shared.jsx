@@ -1,5 +1,5 @@
 // Shared bits for the resident-office pages: status palette, date formatting,
-// error toasts, QR canvas and the common disclaimer banner.
+// error toasts and the QR canvas.
 /* eslint-disable react/only-export-components */
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -86,13 +86,3 @@ export function StatusTag({ value, map, i18nPrefix }) {
   );
 }
 
-// 娱乐声明 + 防诈骗统一提示条(居民署所有页面可见)。
-export function DisclaimerBanner({ text }) {
-  const { t } = useTranslation();
-  return (
-    <div className="res-disclaimer" role="note">
-      <span className="res-disclaimer-title">{t('res.disclaimer.title')}</span>
-      <span className="res-disclaimer-text">{text ?? t('res.disclaimer.default')}</span>
-    </div>
-  );
-}

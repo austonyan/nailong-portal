@@ -70,8 +70,8 @@ export function CrowdMeter({ crowding }) {
   );
 }
 
-// 虚构入境章 — decorative rotated stamp with the compliance watermark.
-export function StampView({ portName, date, recordNo, watermark, style = 'wave', compact = false }) {
+// 入境章 — decorative rotated stamp.
+export function StampView({ portName, date, recordNo, style = 'wave', compact = false }) {
   const { t } = useTranslation();
   return (
     <div className={`im-stamp im-stamp-${style}${compact ? ' im-stamp-compact' : ''}`} aria-label={t('imm.records.stampAria')}>
@@ -79,7 +79,6 @@ export function StampView({ portName, date, recordNo, watermark, style = 'wave',
       <span className="im-stamp-line">{t('imm.records.entryStamp')}</span>
       <span className="im-stamp-date">{date}</span>
       {recordNo && <span className="im-stamp-no">{recordNo}</span>}
-      <span className="im-stamp-watermark">{watermark ?? t('imm.records.watermark')}</span>
     </div>
   );
 }
@@ -164,13 +163,4 @@ export function ImAdminNav() {
   );
 }
 
-// 娱乐声明 + 防诈骗统一提示条(所有入境署页面可见)。
-export function DisclaimerBanner({ text }) {
-  const { t } = useTranslation();
-  return (
-    <div className="im-disclaimer" role="note">
-      <span className="im-disclaimer-title">{t('imm.disclaimer.title')}</span>
-      <span className="im-disclaimer-text">{text ?? t('imm.disclaimer.default')}</span>
-    </div>
-  );
-}
+

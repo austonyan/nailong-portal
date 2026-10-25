@@ -177,7 +177,6 @@ export function serializeApplication(row, { withPermit = false } = {}) {
     inviterName: row.inviter_name,
     inviterContact: row.inviter_contact,
     companions: row.companions,
-    entertainmentAgreed: !!row.entertainment_agreed,
     supplementNote: row.supplement_note,
     supplementDeadline: row.supplement_deadline,
     rejectCode: row.reject_code,

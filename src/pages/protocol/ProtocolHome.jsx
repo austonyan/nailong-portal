@@ -1,5 +1,5 @@
 // 礼宾与活动署首页:署内公告、活动分类、热门/即将开始、服务目录、办事指南、
-// 快速入口、常见问题与娱乐/防诈骗声明。
+// 快速入口与常见问题。
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -302,10 +302,6 @@ export default function ProtocolHome() {
         </Card>
       </section>
 
-      <Card type="dashed" className="protocol-disclaimer-card">
-        <strong>{t('protocol.entertainmentNotice')}</strong>
-        <p>{home.disclaimer || t('protocol.disclaimerLong')}</p>
-      </Card>
     </div>
   );
 }

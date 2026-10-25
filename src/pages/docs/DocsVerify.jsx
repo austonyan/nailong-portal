@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { Button, Card, Input, Notification, Pagination, Table, Tag, Title } from 'animal-island-ui';
-import { AlertTriangleIcon, SearchIcon, ShieldIcon } from 'naive-icons';
+import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS, normalizeDocNo } from '../../api/docs.js';
 
@@ -164,14 +164,6 @@ export default function DocsVerify() {
       </Card>
 
       <ResultCard result={result} />
-
-      <Card color="app-yellow" className="docs-band-card">
-        <div className="docs-band-head">
-          <AlertTriangleIcon size={18} />
-          <strong>{t('docs.verify.disclaimerTitle')}</strong>
-        </div>
-        <p>{t('docs.verify.disclaimerBody')}</p>
-      </Card>
 
       <Card className="docs-block">
         <h3 className="docs-block-title">{t('docs.verify.historyTitle')}</h3>

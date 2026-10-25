@@ -3,10 +3,9 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { Avatar, Button, Card, Modal } from 'animal-island-ui';
 import { UsersIcon } from 'naive-icons';
 import { useAuth } from '../../auth/AuthContext.jsx';
-import { DisclaimerBanner } from './shared.jsx';
 
 const SSO_FLAG = 'nailong.resident.sso';
 
@@ -52,9 +51,6 @@ export default function ResidentShell({ permission, children }) {
             <div className="res-office-sub">{t('res.officeSub')}</div>
           </div>
         </div>
-        <Tag color="app-yellow" variant="soft">
-          {t('res.disclaimerTag')}
-        </Tag>
       </div>
 
       <nav className="res-nav" aria-label={t('res.officeName')}>
@@ -93,8 +89,6 @@ export default function ResidentShell({ permission, children }) {
           </NavLink>
         )}
       </nav>
-
-      <DisclaimerBanner />
 
       {children}
 
