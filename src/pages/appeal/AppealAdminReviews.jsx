@@ -12,13 +12,12 @@ import {
   Select,
   Table,
   Tag,
-  TextArea,
   Title,
 } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
-import { api } from '../../../api/client.js';
-import { openAppealMaterial } from '../../../api/appeal.js';
-import { DECISION_TYPE_COLORS, REVIEW_STATUS_COLORS, fmtDateTime, toastAppealError } from '../shared.jsx';
+import { api } from '../../api/client.js';
+import { openAppealMaterial } from '../../api/appeal.js';
+import { TextArea, DECISION_TYPE_COLORS, REVIEW_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 
 const STATUS_OPTIONS = ['', 'pending', 'reviewing', 'completed'];
 const DECIDE_TYPES = ['maintain', 'undo', 'change'];

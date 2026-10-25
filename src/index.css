@@ -4853,3 +4853,830 @@ h3 {
     border-color: var(--animal-primary-color);
   }
 }
+
+/* ---------- 奶龍國皇家申訴與監察署 (appeal service) ---------- */
+
+.appeal-office-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.appeal-office-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.appeal-office-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+}
+
+.appeal-office-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.appeal-office-sub {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.appeal-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.appeal-nav-link {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+  text-decoration: none;
+  background: var(--animal-bg-color-secondary);
+  transition:
+    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.appeal-nav-link:hover,
+.appeal-nav-link.active {
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.appeal-nav-link.active {
+  font-weight: 700;
+}
+
+.appeal-hero {
+  border-radius: var(--animal-border-radius-lg);
+  padding: 34px 32px;
+  margin-bottom: 16px;
+}
+
+.appeal-hero-sub {
+  margin: 12px 0 0;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.appeal-hero-counts {
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.appeal-scam-banner {
+  margin-bottom: 16px;
+}
+
+.appeal-scam-inner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--animal-warning-color);
+}
+
+.appeal-scam-inner p {
+  margin: 4px 0 0;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-section {
+  margin-bottom: 22px;
+}
+
+.appeal-service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.appeal-service-card h4 {
+  margin: 10px 0 4px;
+  font-size: 15px;
+}
+
+.appeal-service-card p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.appeal-service-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+}
+
+.appeal-notice-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.appeal-notice-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-notice-time {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.appeal-notice-body {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.appeal-guide-card h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.appeal-guide-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-guide-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.appeal-faq {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.appeal-support-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-disclaimer-card {
+  margin-top: 8px;
+}
+
+.appeal-disclaimer-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--animal-text-color-muted);
+}
+
+.appeal-guide-page,
+.appeal-form-page,
+.appeal-detail-page,
+.appeal-list-page,
+.appeal-publicity-page,
+.appeal-doc-page,
+.appeal-verify-page,
+.appeal-admin-page {
+  max-width: 1080px;
+}
+
+.appeal-guide-block {
+  margin-bottom: 14px;
+}
+
+.appeal-guide-block h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.appeal-biz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.appeal-biz-row {
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin: 12px 0;
+}
+
+@media (max-width: 720px) {
+  .appeal-biz-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.appeal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.appeal-diff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.appeal-textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 10px 16px;
+  border-radius: var(--animal-border-radius-md);
+  border: var(--animal-border-width) solid var(--animal-border-color);
+  background: var(--animal-bg-color);
+  color: var(--animal-text-color);
+  font-family: var(--animal-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  resize: vertical;
+  transition:
+    border-color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    box-shadow var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.appeal-textarea:focus {
+  outline: none;
+  border-color: var(--animal-primary-color);
+  box-shadow: 0 0 0 2px var(--animal-focus-yellow);
+}
+
+.appeal-textarea::placeholder {
+  color: var(--animal-text-color-muted);
+}
+
+.appeal-textarea:disabled {
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color-disabled);
+}
+
+.appeal-form-card {
+  margin-bottom: 14px;
+}
+
+.appeal-form-card h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.appeal-materials-section {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.appeal-material-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.appeal-confirm-body {
+  display: grid;
+  gap: 12px;
+}
+
+.appeal-confirm-list,
+.appeal-field-list {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.appeal-confirm-list > div,
+.appeal-field-list > div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.appeal-confirm-list dt,
+.appeal-field-list dt {
+  font-size: 13px;
+  color: var(--animal-text-color-muted);
+}
+
+.appeal-confirm-list dd,
+.appeal-field-list dd {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.appeal-submitted-card {
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.appeal-submitted-no {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.appeal-item-card {
+  margin-bottom: 10px;
+}
+
+.appeal-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-item-reason {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.appeal-item-reply {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--animal-primary-color);
+}
+
+.appeal-item-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.appeal-filter-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.appeal-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.appeal-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.appeal-detail-actions {
+  margin-top: 12px;
+  align-items: center;
+}
+
+.appeal-decision-banner h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.appeal-decision-banner p {
+  margin: 4px 0;
+  white-space: pre-wrap;
+}
+
+.appeal-supplement-card {
+  margin-bottom: 14px;
+}
+
+.appeal-material-list {
+  list-style: none;
+  margin: 8px 0 14px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.appeal-material-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-record-timeline {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.appeal-record-timeline li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-record-timeline p {
+  width: 100%;
+  margin: 0;
+  font-size: 13px;
+}
+
+.appeal-eval-body {
+  display: grid;
+  gap: 12px;
+}
+
+.appeal-review-tip,
+.appeal-review-final-tip {
+  margin-bottom: 12px;
+}
+
+.appeal-review-form,
+.appeal-complaint-form,
+.appeal-ticket-form,
+.appeal-action-form {
+  display: grid;
+  gap: 6px;
+}
+
+.appeal-complaint-form p,
+.appeal-review-form p,
+.appeal-ticket-form p,
+.appeal-action-form p {
+  margin: 6px 0 0;
+}
+
+.appeal-anon-tip {
+  font-size: 12px;
+  color: var(--animal-warning-color);
+}
+
+.appeal-faq-card {
+  margin-top: 14px;
+}
+
+.appeal-ticket-thread {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.appeal-ticket-thread li {
+  padding: 10px 14px;
+  border-radius: var(--animal-border-radius-md);
+  background: var(--animal-bg-color-secondary);
+}
+
+.appeal-ticket-thread li.staff {
+  background: var(--animal-primary-color-bg);
+}
+
+.appeal-thread-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.appeal-ticket-reply-box {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.appeal-message-card.unread {
+  border-color: var(--animal-primary-color);
+}
+
+.appeal-message-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-message-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--animal-primary-color);
+}
+
+.appeal-message-actions {
+  margin-top: 8px;
+}
+
+.appeal-empty-card {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 28px;
+  color: var(--animal-text-color-muted);
+}
+
+/* 公示与统计 */
+
+.appeal-stats-card {
+  margin-bottom: 14px;
+}
+
+.appeal-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.appeal-stat-item {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: var(--animal-border-radius-md);
+  background: var(--animal-bg-color-secondary);
+}
+
+.appeal-stat-item strong {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--animal-primary-color);
+}
+
+.appeal-stat-item span {
+  font-size: 12px;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-stat-item.warn strong {
+  color: var(--animal-error-color);
+}
+
+.appeal-dist-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.appeal-pub-disclaimer {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.appeal-stats-tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.appeal-stats-table h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+/* 管理端 */
+
+.appeal-admin-counters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-admin-actions {
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.appeal-config-list {
+  display: grid;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.appeal-config-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.appeal-report-body {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+}
+
+/* 决定书文书 */
+
+.appeal-doc-toolbar {
+  margin-bottom: 12px;
+  justify-content: flex-end;
+}
+
+.appeal-doc-paper {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 44px;
+  overflow: hidden;
+}
+
+.appeal-doc-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: color-mix(in srgb, var(--animal-warning-color) 22%, transparent);
+  transform: rotate(-24deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.appeal-doc-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.appeal-doc-no {
+  text-align: right;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.appeal-doc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.appeal-doc-disclaimer p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+  max-width: 420px;
+}
+
+.appeal-doc-qr {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--animal-border-radius-md);
+  border: var(--animal-border-width) solid var(--animal-border-color-light);
+  background: #ffffff;
+  padding: 4px;
+}
+
+/* 公开验真页 */
+
+.appeal-public-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.appeal-verify-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.appeal-verify-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.appeal-verify-form > :first-child {
+  flex: 1;
+  min-width: 240px;
+}
+
+.appeal-verify-error {
+  margin: 10px 0 0;
+  color: var(--animal-error-color);
+  font-size: 13px;
+}
+
+.appeal-verify-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.appeal-verify-rows {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.appeal-verify-rows > div {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+}
+
+.appeal-verify-rows dt {
+  font-size: 13px;
+  color: var(--animal-text-color-muted);
+}
+
+.appeal-verify-rows dd {
+  margin: 0;
+}
+
+.appeal-verify-missing {
+  text-align: center;
+  padding: 12px 0;
+}
+
+.appeal-verify-disclaimer {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+@media print {
+  .app-header,
+  .app-footer,
+  .appeal-office-banner,
+  .appeal-nav,
+  .appeal-doc-toolbar,
+  .no-print,
+  .appeal-disclaimer-card {
+    display: none !important;
+  }
+
+  .appeal-doc-paper {
+    border: none;
+    box-shadow: none;
+    max-width: none;
+  }
+}

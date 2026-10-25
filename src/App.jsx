@@ -122,6 +122,28 @@ import AdminProtocolCheckin from './pages/protocol/admin/AdminProtocolCheckin.js
 import AdminProtocolManage from './pages/protocol/admin/AdminProtocolManage.jsx';
 import AdminProtocolStats from './pages/protocol/admin/AdminProtocolStats.jsx';
 import AdminProtocolAudit from './pages/protocol/admin/AdminProtocolAudit.jsx';
+// 奶龙国皇家申诉与监察署
+import AppealShell from './pages/appeal/AppealShell.jsx';
+import AppealHome from './pages/appeal/AppealHome.jsx';
+import AppealGuide from './pages/appeal/AppealGuide.jsx';
+import AppealApply from './pages/appeal/AppealApply.jsx';
+import AppealMyAppeals from './pages/appeal/AppealMyAppeals.jsx';
+import AppealAppealDetail from './pages/appeal/AppealAppealDetail.jsx';
+import AppealReviews from './pages/appeal/AppealReviews.jsx';
+import AppealComplaints from './pages/appeal/AppealComplaints.jsx';
+import AppealTickets from './pages/appeal/AppealTickets.jsx';
+import AppealDecisions from './pages/appeal/AppealDecisions.jsx';
+import AppealDecisionDoc from './pages/appeal/AppealDecisionDoc.jsx';
+import AppealPublicity from './pages/appeal/AppealPublicity.jsx';
+import AppealMessages from './pages/appeal/AppealMessages.jsx';
+import AppealVerify from './pages/appeal/AppealVerify.jsx';
+import AppealAdminWorkbench from './pages/appeal/AppealAdminWorkbench.jsx';
+import AppealAdminReviews from './pages/appeal/AppealAdminReviews.jsx';
+import AppealAdminDesk from './pages/appeal/AppealAdminDesk.jsx';
+import AppealAdminInspect from './pages/appeal/AppealAdminInspect.jsx';
+import AppealAdminManage from './pages/appeal/AppealAdminManage.jsx';
+import AppealAdminStats from './pages/appeal/AppealAdminStats.jsx';
+import AppealAdminAudit from './pages/appeal/AppealAdminAudit.jsx';
 
 function NotFound() {
   const { t } = useTranslation();
@@ -154,6 +176,8 @@ export default function App() {
       <Route path="/resident/verify" element={<ResidentVerify />} />
       {/* 礼宾与活动署验真中心(公开) */}
       <Route path="/protocol/verify" element={<ProtocolVerify />} />
+      {/* 皇家申诉与监察署验真中心(公开) */}
+      <Route path="/appeal/verify" element={<AppealVerify />} />
       <Route
         element={
           <RequireAuth>
@@ -840,6 +864,28 @@ export default function App() {
         <Route path="/protocol/admin/manage" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolManage /></ProtocolShell>} />
         <Route path="/protocol/admin/stats" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolStats /></ProtocolShell>} />
         <Route path="/protocol/admin/audit" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolAudit /></ProtocolShell>} />
+        {/* 奶龙国皇家申诉与监察署:前台 */}
+        <Route path="/appeal" element={<AppealShell><AppealHome /></AppealShell>} />
+        <Route path="/appeal/guide" element={<AppealShell><AppealGuide /></AppealShell>} />
+        <Route path="/appeal/apply" element={<AppealShell><AppealApply /></AppealShell>} />
+        <Route path="/appeal/apply/:id" element={<AppealShell><AppealApply /></AppealShell>} />
+        <Route path="/appeal/my" element={<AppealShell><AppealMyAppeals /></AppealShell>} />
+        <Route path="/appeal/appeals/:id" element={<AppealShell><AppealAppealDetail /></AppealShell>} />
+        <Route path="/appeal/reviews" element={<AppealShell><AppealReviews /></AppealShell>} />
+        <Route path="/appeal/complaints" element={<AppealShell><AppealComplaints /></AppealShell>} />
+        <Route path="/appeal/tickets" element={<AppealShell><AppealTickets /></AppealShell>} />
+        <Route path="/appeal/decisions" element={<AppealShell><AppealDecisions /></AppealShell>} />
+        <Route path="/appeal/decisions/:code" element={<AppealShell><AppealDecisionDoc /></AppealShell>} />
+        <Route path="/appeal/publicity" element={<AppealShell><AppealPublicity /></AppealShell>} />
+        <Route path="/appeal/messages" element={<AppealShell><AppealMessages /></AppealShell>} />
+        {/* 奶龙国皇家申诉与监察署:管理端(队列隔离) */}
+        <Route path="/appeal/admin/workbench" element={<AppealShell permission="appeal:process"><AppealAdminWorkbench /></AppealShell>} />
+        <Route path="/appeal/admin/reviews" element={<AppealShell permission="appeal:review"><AppealAdminReviews /></AppealShell>} />
+        <Route path="/appeal/admin/desk" element={<AppealShell permission="appeal:process"><AppealAdminDesk /></AppealShell>} />
+        <Route path="/appeal/admin/inspect" element={<AppealShell permission="appeal:inspect"><AppealAdminInspect /></AppealShell>} />
+        <Route path="/appeal/admin/manage" element={<AppealShell permission="appeal:manage"><AppealAdminManage /></AppealShell>} />
+        <Route path="/appeal/admin/stats" element={<AppealShell permission="appeal:manage"><AppealAdminStats /></AppealShell>} />
+        <Route path="/appeal/admin/audit" element={<AppealShell permission="appeal:manage"><AppealAdminAudit /></AppealShell>} />
       </Route>
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />

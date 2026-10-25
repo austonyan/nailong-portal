@@ -11,12 +11,11 @@ import {
   Notification,
   Select,
   Tag,
-  TextArea,
   Title,
 } from 'animal-island-ui';
 import { PlusIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { TextArea, TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 
 const FAQ_KEYS = ['reset', 'unbind', 'slow', 'display', 'contact'];
 

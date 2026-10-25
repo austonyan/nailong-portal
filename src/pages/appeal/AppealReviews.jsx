@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Notification, Select, Tag, TextArea, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Modal, Notification, Select, Tag, Title } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { REVIEW_STATUS_COLORS, DECISION_TYPE_COLORS, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';

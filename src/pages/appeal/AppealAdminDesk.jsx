@@ -12,13 +12,12 @@ import {
   Table,
   Tabs,
   Tag,
-  TextArea,
   Title,
 } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
-import { api } from '../../../api/client.js';
-import { openAppealMaterial } from '../../../api/appeal.js';
-import { COMPLAINT_STATUS_COLORS, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from '../shared.jsx';
+import { api } from '../../api/client.js';
+import { openAppealMaterial } from '../../api/appeal.js';
+import { TextArea, COMPLAINT_STATUS_COLORS, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 
 const COMPLAINT_STATUS = ['', 'pending_accept', 'processing', 'replied', 'closed'];
 const TICKET_STATUS = ['', 'pending', 'processing', 'replied', 'closed', 'escalated'];
@@ -250,8 +249,10 @@ export default function AppealAdminDesk() {
                       <dt>{t('appeal.complaint.replyLabel')}</dt>
                       <dd>
                         {detail.data.reply}
-                        <p className="muted-text">{detail.data.repliedName} · {fmtDateTime(detail.data.repliedAt)}</dd>
-                      </p>
+                        <p className="muted-text">
+                          {detail.data.repliedName} · {fmtDateTime(detail.data.repliedAt)}
+                        </p>
+                      </dd>
                     </div>
                   )}
                 </dl>

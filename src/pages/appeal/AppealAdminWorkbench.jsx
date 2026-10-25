@@ -13,12 +13,11 @@ import {
   Select,
   Table,
   Tag,
-  TextArea,
   Title,
 } from 'animal-island-ui';
 import { EyeIcon, SearchIcon } from 'naive-icons';
-import { api } from '../../../api/client.js';
-import { openAppealMaterial } from '../../../api/appeal.js';
+import { api } from '../../api/client.js';
+import { openAppealMaterial } from '../../api/appeal.js';
 import {
   APPEAL_STATUS_COLORS,
   BIZ_TYPES,
@@ -27,7 +26,7 @@ import {
   TextArea,
   fmtDateTime,
   toastAppealError,
-} from '../shared.jsx';
+} from './shared.jsx';
 
 const QUEUE_STATUS = ['', 'pending_accept', 'accepted', 'processing', 'supplement_required', 'resolved', 'rejected', 'withdrawn', 'closed'];
 const DECIDE_TYPES = ['maintain', 'undo', 'change', 'transfer'];

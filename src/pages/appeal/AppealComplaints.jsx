@@ -14,14 +14,13 @@ import {
   Radio,
   Select,
   Tag,
-  TextArea,
   Title,
   Upload,
 } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
-import { COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { TextArea, COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 
 export default function AppealComplaints() {
   const { t } = useTranslation();
