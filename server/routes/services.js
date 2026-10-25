@@ -26,6 +26,7 @@ function serialize(row) {
     icon: row.icon,
     color: row.color,
     requiredPermission: row.required_permission,
+    entryMode: row.entry_mode || 'external',
     enabled: !!row.enabled,
     sortOrder: row.sort_order,
   };
@@ -84,6 +85,13 @@ function validateServiceBody(body, { partial = false } = {}) {
       throw badRequest('VALIDATION_ERROR', `Unknown permission: ${perm}`);
     }
     out.requiredPermission = perm;
+  }
+  if (body.entryMode !== undefined) {
+    const mode = String(body.entryMode);
+    if (!['external', 'internal', 'internal_sso'].includes(mode)) {
+      throw badRequest('VALIDATION_ERROR', `Unsupported entry mode: ${mode}`);
+    }
+    out.entry_mode = mode;
   }
   if (body.enabled !== undefined) out.enabled = body.enabled ? 1 : 0;
   if (body.sortOrder !== undefined) out.sortOrder = Number(body.sortOrder) || 0;

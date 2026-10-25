@@ -4,13 +4,16 @@
   },
   "nav": {
     "portal": "门户",
+    "visa": "签注申请署",
     "profile": "个人资料",
     "admin": "管理",
     "users": "用户管理",
     "roles": "角色与权限",
     "services": "服务管理",
     "logout": "退出登录",
-    "language": "语言"
+    "language": "语言",
+    "docs": "文书认证署",
+    "docsReview": "文书审核台"
   },
   "common": {
     "actions": "操作",
@@ -77,7 +80,41 @@
     "ROLE_KEY_TAKEN": "角色标识已存在",
     "NOT_FOUND": "资源不存在",
     "INTERNAL_ERROR": "服务器开小差了,请稍后重试",
-    "NETWORK_ERROR": "网络连接失败,请确认服务端已启动"
+    "NETWORK_ERROR": "网络连接失败,请确认服务端已启动",
+    "VISA_FIELD_REQUIRED": "还有必填信息没有填写",
+    "VISA_DATES_INVALID": "离开日期需要晚于抵达日期",
+    "VISA_TYPE_UNAVAILABLE": "该签注类型暂未开放",
+    "VISA_NOT_EDITABLE": "当前状态不能再修改",
+    "VISA_RATE_LIMITED": "操作太频繁,请稍等一分钟再试",
+    "VISA_TOO_MANY_ACTIVE": "你有太多正在审核中的申请",
+    "VISA_AGREEMENT_REQUIRED": "请先勾选娱乐声明",
+    "VISA_AVATAR_REQUIRED": "需要至少上传一张头像",
+    "VISA_INVALID_TRANSITION": "当前状态无法执行该操作",
+    "VISA_SUPPLEMENT_EXPIRED": "补件期限已过",
+    "VISA_SUPPLEMENT_EMPTY": "请先上传补件材料或填写说明",
+    "VISA_FILE_TOO_LARGE": "文件太大,单个不超过 5MB",
+    "VISA_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或 PDF",
+    "VISA_TOO_MANY_FILES": "材料数量已达上限(6 个)",
+    "VISA_BLACKLISTED": "该账号已被限制申请",
+    "VISA_VERIFY_LIMITED": "验真请求太频繁,请稍后再试",
+    "VISA_REASON_REQUIRED": "请选择驳回原因",
+    "VISA_ALREADY_ISSUED": "该申请已签发过签注",
+    "VISA_ERASE_BLOCKED": "请先撤销进行中的申请",
+    "SERVICE_DISABLED": "服务间接口未启用",
+    "SERVICE_FORBIDDEN": "服务令牌无效",
+    "DOC_TYPE_UNAVAILABLE": "该文书类型暂不可申请",
+    "DOC_DECLARATION_REQUIRED": "请先勾选娱乐声明",
+    "DOC_RATE_LIMITED": "操作太频繁了,请明天再试",
+    "DOC_DUPLICATE": "存在重复的在途申请或有效文书",
+    "DOC_BLACKLISTED": "账号已被限制申请认证,请联系管理员",
+    "DOC_NOT_EDITABLE": "当前状态不可编辑",
+    "DOC_INVALID_STATE": "当前状态不允许此操作",
+    "DOC_MATERIAL_REQUIRED": "还有必传材料未上传",
+    "DOC_FILE_TOO_LARGE": "文件太大,超出大小限制",
+    "DOC_FILE_TYPE_REJECTED": "文件类型不被支持",
+    "DOC_FILE_COUNT_EXCEEDED": "材料数量超出上限",
+    "DOC_VERIFY_LIMIT": "查询太频繁,请稍后再试",
+    "DOC_TYPE_CODE_TAKEN": "类型编码已存在"
   },
   "portal": {
     "tagline": "这里是奶龙统一门户,所有服务从这里出发",
@@ -130,7 +167,8 @@
         "portal": "门户",
         "users": "用户",
         "roles": "角色",
-        "services": "服务"
+        "services": "服务",
+        "visa": "签注"
       }
     },
     "services": {
@@ -145,11 +183,954 @@
       "deleteConfirm": "确定要删除服务 {{name}} 吗?"
     }
   },
+  "visa": {
+    "officeName": "奶龍國簽註申請署",
+    "officeSub": "Nailong National Endorsement Office · 虚构娱乐机构",
+    "disclaimerTag": "娱乐声明",
+    "disclaimerShort": "本签注为虚构娱乐作品,不具任何现实效力",
+    "disclaimerLong": "娱乐声明:奶龙国及其签注申请署均为虚构创作。本平台不核验真实身份,签注不具任何现实法律效力,不可用于任何现实场合。请勿相信任何收费办证或\"保证通过\"的说法。",
+    "back": "返回",
+    "backHome": "回首页",
+    "sso": {
+      "title": "单点登录身份确认",
+      "confirm": "确认并进入",
+      "tip": "进入服务后,你的门户身份将用于签注申请与站内通知。你可以随时在个人资料页退出登录。",
+      "portalTip": "奶龙统一门户将以当前身份单点登录进入该服务。"
+    },
+    "nav": {
+      "home": "署内首页",
+      "applications": "我的申请",
+      "permits": "我的签注",
+      "messages": "站内信",
+      "workbench": "审核工作台",
+      "manage": "签注管理"
+    },
+    "noticeLevel": {
+      "info": "通知",
+      "policy": "政策",
+      "event": "活动"
+    },
+    "home": {
+      "heroTitle": "欢迎来到签注申请署",
+      "heroSub": "办好虚拟签注,奶龙岛说走就走。当前开放:旅游签注 TOURIST",
+      "applyEntry": "开始申请",
+      "progressEntry": "我的申请",
+      "verifyEntry": "验真中心",
+      "scamTitle": "防诈骗提示",
+      "scamBody": "本署办证完全免费。任何\"收费办证\"\"承诺签注有现实效力\"的行为都是诈骗,请立即举报。",
+      "notices": "署内公告",
+      "types": "签注类型",
+      "guide": "办事指南",
+      "guideCondition": "申请条件",
+      "guideConditionBody": "凡奶龙统一门户注册用户均可申请。本平台不核验真实身份,请用昵称与虚构信息填写。",
+      "guideMaterials": "所需材料",
+      "guideMaterialsBody": "头像照片(必传)、行程说明(必填)、邀请函或活动凭证(选填,图片或 PDF)。",
+      "guideDuration": "审核时长",
+      "guideDurationBody": "提交后约 {{hours}} 小时内完成审核,请留意站内信通知。",
+      "guideValidity": "有效期说明",
+      "guideValidityBody": "签发后 {{days}} 天内有效,单次最长停留 {{stay}} 天,过期自动失效。",
+      "faq": "常见问题",
+      "supportTip": "还有疑问?给署里发一封站内信吧:"
+    },
+    "typeAvail": {
+      "open": "开放申请",
+      "soon": "即将开放"
+    },
+    "typeMeta": {
+      "stay": "单次停留 {{days}} 天",
+      "valid": "有效期 {{days}} 天",
+      "stayShort": "停留天数",
+      "validShort": "有效天数",
+      "renewable": {
+        "title": "可否续签",
+        "yes": "可续签",
+        "no": "不可续签"
+      }
+    },
+    "faq": {
+      "reject": {
+        "q": "为什么会被驳回?",
+        "a": "常见原因:材料不全、行程说明太含糊、信息前后矛盾。按驳回原因补齐后可以重新申请。"
+      },
+      "fee": {
+        "q": "办签注要收费吗?",
+        "a": "完全免费。奶龙国签证费用由奶龙本龙承担(它很有钱)。任何收费办证都是诈骗。"
+      },
+      "real": {
+        "q": "签注可以在现实中使用吗?",
+        "a": "不可以。本签注是虚构娱乐作品,不具任何现实效力,不能用于任何现实口岸、机场或场合。"
+      },
+      "duration": {
+        "q": "审核要多久?",
+        "a": "一般 72 小时内完成。补件期间需在截止时间前补交,超时申请会自动关闭。"
+      },
+      "port": {
+        "q": "到达皇家口岸时怎么通关?",
+        "a": "皇家口岸入境署(建设中)将直接在线校验你的签注编号,通关后签注会自动标记为已使用。"
+      }
+    },
+    "applyGuide": {
+      "title": "{{name}} · 申请前引导",
+      "typeUnavailable": "该签注类型暂未开放,先看看其他类型吧",
+      "materialsTitle": "材料清单",
+      "materialAvatar": "头像照片 1 张(必传,图片格式)",
+      "materialItinerary": "行程说明(必填,写清楚打算去哪玩)",
+      "materialInvitation": "邀请函 / 活动凭证(选填,后续开放邀请方功能)",
+      "materialFormat": "支持 PNG / JPG / WebP / PDF,单个不超过 5MB,最多 6 个文件",
+      "quizTitle": "申请资格自检",
+      "quizHint": "趣味三连问,答完就能出发(本平台不核验真实身份)",
+      "quizDone": "自检完成,看起来你很适合来奶龙岛!",
+      "agreementTitle": "隐私政策与用户协议",
+      "agreePrivacy": "我已阅读并同意《隐私政策》:平台仅收集昵称与虚构信息用于娱乐演绎",
+      "agreeTerms": "我已阅读并同意《用户协议》:签注仅供娱乐,不可用于现实用途",
+      "start": "开始填写申请"
+    },
+    "quiz": {
+      "identity": {
+        "q": "你准备以什么身份来到奶龙国?",
+        "yes": "一个可爱的虚构角色",
+        "no": "我就是现实中的我"
+      },
+      "verification": {
+        "q": "你了解本平台不核验真实身份吗?",
+        "yes": "了解,这是娱乐平台",
+        "no": "以为要查户口"
+      },
+      "usage": {
+        "q": "你承诺不会把签注用于现实用途吗?",
+        "yes": "承诺,只在奶龙国玩",
+        "no": "想拿去机场试试"
+      }
+    },
+    "form": {
+      "title": "在线申请表",
+      "draftNo": "草稿编号:{{no}}",
+      "nickname": "昵称",
+      "nicknamePlaceholder": "在奶龙国怎么称呼你",
+      "contact": "联系方式",
+      "contactPlaceholder": "站内信或邮箱",
+      "virtualId": "虚拟身份信息",
+      "virtualIdPlaceholder": "例如:NL-8888(选填)",
+      "purpose": "访问目的",
+      "purposePlaceholder": "观光 / 度假 / 打卡奶龙雕像…",
+      "planArrive": "计划抵达",
+      "planLeave": "计划离开",
+      "datePlaceholder": "选择日期",
+      "datesInvalid": "离开日期要晚于抵达日期",
+      "itinerary": "行程说明",
+      "itineraryPlaceholder": "D1 海滩晒太阳;D2 图鉴馆;D3 看流星雨…",
+      "inviterName": "邀请人 / 接待方",
+      "inviterContact": "邀请人联系方式",
+      "companions": "随行人员",
+      "companionsPlaceholder": "例如:奶龙宝宝 ×2(选填)",
+      "materialsTitle": "材料上传",
+      "materialsTip": "头像必传;其余材料可选。支持图片与 PDF,单个不超过 5MB。",
+      "materialAvatar": "头像",
+      "materialOther": "其他材料(邀请函、活动凭证等)",
+      "uploadAvatar": "上传头像",
+      "uploadOther": "点击或拖拽上传,支持多份",
+      "saveDraft": "保存草稿",
+      "draftSaved": "草稿已保存",
+      "submit": "提交申请",
+      "submitSuccess": "申请已提交",
+      "confirmTitle": "提交前确认",
+      "confirmAgree": "我确认以上信息为虚构娱乐内容,并同意《娱乐声明》",
+      "materialsCount": "已上传 {{count}} 份材料",
+      "submittedTitle": "提交成功!",
+      "submittedNo": "申请编号:{{no}}",
+      "submittedHint": "预计 {{hours}} 小时内完成审核,结果将通过站内信通知。请保存好申请编号,可在验真中心查询进度。",
+      "viewMyApplications": "查看我的申请"
+    },
+    "materialKind": {
+      "avatar": "头像",
+      "invitation": "邀请函",
+      "proof": "活动凭证",
+      "other": "其他材料"
+    },
+    "field": {
+      "appNo": "申请编号",
+      "type": "签注类型",
+      "submittedAt": "提交时间",
+      "updatedAt": "最后更新",
+      "trip": "计划行程",
+      "applicant": "申请人"
+    },
+    "status": {
+      "draft": "草稿",
+      "pending_review": "待审核",
+      "supplement_required": "补件中",
+      "approved": "审核通过",
+      "issued": "已签发",
+      "rejected": "已驳回",
+      "withdrawn": "已撤销",
+      "closed": "已关闭"
+    },
+    "permitStatus": {
+      "valid": "有效",
+      "used": "已使用",
+      "expired": "已过期",
+      "voided": "已注销"
+    },
+    "reviewAction": {
+      "approve": "审核通过",
+      "reject": "驳回",
+      "require_supplement": "要求补件",
+      "issue": "签发",
+      "void": "注销",
+      "mark_used": "标记已使用"
+    },
+    "rejectReason": {
+      "incomplete_materials": "材料不全",
+      "false_info": "信息不实",
+      "type_mismatch": "类型不符",
+      "duplicate": "重复申请",
+      "other": "其他原因"
+    },
+    "my": {
+      "title": "我的申请",
+      "view": "查看",
+      "withdraw": "撤销申请",
+      "withdrawn": "已撤销",
+      "withdrawConfirmTitle": "撤销申请",
+      "withdrawConfirmBody": "确定要撤销申请 {{no}} 吗?撤销后不能恢复。",
+      "draftDeleted": "草稿已删除",
+      "export": "导出记录",
+      "empty": "还没有申请,去办一张旅游签注吧",
+      "preview": "预览"
+    },
+    "detail": {
+      "title": "申请详情",
+      "rejectTitle": "很遗憾,申请被驳回了",
+      "closedTitle": "申请已关闭",
+      "closedBody": "补件期限已过,申请自动关闭。可以按原类型重新申请。",
+      "permitReady": "电子签注已签发",
+      "materials": "材料",
+      "reviews": "审核记录",
+      "noReviews": "还没有审核记录",
+      "supplementTitle": "补件",
+      "supplementDeadline": "补件截止:{{time}}",
+      "supplementAsk": "审核员要求:",
+      "uploadSupplement": "点击或拖拽上传补件材料",
+      "supplementNotePlaceholder": "补件说明(选填)",
+      "submitSupplement": "提交补件",
+      "supplementSent": "补件已提交,重新进入审核",
+      "reapply": "重新申请",
+      "print": "打印 / 导出 PDF"
+    },
+    "permit": {
+      "title": "我的签注",
+      "empty": "还没有签注。申请通过并签发后,电子签注会出现在这里。",
+      "electronic": "电子签注 Electronic Endorsement",
+      "noLabel": "签注编号",
+      "no": "签注编号:{{no}}",
+      "holder": "持有人",
+      "issuedAt": "签发日期",
+      "validUntil": "有效期至",
+      "issuer": "签发机构",
+      "watermark": "奶龍國 · 娛樂專用",
+      "print": "打印 / 保存 PDF",
+      "verifyLink": "打开验真链接",
+      "copyLink": "复制验真链接",
+      "linkCopied": "验真链接已复制",
+      "meta": "本签注由奶龍國簽註申請署于 {{time}} 签发,验真请前往验真中心。"
+    },
+    "verify": {
+      "title": "签注验真中心",
+      "subtitle": "输入签注编号或申请编号,即时校验签注状态(结果已脱敏,不含个人信息)",
+      "placeholder": "例如:NLT-261025-XXXXXXXX",
+      "action": "验真",
+      "limitTip": "为防枚举,同一来源每 5 分钟最多查询 30 次",
+      "notFound": "没有查到对应签注。请核对编号,或联系持有人确认。",
+      "disclaimer": "验真结果仅供娱乐参考。本签注为虚构作品,不具任何现实效力。"
+    },
+    "msgType": {
+      "submitted": "提交成功",
+      "supplement_required": "需要补件",
+      "approved": "审核通过",
+      "rejected": "已驳回",
+      "issued": "签注已签发",
+      "used": "签注已使用",
+      "voided": "签注已注销",
+      "expired": "签注已过期",
+      "closed": "申请已关闭",
+      "withdrawn": "申请已撤销",
+      "expiry_reminder": "到期提醒",
+      "system": "系统通知"
+    },
+    "msg": {
+      "submitted": {
+        "title": "申请 {{appNo}} 已提交",
+        "body": "你的签注申请已进入审核队列,预计 {{hours}} 小时内完成。"
+      },
+      "supplement_required": {
+        "title": "申请 {{appNo}} 需要补件",
+        "body": "审核员留言:{{comment}}。请在 {{deadline}} 前补交材料,超时申请将自动关闭。"
+      },
+      "approved": {
+        "title": "申请 {{appNo}} 审核通过",
+        "body": "恭喜!申请已通过审核,等待签发电子签注。"
+      },
+      "rejected": {
+        "title": "申请 {{appNo}} 被驳回",
+        "body": "驳回原因:{{reason}}。查看详情了解说明,可以重新申请。"
+      },
+      "issued": {
+        "title": "电子签注已签发",
+        "body": "签注编号 {{visaNo}}(申请 {{appNo}}),有效期至 {{validUntil}}。到我的签注查看或下载。"
+      },
+      "used": {
+        "title": "签注 {{visaNo}} 已使用",
+        "body": "该签注已在皇家口岸通关时核销,不能再次使用。"
+      },
+      "voided": {
+        "title": "签注 {{visaNo}} 已注销",
+        "body": "签注已被签发机构注销,如有疑问请联系署里。"
+      },
+      "expired": {
+        "title": "签注 {{visaNo}} 已过期",
+        "body": "签注超过有效期,自动失效。需要的话可以重新申请。"
+      },
+      "closed": {
+        "title": "申请 {{appNo}} 已关闭",
+        "body": "补件期限已过,申请自动关闭。可以重新申请。"
+      },
+      "withdrawn": {
+        "title": "申请 {{appNo}} 已撤销",
+        "body": "你已撤销该申请。"
+      },
+      "expiry_reminder": {
+        "title": "签注 {{visaNo}} 即将到期",
+        "body": "签注将在 72 小时内到期,注意安排行程。"
+      },
+      "system": {
+        "title": "系统通知",
+        "body": ""
+      }
+    },
+    "msgs": {
+      "title": "站内信",
+      "inbox": "收件箱",
+      "archived": "已归档",
+      "archive": "归档"
+    },
+    "admin": {
+      "allStatus": "全部状态",
+      "allTypes": "全部类型",
+      "searchPlaceholder": "搜索编号 / 昵称",
+      "queueEmpty": "队列为空,去喝杯椰子汁吧",
+      "commentLabel": "审核意见(选填)",
+      "rejectReasonLabel": "驳回原因",
+      "supplementDaysLabel": "补件期限(天)",
+      "validDaysLabel": "签注有效期(天,留空用类型默认)",
+      "actions": {
+        "approve": "通过",
+        "reject": "驳回",
+        "supplement": "要求补件",
+        "issue": "签发电子签注",
+        "void": "注销签注",
+        "markUsed": "标记已使用"
+      },
+      "typesTip": "签注类型决定有效期与停留天数;新类型默认开放,可手动停用",
+      "typesCreate": "新建签注类型",
+      "typesEdit": "编辑签注类型",
+      "typesGuide": "申请指南",
+      "sortOrder": "排序",
+      "noticesTip": "公告展示在签注申请署首页",
+      "noticesCreate": "发布公告",
+      "noticesEdit": "编辑公告",
+      "noticeLevel": "公告级别",
+      "configAppNoPrefix": "申请编号前缀",
+      "configVisaNoPrefix": "签注编号前缀",
+      "configSupplementDays": "默认补件期限(天)",
+      "configReviewHours": "预计审核时长(小时,展示用)",
+      "configVerifyLimit": "验真限流(次 / 5 分钟 / IP)",
+      "userId": "用户 ID",
+      "blacklistReason": "限制原因",
+      "blacklistAdd": "加入限制名单",
+      "workbench": {
+        "title": "审核工作台"
+      },
+      "manage": {
+        "title": "签注管理",
+        "types": "签注类型",
+        "notices": "公告管理",
+        "config": "编号与规则",
+        "blacklist": "风控名单"
+      },
+      "stats": {
+        "title": "统计与报表",
+        "export": "导出申请 CSV",
+        "submitted": "累计提交",
+        "approvalRate": "通过率",
+        "rejectRate": "驳回率",
+        "supplementRate": "补件率",
+        "avgReviewHours": "平均审核时长",
+        "verifyToday": "今日验真",
+        "verifyTotal": "累计验真 {{total}} 次",
+        "byStatus": "申请状态分布",
+        "byType": "签注类型分布",
+        "rejectReasons": "常见驳回原因",
+        "permits": "签注状态",
+        "verifyLogs": "验真记录"
+      },
+      "verifyQuery": "查询内容",
+      "verifyIp": "来源 IP",
+      "verifyResult_valid": "命中 · 有效",
+      "verifyResult_used": "命中 · 已使用",
+      "verifyResult_expired": "命中 · 已过期",
+      "verifyResult_voided": "命中 · 已注销",
+      "verifyResult_not_found": "未命中",
+      "verifyResult_rate_limited": "已限流",
+      "audit": {
+        "title": "审计日志",
+        "auditFilter": "按操作类型筛选",
+        "auditAction": "操作",
+        "auditActor": "操作人",
+        "auditTarget": "对象",
+        "auditDetail": "详情"
+      }
+    }
+  },
   "errors": {
     "forbiddenTitle": "权限不足",
     "forbiddenTip": "你的账号没有访问该页面的权限",
     "backHome": "回门户首页",
     "notFoundTitle": "页面不存在",
     "notFoundTip": "这片海域什么都没有"
+  },
+  "docs": {
+    "docs": {
+      "title": "奶龙国皇家文书与认证署",
+      "subtitle": "欢迎来到皇家文书与认证署,{{name}}!在这里为你的冒险出具认证。",
+      "disclaimer": "本署为奶龙国虚构娱乐设定:所有文书仅代表虚构世界内的娱乐成就,不具任何现实效力,请勿用于现实用途。",
+      "tab": {
+        "home": "署内首页",
+        "types": "文书类型",
+        "apply": "申请认证",
+        "applications": "我的申请",
+        "certificates": "我的文书",
+        "verify": "验真中心",
+        "messages": "站内信"
+      },
+      "noticeLevel": {
+        "info": "防诈骗提示",
+        "policy": "认证规则",
+        "event": "署内公告"
+      },
+      "purpose": {
+        "display": "展示",
+        "collect": "收藏",
+        "event": "活动报名",
+        "entry_aux": "入境申报辅助",
+        "other": "其他"
+      },
+      "status": {
+        "draft": "草稿",
+        "pending": "待认证",
+        "supplementing": "补件中",
+        "approved": "已认证",
+        "rejected": "已驳回",
+        "withdrawn": "已撤销"
+      },
+      "certStatus": {
+        "valid": "有效",
+        "used": "已使用",
+        "expired": "已过期",
+        "revoked": "已撤销"
+      },
+      "reason": {
+        "materials_incomplete": "材料不全",
+        "info_false": "信息不实",
+        "type_mismatch": "类型不符",
+        "biz_invalid": "关联业务无效",
+        "duplicate": "重复申请",
+        "other": "其他原因"
+      },
+      "record": {
+        "draft_saved": "保存草稿",
+        "submitted": "提交申请",
+        "resubmitted": "补件后重新提交",
+        "supplement_requested": "要求补件",
+        "approved": "认证通过",
+        "rejected": "认证驳回",
+        "withdrawn": "申请人撤销",
+        "cert_issued": "签发文书",
+        "cert_revoked": "撤销文书",
+        "cert_marked_used": "标注已使用",
+        "cert_regenerated": "补发文书",
+        "auto_expired": "到期自动失效"
+      },
+      "filter": {
+        "all": "全部",
+        "allStatus": "全部状态",
+        "allTypes": "全部类型"
+      },
+      "actions": {
+        "view": "查看",
+        "viewCert": "查看文书",
+        "back": "返回列表"
+      },
+      "home": {
+        "welcome": "皇家文书与认证署",
+        "tagline": "邀请函、签注、居民卡、活动凭证……你的每一段冒险,都值得一份盖章的纪念。",
+        "quick": {
+          "apply": "申请认证",
+          "certificates": "我的文书",
+          "verify": "验真查询",
+          "faq": "常见问题"
+        },
+        "antifraudTitle": "防诈骗提示",
+        "antifraudBody": "本署认证完全免费:不收取任何费用、不承诺任何现实效力。任何自称\"收费代办认证\"的行为都是诈骗。",
+        "entertainmentTitle": "娱乐声明",
+        "entertainmentBody": "本署及全部认证文书均为虚构娱乐设定,仅代表奶龙国虚拟世界内的成就,不具备任何现实法律效力。",
+        "notices": "署内公告",
+        "catalog": "服务目录",
+        "guide": "办事指南与常见问题",
+        "faq1q": "哪些文书可以认证?",
+        "faq1a": "目前开放六类:签注证明、邀请函、入境记录证明、居民卡、活动凭证与外交文书。进入\"文书类型\"页可以查看每类的适用场景、所需材料与有效期。",
+        "faq2q": "认证需要准备什么材料?",
+        "faq2a": "通常需要对应业务的凭证截图(如签注详情页、活动门票),部分类型需要邀请函扫描件。全部材料仅支持图片或 PDF,单个不超过 10MB。",
+        "faq3q": "认证通过后有什么用?",
+        "faq3a": "你会获得一份带唯一编号与电子印章的认证文书,可以在验真中心被任何人查验,用于展示、收藏或作为其他活动的报名凭证(娱乐用途)。",
+        "faq4q": "认证大概需要多久?",
+        "faq4a": "提交后进入待认证队列,材料齐全通常 72 小时内完成;如需补件会发送站内信,请在 7 天内补交,逾期申请将自动关闭。"
+      },
+      "types": {
+        "title": "文书类型",
+        "validityDays": "{{days}} 天内有效",
+        "bizLabel": "关联{{label}}",
+        "guideTitle": "办事指南",
+        "guideEmpty": "该类型指南整理中。",
+        "materialsTitle": "材料清单",
+        "materialRule": "最多 {{count}} 个,单个 ≤ {{mb}}MB,图片或 PDF",
+        "materialsEmpty": "该类型无需上传材料。",
+        "formTitle": "需要填写的信息",
+        "noBiz": "无需关联业务编号",
+        "shownTitle": "认证后展示的字段",
+        "shownBody": "认证文书会展示:文书编号、文书类型、持有人昵称、关联业务编号、认证机构、认证日期与有效期。验真查询只返回脱敏信息,不含昵称与业务编号。",
+        "faqTitle": "常见问题",
+        "faq1q": "认证文书具有现实效力吗?",
+        "faq1a": "没有。所有文书都是虚构娱乐设定,仅代表奶龙国虚拟世界内的成就,不能用于任何现实证明。每份文书都印有\"虚构娱乐·无现实效力\"水印。",
+        "faq2q": "关联业务编号填错了怎么办?",
+        "faq2a": "草稿阶段可以随时修改;已提交的申请如被驳回,可以按驳回原因重新申请。请在提交前仔细核对编号。",
+        "faq3q": "我可以同时有多份同类文书吗?",
+        "faq3a": "同一类型+同一关联业务编号只会有一份在途或有效的文书;不同业务编号可以分别认证。"
+      },
+      "apply": {
+        "title": "申请文书认证",
+        "start": "去申请认证",
+        "step1": "第 1 步 · 选择文书类型",
+        "step2": "第 2 步 · 填写申请信息",
+        "step3": "第 3 步 · 上传材料",
+        "step4": "第 4 步 · 娱乐声明与提交",
+        "nickname": "申请人昵称",
+        "nicknamePh": "将展示在认证文书上",
+        "contact": "联系方式",
+        "contactPh": "选填,仅认证员可见",
+        "bizPh": "填写关联业务编号",
+        "bizHint": "可在对应业务署的详情页找到;联动校验即将开放。",
+        "purpose": "认证用途",
+        "required": "必填",
+        "upload": "上传材料",
+        "materialsCount": "材料数量",
+        "saveDraft": "保存草稿",
+        "submit": "提交认证",
+        "draftSaved": "草稿已保存",
+        "submitted": "已提交!认证申请编号:{{no}}",
+        "draftNo": "当前草稿编号:{{no}}",
+        "needType": "请先选择文书类型",
+        "nicknameRequired": "请填写申请人昵称",
+        "bizRequired": "请填写{{label}}",
+        "fieldRequired": "请填写「{{label}}」",
+        "materialRequired": "请上传「{{label}}」",
+        "agreeRequired": "请先勾选娱乐声明",
+        "typeLocked": "草稿已创建,类型不可更改;如需其他类型请新建申请。",
+        "declaration": "我已知晓并同意:本次认证为奶龙国虚构娱乐设定,文书不具任何现实效力,本人不将其用于现实用途。",
+        "confirmTitle": "提交前确认",
+        "confirmTip": "请核对以下信息;提交后将进入认证队列,草稿信息将被锁定。",
+        "confirmSubmit": "确认提交",
+        "type": "文书类型",
+        "fileTypeBad": "文件类型不符,仅支持:{{accept}}",
+        "fileTooLarge": "文件超过 {{mb}}MB 限制",
+        "supplementOrigin": "补件"
+      },
+      "appList": {
+        "title": "我的认证申请",
+        "appNo": "申请编号",
+        "type": "文书类型",
+        "submittedAt": "提交时间",
+        "deleteConfirm": "确定删除草稿 {{no}} 吗?",
+        "deleted": "草稿已删除"
+      },
+      "detail": {
+        "title": "认证申请 {{no}}",
+        "infoTitle": "申请信息",
+        "recordsTitle": "认证记录",
+        "materialsTitle": "申请材料",
+        "certReady": "认证已通过,文书编号 {{no}}",
+        "certReadyTip": "点击查看并下载你的认证文书。",
+        "rejectedTitle": "申请被驳回",
+        "reapply": "按此类型重新申请",
+        "supplementTitle": "认证员要求补件",
+        "supplementDeadline": "补件截止:",
+        "uploadFor": "补交:{{label}}",
+        "resubmit": "补交完成,重新提交",
+        "resubmitted": "已重新进入认证队列",
+        "withdraw": "撤销申请",
+        "withdrawConfirmTitle": "撤销认证申请",
+        "withdrawConfirmBody": "确定撤销申请 {{no}} 吗?撤销后不可恢复,如需认证请重新申请。",
+        "withdrawn": "申请已撤销",
+        "bizReserved": "联动校验预留",
+        "uploaded": "材料已上传"
+      },
+      "materials": {
+        "empty": "暂无材料",
+        "preview": "预览",
+        "download": "下载"
+      },
+      "cert": {
+        "certNo": "文书编号",
+        "holder": "持有人",
+        "bizNo": "关联业务编号",
+        "issuedAt": "认证日期",
+        "expiresAt": "有效期至",
+        "expiringSoon": "即将到期",
+        "copyNo": "复制编号",
+        "copied": "编号已复制",
+        "copyFailed": "复制失败,请手动选择复制",
+        "downloadPng": "下载图片",
+        "downloadPdf": "下载 PDF",
+        "verifyEntry": "去验真",
+        "exportFailed": "导出失败,请重试",
+        "ariaLabel": "认证文书 {{no}}",
+        "watermarkFallback": "虚构娱乐 · 无现实效力"
+      },
+      "certList": {
+        "title": "我的认证文书",
+        "empty": "还没有认证文书,通过认证后会在这里展示。"
+      },
+      "certDetail": {
+        "title": "认证文书",
+        "certStatus": "文书状态",
+        "revokedTitle": "文书已被撤销",
+        "tipsTitle": "使用须知",
+        "tip1": "文书仅限奶龙国虚构世界内使用,不具备任何现实效力。",
+        "tip2": "任何人可凭文书编号在验真中心查验真伪,查询结果不包含个人信息。",
+        "tip3": "\"下载 PDF\"会打开系统打印对话框,选择\"另存为 PDF\"即可保存。"
+      },
+      "verify": {
+        "title": "文书验真中心",
+        "tip": "输入认证文书编号或认证申请编号,查询其真实状态。",
+        "placeholder": "例如 NLDC-261025-AB12CDEFG",
+        "query": "查询",
+        "inputRequired": "请输入要查询的编号",
+        "limitTip": "为防止恶意枚举,查询有频率限制;结果不含任何个人信息。",
+        "notFoundTitle": "未查询到对应文书",
+        "notFoundBody": "请核对编号是否输入正确。若编号来自他人转述,请警惕伪造风险。",
+        "foundTitle": "已查到认证文书",
+        "validYes": "当前有效",
+        "validNo": "当前无效",
+        "selfTitle": "这是你自己的申请 {{no}}",
+        "selfNoCert": "该申请尚未签发文书。",
+        "issuer": "认证机构",
+        "disclaimerTitle": "验真结果仅限娱乐参考",
+        "disclaimerBody": "验真结果仅说明文书在奶龙国虚构设定中的状态,不代表任何现实事实;本站不为任何现实用途提供证明。",
+        "historyTitle": "我的验真记录",
+        "historyEmpty": "暂无验真记录",
+        "historyQuery": "查询编号",
+        "historyResult": "结果",
+        "result": {
+          "found": "查到文书",
+          "found_self": "本人申请",
+          "not_found": "未查到"
+        }
+      },
+      "msg": {
+        "title": "站内信",
+        "inbox": "收件箱",
+        "archived": "已归档",
+        "backInbox": "返回收件箱",
+        "readAll": "全部已读",
+        "empty": "没有站内信",
+        "archive": "归档",
+        "unarchive": "取消归档",
+        "tipTag": "小贴士",
+        "tip": "点击站内信可以跳转对应申请;所有状态变更(补件、通过、驳回、到期)都会在这里通知。"
+      },
+      "admin": {
+        "title": "文书与认证署 · 管理端",
+        "tab": {
+          "review": "审核工作台",
+          "types": "类型管理",
+          "certs": "文书管理",
+          "verify": "验真管理",
+          "stats": "统计报表",
+          "notices": "公告管理",
+          "audit": "审计日志",
+          "settings": "署设置"
+        },
+        "review": {
+          "title": "认证审核工作台",
+          "active": "待处理(pending+补件)",
+          "queueEmpty": "队列为空,喝杯椰子休息一下吧!",
+          "review": "审核",
+          "detailTitle": "申请详情",
+          "applicant": "申请人",
+          "username": "账号",
+          "materials": "材料数",
+          "searchPh": "搜索申请编号/昵称",
+          "approve": "通过并签发",
+          "approveConfirmTitle": "通过认证",
+          "approveAndIssue": "确认通过并签发文书",
+          "approveTip": "通过后将立即生成带编号的认证文书,请确认材料与信息无误。",
+          "reject": "驳回",
+          "rejectTitle": "驳回申请",
+          "rejectTip": "请选择驳回原因,用户将看到原因并可重新申请。",
+          "rejectReason": "驳回原因",
+          "supplement": "要求补件",
+          "supplementTitle": "要求补件",
+          "supplementTip": "请写明需要补充的材料与要求;系统会按署设置给用户补件期限。",
+          "supplementSend": "发送补件要求",
+          "supplementPh": "例如:邀请函扫描件不清晰,请重新上传",
+          "commentPh": "认证意见(选填)",
+          "done": "操作成功",
+          "waitingResubmit": "等待用户补件并重新提交。"
+        },
+        "types": {
+          "title": "文书类型管理",
+          "create": "新建类型",
+          "editTitle": "编辑类型:{{name}}",
+          "code": "类型编码",
+          "validity": "有效期(天)",
+          "fields": "表单字段",
+          "materialsCol": "材料要求",
+          "guide": "办事指南",
+          "guidePh": "用途、材料、注意事项……",
+          "bizLabel": "关联业务编号名称",
+          "bizLabelPh": "如:签注编号",
+          "bizSource": "联动署(预留)",
+          "bizRequired": "业务编号必填",
+          "sort": "排序",
+          "addMaterial": "添加材料要求",
+          "addField": "添加表单字段",
+          "materialLabel": "材料名称",
+          "fieldLabel": "字段名称"
+        },
+        "certs": {
+          "title": "文书管理",
+          "searchPh": "搜索文书编号/持有人/业务编号",
+          "markUsed": "标注已使用",
+          "revoke": "撤销",
+          "revokeTitle": "撤销文书 {{no}}",
+          "revokeTip": "撤销后文书立即失效且不可恢复,请填写撤销原因(将记入审计日志并通知持有人)。",
+          "revokeReasonPh": "撤销原因(必填)",
+          "regenerate": "补发",
+          "regenerateTitle": "补发文书 {{no}}",
+          "regenerateTip": "将为同一申请签发一份新编号的文书,原文书保持当前状态。",
+          "regenerated": "已补发新文书"
+        },
+        "verify": {
+          "title": "验真管理",
+          "alertTitle": "验真异常告警(24 小时)",
+          "alert": {
+            "high_failure_rate": "未命中比例异常偏高,可能存在枚举扫描。",
+            "high_frequency_query": "存在高频重复查询,建议关注来源 IP。"
+          },
+          "last24h": "24 小时查询量",
+          "failureRate": "未命中比例",
+          "topQueries": "高频查询",
+          "searchPh": "搜索查询编号"
+        },
+        "stats": {
+          "title": "统计报表",
+          "appTotal": "累计申请",
+          "approvalRate": "通过率",
+          "rejectRate": "驳回率",
+          "supplementRate": "补件率",
+          "avgHours": "平均认证时长(小时)",
+          "certTotal": "累计签发文书",
+          "verifyTotal": "累计验真查询",
+          "verify24h": "近 24 小时 {{n}} 次",
+          "verifyValidRate": "验真命中率",
+          "appByStatus": "申请状态分布",
+          "certByStatus": "文书状态分布",
+          "byType": "各文书类型申请量",
+          "count": "数量",
+          "rejectReasons": "常见驳回原因"
+        },
+        "notices": {
+          "title": "公告管理",
+          "create": "发布公告",
+          "edit": "编辑公告",
+          "titleCol": "标题",
+          "level": "级别",
+          "deleteConfirm": "确定删除公告「{{title}}」吗?"
+        },
+        "audit": {
+          "title": "审计日志",
+          "time": "时间",
+          "actor": "操作人",
+          "action": "操作",
+          "actionPh": "按操作筛选,如 certify",
+          "target": "目标",
+          "targetPh": "搜索目标/操作人",
+          "detail": "详情",
+          "actions": {
+            "application_create_draft": "创建草稿",
+            "application_delete_draft": "删除草稿",
+            "application_submit": "提交申请",
+            "application_resubmit": "补件重提",
+            "application_withdraw": "撤销申请",
+            "certify_approve": "认证通过",
+            "certify_reject": "认证驳回",
+            "certify_require_supplement": "要求补件",
+            "certificate_revoke": "撤销文书",
+            "certificate_mark_used": "标注已使用",
+            "certificate_regenerate": "补发文书",
+            "type_create": "新建类型",
+            "type_update": "修改类型",
+            "notice_create": "发布公告",
+            "notice_update": "修改公告",
+            "notice_delete": "删除公告",
+            "config_update": "修改署设置",
+            "blacklist_add": "加入黑名单",
+            "blacklist_remove": "移出黑名单",
+            "verify_rate_limited": "验真限流触发",
+            "material_download": "下载材料",
+            "auto_expire_certificate": "文书到期失效",
+            "auto_close_supplement_timeout": "补件超时关闭"
+          }
+        },
+        "settings": {
+          "title": "署设置",
+          "numbering": "编号与流程",
+          "appPrefix": "申请编号前缀",
+          "certPrefix": "文书编号前缀",
+          "prefixTip": "2-8 位字母或数字",
+          "supplementDays": "补件期限(天)",
+          "reviewHours": "审核时长提示(小时)",
+          "applyDailyLimit": "每人每日提交上限",
+          "uploadMaxMb": "单文件上限(MB)",
+          "verifySection": "验真与展示",
+          "verifyLimit": "验真限流(次/5分钟/IP)",
+          "verifyLimitTip": "防止枚举扫描的查询频率上限",
+          "seal": "电子印章",
+          "issuer": "认证机构名称",
+          "watermark": "水印/声明文案",
+          "watermarkTip": "展示在文书与验真结果页",
+          "riskTitle": "风控与黑名单",
+          "riskTip": "黑名单用户无法创建或提交认证申请;重复申请与频率限制始终生效。",
+          "blacklistAdd": "加入黑名单",
+          "blacklistUser": "用户",
+          "blacklistUserId": "用户 ID",
+          "blacklistReason": "原因",
+          "blacklistBy": "操作人",
+          "blacklistRemove": "移出",
+          "blacklistEmpty": "黑名单为空",
+          "blacklistEffectTag": "生效范围",
+          "blacklistEffect": "仅影响文书认证申请,不影响门户其他功能。"
+        }
+      }
+    },
+    "docMsg": {
+      "submitted": {
+        "title": "认证申请已提交",
+        "body": "申请 {{appNo}} 已进入认证队列,预计 72 小时内完成。"
+      },
+      "supplement_request": {
+        "title": "认证需要补件",
+        "body": "申请 {{appNo}} 需要补件:{{note}}。请在 {{days}} 天内补交,逾期将自动关闭。"
+      },
+      "supplemented": {
+        "title": "补件已提交",
+        "body": "申请 {{appNo}} 已重新进入认证队列。"
+      },
+      "approved": {
+        "title": "认证通过!",
+        "body": "申请 {{appNo}} 已通过认证,文书编号 {{certNo}},快去查看吧。"
+      },
+      "rejected": {
+        "title": "认证申请被驳回",
+        "body": "申请 {{appNo}} 未通过认证(原因:{{reason}})。你可以按原因补充后重新申请。"
+      },
+      "withdrawn": {
+        "title": "认证申请已撤销",
+        "body": "申请 {{appNo}} 已由你撤销。"
+      },
+      "closed": {
+        "title": "补件超时,申请已关闭",
+        "body": "申请 {{appNo}} 因未在期限内补件而自动关闭,如需认证请重新申请。"
+      },
+      "expired": {
+        "title": "文书已过期",
+        "body": "文书 {{certNo}} 已过有效期。如仍需使用,可重新申请认证。"
+      },
+      "expiry_reminder": {
+        "title": "文书即将到期",
+        "body": "文书 {{certNo}} 将在 72 小时内到期,请注意查看有效期。"
+      },
+      "revoked": {
+        "title": "文书已被撤销",
+        "body": "文书 {{certNo}} 已被认证署撤销,原因:{{reason}}。如有疑问请联系管理员。"
+      },
+      "regenerated": {
+        "title": "文书已补发",
+        "body": "原文书 {{oldCertNo}} 已补发为新文书 {{certNo}},请以新编号为准。"
+      },
+      "system": {
+        "title": "系统通知",
+        "body": "你有一条新的系统通知。"
+      }
+    }
+  },
+  "docMsg": {
+    "submitted": {
+      "title": "认证申请已提交",
+      "body": "申请 {{appNo}} 已进入认证队列,预计 72 小时内完成。"
+    },
+    "supplement_request": {
+      "title": "认证需要补件",
+      "body": "申请 {{appNo}} 需要补件:{{note}}。请在 {{days}} 天内补交,逾期将自动关闭。"
+    },
+    "supplemented": {
+      "title": "补件已提交",
+      "body": "申请 {{appNo}} 已重新进入认证队列。"
+    },
+    "approved": {
+      "title": "认证通过!",
+      "body": "申请 {{appNo}} 已通过认证,文书编号 {{certNo}},快去查看吧。"
+    },
+    "rejected": {
+      "title": "认证申请被驳回",
+      "body": "申请 {{appNo}} 未通过认证(原因:{{reason}})。你可以按原因补充后重新申请。"
+    },
+    "withdrawn": {
+      "title": "认证申请已撤销",
+      "body": "申请 {{appNo}} 已由你撤销。"
+    },
+    "closed": {
+      "title": "补件超时,申请已关闭",
+      "body": "申请 {{appNo}} 因未在期限内补件而自动关闭,如需认证请重新申请。"
+    },
+    "expired": {
+      "title": "文书已过期",
+      "body": "文书 {{certNo}} 已过有效期。如仍需使用,可重新申请认证。"
+    },
+    "expiry_reminder": {
+      "title": "文书即将到期",
+      "body": "文书 {{certNo}} 将在 72 小时内到期,请注意查看有效期。"
+    },
+    "revoked": {
+      "title": "文书已被撤销",
+      "body": "文书 {{certNo}} 已被认证署撤销,原因:{{reason}}。如有疑问请联系管理员。"
+    },
+    "regenerated": {
+      "title": "文书已补发",
+      "body": "原文书 {{oldCertNo}} 已补发为新文书 {{certNo}},请以新编号为准。"
+    },
+    "system": {
+      "title": "系统通知",
+      "body": "你有一条新的系统通知。"
+    }
   }
 }

@@ -44,6 +44,16 @@ export default function AppLayout() {
             <NavLink to="/" end className={navClass}>
               {t('nav.portal')}
             </NavLink>
+            {can('visa:apply') && (
+              <NavLink to="/visa" className={navClass}>
+                {t('nav.visa')}
+              </NavLink>
+            )}
+            {can('docs:apply') && (
+              <NavLink to="/docs" className={navClass}>
+                {t('nav.docs')}
+              </NavLink>
+            )}
             <NavLink to="/profile" className={navClass}>
               {t('nav.profile')}
             </NavLink>
@@ -60,6 +70,11 @@ export default function AppLayout() {
             {can('services:read') && (
               <NavLink to="/admin/services" className={navClass}>
                 {t('nav.services')}
+              </NavLink>
+            )}
+            {can('docs:certify') && (
+              <NavLink to="/admin/docs/review" className={navClass}>
+                {t('nav.docsReview')}
               </NavLink>
             )}
           </nav>

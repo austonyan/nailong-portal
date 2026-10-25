@@ -1,0 +1,181 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button, Card, Input, Modal, Notification, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { PlusIcon, TrashIcon } from 'naive-icons';
+import { api } from '../../../api/client.js';
+import DocsTextarea from '../../../components/DocsTextarea.jsx';
+
+const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
+
+export default function DocsNotices() {
+  const { t } = useTranslation();
+  const [items, setItems] = useState(null);
+  const [editing, setEditing] = useState(null); // null | {} | notice
+  const [form, setForm] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      // 管理端要看全部(含已下线的公告)
+      const d = await api.get('/docs/admin/notices');
+      setItems(d.items);
+    } catch (err) {
+      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      setItems([]);
+    }
+  }, [t]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const openCreate = () => {
+    setEditing({});
+    setForm({ title: '', body: '', level: 'info', enabled: true });
+  };
+
+  const openEdit = (n) => {
+    setEditing(n);
+    setForm({ title: n.title, body: n.body, level: n.level, enabled: !!n.enabled });
+  };
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      if (editing?.id) await api.patch(`/docs/admin/notices/${editing.id}`, form);
+      else await api.post('/docs/admin/notices', form);
+      Notification.success(t('common.save'));
+      setEditing(null);
+      load();
+    } catch (err) {
+      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const toggle = async (n) => {
+    try {
+      await api.patch(`/docs/admin/notices/${n.id}`, { enabled: !n.enabled });
+      load();
+    } catch (err) {
+      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+    }
+  };
+
+  const doDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await api.del(`/docs/admin/notices/${deleteTarget.id}`);
+      setDeleteTarget(null);
+      load();
+    } catch (err) {
+      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+    }
+  };
+
+  const setF = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+
+  const columns = [
+    { title: t('docs.admin.notices.titleCol'), dataIndex: 'title', width: 220 },
+    { title: t('common.description'), dataIndex: 'body', render: (v) => <span className="docs-cell-clip">{v}</span> },
+    {
+      title: t('docs.admin.notices.level'),
+      dataIndex: 'level',
+      width: 100,
+      render: (v) => (
+        <Tag color={LEVEL_COLORS[v] || 'default'} variant="soft">
+          {t(`docs.noticeLevel.${v}`)}
+        </Tag>
+      ),
+    },
+    {
+      title: t('common.status'),
+      dataIndex: 'enabled',
+      width: 90,
+      render: (v, row) => <Switch size="small" checked={!!v} onChange={() => toggle(row)} />,
+    },
+    { title: t('common.createdAt'), dataIndex: 'createdAt', width: 110, render: (v) => String(v).slice(0, 10) },
+    {
+      title: t('common.actions'),
+      width: 120,
+      render: (_, row) => (
+        <div className="table-actions">
+          <Button size="small" onClick={() => openEdit(row)}>
+            {t('common.edit')}
+          </Button>
+          <Button size="small" danger icon={<TrashIcon />} onClick={() => setDeleteTarget(row)} />
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <div className="page-header">
+        <Title size="middle">{t('docs.admin.notices.title')}</Title>
+        <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
+          {t('docs.admin.notices.create')}
+        </Button>
+      </div>
+      <Card>
+        <Table columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
+      </Card>
+
+      <Modal
+        open={!!editing}
+        title={editing?.id ? t('docs.admin.notices.edit') : t('docs.admin.notices.create')}
+        width={640}
+        typewriter={false}
+        onClose={() => setEditing(null)}
+        footer={
+          <>
+            <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} onClick={submit}>
+              {t('common.save')}
+            </Button>
+          </>
+        }
+      >
+        {form && (
+          <div className="docs-field-col">
+            <label className="docs-field">
+              <span className="docs-field-label">{t('docs.admin.notices.titleCol')}</span>
+              <Input value={form.title} onChange={(e) => setF('title', e.target.value)} maxLength={120} />
+            </label>
+            <label className="docs-field">
+              <span className="docs-field-label">{t('docs.admin.notices.level')}</span>
+              <Select value={form.level} onChange={(v) => setF('level', v)} options={['info', 'policy', 'event'].map((l) => ({ key: l, label: t(`docs.noticeLevel.${l}`) }))} />
+            </label>
+            <label className="docs-field docs-field-wide">
+              <span className="docs-field-label">{t('common.description')}</span>
+              <DocsTextarea value={form.body} onChange={(v) => setF('body', v)} rows={5} maxLength={2000} />
+            </label>
+            <label className="docs-field">
+              <span className="docs-field-label">{t('common.enabled')}</span>
+              <Switch checked={form.enabled} onChange={(v) => setF('enabled', v)} />
+            </label>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        open={!!deleteTarget}
+        title={t('common.confirmDeleteTitle')}
+        typewriter={false}
+        onClose={() => setDeleteTarget(null)}
+        footer={
+          <>
+            <Button onClick={() => setDeleteTarget(null)}>{t('common.cancel')}</Button>
+            <Button type="primary" danger onClick={doDelete}>
+              {t('common.delete')}
+            </Button>
+          </>
+        }
+      >
+        <p>{t('docs.admin.notices.deleteConfirm', { title: deleteTarget?.title })}</p>
+      </Modal>
+    </div>
+  );
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Card, Divider, Notification, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Avatar, Background, Button, Card, Divider, Modal, Notification, Tag, Title, Typewriter } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
@@ -9,7 +10,9 @@ import { serviceIcon } from '../components/icons.js';
 export default function Portal() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [services, setServices] = useState(null);
+  const [ssoService, setSsoService] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,6 +31,18 @@ export default function Portal() {
   }, [t]);
 
   const displayName = user?.displayName || user?.username || '';
+
+  // 服务入口:external 新开外链;internal 直接进 SPA 路由;internal_sso 先弹
+  // 单点登录身份确认,确认后再进入(签注申请署等站内服务)。
+  const openService = (s) => {
+    if (s.entryMode === 'external') {
+      window.open(s.url, '_blank', 'noopener,noreferrer');
+    } else if (s.entryMode === 'internal') {
+      navigate(s.url);
+    } else {
+      setSsoService(s);
+    }
+  };
 
   return (
     <div className="portal-page">
@@ -89,7 +104,7 @@ export default function Portal() {
                   color={s.color}
                   hoverable
                   className="service-card"
-                  onClick={() => window.open(s.url, '_blank', 'noopener,noreferrer')}
+                  onClick={() => openService(s)}
                 >
                   <div className="service-card-top">
                     <Icon size={36} />
@@ -103,6 +118,42 @@ export default function Portal() {
           </div>
         )}
       </section>
+
+      <Modal
+        open={ssoService !== null}
+        title={t('visa.sso.title')}
+        onClose={() => setSsoService(null)}
+        typewriter={false}
+        footer={
+          <>
+            <Button onClick={() => setSsoService(null)}>{t('common.cancel')}</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                const target = ssoService;
+                sessionStorage.setItem('nailong.visa.sso', '1');
+                setSsoService(null);
+                if (target) navigate(target.url);
+              }}
+            >
+              {t('visa.sso.confirm')}
+            </Button>
+          </>
+        }
+      >
+        <div className="visa-sso-body">
+          <Card color="app-teal" className="visa-sso-card">
+            <div className="visa-sso-identity">
+              <Avatar size="large">{displayName.slice(0, 1)}</Avatar>
+              <div>
+                <div className="visa-sso-name">{displayName}</div>
+                <div className="visa-sso-account">@{user?.username}</div>
+              </div>
+            </div>
+          </Card>
+          <p className="muted-text">{t('visa.sso.portalTip')}</p>
+        </div>
+      </Modal>
     </div>
   );
 }

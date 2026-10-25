@@ -25,6 +25,7 @@ import {
   BellIcon,
   FishIcon,
   MapIcon,
+  BadgeCheckIcon,
 } from 'naive-icons';
 
 export const SERVICE_ICONS = {
@@ -52,6 +53,7 @@ export const SERVICE_ICONS = {
   BellIcon,
   FishIcon,
   MapIcon,
+  BadgeCheckIcon,
 };
 
 export const SERVICE_COLORS = [

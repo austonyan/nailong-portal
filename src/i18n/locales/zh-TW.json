@@ -1,16 +1,19 @@
 {
   "app": {
-    "name": "奶龍統一入口"
+    "name": "奶龍統一門戶"
   },
   "nav": {
-    "portal": "入口",
+    "portal": "門戶",
+    "visa": "簽註申請署",
     "profile": "個人資料",
     "admin": "管理",
     "users": "使用者管理",
     "roles": "角色與權限",
     "services": "服務管理",
     "logout": "登出",
-    "language": "語言"
+    "language": "語言",
+    "docs": "文書認證署",
+    "docsReview": "文書審核臺"
   },
   "common": {
     "actions": "操作",
@@ -21,7 +24,7 @@
     "delete": "刪除",
     "confirm": "確認",
     "confirmDeleteTitle": "確認刪除",
-    "deleteTip": "此操作無法復原,確定要刪除嗎?",
+    "deleteTip": "此操作不可復原,確定要刪除嗎?",
     "search": "搜尋",
     "loading": "載入中…",
     "enabled": "啟用",
@@ -50,7 +53,7 @@
     "confirmPassword": "確認密碼",
     "displayName": "顯示名稱",
     "displayNamePlaceholder": "大家怎麼稱呼你",
-    "email": "電子郵件",
+    "email": "信箱",
     "login": "登入",
     "register": "註冊",
     "toRegister": "還沒有帳號?去註冊",
@@ -66,7 +69,7 @@
     "FORBIDDEN": "權限不足",
     "ACCOUNT_DISABLED": "帳號已被停用,請聯絡管理員",
     "USERNAME_TAKEN": "使用者名稱已被佔用",
-    "EMAIL_TAKEN": "電子郵件已被使用",
+    "EMAIL_TAKEN": "信箱已被使用",
     "WEAK_PASSWORD": "密碼需要 8-72 位字元",
     "WRONG_PASSWORD": "目前密碼不正確",
     "VALIDATION_ERROR": "輸入有誤,請檢查後重試",
@@ -77,13 +80,47 @@
     "ROLE_KEY_TAKEN": "角色標識已存在",
     "NOT_FOUND": "資源不存在",
     "INTERNAL_ERROR": "伺服器開小差了,請稍後重試",
-    "NETWORK_ERROR": "網路連線失敗,請確認伺服器已啟動"
+    "NETWORK_ERROR": "網路連線失敗,請確認伺服器已啟動",
+    "VISA_FIELD_REQUIRED": "還有必填資訊沒有填寫",
+    "VISA_DATES_INVALID": "離開日期需要晚於抵達日期",
+    "VISA_TYPE_UNAVAILABLE": "該簽註類型暫未開放",
+    "VISA_NOT_EDITABLE": "目前狀態不能再修改",
+    "VISA_RATE_LIMITED": "操作太頻繁,請稍等一分鐘再試",
+    "VISA_TOO_MANY_ACTIVE": "你有太多正在審核中的申請",
+    "VISA_AGREEMENT_REQUIRED": "請先勾選娛樂聲明",
+    "VISA_AVATAR_REQUIRED": "需要至少上傳一張頭像",
+    "VISA_INVALID_TRANSITION": "目前狀態無法執行該操作",
+    "VISA_SUPPLEMENT_EXPIRED": "補件期限已過",
+    "VISA_SUPPLEMENT_EMPTY": "請先上傳補件材料或填寫說明",
+    "VISA_FILE_TOO_LARGE": "檔案太大,單個不超過 5MB",
+    "VISA_FILE_TYPE": "僅支援圖片(PNG/JPG/WebP)或 PDF",
+    "VISA_TOO_MANY_FILES": "材料數量已達上限(6 個)",
+    "VISA_BLACKLISTED": "該帳號已被限制申請",
+    "VISA_VERIFY_LIMITED": "驗真請求太頻繁,請稍後再試",
+    "VISA_REASON_REQUIRED": "請選擇駁回原因",
+    "VISA_ALREADY_ISSUED": "該申請已簽發過簽註",
+    "VISA_ERASE_BLOCKED": "請先撤銷進行中的申請",
+    "SERVICE_DISABLED": "服務間介面未啟用",
+    "SERVICE_FORBIDDEN": "服務權杖無效",
+    "DOC_TYPE_UNAVAILABLE": "該文書類型暫不可申請",
+    "DOC_DECLARATION_REQUIRED": "請先勾選娛樂聲明",
+    "DOC_RATE_LIMITED": "操作太頻繁了,請明天再試",
+    "DOC_DUPLICATE": "存在重複的在途申請或有效文書",
+    "DOC_BLACKLISTED": "帳號已被限制申請認證,請聯絡管理員",
+    "DOC_NOT_EDITABLE": "目前狀態不可編輯",
+    "DOC_INVALID_STATE": "目前狀態不允許此操作",
+    "DOC_MATERIAL_REQUIRED": "還有必傳材料未上傳",
+    "DOC_FILE_TOO_LARGE": "檔案太大,超出大小限制",
+    "DOC_FILE_TYPE_REJECTED": "檔案類型不被支援",
+    "DOC_FILE_COUNT_EXCEEDED": "材料數量超出上限",
+    "DOC_VERIFY_LIMIT": "查詢太頻繁,請稍後再試",
+    "DOC_TYPE_CODE_TAKEN": "類型編碼已存在"
   },
   "portal": {
-    "tagline": "這裡是奶龍統一入口,所有服務從這裡出發",
+    "tagline": "這裡是奶龍統一門戶,所有服務從這裡出發",
     "services": "服務入口",
     "servicesEmpty": "還沒有可用的服務,請聯絡管理員",
-    "open": "打開",
+    "open": "開啟",
     "myRoles": "我的角色",
     "serviceCount": "可用服務",
     "permissionCount": "我的權限"
@@ -91,12 +128,12 @@
   "profile": {
     "title": "個人資料",
     "basic": "基本資訊",
-    "changePassword": "變更密碼",
+    "changePassword": "修改密碼",
     "oldPassword": "目前密碼",
     "newPassword": "新密碼",
     "confirmNewPassword": "確認新密碼",
     "updateSuccess": "資料已更新",
-    "passwordChanged": "密碼已變更",
+    "passwordChanged": "密碼已修改",
     "memberSince": "註冊於",
     "roles": "角色"
   },
@@ -107,10 +144,10 @@
       "edit": "編輯使用者",
       "username": "使用者名稱",
       "displayName": "顯示名稱",
-      "email": "電子郵件",
+      "email": "信箱",
       "roles": "角色",
       "resetPassword": "重設密碼",
-      "newPasswordTip": "留空表示不變更密碼",
+      "newPasswordTip": "留空表示不修改密碼",
       "deleteConfirm": "確定要刪除使用者 {{name}} 嗎?",
       "keepStatus": "帳號狀態"
     },
@@ -127,10 +164,11 @@
       "deleteConfirm": "確定要刪除角色 {{name}} 嗎?",
       "adminLockedTip": "管理員角色始終擁有全部權限",
       "group": {
-        "portal": "入口",
+        "portal": "門戶",
         "users": "使用者",
         "roles": "角色",
-        "services": "服務"
+        "services": "服務",
+        "visa": "簽註"
       }
     },
     "services": {
@@ -145,11 +183,954 @@
       "deleteConfirm": "確定要刪除服務 {{name}} 嗎?"
     }
   },
+  "visa": {
+    "officeName": "奶龍國簽註申請署",
+    "officeSub": "Nailong National Endorsement Office · 虛構娛樂機構",
+    "disclaimerTag": "娛樂聲明",
+    "disclaimerShort": "本簽註為虛構娛樂作品,不具任何現實效力",
+    "disclaimerLong": "娛樂聲明:奶龍國及其簽註申請署均為虛構創作。本平台不核驗真實身份,簽註不具任何現實法律效力,不可用於任何現實場合。請勿相信任何收費辦證或「保證通過」的說法。",
+    "back": "返回",
+    "backHome": "回首頁",
+    "sso": {
+      "title": "單點登入身份確認",
+      "confirm": "確認並進入",
+      "tip": "進入服務後,你的門戶身份將用於簽註申請與站內通知。你可以隨時在個人資料頁登出。",
+      "portalTip": "奶龍統一門戶將以目前身份單點登入進入該服務。"
+    },
+    "nav": {
+      "home": "署內首頁",
+      "applications": "我的申請",
+      "permits": "我的簽註",
+      "messages": "站內信",
+      "workbench": "審核工作台",
+      "manage": "簽註管理"
+    },
+    "noticeLevel": {
+      "info": "通知",
+      "policy": "政策",
+      "event": "活動"
+    },
+    "home": {
+      "heroTitle": "歡迎來到簽註申請署",
+      "heroSub": "辦好虛擬簽註,奶龍島說走就走。目前開放:旅遊簽註 TOURIST",
+      "applyEntry": "開始申請",
+      "progressEntry": "我的申請",
+      "verifyEntry": "驗真中心",
+      "scamTitle": "防詐騙提示",
+      "scamBody": "本署辦證完全免費。任何「收費辦證」「承諾簽註有現實效力」的行為都是詐騙,請立即舉報。",
+      "notices": "署內公告",
+      "types": "簽註類型",
+      "guide": "辦事指南",
+      "guideCondition": "申請條件",
+      "guideConditionBody": "凡奶龍統一門戶註冊使用者均可申請。本平台不核驗真實身份,請用暱稱與虛構資訊填寫。",
+      "guideMaterials": "所需材料",
+      "guideMaterialsBody": "頭像照片(必傳)、行程說明(必填)、邀請函或活動憑證(選填,圖片或 PDF)。",
+      "guideDuration": "審核時長",
+      "guideDurationBody": "提交後約 {{hours}} 小時內完成審核,請留意站內信通知。",
+      "guideValidity": "有效期說明",
+      "guideValidityBody": "簽發後 {{days}} 天內有效,單次最長停留 {{stay}} 天,過期自動失效。",
+      "faq": "常見問題",
+      "supportTip": "還有疑問?給署裡發一封站內信吧:"
+    },
+    "typeAvail": {
+      "open": "開放申請",
+      "soon": "即將開放"
+    },
+    "typeMeta": {
+      "stay": "單次停留 {{days}} 天",
+      "valid": "有效期 {{days}} 天",
+      "stayShort": "停留天數",
+      "validShort": "有效天數",
+      "renewable": {
+        "title": "可否續簽",
+        "yes": "可續簽",
+        "no": "不可續簽"
+      }
+    },
+    "faq": {
+      "reject": {
+        "q": "為什麼會被駁回?",
+        "a": "常見原因:材料不全、行程說明太含糊、資訊前後矛盾。按駁回原因補齊後可以重新申請。"
+      },
+      "fee": {
+        "q": "辦簽註要收費嗎?",
+        "a": "完全免費。奶龍國簽證費用由奶龍本龍承擔(它很有錢)。任何收費辦證都是詐騙。"
+      },
+      "real": {
+        "q": "簽註可以在現實中使用嗎?",
+        "a": "不可以。本簽註是虛構娛樂作品,不具任何現實效力,不能用於任何現實口岸、機場或場合。"
+      },
+      "duration": {
+        "q": "審核要多久?",
+        "a": "一般 72 小時內完成。補件期間需在截止時間前補交,超時申請會自動關閉。"
+      },
+      "port": {
+        "q": "到達皇家口岸時怎麼通關?",
+        "a": "皇家口岸入境署(建設中)將直接線上校驗你的簽註編號,通關後簽註會自動標記為已使用。"
+      }
+    },
+    "applyGuide": {
+      "title": "{{name}} · 申請前引導",
+      "typeUnavailable": "該簽註類型暫未開放,先看看其他類型吧",
+      "materialsTitle": "材料清單",
+      "materialAvatar": "頭像照片 1 張(必傳,圖片格式)",
+      "materialItinerary": "行程說明(必填,寫清楚打算去哪玩)",
+      "materialInvitation": "邀請函 / 活動憑證(選填,後續開放邀請方功能)",
+      "materialFormat": "支援 PNG / JPG / WebP / PDF,單個不超過 5MB,最多 6 個檔案",
+      "quizTitle": "申請資格自檢",
+      "quizHint": "趣味三連問,答完就能出發(本平台不核驗真實身份)",
+      "quizDone": "自檢完成,看起來你很適合來奶龍島!",
+      "agreementTitle": "隱私政策與使用者協議",
+      "agreePrivacy": "我已閱讀並同意《隱私政策》:平台僅收集暱稱與虛構資訊用於娛樂演繹",
+      "agreeTerms": "我已閱讀並同意《使用者協議》:簽註僅供娛樂,不可用於現實用途",
+      "start": "開始填寫申請"
+    },
+    "quiz": {
+      "identity": {
+        "q": "你準備以什麼身份來到奶龍國?",
+        "yes": "一個可愛的虛構角色",
+        "no": "我就是現實中的我"
+      },
+      "verification": {
+        "q": "你了解本平台不核驗真實身份嗎?",
+        "yes": "了解,這是娛樂平台",
+        "no": "以為要查戶口"
+      },
+      "usage": {
+        "q": "你承諾不會把簽註用於現實用途嗎?",
+        "yes": "承諾,只在奶龍國玩",
+        "no": "想拿去機場試試"
+      }
+    },
+    "form": {
+      "title": "線上申請表",
+      "draftNo": "草稿編號:{{no}}",
+      "nickname": "暱稱",
+      "nicknamePlaceholder": "在奶龍國怎麼稱呼你",
+      "contact": "聯絡方式",
+      "contactPlaceholder": "站內信或信箱",
+      "virtualId": "虛擬身份資訊",
+      "virtualIdPlaceholder": "例如:NL-8888(選填)",
+      "purpose": "訪問目的",
+      "purposePlaceholder": "觀光 / 度假 / 打卡奶龍雕像…",
+      "planArrive": "計劃抵達",
+      "planLeave": "計劃離開",
+      "datePlaceholder": "選擇日期",
+      "datesInvalid": "離開日期要晚於抵達日期",
+      "itinerary": "行程說明",
+      "itineraryPlaceholder": "D1 海灘曬太陽;D2 圖鑑館;D3 看流星雨…",
+      "inviterName": "邀請人 / 接待方",
+      "inviterContact": "邀請人聯絡方式",
+      "companions": "隨行人員",
+      "companionsPlaceholder": "例如:奶龍寶寶 ×2(選填)",
+      "materialsTitle": "材料上傳",
+      "materialsTip": "頭像必傳;其餘材料可選。支援圖片與 PDF,單個不超過 5MB。",
+      "materialAvatar": "頭像",
+      "materialOther": "其他材料(邀請函、活動憑證等)",
+      "uploadAvatar": "上傳頭像",
+      "uploadOther": "點擊或拖曳上傳,支援多份",
+      "saveDraft": "儲存草稿",
+      "draftSaved": "草稿已儲存",
+      "submit": "提交申請",
+      "submitSuccess": "申請已提交",
+      "confirmTitle": "提交前確認",
+      "confirmAgree": "我確認以上資訊為虛構娛樂內容,並同意《娛樂聲明》",
+      "materialsCount": "已上傳 {{count}} 份材料",
+      "submittedTitle": "提交成功!",
+      "submittedNo": "申請編號:{{no}}",
+      "submittedHint": "預計 {{hours}} 小時內完成審核,結果將透過站內信通知。請保存好申請編號,可在驗真中心查詢進度。",
+      "viewMyApplications": "查看我的申請"
+    },
+    "materialKind": {
+      "avatar": "頭像",
+      "invitation": "邀請函",
+      "proof": "活動憑證",
+      "other": "其他材料"
+    },
+    "field": {
+      "appNo": "申請編號",
+      "type": "簽註類型",
+      "submittedAt": "提交時間",
+      "updatedAt": "最後更新",
+      "trip": "計劃行程",
+      "applicant": "申請人"
+    },
+    "status": {
+      "draft": "草稿",
+      "pending_review": "待審核",
+      "supplement_required": "補件中",
+      "approved": "審核通過",
+      "issued": "已簽發",
+      "rejected": "已駁回",
+      "withdrawn": "已撤銷",
+      "closed": "已關閉"
+    },
+    "permitStatus": {
+      "valid": "有效",
+      "used": "已使用",
+      "expired": "已過期",
+      "voided": "已註銷"
+    },
+    "reviewAction": {
+      "approve": "審核通過",
+      "reject": "駁回",
+      "require_supplement": "要求補件",
+      "issue": "簽發",
+      "void": "註銷",
+      "mark_used": "標記已使用"
+    },
+    "rejectReason": {
+      "incomplete_materials": "材料不全",
+      "false_info": "資訊不實",
+      "type_mismatch": "類型不符",
+      "duplicate": "重複申請",
+      "other": "其他原因"
+    },
+    "my": {
+      "title": "我的申請",
+      "view": "查看",
+      "withdraw": "撤銷申請",
+      "withdrawn": "已撤銷",
+      "withdrawConfirmTitle": "撤銷申請",
+      "withdrawConfirmBody": "確定要撤銷申請 {{no}} 嗎?撤銷後不能恢復。",
+      "draftDeleted": "草稿已刪除",
+      "export": "匯出記錄",
+      "empty": "還沒有申請,去辦一張旅遊簽註吧",
+      "preview": "預覽"
+    },
+    "detail": {
+      "title": "申請詳情",
+      "rejectTitle": "很遺憾,申請被駁回了",
+      "closedTitle": "申請已關閉",
+      "closedBody": "補件期限已過,申請自動關閉。可以按原類型重新申請。",
+      "permitReady": "電子簽註已簽發",
+      "materials": "材料",
+      "reviews": "審核記錄",
+      "noReviews": "還沒有審核記錄",
+      "supplementTitle": "補件",
+      "supplementDeadline": "補件截止:{{time}}",
+      "supplementAsk": "審核員要求:",
+      "uploadSupplement": "點擊或拖曳上傳補件材料",
+      "supplementNotePlaceholder": "補件說明(選填)",
+      "submitSupplement": "提交補件",
+      "supplementSent": "補件已提交,重新進入審核",
+      "reapply": "重新申請",
+      "print": "列印 / 匯出 PDF"
+    },
+    "permit": {
+      "title": "我的簽註",
+      "empty": "還沒有簽註。申請通過並簽發後,電子簽註會出現在這裡。",
+      "electronic": "電子簽註 Electronic Endorsement",
+      "noLabel": "簽註編號",
+      "no": "簽註編號:{{no}}",
+      "holder": "持有人",
+      "issuedAt": "簽發日期",
+      "validUntil": "有效期至",
+      "issuer": "簽發機構",
+      "watermark": "奶龍國 · 娛樂專用",
+      "print": "列印 / 保存 PDF",
+      "verifyLink": "開啟驗真連結",
+      "copyLink": "複製驗真連結",
+      "linkCopied": "驗真連結已複製",
+      "meta": "本簽註由奶龍國簽註申請署於 {{time}} 簽發,驗真請前往驗真中心。"
+    },
+    "verify": {
+      "title": "簽註驗真中心",
+      "subtitle": "輸入簽註編號或申請編號,即時校驗簽註狀態(結果已脫敏,不含個人資訊)",
+      "placeholder": "例如:NLT-261025-XXXXXXXX",
+      "action": "驗真",
+      "limitTip": "為防枚舉,同一來源每 5 分鐘最多查詢 30 次",
+      "notFound": "沒有查到對應簽註。請核對編號,或聯絡持有人確認。",
+      "disclaimer": "驗真結果僅供娛樂參考。本簽註為虛構作品,不具任何現實效力。"
+    },
+    "msgType": {
+      "submitted": "提交成功",
+      "supplement_required": "需要補件",
+      "approved": "審核通過",
+      "rejected": "已駁回",
+      "issued": "簽註已簽發",
+      "used": "簽註已使用",
+      "voided": "簽註已註銷",
+      "expired": "簽註已過期",
+      "closed": "申請已關閉",
+      "withdrawn": "申請已撤銷",
+      "expiry_reminder": "到期提醒",
+      "system": "系統通知"
+    },
+    "msg": {
+      "submitted": {
+        "title": "申請 {{appNo}} 已提交",
+        "body": "你的簽註申請已進入審核佇列,預計 {{hours}} 小時內完成。"
+      },
+      "supplement_required": {
+        "title": "申請 {{appNo}} 需要補件",
+        "body": "審核員留言:{{comment}}。請在 {{deadline}} 前補交材料,超時申請將自動關閉。"
+      },
+      "approved": {
+        "title": "申請 {{appNo}} 審核通過",
+        "body": "恭喜!申請已通過審核,等待簽發電子簽註。"
+      },
+      "rejected": {
+        "title": "申請 {{appNo}} 被駁回",
+        "body": "駁回原因:{{reason}}。查看詳情了解說明,可以重新申請。"
+      },
+      "issued": {
+        "title": "電子簽註已簽發",
+        "body": "簽註編號 {{visaNo}}(申請 {{appNo}}),有效期至 {{validUntil}}。到我的簽註查看或下載。"
+      },
+      "used": {
+        "title": "簽註 {{visaNo}} 已使用",
+        "body": "該簽註已在皇家口岸通關時核銷,不能再次使用。"
+      },
+      "voided": {
+        "title": "簽註 {{visaNo}} 已註銷",
+        "body": "簽註已被簽發機構註銷,如有疑問請聯絡署裡。"
+      },
+      "expired": {
+        "title": "簽註 {{visaNo}} 已過期",
+        "body": "簽註超過有效期,自動失效。需要的話可以重新申請。"
+      },
+      "closed": {
+        "title": "申請 {{appNo}} 已關閉",
+        "body": "補件期限已過,申請自動關閉。可以重新申請。"
+      },
+      "withdrawn": {
+        "title": "申請 {{appNo}} 已撤銷",
+        "body": "你已撤銷該申請。"
+      },
+      "expiry_reminder": {
+        "title": "簽註 {{visaNo}} 即將到期",
+        "body": "簽註將在 72 小時內到期,注意安排行程。"
+      },
+      "system": {
+        "title": "系統通知",
+        "body": ""
+      }
+    },
+    "msgs": {
+      "title": "站內信",
+      "inbox": "收件匣",
+      "archived": "已歸檔",
+      "archive": "歸檔"
+    },
+    "admin": {
+      "allStatus": "全部狀態",
+      "allTypes": "全部類型",
+      "searchPlaceholder": "搜尋編號 / 暱稱",
+      "queueEmpty": "佇列為空,去喝杯椰子汁吧",
+      "commentLabel": "審核意見(選填)",
+      "rejectReasonLabel": "駁回原因",
+      "supplementDaysLabel": "補件期限(天)",
+      "validDaysLabel": "簽註有效期(天,留空用類型預設)",
+      "actions": {
+        "approve": "通過",
+        "reject": "駁回",
+        "supplement": "要求補件",
+        "issue": "簽發電子簽註",
+        "void": "註銷簽註",
+        "markUsed": "標記已使用"
+      },
+      "typesTip": "簽註類型決定有效期與停留天數;新類型預設開放,可手動停用",
+      "typesCreate": "新增簽註類型",
+      "typesEdit": "編輯簽註類型",
+      "typesGuide": "申請指南",
+      "sortOrder": "排序",
+      "noticesTip": "公告展示在簽註申請署首頁",
+      "noticesCreate": "發佈公告",
+      "noticesEdit": "編輯公告",
+      "noticeLevel": "公告級別",
+      "configAppNoPrefix": "申請編號前綴",
+      "configVisaNoPrefix": "簽註編號前綴",
+      "configSupplementDays": "預設補件期限(天)",
+      "configReviewHours": "預計審核時長(小時,展示用)",
+      "configVerifyLimit": "驗真限流(次 / 5 分鐘 / IP)",
+      "userId": "使用者 ID",
+      "blacklistReason": "限制原因",
+      "blacklistAdd": "加入限制名單",
+      "workbench": {
+        "title": "審核工作台"
+      },
+      "manage": {
+        "title": "簽註管理",
+        "types": "簽註類型",
+        "notices": "公告管理",
+        "config": "編號與規則",
+        "blacklist": "風控名單"
+      },
+      "stats": {
+        "title": "統計與報表",
+        "export": "匯出申請 CSV",
+        "submitted": "累計提交",
+        "approvalRate": "通過率",
+        "rejectRate": "駁回率",
+        "supplementRate": "補件率",
+        "avgReviewHours": "平均審核時長",
+        "verifyToday": "今日驗真",
+        "verifyTotal": "累計驗真 {{total}} 次",
+        "byStatus": "申請狀態分佈",
+        "byType": "簽註類型分佈",
+        "rejectReasons": "常見駁回原因",
+        "permits": "簽註狀態",
+        "verifyLogs": "驗真記錄"
+      },
+      "verifyQuery": "查詢內容",
+      "verifyIp": "來源 IP",
+      "verifyResult_valid": "命中 · 有效",
+      "verifyResult_used": "命中 · 已使用",
+      "verifyResult_expired": "命中 · 已過期",
+      "verifyResult_voided": "命中 · 已註銷",
+      "verifyResult_not_found": "未命中",
+      "verifyResult_rate_limited": "已限流",
+      "audit": {
+        "title": "稽核日誌",
+        "auditFilter": "按操作類型篩選",
+        "auditAction": "操作",
+        "auditActor": "操作人",
+        "auditTarget": "對象",
+        "auditDetail": "詳情"
+      }
+    }
+  },
   "errors": {
     "forbiddenTitle": "權限不足",
-    "forbiddenTip": "你的帳號沒有造訪該頁面的權限",
-    "backHome": "回入口首頁",
+    "forbiddenTip": "你的帳號沒有存取該頁面的權限",
+    "backHome": "回門戶首頁",
     "notFoundTitle": "頁面不存在",
     "notFoundTip": "這片海域什麼都沒有"
+  },
+  "docs": {
+    "docs": {
+      "title": "奶龍國皇家文書與認證署",
+      "subtitle": "歡迎來到皇家文書與認證署,{{name}}!在這裡為你的冒險出具認證。",
+      "disclaimer": "本署為奶龍國虛構娛樂設定:所有文書僅代表虛構世界內的娛樂成就,不具任何現實效力,請勿用於現實用途。",
+      "tab": {
+        "home": "署內首頁",
+        "types": "文書類型",
+        "apply": "申請認證",
+        "applications": "我的申請",
+        "certificates": "我的文書",
+        "verify": "驗真中心",
+        "messages": "站內訊息"
+      },
+      "noticeLevel": {
+        "info": "防詐騙提示",
+        "policy": "認證規則",
+        "event": "署內公告"
+      },
+      "purpose": {
+        "display": "展示",
+        "collect": "收藏",
+        "event": "活動報名",
+        "entry_aux": "入境申報輔助",
+        "other": "其他"
+      },
+      "status": {
+        "draft": "草稿",
+        "pending": "待認證",
+        "supplementing": "補件中",
+        "approved": "已認證",
+        "rejected": "已駁回",
+        "withdrawn": "已撤銷"
+      },
+      "certStatus": {
+        "valid": "有效",
+        "used": "已使用",
+        "expired": "已過期",
+        "revoked": "已撤銷"
+      },
+      "reason": {
+        "materials_incomplete": "材料不全",
+        "info_false": "資訊不實",
+        "type_mismatch": "類型不符",
+        "biz_invalid": "關聯業務無效",
+        "duplicate": "重複申請",
+        "other": "其他原因"
+      },
+      "record": {
+        "draft_saved": "儲存草稿",
+        "submitted": "提交申請",
+        "resubmitted": "補件後重新提交",
+        "supplement_requested": "要求補件",
+        "approved": "認證通過",
+        "rejected": "認證駁回",
+        "withdrawn": "申請人撤銷",
+        "cert_issued": "簽發文書",
+        "cert_revoked": "撤銷文書",
+        "cert_marked_used": "標註已使用",
+        "cert_regenerated": "補發文書",
+        "auto_expired": "到期自動失效"
+      },
+      "filter": {
+        "all": "全部",
+        "allStatus": "全部狀態",
+        "allTypes": "全部類型"
+      },
+      "actions": {
+        "view": "查看",
+        "viewCert": "查看文書",
+        "back": "返回列表"
+      },
+      "home": {
+        "welcome": "皇家文書與認證署",
+        "tagline": "邀請函、簽註、居民卡、活動憑證……你的每一段冒險,都值得一份蓋章的紀念。",
+        "quick": {
+          "apply": "申請認證",
+          "certificates": "我的文書",
+          "verify": "驗真查詢",
+          "faq": "常見問題"
+        },
+        "antifraudTitle": "防詐騙提示",
+        "antifraudBody": "本署認證完全免費:不收取任何費用、不承諾任何現實效力。任何自稱「收費代辦認證」的行為都是詐騙。",
+        "entertainmentTitle": "娛樂聲明",
+        "entertainmentBody": "本署及全部認證文書均為虛構娛樂設定,僅代表奶龍國虛擬世界內的成就,不具備任何現實法律效力。",
+        "notices": "署內公告",
+        "catalog": "服務目錄",
+        "guide": "辦事指南與常見問題",
+        "faq1q": "哪些文書可以認證?",
+        "faq1a": "目前開放六類:簽註證明、邀請函、入境記錄證明、居民卡、活動憑證與外交文書。進入「文書類型」頁可以查看每類的適用場景、所需材料與有效期。",
+        "faq2q": "認證需要準備什麼材料?",
+        "faq2a": "通常需要對應業務的憑證截圖(如簽註詳情頁、活動門票),部分類型需要邀請函掃描件。全部材料僅支援圖片或 PDF,單個不超過 10MB。",
+        "faq3q": "認證通過後有什麼用?",
+        "faq3a": "你會獲得一份帶唯一編號與電子印章的認證文書,可以在驗真中心被任何人查驗,用於展示、收藏或作為其他活動的報名憑證(娛樂用途)。",
+        "faq4q": "認證大概需要多久?",
+        "faq4a": "提交後進入待認證佇列,材料齊全通常 72 小時內完成;如需補件會發送站內訊息,請在 7 天內補交,逾期申請將自動關閉。"
+      },
+      "types": {
+        "title": "文書類型",
+        "validityDays": "{{days}} 天內有效",
+        "bizLabel": "關聯{{label}}",
+        "guideTitle": "辦事指南",
+        "guideEmpty": "該類型指南整理中。",
+        "materialsTitle": "材料清單",
+        "materialRule": "最多 {{count}} 個,單個 ≤ {{mb}}MB,圖片或 PDF",
+        "materialsEmpty": "該類型無需上傳材料。",
+        "formTitle": "需要填寫的資訊",
+        "noBiz": "無需關聯業務編號",
+        "shownTitle": "認證後展示的欄位",
+        "shownBody": "認證文書會展示:文書編號、文書類型、持有人暱稱、關聯業務編號、認證機構、認證日期與有效期。驗真查詢只返回去敏資訊,不含暱稱與業務編號。",
+        "faqTitle": "常見問題",
+        "faq1q": "認證文書具有現實效力嗎?",
+        "faq1a": "沒有。所有文書都是虛構娛樂設定,僅代表奶龍國虛擬世界內的成就,不能用於任何現實證明。每份文書都印有「虛構娛樂·無現實效力」浮水印。",
+        "faq2q": "關聯業務編號填錯了怎麼辦?",
+        "faq2a": "草稿階段可以隨時修改;已提交的申請如被駁回,可以按駁回原因重新申請。請在提交前仔細核對編號。",
+        "faq3q": "我可以同時有多份同類文書嗎?",
+        "faq3a": "同一類型+同一關聯業務編號只會有一份在途或有效的文書;不同業務編號可以分別認證。"
+      },
+      "apply": {
+        "title": "申請文書認證",
+        "start": "去申請認證",
+        "step1": "第 1 步 · 選擇文書類型",
+        "step2": "第 2 步 · 填寫申請資訊",
+        "step3": "第 3 步 · 上傳材料",
+        "step4": "第 4 步 · 娛樂聲明與提交",
+        "nickname": "申請人暱稱",
+        "nicknamePh": "將展示在認證文書上",
+        "contact": "聯絡方式",
+        "contactPh": "選填,僅認證員可見",
+        "bizPh": "填寫關聯業務編號",
+        "bizHint": "可在對應業務署的詳情頁找到;聯動校驗即將開放。",
+        "purpose": "認證用途",
+        "required": "必填",
+        "upload": "上傳材料",
+        "materialsCount": "材料數量",
+        "saveDraft": "儲存草稿",
+        "submit": "提交認證",
+        "draftSaved": "草稿已儲存",
+        "submitted": "已提交!認證申請編號:{{no}}",
+        "draftNo": "當前草稿編號:{{no}}",
+        "needType": "請先選擇文書類型",
+        "nicknameRequired": "請填寫申請人暱稱",
+        "bizRequired": "請填寫{{label}}",
+        "fieldRequired": "請填寫「{{label}}」",
+        "materialRequired": "請上傳「{{label}}」",
+        "agreeRequired": "請先勾選娛樂聲明",
+        "typeLocked": "草稿已建立,類型不可更改;如需其他類型請新建申請。",
+        "declaration": "我已知曉並同意:本次認證為奶龍國虛構娛樂設定,文書不具任何現實效力,本人不將其用於現實用途。",
+        "confirmTitle": "提交前確認",
+        "confirmTip": "請核對以下資訊;提交後將進入認證佇列,草稿資訊將被鎖定。",
+        "confirmSubmit": "確認提交",
+        "type": "文書類型",
+        "fileTypeBad": "檔案類型不符,僅支援:{{accept}}",
+        "fileTooLarge": "檔案超過 {{mb}}MB 限制",
+        "supplementOrigin": "補件"
+      },
+      "appList": {
+        "title": "我的認證申請",
+        "appNo": "申請編號",
+        "type": "文書類型",
+        "submittedAt": "提交時間",
+        "deleteConfirm": "確定刪除草稿 {{no}} 嗎?",
+        "deleted": "草稿已刪除"
+      },
+      "detail": {
+        "title": "認證申請 {{no}}",
+        "infoTitle": "申請資訊",
+        "recordsTitle": "認證記錄",
+        "materialsTitle": "申請材料",
+        "certReady": "認證已通過,文書編號 {{no}}",
+        "certReadyTip": "點擊查看並下載你的認證文書。",
+        "rejectedTitle": "申請被駁回",
+        "reapply": "按此類型重新申請",
+        "supplementTitle": "認證員要求補件",
+        "supplementDeadline": "補件截止:",
+        "uploadFor": "補交:{{label}}",
+        "resubmit": "補交完成,重新提交",
+        "resubmitted": "已重新進入認證佇列",
+        "withdraw": "撤銷申請",
+        "withdrawConfirmTitle": "撤銷認證申請",
+        "withdrawConfirmBody": "確定撤銷申請 {{no}} 嗎?撤銷後不可恢復,如需認證請重新申請。",
+        "withdrawn": "申請已撤銷",
+        "bizReserved": "聯動校驗預留",
+        "uploaded": "材料已上傳"
+      },
+      "materials": {
+        "empty": "暫無材料",
+        "preview": "預覽",
+        "download": "下載"
+      },
+      "cert": {
+        "certNo": "文書編號",
+        "holder": "持有人",
+        "bizNo": "關聯業務編號",
+        "issuedAt": "認證日期",
+        "expiresAt": "有效期至",
+        "expiringSoon": "即將到期",
+        "copyNo": "複製編號",
+        "copied": "編號已複製",
+        "copyFailed": "複製失敗,請手動選擇複製",
+        "downloadPng": "下載圖片",
+        "downloadPdf": "下載 PDF",
+        "verifyEntry": "去驗真",
+        "exportFailed": "匯出失敗,請重試",
+        "ariaLabel": "認證文書 {{no}}",
+        "watermarkFallback": "虛構娛樂 · 無現實效力"
+      },
+      "certList": {
+        "title": "我的認證文書",
+        "empty": "還沒有認證文書,通過認證後會在這裡展示。"
+      },
+      "certDetail": {
+        "title": "認證文書",
+        "certStatus": "文書狀態",
+        "revokedTitle": "文書已被撤銷",
+        "tipsTitle": "使用須知",
+        "tip1": "文書僅限奶龍國虛構世界內使用,不具備任何現實效力。",
+        "tip2": "任何人可憑文書編號在驗真中心查驗真偽,查詢結果不包含個人資訊。",
+        "tip3": "「下載 PDF」會開啟系統列印對話框,選擇「另存為 PDF」即可儲存。"
+      },
+      "verify": {
+        "title": "文書驗真中心",
+        "tip": "輸入認證文書編號或認證申請編號,查詢其真實狀態。",
+        "placeholder": "例如 NLDC-261025-AB12CDEFG",
+        "query": "查詢",
+        "inputRequired": "請輸入要查詢的編號",
+        "limitTip": "為防止惡意列舉,查詢有頻率限制;結果不含任何個人資訊。",
+        "notFoundTitle": "未查詢到對應文書",
+        "notFoundBody": "請核對編號是否輸入正確。若編號來自他人轉述,請警惕偽造風險。",
+        "foundTitle": "已查到認證文書",
+        "validYes": "當前有效",
+        "validNo": "當前無效",
+        "selfTitle": "這是你自己的申請 {{no}}",
+        "selfNoCert": "該申請尚未簽發文書。",
+        "issuer": "認證機構",
+        "disclaimerTitle": "驗真結果僅限娛樂參考",
+        "disclaimerBody": "驗真結果僅說明文書在奶龍國虛構設定中的狀態,不代表任何現實事實;本站不為任何現實用途提供證明。",
+        "historyTitle": "我的驗真記錄",
+        "historyEmpty": "暫無驗真記錄",
+        "historyQuery": "查詢編號",
+        "historyResult": "結果",
+        "result": {
+          "found": "查到文書",
+          "found_self": "本人申請",
+          "not_found": "未查到"
+        }
+      },
+      "msg": {
+        "title": "站內訊息",
+        "inbox": "收件匣",
+        "archived": "已封存",
+        "backInbox": "返回收件匣",
+        "readAll": "全部已讀",
+        "empty": "沒有站內訊息",
+        "archive": "封存",
+        "unarchive": "取消封存",
+        "tipTag": "小貼士",
+        "tip": "點擊站內訊息可以跳轉對應申請;所有狀態變更(補件、通過、駁回、到期)都會在這裡通知。"
+      },
+      "admin": {
+        "title": "文書與認證署 · 管理端",
+        "tab": {
+          "review": "審核工作台",
+          "types": "類型管理",
+          "certs": "文書管理",
+          "verify": "驗真管理",
+          "stats": "統計報表",
+          "notices": "公告管理",
+          "audit": "稽核日誌",
+          "settings": "署設定"
+        },
+        "review": {
+          "title": "認證審核工作台",
+          "active": "待處理(pending+補件)",
+          "queueEmpty": "佇列為空,喝杯椰子休息一下吧!",
+          "review": "審核",
+          "detailTitle": "申請詳情",
+          "applicant": "申請人",
+          "username": "帳號",
+          "materials": "材料數",
+          "searchPh": "搜尋申請編號/暱稱",
+          "approve": "通過並簽發",
+          "approveConfirmTitle": "通過認證",
+          "approveAndIssue": "確認通過並簽發文書",
+          "approveTip": "通過後將立即產生帶編號的認證文書,請確認材料與資訊無誤。",
+          "reject": "駁回",
+          "rejectTitle": "駁回申請",
+          "rejectTip": "請選擇駁回原因,使用者將看到原因並可重新申請。",
+          "rejectReason": "駁回原因",
+          "supplement": "要求補件",
+          "supplementTitle": "要求補件",
+          "supplementTip": "請寫明需要補充的材料與要求;系統會按署設定給使用者補件期限。",
+          "supplementSend": "發送補件要求",
+          "supplementPh": "例如:邀請函掃描件不清晰,請重新上傳",
+          "commentPh": "認證意見(選填)",
+          "done": "操作成功",
+          "waitingResubmit": "等待使用者補件並重新提交。"
+        },
+        "types": {
+          "title": "文書類型管理",
+          "create": "新建類型",
+          "editTitle": "編輯類型:{{name}}",
+          "code": "類型編碼",
+          "validity": "有效期(天)",
+          "fields": "表單欄位",
+          "materialsCol": "材料要求",
+          "guide": "辦事指南",
+          "guidePh": "用途、材料、注意事項……",
+          "bizLabel": "關聯業務編號名稱",
+          "bizLabelPh": "如:簽註編號",
+          "bizSource": "聯動署(預留)",
+          "bizRequired": "業務編號必填",
+          "sort": "排序",
+          "addMaterial": "新增材料要求",
+          "addField": "新增表單欄位",
+          "materialLabel": "材料名稱",
+          "fieldLabel": "欄位名稱"
+        },
+        "certs": {
+          "title": "文書管理",
+          "searchPh": "搜尋文書編號/持有人/業務編號",
+          "markUsed": "標註已使用",
+          "revoke": "撤銷",
+          "revokeTitle": "撤銷文書 {{no}}",
+          "revokeTip": "撤銷後文書立即失效且不可恢復,請填寫撤銷原因(將記入稽核日誌並通知持有人)。",
+          "revokeReasonPh": "撤銷原因(必填)",
+          "regenerate": "補發",
+          "regenerateTitle": "補發文書 {{no}}",
+          "regenerateTip": "將為同一申請簽發一份新編號的文書,原文書保持目前狀態。",
+          "regenerated": "已補發新文書"
+        },
+        "verify": {
+          "title": "驗真管理",
+          "alertTitle": "驗真異常告警(24 小時)",
+          "alert": {
+            "high_failure_rate": "未命中比例異常偏高,可能存在列舉掃描。",
+            "high_frequency_query": "存在高頻重複查詢,建議關注來源 IP。"
+          },
+          "last24h": "24 小時查詢量",
+          "failureRate": "未命中比例",
+          "topQueries": "高頻查詢",
+          "searchPh": "搜尋查詢編號"
+        },
+        "stats": {
+          "title": "統計報表",
+          "appTotal": "累計申請",
+          "approvalRate": "通過率",
+          "rejectRate": "駁回率",
+          "supplementRate": "補件率",
+          "avgHours": "平均認證時長(小時)",
+          "certTotal": "累計簽發文書",
+          "verifyTotal": "累計驗真查詢",
+          "verify24h": "近 24 小時 {{n}} 次",
+          "verifyValidRate": "驗真命中率",
+          "appByStatus": "申請狀態分佈",
+          "certByStatus": "文書狀態分佈",
+          "byType": "各文書類型申請量",
+          "count": "數量",
+          "rejectReasons": "常見駁回原因"
+        },
+        "notices": {
+          "title": "公告管理",
+          "create": "發佈公告",
+          "edit": "編輯公告",
+          "titleCol": "標題",
+          "level": "級別",
+          "deleteConfirm": "確定刪除公告「{{title}}」嗎?"
+        },
+        "audit": {
+          "title": "稽核日誌",
+          "time": "時間",
+          "actor": "操作人",
+          "action": "操作",
+          "actionPh": "按操作篩選,如 certify",
+          "target": "目標",
+          "targetPh": "搜尋目標/操作人",
+          "detail": "詳情",
+          "actions": {
+            "application_create_draft": "建立草稿",
+            "application_delete_draft": "刪除草稿",
+            "application_submit": "提交申請",
+            "application_resubmit": "補件重提",
+            "application_withdraw": "撤銷申請",
+            "certify_approve": "認證通過",
+            "certify_reject": "認證駁回",
+            "certify_require_supplement": "要求補件",
+            "certificate_revoke": "撤銷文書",
+            "certificate_mark_used": "標註已使用",
+            "certificate_regenerate": "補發文書",
+            "type_create": "新建類型",
+            "type_update": "修改類型",
+            "notice_create": "發佈公告",
+            "notice_update": "修改公告",
+            "notice_delete": "刪除公告",
+            "config_update": "修改署設定",
+            "blacklist_add": "加入黑名單",
+            "blacklist_remove": "移出黑名單",
+            "verify_rate_limited": "驗真限流觸發",
+            "material_download": "下載材料",
+            "auto_expire_certificate": "文書到期失效",
+            "auto_close_supplement_timeout": "補件逾時關閉"
+          }
+        },
+        "settings": {
+          "title": "署設定",
+          "numbering": "編號與流程",
+          "appPrefix": "申請編號前綴",
+          "certPrefix": "文書編號前綴",
+          "prefixTip": "2-8 位字母或數字",
+          "supplementDays": "補件期限(天)",
+          "reviewHours": "審核時長提示(小時)",
+          "applyDailyLimit": "每人每日提交上限",
+          "uploadMaxMb": "單檔案上限(MB)",
+          "verifySection": "驗真與展示",
+          "verifyLimit": "驗真限流(次/5 分鐘/IP)",
+          "verifyLimitTip": "防止列舉掃描的查詢頻率上限",
+          "seal": "電子印章",
+          "issuer": "認證機構名稱",
+          "watermark": "浮水印/聲明文案",
+          "watermarkTip": "展示在文書與驗真結果頁",
+          "riskTitle": "風控與黑名單",
+          "riskTip": "黑名單使用者無法建立或提交認證申請;重複申請與頻率限制始終生效。",
+          "blacklistAdd": "加入黑名單",
+          "blacklistUser": "使用者",
+          "blacklistUserId": "使用者 ID",
+          "blacklistReason": "原因",
+          "blacklistBy": "操作人",
+          "blacklistRemove": "移出",
+          "blacklistEmpty": "黑名單為空",
+          "blacklistEffectTag": "生效範圍",
+          "blacklistEffect": "僅影響文書認證申請,不影響門戶其他功能。"
+        }
+      }
+    },
+    "docMsg": {
+      "submitted": {
+        "title": "認證申請已提交",
+        "body": "申請 {{appNo}} 已進入認證佇列,預計 72 小時內完成。"
+      },
+      "supplement_request": {
+        "title": "認證需要補件",
+        "body": "申請 {{appNo}} 需要補件:{{note}}。請在 {{days}} 天內補交,逾期將自動關閉。"
+      },
+      "supplemented": {
+        "title": "補件已提交",
+        "body": "申請 {{appNo}} 已重新進入認證佇列。"
+      },
+      "approved": {
+        "title": "認證通過!",
+        "body": "申請 {{appNo}} 已通過認證,文書編號 {{certNo}},快去查看吧。"
+      },
+      "rejected": {
+        "title": "認證申請被駁回",
+        "body": "申請 {{appNo}} 未通過認證(原因:{{reason}})。你可以按原因補充後重新申請。"
+      },
+      "withdrawn": {
+        "title": "認證申請已撤銷",
+        "body": "申請 {{appNo}} 已由你撤銷。"
+      },
+      "closed": {
+        "title": "補件逾時,申請已關閉",
+        "body": "申請 {{appNo}} 因未在期限內補件而自動關閉,如需認證請重新申請。"
+      },
+      "expired": {
+        "title": "文書已過期",
+        "body": "文書 {{certNo}} 已過有效期。如仍需使用,可重新申請認證。"
+      },
+      "expiry_reminder": {
+        "title": "文書即將到期",
+        "body": "文書 {{certNo}} 將在 72 小時內到期,請注意查看有效期。"
+      },
+      "revoked": {
+        "title": "文書已被撤銷",
+        "body": "文書 {{certNo}} 已被認證署撤銷,原因:{{reason}}。如有疑問請聯絡管理員。"
+      },
+      "regenerated": {
+        "title": "文書已補發",
+        "body": "原文書 {{oldCertNo}} 已補發為新文書 {{certNo}},請以新編號為準。"
+      },
+      "system": {
+        "title": "系統通知",
+        "body": "你有一條新的系統通知。"
+      }
+    }
+  },
+  "docMsg": {
+    "submitted": {
+      "title": "認證申請已提交",
+      "body": "申請 {{appNo}} 已進入認證佇列,預計 72 小時內完成。"
+    },
+    "supplement_request": {
+      "title": "認證需要補件",
+      "body": "申請 {{appNo}} 需要補件:{{note}}。請在 {{days}} 天內補交,逾期將自動關閉。"
+    },
+    "supplemented": {
+      "title": "補件已提交",
+      "body": "申請 {{appNo}} 已重新進入認證佇列。"
+    },
+    "approved": {
+      "title": "認證通過!",
+      "body": "申請 {{appNo}} 已通過認證,文書編號 {{certNo}},快去查看吧。"
+    },
+    "rejected": {
+      "title": "認證申請被駁回",
+      "body": "申請 {{appNo}} 未通過認證(原因:{{reason}})。你可以按原因補充後重新申請。"
+    },
+    "withdrawn": {
+      "title": "認證申請已撤銷",
+      "body": "申請 {{appNo}} 已由你撤銷。"
+    },
+    "closed": {
+      "title": "補件逾時,申請已關閉",
+      "body": "申請 {{appNo}} 因未在期限內補件而自動關閉,如需認證請重新申請。"
+    },
+    "expired": {
+      "title": "文書已過期",
+      "body": "文書 {{certNo}} 已過有效期。如仍需使用,可重新申請認證。"
+    },
+    "expiry_reminder": {
+      "title": "文書即將到期",
+      "body": "文書 {{certNo}} 將在 72 小時內到期,請注意查看有效期。"
+    },
+    "revoked": {
+      "title": "文書已被撤銷",
+      "body": "文書 {{certNo}} 已被認證署撤銷,原因:{{reason}}。如有疑問請聯絡管理員。"
+    },
+    "regenerated": {
+      "title": "文書已補發",
+      "body": "原文書 {{oldCertNo}} 已補發為新文書 {{certNo}},請以新編號為準。"
+    },
+    "system": {
+      "title": "系統通知",
+      "body": "你有一條新的系統通知。"
+    }
   }
 }

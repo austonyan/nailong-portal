@@ -71,12 +71,172 @@ CREATE TABLE IF NOT EXISTS services (
   icon                TEXT NOT NULL DEFAULT 'RocketIcon',
   color               TEXT NOT NULL DEFAULT 'app-teal',
   required_permission TEXT,
+  entry_mode          TEXT NOT NULL DEFAULT 'external' CHECK (entry_mode IN ('external', 'internal', 'internal_sso')),
   enabled             INTEGER NOT NULL DEFAULT 1,
   sort_order          INTEGER NOT NULL DEFAULT 0,
   created_at          TEXT NOT NULL,
   updated_at          TEXT NOT NULL
 );
+
+-- ---------------------------------------------------------------------------
+-- 奶龍國簽註申請署 (visa service)
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS visa_types (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  code        TEXT NOT NULL UNIQUE,
+  name        TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  guide       TEXT NOT NULL DEFAULT '',
+  stay_days   INTEGER NOT NULL DEFAULT 30,
+  valid_days  INTEGER NOT NULL DEFAULT 90,
+  renewable   INTEGER NOT NULL DEFAULT 0,
+  enabled     INTEGER NOT NULL DEFAULT 1,
+  sort_order  INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL,
+  updated_at  TEXT NOT NULL
+);
+
+-- 申请状态机: draft → pending_review → (approved | rejected | supplement_required)
+--   supplement_required → (补件) pending_review; 超时 → closed
+--   approved → (签发) issued; pending_review/supplement_required → withdrawn (用户撤销)
+CREATE TABLE IF NOT EXISTS visa_applications (
+  id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+  app_no               TEXT NOT NULL UNIQUE,
+  user_id              INTEGER NOT NULL REFERENCES users(id),
+  type_code            TEXT NOT NULL,
+  status               TEXT NOT NULL DEFAULT 'draft'
+                       CHECK (status IN ('draft','pending_review','supplement_required','approved','rejected','withdrawn','closed','issued')),
+  nickname             TEXT NOT NULL DEFAULT '',
+  contact              TEXT NOT NULL DEFAULT '',
+  virtual_id           TEXT NOT NULL DEFAULT '',
+  purpose              TEXT NOT NULL DEFAULT '',
+  plan_arrive          TEXT,
+  plan_leave           TEXT,
+  itinerary            TEXT NOT NULL DEFAULT '',
+  inviter_name         TEXT NOT NULL DEFAULT '',
+  inviter_contact      TEXT NOT NULL DEFAULT '',
+  companions           TEXT NOT NULL DEFAULT '',
+  entertainment_agreed INTEGER NOT NULL DEFAULT 0,
+  supplement_note      TEXT NOT NULL DEFAULT '',
+  supplement_deadline  TEXT,
+  reject_code          TEXT,
+  reject_comment       TEXT,
+  review_stage         TEXT NOT NULL DEFAULT 'initial' CHECK (review_stage IN ('initial','review')),
+  decided_by           INTEGER,
+  decided_at           TEXT,
+  issued_at            TEXT,
+  created_at           TEXT NOT NULL,
+  updated_at           TEXT NOT NULL,
+  submitted_at         TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_visa_app_user ON visa_applications (user_id, status);
+CREATE INDEX IF NOT EXISTS idx_visa_app_status ON visa_applications (status, submitted_at);
+
+CREATE TABLE IF NOT EXISTS visa_materials (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  application_id INTEGER NOT NULL REFERENCES visa_applications(id) ON DELETE CASCADE,
+  user_id        INTEGER NOT NULL,
+  kind           TEXT NOT NULL DEFAULT 'other' CHECK (kind IN ('avatar','invitation','proof','other')),
+  origin         TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial','supplement')),
+  filename       TEXT NOT NULL,
+  mime           TEXT NOT NULL,
+  size           INTEGER NOT NULL,
+  path           TEXT NOT NULL,
+  created_at     TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS visa_reviews (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  application_id INTEGER NOT NULL REFERENCES visa_applications(id) ON DELETE CASCADE,
+  reviewer_id    INTEGER NOT NULL,
+  reviewer_name  TEXT NOT NULL DEFAULT '',
+  action         TEXT NOT NULL CHECK (action IN ('approve','reject','require_supplement','issue','void','mark_used')),
+  reason_code    TEXT,
+  comment        TEXT NOT NULL DEFAULT '',
+  created_at     TEXT NOT NULL
+);
+
+-- 签发状态机: valid → (used 入境署回写 | voided 注销 | expired 到期, 惰性判定)
+CREATE TABLE IF NOT EXISTS visa_permits (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  visa_no        TEXT NOT NULL UNIQUE,
+  application_id INTEGER NOT NULL UNIQUE REFERENCES visa_applications(id),
+  user_id        INTEGER NOT NULL,
+  type_code      TEXT NOT NULL,
+  holder_name    TEXT NOT NULL DEFAULT '',
+  status         TEXT NOT NULL DEFAULT 'valid' CHECK (status IN ('valid','used','expired','voided')),
+  verify_token   TEXT NOT NULL UNIQUE,
+  issued_at      TEXT NOT NULL,
+  valid_until    TEXT NOT NULL,
+  remind_sent    INTEGER NOT NULL DEFAULT 0,
+  updated_at     TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_visa_permit_user ON visa_permits (user_id, status);
+
+CREATE TABLE IF NOT EXISTS visa_messages (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id        INTEGER NOT NULL,
+  application_id INTEGER,
+  type           TEXT NOT NULL DEFAULT 'system',
+  params         TEXT NOT NULL DEFAULT '{}',
+  read           INTEGER NOT NULL DEFAULT 0,
+  archived       INTEGER NOT NULL DEFAULT 0,
+  created_at     TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_visa_msg_user ON visa_messages (user_id, archived, read);
+
+CREATE TABLE IF NOT EXISTS visa_notices (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  title      TEXT NOT NULL,
+  body       TEXT NOT NULL DEFAULT '',
+  level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
+  enabled    INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS visa_audit (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  actor_id    INTEGER,
+  actor_name  TEXT NOT NULL DEFAULT '',
+  action      TEXT NOT NULL,
+  target_type TEXT NOT NULL DEFAULT '',
+  target_id   TEXT NOT NULL DEFAULT '',
+  detail      TEXT NOT NULL DEFAULT '',
+  created_at  TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS visa_verify_logs (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  query      TEXT NOT NULL DEFAULT '',
+  ip         TEXT NOT NULL DEFAULT '',
+  result     TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS visa_blacklist (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id    INTEGER NOT NULL UNIQUE REFERENCES users(id),
+  reason     TEXT NOT NULL DEFAULT '',
+  created_by TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS visa_config (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
 `);
+
+// Lightweight migration for databases created before a schema change. Only
+// additive column changes live here — new tables are covered by CREATE above.
+function migrate() {
+  const serviceCols = db.pragma('table_info(services)').map((c) => c.name);
+  if (!serviceCols.includes('entry_mode')) {
+    db.exec("ALTER TABLE services ADD COLUMN entry_mode TEXT NOT NULL DEFAULT 'external'");
+  }
+}
+migrate();
 
 export const now = () => new Date().toISOString();
 
@@ -92,11 +252,16 @@ export const PERMISSIONS = [
   { key: 'roles:write', name: '角色管理', description: '创建、编辑角色并分配权限', grp: 'roles' },
   { key: 'services:read', name: '服务查看', description: '查看全部服务注册信息(含未启用)', grp: 'services' },
   { key: 'services:write', name: '服务管理', description: '注册、编辑、启停与删除服务', grp: 'services' },
+  { key: 'visa:apply', name: '签注申请', description: '提交与查看签注申请', grp: 'visa' },
+  { key: 'visa:review', name: '签注审核', description: '审核签注申请、签发与管理签注', grp: 'visa' },
+  { key: 'visa:manage', name: '签注管理', description: '管理签注类型、公告、配置与风控', grp: 'visa' },
 ];
 
 const ROLES = [
   { key: 'admin', name: '管理员', description: '拥有全部权限的系统角色', is_system: 1, permissions: '*' },
-  { key: 'user', name: '普通用户', description: '默认角色,仅可访问门户', is_system: 1, permissions: ['portal:access'] },
+  { key: 'user', name: '普通用户', description: '默认角色,可访问门户与申请签注', is_system: 1, permissions: ['portal:access', 'visa:apply'] },
+  { key: 'visa_reviewer', name: '签注审核员', description: '审核签注申请并签发电子签注(队列隔离,不含门户管理)', is_system: 1, permissions: ['portal:access', 'visa:apply', 'visa:review'] },
+  { key: 'visa_admin', name: '签注管理员', description: '签注审核与签注配置管理', is_system: 1, permissions: ['portal:access', 'visa:apply', 'visa:review', 'visa:manage'] },
 ];
 
 function seed() {
@@ -115,11 +280,15 @@ function seed() {
 
     for (const role of ROLES) {
       const created = insertRole.run({ ...role, now: now() });
-      if (created.changes > 0) {
-        const roleId = db.prepare('SELECT id FROM roles WHERE key = ?').get(role.key).id;
-        const keys = role.permissions === '*' ? PERMISSIONS.map((p) => p.key) : role.permissions;
-        for (const key of keys) insertRolePermission.run(roleId, key);
-      }
+      const roleId =
+        created.changes > 0
+          ? db.prepare('SELECT id FROM roles WHERE key = ?').get(role.key).id
+          : db.prepare('SELECT id FROM roles WHERE key = ?').get(role.key)?.id;
+      if (!roleId) continue;
+      // Backfill on every boot so existing databases pick up newly added
+      // permissions for system roles (e.g. visa:apply for the user role).
+      const keys = role.permissions === '*' ? PERMISSIONS.map((p) => p.key) : role.permissions;
+      for (const key of keys) insertRolePermission.run(roleId, key);
     }
 
     if (db.prepare('SELECT COUNT(*) AS n FROM users').get().n === 0) {
@@ -139,15 +308,85 @@ function seed() {
 
     if (db.prepare('SELECT COUNT(*) AS n FROM services').get().n === 0) {
       const insertService = db.prepare(
-        `INSERT INTO services (key, name, description, url, icon, color, required_permission, enabled, sort_order, created_at, updated_at)
-         VALUES (@key, @name, @description, @url, @icon, @color, NULL, 1, @sort_order, @now, @now)`
+        `INSERT INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
+         VALUES (@key, @name, @description, @url, @icon, @color, @required_permission, @entry_mode, 1, @sort_order, @now, @now)`
       );
       [
         { key: 'wiki', name: '奶龙图鉴', description: '奶龙世界观的百科与图鉴', url: 'https://example.com/wiki', icon: 'BookIcon', color: 'app-yellow', sort_order: 0 },
         { key: 'workshop', name: '礼物工坊', description: '给岛上的朋友们准备礼物', url: 'https://example.com/workshop', icon: 'GiftIcon', color: 'app-pink', sort_order: 1 },
         { key: 'weather', name: '岛屿天气', description: '查看今天的岛屿天气与流星雨预报', url: 'https://example.com/weather', icon: 'CloudIcon', color: 'app-blue', sort_order: 2 },
-      ].forEach((s) => insertService.run({ ...s, now: now() }));
+      ].forEach((s) => insertService.run({ ...s, required_permission: null, entry_mode: 'external', now: now() }));
     }
+
+    // The visa service is part of this codebase: make sure it always exists,
+    // even on databases that already carry the demo services above.
+    db.prepare(
+      `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
+       VALUES ('visa', '奶龍國簽註申請署', '办理奶龙国旅游签注:申请、审核、签发与验真', '/visa', 'AirplaneIcon', 'app-teal', 'visa:apply', 'internal_sso', 1, -1, @now, @now)`
+    ).run({ now: now() });
+
+    if (db.prepare('SELECT COUNT(*) AS n FROM visa_types').get().n === 0) {
+      const insertType = db.prepare(
+        `INSERT INTO visa_types (code, name, description, guide, stay_days, valid_days, renewable, enabled, sort_order, created_at, updated_at)
+         VALUES (@code, @name, @description, @guide, @stay_days, @valid_days, @renewable, 1, @sort_order, @now, @now)`
+      );
+      insertType.run({
+        code: 'TOURIST',
+        name: '旅游签注',
+        description: '来奶龙国观光、度假、打卡奶龙雕像的最经典签注',
+        guide:
+          '适用于以观光游览为目的进入奶龙国的旅行者。单次停留最长 30 天,签发后 90 天内有效,不可续签(娱乐设定)。需准备:头像照片、行程说明;邀请函为选填。',
+        stay_days: 30,
+        valid_days: 90,
+        renewable: 0,
+        sort_order: 0,
+        now: now(),
+      });
+      // 后续开放的类型先落库但停用,前台不展示
+      [
+        { code: 'FAMILY', name: '探亲签注', description: '探望在奶龙国定居的亲友', stay_days: 60, valid_days: 120 },
+        { code: 'EVENT', name: '活动签注', description: '参加奶龙节、演唱会等活动', stay_days: 14, valid_days: 60 },
+        { code: 'DIPLOMATIC', name: '外交签注', description: '仅限各国奶龙友好使团', stay_days: 90, valid_days: 180 },
+      ].forEach((t, i) =>
+        insertType.run({
+          ...t,
+          guide: '',
+          renewable: 0,
+          sort_order: i + 1,
+          now: now(),
+        })
+      );
+      db.prepare("UPDATE visa_types SET enabled = 0 WHERE code != 'TOURIST'").run();
+    }
+
+    if (db.prepare('SELECT COUNT(*) AS n FROM visa_notices').get().n === 0) {
+      const insertNotice = db.prepare(
+        `INSERT INTO visa_notices (title, body, level, enabled, created_at, updated_at)
+         VALUES (@title, @body, @level, 1, @now, @now)`
+      );
+      insertNotice.run({
+        title: '旅游签注开放申请',
+        body: '奶龍國簽註申請署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。本平台为虚构娱乐项目,不核验真实身份。',
+        level: 'policy',
+        now: now(),
+      });
+      insertNotice.run({
+        title: '谨防冒充办证诈骗',
+        body: '本署办证完全免费,任何收费办证、承诺"现实效力"的行为均为诈骗。签注仅在奶龙国虚构世界内使用。',
+        level: 'info',
+        now: now(),
+      });
+    }
+
+    const defaults = {
+      'visa.app_no_prefix': 'NLA',
+      'visa.visa_no_prefix': 'NLT',
+      'visa.supplement_days': '7',
+      'visa.review_hours_hint': '72',
+      'visa.verify_limit_per_5min': '30',
+    };
+    const insertConfig = db.prepare('INSERT OR IGNORE INTO visa_config (key, value) VALUES (?, ?)');
+    for (const [k, v] of Object.entries(defaults)) insertConfig.run(k, v);
   });
   run();
 }

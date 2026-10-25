@@ -7,6 +7,12 @@ import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import roleRoutes from './routes/roles.js';
 import serviceRoutes from './routes/services.js';
+import visaRoutes from './routes/visa.js';
+import visaAdminRoutes from './routes/visaAdmin.js';
+import visaInterRoutes from './routes/visaInter.js';
+import docsRoutes from './routes/docs.js';
+import immigrationRoutes from './immigration/routes.js';
+import immigrationAdminRoutes from './immigration/admin.js';
 import { ApiError } from './http.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,6 +26,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/visa/admin', visaAdminRoutes);
+app.use('/api/visa/inter', visaInterRoutes);
+app.use('/api/visa', visaRoutes);
+app.use('/api/docs', docsRoutes);
+app.use('/api/immigration/admin', immigrationAdminRoutes);
+app.use('/api/immigration', immigrationRoutes);
 
 app.use('/api', (_req, res) => res.status(404).json({ code: 'NOT_FOUND', message: 'Unknown API endpoint' }));
 
