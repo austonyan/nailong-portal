@@ -1,0 +1,448 @@
+# 布局组件 —— 精确样式规范
+
+布局与结构类组件 Card、Title、Divider、Background、Collapse、Tabs 的像素级样式规范。
+
+## Card
+
+```css
+/* 默认 (无 hover) */
+border-radius: 20px;
+background: rgb(247, 243, 223);
+padding: 16px 24px;
+color: #725d42;
+font-weight: 500;
+/* 默认 NO box-shadow(依赖 border / pattern 分层,不靠悬浮阴影)*/
+transition: all 0.3s ease;
+/* 默认无 cursor:pointer、无 hover transform —— 只读卡片场景 */
+
+/* hoverable=true 时才应用(光标 + 上浮) */
+cursor: pointer;
+&:hover { transform: translateY(-2px); }
+
+/* dashed 类型 */
+border: 2px dashed #e8dcc8;
+background: rgb(250, 248, 242);
+box-shadow: none;
+/* dashed + hoverable:hover  → 只换边框色,不做位移 */
+&.card-dashed:hover { transform: none; border-color: #d4c4a8; }
+
+/* pattern 叠加（pattern !== 'none' 时，纯 CSS 实现，**无 png/svg**） */
+/* 双层 radial-gradient 点阵 + 同色调 1.5px solid 边框 + pastel 浅底，
+   13 种命名（default / app-pink / purple / app-blue / app-yellow / app-orange /
+   app-teal / app-green / app-red / lime-green / yellow-green / brown / warm-peach-pink）
+   与 Card.color 同名，但呈现为浅底波点"墙纸"而非实色块。 */
+/* 例：pattern="app-pink" */
+background:
+    radial-gradient(circle, rgba(248, 166, 178, 0.18) 1.5px, transparent 1.5px) 0 0/28px 28px,
+    radial-gradient(circle, rgba(255, 200, 210, 0.12) 1px, transparent 1px) 7px 7px/14px 14px,
+    #fde4e8;
+border: 1.5px solid #f8a6b2;
+color: #a85565;
+/* 当 color 与 pattern 同时设置时，pattern 视觉上覆盖 color */
+```
+
+> 旧版 `Card type="title"` 在 v0.9.x 移除，章节标题请使用独立的 `<Title>` 组件（见下文）。
+
+## Title（飘带 Ribbon 章节标题）
+
+替代旧 `Card type="title"`，渲染游戏风飘带横幅：燕尾两端 + 折角阴影 + 微透视正面主体。
+
+```css
+/* 默认（绿色配色，可被 .color-* 覆盖） */
+--rf: #27d039; /* front 正面 */
+--rb: #20992a; /* back  燕尾 */
+--rk: #115017; /* fold  折角阴影 */
+--rt: #fff; /* text  文字色 */
+
+font-family: Nunito, 'Noto Sans SC', sans-serif;
+font-weight: 800; /* 外层 wrapper */
+/* .ribbonText 内层文字 font-weight 900；padding-top 0.11em CJK 光学居中 */
+
+/* 飘带主体 */
+display: inline-flex;
+height: 2em;
+padding: 0 1.6em;
+letter-spacing: 0.04em;
+filter: drop-shadow(0 0.08em 0.12em rgba(0, 0, 0, 0.05));
+
+/* 燕尾（左/右）—— clip-path 鱼尾形 */
+.ribbonBackLeft {
+    clip-path: polygon(100% 0%, 100% 100%, 0% 100%, 30% 50%, 0% 0%);
+}
+.ribbonBackRight {
+    clip-path: polygon(0% 0%, 100% 0%, 70% 50%, 100% 100%, 0% 100%);
+}
+width: 1.7em;
+height: 1.7em;
+bottom: -0.4em;
+
+/* 折角阴影 —— CSS border 三角 */
+.ribbonFoldLeft {
+    border-width: 0 0.95em 0.45em 0;
+    border-color: transparent var(--rk) transparent transparent;
+}
+.ribbonFoldRight {
+    border-width: 0 0 0.45em 0.95em;
+    border-color: transparent transparent transparent var(--rk);
+}
+
+/* 正面主体 */
+.ribbonFront {
+    inset: 0 0.1em;
+    border-radius: 0.2em;
+    transform: perspective(11.5em) rotateX(3deg);
+}
+```
+
+### 变体 —— `variant` prop（`layer` | `ribbon` | `tab`，默认 `layer`）
+
+所有变体共用同一组 `--rf / --rb / --rk / --rt` 四变量，因此 13 套 `.color-*` 覆盖同样作用于 `layer` 与 `tab`。
+
+**`layer`（双层纸，double-layer note）** —— 背层纸片向左上错位露出，正面浮在上方：
+
+```css
+.layer {
+    display: inline-flex;
+    align-items: center;
+    height: 2.1em;
+    transition: transform 0.2s ease;
+}
+.layer:hover { transform: scale(1.06); }
+.layer::before { /* 背层纸片 */
+    left: -0.26em; top: -0.3em; right: 0.65em; bottom: 0;
+    background: var(--rb);
+    border-radius: 0.35em;
+    z-index: 0;
+}
+.layerFront { /* 正面 */
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 2.1em; padding: 0 1.55em;
+    border-radius: 0.35em;
+    color: var(--rt); background: var(--rf);
+    box-shadow: 0 0.1em 0.16em rgba(0, 0, 0, 0.08);
+    letter-spacing: 0.04em; font-weight: 900; white-space: nowrap;
+    text-shadow: 0 0.05em 0.1em rgba(0, 0, 0, 0.12);
+}
+```
+
+**`tab`（折角便签，corner tab）** —— 135° 渐变切掉右下角，配深色三角折瓣：
+
+```css
+.tab {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 2em; padding: 0 1.5em;
+    border-radius: 0.32em;
+    color: var(--rt);
+    background: linear-gradient(135deg, transparent 0.9em, var(--rf) 0.9em);
+    filter: drop-shadow(0 0.1em 0.16em rgba(0, 0, 0, 0.08));
+    transition: transform 0.2s ease;
+}
+.tab:hover { transform: scale(1.06); }
+.tab::after { /* 折角三角 */
+    content: '';
+    position: absolute; right: 0; bottom: 0;
+    border-width: 0 0 0.9em 0.9em;
+    border-color: transparent transparent var(--rk) transparent;
+}
+.tabText {
+    position: relative; z-index: 2;
+    letter-spacing: 0.04em; font-weight: 900; white-space: nowrap;
+    text-shadow: 0 0.05em 0.1em rgba(0, 0, 0, 0.12);
+}
+```
+
+## Carousel（淡入淡出轮播）
+
+源码：`src/components/Carousel/Carousel.tsx` + `carousel.module.less`。
+
+```ts
+interface CarouselProps extends Omit<HTMLAttributes<HTMLElement>, 'onChange'> {
+    children: ReactNode;
+    activeIndex?: number;
+    defaultActiveIndex?: number; // 默认 0
+    onChange?: (index: number) => void;
+    autoplay?: boolean; // 默认 false
+    interval?: number; // 默认 3000；实际最小间隔 1000
+    loop?: boolean; // 默认 true
+    showArrows?: boolean; // 默认 true
+    showDots?: boolean; // 默认 true
+    pauseOnHover?: boolean; // 默认 true；聚焦时也暂停
+}
+```
+
+20px 圆角视口使用羊皮纸背景，幻灯片以 0.3s 淡入淡出；非活动页不可见且不可交互。圆形箭头按钮为 42px，箭头由 CSS border 绘制。每个圆点拥有 30×30px pill 点击区，10px 标记由 `::before` 绘制；当前标记展开成 24px teal 胶囊。自动播放时右上角显示暂停/继续 pill。根节点是可聚焦 `region` 并带 `aria-roledescription="carousel"`，每页暴露位置/总数标签；ArrowLeft/ArrowRight、Home、End 可导航，减少动态效果模式会移除过渡。
+
+尺寸（`SIZE_MAP` 通过 inline `font-size` 注入；所有内部 `em` 自动缩放）：
+
+| size   | font-size |
+| ------ | --------- |
+| small  | 14px      |
+| middle | 20px      |
+| large  | 28px      |
+
+13 种颜色覆盖：在 wrapper 上叠加 `.color-app-pink` / `.color-purple` / `.color-app-blue` / `.color-app-yellow` / `.color-app-orange` / `.color-app-teal` / `.color-app-green` / `.color-app-red` / `.color-lime-green` / `.color-yellow-green` / `.color-brown` / `.color-warm-peach-pink` 之一；每个类同时覆盖 `--rf / --rb / --rk / --rt` 四个变量。
+
+例：
+
+```less
+.color-app-yellow {
+    --rf: #f7cd67;
+    --rb: #d4a030;
+    --rk: #8a6010;
+    --rt: #725d42;
+}
+.color-purple {
+    --rf: #b77dee;
+    --rb: #9050d0;
+    --rk: #5a1a9a;
+    --rt: #fff;
+}
+```
+
+## Divider
+
+```tsx
+<Divider type="dashed-brown" />  // 默认
+<Divider type="thin" />        // 1px 实线 #e8dec7
+<Divider type="hairline" />    // 1px 细密虚线 #d5c3a2
+<Divider type="wave-yellow" /> // 黄色波浪线 #f5d04a
+<Divider type="squiggle" />    // 主题青色无缝波浪线 #19c8b9
+<Divider icon="Fish" />        // 单图标相连分割线
+```
+
+```less
+.divider {
+    width: 100%;
+    height: 12px;
+    /* 默认 type=dashed-brown */
+    background: linear-gradient(to right, #c4b89e 50%, transparent 50%) center / 12px 2px repeat-x;
+}
+.thin {
+    height: 1px;
+    background: #e8dec7;
+}
+.hairline {
+    height: 1px;
+    background: linear-gradient(to right, #d5c3a2 50%, transparent 50%) center / 6px 1px repeat-x;
+}
+.wave-yellow {
+    height: 14px;
+    background-image: url("data:image/svg+xml,...波浪路径...");
+    background-repeat: repeat-x;
+    background-size: 40px 14px;
+    background-position: center;
+}
+.squiggle {
+    height: 10px;
+    background-image: url("data:image/svg+xml,...波浪路径...");
+    background-repeat: repeat-x;
+    background-size: 120px 10px;
+    background-position: center;
+}
+```
+
+纯 CSS 实现，无图片资源：`dashed-*` 用 `linear-gradient` 画 2px 破折线（12px 节奏，50% 实 / 50% 空）；`thin` 为 `#e8dec7` 的 1px 实心细线；`hairline` 为 `#d5c3a2` 的 1px 细密虚线（6px 节奏）；`wave-yellow` 用内联 SVG data-URI 画黄色（#f5d04a）重复波浪线（40px 周期，±7px 振幅，圆头线帽）；`squiggle` 用内联 SVG data-URI 画主题青色（#19c8b9）波浪线，固定 120px 宽度平铺（`repeat-x`，viewport 0 0 120 10），首尾同高且切线水平，随容器变宽无缝衔接、不拉伸变形。
+
+传入 `icon`（`IconComponent`，一个 React 图标组件，如来自 naive-icons 的 `FishIcon`）时切换为图标相连模式（与 Footer 单图标链同思路）：flex 行重复 `[图标][空隙]` 单元铺满整行，由 `iconSize`（默认 24）与 `iconGap`（默认 8）控制。每个空隙内放一根 4×2px 棕色短连接条，水平居中，视觉上正好位于相邻两图标中间；最后一个图标不跟连接条，分割线两端都以图标收尾；周期数通过 ResizeObserver 随宽度变化实时重算。
+
+## Background（图案壁纸）
+
+```tsx
+<Background />                             // 默认 —— 奶油色波点
+<Background type="dots-dark-green" />      // 深绿波点
+<Background type="sprinkles" />            // 圆柱形彩色针糖
+<Background type="dots-blue" />            // 底色对应 Card pattern-* 系列的粉彩波点壁纸
+<Background type="sweet-corner" />         // 甜点街角场景图（cover 铺满）
+<Background type="coffee-break" />         // 咖啡时光场景图（cover 铺满）
+```
+
+```less
+.background {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+}
+/* 配色与 Card 1:1 对应；dots- 前缀仅区分波点壁纸命名 */
+.bg-default {
+    background:
+        radial-gradient(circle, rgba(196, 184, 158, 0.15) 1.5px, transparent 1.5px) 0 0 / 28px 28px,
+        radial-gradient(circle, rgba(196, 184, 158, 0.1) 1px, transparent 1px) 7px 7px / 14px 14px,
+        rgb(247, 243, 223);
+}
+.bg-dots-dark-green {
+    /* 两层错位圆点 + 纯色底 */
+    background:
+        radial-gradient(circle, rgba(90, 160, 90, 0.22) 1.5px, transparent 1.5px) 0 0 / 28px 28px,
+        radial-gradient(circle, rgba(140, 200, 140, 0.15) 1px, transparent 1px) 7px 7px / 14px 14px,
+        #bfe3bf;
+}
+.bg-sprinkles {
+    /* 圆柱形糖针：圆角矩形（rx = 厚度一半）+ 共享高光渐变模拟圆柱受光；
+       三层互质内联 SVG tile（190×170 / 230×195 / 255×215，各 6 根糖针），
+       合计重复周期约 220000×280000px，远超任何屏幕，视觉上随机散落 */
+    background:
+        url("data:image/svg+xml,…tile A…") 0 0 / 190px 170px,
+        url("data:image/svg+xml,…tile B…") 45px 30px / 230px 195px,
+        url("data:image/svg+xml,…tile C…") 90px 60px / 255px 215px,
+        #fdf3e3;
+}
+```
+
+每个 tile 是一段内联 SVG（编码进 CSS，无外部图片文件），在固定的伪随机位置与角度盖 6 根糖针。一根糖针由共用同一 transform 的两个圆角矩形组成 —— 底色 + 竖向高光叠加层，呈现圆柱受光效果：
+
+```html
+<g transform='translate(18 26) rotate(24)'>
+    <rect width='17' height='4.6' rx='2.3' fill='#f8a6b2' />
+    <rect width='17' height='4.6' rx='2.3' fill='url(#s)' />
+</g>
+```
+
+- `default`：奶油色壁纸 `rgb(247, 243, 223)` + 米棕波点 —— 与 Card `pattern-default` 同配色。
+- `dots-dark-green`：绿色系壁纸 —— 两层错位波点（28px 大点、14px 小点）铺在 `#bfe3bf` 纯色底上。
+- 13 色 `dots-*` 底色对应 Card `pattern-*` 系列的壁纸 —— `dots-pink` `#fde4e8` / `dots-purple` `#f0e8ff` / `dots-blue` `#e8edff` / `dots-yellow` `#fff8e0` / `dots-orange` `#fff0e8` / `dots-teal` `#e8faf5` / `dots-green` `#e8f5e8` / `dots-red` `#ffe8e8` / `dots-lime-green` `#f5f8e0` / `dots-yellow-green` `#fffde8` / `dots-brown` `#f5f0e0` / `dots-warm-peach-pink` `#fff0e8` —— 粉彩底 + 同色系两层波点（底色取值与对应 Card `pattern-*` 类 1:1 一致，去掉描边），外加 `dots-gray` `#ffffff` —— 白色底 + 浅灰两层波点。不内置文字色 —— 直接在壁纸上放内容时请自行设置。
+- `sprinkles`：甜甜圈糖霜底 `#fdf3e3`，撒 6 色圆柱形糖针（粉 `#f8a6b2` / 黄 `#f5d04a` / 蓝 `#8ecae6` / 绿 `#95d5b2` / 橙 `#f4a261` / 紫 `#c9a7f5`）。每根糖针是 13–18px 长、约 4.5px 粗的胶囊 —— 两端圆润、带高光受光、随机角度散落。三层互质 SVG tile（190×170、230×195、255×215）合计重复周期约 220000×280000px —— 远超任何屏幕，散落效果视觉上等同随机、无可感知重复。
+- `sweet-corner` / `coffee-break`：场景壁纸（即 Progress `fill` 场景变体所使用的 2560×1440 透明底场景 SVG），以 `background-size: cover` 居中铺满、不重复，铺在奶油色 `#fdf3e3` 底上。SVG URL 由组件注入（`backgroundImage` 内联样式），非编码进 CSS 的 data-URI。
+- 内容（children）渲染在图案之上；组件无固定高度，通过 `style`（`height` / `min-height`）控制尺寸。
+
+## Collapse
+
+```css
+/* 外层卡片 */
+border-radius: 18px;
+border: 2px solid #9f927d;
+margin-bottom: 12px;
+/* disabled */ opacity: 0.6;
+
+/* 问题栏 */
+padding: 16px 24px;
+gap: 12px;
+
+/* 图标圆圈 */
+width: 28px; height: 28px;
+background: #19c8b9;
+color: #fff;
+border-radius: 50%;
+font-size: 18px; font-weight: 700;
+box-shadow: 0 2px 4px rgba(25, 200, 185, 0.3);
+/* 展开时 */ transform: rotate(180deg);
+
+/* 鱼图标装饰（FishIcon，color currentColor） */
+opacity: 1; /* 默认与展开亮度一致 */
+/* expanded */ transform: rotate(45deg);
+
+/* 问题文字 */
+font-size: 16px; font-weight: 600; line-height: 1.4;
+
+/* 答案展开（CSS Grid trick，无 JS）*/
+display: grid;
+grid-template-rows: 0fr;
+transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* 展开 */ grid-template-rows: 1fr;
+/* 内层 */ overflow: hidden;
+
+/* 答案文字 */
+padding: 0 24px;
+font-size: 14px; line-height: 1.7;
+/* 展开后 padding-bottom */ 24px;
+```
+
+## Tabs
+
+```css
+/* 外层容器 */
+.tabs {
+    background: rgb(247, 243, 223);
+    border-radius: 20px;
+    border: 2px solid #9f927d;
+    overflow: hidden;
+}
+
+/* 标签列表 */
+.tabList {
+    display: flex;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border-bottom: 2px solid #c4b89e;
+}
+
+/* 标签项 */
+.tabItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #8a7b66;
+    transition: all 0.2s ease;
+}
+/* hover */
+.tabItem:hover {
+    background: rgba(25, 200, 185, 0.1);
+    color: #725d42;
+}
+/* 激活状态 — 实心 teal 胶囊 + 奶油色字 */
+.tabItem.active {
+    background: #0cc0b5;
+    color: #fff9e3;
+    font-weight: 600;
+}
+.tabItem.active-shadow {
+    box-shadow: 0 3px 0 0 #d4c9b4; /* 仅 shadow opt-in 时启用 */
+}
+
+/* 标签图标 */
+.tabIcon {
+    font-size: 10px;
+}
+/* 激活时图标放大 */
+.tabItem.active .tabIcon {
+    transform: scale(1.2);
+}
+
+/* 叶子装饰动画 */
+.tabLeaf {
+    position: absolute;
+    right: -6px;
+    top: -3px;
+    font-size: 12px;
+    animation: leafWiggle 2s ease-in-out infinite;
+}
+/* leafAnimation={false} 时追加 tabLeafStatic 类去除 animation */
+
+@keyframes leafWiggle {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
+/* 内容区 */
+.tabContent {
+    padding: 24px;
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+```
