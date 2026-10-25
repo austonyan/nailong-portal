@@ -91,10 +91,14 @@ function formFieldsConfig(typeRow) {
 }
 
 function sanitizeText(value, max = 200) {
-  return String(value ?? '')
-    .replace(/[\u0000-\u001f\u007f]/g, ' ')
-    .trim()
-    .slice(0, max);
+  // 去控制字符(含 DEL)后截断
+  const cleaned = [...String(value ?? '')]
+    .filter((ch) => {
+      const code = ch.codePointAt(0);
+      return code > 31 && code !== 127;
+    })
+    .join('');
+  return cleaned.trim().slice(0, max);
 }
 
 function getPaging(query) {
@@ -116,7 +120,7 @@ function assertOwnerOrReviewer(app, req) {
 }
 
 function serializeApplicationDetail(row) {
-  const type = D.serializeType(D.getTypeRow(row.type_code), { withConfig: false });
+  const type = D.serializeType(D.getTypeRow(row.type_code));
   const materials = db
     .prepare('SELECT * FROM doc_materials WHERE application_id = ? ORDER BY created_at, id')
     .all(row.id)
@@ -726,7 +730,7 @@ router.post('/admin/applications/:id/require-supplement', certifyAuth, (req, res
 // Admin: types registry (docs:manage)
 // ---------------------------------------------------------------------------
 
-function validateTypePayload(body, { partial = false, existing = null } = {}) {
+function validateTypePayload(body, { partial = false } = {}) {
   const out = {};
   const str = (key, max, def = '') => {
     if (body[key] === undefined) {

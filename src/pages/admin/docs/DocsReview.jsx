@@ -89,8 +89,8 @@ export default function DocsReview() {
   const columns = [
     { title: t('docs.appList.appNo'), dataIndex: 'appNo', width: 170 },
     { title: t('docs.appList.type'), dataIndex: 'typeName', width: 120 },
-    { title: t('docs.review.applicant'), dataIndex: 'nickname', width: 110 },
-    { title: t('docs.review.username'), dataIndex: 'username', width: 110 },
+    { title: t('docs.admin.review.applicant'), dataIndex: 'nickname', width: 110 },
+    { title: t('docs.admin.review.username'), dataIndex: 'username', width: 110 },
     {
       title: t('common.status'),
       dataIndex: 'status',
@@ -101,14 +101,14 @@ export default function DocsReview() {
         </Tag>
       ),
     },
-    { title: t('docs.review.materials'), dataIndex: 'materialCount', width: 80, align: 'center' },
+    { title: t('docs.admin.review.materials'), dataIndex: 'materialCount', width: 80, align: 'center' },
     { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => String(v || '').slice(0, 10) },
     {
       title: t('common.actions'),
       width: 90,
       render: (_, row) => (
         <Button size="small" onClick={() => openDetail(row)}>
-          {t('docs.review.review')}
+          {t('docs.admin.review.review')}
         </Button>
       ),
     },
@@ -142,7 +142,7 @@ export default function DocsReview() {
             }}
             options={[{ key: 'all', label: t('docs.filter.allTypes') }, ...types.map((tp) => ({ key: tp.code, label: tp.name }))]}
           />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.review.searchPh')} allowClear />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.admin.review.searchPh')} allowClear />
           <Button type="primary" icon={<SearchIcon />} onClick={() => { setPage(1); load(); }}>
             {t('common.search')}
           </Button>
@@ -165,7 +165,7 @@ export default function DocsReview() {
         )}
       </Card>
 
-      <Drawer open={!!detail} title={detail ? `${t('docs.review.detailTitle')} · ${detail.appNo}` : ''} width={620} onClose={() => setDetail(null)}>
+      <Drawer open={!!detail} title={detail ? `${t('docs.admin.review.detailTitle')} · ${detail.appNo}` : ''} width={620} onClose={() => setDetail(null)}>
         {detail && (
           <div className="docs-review-detail">
             <dl className="docs-kv">

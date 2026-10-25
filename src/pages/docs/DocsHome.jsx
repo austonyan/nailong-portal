@@ -26,8 +26,8 @@ export default function DocsHome() {
     Promise.all([api.get('/docs/notices'), api.get('/docs/types')])
       .then(([n, tp]) => {
         if (cancelled) return;
-        setNotices(n.data.items || []);
-        setTypes(tp.data.items || []);
+        setNotices(n.items || []);
+        setTypes(tp.items || []);
       })
       .catch((err) => {
         Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));

@@ -54,6 +54,11 @@ export default function AppLayout() {
                 {t('nav.docs')}
               </NavLink>
             )}
+            {can('imm:portal') && (
+              <NavLink to="/immigration" className={navClass}>
+                {t('nav.immigration')}
+              </NavLink>
+            )}
             <NavLink to="/profile" className={navClass}>
               {t('nav.profile')}
             </NavLink>
@@ -75,6 +80,11 @@ export default function AppLayout() {
             {can('docs:certify') && (
               <NavLink to="/admin/docs/review" className={navClass}>
                 {t('nav.docsReview')}
+              </NavLink>
+            )}
+            {(can('imm:inspect') || can('imm:admin') || can('imm:verify')) && (
+              <NavLink to="/admin/immigration/ports" className={navClass}>
+                {t('nav.immigrationAdmin')}
               </NavLink>
             )}
           </nav>

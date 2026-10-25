@@ -4,8 +4,6 @@ import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } f
 import { BanIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 
-const NUMERIC_KEYS = ['docs.supplement_days', 'docs.review_hours_hint', 'docs.verify_limit_per_5min', 'docs.apply_daily_limit', 'docs.upload_max_mb'];
-
 export default function DocsSettings() {
   const { t } = useTranslation();
   const [config, setConfig] = useState({});

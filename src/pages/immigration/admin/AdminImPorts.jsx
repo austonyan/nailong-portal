@@ -4,9 +4,9 @@ import {
   Button, Card, Form, FormItem, Input, Modal, Notification, Select, Switch, Table, Tabs, Tag, Title, useForm,
 } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SettingsIcon } from 'naive-icons';
-import { api } from '../../api/client.js';
-import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { api } from '../../../api/client.js';
+import { toastApiError } from '../../../components/immigration/apiError.js';
+import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 
 const PORT_TYPES = ['land', 'air', 'sea'];
 const PORT_STATUSES = ['open', 'closed', 'maintenance'];
@@ -330,7 +330,6 @@ function AnnouncementsTab() {
 
 function SettingsTab() {
   const { t } = useTranslation();
-  const [items, setItems] = useState(null);
   const [disclaimerText, setDisclaimerText] = useState('');
   const [watermark, setWatermark] = useState('');
   const [version, setVersion] = useState('1');
@@ -339,7 +338,6 @@ function SettingsTab() {
     api
       .get('/immigration/admin/settings')
       .then((data) => {
-        setItems(data.items);
         setDisclaimerText(data.items.find((s) => s.key === 'disclaimer_text')?.value ?? '');
         setWatermark(data.items.find((s) => s.key === 'stamp_watermark')?.value ?? '');
         setVersion(data.items.find((s) => s.key === 'disclaimer_version')?.value ?? '1');

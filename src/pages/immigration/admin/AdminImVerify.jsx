@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
 import { CheckCircleIcon, SearchIcon, ShieldIcon } from 'naive-icons';
-import { api } from '../../api/client.js';
-import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { api } from '../../../api/client.js';
+import { toastApiError } from '../../../components/immigration/apiError.js';
+import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 
 const RESULT_COLORS = {
   accepted: 'app-green',

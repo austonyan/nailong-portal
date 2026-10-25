@@ -1,5 +1,7 @@
 // 皇家口岸入境署 — shared UI atoms: status tags, crowding meter, fun entry
 // stamp, pass-code QR canvas, CSV export helpers and the page sub-navigation.
+// (Non-component exports are intentional helpers, not a components-file slip.)
+/* eslint-disable react/only-export-components */
 import { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

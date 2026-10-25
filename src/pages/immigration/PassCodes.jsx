@@ -9,13 +9,10 @@ import { DisclaimerBanner, ImNav, PassQr, StatusTag, downloadDataUrl } from '../
 function PassCodeModal({ passCode, onClose }) {
   const { t } = useTranslation();
   const canvasHostRef = useRef(null);
-  const [verifyUrl, setVerifyUrl] = useState('');
 
   useEffect(() => {
-    if (!passCode) return;
-    const url = `${window.location.origin}${passCode.verifyPath}`;
-    setVerifyUrl(url);
-    // PassQr renders its own canvas; we keep a reference for the PNG download.
+    if (!passCode) return undefined;
+    // Capture the rendered canvas element so the PNG download works.
     const timer = setTimeout(() => {
       const canvas = canvasHostRef.current?.querySelector('canvas');
       if (canvas) canvasHostRef.current.canvasEl = canvas;
@@ -25,6 +22,7 @@ function PassCodeModal({ passCode, onClose }) {
 
   if (!passCode) return null;
   const usable = passCode.status === 'unused';
+  const verifyUrl = `${window.location.origin}${passCode.verifyPath}`;
 
   const download = () => {
     const canvas = canvasHostRef.current?.canvasEl;

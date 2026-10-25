@@ -7,7 +7,7 @@ import { Router } from 'express';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, notFound, readString, conflict } from '../http.js';
-import { ensureImmigrationSchema, getSetting } from './schema.js';
+import { ensureImmigrationSchema } from './schema.js';
 import {
   audit,
   consumeRateLimit,

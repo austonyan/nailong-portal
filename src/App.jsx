@@ -42,6 +42,22 @@ import DocsStats from './pages/admin/docs/DocsStats.jsx';
 import DocsNotices from './pages/admin/docs/DocsNotices.jsx';
 import DocsAudit from './pages/admin/docs/DocsAudit.jsx';
 import DocsSettings from './pages/admin/docs/DocsSettings.jsx';
+import ImmigrationHome from './pages/immigration/ImmigrationHome.jsx';
+import ImmigrationPorts from './pages/immigration/ImmigrationPorts.jsx';
+import ImmigrationPortDetail from './pages/immigration/ImmigrationPortDetail.jsx';
+import DeclarationEdit from './pages/immigration/DeclarationEdit.jsx';
+import MyDeclarations from './pages/immigration/MyDeclarations.jsx';
+import PassCodes from './pages/immigration/PassCodes.jsx';
+import ImmigrationRecords from './pages/immigration/ImmigrationRecords.jsx';
+import ImmigrationMessages from './pages/immigration/ImmigrationMessages.jsx';
+import ImmigrationHelp from './pages/immigration/ImmigrationHelp.jsx';
+import ImmigrationVerify from './pages/immigration/ImmigrationVerify.jsx';
+import AdminImPorts from './pages/immigration/admin/AdminImPorts.jsx';
+import AdminImReview from './pages/immigration/admin/AdminImReview.jsx';
+import AdminImVerify from './pages/immigration/admin/AdminImVerify.jsx';
+import AdminImRecords from './pages/immigration/admin/AdminImRecords.jsx';
+import AdminImStats from './pages/immigration/admin/AdminImStats.jsx';
+import AdminImAudit from './pages/immigration/admin/AdminImAudit.jsx';
 
 function NotFound() {
   const { t } = useTranslation();
@@ -65,6 +81,8 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       {/* 验真中心:公开页,不需要登录 */}
       <Route path="/visa/verify" element={<VisaVerify />} />
+      {/* 皇家口岸入境署验真页(二维码 token,公开) */}
+      <Route path="/immigration/verify" element={<ImmigrationVerify />} />
       <Route
         element={
           <RequireAuth>
@@ -248,6 +266,136 @@ export default function App() {
           <Route path="audit" element={<DocsAudit />} />
           <Route path="settings" element={<DocsSettings />} />
         </Route>
+        {/* 皇家口岸入境署(用户端) */}
+        <Route
+          path="/immigration"
+          element={
+            <RequirePermission permission="imm:portal">
+              <ImmigrationHome />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/ports"
+          element={
+            <RequirePermission permission="imm:portal">
+              <ImmigrationPorts />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/ports/:code"
+          element={
+            <RequirePermission permission="imm:portal">
+              <ImmigrationPortDetail />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/declare"
+          element={
+            <RequirePermission permission="imm:portal">
+              <DeclarationEdit />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/declare/:id"
+          element={
+            <RequirePermission permission="imm:portal">
+              <DeclarationEdit />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/declarations"
+          element={
+            <RequirePermission permission="imm:portal">
+              <MyDeclarations />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/pass-codes"
+          element={
+            <RequirePermission permission="imm:portal">
+              <PassCodes />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/records"
+          element={
+            <RequirePermission permission="imm:portal">
+              <ImmigrationRecords />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/messages"
+          element={
+            <RequirePermission permission="imm:portal">
+              <ImmigrationMessages />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/immigration/help"
+          element={
+            <RequirePermission permission="imm:portal">
+              <ImmigrationHelp />
+            </RequirePermission>
+          }
+        />
+        {/* 皇家口岸入境署(管理端) */}
+        <Route
+          path="/admin/immigration/ports"
+          element={
+            <RequirePermission permission="imm:admin">
+              <AdminImPorts />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/immigration/review"
+          element={
+            <RequirePermission permission="imm:inspect">
+              <AdminImReview />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/immigration/verify"
+          element={
+            <RequirePermission permission="imm:verify">
+              <AdminImVerify />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/immigration/records"
+          element={
+            <RequirePermission permission="imm:admin">
+              <AdminImRecords />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/immigration/stats"
+          element={
+            <RequirePermission permission="imm:admin">
+              <AdminImStats />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/immigration/audit"
+          element={
+            <RequirePermission permission="imm:admin">
+              <AdminImAudit />
+            </RequirePermission>
+          }
+        />
       </Route>
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />

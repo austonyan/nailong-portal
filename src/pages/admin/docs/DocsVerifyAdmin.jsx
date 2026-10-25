@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Input, Notification, Pagination, Progress, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Notification, Pagination, Progress, Select, Table, Tag, Title } from 'animal-island-ui';
 import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 

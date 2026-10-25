@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, Card, Notification, Tag } from 'animal-island-ui';
 import { ShieldIcon } from 'naive-icons';
-import { api } from '../api/client.js';
-import { DisclaimerBanner } from '../components/immigration/shared.jsx';
+import { api } from '../../api/client.js';
+import { DisclaimerBanner } from '../../components/immigration/shared.jsx';
 
 const STATUS_COLOR = {
   unused: 'app-green',

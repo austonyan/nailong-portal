@@ -3,7 +3,6 @@
 import crypto from 'node:crypto';
 import { db, now } from '../db.js';
 import { ApiError, badRequest, conflict, forbidden } from '../http.js';
-import { getSetting } from './schema.js';
 
 // ---------------------------------------------------------------------------
 // Non-guessable identifiers

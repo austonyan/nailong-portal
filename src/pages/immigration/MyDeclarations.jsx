@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
 import { CodeIcon, EditIcon, PlusIcon, RefreshIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -97,13 +97,12 @@ function DeclarationDetail({ id, onClose, onChanged }) {
           {d.supplementContent && (
             <p className="muted-text">{t('imm.mydecl.supplementSubmitted')}: {d.supplementContent}</p>
           )}
-          <Input
-            size="large"
+          <textarea
+            className="docs-textarea"
             value={supplementText}
             onChange={(e) => setSupplementText(e.target.value)}
             placeholder={t('imm.mydecl.supplementPlaceholder')}
             maxLength={500}
-            allowClear
           />
           <Button
             type="primary"

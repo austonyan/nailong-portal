@@ -86,7 +86,7 @@ export default function DocsCertsAdmin() {
     { title: t('docs.cert.certNo'), dataIndex: 'certNo', width: 190 },
     { title: t('docs.appList.type'), dataIndex: 'typeName', width: 120 },
     { title: t('docs.cert.holder'), dataIndex: 'holderName', width: 100 },
-    { title: t('docs.review.username'), dataIndex: 'username', width: 100 },
+    { title: t('docs.admin.review.username'), dataIndex: 'username', width: 100 },
     {
       title: t('common.status'),
       dataIndex: 'status',

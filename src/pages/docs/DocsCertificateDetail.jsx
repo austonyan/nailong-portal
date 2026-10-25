@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Notification, Tag } from 'animal-island-ui';
+import { Button, Card, Notification, Tag, Title } from 'animal-island-ui';
 import { CopyIcon, DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS, exportCertificatePng } from '../../api/docs.js';

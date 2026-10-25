@@ -4,9 +4,9 @@ import {
   Button, Card, Drawer, Input, Modal, Notification, Select, Table, Tag, Title,
 } from 'animal-island-ui';
 import { CheckCircleIcon, ClockIcon, XCircleIcon } from 'naive-icons';
-import { api } from '../../api/client.js';
-import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { api } from '../../../api/client.js';
+import { toastApiError } from '../../../components/immigration/apiError.js';
+import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 
 const QUEUE_STATUSES = ['pending', 'supplement', 'approved', 'rejected', 'entered', 'exited', 'withdrawn'];
 const REJECT_REASONS = ['visa_invalid', 'incomplete', 'duplicate', 'port_closed', 'other'];
