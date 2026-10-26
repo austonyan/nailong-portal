@@ -404,7 +404,7 @@ const DEFAULT_CONFIG = {
   'verify_limit_per_5min': '30',
   'max_companions': '3',
   'max_active_registrations': '5',
-  'linkage_enabled': '0',
+  'linkage_enabled': '1',
 };
 
 function addDays(days, hour = 10) {
@@ -612,7 +612,7 @@ function seedProtocol() {
          VALUES (?, ?, ?, ?, 1, ?, ?, ?)`
       );
       insertType.run('foreign_reception', '外宾接待', '为虚构外宾提供的接待礼遇(趣味记录)', '外宾需提供有效邀请函编号,或外交身份编号。', 0, ts, ts);
-      insertType.run('resident_courtesy', '居民礼遇', '面向奶龙国居民的虚构礼遇', '需提供有效的居民编号,并与居民登记署联动校验(预留)。', 1, ts, ts);
+      insertType.run('resident_courtesy', '居民礼遇', '面向奶龙国居民的虚构礼遇', '需提供有效的居民编号,并与居民登记署实时联动校验。', 1, ts, ts);
       insertType.run('diplomatic_courtesy', '外交礼遇', '面向虚构外交身份的礼遇', '需提供有效外交身份编号,并处于有效期内。', 2, ts, ts);
       insertType.run('event_channel', '活动礼宾通道', '活动入场的虚构礼宾通道', '需提供有效邀请函编号或活动凭证编号。', 3, ts, ts);
     }
@@ -628,6 +628,16 @@ function seedProtocol() {
     for (const [k, v] of Object.entries(DEFAULT_CONFIG)) insertConfig.run(k, v, ts);
   });
   run();
+
+  // 跨署联动打通:旧库若从未配置过联动开关,默认开启一次;之后管理端
+  // 仍可在参数配置里关闭,重启不会被强行改回。
+  if (!getConfig('_linkage_bootstrapped')) {
+    if (getConfig('linkage_enabled') === '0') setConfig('linkage_enabled', '1');
+    setConfig('_linkage_bootstrapped', '1');
+  }
+  db.prepare(
+    "UPDATE pro_courtesy_types SET requirements = REPLACE(requirements, '(预留)', '') WHERE code = 'resident_courtesy'"
+  ).run();
 }
 
 export function getConfig(key) {

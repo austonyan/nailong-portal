@@ -265,3 +265,37 @@ export function maskPermit(permit, typeRow) {
     issuer: '奶龍國簽註申請署',
   };
 }
+
+// ---------------------------------------------------------------------------
+// 服务间联动入口(同进程服务直接调用,不经过 HTTP)。
+// 返回原始行,只在各署服务端内部使用,不得直接回给前台。
+// ---------------------------------------------------------------------------
+
+export function lookupPermit({ no, token } = {}) {
+  sweepAll();
+  const permit = token
+    ? db.prepare('SELECT * FROM visa_permits WHERE verify_token = ?').get(String(token).trim())
+    : db.prepare('SELECT * FROM visa_permits WHERE visa_no = ?').get(String(no || '').trim().toUpperCase());
+  if (!permit) return { permit: null, typeRow: null };
+  const typeRow = db.prepare('SELECT * FROM visa_types WHERE code = ?').get(permit.type_code);
+  return { permit, typeRow };
+}
+
+// 口岸回写"已使用":签注署负责状态、站内信与审计,调用方只管结果。
+export function markPermitUsed(visaNo, { actorName = 'port-authority' } = {}) {
+  sweepAll();
+  const no = String(visaNo || '').trim().toUpperCase();
+  const permit = db.prepare('SELECT * FROM visa_permits WHERE visa_no = ?').get(no);
+  if (!permit) return { found: false, ok: false, status: null };
+  if (permit.status !== 'valid') return { found: true, ok: false, status: permit.status };
+  db.prepare("UPDATE visa_permits SET status = 'used', updated_at = ? WHERE id = ?").run(now(), permit.id);
+  sendMsg(permit.user_id, permit.application_id, 'used', { visaNo: permit.visa_no });
+  audit({ name: actorName }, 'inter_mark_used', 'permit', permit.visa_no);
+  return {
+    found: true,
+    ok: true,
+    status: 'used',
+    userId: permit.user_id,
+    applicationId: permit.application_id,
+  };
+}

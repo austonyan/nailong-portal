@@ -1,29 +1,19 @@
-// 签注校验适配层 — 预留与"奶龍國簽註申請署"的联动。
+// 签注校验适配层 — 与"奶龍國簽註申請署"的联动已打通。
 //
-// Today a deterministic stub answers checks so the immigration flow is fully
-// testable offline. When the linkage ships, only `stubValidate` needs to
-// change: replace it with an HTTP call carrying the shared service token —
-//   POST /api/visa/inter/check   { no }            -> { found, status, valid, validUntil, typeName, issuer }
-//   POST /api/visa/inter/mark-used { no }           -> { ok, status }
-//   header: x-nailong-service-token: $VISA_INTER_SERVICE_TOKEN
-// (the visa office already publishes these). Map their `status` onto the
-// { result, detail } shape below and the cache / writeback / interception
-// logic keeps working untouched.
+// 同进程共库:先查签注署真实台账(visa_permits),命中即按真实状态返回,
+// 通关后回写"已使用"也直接落到签注署;演示编号 NL-XXXX-XXXX 仍保留确定性
+// stub,方便离线演示与既有验收脚本。
 //
-// Stub contract for manual testing (visa number format NL-XXXX-XXXX):
-//   contains 0000 -> used      (已使用)
-//   contains 1111 -> expired   (已过期)
-//   contains 2222 -> revoked   (已注销)
-//   contains 3333 -> invalid   (无效)
-//   anything else -> valid     (有效期一年,趣味签注类型按编号稳定散列)
-// Real 签注署 numbers (NLT-YYYYMMDD-XXXXXXXX) are recognized but reported as
-// `not_found` until the remote linkage is enabled — no offline guessing.
+// 真实签注号格式 NLT-YYYYMMDD-XXXXXXXX 未命中时返回 not_found,不做离线猜测。
+// 外交签注额外校验持有人当前是否仍有有效外交身份(外交署联动),失效则拦截。
 import crypto from 'node:crypto';
 import { db, now } from '../db.js';
 import { audit } from './util.js';
+import { lookupPermit, markPermitUsed } from '../visa.js';
+import { diplomaticEligibility } from '../linkage.js';
 
 const VISA_STUB_RE = /^NL-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
-const VISA_REMOTE_RE = /^[A-Z]{2,4}-\d{8}-[A-Z0-9]{4,12}$/; // 签注署格式: NLT-20261025-ABCD1234
+const VISA_REMOTE_RE = /^[A-Z]{2,4}-\d{6,8}-[A-Z0-9]{4,12}$/; // 签注署格式: NLT-261026-ABCD1234
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
 const FUN_VISA_TYPES = ['观光奶龙签注', '深度贴贴签注', '演出巡游签注', '美食突袭签注', '串门探亲签注'];
@@ -34,16 +24,16 @@ function hashPick(text, list) {
 }
 
 function maskHolder(name = '') {
-  const trimmed = String(name);
+  const trimmed = String(name || '');
   if (trimmed.length <= 1) return trimmed || '旅客';
   return trimmed.slice(0, 1) + '***';
 }
 
-// Deterministic offline validator. Returns { result, detail } with the exact
-// shape the real 签注署 adapter must produce (脱敏字段 only).
+// Deterministic offline validator for demo numbers. Returns { result, detail }
+// with the exact shape the real adapter produces (脱敏字段 only).
 function stubValidate(visaNo, user) {
   if (VISA_REMOTE_RE.test(visaNo) && !VISA_STUB_RE.test(visaNo)) {
-    return { result: 'not_found', detail: { reason: 'linkage_pending' } };
+    return { result: 'not_found', detail: { reason: 'linkage' } };
   }
   if (!VISA_STUB_RE.test(visaNo)) {
     return { result: 'invalid', detail: { reason: 'format' } };
@@ -65,40 +55,87 @@ function stubValidate(visaNo, user) {
   };
 }
 
-// Latest cached check within TTL for the same visa number.
+// 真实签注台账 → 入境署既能理解又能展示的脱敏结果。
+function liveValidate(permit, typeRow, user) {
+  if (permit.user_id !== user?.id) {
+    return { result: 'invalid', detail: { reason: 'holder' } };
+  }
+  if (permit.type_code === 'DIPLOMATIC') {
+    const identity = diplomaticEligibility(permit.user_id);
+    if (!identity.eligible) {
+      return { result: 'revoked', detail: { reason: 'diplomatic_identity_inactive' } };
+    }
+  }
+  const status = permit.status === 'valid' && permit.valid_until < now() ? 'expired' : permit.status;
+  const result = status === 'voided' ? 'revoked' : status;
+  return {
+    result,
+    detail: {
+      type: typeRow?.name ?? permit.type_code,
+      holder: maskHolder(permit.holder_name),
+      validUntil: permit.valid_until,
+      issuer: '奶龍國簽註申請署',
+      visaNo: permit.visa_no,
+    },
+  };
+}
+
+function recordCheck(visaNo, userId, result, detail, source) {
+  const ts = now();
+  db.prepare(
+    'INSERT INTO im_visa_checks (visa_no, user_id, result, detail, source, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(visaNo, userId ?? null, result, JSON.stringify(detail || {}), source, ts);
+  return ts;
+}
+
+// Latest cached check within TTL for the same visa number. Writeback rows are
+// terminal: once the port authority marks a permit used, it stays used even if
+// a demo cache entry exists.
 export function cachedCheck(visaNo) {
   const row = db
     .prepare(
-      `SELECT result, detail, created_at FROM im_visa_checks
-       WHERE visa_no = ? AND source IN ('stub', 'remote') ORDER BY id DESC LIMIT 1`
+      `SELECT result, detail, source, created_at FROM im_visa_checks
+       WHERE visa_no = ? AND source IN ('stub', 'remote', 'writeback') ORDER BY id DESC LIMIT 1`
     )
     .get(visaNo);
   if (!row) return null;
+  if (row.source === 'writeback' && row.result === 'used') {
+    return { result: 'used', detail: JSON.parse(row.detail || '{}'), checkedAt: row.created_at, cached: true };
+  }
   if (Date.now() - Date.parse(row.created_at) > CACHE_TTL_MS) return null;
   return { result: row.result, detail: JSON.parse(row.detail || '{}'), checkedAt: row.created_at, cached: true };
 }
 
 export function checkVisa(visaNo, user, { useCache = true } = {}) {
+  // 真实台账优先:命中时不走缓存,注销/过期/已使用都实时反映。
+  const { permit, typeRow } = lookupPermit({ no: visaNo });
+  if (permit) {
+    const { result, detail } = liveValidate(permit, typeRow, user);
+    const ts = recordCheck(visaNo, user?.id ?? null, result, detail, 'remote');
+    return { result, detail, checkedAt: ts, cached: false };
+  }
   if (useCache) {
     const hit = cachedCheck(visaNo);
     if (hit) return hit;
   }
   const { result, detail } = stubValidate(visaNo, user);
-  const ts = now();
-  db.prepare(
-    'INSERT INTO im_visa_checks (visa_no, user_id, result, detail, source, created_at) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(visaNo, user?.id ?? null, result, JSON.stringify(detail), 'stub', ts);
+  const ts = recordCheck(visaNo, user?.id ?? null, result, detail, 'stub');
   return { result, detail, checkedAt: ts, cached: false };
 }
 
-// 通关后回写:签注标记"已使用"。Stub 阶段只落一条回写记录 + 审计日志,
-// 真实对接后替换为调用签注署的回写接口。
+// 通关后回写:真实签注直接回调签注署(状态 + 站内信 + 审计都在签注署完成),
+// 演示编号只落一条回写记录。
 export function markVisaUsed(visaNo, actorId, declarationNo) {
-  if (!visaNo) return;
-  db.prepare(
-    'INSERT INTO im_visa_checks (visa_no, user_id, result, detail, source, created_at) VALUES (?, NULL, ?, ?, ?, ?)'
-  ).run(visaNo, 'used', JSON.stringify({ declarationNo }), 'writeback', now());
-  audit(actorId, 'im:visa.mark_used', 'visa', visaNo, { declarationNo });
+  if (!visaNo) return { found: false, ok: false };
+  const result = markPermitUsed(visaNo);
+  if (result.found) {
+    recordCheck(visaNo, null, 'used', { declarationNo, via: 'visa-office' }, 'writeback');
+    audit(actorId, 'im:visa.mark_used', 'visa', visaNo, { declarationNo, via: 'visa-office' });
+    return result;
+  }
+  recordCheck(visaNo, null, 'used', { declarationNo }, 'writeback');
+  audit(actorId, 'im:visa.mark_used', 'visa', visaNo, { declarationNo, via: 'demo-stub' });
+  return { found: false, ok: true, status: 'used' };
 }
 
 export const VISA_ERROR_CODE = {

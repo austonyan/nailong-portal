@@ -320,7 +320,30 @@ export default function AppealAdminWorkbench() {
             </ul>
 
             <h4>{t('appeal.admin.bizLink')}</h4>
-            <p className="muted-text">{t('appeal.admin.bizLinkReserved')}</p>
+            {detail.bizLink?.integrated && detail.bizLink.found ? (
+              <div className="appeal-biz-link">
+                <div className="appeal-dist-row">
+                  <Tag color="app-green" variant="soft">{detail.bizLink.office}</Tag>
+                  <b>{detail.bizLink.title}</b>
+                  <span className="muted-text">
+                    {detail.bizLink.code} · {detail.bizLink.status}
+                  </span>
+                </div>
+                {detail.bizLink.timeline?.length > 0 && (
+                  <ul className="appeal-record-timeline">
+                    {detail.bizLink.timeline.map((r, idx) => (
+                      <li key={`${r.createdAt}-${idx}`}>
+                        <Tag variant="soft" color="app-teal" size="small">{r.action}</Tag>
+                        <span className="muted-text">{fmtDateTime(r.createdAt)}</span>
+                        {r.comment && <p className="muted-text">{r.comment}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <p className="muted-text">{t('appeal.admin.bizLinkMissing')}</p>
+            )}
 
             <h4>{t('appeal.detail.records')}</h4>
             <ul className="appeal-record-timeline">

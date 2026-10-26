@@ -1,7 +1,7 @@
-// 奶龙国皇家外交事务署联动预留(服务间接口)。
-// 约定:其他署以固定服务令牌调用(DIP_INTER_SERVICE_TOKEN)。按需求"联动先不做、
-// 先做预留",这里把校验接口立起来(签注署校验外交身份有效性、文书署校验建交/身份
-// 编号、入境署礼遇通道),未来对接零改动。
+// 奶龙国皇家外交事务署服务间接口。
+// 同进程内部联动已直接走 server/linkage.js(签注署校验外交身份、文书署校验
+// 建交/身份编号、入境署礼遇通道);本路由保留给独立部署的服务,以固定服务
+// 令牌(DIP_INTER_SERVICE_TOKEN)调用。
 import { Router } from 'express';
 import { db } from '../db.js';
 import { forbidden } from '../http.js';
@@ -55,7 +55,7 @@ router.post('/agreement/check', (req, res) => {
   res.json({ found: true, ...maskAgreement(agreement) });
 });
 
-// 礼遇通道查询(入境署联动预留):按外交身份编号返回可享礼遇
+// 礼遇通道查询(入境署联动):按外交身份编号返回可享礼遇
 router.get('/courtesies/:no', (req, res) => {
   sweepAll();
   const no = String(req.params.no || '').toUpperCase();

@@ -3,6 +3,14 @@
 // limiting and the reserved write-back hooks for the other offices.
 import crypto from 'node:crypto';
 import { db, now } from './db.js';
+import {
+  businessSnapshot,
+  classifyBizStatus,
+  integrationStatus,
+  sampleBusinessRecords,
+  verifyBusinessRecord,
+  writebackBusiness,
+} from './linkage.js';
 
 // Unpredictable, human-friendly numbers: no vowels/ambiguous glyphs.
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -76,9 +84,8 @@ export function sendMsg(userId, targetType, targetId, type, params = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// 关联业务校验(预留):各业务署接入后在此注册 handler。
-// 约定接口:{ validate(code, userId) → { exists, owned, appealable }, link(code) }
-// 未接入时 resolveBizHandler 返回 null,申诉可先提交,关联校验标记 unverified。
+// 关联业务校验(已联动):五个业务署全部接入,直接读各自台账。
+// 约定接口:{ validate(code, userId), link(code), writeback(appeal, ctx) }
 // ---------------------------------------------------------------------------
 export const BIZ_TYPES = [
   { key: 'visa', office: '签注申请署' },
@@ -88,31 +95,38 @@ export const BIZ_TYPES = [
   { key: 'document', office: '文书与认证署' },
 ];
 
-const BIZ_HANDLERS = {
-  // visa: { validate(code, userId) {...}, link(code) {...} },
-  // immigration: {...}, resident: {...}, diplomatic: {...}, document: {...},
-};
+const BIZ_HANDLERS = Object.fromEntries(
+  BIZ_TYPES.map(({ key }) => [
+    key,
+    {
+      validate: (code, userId) => verifyBusinessRecord(key, code, userId),
+      link: (code) => businessSnapshot(key, code),
+      writeback: (appeal, ctx) =>
+        writebackBusiness(key, appeal.biz_code, { ...ctx, appealCode: appeal.code }),
+    },
+  ])
+);
 
 export function resolveBizHandler(bizType) {
   return BIZ_HANDLERS[bizType] || null;
 }
 
-// 处理决定回写业务署(预留):职责分离 —— 申诉署不直接改业务状态,
-// 正式接入后由业务署暴露的回调执行回写;当前仅审计留痕,返回 false 表示未回写。
+export { classifyBizStatus, integrationStatus, sampleBusinessRecords };
+
+// 处理决定回写业务署:职责分离 —— 申诉署不直接改业务状态,由业务署自己的
+// 联动函数决定是否重开被驳回件;无论是否重开都写一条业务署审计。
 export function writebackDecision(appeal, { decisionType, decisionCode }) {
   const handler = resolveBizHandler(appeal.biz_type);
-  audit(
-    { name: 'system' },
-    'writeback_skipped',
-    'appeal',
-    appeal.code,
-    { bizType: appeal.biz_type, decisionType, decisionCode, integrated: !!handler, reserved: true }
-  );
-  if (handler?.writeback) {
-    handler.writeback(appeal, { decisionType, decisionCode });
-    return true;
-  }
-  return false;
+  const result = handler?.writeback
+    ? handler.writeback(appeal, { decisionType, decisionCode })
+    : { integrated: false, applied: false, reason: 'not_integrated', office: '' };
+  audit({ name: 'system' }, 'appeal_decision_writeback', 'appeal', appeal.code, {
+    bizType: appeal.biz_type,
+    decisionType,
+    decisionCode,
+    ...result,
+  });
+  return result;
 }
 
 // ---------------------------------------------------------------------------

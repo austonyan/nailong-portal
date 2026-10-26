@@ -24,6 +24,7 @@ import {
   serializeType,
   sweepAll,
 } from '../visa.js';
+import { diplomaticEligibility } from '../linkage.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data');
@@ -36,6 +37,14 @@ const MAX_MATERIAL_BYTES = 5 * 1024 * 1024;
 const MAX_MATERIALS_PER_APP = 6;
 const ALLOWED_MIMES = new Set(['image/png', 'image/jpeg', 'image/webp', 'application/pdf']);
 const KINDS = new Set(['avatar', 'invitation', 'proof', 'other']);
+
+// 外交签注通道:申请与提交时都要求申请人当前持有有效外交身份(外交署联动)。
+function assertDiplomaticEligible(typeCode, userId) {
+  if (typeCode !== 'DIPLOMATIC') return;
+  if (!diplomaticEligibility(userId).eligible) {
+    throw badRequest('VISA_DIP_IDENTITY_REQUIRED', 'An active diplomatic identity is required for a diplomatic visa');
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Uploads (private storage)
@@ -208,6 +217,11 @@ router.get('/types', (_req, res) => {
   res.json({ items: db.prepare('SELECT * FROM visa_types WHERE enabled = 1 ORDER BY sort_order, id').all().map(serializeType) });
 });
 
+// 外交签注资格:外交署联动查询当前有效外交身份
+router.get('/diplomatic-eligibility', (req, res) => {
+  res.json(diplomaticEligibility(req.user.id));
+});
+
 // ---------------------------------------------------------------------------
 // Applications: draft lifecycle
 // ---------------------------------------------------------------------------
@@ -230,6 +244,7 @@ router.post('/applications', (req, res) => {
   const typeCode = String(req.body?.typeCode || '').trim();
   const typeRow = db.prepare('SELECT * FROM visa_types WHERE code = ? AND enabled = 1').get(typeCode);
   if (!typeRow) throw badRequest('VISA_TYPE_UNAVAILABLE', 'Visa type not available');
+  assertDiplomaticEligible(typeCode, req.user.id);
   const ts = now();
   const appNo = nextApplicationNo();
   const info = db
@@ -273,6 +288,7 @@ router.post('/applications/:id/submit', (req, res) => {
   if (db.prepare('SELECT 1 FROM visa_blacklist WHERE user_id = ?').get(req.user.id)) {
     throw forbidden('VISA_BLACKLISTED', 'Account is restricted from applying');
   }
+  assertDiplomaticEligible(app.type_code, req.user.id);
   const active = db
     .prepare(`SELECT COUNT(*) AS n FROM visa_applications WHERE user_id = ? AND status IN ('pending_review','supplement_required')`)
     .get(req.user.id).n;

@@ -4256,6 +4256,16 @@ h3 {
   font-size: 13px;
 }
 
+.res-channel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
 /* 站内信 */
 
 .res-msg-list {

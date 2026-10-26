@@ -34,6 +34,7 @@ import {
   serializeType,
   sweepAll,
 } from './util.js';
+import { residentChannels } from '../linkage.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 ensureResidentSchema();
@@ -597,7 +598,7 @@ router.post('/changes/:id/cancel', (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// 居民权益(趣味化 + 预留通道开关)
+// 居民权益(趣味化 + 跨署联动通道)
 // ---------------------------------------------------------------------------
 
 router.get('/benefits', (req, res) => {
@@ -607,19 +608,15 @@ router.get('/benefits', (req, res) => {
   const announcements = db
     .prepare("SELECT id, title, body, level, created_at FROM res_notices WHERE enabled = 1 AND level = 'policy' ORDER BY id DESC LIMIT 5")
     .all();
+  const channelInfo = residentChannels(req.user.id);
   res.json({
     card: card ? serializeCard(card) : null,
     typeName: typeRow?.name ?? null,
     benefits: typeRow?.benefits ?? '',
     duties: typeRow?.duties ?? '',
     announcements,
-    // 联动预留:各署快捷通道开关(签注/入境/活动/文书),MVP 全部为 false
-    channels: {
-      visaFast: false,
-      immigrationLane: false,
-      activityPriority: false,
-      identityCertificate: false,
-    },
+    // 联动快捷通道:按居民卡状态 + 各署真实配置下发可用性与跳转地址
+    ...channelInfo,
   });
 });
 

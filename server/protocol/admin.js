@@ -1134,7 +1134,9 @@ const EDITABLE_CONFIG = new Set([
 ]);
 
 router.get('/config', manager, (_req, res) => {
-  const items = db.prepare('SELECT key, value, updated_at FROM pro_config ORDER BY key').all();
+  const items = db
+    .prepare("SELECT key, value, updated_at FROM pro_config WHERE key NOT LIKE '\\_%' ESCAPE '\\' ORDER BY key")
+    .all();
   res.json({ items });
 });
 

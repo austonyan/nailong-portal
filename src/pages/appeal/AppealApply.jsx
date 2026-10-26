@@ -197,9 +197,9 @@ export default function AppealApply() {
             </Button>
           )}
         </div>
-        {appeal && appeal.bizStatus === 'unverified' && (
-          <Tag color="app-orange" variant="soft">
-            {t('appeal.apply.bizUnverified')}
+        {appeal && appeal.bizStatus && (
+          <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'app-orange'} variant="soft">
+            {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: appeal.bizStatus })}
           </Tag>
         )}
       </Card>

@@ -1,7 +1,7 @@
-// 皇家礼宾与活动署联动预留(服务间接口)。
-// 约定:其他署以固定服务令牌调用(PROTOCOL_INTER_SERVICE_TOKEN)。
-// 当前提供邀请函/活动凭证/接待方校验与凭证核销,供签注署、入境署与统一
-// 验真中心对接;联动尚未接入时保持零调用,不影响主流程。
+// 皇家礼宾与活动署服务间接口。
+// 同进程内部联动已直接走 server/linkage.js;本路由保留给独立部署的服务,
+// 以固定服务令牌(PROTOCOL_INTER_SERVICE_TOKEN)调用。提供邀请函/活动凭证/
+// 接待方校验与凭证核销,供签注署、入境署与统一验真中心对接。
 import { Router } from 'express';
 import { db, now } from '../db.js';
 import { forbidden, notFound } from '../http.js';
@@ -93,7 +93,7 @@ router.get('/invitations/:no', (req, res) => {
   });
 });
 
-// 活动凭证辅助入境申报(预留)。
+// 活动凭证校验(供签注署 / 入境署 / 文书署查询申报辅助材料)。
 router.get('/passes/:no', (req, res) => {
   sweepAll();
   const row = db.prepare('SELECT * FROM pro_passes WHERE pass_no = ?').get(String(req.params.no).trim().toUpperCase());
@@ -105,7 +105,7 @@ router.get('/passes/:no', (req, res) => {
   });
 });
 
-// 活动期间口岸提示预留:按日期返回活动与预计人流(虚构)。
+// 活动期间口岸提示:按日期返回活动与预计人流(入境署口岸详情已接入)。
 router.get('/events/upcoming', (req, res) => {
   sweepAll();
   const days = Math.min(30, Math.max(1, Number(req.query.days) || 7));
@@ -133,7 +133,7 @@ router.get('/hosts/:no', (req, res) => {
   });
 });
 
-// 签到回写预留:入境署/签注署可标记凭证已使用。
+// 签到回写:入境署/签注署等核销方可标记凭证已使用。
 router.post('/passes/mark-used', (req, res) => {
   sweepAll();
   const row = db.prepare('SELECT * FROM pro_passes WHERE pass_no = ?').get(String(req.body?.no || '').trim().toUpperCase());

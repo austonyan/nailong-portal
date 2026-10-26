@@ -403,6 +403,12 @@ const MESSAGE_TEMPLATES = [
     body: '互免协议 {{no}}({{partyA}} × {{partyB}})已生效,有效期至 {{effectiveTo}}。可凭外交身份编号查询互免资格。',
     variables: 'no, partyA, partyB, effectiveTo',
   },
+  {
+    code: 'appeal_reopened',
+    title: '申诉复核:外交业务 {{no}} 重新进入待审',
+    body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),{{no}} 重新进入待审核队列。',
+    variables: 'no, decisionCode, appealCode',
+  },
 ];
 
 const DEFAULT_SETTINGS = [
@@ -531,10 +537,13 @@ function seedDiplomacy() {
         `INSERT INTO dip_courtesy_types (code, name, description, enabled, sort_order, created_at, updated_at)
          VALUES (@code, @name, @description, 1, @sort_order, @ts, @ts)`
       );
-      insertType.run({ code: 'ENTRY_LANE', name: '入境礼遇通道', description: '入境署通关时的趣味礼遇通道(联动预留)', sort_order: 0, ts });
+      insertType.run({ code: 'ENTRY_LANE', name: '入境礼遇通道', description: '入境署通关时的趣味礼遇通道(与入境署联动)', sort_order: 0, ts });
       insertType.run({ code: 'EVENT_INVITE', name: '活动优先邀请', description: '礼宾活动的优先邀请资格', sort_order: 1, ts });
       insertType.run({ code: 'PRIORITY_REVIEW', name: '优先审核', description: '署内申请优先审核(趣味化标记)', sort_order: 2, ts });
     }
+    db.prepare(
+      "UPDATE dip_courtesy_types SET description = REPLACE(description, '(联动预留)', '(与入境署联动)') WHERE code = 'ENTRY_LANE'"
+    ).run();
 
     // --- 署级公告: 建交开放 / 登记须知 / 礼遇说明 ---------------------------
     if (db.prepare('SELECT COUNT(*) AS n FROM dip_notices').get().n === 0) {

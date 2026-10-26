@@ -63,9 +63,9 @@ for direct URLs too). Layers:
   `visa.msg.*`), lazy sweeps (supplement-deadline auto-close, permit expiry + 72 h reminder),
   in-memory rate limiting, masked verify results.
 - Routes: `server/routes/visa.js` (user, `visa:apply`; `/verify` is public + rate limited),
-  `visaAdmin.js` (`visa:review` workbench/issue/permit ops; `visa:manage` types/notices/
-  config/blacklist/stats/audit/CSV), `visaInter.js` (皇家口岸入境署 integration stub,
-  `x-nailong-service-token` vs `VISA_INTER_SERVICE_TOKEN`; check/mark-used/types).
+`visaAdmin.js` (`visa:review` workbench/issue/permit ops; `visa:manage` types/notices/
+config/blacklist/stats/audit/CSV), `visaInter.js` (皇家口岸入境署 service-to-service API,
+`x-nailong-service-token` vs `VISA_INTER_SERVICE_TOKEN`; check/mark-used/types).
 - Private uploads via multer land in `server/data/uploads/visa/<appId>/` (gitignored);
   downloads only through the authenticated `/api/visa/materials/:id/file`.
 - State machines — application: `draft → pending_review → (approved | rejected |
@@ -107,13 +107,24 @@ Exact token values and pixel-level component specs live in `docs/design-system/`
 (`design-tokens.md`, `design-rules.md`, `components/*.md`). `docs/adr/` records library-wide
 constraints (e.g. dayjs is the only sanctioned date layer for the date/time components).
 
+## Cross-service linkage
+
+`server/linkage.js` is the in-process cross-office bus. All offices share one SQLite DB, so
+internal checks read/write each other's tables directly instead of doing HTTP to self:
+visa permit ↔ immigration check/writeback, docs business-number verification across the
+five offices (plus appeal decisions), appeal validate/snapshot/writeback/inspection
+sampling, protocol identity/courtesy checks, resident benefit channels, and diplomatic
+visa eligibility + permit void-on-identity-loss. The per-office `/api/*/inter` routes
+remain for independently deployed callers and still require their service tokens.
+Acceptance: `node server/scripts/smoke-linkage.mjs [baseUrl]`.
+
 ## Current state
 
-As of 2026-10-25 the portal is functional end to end: auth (login/register/refresh), RBAC
+As of 2026-10-26 the portal is functional end to end: auth (login/register/refresh), RBAC
 guards, portal service cards, profile management, and admin screens for users / roles /
 services. The UI is built entirely with animal-island-ui components + `--animal-*` tokens.
 The 奶龍國簽註申請署 (visa service, v0.2) is complete: apply → review → issue → verify loop,
-supplement flow, e-visa card, messages, stats/audit; port-authority integration is stubbed
-but wired (see the visa section above). Other in-SPA services (文书署/入境署) may appear in
-the working tree from parallel development sessions — treat untracked files you did not
-create as someone else's WIP.
+supplement flow, e-visa card, messages, stats/audit; port-authority check/writeback is live
+through `server/linkage.js`. Other in-SPA services (文书署/入境署) may appear in the working
+tree from parallel development sessions — treat untracked files you did not create as
+someone else's WIP.

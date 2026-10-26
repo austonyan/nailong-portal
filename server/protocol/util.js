@@ -507,7 +507,7 @@ export function maskHost(row) {
 }
 
 // ---------------------------------------------------------------------------
-// Cross-service identity checks — 预留联动,默认关闭(linkage_enabled = 0).
+// Cross-service identity checks — 跨署联动,默认开启(linkage_enabled = 1).
 // When disabled we only record that the claim is reserved; when enabled we read
 // the resident card / diplomatic identity tables if they exist.
 // ---------------------------------------------------------------------------
@@ -526,21 +526,23 @@ export function checkIdentity(type, no, userId) {
   if (type === 'resident') {
     if (!tableExists('res_cards')) return { status: 'unavailable', valid: true };
     const card = db
-      .prepare('SELECT status FROM res_cards WHERE card_no = ? AND user_id = ?')
+      .prepare('SELECT status, valid_until FROM res_cards WHERE card_no = ? AND user_id = ?')
       .get(value, userId);
-    return card?.status === 'valid' ? { status: 'verified', valid: true } : { status: 'invalid', valid: false };
+    const live = card?.status === 'valid' && (!card.valid_until || card.valid_until >= now());
+    return live ? { status: 'verified', valid: true } : { status: 'invalid', valid: false };
   }
   if (type === 'diplomatic') {
     if (!tableExists('dip_identities')) return { status: 'unavailable', valid: true };
     const idn = db
-      .prepare('SELECT status FROM dip_identities WHERE no = ? AND user_id = ? AND deleted_at IS NULL')
+      .prepare('SELECT status, term_end FROM dip_identities WHERE no = ? AND user_id = ? AND deleted_at IS NULL')
       .get(value, userId);
-    return idn?.status === 'active' ? { status: 'verified', valid: true } : { status: 'invalid', valid: false };
+    const live = idn?.status === 'active' && (!idn.term_end || idn.term_end >= now().slice(0, 10));
+    return live ? { status: 'verified', valid: true } : { status: 'invalid', valid: false };
   }
   return { status: 'reserved', valid: true };
 }
 
-// Used by the courtesy eligibility query (reserved linkage, read-only).
+// Used by the courtesy eligibility query (cross-service, read-only).
 export function checkCourtesyBasis(basisType, basisNo, userId) {
   const value = String(basisNo || '').trim().toUpperCase();
   if (!value) return { valid: false, status: 'missing', source: basisType };
@@ -548,11 +550,13 @@ export function checkCourtesyBasis(basisType, basisNo, userId) {
     const inv = db
       .prepare('SELECT * FROM pro_invitations WHERE invite_no = ? AND invitee_user_id = ?')
       .get(value, userId);
+    if (!inv) return { valid: false, status: 'not_found', source: 'protocol', detail: null };
+    const live = inv.status === 'valid' && (!inv.valid_until || inv.valid_until >= now());
     return {
-      valid: inv?.status === 'valid' && (!inv.valid_until || inv.valid_until >= now()),
-      status: inv ? inv.status : 'not_found',
+      valid: live,
+      status: live ? 'verified' : 'invalid',
       source: 'protocol',
-      detail: inv ? { eventId: inv.event_id, validUntil: inv.valid_until } : null,
+      detail: { eventId: inv.event_id, validUntil: inv.valid_until, recordStatus: inv.status },
     };
   }
   if (getConfig('linkage_enabled') !== '1') {
@@ -560,15 +564,18 @@ export function checkCourtesyBasis(basisType, basisNo, userId) {
   }
   if (basisType === 'resident') {
     if (!tableExists('res_cards')) return { valid: true, status: 'unavailable', source: 'resident' };
-    const card = db.prepare('SELECT status FROM res_cards WHERE card_no = ? AND user_id = ?').get(value, userId);
-    return { valid: card?.status === 'valid', status: card ? card.status : 'not_found', source: 'resident' };
+    const card = db.prepare('SELECT status, valid_until FROM res_cards WHERE card_no = ? AND user_id = ?').get(value, userId);
+    if (!card) return { valid: false, status: 'not_found', source: 'resident' };
+    const live = card.status === 'valid' && (!card.valid_until || card.valid_until >= now());
+    return { valid: live, status: live ? 'verified' : 'invalid', source: 'resident', detail: { recordStatus: card.status } };
   }
   if (basisType === 'diplomatic') {
     if (!tableExists('dip_identities')) return { valid: true, status: 'unavailable', source: 'diplomatic' };
     const idn = db
       .prepare('SELECT status FROM dip_identities WHERE no = ? AND user_id = ? AND deleted_at IS NULL')
       .get(value, userId);
-    return { valid: idn?.status === 'active', status: idn ? idn.status : 'not_found', source: 'diplomatic' };
+    if (!idn) return { valid: false, status: 'not_found', source: 'diplomatic' };
+    return { valid: idn.status === 'active', status: idn.status === 'active' ? 'verified' : 'invalid', source: 'diplomatic' };
   }
   return { valid: false, status: 'invalid_basis', source: basisType };
 }

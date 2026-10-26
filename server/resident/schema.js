@@ -237,6 +237,7 @@ const MESSAGE_TEMPLATES = [
   { code: 'expiry_reminder', title: '居民卡即将到期:{{cardNo}}', body: '你的居民卡 {{cardNo}} 将于 {{validUntil}} 到期,记得及时续期哦。', variables: 'cardNo, validUntil' },
   { code: 'change_approved', title: '变更申请已通过:{{no}}', body: '你的变更申请 {{no}} 已通过审核,居民卡信息已同步更新。', variables: 'no' },
   { code: 'change_rejected', title: '变更申请未通过:{{no}}', body: '你的变更申请 {{no}} 未通过审核(原因:{{reason}})。{{note}}', variables: 'no, reason, note' },
+  { code: 'appeal_reopened', title: '申诉复核:登记申请 {{no}} 重新进入待审', body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),登记申请 {{no}} 重新进入待审核队列。', variables: 'no, decisionCode, appealCode' },
 ];
 
 const DEFAULT_CONFIG = {

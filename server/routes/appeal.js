@@ -14,6 +14,7 @@ import {
   APPEAL_UPLOAD_KINDS,
   BIZ_TYPES,
   audit,
+  classifyBizStatus,
   clientIp,
   getConfigNumber,
   maskVerifyResult,
@@ -23,7 +24,6 @@ import {
   nextReviewNo,
   nextTicketNo,
   rateLimit,
-  resolveBizHandler,
   sendMsg,
   serializeAppeal,
   serializeComplaint,
@@ -252,9 +252,8 @@ router.post('/appeals', (req, res) => {
   }
   const fields = validateBizRef(req.body);
   const code = nextAppealNo();
-  // 关联校验(预留):业务署接入前只做格式校验,状态记为 unverified
-  const handler = resolveBizHandler(fields.bizType);
-  const bizStatus = handler ? 'pending_check' : 'unverified';
+  // 关联校验(已联动):直接查业务署台账,记录 verified / not_found / not_owned / not_appealable
+  const { status: bizStatus } = classifyBizStatus(fields.bizType, fields.bizCode, req.user.id);
   const ts = now();
   const info = db
     .prepare(
@@ -273,9 +272,10 @@ router.put('/appeals/:id', (req, res) => {
   if (!row || row.user_id !== req.user.id) throw notFound('Appeal not found');
   if (row.status !== 'draft') throw badRequest('APPEAL_NOT_EDITABLE', 'Only drafts can be edited');
   const fields = validateAppealFields({ ...serializeAppeal(row), ...req.body });
+  const { status: bizStatus } = classifyBizStatus(fields.bizType, fields.bizCode, req.user.id);
   db.prepare(
-    'UPDATE appeal_appeals SET biz_type = ?, biz_code = ?, reason = ?, expected = ?, contact = ?, updated_at = ? WHERE id = ?'
-  ).run(fields.bizType, fields.bizCode, fields.reason, fields.expected, fields.contact, now(), row.id);
+    'UPDATE appeal_appeals SET biz_type = ?, biz_code = ?, biz_status = ?, reason = ?, expected = ?, contact = ?, updated_at = ? WHERE id = ?'
+  ).run(fields.bizType, fields.bizCode, bizStatus, fields.reason, fields.expected, fields.contact, now(), row.id);
   res.json({ appeal: appealWithMeta(db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(row.id)) });
 });
 
@@ -317,16 +317,22 @@ router.post('/appeals/:id/submit', (req, res) => {
     .get(req.user.id).n;
   if (active >= 3) throw badRequest('APPEAL_TOO_MANY_ACTIVE', 'Too many appeals in progress');
   validateAppealFields({ ...serializeAppeal(row) });
+  // 提交时复检:业务件确实存在且属于本人;不存在的编号允许进入人工核验,
+  // 但绝不能替别人申诉。
+  const { status: bizStatus, check: bizCheck } = classifyBizStatus(row.biz_type, row.biz_code, req.user.id);
+  if (bizCheck.found && !bizCheck.owned) {
+    throw forbidden('APPEAL_BIZ_NOT_OWNED', 'The linked business record belongs to another account');
+  }
   if (!rateLimit(`appeal-submit:${req.user.id}`, 1, 60_000)) {
     throw badRequest('APPEAL_RATE_LIMITED', 'Please wait a minute before submitting again');
   }
   const ts = now();
   db.prepare(
-    "UPDATE appeal_appeals SET status = 'pending_accept', submitted_at = ?, updated_at = ? WHERE id = ?"
-  ).run(ts, ts, row.id);
+    "UPDATE appeal_appeals SET status = 'pending_accept', biz_status = ?, submitted_at = ?, updated_at = ? WHERE id = ?"
+  ).run(bizStatus, ts, ts, row.id);
   record('appeal', row.id, req.user, 'submit');
   sendMsg(req.user.id, 'appeal', row.id, 'appeal_submitted', { code: row.code });
-  audit(req.user, 'submit_appeal', 'appeal', row.code);
+  audit(req.user, 'submit_appeal', 'appeal', row.code, { bizStatus, bizOffice: bizCheck.office || '' });
   res.json({ appeal: appealWithMeta(db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(row.id)) });
 });
 
@@ -620,7 +626,7 @@ router.post('/tickets/:id/close', (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// 决定书(联动文书认证预留 certCode)
+// 决定书(文书署认证签发后回写 certCode)
 // ---------------------------------------------------------------------------
 
 router.get('/decisions', (req, res) => {

@@ -164,6 +164,26 @@ export default function DocsApplicationDetail() {
                 <dt>{type.bizNoLabel}</dt>
                 <dd>
                   {item.bizNo || '—'}
+                  {item.bizCheck?.checked && item.bizCheck.found && item.bizCheck.owned && (
+                    <Tag size="small" color="app-green" variant="soft">
+                      {t('docs.detail.bizVerified')}
+                    </Tag>
+                  )}
+                  {item.bizCheck?.checked && item.bizCheck.found && !item.bizCheck.owned && (
+                    <Tag size="small" color="app-orange" variant="soft">
+                      {t('docs.detail.bizNotOwned')}
+                    </Tag>
+                  )}
+                  {item.bizCheck?.checked && !item.bizCheck.found && (
+                    <Tag size="small" color="app-orange" variant="soft">
+                      {t('docs.detail.bizNotFound')}
+                    </Tag>
+                  )}
+                  {item.bizCheck?.unavailable && (
+                    <Tag size="small" variant="soft">
+                      {t('docs.detail.bizUnavailable')}
+                    </Tag>
+                  )}
                   {item.bizCheck?.reserved && (
                     <Tag size="small" variant="soft">
                       {t('docs.detail.bizReserved')}

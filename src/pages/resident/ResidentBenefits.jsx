@@ -1,7 +1,8 @@
-// 居民权益:类型权益/义务、专属公告与联动快捷通道(预留,未开放)。
+// 居民权益:类型权益/义务、专属公告与跨署联动快捷通道。
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag, Title } from 'animal-island-ui';
 import { CompassIcon, FileIcon, MailIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDate, toastResError } from './shared.jsx';
@@ -69,16 +70,29 @@ export default function ResidentBenefits() {
         <Title size="middle">{t('res.benefits.channels')}</Title>
         <p className="muted-text">{t('res.benefits.channelsTip')}</p>
         <div className="res-channel-grid">
-          {CHANNELS.map(({ key, icon: Icon }) => (
-            <Card key={key} className="res-channel-card" color="app-teal">
-              <Icon size={28} />
-              <b>{t(`res.channel.${key}.name`)}</b>
-              <p className="muted-text">{t(`res.channel.${key}.desc`)}</p>
-              <Tag color="app-yellow" variant="soft" size="small">
-                {data.channels?.[key] ? t('res.channelState.open') : t('res.channelState.reserved')}
-              </Tag>
-            </Card>
-          ))}
+          {CHANNELS.map(({ key, icon: Icon }) => {
+            const open = !!data.channels?.[key];
+            const href = data.links?.[key];
+            return (
+              <Card key={key} className="res-channel-card" color="app-teal">
+                <Icon size={28} />
+                <b>{t(`res.channel.${key}.name`)}</b>
+                <p className="muted-text">{t(`res.channel.${key}.desc`)}</p>
+                <div className="res-channel-foot">
+                  <Tag color={open ? 'app-green' : 'app-yellow'} variant="soft" size="small">
+                    {open ? t('res.channelState.open') : t('res.channelState.reserved')}
+                  </Tag>
+                  {open && href && (
+                    <Link to={href}>
+                      <Button type="primary" size="small">
+                        {t('res.benefits.openChannel')}
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </section>
 

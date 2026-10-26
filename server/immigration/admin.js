@@ -496,7 +496,7 @@ router.post('/pass-codes/verify', ...verifier, (req, res) => {
     logPassCheck(row.code_no, 'port_closed', req.user.id, '', row.id);
     return res.json({ result: 'port_closed', codeNo: row.code_no, declarationNo: row.declaration_no });
   }
-  // 签注联动预留:核验时复检签注,注销/过期后自动拦截。
+  // 签注联动:核验时复检真实签注台账,注销/过期/已使用后自动拦截。
   if (row.visa_no) {
     const check = checkVisa(row.visa_no, { id: row.user_id });
     if (check.result !== 'valid') {

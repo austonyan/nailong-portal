@@ -15,6 +15,7 @@ export default function AppealAdminInspect() {
   const [kind, setKind] = useState('quality');
   const [content, setContent] = useState('');
   const [sampleBiz, setSampleBiz] = useState('visa');
+  const [sampleResult, setSampleResult] = useState(null);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
@@ -55,7 +56,8 @@ export default function AppealAdminInspect() {
   const doSample = async () => {
     try {
       const data = await api.post('/appeal/admin/inspect/sampling', { bizType: sampleBiz, note: t('appeal.inspect.sampleNote') });
-      if (data.reserved) Notification.info(t('appeal.inspect.sampleReserved'));
+      setSampleResult(data.sample);
+      Notification.success(t('appeal.inspect.sampleDone', { count: data.sample?.items?.length ?? 0 }));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -151,7 +153,7 @@ export default function AppealAdminInspect() {
 
           <Card className="appeal-inspect-card">
             <h4>{t('appeal.inspect.integrationTitle')}</h4>
-            <p className="muted-text">{t('appeal.inspect.integrationReserved')}</p>
+            <p className="muted-text">{t('appeal.inspect.integrationLive')}</p>
             <div className="appeal-dist-row">
               {summary.integration.map((i) => (
                 <Tag key={i.bizType} variant="soft" color={i.integrated ? 'app-green' : 'default'}>
@@ -163,6 +165,32 @@ export default function AppealAdminInspect() {
               <Select value={sampleBiz} onChange={setSampleBiz} options={summary.integration.map((i) => ({ key: i.bizType, label: t(`appeal.bizType.${i.bizType}`) }))} />
               <Button onClick={doSample}>{t('appeal.inspect.sample')}</Button>
             </div>
+            {sampleResult && (
+              <div className="appeal-sample-result">
+                <p className="muted-text">
+                  {t('appeal.inspect.sampleSummary', {
+                    office: sampleResult.office,
+                    total: sampleResult.total,
+                    count: sampleResult.items.length,
+                  })}
+                </p>
+                <div className="appeal-dist-row">
+                  {sampleResult.byStatus.map((s) => (
+                    <Tag key={s.status} variant="outlined" size="small">
+                      {s.status}: {s.n}
+                    </Tag>
+                  ))}
+                </div>
+                <ul className="appeal-list">
+                  {sampleResult.items.map((s) => (
+                    <li key={s.code}>
+                      <b>{s.code}</b>
+                      <span className="muted-text"> · {s.title} · {s.status} · {fmtDateTime(s.updatedAt)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Card>
 
           <Card className="appeal-inspect-card">

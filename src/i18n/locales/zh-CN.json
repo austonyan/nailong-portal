@@ -129,7 +129,7 @@
     "IMM_VISA_EXPIRED": "签注已过期,请先续签",
     "IMM_VISA_REVOKED": "签注已被注销,无法用于入境",
     "IMM_VISA_USED": "该签注已使用过,不能重复使用",
-    "IMM_VISA_NOT_FOUND": "签注署暂无此签注记录(联动未开放)",
+    "IMM_VISA_NOT_FOUND": "签注署暂无此签注记录",
     "IMM_VISA_REQUIRED": "请先关联有效签注",
     "IMM_INCOMPLETE": "申报信息不完整,请补全后再提交",
     "IMM_FILE_TOO_LARGE": "文件超过 5MB 上限",
@@ -199,6 +199,9 @@
     "EVT_ERASE_BLOCKED": "存在进行中的报名或认证,无法注销",
     "EVT_HOST_DUPLICATE": "已有进行中的接待方申请",
     "EVT_TIME_RANGE": "结束时间必须晚于开始时间",
+    "VISA_DIP_IDENTITY_REQUIRED": "申请外交签注需持有有效外交身份",
+    "VISA_DIP_IDENTITY_INACTIVE": "申请人当前没有有效外交身份,无法继续",
+    "DOC_BIZ_INVALID": "关联业务编号未通过核验,请确认编号与归属",
     "APPEAL_BIZ_NOT_OWNED": "该业务编号属于其他账号,不能代为申诉",
     "APPEAL_ALREADY_EVALUATED": "该申诉已评价,不能重复评价。",
     "APPEAL_ASSIGNEE_INVALID": "分派对象无效或不可用。",
@@ -608,6 +611,14 @@
       "system": {
         "title": "系统通知",
         "body": ""
+      },
+      "appeal_reopened": {
+        "title": "申诉复核:申请 {{appNo}} 重新审核",
+        "body": "皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),申请 {{appNo}} 已重新进入审核队列。"
+      },
+      "diplomatic_voided": {
+        "title": "签注 {{visaNo}} 已随外交身份失效注销",
+        "body": "你的外交身份已失效,关联的外交签注 {{visaNo}} 已同步注销。如需继续使用请重新登记外交身份并申请签注。"
       }
     },
     "msgs": {
@@ -786,7 +797,7 @@
       "catalog": "服务目录",
       "guide": "办事指南与常见问题",
       "faq1q": "哪些文书可以认证?",
-      "faq1a": "目前开放六类:签注证明、邀请函、入境记录证明、居民卡、活动凭证与外交文书。进入\"文书类型\"页可以查看每类的适用场景、所需材料与有效期。",
+      "faq1a": "目前开放七类:签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书与申诉决定书。进入\"文书类型\"页可以查看每类的适用场景、所需材料与有效期。",
       "faq2q": "认证需要准备什么材料?",
       "faq2a": "通常需要对应业务的凭证截图(如签注详情页、活动门票),部分类型需要邀请函扫描件。全部材料仅支持图片或 PDF,单个不超过 10MB。",
       "faq3q": "认证通过后有什么用?",
@@ -826,7 +837,7 @@
       "contact": "联系方式",
       "contactPh": "选填,仅认证员可见",
       "bizPh": "填写关联业务编号",
-      "bizHint": "可在对应业务署的详情页找到;联动校验即将开放。",
+      "bizHint": "可在对应业务署的详情页找到;提交时会与对应业务署实时校验。",
       "purpose": "认证用途",
       "required": "必填",
       "upload": "上传材料",
@@ -876,8 +887,12 @@
       "withdrawConfirmTitle": "撤销认证申请",
       "withdrawConfirmBody": "确定撤销申请 {{no}} 吗?撤销后不可恢复,如需认证请重新申请。",
       "withdrawn": "申请已撤销",
-      "bizReserved": "联动校验预留",
-      "uploaded": "材料已上传"
+      "bizReserved": "历史记录未校验",
+      "uploaded": "材料已上传",
+      "bizVerified": "已与业务署核验",
+      "bizNotOwned": "编号非本人业务",
+      "bizNotFound": "未查询到该业务编号",
+      "bizUnavailable": "该业务署暂不支持在线核验"
     },
     "materials": {
       "empty": "暂无材料",
@@ -1000,7 +1015,7 @@
         "guidePh": "用途、材料、注意事项……",
         "bizLabel": "关联业务编号名称",
         "bizLabelPh": "如:签注编号",
-        "bizSource": "联动署(预留)",
+        "bizSource": "关联业务署",
         "bizRequired": "业务编号必填",
         "sort": "排序",
         "addMaterial": "添加材料要求",
@@ -1170,6 +1185,10 @@
     "system": {
       "title": "系统通知",
       "body": "你有一条新的系统通知。"
+    },
+    "appeal_reopened": {
+      "title": "申诉复核:申请 {{appNo}} 重新认证",
+      "body": "皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),认证申请 {{appNo}} 已重新进入认证队列。"
     }
   },
   "imm": {
@@ -1275,7 +1294,11 @@
       "mapGarden": "出站花园",
       "channelClosed": "暂未开放",
       "startDeclare": "在此口岸申报入境",
-      "declareBlocked": "口岸未开放申报"
+      "declareBlocked": "口岸未开放申报",
+      "eventHints": "近期活动提示",
+      "eventHintsTip": "活动期间口岸人流可能增加,建议错峰通关。",
+      "courtesyTitle": "外交礼遇通道",
+      "courtesyTip": "凭有效外交身份 {{no}} 可使用以下礼遇通道。"
     },
     "declare": {
       "title": "入境申报",
@@ -1294,7 +1317,7 @@
       "address": "虚拟停留地址",
       "addressPlaceholder": "例如:奶龙湾 3 号沙滩",
       "visaNo": "关联签注编号",
-      "visaTip": "演示格式 NL-1234-ABCD;真实签注号将在签注署联动开放后支持",
+      "visaTip": "支持签注署真实编号 NLT-日期-编号,以及演示编号 NL-1234-ABCD",
       "checkVisa": "校验",
       "visaFirst": "请先输入签注编号",
       "visaOk": "签注有效,放心提交",
@@ -1432,7 +1455,8 @@
         "supplement_received": "补件已收到",
         "pass_code": "通关码生成",
         "entry_record": "入境记录",
-        "exit_reminder": "出境提醒"
+        "exit_reminder": "出境提醒",
+        "appeal_reopened": "申诉复核重开"
       }
     },
     "help": {
@@ -1923,32 +1947,33 @@
       "myBenefits": "{{type}}专属权益",
       "needResidency": "登记成为居民后即可查看专属权益",
       "channels": "快捷通道",
-      "channelsTip": "与其他署的联动通道正在建设中,敬请期待。",
+      "channelsTip": "已根据你的居民身份与各署配置开通可用通道。",
       "announcements": "居民专属公告",
       "achievements": "成就 / 徽章",
-      "achievementsTip": "成就系统规划中:连续签到、活动全勤、奶龙学者等徽章陆续上线。"
+      "achievementsTip": "成就系统规划中:连续签到、活动全勤、奶龙学者等徽章陆续上线。",
+      "openChannel": "前往办理"
     },
     "channel": {
       "visaFast": {
         "name": "签注快捷通道",
-        "desc": "居民申请签注可简化表单、优先审核(需签注署支持)"
+        "desc": "持有效居民卡可前往签注署办理签注。"
       },
       "immigrationLane": {
         "name": "入境居民通道",
-        "desc": "居民入境可走虚拟居民通道(需入境署支持)"
+        "desc": "持有效居民卡可在皇家口岸走居民与外交礼遇通道。"
       },
       "activityPriority": {
         "name": "活动优先报名",
-        "desc": "居民可优先报名礼宾活动(需活动署支持)"
+        "desc": "居民可凭身份申请礼宾活动优先报名与居民礼遇。"
       },
       "identityCertificate": {
         "name": "居民身份证明",
-        "desc": "联动文书与认证署申请居民身份证明(预留)"
+        "desc": "可直接前往文书与认证署申请居民卡认证。"
       }
     },
     "channelState": {
       "open": "已开放",
-      "reserved": "预留中"
+      "reserved": "居民身份生效后开放"
     },
     "messages": {
       "title": "站内信",
@@ -2034,7 +2059,7 @@
         "maskTip": "联系方式与地址已脱敏展示;数据导出会记录审计日志。",
         "changes": "变更记录",
         "related": "关联业务",
-        "relatedSummary": "签注申请 {{visa}} 份 · 入境申报 {{immigration}} 份(联动展示预留)"
+        "relatedSummary": "签注申请 {{visa}} 份 · 入境申报 {{immigration}} 份(实时统计)"
       },
       "verify": {
         "title": "验真管理",
@@ -2347,8 +2372,8 @@
       "no": "身份编号",
       "materialTip": "需上传任命书(虚构)或介绍信等材料,图片/PDF,≤5MB。",
       "confirmTip": "提交后将进入外交审核队列,审核时将校验关联建交关系的有效性。",
-      "visaChannelTitle": "外交签注通道(预留)",
-      "visaChannelTip": "外交身份用户可申请虚拟外交签注:跳转签注申请署后自动带出外交身份编号,签注审核时校验外交身份有效性;身份失效后签注同步失效。该联动即将开放。",
+      "visaChannelTitle": "外交签注通道",
+      "visaChannelTip": "外交身份用户可申请虚拟外交签注:申请与提交时会校验外交身份有效性;身份失效后已签发的外交签注将同步注销。",
       "goVisa": "前往签注申请署",
       "carryNo": "将自动带出 {no}",
       "visaNeedActive": "需持有有效外交身份后开放"
@@ -2774,7 +2799,7 @@
     "identityCheck": {
       "not_required": "无需校验",
       "missing": "缺少编号",
-      "reserved": "联动预留(未启用)",
+      "reserved": "联动已关闭(仅登记编号)",
       "verified": "已校验",
       "invalid": "校验未通过",
       "unavailable": "对方服务未开放"
@@ -2961,7 +2986,7 @@
       "guide_apply": "如何报名",
       "guide_apply_body": "选择活动 → 填写信息与随行人员 → 上传材料 → 提交确认。名额已满时可进入候补。",
       "guide_invitation": "邀请函怎么用",
-      "guide_invitation_body": "收到邀请后可接受或拒绝,下载打印版;报名时填写邀请函编号,亦可作为签注材料(联动预留)。",
+      "guide_invitation_body": "收到邀请后可接受或拒绝,下载打印版;报名时填写邀请函编号,亦可作为签注材料。",
       "guide_pass": "活动凭证怎么验",
       "guide_pass_body": "报名通过后自动生成活动凭证。凭编号或二维码签到,也可在验真中心查询状态。",
       "guide_rules": "报名与礼遇规则",
@@ -3015,7 +3040,7 @@
       "companionsHint": "最多可添加 {{max}} 位随行人员,昵称与关系均为虚构。",
       "addCompanion": "添加随行人员",
       "identitySection": "身份类型",
-      "identityHint": "居民 / 外交身份将预留联动校验;当前如未开启联动,仅登记编号。",
+      "identityHint": "居民 / 外交身份将与对应署实时校验,编号无效将无法提交报名。",
       "identityNoPlaceholder_resident": "居民编号(如 NRC…)",
       "identityNoPlaceholder_diplomatic": "外交身份编号(如 NLE…)",
       "invitationNoPlaceholder": "选填,填写邀请函编号",
@@ -3054,7 +3079,7 @@
       "empty": "暂未收到邀请函",
       "inviter": "邀请人 / 接待方",
       "validUntil": "有效期至 {{date}}",
-      "usage": "邀请函可用于活动报名,也可作为签注申请材料(与签注署联动预留)。",
+      "usage": "邀请函可用于活动报名,也可作为签注申请材料(签注署可实时校验)。",
       "usedTip": "该邀请函已在报名中核销使用。",
       "acceptTitle": "接受邀请",
       "acceptTip": "接受后邀请函状态保持有效,可在报名时填写邀请函编号。",
@@ -3082,7 +3107,7 @@
     "hosts": {
       "title": "接待方认证",
       "subtitle": "活动组织方、社区团体、外交接待方与居民团体的虚构认证。",
-      "intro": "认证通过后可获得接待方编号与认证证书,并可按权限发起邀请函、发布活动(联动预留)。",
+      "intro": "认证通过后可获得接待方编号与认证证书,并可按权限发起邀请函、发布活动。",
       "applyTitle": "申请接待方认证",
       "empty": "还没有接待方申请",
       "unnamed": "未命名接待方",
@@ -3098,7 +3123,7 @@
       "supplementTip": "补件:{{note}},截止 {{date}}",
       "certTitle": "接待方认证证书",
       "certBody": "兹证明“{{name}}”已完成奶龙国皇家礼宾与活动署接待方认证。",
-      "certLink": "认证证书与文书认证署联动签发(预留)",
+      "certLink": "认证证书与文书认证署联动签发",
       "canPublish": "可发布活动",
       "canInvite": "可发起邀请函",
       "rulesTitle": "认证规则",
@@ -3108,12 +3133,21 @@
       "title": "礼宾服务",
       "subtitle": "外宾接待、居民礼遇、外交礼遇与活动礼宾通道。",
       "eligibility": "礼遇资格查询",
-      "eligibilityTip": "凭居民编号、外交身份编号或邀请函编号查询。联动未开启时仅登记编号。",
+      "eligibilityTip": "凭居民编号、外交身份编号或邀请函编号查询,系统会实时校验对应署台账。",
       "query": "查询资格",
       "eligible": "符合申请条件",
       "notEligible": "暂不符合条件",
       "eligibilityStatus": "校验结果:{{status}}",
-      "reserved": "联动校验预留,当前仅做编号登记",
+      "status": {
+        "verified": "已与对应署核验",
+        "invalid": "编号已失效或状态不符",
+        "not_found": "未查询到该编号",
+        "missing": "缺少编号",
+        "reserved": "联动已关闭",
+        "unavailable": "对方服务未开放",
+        "invalid_basis": "依据类型不支持"
+      },
+      "reserved": "跨署联动已关闭,当前仅做编号登记",
       "basisPlaceholder_resident": "居民编号(如 NRC…)",
       "basisPlaceholder_diplomatic": "外交身份编号(如 NLE…)",
       "basisPlaceholder_invitation": "邀请函编号(如 NJI…)",
@@ -3179,7 +3213,7 @@
         },
         "invitationVisa": {
           "q": "邀请函能否用于签注?",
-          "a": "可以。邀请函编号可作为签注申请材料,签注署可通过服务接口校验(联动预留)。"
+          "a": "可以。邀请函编号可作为签注申请材料,签注署会实时校验。"
         },
         "passUsage": {
           "q": "活动凭证怎么用?",
@@ -3191,7 +3225,7 @@
         },
         "host": {
           "q": "接待方认证有什么用?",
-          "a": "认证后可获得接待方编号与证书,并可按权限发起邀请函或发布活动(联动预留)。"
+          "a": "认证后可获得接待方编号与证书,并可按权限发起邀请函或发布活动。"
         },
         "courtesy": {
           "q": "礼遇有现实效力吗?",
@@ -3216,7 +3250,7 @@
       "valid": "有效",
       "invalid": "无效",
       "notFound": "未查询到该编号,请核对后重试。",
-      "visaUsable": "该邀请函有效,可作为签注申请材料(联动预留)。",
+      "visaUsable": "该邀请函有效,可作为签注申请材料。",
       "antiEnum": "防枚举提示:系统会记录验真来源并对高频查询限流;编号不可猜测,请勿尝试遍历。"
     },
     "faq": {
@@ -3238,7 +3272,7 @@
       },
       "identity": {
         "q": "居民 / 外交身份如何校验?",
-        "a": "报名时填写居民或外交身份编号。联动校验为预留能力,当前以编号登记为主。"
+        "a": "报名时填写居民或外交身份编号,系统会与居民登记署/外交署实时校验。"
       }
     },
     "config": {
@@ -3247,7 +3281,7 @@
       "verify_limit_per_5min": "验真限流(次/5分钟)",
       "max_companions": "最大随行人数",
       "max_active_registrations": "每人最多进行中报名",
-      "linkage_enabled": "联动校验(0 关闭 / 1 开启)",
+      "linkage_enabled": "跨署联动校验(0 关闭 / 1 开启,默认开启)",
       "prefix.event": "活动编号前缀",
       "prefix.registration": "报名编号前缀",
       "prefix.invitation": "邀请函编号前缀",

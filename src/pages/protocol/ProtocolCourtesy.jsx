@@ -115,7 +115,9 @@ export default function ProtocolCourtesy() {
                 <div>
                   <strong>{eligibility.valid ? t('protocol.courtesy.eligible') : t('protocol.courtesy.notEligible')}</strong>
                   <p className="muted-text">
-                    {t('protocol.courtesy.eligibilityStatus', { status: eligibility.status })}
+                    {t('protocol.courtesy.eligibilityStatus', {
+                      status: t(`protocol.courtesy.status.${eligibility.status}`, { defaultValue: eligibility.status }),
+                    })}
                     {eligibility.status === 'reserved' ? ` · ${t('protocol.courtesy.reserved')}` : ''}
                   </p>
                 </div>

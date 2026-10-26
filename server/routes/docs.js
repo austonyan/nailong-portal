@@ -355,8 +355,18 @@ router.post('/applications/:id/submit', applyAuth, (req, res) => {
     }
   }
 
-  // 关联业务校验(联动预留) — 结果缓存进 biz_check
-  const bizCheck = D.checkBizNo(typeRow, payload.bizNo);
+  // 关联业务校验(已联动) — 结果缓存进 biz_check;必填类型必须命中、属于本人且可认证。
+  const bizCheck = D.checkBizNo(typeRow, payload.bizNo, req.user.id);
+  if (typeRow.biz_required && bizCheck.checked && !bizCheck.certifiable) {
+    throw conflict(
+      'DOC_BIZ_INVALID',
+      !bizCheck.found
+        ? 'The linked business record was not found'
+        : !bizCheck.owned
+          ? 'The linked business record does not belong to you'
+          : 'The linked business record is no longer valid for certification'
+    );
+  }
 
   const ts = now();
   db.prepare(
@@ -375,7 +385,7 @@ router.post('/applications/:id/submit', applyAuth, (req, res) => {
     ts,
     app.id
   );
-  D.addRecord(app.id, req.user, 'submitted', { comment: bizCheck.reserved ? 'biz-check-reserved' : '' });
+  D.addRecord(app.id, req.user, 'submitted', { comment: '' });
   D.sendMsg(app.user_id, app.id, 'submitted', { appNo: app.app_no });
   D.audit(req.user, 'application_submit', 'application', app.app_no, { typeCode: app.type_code });
   res.json({ item: serializeApplicationDetail(loadApplication(app.id)) });
@@ -666,6 +676,15 @@ router.post('/admin/applications/:id/approve', certifyAuth, (req, res) => {
   const existing = D.getCertRowByApplication(app.id);
   if (existing) throw conflict('DOC_DUPLICATE', 'Certificate already issued');
 
+  // 签发前复检关联业务编号,避免提交后业务件被注销/失效仍签发。
+  if (app.biz_no && typeRow.biz_source) {
+    const check = D.checkBizNo(typeRow, app.biz_no, app.user_id);
+    if (typeRow.biz_required && check.checked && !check.certifiable) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business record is no longer valid for this applicant');
+    }
+    db.prepare('UPDATE doc_applications SET biz_check = ?, updated_at = ? WHERE id = ?').run(JSON.stringify(check), now(), app.id);
+  }
+
   const comment = sanitizeText(req.body?.comment, 300);
   const ts = now();
   const expires = new Date(Date.now() + (Number(typeRow.validity_days) || 365) * 24 * 60 * 60 * 1000).toISOString();
@@ -682,6 +701,10 @@ router.post('/admin/applications/:id/approve', certifyAuth, (req, res) => {
   );
   D.addRecord(app.id, req.user, 'approved', { comment });
   D.addRecord(app.id, req.user, 'cert_issued', { comment: certNo });
+  // 申诉决定书认证:把文书编号回写申诉署决定书 cert_code
+  if (app.type_code === 'APPEAL_DECISION' && app.biz_no) {
+    D.attachDecisionCertificate(app.biz_no, certNo);
+  }
   D.sendMsg(app.user_id, app.id, 'approved', { appNo: app.app_no, certNo });
   D.audit(req.user, 'certify_approve', 'application', app.app_no, { certNo });
   res.json({ item: serializeApplicationDetail(loadApplication(app.id)) });
@@ -915,6 +938,7 @@ router.post('/admin/certificates/:id/regenerate', manageAuth, (req, res) => {
     `INSERT INTO doc_certificates (cert_no, application_id, user_id, type_code, holder_name, biz_no, status, verify_token, issued_at, expires_at, updated_at)
      VALUES (?, ?, ?, ?, ?, ?, 'valid', ?, ?, ?, ?)`
   ).run(newNo, app.id, app.user_id, app.type_code, app.nickname, app.biz_no, crypto.randomUUID(), ts, expires, ts);
+  if (app.type_code === 'APPEAL_DECISION' && app.biz_no) D.attachDecisionCertificate(app.biz_no, newNo);
   D.addRecord(app.id, req.user, 'cert_regenerated', { comment: `${cert.cert_no} → ${newNo}` });
   D.sendMsg(app.user_id, app.id, 'regenerated', { oldCertNo: cert.cert_no, certNo: newNo });
   D.audit(req.user, 'certificate_regenerate', 'certificate', cert.cert_no, { newCertNo: newNo });

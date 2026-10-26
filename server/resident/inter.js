@@ -1,6 +1,6 @@
-// 其他署联动预留(服务间接口)— 签注申请署 / 入境署 / 活动署可凭服务令牌
-// 校验居民编号。约定:调用方以固定服务令牌(RESIDENT_INTER_SERVICE_TOKEN)
-// 调用,MVP 阶段各署尚未接入,这里先把校验接口立起来,保证未来对接零改动。
+// 皇家居民登记署服务间接口 — 签注申请署 / 入境署 / 活动署可凭服务令牌
+// 校验居民编号。同进程内部联动已直接走 server/linkage.js;本路由保留给
+// 独立部署的调用方,以固定服务令牌(RESIDENT_INTER_SERVICE_TOKEN)调用。
 import { Router } from 'express';
 import { db, now } from '../db.js';
 import { forbidden } from '../http.js';

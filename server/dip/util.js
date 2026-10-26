@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import { db, now } from '../db.js';
 import { ApiError, badRequest, conflict, forbidden } from '../http.js';
 import { getSetting } from './schema.js';
+import { syncDiplomaticVisa } from '../linkage.js';
 
 // ---------------------------------------------------------------------------
 // Non-guessable identifiers (same scheme as the other offices: date + random
@@ -198,11 +199,22 @@ export function riskSummary(userId) {
 
 export function sweepIdentities() {
   const today = now().slice(0, 10);
-  // 任期到期 → expired(含冻结中的身份)
-  db.prepare(
-    `UPDATE dip_identities SET status = 'expired', inactive_reason = 'term_ended', updated_at = ?
-     WHERE status IN ('active', 'frozen') AND term_end IS NOT NULL AND term_end < ?`
-  ).run(now(), today);
+  // 任期到期 → expired(含冻结中的身份);到期后同步注销该用户的外交签注
+  const expiring = db
+    .prepare(
+      `SELECT id, user_id FROM dip_identities
+       WHERE status IN ('active', 'frozen') AND term_end IS NOT NULL AND term_end < ?`
+    )
+    .all(today);
+  if (expiring.length) {
+    db.prepare(
+      `UPDATE dip_identities SET status = 'expired', inactive_reason = 'term_ended', updated_at = ?
+       WHERE status IN ('active', 'frozen') AND term_end IS NOT NULL AND term_end < ?`
+    ).run(now(), today);
+    for (const userId of new Set(expiring.map((row) => row.user_id))) {
+      syncDiplomaticVisa(userId);
+    }
+  }
   // 72 小时内到期的有效身份发送一次提醒
   const due = db
     .prepare(

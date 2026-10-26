@@ -294,6 +294,12 @@ const MESSAGE_TEMPLATES = [
     body: '你的入境记录 {{recordNo}} 计划停留 {{days}} 天即将到期,记得办理趣味出境登记哦。',
     variables: 'recordNo, days',
   },
+  {
+    code: 'appeal_reopened',
+    title: '申诉复核:申报 {{no}} 重新进入待检',
+    body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),申报 {{no}} 重新进入待检队列,请留意后续审核结果。',
+    variables: 'no, decisionCode, appealCode',
+  },
 ];
 
 function seedImmigration() {
@@ -347,6 +353,15 @@ function seedImmigration() {
       insertChannel.run(portInfo.lastInsertRowid, '普通通道', 'normal', '随到随走,适合首次上岛的旅客。', 1, ts);
       insertChannel.run(portInfo.lastInsertRowid, '预约通道', 'reserved', '分时段预约,错峰通关(即将开放)。', 0, ts);
       insertChannel.run(portInfo.lastInsertRowid, '特殊通道', 'special', '超大号奶龙玩偶携带者专用。', 1, ts);
+    }
+
+    // 居民 / 外交礼遇通道:居民登记署与外交署联动打通后开放,
+    // 旧库也补一条(按名称幂等),让居民权益页的"入境居民通道"有真实落点。
+    const port = db.prepare("SELECT id FROM im_ports WHERE code = 'ROYAL_PORT'").get();
+    if (port && !db.prepare("SELECT 1 FROM im_channels WHERE port_id = ? AND name = '居民与外交礼遇通道'").get(port.id)) {
+      db.prepare(
+        'INSERT INTO im_channels (port_id, name, type, description, enabled, created_at) VALUES (?, ?, ?, ?, 1, ?)'
+      ).run(port.id, '居民与外交礼遇通道', 'special', '持有效电子居民卡或外交身份卡可走此通道,出示电子凭证即可。', ts);
     }
 
     // --- announcements -------------------------------------------------------

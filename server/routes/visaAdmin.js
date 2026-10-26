@@ -5,7 +5,7 @@ import { Router } from 'express';
 import crypto from 'node:crypto';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
-import { badRequest, notFound } from '../http.js';
+import { badRequest, conflict, notFound } from '../http.js';
 import {
   audit,
   getConfigNumber,
@@ -17,6 +17,7 @@ import {
   setConfig,
   sweepAll,
 } from '../visa.js';
+import { diplomaticEligibility } from '../linkage.js';
 
 const router = Router();
 const DECIDED = "('approved','rejected','issued')";
@@ -127,6 +128,9 @@ function decideApplication(req, res, { action }) {
 
   if (action === 'approve') {
     if (app.status !== 'pending_review') throw badRequest('VISA_INVALID_TRANSITION', 'Only pending applications can be approved');
+    if (app.type_code === 'DIPLOMATIC' && !diplomaticEligibility(app.user_id).eligible) {
+      throw conflict('VISA_DIP_IDENTITY_INACTIVE', 'The applicant no longer holds an active diplomatic identity');
+    }
     db.prepare("UPDATE visa_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?").run(
       req.user.id, now(), now(), app.id
     );
@@ -169,6 +173,9 @@ router.post('/applications/:id/supplement', (req, res) => decideApplication(req,
 router.post('/applications/:id/issue', (req, res) => {
   const app = getApplication(req.params.id);
   if (app.status !== 'approved') throw badRequest('VISA_INVALID_TRANSITION', 'Only approved applications can be issued');
+  if (app.type_code === 'DIPLOMATIC' && !diplomaticEligibility(app.user_id).eligible) {
+    throw conflict('VISA_DIP_IDENTITY_INACTIVE', 'The applicant no longer holds an active diplomatic identity');
+  }
   if (db.prepare('SELECT 1 FROM visa_permits WHERE application_id = ?').get(app.id)) {
     throw badRequest('VISA_ALREADY_ISSUED', 'Application already has a permit');
   }

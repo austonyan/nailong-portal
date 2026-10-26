@@ -87,7 +87,7 @@ async function main() {
   check('创建申诉草稿', draft.status === 201 && /^NAA-/.test(draft.data.appeal?.code || ''), JSON.stringify(draft.data));
   const appealId = draft.data.appeal.id;
   const appealCode = draft.data.appeal.code;
-  check('关联校验预留(unverified)', draft.data.appeal.bizStatus === 'unverified');
+  check('关联校验未命中(not_found)', draft.data.appeal.bizStatus === 'not_found');
 
   const badType = await api('/appeal/appeals', { method: 'POST', token: userToken, body: { bizType: 'unknown', bizCode: 'X-1' } });
   check('拒绝未知业务类型', badType.status === 400 && badType.data.code === 'APPEAL_BIZ_TYPE');
@@ -257,11 +257,11 @@ async function main() {
   });
   check('合并重复申诉成功', merged2.status === 200 && merged2.data.appeal.mergedInto === m1.data.appeal.code);
 
-  // 监察(只读 + 预留)
+  // 监察(只读 + 跨署联动核查)
   const inspect = await api('/appeal/admin/inspect/summary', { token: adminToken });
-  check('监察汇总与时效', inspect.status === 200 && inspect.data.integration.every((i) => i.reserved === undefined && i.integrated === false));
+  check('监察汇总与时效', inspect.status === 200 && inspect.data.integration.every((i) => i.integrated === true));
   const sampling = await api('/appeal/admin/inspect/sampling', { method: 'POST', token: adminToken, body: { bizType: 'visa', note: '抽查签注驳回申诉 3 件' } });
-  check('监察抽查预留接口', sampling.status === 200 && sampling.data.reserved === true);
+  check('监察抽查接入业务署台账', sampling.status === 200 && sampling.data.reserved === false && sampling.data.sample?.integrated === true);
   const report = await api('/appeal/admin/inspect/reports', {
     method: 'POST', token: adminToken,
     body: { kind: 'quality', title: '季度申诉处理质量报告', content: '平均受理时长与决定时长均在 SLA 内,处理结果分布均衡。' },

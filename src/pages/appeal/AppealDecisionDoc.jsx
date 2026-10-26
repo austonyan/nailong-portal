@@ -88,6 +88,12 @@ export default function AppealDecisionDoc() {
             <dt>{t('appeal.doc.effectiveLabel')}</dt>
             <dd>{fmtDateTime(doc.effectiveAt)}</dd>
           </div>
+          {doc.certCode && (
+            <div>
+              <dt>{t('appeal.doc.certCodeLabel')}</dt>
+              <dd>{doc.certCode}</dd>
+            </div>
+          )}
           {doc.reviewCode && (
             <div>
               <dt>{t('appeal.doc.reviewLabel')}</dt>

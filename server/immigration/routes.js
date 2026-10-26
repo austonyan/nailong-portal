@@ -23,6 +23,7 @@ import {
   pageParams,
 } from './util.js';
 import { checkVisa, VISA_ERROR_CODE } from './visa.js';
+import { diplomaticCourtesyFor, upcomingProtocolEvents } from '../linkage.js';
 
 ensureImmigrationSchema();
 
@@ -218,7 +219,15 @@ router.get('/ports/:code', ...portalOnly, (req, res) => {
     )
     .all(port.id)
     .map(serializeAnnouncement);
-  res.json({ port: serializePort(port), channels, announcements });
+  res.json({
+    port: serializePort(port),
+    channels,
+    announcements,
+    // 礼宾活动署联动:近期活动提示(口岸分流参考)
+    eventHints: upcomingProtocolEvents(7),
+    // 外交署联动:当前用户的外交礼遇资格(有效外交身份才返回可用项)
+    courtesies: diplomaticCourtesyFor(req.user.id),
+  });
 });
 
 router.get('/announcements', ...portalOnly, (_req, res) => {
@@ -231,7 +240,7 @@ router.get('/announcements', ...portalOnly, (_req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// Visa check (stub adapter, rate limited)
+// Visa check (live visa-office ledger + demo fallback, rate limited)
 // ---------------------------------------------------------------------------
 
 router.post('/visa/check', ...portalOnly, (req, res) => {
@@ -299,9 +308,9 @@ function readDeclarationFields(body, { partial = false } = {}) {
   if (body.address !== undefined) out.address = String(body.address || '').trim().slice(0, 120);
   if (body.visaNo !== undefined) {
     const raw = String(body.visaNo || '').trim().toUpperCase();
-    // 演示签注 NL-XXXX-XXXX,或签注署真实格式 NLT-YYYYMMDD-XXXXXXXX(联动开放前校验为 not_found)。
-    if (raw && !/^(NL-[A-Z0-9]{4}-[A-Z0-9]{4}|[A-Z]{2,4}-\d{8}-[A-Z0-9]{4,12})$/.test(raw)) {
-      throw badRequest('VALIDATION_ERROR', 'Visa number must look like NL-1234-ABCD or NLT-20261025-ABCD1234');
+    // 演示签注 NL-XXXX-XXXX,或签注署真实格式 NLT-YYMMDD-XXXXXXXX(真实台账实时校验)。
+    if (raw && !/^(NL-[A-Z0-9]{4}-[A-Z0-9]{4}|[A-Z]{2,4}-\d{6,8}-[A-Z0-9]{4,12})$/.test(raw)) {
+      throw badRequest('VALIDATION_ERROR', 'Visa number must look like NL-1234-ABCD or NLT-261026-ABCD1234');
     }
     out.visa_no = raw || null;
   }

@@ -11,8 +11,14 @@ import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, notFound } from '../http.js';
 import {
   audit,
+  BIZ_TYPES,
+  classifyBizStatus,
   getConfigNumber,
+  integrationStatus,
+  nextAppealNo,
   nextDecisionNo,
+  resolveBizHandler,
+  sampleBusinessRecords,
   sendMsg,
   serializeAppeal,
   serializeComplaint,
@@ -50,8 +56,8 @@ function appealAdminMeta(row) {
     records: recordsFor('appeal', row.id),
     review: serializeReview(db.prepare('SELECT * FROM appeal_reviews WHERE appeal_id = ? ORDER BY id DESC').get(row.id)),
     decision: serializeDecision(db.prepare('SELECT * FROM appeal_decisions WHERE appeal_id = ? ORDER BY id DESC').get(row.id)),
-    // 关联业务只读链路(预留):各业务署接入后此处返回其审核记录快照
-    bizLink: { integrated: false, reserved: true },
+    // 关联业务只读链路:直接回业务署台账快照(状态、标题、处理轨迹)
+    bizLink: resolveBizHandler(row.biz_type)?.link?.(row.biz_code) || { integrated: false, found: false, timeline: [] },
   };
 }
 
@@ -236,11 +242,11 @@ processRouter.post('/appeals/:id/decide', (req, res) => {
   ).run(decisionType, reason, basis, req.user.displayName || req.user.username, ts, ts, appeal.id);
   record('appeal', appeal.id, req.user, 'decide', `${decisionType}: ${reason}`);
   const decision = createDecisionDoc({ appeal, decisionType, reason, basis, actor: req.user });
-  // 职责分离:回写业务状态由原业务署执行,这里只做预留审计
-  writebackDecision(appeal, { decisionType, decisionCode: decision.code });
+  // 职责分离:回写由业务署联动函数执行(只重开被驳回件),申诉署只传决定。
+  const writeback = writebackDecision(appeal, { decisionType, decisionCode: decision.code });
   sendMsg(appeal.user_id, 'appeal', appeal.id, 'appeal_resolved', { code: appeal.code, decisionType });
-  audit(req.user, 'decide_appeal', 'appeal', appeal.code, { decisionType });
-  res.json({ appeal: appealAdminMeta(getAppeal(appeal.id)) });
+  audit(req.user, 'decide_appeal', 'appeal', appeal.code, { decisionType, writeback });
+  res.json({ appeal: appealAdminMeta(getAppeal(appeal.id)), writeback });
 });
 
 processRouter.post('/appeals/:id/close', (req, res) => {
@@ -361,14 +367,50 @@ processRouter.post('/complaints/:id/close', (req, res) => {
   res.json({ complaint: complaintAdminMeta(db.prepare('SELECT * FROM appeal_complaints WHERE id = ?').get(row.id)) });
 });
 
-// 转申诉(预留):当前仅记录审计并向用户发送申诉指引,正式转换待业务署联动接入
+// 转申诉:带业务编号时直接生成申诉草稿,否则继续发送申诉指引
 processRouter.post('/complaints/:id/escalate-appeal', (req, res) => {
   const row = db.prepare('SELECT * FROM appeal_complaints WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Complaint not found');
-  record('complaint', row.id, req.user, 'escalate_appeal', String(req.body?.comment || '').slice(0, 500));
-  audit(req.user, 'escalate_complaint_to_appeal', 'complaint', row.code, { reserved: true });
+  const note = String(req.body?.comment || '').slice(0, 500);
+  const bizType = String(req.body?.bizType || '').trim();
+  const bizCode = String(req.body?.bizCode || '').trim().toUpperCase();
+  record('complaint', row.id, req.user, 'escalate_appeal', note);
+  const validType = BIZ_TYPES.some((b) => b.key === bizType);
+  if (validType && /^[A-Z0-9][A-Z0-9-]{3,63}$/.test(bizCode)) {
+    const { status: bizStatus } = classifyBizStatus(bizType, bizCode, row.user_id);
+    const code = nextAppealNo();
+    const ts = now();
+    const info = db
+      .prepare(
+        `INSERT INTO appeal_appeals
+         (code, user_id, biz_type, biz_code, biz_status, status, reason, expected, contact, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?)`
+      )
+      .run(
+        code,
+        row.user_id,
+        bizType,
+        bizCode,
+        bizStatus,
+        row.content.slice(0, 2000),
+        String(req.body?.expected || '').trim().slice(0, 500) || '按投诉事项重新审核',
+        row.contact || '',
+        ts,
+        ts
+      );
+    const appeal = serializeAppeal(db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(info.lastInsertRowid));
+    audit(req.user, 'escalate_complaint_to_appeal', 'complaint', row.code, {
+      created: true,
+      appealCode: code,
+      bizType,
+      bizCode,
+      bizStatus,
+    });
+    return res.json({ ok: true, reserved: false, created: true, appeal });
+  }
+  audit(req.user, 'escalate_complaint_to_appeal', 'complaint', row.code, { created: false, reason: 'missing_biz_ref' });
   sendMsg(row.user_id, 'complaint', row.id, 'complaint_escalated', { code: row.code });
-  res.json({ ok: true, reserved: true });
+  res.json({ ok: true, reserved: false, created: false });
 });
 
 function ticketAdminMeta(row) {
@@ -523,10 +565,13 @@ reviewRouter.post('/reviews/:id/decide', (req, res) => {
     basis: String(req.body?.basis || '').trim().slice(0, 500),
     actor: req.user,
   });
-  writebackDecision(appeal, { decisionType, decisionCode: doc.code });
+  const writeback = writebackDecision(appeal, { decisionType, decisionCode: doc.code });
   sendMsg(review.user_id, 'review', review.id, 'review_completed', { code: review.code, decisionType });
-  audit(req.user, 'decide_review', 'review', review.code, { decisionType });
-  res.json({ review: reviewAdminMeta(db.prepare('SELECT * FROM appeal_reviews WHERE id = ?').get(review.id)) });
+  audit(req.user, 'decide_review', 'review', review.code, { decisionType, writeback });
+  res.json({
+    review: reviewAdminMeta(db.prepare('SELECT * FROM appeal_reviews WHERE id = ?').get(review.id)),
+    writeback,
+  });
 });
 
 // ===========================================================================
@@ -578,14 +623,8 @@ inspectRouter.get('/inspect/summary', (_req, res) => {
     bizDistribution: bizDist,
     anomalies: { highFrequency, nightOps },
     satisfaction: satisfaction ? Math.round(satisfaction * 10) / 10 : null,
-    // 各署审核数据接入状态(预留):接入后监察抽查覆盖对应业务
-    integration: [
-      { bizType: 'visa', integrated: false },
-      { bizType: 'immigration', integrated: false },
-      { bizType: 'resident', integrated: false },
-      { bizType: 'diplomatic', integrated: false },
-      { bizType: 'document', integrated: false },
-    ],
+    // 各署审核数据接入状态:五类业务全部接入实时校验与抽查
+    integration: integrationStatus(),
   });
 });
 
@@ -612,11 +651,30 @@ inspectRouter.post('/inspect/reports', (req, res) => {
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
 });
 
-// 审核抽查(预留):跨署审核记录接入后开放;当前仅登记抽查意向用于审计
+// 审核抽查(已联动):直接抽取对应业务署最近记录,生成状态分布并落监察报告
 inspectRouter.post('/inspect/sampling', (req, res) => {
   const bizType = String(req.body?.bizType || '');
-  audit(req.user, 'inspect_sampling_reserved', 'sampling', bizType, { reserved: true, note: String(req.body?.note || '').slice(0, 200) });
-  res.json({ ok: true, reserved: true });
+  const note = String(req.body?.note || '').slice(0, 200);
+  const sample = sampleBusinessRecords(bizType, req.body?.limit);
+  if (!sample.integrated) throw badRequest('VALIDATION_ERROR', 'Unknown business type');
+  audit(req.user, 'inspect_sampling', 'sampling', bizType, {
+    note,
+    office: sample.office,
+    total: sample.total,
+    sampled: sample.items.length,
+  });
+  const dist = sample.byStatus.map((s) => `${s.status}:${s.n}`).join(' / ') || '暂无记录';
+  const content = [
+    `抽查范围:${sample.office}(库内 ${sample.total} 条)`,
+    `抽样 ${sample.items.length} 条,状态分布:${dist}`,
+    note ? `抽查说明:${note}` : '',
+  ]
+    .filter(Boolean)
+    .join(';');
+  db.prepare(
+    'INSERT INTO appeal_inspect_reports (title, kind, content, created_by, created_at) VALUES (?, ?, ?, ?, ?)'
+  ).run(`${sample.office}审核抽查`, 'quality', content, req.user.displayName || req.user.username, now());
+  res.json({ ok: true, reserved: false, sample });
 });
 
 // ===========================================================================

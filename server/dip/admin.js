@@ -18,6 +18,7 @@ import {
   riskSummary,
   sweepAll,
 } from './util.js';
+import { syncDiplomaticVisa } from '../linkage.js';
 
 ensureDipSchema();
 
@@ -237,6 +238,7 @@ router.post('/relations/:id/sever', ...reviewer, (req, res) => {
   }
   const reason = String(req.body?.reason || row.sever_reason || '双方协商断交').slice(0, 300);
   const ts = now();
+  const affectedUsers = new Set();
   const sever = db.transaction(() => {
     db.prepare("UPDATE dip_relations SET status = 'severed', severed_at = ?, sever_reason = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?").run(
       ts,
@@ -251,12 +253,14 @@ router.post('/relations/:id/sever', ...reviewer, (req, res) => {
       .all(row.id);
     for (const idt of linked) {
       db.prepare("UPDATE dip_identities SET status = 'expired', inactive_reason = 'relation_severed', updated_at = ? WHERE id = ?").run(ts, idt.id);
+      affectedUsers.add(idt.user_id);
       logEvent('identity', idt.id, 'invalidate', req.user.id, `建交关系 ${row.no} 断交,身份同步失效`);
       notify(idt.user_id, 'identity_invalidated', { no: idt.no, reason: `建交关系 ${row.no} 已断交` }, { identityNo: idt.no });
     }
     logEvent('relation', row.id, 'sever', req.user.id, reason);
   });
   sever();
+  for (const userId of affectedUsers) syncDiplomaticVisa(userId);
   notify(row.user_id, 'relation_severed', { no: row.no, entity: row.entity_name }, { relationNo: row.no });
   audit(req.user.id, 'dip:relation.sever', 'relation', row.no, { reason, cascade: true });
   res.json({ relation: relationDetail(getRelation(row.id)) });
@@ -461,6 +465,7 @@ router.post('/identities/:id/revoke', ...reviewer, (req, res) => {
   db.prepare("UPDATE dip_identities SET status = 'revoked', inactive_reason = ?, updated_at = ? WHERE id = ?").run(reason, ts, row.id);
   logEvent('identity', row.id, 'revoke', req.user.id, reason);
   notify(row.user_id, 'identity_invalidated', { no: row.no, reason }, { identityNo: row.no });
+  syncDiplomaticVisa(row.user_id);
   audit(req.user.id, 'dip:identity.revoke', 'identity', row.no, { reason });
   res.json({ identity: identityDetail(getIdentity(row.id)) });
 });

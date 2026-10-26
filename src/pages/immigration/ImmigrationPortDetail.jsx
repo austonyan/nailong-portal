@@ -46,7 +46,7 @@ export default function ImmigrationPortDetail() {
   }, [code]);
 
   if (!data) return null;
-  const { port, channels, announcements } = data;
+  const { port, channels, announcements, eventHints = [], courtesies } = data;
 
   return (
     <div className="im-page">
@@ -74,6 +74,33 @@ export default function ImmigrationPortDetail() {
                       <b>{t('imm.ports.notice')}</b>
                       <p>{port.notice}</p>
                     </Card>
+                    {eventHints.length > 0 && (
+                      <Card color="app-teal">
+                        <b>{t('imm.ports.eventHints')}</b>
+                        <p className="muted-text">{t('imm.ports.eventHintsTip')}</p>
+                        <ul className="im-ann-list">
+                          {eventHints.map((ev) => (
+                            <li key={ev.eventNo} className="muted-text">
+                              {ev.startsAt?.slice(0, 16).replace('T', ' ')} · {ev.title}
+                              {ev.venueName ? ` · ${ev.venueName}` : ''}
+                            </li>
+                          ))}
+                        </ul>
+                      </Card>
+                    )}
+                    {courtesies?.eligible && (
+                      <Card color="purple">
+                        <b>{t('imm.ports.courtesyTitle')}</b>
+                        <p className="muted-text">{t('imm.ports.courtesyTip', { no: courtesies.identityNo })}</p>
+                        <div className="table-actions">
+                          {(courtesies.items || []).map((c) => (
+                            <Tag key={c.code} color="purple" variant="soft" size="small">
+                              {c.name}
+                            </Tag>
+                          ))}
+                        </div>
+                      </Card>
+                    )}
                     <PortMap mapDesc={port.mapDesc} />
                   </div>
                 ),

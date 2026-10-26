@@ -7,6 +7,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { db, now } from './db.js';
+import { BIZ_SOURCE_TO_TYPE, attachDecisionCertificate, verifyBusinessRecord } from './linkage.js';
+export { attachDecisionCertificate };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, 'data');
@@ -289,7 +291,7 @@ function seedDocs() {
           name: '邀请函认证',
           description: '认证奶龙国居民或机构发出的邀请函',
           guide:
-            '用途:验证邀请函真实性,常用于活动报名与入境申报辅助。需要材料:邀请函扫描件;身份说明选填。关联业务:填写邀请函编号(由礼宾与活动署签发,联动预留中)。认证后 180 天内有效。',
+            '用途:验证邀请函真实性,常用于活动报名与入境申报辅助。需要材料:邀请函扫描件;身份说明选填。关联业务:填写邀请函编号(由礼宾与活动署签发,已与本署实时联动校验)。认证后 180 天内有效。',
           biz_no_label: '邀请函编号',
           biz_required: 0,
           biz_source: 'protocol',
@@ -306,7 +308,7 @@ function seedDocs() {
           name: '入境记录证明',
           description: '为入境署受理的入境申报出具记录证明',
           guide:
-            '用途:证明某次入境申报真实存在,用于回溯行程。需要材料:入境申报回执截图。关联业务:填写申报编号(由入境署生成,联动预留中)。认证后 90 天内有效。',
+            '用途:证明某次入境申报真实存在,用于回溯行程。需要材料:入境申报回执截图。关联业务:填写申报编号(由入境署生成,已与本署实时联动校验)。认证后 90 天内有效。',
           biz_no_label: '申报编号',
           biz_required: 0,
           biz_source: 'entry',
@@ -320,7 +322,7 @@ function seedDocs() {
           name: '居民卡认证',
           description: '对居民登记署登记的居民身份出具认证文书',
           guide:
-            '用途:为居民编号出具认证文书,是最常用的身份类娱乐文书。需要材料:居民登记页截图;头像照片选填。关联业务:填写居民编号(由居民登记署生成,联动预留中)。认证后 365 天内有效。',
+            '用途:为居民编号出具认证文书,是最常用的身份类娱乐文书。需要材料:居民登记页截图;头像照片选填。关联业务:填写居民编号(由居民登记署生成,已与本署实时联动校验)。认证后 365 天内有效。',
           biz_no_label: '居民编号',
           biz_required: 0,
           biz_source: 'resident',
@@ -337,7 +339,7 @@ function seedDocs() {
           name: '活动凭证认证',
           description: '认证活动参与凭证,如奶龙节、演唱会的参与证明',
           guide:
-            '用途:为活动凭证背书,可用于收藏或下次活动的快速报名。需要材料:活动凭证截图(门票、参与码等)。关联业务:填写活动编号(由礼宾与活动署生成,联动预留中)。认证后 90 天内有效。',
+            '用途:为活动凭证背书,可用于收藏或下次活动的快速报名。需要材料:活动凭证截图(门票、参与码等)。关联业务:填写活动编号(由礼宾与活动署生成,已与本署实时联动校验)。认证后 90 天内有效。',
           biz_no_label: '活动编号',
           biz_required: 0,
           biz_source: 'protocol',
@@ -351,7 +353,7 @@ function seedDocs() {
           name: '外交文书认证',
           description: '认证外交事务署往来文书与建交文件',
           guide:
-            '用途:认证使团往来文书、建交纪念文件。需要材料:外交文书扫描件。关联业务:填写外交编号(由外交事务署生成,联动预留中)。认证后 365 天内有效。仅限使团渠道提交。',
+            '用途:认证使团往来文书、建交纪念文件。需要材料:外交文书扫描件。关联业务:填写外交编号(由外交事务署生成,已与本署实时联动校验)。认证后 365 天内有效。仅限使团渠道提交。',
           biz_no_label: '外交编号',
           biz_required: 0,
           biz_source: 'foreign',
@@ -364,14 +366,32 @@ function seedDocs() {
       for (const t of types) insertType.run({ ...t, enabled: 1, now: ts });
     }
 
+    // 申诉决定书认证:联动申诉署决定书台账,签发后回写决定书 cert_code。
+    // 旧库也会补上(INSERT OR IGNORE),不影响管理员已改的类型配置。
+    db.prepare(
+      `INSERT OR IGNORE INTO doc_types
+       (code, name, description, guide, biz_no_label, biz_required, biz_source, validity_days, form_fields, materials, enabled, sort_order, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, 1, 'appeal', 365, ?, ?, 1, 6, ?, ?)`
+    ).run(
+      'APPEAL_DECISION',
+      '申诉决定书认证',
+      '对皇家申诉与监察署出具的决定书进行背书认证',
+      '用途:为申诉/复核决定书出具认证文书,可用于展示、收藏或作为后续申诉的佐证。需要材料:决定书截图;关联业务:填写决定书编号(如 NAD-…),系统会实时校验归属与有效性。认证后 365 天内有效。',
+      '决定书编号',
+      JSON.stringify([{ key: 'case_note', label: '案件补充说明', required: 0, max: 200, placeholder: '选填,一句话描述这份决定书' }]),
+      JSON.stringify([{ key: 'proof', label: '决定书截图', required: 1, accept: 'image/*,application/pdf', max_mb: 10, max_count: 3 }]),
+      now(),
+      now()
+    );
+
     if (db.prepare('SELECT COUNT(*) AS n FROM doc_notices').get().n === 0) {
       const insertNotice = db.prepare(
         `INSERT INTO doc_notices (title, body, level, enabled, created_at, updated_at)
          VALUES (@title, @body, @level, 1, @now, @now)`
       );
       insertNotice.run({
-        title: '六类文书认证全面开放',
-        body: '皇家文书与认证署现已开放签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书六类文书的在线认证申请,审核预计 72 小时内完成。',
+        title: '七类文书认证全面开放',
+        body: '皇家文书与认证署现已开放签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书、申诉决定书七类文书的在线认证申请,审核预计 72 小时内完成。',
         level: 'event',
         now: now(),
       });
@@ -406,6 +426,17 @@ function seedDocs() {
   run();
 }
 seedDocs();
+
+// 旧库里的类型指南仍写着"联动预留中",联动打通后统一更新一次,
+// 保留管理员后来改写的其他文案。
+db.prepare(
+  "UPDATE doc_types SET guide = REPLACE(guide, '联动预留中', '已与本署实时联动校验') WHERE guide LIKE '%联动预留中%'"
+).run();
+
+// 旧库公告仍写"六类",补上申诉决定书认证后同步为七类。
+db.prepare(
+  "UPDATE doc_notices SET title = REPLACE(title, '六类', '七类'), body = REPLACE(body, '外交文书六类文书', '外交文书、申诉决定书七类文书') WHERE title LIKE '%六类%' OR body LIKE '%外交文书六类文书%'"
+).run();
 
 // ---------------------------------------------------------------------------
 // Config / numbering
@@ -585,18 +616,29 @@ export function clientIp(req) {
 }
 
 // ---------------------------------------------------------------------------
-// 关联业务校验(联动预留): 其他署尚未接入,这里只做登记与缓存。
+// 关联业务校验(已联动):按类型配置的 biz_source 直接查对应业务署台账,
+// 结果脱敏后缓存进申请的 biz_check 字段,供前台与审核员查看。
 // ---------------------------------------------------------------------------
 
-export function checkBizNo(typeRow, bizNo) {
-  const result = {
+export function checkBizNo(typeRow, bizNo, userId) {
+  const value = String(bizNo || '').trim().toUpperCase();
+  const source = typeRow?.biz_source || '';
+  const bizType = BIZ_SOURCE_TO_TYPE[source] || '';
+  const base = {
     checked: false,
-    reserved: true,
-    source: typeRow?.biz_source || '',
-    bizNo,
+    reserved: false,
+    source,
+    bizNo: value,
     checkedAt: now(),
   };
-  return result;
+  if (!value) {
+    return { ...base, found: false, owned: false, valid: false, certifiable: false, status: 'missing' };
+  }
+  if (!bizType) {
+    return { ...base, unavailable: true, found: false, owned: false, valid: false, certifiable: false, status: 'unsupported' };
+  }
+  const result = verifyBusinessRecord(bizType, value, userId);
+  return { ...base, ...result, checked: true, reserved: false };
 }
 
 // ---------------------------------------------------------------------------

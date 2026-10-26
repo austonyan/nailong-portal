@@ -128,9 +128,9 @@ export default function AppealAppealDetail() {
             <dt>{t('appeal.apply.bizType')}</dt>
             <dd>
               {t(`appeal.bizType.${appeal.bizType}`)} · {appeal.bizCode}
-              {appeal.bizStatus === 'unverified' && (
-                <Tag color="app-orange" variant="soft">
-                  {t('appeal.detail.bizUnverified')}
+              {appeal.bizStatus && (
+                <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'app-orange'} variant="soft">
+                  {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: appeal.bizStatus })}
                 </Tag>
               )}
             </dd>
