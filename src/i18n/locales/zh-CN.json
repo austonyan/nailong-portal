@@ -198,7 +198,32 @@
     "EVT_EVENT_CANCELLED": "活动已取消",
     "EVT_ERASE_BLOCKED": "存在进行中的报名或认证,无法注销",
     "EVT_HOST_DUPLICATE": "已有进行中的接待方申请",
-    "EVT_TIME_RANGE": "结束时间必须晚于开始时间"
+    "EVT_TIME_RANGE": "结束时间必须晚于开始时间",
+    "APPEAL_BIZ_NOT_OWNED": "该业务编号属于其他账号,不能代为申诉",
+    "APPEAL_ALREADY_EVALUATED": "该申诉已评价,不能重复评价。",
+    "APPEAL_ASSIGNEE_INVALID": "分派对象无效或不可用。",
+    "APPEAL_BIZ_CODE": "请填写有效的业务编号。",
+    "APPEAL_BIZ_TYPE": "业务类型无效。",
+    "APPEAL_BLACKLISTED": "你的账号已被限制提交申诉或投诉。",
+    "APPEAL_COMPLAINT_CATEGORY": "投诉分类无效。",
+    "APPEAL_DUPLICATE": "该业务编号已有在办或已办申诉。",
+    "APPEAL_ERASE_BLOCKED": "存在未完成的申诉或工单,暂不能注销或擦除数据。",
+    "APPEAL_FIELD_REQUIRED": "请填写必填项。",
+    "APPEAL_FILE_TOO_LARGE": "文件超过大小限制。",
+    "APPEAL_FILE_TYPE": "文件类型不支持。",
+    "APPEAL_INVALID_TRANSITION": "当前状态不允许该操作。",
+    "APPEAL_NOT_EDITABLE": "仅草稿可编辑。",
+    "APPEAL_RATE_LIMITED": "操作过于频繁,请稍后再试。",
+    "APPEAL_REASON_REQUIRED": "请填写申诉理由。",
+    "APPEAL_REVIEW_EXISTS": "该申诉已申请过复核。",
+    "APPEAL_REVIEW_EXPIRED": "已超过复核窗口,无法申请复核。",
+    "APPEAL_REVIEW_NOT_ALLOWED": "该申诉状态不允许申请复核。",
+    "APPEAL_SUPPLEMENT_EMPTY": "请填写补件说明。",
+    "APPEAL_SUPPLEMENT_EXPIRED": "补件期限已过。",
+    "APPEAL_TICKET_CATEGORY": "工单分类无效。",
+    "APPEAL_TOO_MANY_ACTIVE": "在办申诉过多,请先完成现有申诉。",
+    "APPEAL_TOO_MANY_FILES": "材料数量超过限制。",
+    "APPEAL_VERIFY_LIMITED": "查询过于频繁,请稍后再试。"
   },
   "portal": {
     "tagline": "这里是奶龙统一门户,所有服务从这里出发",
@@ -3389,6 +3414,816 @@
       "scheduleTime": "时间(如 第1天 10:00)",
       "scheduleTitle": "环节标题",
       "addSchedule": "添加日程环节"
+    }
+  },
+  "appeal": {
+    "officeName": "奶龙国皇家申诉与监察署",
+    "officeSub": "结果申诉 · 复核 · 监察",
+    "back": "返回",
+    "backHome": "回署首页",
+    "nav": {
+      "home": "首页",
+      "apply": "我要申诉",
+      "my": "我的申诉",
+      "reviews": "我的复核",
+      "complaints": "投诉与建议",
+      "tickets": "工单客服",
+      "decisions": "我的决定书",
+      "publicity": "处理公示",
+      "messages": "站内信",
+      "guide": "办事指南",
+      "workbench": "申诉工作台",
+      "reviewAdmin": "复核管理",
+      "desk": "投诉工单台",
+      "inspect": "监察与审核",
+      "manage": "署务管理",
+      "stats": "统计报表",
+      "audit": "审计与合规"
+    },
+    "sso": {
+      "title": "统一身份确认",
+      "tip": "进入申诉与监察署前,请确认当前登录身份;该确认每个浏览器会话仅需一次。",
+      "confirm": "确认并进入"
+    },
+    "status": {
+      "draft": "草稿",
+      "pending_accept": "待受理",
+      "accepted": "已受理",
+      "processing": "处理中",
+      "supplement_required": "待补件",
+      "resolved": "已处理",
+      "rejected": "已驳回",
+      "withdrawn": "已撤回",
+      "closed": "已关闭"
+    },
+    "priority": {
+      "low": "低",
+      "normal": "普通",
+      "high": "高",
+      "urgent": "紧急"
+    },
+    "bizType": {
+      "visa": "签注申请",
+      "immigration": "入境事务",
+      "resident": "居民登记",
+      "diplomatic": "外交事务",
+      "document": "文书与认证"
+    },
+    "bizStatus": {
+      "verified": "已与业务署核验",
+      "not_found": "未查询到业务编号",
+      "not_owned": "编号非本人业务",
+      "not_appealable": "该业务状态暂不可申诉",
+      "unverified": "关联校验未启用"
+    },
+    "reviewStatus": {
+      "pending": "待受理",
+      "reviewing": "复核中",
+      "completed": "已完成"
+    },
+    "decisionType": {
+      "maintain": "维持原决定",
+      "undo": "撤销原决定",
+      "change": "变更决定",
+      "transfer": "转交其他署"
+    },
+    "decisionStatus": {
+      "valid": "有效",
+      "voided": "已撤销",
+      "expired": "已失效"
+    },
+    "materialKind": {
+      "screenshot": "截图",
+      "proof": "证明材料",
+      "other": "其他"
+    },
+    "ownerType": {
+      "appeal": "申诉",
+      "review": "复核",
+      "complaint": "投诉建议",
+      "ticket": "工单"
+    },
+    "recordAction": {
+      "submit": "提交",
+      "withdraw": "撤回",
+      "supplement_submit": "补件提交",
+      "evaluate": "评价",
+      "review_submit": "复核申请",
+      "accept": "受理",
+      "reject_accept": "不予受理",
+      "dispatch": "分派",
+      "supplement_request": "要求补件",
+      "decide": "处理决定",
+      "close": "关闭",
+      "merge": "合并",
+      "reply": "回复",
+      "escalate_appeal": "转申诉指引",
+      "mark_processing": "转为处理中",
+      "mark_closed": "关闭工单",
+      "mark_escalated": "升级工单"
+    },
+    "noticeLevel": {
+      "info": "通知",
+      "policy": "政策",
+      "event": "活动"
+    },
+    "publicityKind": {
+      "stats": "统计",
+      "case": "案例",
+      "report": "报告"
+    },
+    "publicityStatus": {
+      "draft": "草稿",
+      "published": "已发布",
+      "offline": "已下线"
+    },
+    "blacklistScope": {
+      "all": "全部",
+      "appeal": "仅申诉",
+      "complaint": "仅投诉建议"
+    },
+    "verifyKind": {
+      "appeal": "申诉",
+      "review": "复核",
+      "decision": "决定书"
+    },
+    "complaintKind": {
+      "complaint": "投诉",
+      "suggestion": "建议"
+    },
+    "complaintCategory": {
+      "attitude": "服务态度",
+      "process": "办理流程",
+      "notice": "告知与公示",
+      "staff": "人员问题",
+      "system": "系统故障",
+      "other": "其他",
+      "feature": "功能建议",
+      "experience": "使用体验",
+      "content": "内容质量"
+    },
+    "complaintStatus": {
+      "pending_accept": "待受理",
+      "processing": "处理中",
+      "replied": "已回复",
+      "closed": "已关闭"
+    },
+    "ticketCategory": {
+      "consult": "一般咨询",
+      "account": "账号问题",
+      "bug": "故障报修"
+    },
+    "ticketPriority": {
+      "low": "低",
+      "normal": "普通",
+      "high": "高"
+    },
+    "ticketStatus": {
+      "pending": "待处理",
+      "processing": "处理中",
+      "replied": "已回复",
+      "closed": "已关闭",
+      "escalated": "已升级"
+    },
+    "home": {
+      "heroTitle": "有异议,请依法申诉",
+      "heroSub": "对签注、入境、居民登记、外交与文书处理结果有异议,可在此提交结果申诉;也可提出投诉建议或联系客服。",
+      "entryApply": "我要申诉",
+      "entryMy": "我的申诉",
+      "entryVerify": "验真查询",
+      "openAppeals": "在办申诉 {{count}} 件",
+      "validDecisions": "有效决定书 {{count}} 份",
+      "unread": "未读站内信 {{count}} 条",
+      "scamTitle": "谨防假冒申诉中介",
+      "scamBody": "本署不收取任何申诉费用,也不会索取账号密码或验证码;请只通过本门户提交申诉并自行查询进度。",
+      "services": "服务目录",
+      "service": {
+        "apply": "结果申诉",
+        "my": "我的申诉",
+        "review": "复核申请",
+        "complaint": "投诉与建议",
+        "ticket": "工单客服",
+        "publicity": "处理公示"
+      },
+      "serviceDesc": {
+        "apply": "对五类业务结果提交申诉并上传材料。",
+        "my": "查看进度、补充材料、撤回与结果。",
+        "review": "对处理决定申请一次终局复核。",
+        "complaint": "反映服务问题或提出改进建议。",
+        "ticket": "咨询账号、系统与使用问题。",
+        "publicity": "查看脱敏统计、案例与质量报告。"
+      },
+      "notices": "署内公告",
+      "guide": "办事指南",
+      "guideScope": "可申诉范围",
+      "guideScopeBody": "签注、入境、居民登记、外交事务与文书认证的处理结果,均可在规定时效内申诉。",
+      "guideMaterials": "所需材料",
+      "guideMaterialsBody": "业务编号、申诉理由、期望结果与联系方式;截图或证明材料可选传。",
+      "guideSla": "受理与处理时限",
+      "guideSlaBody": "受理时限 {{accept}} 小时,处理时限 {{resolve}} 小时,超时将进入监察关注。",
+      "guideReview": "复核窗口",
+      "guideReviewBody": "收到处理决定后 {{days}} 天内可申请复核,复核为一次终局。",
+      "guideMore": "查看完整指南",
+      "faq": "常见问题",
+      "supportTip": "找不到答案?提交工单,我们会尽快回复。"
+    },
+    "faq": {
+      "duration": {
+        "q": "申诉处理需要多久?",
+        "a": "受理时限为 48 小时,处理时限为 120 小时;补件时间不计入处理时限。"
+      },
+      "effect": {
+        "q": "申诉成功会改变原结果吗?",
+        "a": "处理决定为撤销或变更时,申诉署会联动业务署重新处理该业务,并以新决定书为准。"
+      },
+      "fee": {
+        "q": "提交申诉需要费用吗?",
+        "a": "不需要。本署所有申诉、复核、投诉建议与工单服务均免费。"
+      },
+      "review": {
+        "q": "申诉和复核有什么区别?",
+        "a": "申诉针对业务处理结果;复核针对申诉处理决定,须在复核窗口内提出,且为一次终局。"
+      },
+      "anonymous": {
+        "q": "可以匿名提交吗?",
+        "a": "投诉建议支持匿名;结果申诉需实名并关联本人业务编号。"
+      }
+    },
+    "apply": {
+      "title": "提交结果申诉",
+      "bizTitle": "第一步:选择业务并关联编号",
+      "bizTip": "请选择业务类型并填写本人业务编号,系统会直接向对应业务署核验。",
+      "bizType": "业务类型",
+      "bizCode": "业务编号",
+      "bizCodePlaceholder": "请输入业务编号",
+      "createDraft": "创建申诉草稿",
+      "draftNo": "申诉草稿 {{no}}",
+      "draftNoLabel": "草稿创建时间",
+      "reason": "申诉理由",
+      "reasonPlaceholder": "请说明对哪项处理结果有异议,以及事实与依据",
+      "expected": "期望结果",
+      "expectedPlaceholder": "请说明你希望得到的处理结果",
+      "contact": "联系方式",
+      "contactPlaceholder": "手机号或邮箱",
+      "materialsTitle": "证明材料",
+      "materialsTip": "支持图片或 PDF,每类最多 6 份;补件时可再上传。",
+      "uploadScreenshot": "上传截图",
+      "uploadProof": "上传证明",
+      "materialsCount": "共 {{count}} 份材料",
+      "saveDraft": "保存草稿",
+      "submit": "提交申诉",
+      "confirmTitle": "请确认申诉信息",
+      "submitSuccess": "申诉已提交",
+      "submittedTitle": "申诉提交成功",
+      "submittedNo": "申诉编号:{{no}}",
+      "submittedHint": "我们将在 {{hours}} 小时内完成受理,请留意站内信。",
+      "viewMy": "查看我的申诉"
+    },
+    "my": {
+      "title": "我的申诉",
+      "allStatus": "全部状态",
+      "submittedAt": "提交于 {{time}}",
+      "submittedAtLabel": "提交时间",
+      "view": "查看详情",
+      "preview": "预览",
+      "deleteTitle": "删除申诉草稿",
+      "deleteTip": "确定要删除草稿 {{no}} 吗?删除后不可恢复。"
+    },
+    "detail": {
+      "records": "处理记录",
+      "systemActor": "系统",
+      "materials": "材料",
+      "supplementTitle": "补件通知",
+      "supplementTip": "请在补件截止前提交说明并上传材料;逾期申诉将自动关闭。",
+      "supplementPlaceholder": "请说明补交内容",
+      "uploadSupplement": "上传补件材料",
+      "submitSupplement": "提交补件",
+      "supplementDone": "补件已提交",
+      "supplementDeadline": "补件截止",
+      "supplementNoteLabel": "补件说明",
+      "withdraw": "撤回申诉",
+      "withdrawDone": "申诉已撤回",
+      "evaluate": "评价处理结果",
+      "evaluateTitle": "服务评价",
+      "evalPlaceholder": "请填写评价内容(选填)",
+      "evalDone": "评价已提交",
+      "decisionTitle": "处理决定",
+      "decisionReason": "决定理由",
+      "decisionBasis": "决定依据",
+      "viewDecisionDoc": "查看决定书",
+      "viewReview": "查看复核",
+      "applyReview": "申请复核",
+      "reviewWindow": "复核窗口至 {{date}}",
+      "mergedInto": "已合并至"
+    },
+    "review": {
+      "title": "我的复核",
+      "create": "申请复核",
+      "createTitle": "提交复核申请",
+      "finalTip": "复核为一次终局,复核决定将生成新的决定书。",
+      "pickAppeal": "选择要复核的申诉",
+      "noCandidates": "暂无可复核的申诉(仅已处理或已驳回且未复核的申诉可申请)。",
+      "reasonLabel": "复核理由",
+      "reasonPlaceholder": "请说明对处理决定的具体异议与依据",
+      "submitDone": "复核申请已提交",
+      "forAppeal": "关联申诉 {{no}}",
+      "appealLabel": "关联申诉",
+      "decision": "复核决定",
+      "decidedAt": "决定时间"
+    },
+    "complaint": {
+      "title": "投诉与建议",
+      "create": "发起投诉/建议",
+      "createTitle": "提交投诉或建议",
+      "kindLabel": "类型",
+      "categoryLabel": "分类",
+      "contentLabel": "内容",
+      "contentPlaceholder": "请具体描述问题或建议(至少 10 字)",
+      "anonymousOption": "匿名提交(不记录联系方式)",
+      "anonymousTip": "已选择匿名,处理人员将看不到你的身份与联系方式。",
+      "anonymousTag": "匿名",
+      "contactLabel": "联系方式",
+      "contactPlaceholder": "手机号或邮箱,便于回复",
+      "replyLabel": "回复",
+      "submit": "提交",
+      "submitDone": "投诉建议 {{no}} 已提交"
+    },
+    "ticket": {
+      "title": "我的工单",
+      "create": "新建工单",
+      "createTitle": "提交工单",
+      "categoryLabel": "问题分类",
+      "priorityLabel": "优先级",
+      "titleLabel": "标题",
+      "titlePlaceholder": "一句话概括问题",
+      "contentLabel": "问题描述",
+      "contentPlaceholder": "请描述问题现象、出现时间与已尝试的操作",
+      "submit": "提交",
+      "submitDone": "工单 {{no}} 已提交",
+      "threadTitle": "沟通记录",
+      "staffRole": "客服",
+      "userRole": "我",
+      "noReplies": "暂无回复",
+      "replyPlaceholder": "输入回复内容",
+      "sendReply": "发送回复",
+      "replyDone": "回复已发送",
+      "close": "关闭工单",
+      "closeDone": "工单已关闭",
+      "faqTitle": "常见问题自助",
+      "faqSearch": "搜索常见问题",
+      "faq": {
+        "reset": {
+          "q": "忘记密码怎么办?",
+          "a": "在登录页使用\"忘记密码\"通过邮箱重置,或提交工单由客服协助。"
+        },
+        "unbind": {
+          "q": "如何更换绑定的邮箱或手机?",
+          "a": "请联系客服提交工单,完成身份核验后可更换绑定信息。"
+        },
+        "slow": {
+          "q": "页面加载很慢怎么办?",
+          "a": "请先刷新页面并检查网络;若持续出现,请提交\"故障报修\"工单并附上截图。"
+        },
+        "display": {
+          "q": "页面显示异常怎么办?",
+          "a": "尝试清除浏览器缓存或更换浏览器;仍异常请提交工单。"
+        },
+        "contact": {
+          "q": "如何联系人工客服?",
+          "a": "在本页提交工单即可,客服会在工作时间内回复。"
+        }
+      }
+    },
+    "decision": {
+      "title": "我的决定书",
+      "view": "查看决定书",
+      "verify": "去验真",
+      "forAppeal": "关联申诉 {{no}}",
+      "fromReview": "复核 {{no}}",
+      "effectiveAt": "生效于 {{time}}"
+    },
+    "doc": {
+      "title": "处理决定书",
+      "noLabel": "决定书编号",
+      "appealLabel": "关联申诉",
+      "decisionLabel": "处理决定",
+      "reasonLabel": "决定理由",
+      "basisLabel": "决定依据",
+      "effectiveLabel": "生效时间",
+      "certCodeLabel": "文书认证编号",
+      "reviewLabel": "关联复核",
+      "print": "打印",
+      "qrAlt": "验真二维码",
+      "verifyTip": "可扫描二维码或到验真中心输入编号 {{no}} 核验本决定书。"
+    },
+    "publicity": {
+      "title": "处理公示",
+      "maskTip": "以下统计与案例均已脱敏,不含申诉人身份信息与敏感细节。",
+      "statsTitle": "本期处理统计",
+      "submitted": "申诉提交量",
+      "acceptRate": "受理率",
+      "rejectRate": "不予受理率",
+      "avgDays": "平均处理天数",
+      "reviews": "复核完成"
+    },
+    "messages": {
+      "title": "站内信",
+      "unread": "未读 {{count}} 条",
+      "showArchived": "查看归档",
+      "backToInbox": "返回收件箱",
+      "view": "查看",
+      "markRead": "标为已读",
+      "archive": "归档"
+    },
+    "msg": {
+      "system": {
+        "title": "系统通知",
+        "body": "系统通知"
+      },
+      "appeal_submitted": {
+        "title": "申诉 {{code}} 已提交",
+        "body": "你的申诉已进入待受理队列,请耐心等待受理通知。"
+      },
+      "appeal_accepted": {
+        "title": "申诉 {{code}} 已受理",
+        "body": "你的申诉已被受理,将按处理时限推进,处理结果将以决定书形式通知。"
+      },
+      "appeal_accept_rejected": {
+        "title": "申诉 {{code}} 不予受理",
+        "body": "受理说明:{{reason}}。可在复核时效内对处理结果申请复核。"
+      },
+      "appeal_supplement_required": {
+        "title": "申诉 {{code}} 需要补件",
+        "body": "补件说明:{{comment}}。请在 {{deadline}} 前在线补交,逾期申诉将自动关闭。"
+      },
+      "appeal_supplemented": {
+        "title": "申诉 {{code}} 补件已提交",
+        "body": "你补交的材料已随申诉重新进入处理流程。"
+      },
+      "appeal_resolved": {
+        "title": "申诉 {{code}} 已有处理决定",
+        "body": "处理决定已生成决定书,可到\"我的决定书\"查看、下载或验真。"
+      },
+      "appeal_withdrawn": {
+        "title": "申诉 {{code}} 已撤回",
+        "body": "你已撤回该申诉。"
+      },
+      "appeal_closed": {
+        "title": "申诉 {{code}} 已关闭",
+        "body": "补件期限已过,申诉自动关闭。"
+      },
+      "appeal_merged": {
+        "title": "申诉 {{code}} 已合并",
+        "body": "该申诉与 {{targetCode}} 属重复申诉,已合并处理,请以目标申诉为准。"
+      },
+      "appeal_reopened": {
+        "title": "申诉 {{code}} 经复核重新处理",
+        "body": "复核 {{reviewCode}} 撤销了原不予受理决定,申诉已重新进入处理流程。"
+      },
+      "review_submitted": {
+        "title": "复核 {{code}} 已提交",
+        "body": "对申诉 {{appealCode}} 的复核申请已提交,复核为一次终局。"
+      },
+      "review_accepted": {
+        "title": "复核 {{code}} 已受理",
+        "body": "复核进入复核中,复核决定将生成新的决定书。"
+      },
+      "review_completed": {
+        "title": "复核 {{code}} 已完成",
+        "body": "复核决定已生成,可到\"我的决定书\"查看。复核为一次终局。"
+      },
+      "decision_issued": {
+        "title": "处理决定书 {{code}} 已生成",
+        "body": "关联申诉 {{appealCode}}。可在\"我的决定书\"查看、下载或验真。"
+      },
+      "complaint_submitted": {
+        "title": "投诉建议 {{code}} 已提交",
+        "body": "你的投诉或建议已提交,处理完成后将回复通知。"
+      },
+      "complaint_replied": {
+        "title": "投诉建议 {{code}} 已回复",
+        "body": "处理人员已回复,请到详情页查看回复内容并评价。"
+      },
+      "complaint_closed": {
+        "title": "投诉建议 {{code}} 已关闭",
+        "body": "该投诉建议已办结归档。"
+      },
+      "complaint_escalated": {
+        "title": "投诉建议 {{code}} 转申诉指引",
+        "body": "该事项适合走结果申诉流程,请准备关联业务编号后到\"我要申诉\"提交。"
+      },
+      "ticket_replied": {
+        "title": "工单 {{code}} 有新回复",
+        "body": "客服已回复你的工单,请到工单详情查看。"
+      },
+      "ticket_escalated": {
+        "title": "工单 {{code}} 已升级",
+        "body": "你的工单已升级处理,请留意后续回复。"
+      },
+      "ticket_closed": {
+        "title": "工单 {{code}} 已关闭",
+        "body": "工单已办结。如仍有问题可重新提交。"
+      }
+    },
+    "guide": {
+      "title": "办事指南",
+      "scopeTitle": "可申诉范围",
+      "scopeIntro": "对以下五类业务的处理结果有异议,可在规定时效内提交结果申诉。",
+      "scope": {
+        "visa": "签注拒签、批注条件或有效期异议",
+        "immigration": "入境查验、拒绝入境或记录异议",
+        "resident": "居民登记审核、变更或续期异议",
+        "diplomatic": "外交身份、建交或互免协议异议",
+        "document": "文书认证结果或认证内容异议"
+      },
+      "excludedTitle": "不予受理情形",
+      "excluded": {
+        "late": {
+          "t": "超过时效",
+          "d": "超过处理结果告知的申诉期限。"
+        },
+        "duplicate": {
+          "t": "重复申诉",
+          "d": "同一业务编号已有在办或已办申诉。"
+        },
+        "malicious": {
+          "t": "恶意或虚假申诉",
+          "d": "捏造事实、伪造材料或骚扰工作人员。"
+        },
+        "unrelated": {
+          "t": "与业务结果无关",
+          "d": "咨询、投诉或与处理结果无关的诉求。"
+        }
+      },
+      "materialsTitle": "材料清单",
+      "materials": {
+        "code": {
+          "t": "业务编号",
+          "d": "本人名下、可核验的业务编号。"
+        },
+        "reason": {
+          "t": "申诉理由",
+          "d": "对处理结果的具体异议与事实依据。"
+        },
+        "expected": {
+          "t": "期望结果",
+          "d": "希望撤销、变更或转交的具体诉求。"
+        },
+        "contact": {
+          "t": "联系方式",
+          "d": "便于受理与补件通知的手机号或邮箱。"
+        },
+        "screenshot": {
+          "t": "截图",
+          "d": "能反映处理结果的页面截图(选填)。"
+        },
+        "proof": {
+          "t": "证明材料",
+          "d": "支持申诉理由的证明文件(选填)。"
+        }
+      },
+      "slaTitle": "时效说明",
+      "slaBody": "受理时限 48 小时,处理时限 120 小时;需补件时补件期限为 7 天,逾期自动关闭。受理与处理超时会进入监察统计。",
+      "diffTitle": "申诉与复核的区别",
+      "diffAppeal": {
+        "t": "结果申诉",
+        "d": "针对五类业务署的处理结果,向申诉署提出;可要求撤销、变更或转交。"
+      },
+      "diffReview": {
+        "t": "处理复核",
+        "d": "针对申诉署已作出的处理决定,在复核窗口内提出;复核为一次终局。"
+      },
+      "faq": "常见问题",
+      "faqItem": {
+        "how": {
+          "q": "如何提交申诉?",
+          "a": "先选择业务类型并填写业务编号,系统核验通过后填写理由与期望结果,上传材料并提交。"
+        },
+        "change": {
+          "q": "申诉过程中可以修改内容吗?",
+          "a": "草稿阶段可随时修改;提交后如需补充,请按补件通知在线补交。"
+        },
+        "fee": {
+          "q": "申诉收费吗?",
+          "a": "不收费。请勿向任何个人或中介支付\"申诉费\"。"
+        },
+        "who": {
+          "q": "谁可以提交申诉?",
+          "a": "业务编号对应的本人账号;他人业务需由本人提交。"
+        },
+        "docs": {
+          "q": "需要哪些材料?",
+          "a": "业务编号、申诉理由、期望结果与联系方式为必填;截图与证明可选。"
+        }
+      }
+    },
+    "verify": {
+      "title": "验真中心",
+      "headerSub": "申诉 · 复核 · 决定书验真",
+      "tip": "输入申诉、复核或决定书编号,或扫描决定书二维码,核验记录真实性与状态。",
+      "placeholder": "请输入编号",
+      "action": "查询",
+      "appealNo": "关联申诉",
+      "decisionType": "处理决定",
+      "handledAt": "处理时间",
+      "office": "出具机构",
+      "maskTip": "为保护隐私,验真结果仅展示状态与必要信息,不含申诉内容与个人联系方式。",
+      "notFound": "未查询到该编号",
+      "notFoundTip": "请核对编号是否完整、大小写是否正确;多次查询失败请稍后再试。"
+    },
+    "admin": {
+      "workbenchTitle": "申诉处理工作台",
+      "reviewTitle": "复核管理",
+      "deskTitle": "投诉与工单处理台",
+      "manageTitle": "署务管理",
+      "queueEmpty": "当前队列没有待办",
+      "allStatus": "全部状态",
+      "allBiz": "全部业务",
+      "searchPlaceholder": "搜索编号或业务编号",
+      "counterPending": "待受理 {{count}}",
+      "counterProcessing": "处理中 {{count}}",
+      "counterSupplement": "待补件 {{count}}",
+      "counterOverdue": "超时 {{count}}",
+      "colCode": "申诉编号",
+      "colApplicant": "申诉人",
+      "colPriority": "优先级",
+      "colTitle": "标题",
+      "colLevel": "级别",
+      "colBody": "正文",
+      "colKind": "类型",
+      "colType": "模板类型",
+      "colVars": "模板内容",
+      "colUser": "用户",
+      "colScope": "适用范围",
+      "colReason": "原因",
+      "handler": "处理人",
+      "refuseReason": "不予受理原因",
+      "anonymousUser": "匿名用户",
+      "contactHidden": "匿名提交,不展示联系方式",
+      "bizLink": "关联业务",
+      "bizLinkMissing": "未查询到关联业务记录",
+      "originalDecision": "原处理决定",
+      "templateTip": "站内信模板控制各类通知是否发送;正文变量由服务端填充。",
+      "publicityTip": "公示内容会脱敏后展示在处理公示页;下线后不再对外展示。",
+      "publicityPlaceholder": "可填写脱敏统计、典型案例或质量报告内容",
+      "createNotice": "发布公告",
+      "createPublicity": "新建公示",
+      "publish": "发布",
+      "offline": "下线",
+      "backToDraft": "退回草稿",
+      "enable": "启用",
+      "disable": "停用",
+      "enabled": "已启用",
+      "disabled": "已停用",
+      "addBlacklist": "加入黑名单",
+      "unblacklist": "移出黑名单",
+      "blacklistUserLabel": "用户 ID",
+      "blacklistUserPlaceholder": "请输入用户 ID",
+      "dupTip": "同一用户对同一业务编号的重复申诉会在此列出,可在工作台合并。",
+      "dupCount": "次数",
+      "dupCodes": "申诉编号列表",
+      "reviewFinalTip": "复核为一次终局;决定作出后将生成新的决定书并通知申诉人。",
+      "acceptTip": "确认受理该申诉?受理后将按处理时限推进。",
+      "startProcessTip": "开始处理该工单?状态将变更为处理中。",
+      "escalateTicketTip": "升级该工单?升级后将由上级客服跟进。",
+      "escalateTip": "转申诉指引说明",
+      "replyLabel": "回复内容",
+      "closeCommentLabel": "关闭说明",
+      "commentLabel": "处理说明",
+      "refuseReasonLabel": "不予受理原因",
+      "decisionTypeLabel": "处理决定",
+      "decisionReasonLabel": "决定理由",
+      "reviewDecisionLabel": "复核决定",
+      "supplementDaysLabel": "补件期限(天)",
+      "assigneeLabel": "分派给",
+      "assigneePlaceholder": "选择处理人",
+      "priorityLabel": "优先级",
+      "mergeTargetLabel": "目标申诉编号",
+      "mergeTargetTip": "合并后源申诉将关闭,并以目标申诉为准。",
+      "tabNotices": "公告",
+      "tabPublicity": "公示",
+      "tabTemplates": "站内信模板",
+      "tabRisk": "风险与重复",
+      "tabBlacklist": "黑名单",
+      "tabDuplicates": "重复申诉",
+      "tabConfig": "系统配置",
+      "tabComplaints": "投诉与建议",
+      "tabTickets": "工单",
+      "action": {
+        "accept": "受理",
+        "refuse": "不予受理",
+        "dispatch": "分派",
+        "supplement": "要求补件",
+        "decide": "作出处理决定",
+        "close": "关闭",
+        "merge": "合并重复申诉",
+        "reply": "回复",
+        "escalate": "升级工单",
+        "escalateAppeal": "转申诉指引",
+        "reviewAccept": "受理复核",
+        "reviewDecide": "作出复核决定",
+        "startProcess": "开始处理"
+      },
+      "decideHint": {
+        "maintain": "维持原处理结果,申诉人可在复核时效内申请复核。",
+        "undo": "撤销原决定,由业务署按联动规则重新处理该业务。",
+        "change": "变更原决定,以本次决定书为准。",
+        "transfer": "转交其他署办理,处理结果由承接署反馈。"
+      }
+    },
+    "inspect": {
+      "title": "监察与审核质量",
+      "slaTitle": "时效监控",
+      "avgAccept": "平均受理时长",
+      "avgResolve": "平均处理天数",
+      "acceptOverdue": "受理超时",
+      "resolveOverdue": "处理超时",
+      "satisfaction": "平均满意度",
+      "slaHint": "受理时限 {{accept}} 小时,处理时限 {{resolve}} 小时;超时记录计入监察报告。",
+      "anomalyTitle": "异常操作检测",
+      "highFrequency": "高频操作 {{count}} 次",
+      "noHighFrequency": "未发现高频操作异常",
+      "nightOps": "夜间操作 {{count}} 次",
+      "consistencyTitle": "结果一致性",
+      "integrationTitle": "业务联动与抽查",
+      "integrationLive": "五类业务已全部接入实时校验与抽查。",
+      "integrated": "已接入",
+      "reserved": "预留",
+      "sample": "抽查",
+      "sampleSummary": "{{office}}:库内 {{total}} 条,本次抽查 {{count}} 条",
+      "sampleNote": "监察抽查",
+      "sampleDone": "已抽查 {{count}} 条记录并生成监察报告",
+      "reportsTitle": "监察报告",
+      "createReport": "新建报告",
+      "createReportTitle": "新建监察报告",
+      "reportKind": "报告类型",
+      "reportTitleLabel": "报告标题",
+      "reportContentLabel": "报告内容",
+      "recordsTitle": "操作记录",
+      "colTarget": "对象",
+      "colAction": "操作",
+      "colActor": "操作人",
+      "colComment": "说明",
+      "colTime": "时间",
+      "kind": {
+        "quality": "质量报告",
+        "anomaly": "异常报告",
+        "consistency": "一致性报告"
+      }
+    },
+    "stats": {
+      "title": "统计报表",
+      "export": "导出 CSV",
+      "appealTitle": "申诉概况",
+      "submitted": "申诉提交量",
+      "acceptRate": "受理率",
+      "rejectRate": "不予受理率",
+      "avgAccept": "平均受理时长",
+      "avgResolve": "平均处理天数",
+      "acceptOverdue": "受理超时",
+      "resolveOverdue": "处理超时",
+      "satisfaction": "平均满意度",
+      "distTitle": "结果与分布",
+      "otherTitle": "其他指标",
+      "complaintSatisfaction": "投诉满意度",
+      "verifyTotal": "验真查询总量",
+      "verifyToday": "今日验真查询",
+      "inspectReports": "监察报告",
+      "blacklist": "黑名单用户",
+      "appealStatus": "申诉状态分布",
+      "reviewStatus": "复核状态分布",
+      "complaintStatus": "投诉状态分布",
+      "ticketStatus": "工单状态分布"
+    },
+    "audit": {
+      "title": "审计与合规",
+      "tabAudit": "操作审计",
+      "tabVerify": "验真记录",
+      "searchPlaceholder": "按操作类型筛选",
+      "refresh": "刷新",
+      "colActor": "操作人",
+      "colAction": "操作类型",
+      "colTarget": "操作对象",
+      "colDetail": "详情",
+      "colTime": "时间",
+      "colQuery": "查询内容",
+      "colIp": "IP 地址",
+      "colResult": "结果",
+      "verifyTip": "验真查询均已留痕;限流与未命中记录同样保留。",
+      "target": {
+        "appeal": "申诉",
+        "review": "复核",
+        "complaint": "投诉建议",
+        "decision": "决定书",
+        "notice": "公告",
+        "publicity": "公示",
+        "config": "配置",
+        "template": "站内信模板",
+        "user": "用户",
+        "sampling": "抽查",
+        "inspect_report": "监察报告",
+        "ticket": "工单"
+      }
     }
   }
 }
