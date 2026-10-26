@@ -19,6 +19,7 @@ import {
   sweepAll,
 } from './util.js';
 import { syncDiplomaticVisa } from '../linkage.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 
 ensureDipSchema();
 
@@ -142,25 +143,34 @@ const SUPPLEMENT_DEADLINE = () => {
   return new Date(Date.now() + days * 86400000).toISOString().slice(0, 10);
 };
 
-// 建交通过 → established
-router.post('/relations/:id/approve', ...reviewer, (req, res) => {
-  const row = getRelation(req.params.id);
+// 建交通过 → established。人工与自动审批共用。
+function approveRelationCore(row, actor, { note = '', auto = false } = {}) {
   if (!['pending_review', 'supplement_required'].includes(row.status)) {
     throw conflict('DIP_INVALID_STATE', 'Only pending relations can be established');
   }
   const typeName = db.prepare('SELECT name FROM dip_relation_types WHERE code = ?').get(row.relation_type)?.name || row.relation_type;
   const ts = now();
-  db.prepare(
-    "UPDATE dip_relations SET status = 'established', established_at = ?, decided_by = ?, decided_at = ?, supplement_note = '', updated_at = ? WHERE id = ?"
-  ).run(ts, req.user.id, ts, ts, row.id);
-  logEvent('relation', row.id, 'establish', req.user.id, String(req.body?.note || '').slice(0, 200));
+  const info = db
+    .prepare(
+      `UPDATE dip_relations SET status = 'established', established_at = ?, decided_by = ?, decided_at = ?,
+         supplement_note = '', updated_at = ?
+       WHERE id = ? AND status IN ('pending_review', 'supplement_required')`
+    )
+    .run(ts, actor?.id ?? null, ts, ts, row.id);
+  if (!info.changes) throw conflict('DIP_INVALID_STATE', 'Only pending relations can be established');
+  logEvent('relation', row.id, 'establish', actor?.id ?? null, note);
   notify(
     row.user_id,
     'relation_established',
     { no: row.no, entity: row.entity_name, typeName },
     { relationNo: row.no }
   );
-  audit(req.user.id, 'dip:relation.establish', 'relation', row.no, {});
+  audit(actor?.id ?? null, 'dip:relation.establish', 'relation', row.no, auto ? { auto: true } : {});
+}
+
+router.post('/relations/:id/approve', ...reviewer, (req, res) => {
+  const row = getRelation(req.params.id);
+  approveRelationCore(row, req.user, { note: String(req.body?.note || '').slice(0, 200) });
   res.json({ relation: relationDetail(getRelation(row.id)) });
 });
 
@@ -371,9 +381,8 @@ function assertRelationValidForIdentity(row) {
   }
 }
 
-// 外交身份通过 → active + 验真 token + 自动礼遇记录
-router.post('/identities/:id/approve', ...reviewer, (req, res) => {
-  const row = getIdentity(req.params.id);
+// 外交身份通过 → active + 验真 token + 自动礼遇记录。人工与自动审批共用。
+function approveIdentityCore(row, actor, { note = '', auto = false } = {}) {
   if (!['pending_review', 'supplement_required'].includes(row.status)) {
     throw conflict('DIP_INVALID_STATE', 'Only pending identities can be approved');
   }
@@ -382,20 +391,31 @@ router.post('/identities/:id/approve', ...reviewer, (req, res) => {
   const ts = now();
   const token = makeToken();
   const approve = db.transaction(() => {
-    db.prepare(
-      "UPDATE dip_identities SET status = 'active', verify_token = ?, approved_at = ?, approved_by = ?, supplement_note = '', updated_at = ? WHERE id = ?"
-    ).run(token, ts, req.user.id, ts, row.id);
+    const info = db
+      .prepare(
+        `UPDATE dip_identities SET status = 'active', verify_token = ?, approved_at = ?, approved_by = ?,
+           supplement_note = '', updated_at = ?
+         WHERE id = ? AND status IN ('pending_review', 'supplement_required')`
+      )
+      .run(token, ts, actor?.id ?? null, ts, row.id);
+    if (!info.changes) throw conflict('DIP_INVALID_STATE', 'Only pending identities can be approved');
     const courtesies = db.prepare('SELECT code FROM dip_courtesy_types WHERE enabled = 1').all();
     for (const c of courtesies) {
       db.prepare(
         'INSERT INTO dip_courtesy_records (user_id, identity_id, identity_no, courtesy_code, source, note, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-      ).run(row.user_id, row.id, row.no, c.code, 'auto', '身份生效自动授予', req.user.id, ts);
+      ).run(row.user_id, row.id, row.no, c.code, 'auto', '身份生效自动授予', actor?.id ?? null, ts);
     }
-    logEvent('identity', row.id, 'approve', req.user.id, String(req.body?.note || '').slice(0, 200));
+    logEvent('identity', row.id, 'approve', actor?.id ?? null, note);
   });
   approve();
   notify(row.user_id, 'identity_approved', { no: row.no, typeName, termEnd: row.term_end }, { identityNo: row.no });
-  audit(req.user.id, 'dip:identity.approve', 'identity', row.no, {});
+  audit(actor?.id ?? null, 'dip:identity.approve', 'identity', row.no, auto ? { auto: true } : {});
+  return token;
+}
+
+router.post('/identities/:id/approve', ...reviewer, (req, res) => {
+  const row = getIdentity(req.params.id);
+  approveIdentityCore(row, req.user, { note: String(req.body?.note || '').slice(0, 200) });
   res.json({ identity: identityDetail(getIdentity(row.id)) });
 });
 
@@ -1080,6 +1100,34 @@ router.get('/messages', ...adminOnly, (req, res) => {
     )
     .all(...params, pageSize, offset);
   res.json({ items: rows, total, page, pageSize });
+});
+
+// ---------------------------------------------------------------------------
+// 自动审批:先建交后身份(身份生效依赖建交关系已 established)。
+// ---------------------------------------------------------------------------
+registerAutoApprover('dip', ({ cutoff, actor }) => {
+  let processed = 0;
+  const relations = db
+    .prepare(
+      `SELECT * FROM dip_relations
+       WHERE status = 'pending_review' AND deleted_at IS NULL AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of relations) {
+    processed += safeAutoApprove('dip', `relation:${row.id}`, () => approveRelationCore(row, actor, { auto: true }));
+  }
+  const identities = db
+    .prepare(
+      `SELECT * FROM dip_identities
+       WHERE status = 'pending_review' AND deleted_at IS NULL AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of identities) {
+    processed += safeAutoApprove('dip', `identity:${row.id}`, () => approveIdentityCore(row, actor, { auto: true }));
+  }
+  return processed;
 });
 
 export default router;

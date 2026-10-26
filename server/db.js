@@ -86,6 +86,16 @@ CREATE TABLE IF NOT EXISTS services (
   updated_at          TEXT NOT NULL
 );
 
+-- 跨署自动审批设置:每个业务署一行,缺省视为 off。
+-- delay_minutes 在 immediate/off 下也保留,方便来回切换不丢值。
+CREATE TABLE IF NOT EXISTS service_auto_approve (
+  service_key   TEXT PRIMARY KEY,
+  mode          TEXT NOT NULL DEFAULT 'off' CHECK (mode IN ('off', 'immediate', 'delayed')),
+  delay_minutes INTEGER NOT NULL DEFAULT 0,
+  updated_by    TEXT NOT NULL DEFAULT '',
+  updated_at    TEXT NOT NULL
+);
+
 -- ---------------------------------------------------------------------------
 -- 奶龍國簽註申請署 (visa service)
 -- ---------------------------------------------------------------------------

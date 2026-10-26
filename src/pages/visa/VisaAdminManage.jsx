@@ -19,6 +19,7 @@ import {
 } from 'animal-island-ui';
 import { PlusIcon, TrashIcon, EditIcon, BanIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
 import { TextArea, toastVisaError } from './shared.jsx';
 
 function TypesTab() {
@@ -358,26 +359,31 @@ function ConfigTab() {
   };
 
   return (
-    <Card>
-      {items === null && <p className="muted-text">{t('common.loading')}</p>}
-      {items !== null && (
-        <div className="visa-config-form">
-          {items.map((row) => (
-            <div key={row.key} className="visa-config-row">
-              <label>{LABELS[row.key] || row.key}</label>
-              <Input
-                size="middle"
-                value={values[row.key] ?? ''}
-                onChange={(e) => setValues((prev) => ({ ...prev, [row.key]: e.target.value }))}
-              />
-            </div>
-          ))}
-          <Button type="primary" loading={busy} onClick={save}>
-            {t('common.save')}
-          </Button>
-        </div>
-      )}
-    </Card>
+    <>
+      <Card>
+        <AutoApproveSettings service="visa" />
+      </Card>
+      <Card>
+        {items === null && <p className="muted-text">{t('common.loading')}</p>}
+        {items !== null && (
+          <div className="visa-config-form">
+            {items.map((row) => (
+              <div key={row.key} className="visa-config-row">
+                <label>{LABELS[row.key] || row.key}</label>
+                <Input
+                  size="middle"
+                  value={values[row.key] ?? ''}
+                  onChange={(e) => setValues((prev) => ({ ...prev, [row.key]: e.target.value }))}
+                />
+              </div>
+            ))}
+            <Button type="primary" loading={busy} onClick={save}>
+              {t('common.save')}
+            </Button>
+          </div>
+        )}
+      </Card>
+    </>
   );
 }
 

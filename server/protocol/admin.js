@@ -7,6 +7,7 @@ import { db, now } from '../db.js';
 import { authenticate } from '../auth.js';
 import { badRequest, conflict, forbidden, notFound } from '../http.js';
 import { ensureProtocolSchema, getConfig, getConfigInt, setConfig } from './schema.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 import {
   assertTransition,
   audit,
@@ -453,7 +454,7 @@ router.get('/registrations/:id', reviewer, (req, res) => {
 
 const APPROVABLE = new Set(['pending_review', 'waitlisted']);
 
-function approveRegistration(reg, actor, note = '') {
+function approveRegistration(reg, actor, note = '', { auto = false } = {}) {
   const event = requireEvent(reg.event_id);
   if (!APPROVABLE.has(reg.status)) throw conflict('EVT_INVALID_STATE', 'Registration cannot be approved now');
   if (['cancelled', 'ended'].includes(event.status)) throw conflict('EVT_INVALID_STATE', 'Event is closed');
@@ -462,20 +463,20 @@ function approveRegistration(reg, actor, note = '') {
     if (!event.waitlist_enabled) throw conflict('EVT_EVENT_FULL', 'Event is full and waitlist is disabled');
     if (reg.status !== 'waitlisted') {
       db.prepare("UPDATE pro_registrations SET status = 'waitlisted', review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?").run(
-        note, actor.id, now(), now(), reg.id
+        note, actor?.id ?? null, now(), now(), reg.id
       );
     }
     notify(reg.user_id, 'registration_waitlisted', { no: reg.reg_no, event: event.title }, { eventId: event.id });
-    audit(actor, 'registration_waitlist', 'registration', reg.reg_no, { reason: 'capacity_full' });
+    audit(actor, 'registration_waitlist', 'registration', reg.reg_no, { reason: 'capacity_full', ...(auto ? { auto: true } : {}) });
     return { waitlisted: true };
   }
   db.prepare(
     "UPDATE pro_registrations SET status = 'approved', reject_code = NULL, reject_comment = '', review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
-  ).run(note, actor.id, now(), now(), reg.id);
+  ).run(note, actor?.id ?? null, now(), now(), reg.id);
   const fresh = db.prepare('SELECT * FROM pro_registrations WHERE id = ?').get(reg.id);
   const pass = issuePass(fresh);
   notify(reg.user_id, 'registration_approved', { no: reg.reg_no, event: event.title, passNo: pass.pass_no }, { eventId: event.id, passNo: pass.pass_no });
-  audit(actor, 'registration_approve', 'registration', reg.reg_no, { passNo: pass.pass_no });
+  audit(actor, 'registration_approve', 'registration', reg.reg_no, { passNo: pass.pass_no, ...(auto ? { auto: true } : {}) });
   return { waitlisted: false, pass };
 }
 
@@ -740,16 +741,21 @@ router.get('/hosts/:id', reviewer, (req, res) => {
   res.json({ host: hostFull(row) });
 });
 
-router.post('/hosts/:id/approve', reviewer, (req, res) => {
-  const host = db.prepare('SELECT * FROM pro_hosts WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
-  if (!host) throw notFound('Host not found');
+// 接待方认证通过。人工与自动审批共用。
+function approveHostCore(host, actor, { comment = '', auto = false } = {}) {
   assertTransition('host', host.status, 'certified');
   const certNo = makeUniqueNo('prefix.host_cert', 'pro_hosts', 'cert_no');
   db.prepare(
     "UPDATE pro_hosts SET status = 'certified', cert_no = ?, review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
-  ).run(certNo, str(req.body?.comment, 500), req.user.id, now(), now(), host.id);
+  ).run(certNo, comment, actor?.id ?? null, now(), now(), host.id);
   notify(host.user_id, 'host_approved', { no: host.host_no, name: host.name, certNo }, { hostNo: host.host_no });
-  audit(req.user, 'host_approve', 'host', host.host_no, { certNo });
+  audit(actor, 'host_approve', 'host', host.host_no, { certNo, ...(auto ? { auto: true } : {}) });
+}
+
+router.post('/hosts/:id/approve', reviewer, (req, res) => {
+  const host = db.prepare('SELECT * FROM pro_hosts WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
+  if (!host) throw notFound('Host not found');
+  approveHostCore(host, req.user, { comment: str(req.body?.comment, 500) });
   res.json({ host: hostFull(db.prepare('SELECT * FROM pro_hosts WHERE id = ?').get(host.id)) });
 });
 
@@ -903,22 +909,27 @@ router.get('/courtesy/applications', reviewer, (req, res) => {
   });
 });
 
-router.post('/courtesy/applications/:id/approve', reviewer, (req, res) => {
-  const row = db.prepare('SELECT * FROM pro_courtesy_apps WHERE id = ?').get(Number(req.params.id));
-  if (!row) throw notFound('Courtesy application not found');
+// 礼遇申请通过。人工与自动审批共用(自动审批使用默认 14 天有效期)。
+function approveCourtesyCore(row, actor, { days = 14, comment = '', auto = false } = {}) {
   assertTransition('courtesy', row.status, 'approved');
-  const days = Math.max(1, num(req.body?.validDays, 14));
-  const validUntil = new Date(Date.now() + days * 86400000).toISOString();
+  const validDays = Math.max(1, num(days, 14));
+  const validUntil = new Date(Date.now() + validDays * 86400000).toISOString();
   const ts = now();
   db.prepare(
     "UPDATE pro_courtesy_apps SET status = 'approved', valid_until = ?, review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
-  ).run(validUntil, str(req.body?.comment, 500), req.user.id, ts, ts, row.id);
+  ).run(validUntil, comment, actor?.id ?? null, ts, ts, row.id);
   const type = db.prepare('SELECT name FROM pro_courtesy_types WHERE code = ?').get(row.type_code);
   db.prepare('INSERT INTO pro_courtesy_records (user_id, application_id, type_code, note, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)').run(
-    row.user_id, row.id, row.type_code, '礼遇申请通过', req.user.id, ts
+    row.user_id, row.id, row.type_code, '礼遇申请通过', actor?.id ?? null, ts
   );
   notify(row.user_id, 'courtesy_approved', { no: row.app_no, typeName: type?.name ?? row.type_code, validUntil: validUntil.slice(0, 10) }, { appNo: row.app_no });
-  audit(req.user, 'courtesy_approve', 'courtesy', row.app_no, { days });
+  audit(actor, 'courtesy_approve', 'courtesy', row.app_no, { days: validDays, ...(auto ? { auto: true } : {}) });
+}
+
+router.post('/courtesy/applications/:id/approve', reviewer, (req, res) => {
+  const row = db.prepare('SELECT * FROM pro_courtesy_apps WHERE id = ?').get(Number(req.params.id));
+  if (!row) throw notFound('Courtesy application not found');
+  approveCourtesyCore(row, req.user, { days: req.body?.validDays, comment: str(req.body?.comment, 500) });
   res.json({ ok: true });
 });
 
@@ -1352,6 +1363,48 @@ router.get('/export/:kind', manager, (req, res) => {
     );
   }
   throw badRequest('VALIDATION_ERROR', 'Unknown export kind');
+});
+
+// ---------------------------------------------------------------------------
+// 自动审批:活动报名 / 接待方认证 / 礼遇申请。满员时沿用原逻辑转候补。
+// ---------------------------------------------------------------------------
+registerAutoApprover('protocol', ({ cutoff, actor }) => {
+  let processed = 0;
+  const registrations = db
+    .prepare(
+      `SELECT * FROM pro_registrations
+       WHERE status = 'pending_review' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of registrations) {
+    processed += safeAutoApprove('protocol', `registration:${row.id}`, () =>
+      approveRegistration(row, actor, '', { auto: true })
+    );
+  }
+  const hosts = db
+    .prepare(
+      `SELECT * FROM pro_hosts
+       WHERE status = 'pending_review' AND deleted_at IS NULL AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of hosts) {
+    processed += safeAutoApprove('protocol', `host:${row.id}`, () => approveHostCore(row, actor, { auto: true }));
+  }
+  const courtesies = db
+    .prepare(
+      `SELECT * FROM pro_courtesy_apps
+       WHERE status = 'pending_review' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of courtesies) {
+    processed += safeAutoApprove('protocol', `courtesy:${row.id}`, () =>
+      approveCourtesyCore(row, actor, { auto: true })
+    );
+  }
+  return processed;
 });
 
 export default router;

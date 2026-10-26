@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Notification, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
+import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { toastResError } from '../shared.jsx';
 
@@ -60,6 +61,10 @@ export default function AdminResSettings() {
       <div className="page-header">
         <Title size="middle">{t('res.admin.settings.title')}</Title>
       </div>
+
+      <Card className="res-info-card">
+        <AutoApproveSettings service="resident" />
+      </Card>
 
       <Card className="res-info-card">
         <h4>{t('res.admin.settings.numberingTitle')}</h4>

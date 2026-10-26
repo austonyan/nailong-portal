@@ -11,6 +11,7 @@ import { authenticate, requirePermission, JWT_SECRET } from '../auth.js';
 import { loadUserAccess, db, now } from '../db.js';
 import { badRequest, conflict, forbidden, notFound } from '../http.js';
 import * as D from '../docs.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 
 const router = express.Router();
 
@@ -668,45 +669,56 @@ router.get('/admin/queue', certifyAuth, (req, res) => {
 
 const REJECT_CODES = new Set(['materials_incomplete', 'info_false', 'type_mismatch', 'biz_invalid', 'duplicate', 'other']);
 
-router.post('/admin/applications/:id/approve', certifyAuth, (req, res) => {
-  const app = loadApplication(req.params.id);
+// 人工审批与自动审批共用:业务号复检、证书签发、决定书回写、记录/消息/审计。
+function approveApplicationCore(app, actor, { comment = '', auto = false } = {}) {
   if (app.status !== 'pending') throw conflict('DOC_INVALID_STATE', `Cannot approve from status ${app.status}`);
   const typeRow = D.getTypeRow(app.type_code);
   if (!typeRow) throw notFound('Document type not found');
-  const existing = D.getCertRowByApplication(app.id);
-  if (existing) throw conflict('DOC_DUPLICATE', 'Certificate already issued');
+  if (D.getCertRowByApplication(app.id)) throw conflict('DOC_DUPLICATE', 'Certificate already issued');
 
   // 签发前复检关联业务编号,避免提交后业务件被注销/失效仍签发。
+  let bizCheck = null;
   if (app.biz_no && typeRow.biz_source) {
-    const check = D.checkBizNo(typeRow, app.biz_no, app.user_id);
-    if (typeRow.biz_required && check.checked && !check.certifiable) {
+    bizCheck = D.checkBizNo(typeRow, app.biz_no, app.user_id);
+    if (typeRow.biz_required && bizCheck.checked && !bizCheck.certifiable) {
       throw conflict('DOC_BIZ_INVALID', 'The linked business record is no longer valid for this applicant');
     }
-    db.prepare('UPDATE doc_applications SET biz_check = ?, updated_at = ? WHERE id = ?').run(JSON.stringify(check), now(), app.id);
   }
 
-  const comment = sanitizeText(req.body?.comment, 300);
   const ts = now();
   const expires = new Date(Date.now() + (Number(typeRow.validity_days) || 365) * 24 * 60 * 60 * 1000).toISOString();
   const certNo = D.nextCertNo();
-  db.prepare(
-    `INSERT INTO doc_certificates (cert_no, application_id, user_id, type_code, holder_name, biz_no, status, verify_token, issued_at, expires_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, 'valid', ?, ?, ?, ?)`
-  ).run(certNo, app.id, app.user_id, app.type_code, app.nickname, app.biz_no, crypto.randomUUID(), ts, expires, ts);
-  db.prepare("UPDATE doc_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?").run(
-    req.user.id,
-    ts,
-    ts,
-    app.id
-  );
-  D.addRecord(app.id, req.user, 'approved', { comment });
-  D.addRecord(app.id, req.user, 'cert_issued', { comment: certNo });
-  // 申诉决定书认证:把文书编号回写申诉署决定书 cert_code
-  if (app.type_code === 'APPEAL_DECISION' && app.biz_no) {
-    D.attachDecisionCertificate(app.biz_no, certNo);
-  }
+  const issue = db.transaction(() => {
+    const info = db
+      .prepare(
+        `UPDATE doc_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ?
+         WHERE id = ? AND status = 'pending'`
+      )
+      .run(actor?.id ?? null, ts, ts, app.id);
+    if (!info.changes) throw conflict('DOC_INVALID_STATE', `Cannot approve from status ${app.status}`);
+    db.prepare(
+      `INSERT INTO doc_certificates (cert_no, application_id, user_id, type_code, holder_name, biz_no, status, verify_token, issued_at, expires_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'valid', ?, ?, ?, ?)`
+    ).run(certNo, app.id, app.user_id, app.type_code, app.nickname, app.biz_no, crypto.randomUUID(), ts, expires, ts);
+    if (bizCheck) {
+      db.prepare('UPDATE doc_applications SET biz_check = ?, updated_at = ? WHERE id = ?').run(JSON.stringify(bizCheck), ts, app.id);
+    }
+    D.addRecord(app.id, actor, 'approved', { comment });
+    D.addRecord(app.id, actor, 'cert_issued', { comment: certNo });
+    // 申诉决定书认证:把文书编号回写申诉署决定书 cert_code
+    if (app.type_code === 'APPEAL_DECISION' && app.biz_no) {
+      D.attachDecisionCertificate(app.biz_no, certNo);
+    }
+  });
+  issue();
   D.sendMsg(app.user_id, app.id, 'approved', { appNo: app.app_no, certNo });
-  D.audit(req.user, 'certify_approve', 'application', app.app_no, { certNo });
+  D.audit(actor, 'certify_approve', 'application', app.app_no, { certNo, ...(auto ? { auto: true } : {}) });
+  return certNo;
+}
+
+router.post('/admin/applications/:id/approve', certifyAuth, (req, res) => {
+  const app = loadApplication(req.params.id);
+  approveApplicationCore(app, req.user, { comment: sanitizeText(req.body?.comment, 300) });
   res.json({ item: serializeApplicationDetail(loadApplication(app.id)) });
 });
 
@@ -1194,6 +1206,26 @@ router.use((err, _req, res, next) => {
     return res.status(400).json({ code: 'VALIDATION_ERROR', message: 'Invalid JSON body' });
   }
   return next(err);
+});
+
+// ---------------------------------------------------------------------------
+// 自动审批:仅处理 pending(补件中的申请需用户重新提交后再进入队列)。
+// ---------------------------------------------------------------------------
+registerAutoApprover('docs', ({ cutoff, actor }) => {
+  const rows = db
+    .prepare(
+      `SELECT * FROM doc_applications
+       WHERE status = 'pending' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  let processed = 0;
+  for (const row of rows) {
+    processed += safeAutoApprove('docs', `application:${row.id}`, () =>
+      approveApplicationCore(row, actor, { auto: true })
+    );
+  }
+  return processed;
 });
 
 export default router;

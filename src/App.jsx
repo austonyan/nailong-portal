@@ -60,6 +60,7 @@ import AdminImReview from './pages/immigration/admin/AdminImReview.jsx';
 import AdminImVerify from './pages/immigration/admin/AdminImVerify.jsx';
 import AdminImRecords from './pages/immigration/admin/AdminImRecords.jsx';
 import AdminImStats from './pages/immigration/admin/AdminImStats.jsx';
+import AdminImSettings from './pages/immigration/admin/AdminImSettings.jsx';
 import AdminImAudit from './pages/immigration/admin/AdminImAudit.jsx';
 // 奶龙国皇家外交事务署
 import DipShell from './pages/dip/DipShell.jsx';
@@ -500,6 +501,14 @@ export default function App() {
           element={
             <RequirePermission permission="imm:admin">
               <AdminImStats />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/immigration/settings"
+          element={
+            <RequirePermission permission="imm:admin">
+              <AdminImSettings />
             </RequirePermission>
           }
         />

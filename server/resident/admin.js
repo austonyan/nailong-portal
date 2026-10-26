@@ -19,6 +19,7 @@ import {
   setConfig,
   sweepAll,
 } from './util.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 
 const router = Router();
 
@@ -78,10 +79,18 @@ function getApplication(id) {
   return row;
 }
 
-function recordReview(req, app, action, reasonCode, comment) {
+function recordReview(actor, app, action, reasonCode, comment) {
   db.prepare(
     'INSERT INTO res_reviews (application_id, reviewer_id, reviewer_name, action, reason_code, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(app.id, req.user.id, req.user.displayName || req.user.username, action, reasonCode ?? null, comment ?? '', now());
+  ).run(
+    app.id,
+    actor?.id ?? 0,
+    actor?.displayName || actor?.username || actor?.name || 'system',
+    action,
+    reasonCode ?? null,
+    comment ?? '',
+    now()
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -133,11 +142,9 @@ router.get('/applications/:id', (req, res) => {
   res.json({ application: applicationWithMeta(getApplication(req.params.id)) });
 });
 
-// 通过 → 生成居民身份 + 电子居民卡
-router.post('/applications/:id/approve', (req, res) => {
-  const app = getApplication(req.params.id);
+// 通过 → 生成居民身份 + 电子居民卡。人工与自动审批共用。
+function approveApplicationCore(app, actor, { comment = '', auto = false } = {}) {
   if (app.status !== 'pending_review') throw badRequest('RES_INVALID_TRANSITION', 'Only pending applications can be approved');
-  const comment = String(req.body?.comment || '').trim().slice(0, 500);
   const ts = now();
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(app.type_code);
   const avatar = db
@@ -145,10 +152,14 @@ router.post('/applications/:id/approve', (req, res) => {
     .get(app.id);
   const validUntil = new Date(Date.now() + (typeRow?.valid_years || 1) * 365 * 24 * 60 * 60 * 1000).toISOString();
 
-  db.prepare(
-    "UPDATE res_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
-  ).run(req.user.id, ts, ts, app.id);
-  recordReview(req, app, 'approve', null, comment);
+  const info = db
+    .prepare(
+      `UPDATE res_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ?
+       WHERE id = ? AND status = 'pending_review'`
+    )
+    .run(actor?.id ?? null, ts, ts, app.id);
+  if (!info.changes) throw badRequest('RES_INVALID_TRANSITION', 'Only pending applications can be approved');
+  recordReview(actor, app, 'approve', null, comment);
 
   // 居民身份 upsert(注销后重新登记会刷新档案)
   const existing = db.prepare('SELECT id FROM res_residents WHERE user_id = ?').get(app.user_id);
@@ -171,8 +182,14 @@ router.post('/applications/:id/approve', (req, res) => {
      VALUES (?, ?, ?, ?, ?, 'valid', ?, ?, ?, ?)`
   ).run(cardNo, app.user_id, app.id, app.type_code, app.nickname, crypto.randomBytes(24).toString('hex'), ts, validUntil, ts);
 
-  audit(req.user, 'approve_application', 'application', app.app_no, { comment, cardNo });
+  audit(actor, 'approve_application', 'application', app.app_no, { comment, cardNo, ...(auto ? { auto: true } : {}) });
   notify(app.user_id, 'approved', { no: app.app_no, cardNo, validUntil: validUntil.slice(0, 10) }, { appNo: app.app_no });
+  return cardNo;
+}
+
+router.post('/applications/:id/approve', (req, res) => {
+  const app = getApplication(req.params.id);
+  approveApplicationCore(app, req.user, { comment: String(req.body?.comment || '').trim().slice(0, 500) });
   res.json({ application: applicationWithMeta(getApplication(app.id)) });
 });
 
@@ -185,7 +202,7 @@ router.post('/applications/:id/reject', (req, res) => {
   db.prepare(
     "UPDATE res_applications SET status = 'rejected', reject_code = ?, reject_comment = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(reasonCode, comment, req.user.id, now(), now(), app.id);
-  recordReview(req, app, 'reject', reasonCode, comment);
+  recordReview(req.user, app, 'reject', reasonCode, comment);
   audit(req.user, 'reject_application', 'application', app.app_no, { reasonCode, comment });
   notify(app.user_id, 'rejected', { no: app.app_no, reason: reasonCode, note: comment }, { appNo: app.app_no });
   res.json({ application: applicationWithMeta(getApplication(app.id)) });
@@ -200,7 +217,7 @@ router.post('/applications/:id/supplement', (req, res) => {
   db.prepare("UPDATE res_applications SET status = 'supplement_required', supplement_deadline = ?, updated_at = ? WHERE id = ?").run(
     deadline, now(), app.id
   );
-  recordReview(req, app, 'require_supplement', null, comment);
+  recordReview(req.user, app, 'require_supplement', null, comment);
   audit(req.user, 'require_supplement', 'application', app.app_no, { comment, deadline });
   notify(app.user_id, 'supplement_required', { no: app.app_no, note: comment, deadline: deadline.slice(0, 10) }, { appNo: app.app_no });
   res.json({ application: applicationWithMeta(getApplication(app.id)) });
@@ -240,7 +257,7 @@ router.get('/changes', (req, res) => {
   });
 });
 
-function applyChangeToCard(change, card, req) {
+function applyChangeToCard(change, card) {
   const ts = now();
   let payload = {};
   try {
@@ -275,18 +292,32 @@ function applyChangeToCard(change, card, req) {
   }
 }
 
-router.post('/changes/:id/approve', (req, res) => {
-  const change = db.prepare('SELECT * FROM res_changes WHERE id = ?').get(Number(req.params.id));
-  if (!change) throw notFound('Change not found');
+// 变更/升级/续期通过。人工与自动审批共用。
+function approveChangeCore(change, actor, { auto = false } = {}) {
   if (change.status !== 'pending_review') throw badRequest('RES_INVALID_TRANSITION', 'Only pending changes can be approved');
   const card = db.prepare('SELECT * FROM res_cards WHERE id = ?').get(change.card_id);
   if (!card) throw notFound('Resident card not found');
-  applyChangeToCard(change, card, req);
-  db.prepare("UPDATE res_changes SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?").run(
-    req.user.id, now(), now(), change.id
-  );
-  audit(req.user, 'approve_change', 'change', change.no, { type: change.type, payload: change.payload });
+  applyChangeToCard(change, card);
+  const ts = now();
+  const info = db
+    .prepare(
+      `UPDATE res_changes SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ?
+       WHERE id = ? AND status = 'pending_review'`
+    )
+    .run(actor?.id ?? null, ts, ts, change.id);
+  if (!info.changes) throw badRequest('RES_INVALID_TRANSITION', 'Only pending changes can be approved');
+  audit(actor, 'approve_change', 'change', change.no, {
+    type: change.type,
+    payload: change.payload,
+    ...(auto ? { auto: true } : {}),
+  });
   notify(change.user_id, 'change_approved', { no: change.no }, { changeNo: change.no });
+}
+
+router.post('/changes/:id/approve', (req, res) => {
+  const change = db.prepare('SELECT * FROM res_changes WHERE id = ?').get(Number(req.params.id));
+  if (!change) throw notFound('Change not found');
+  approveChangeCore(change, req.user);
   res.json({ change: serializeChange(db.prepare('SELECT * FROM res_changes WHERE id = ?').get(change.id)) });
 });
 
@@ -821,6 +852,36 @@ router.get('/audit.csv', (req, res) => {
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', `attachment; filename="resident-audit-${Date.now()}.csv"`);
   res.send(`\ufeff${lines.join('\n')}`);
+});
+
+// ---------------------------------------------------------------------------
+// 自动审批:先登记(生成居民卡)再处理变更/升级/续期。
+// ---------------------------------------------------------------------------
+registerAutoApprover('resident', ({ cutoff, actor }) => {
+  let processed = 0;
+  const applications = db
+    .prepare(
+      `SELECT * FROM res_applications
+       WHERE status = 'pending_review' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of applications) {
+    processed += safeAutoApprove('resident', `application:${row.id}`, () =>
+      approveApplicationCore(row, actor, { auto: true })
+    );
+  }
+  const changes = db
+    .prepare(
+      `SELECT * FROM res_changes
+       WHERE status = 'pending_review' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of changes) {
+    processed += safeAutoApprove('resident', `change:${row.id}`, () => approveChangeCore(row, actor, { auto: true }));
+  }
+  return processed;
 });
 
 export default router;

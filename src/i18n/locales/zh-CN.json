@@ -48,6 +48,29 @@
     "system": "系统",
     "required": "必填"
   },
+  "autoApprove": {
+    "title": "自动审批",
+    "scope": "适用范围：{{flows}}",
+    "mode": "审批模式",
+    "mode_off": "关闭",
+    "mode_immediate": "立即审批",
+    "mode_delayed": "延时审批",
+    "delayMinutes": "延时（分钟）",
+    "delayHint": "提交后经过该时长自动通过，范围 1–10080 分钟。",
+    "hint_off": "保持人工审核，所有待审事项不变。",
+    "hint_immediate": "提交后数秒内自动通过；开关开启后现有待审件也会按规则处理。",
+    "hint_delayed": "提交后达到设定时长自动通过；达到时长的现有待审件也会被处理。",
+    "updated": "最近更新：{{time}}",
+    "flows": {
+      "visa": "签注申请",
+      "immigration": "入境申报",
+      "dip": "建交申请与外交身份",
+      "resident": "居民登记与变更续期",
+      "protocol": "活动报名、接待方认证与礼遇申请",
+      "docs": "文书认证申请",
+      "appeal": "申诉与投诉受理"
+    }
+  },
   "auth": {
     "loginTitle": "登录",
     "loginSubtitle": "欢迎回到奶龙岛",
@@ -1546,6 +1569,7 @@
         "verify": "通关码核验",
         "records": "记录管理",
         "stats": "统计报表",
+        "settings": "设置",
         "audit": "审计与合规"
       },
       "portsTitle": "口岸与通道管理",

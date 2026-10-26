@@ -15,6 +15,7 @@ import {
 } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
 import { TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
 
 const NOTICE_LEVELS = ['info', 'policy', 'event'];
@@ -327,17 +328,20 @@ export default function AppealAdminManage() {
               key: 'config',
               label: t('appeal.admin.tabConfig'),
               children: (
-                <div className="appeal-config-list">
-                  {config.map((c) => (
-                    <div key={c.key} className="appeal-config-row">
-                      <span>{c.key}</span>
-                      <Input
-                        size="small"
-                        defaultValue={c.value}
-                        onBlur={(e) => e.target.value !== c.value && saveConfig(c.key, e.target.value)}
-                      />
-                    </div>
-                  ))}
+                <div>
+                  <AutoApproveSettings service="appeal" />
+                  <div className="appeal-config-list">
+                    {config.map((c) => (
+                      <div key={c.key} className="appeal-config-row">
+                        <span>{c.key}</span>
+                        <Input
+                          size="small"
+                          defaultValue={c.value}
+                          onBlur={(e) => e.target.value !== c.value && saveConfig(c.key, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ),
             },

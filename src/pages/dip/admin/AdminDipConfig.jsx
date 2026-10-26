@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
+import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { DipAdminNav, TextArea, toastDipError } from '../../../components/dip/shared.jsx';
 
 function TypeEditModal({ kind, initial, onClose, onSaved }) {
@@ -156,6 +157,10 @@ export default function AdminDipConfig() {
       <div className="page-header">
         <Title size="middle" color="purple">{t('dip.config.title')}</Title>
       </div>
+
+      <Card>
+        <AutoApproveSettings service="dip" />
+      </Card>
 
       <Card>
         <Title size="small">{t('dip.config.objectTypes')}</Title>

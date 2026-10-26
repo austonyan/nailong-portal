@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import authRoutes from './routes/auth.js';
 import setupRoutes from './routes/setup.js';
+import autoApproveRoutes from './routes/autoApprove.js';
 import userRoutes from './routes/users.js';
 import roleRoutes from './routes/roles.js';
 import serviceRoutes from './routes/services.js';
@@ -26,6 +27,7 @@ import protocolInterRoutes from './protocol/inter.js';
 import appealRoutes from './routes/appeal.js';
 import appealAdminRoutes from './routes/appealAdmin.js';
 import { ApiError } from './http.js';
+import { startAutoApproveScheduler } from './autoApprove.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -39,6 +41,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/auto-approve', autoApproveRoutes);
 app.use('/api/visa/admin', visaAdminRoutes);
 app.use('/api/visa/inter', visaInterRoutes);
 app.use('/api/visa', visaRoutes);
@@ -90,3 +93,7 @@ const port = Number(process.env.PORT) || 3001;
 app.listen(port, () => {
   console.log(`[nailong] portal API listening on http://localhost:${port}`);
 });
+
+// All office admin routers are imported above, so their auto-approve
+// processors are registered by the time the first tick runs.
+startAutoApproveScheduler();

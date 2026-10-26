@@ -18,6 +18,7 @@ import {
   sweepAll,
 } from '../visa.js';
 import { diplomaticEligibility } from '../linkage.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 
 const router = Router();
 const DECIDED = "('approved','rejected','issued')";
@@ -69,10 +70,39 @@ function getApplication(id) {
   return row;
 }
 
-function recordReview(req, app, action, reasonCode, comment) {
+function recordReview(actor, app, action, reasonCode, comment) {
   db.prepare(
     'INSERT INTO visa_reviews (application_id, reviewer_id, reviewer_name, action, reason_code, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(app.id, req.user.id, req.user.displayName || req.user.username, action, reasonCode ?? null, comment ?? '', now());
+  ).run(
+    app.id,
+    actor?.id ?? 0,
+    actor?.displayName || actor?.username || actor?.name || 'system',
+    action,
+    reasonCode ?? null,
+    comment ?? '',
+    now()
+  );
+}
+
+// 人工审批与自动审批共用:状态校验、外交身份复检、审核轨迹、站内信与审计。
+function approveApplicationCore(app, actor, { comment = '', auto = false } = {}) {
+  if (app.status !== 'pending_review') {
+    throw badRequest('VISA_INVALID_TRANSITION', 'Only pending applications can be approved');
+  }
+  if (app.type_code === 'DIPLOMATIC' && !diplomaticEligibility(app.user_id).eligible) {
+    throw conflict('VISA_DIP_IDENTITY_INACTIVE', 'The applicant no longer holds an active diplomatic identity');
+  }
+  const ts = now();
+  const info = db
+    .prepare(
+      `UPDATE visa_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ?
+       WHERE id = ? AND status = 'pending_review'`
+    )
+    .run(actor?.id ?? null, ts, ts, app.id);
+  if (!info.changes) throw conflict('VISA_INVALID_TRANSITION', 'Only pending applications can be approved');
+  recordReview(actor, app, 'approve', null, comment);
+  audit(actor, 'approve_application', 'application', app.app_no, { comment, ...(auto ? { auto: true } : {}) });
+  sendMsg(app.user_id, app.id, 'approved', { appNo: app.app_no });
 }
 
 // ---------------------------------------------------------------------------
@@ -127,23 +157,14 @@ function decideApplication(req, res, { action }) {
   const reasonCode = req.body?.reasonCode ? String(req.body.reasonCode).slice(0, 40) : null;
 
   if (action === 'approve') {
-    if (app.status !== 'pending_review') throw badRequest('VISA_INVALID_TRANSITION', 'Only pending applications can be approved');
-    if (app.type_code === 'DIPLOMATIC' && !diplomaticEligibility(app.user_id).eligible) {
-      throw conflict('VISA_DIP_IDENTITY_INACTIVE', 'The applicant no longer holds an active diplomatic identity');
-    }
-    db.prepare("UPDATE visa_applications SET status = 'approved', decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?").run(
-      req.user.id, now(), now(), app.id
-    );
-    recordReview(req, app, 'approve', null, comment);
-    audit(req.user, 'approve_application', 'application', app.app_no, { comment });
-    sendMsg(app.user_id, app.id, 'approved', { appNo: app.app_no });
+    approveApplicationCore(app, req.user, { comment });
   } else if (action === 'reject') {
     if (app.status !== 'pending_review') throw badRequest('VISA_INVALID_TRANSITION', 'Only pending applications can be rejected');
     if (!reasonCode) throw badRequest('VISA_REASON_REQUIRED', 'A reject reason code is required');
     db.prepare(
       "UPDATE visa_applications SET status = 'rejected', reject_code = ?, reject_comment = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
     ).run(reasonCode, comment, req.user.id, now(), now(), app.id);
-    recordReview(req, app, 'reject', reasonCode, comment);
+    recordReview(req.user, app, 'reject', reasonCode, comment);
     audit(req.user, 'reject_application', 'application', app.app_no, { reasonCode, comment });
     sendMsg(app.user_id, app.id, 'rejected', { appNo: app.app_no, reason: reasonCode });
   } else if (action === 'require_supplement') {
@@ -153,7 +174,7 @@ function decideApplication(req, res, { action }) {
     db.prepare("UPDATE visa_applications SET status = 'supplement_required', supplement_deadline = ?, updated_at = ? WHERE id = ?").run(
       deadline, now(), app.id
     );
-    recordReview(req, app, 'require_supplement', null, comment);
+    recordReview(req.user, app, 'require_supplement', null, comment);
     audit(req.user, 'require_supplement', 'application', app.app_no, { comment, deadline });
     sendMsg(app.user_id, app.id, 'supplement_required', { appNo: app.app_no, deadline, comment });
   } else {
@@ -190,7 +211,7 @@ router.post('/applications/:id/issue', (req, res) => {
      VALUES (?, ?, ?, ?, ?, 'valid', ?, ?, ?, ?)`
   ).run(visaNo, app.id, app.user_id, app.type_code, app.nickname, token, issuedAt, validUntil, issuedAt);
   db.prepare("UPDATE visa_applications SET status = 'issued', issued_at = ?, updated_at = ? WHERE id = ?").run(issuedAt, now(), app.id);
-  recordReview(req, app, 'issue', null, commentOf(req));
+  recordReview(req.user, app, 'issue', null, commentOf(req));
   audit(req.user, 'issue_permit', 'permit', visaNo, { appNo: app.app_no, validUntil });
   sendMsg(app.user_id, app.id, 'issued', { visaNo, appNo: app.app_no, validUntil });
   res.json({ application: applicationWithMeta(getApplication(app.id)) });
@@ -220,7 +241,7 @@ router.post('/permits/:visaNo/mark-used', (req, res) => {
   if (!permit) throw notFound('Permit not found');
   if (permit.status !== 'valid') throw badRequest('VISA_INVALID_TRANSITION', 'Only valid permits can be marked used');
   db.prepare("UPDATE visa_permits SET status = 'used', updated_at = ? WHERE id = ?").run(now(), permit.id);
-  recordReview(req, db.prepare('SELECT * FROM visa_applications WHERE id = ?').get(permit.application_id), 'mark_used', null, commentOf(req));
+  recordReview(req.user, db.prepare('SELECT * FROM visa_applications WHERE id = ?').get(permit.application_id), 'mark_used', null, commentOf(req));
   audit(req.user, 'mark_permit_used', 'permit', permit.visa_no);
   sendMsg(permit.user_id, permit.application_id, 'used', { visaNo: permit.visa_no });
   res.json({ ok: true });
@@ -231,7 +252,7 @@ router.post('/permits/:visaNo/void', (req, res) => {
   if (!permit) throw notFound('Permit not found');
   if (!['valid', 'used'].includes(permit.status)) throw badRequest('VISA_INVALID_TRANSITION', 'Permit cannot be voided');
   db.prepare("UPDATE visa_permits SET status = 'voided', updated_at = ? WHERE id = ?").run(now(), permit.id);
-  recordReview(req, db.prepare('SELECT * FROM visa_applications WHERE id = ?').get(permit.application_id), 'void', null, commentOf(req));
+  recordReview(req.user, db.prepare('SELECT * FROM visa_applications WHERE id = ?').get(permit.application_id), 'void', null, commentOf(req));
   audit(req.user, 'void_permit', 'permit', permit.visa_no, { comment: commentOf(req) });
   sendMsg(permit.user_id, permit.application_id, 'voided', { visaNo: permit.visa_no });
   res.json({ ok: true });
@@ -470,6 +491,26 @@ router.get('/export.csv', (_req, res) => {
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', `attachment; filename="visa-applications-${Date.now()}.csv"`);
   res.send(`\ufeff${lines.join('\n')}`);
+});
+
+// ---------------------------------------------------------------------------
+// 自动审批:仅处理 pending_review;通过后仍需人工签发。
+// ---------------------------------------------------------------------------
+registerAutoApprover('visa', ({ cutoff, actor }) => {
+  const rows = db
+    .prepare(
+      `SELECT * FROM visa_applications
+       WHERE status = 'pending_review' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  let processed = 0;
+  for (const row of rows) {
+    processed += safeAutoApprove('visa', `application:${row.id}`, () =>
+      approveApplicationCore(row, actor, { auto: true })
+    );
+  }
+  return processed;
 });
 
 export default router;

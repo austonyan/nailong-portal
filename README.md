@@ -38,6 +38,7 @@ npm run dev:all   # 同时启动前端 (Vite, :5173) 和 API 服务器 (:3001)
 | `npm run lint` | oxlint |
 
 首次启动引导验收:`node server/scripts/smoke-setup.mjs`(自包含,会自行启动临时 API 实例)。
+各署自动审批验收:`node server/scripts/smoke-auto-approve.mjs`(自包含,临时库 + 独立端口)。
 
 ## 环境变量
 
@@ -48,3 +49,4 @@ npm run dev:all   # 同时启动前端 (Vite, :5173) 和 API 服务器 (:3001)
 | `ADMIN_PASSWORD` | 未设置 | 可选;首次启动时自动创建 `admin` 并跳过 `/setup` 引导 |
 | `ACCESS_TOKEN_TTL` | `30m` | 访问令牌有效期 |
 | `REFRESH_TOKEN_TTL_DAYS` | `7` | 刷新令牌天数 |
+| `AUTO_APPROVE_INTERVAL_MS` | `5000` | 自动审批调度间隔(毫秒,验收脚本会调小) |

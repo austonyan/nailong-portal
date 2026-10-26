@@ -147,6 +147,7 @@ const ADMIN_TABS = [
   { to: '/admin/immigration/verify', key: 'verify' },
   { to: '/admin/immigration/records', key: 'records' },
   { to: '/admin/immigration/stats', key: 'stats' },
+  { to: '/admin/immigration/settings', key: 'settings' },
   { to: '/admin/immigration/audit', key: 'audit' },
 ];
 

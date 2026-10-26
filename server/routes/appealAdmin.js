@@ -32,6 +32,7 @@ import {
   writebackDecision,
 } from '../appeal.js';
 import { record, recordsFor } from './appeal.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 
 const router = Router();
 const APPEAL_OPEN = "('pending_accept','accepted','processing','supplement_required')";
@@ -162,16 +163,25 @@ processRouter.get('/handlers', (_req, res) => {
   res.json({ items: rows });
 });
 
+// 申诉受理。人工与自动审批共用。
+function acceptAppealCore(appeal, actor, { comment = '', auto = false } = {}) {
+  if (appeal.status !== 'pending_accept') throw badRequest('APPEAL_INVALID_TRANSITION', 'Only pending appeals can be accepted');
+  const ts = now();
+  const info = db
+    .prepare(
+      `UPDATE appeal_appeals SET status = 'accepted', accepted_at = ?, handler_name = ?, updated_at = ?
+       WHERE id = ? AND status = 'pending_accept'`
+    )
+    .run(ts, actor?.displayName || actor?.username || actor?.name || 'system', ts, appeal.id);
+  if (!info.changes) throw badRequest('APPEAL_INVALID_TRANSITION', 'Only pending appeals can be accepted');
+  record('appeal', appeal.id, actor, 'accept', comment);
+  audit(actor, 'accept_appeal', 'appeal', appeal.code, { comment, ...(auto ? { auto: true } : {}) });
+  sendMsg(appeal.user_id, 'appeal', appeal.id, 'appeal_accepted', { code: appeal.code });
+}
+
 processRouter.post('/appeals/:id/accept', (req, res) => {
   const appeal = getAppeal(req.params.id);
-  if (appeal.status !== 'pending_accept') throw badRequest('APPEAL_INVALID_TRANSITION', 'Only pending appeals can be accepted');
-  const comment = String(req.body?.comment || '').trim().slice(0, 500);
-  db.prepare(
-    "UPDATE appeal_appeals SET status = 'accepted', accepted_at = ?, handler_name = ?, updated_at = ? WHERE id = ?"
-  ).run(now(), req.user.displayName || req.user.username, now(), appeal.id);
-  record('appeal', appeal.id, req.user, 'accept', comment);
-  audit(req.user, 'accept_appeal', 'appeal', appeal.code, { comment });
-  sendMsg(appeal.user_id, 'appeal', appeal.id, 'appeal_accepted', { code: appeal.code });
+  acceptAppealCore(appeal, req.user, { comment: String(req.body?.comment || '').trim().slice(0, 500) });
   res.json({ appeal: appealAdminMeta(getAppeal(appeal.id)) });
 });
 
@@ -327,13 +337,24 @@ processRouter.get('/complaints/:id', (req, res) => {
   res.json({ complaint: complaintAdminMeta(row) });
 });
 
+// 投诉受理。人工与自动审批共用。
+function acceptComplaintCore(row, actor, { auto = false } = {}) {
+  if (row.status !== 'pending_accept') throw badRequest('APPEAL_INVALID_TRANSITION', 'Complaint already accepted');
+  const info = db
+    .prepare(
+      `UPDATE appeal_complaints SET status = 'processing', updated_at = ?
+       WHERE id = ? AND status = 'pending_accept'`
+    )
+    .run(now(), row.id);
+  if (!info.changes) throw badRequest('APPEAL_INVALID_TRANSITION', 'Complaint already accepted');
+  record('complaint', row.id, actor, 'accept');
+  audit(actor, 'accept_complaint', 'complaint', row.code, auto ? { auto: true } : {});
+}
+
 processRouter.post('/complaints/:id/accept', (req, res) => {
   const row = db.prepare('SELECT * FROM appeal_complaints WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Complaint not found');
-  if (row.status !== 'pending_accept') throw badRequest('APPEAL_INVALID_TRANSITION', 'Complaint already accepted');
-  db.prepare("UPDATE appeal_complaints SET status = 'processing', updated_at = ? WHERE id = ?").run(now(), row.id);
-  record('complaint', row.id, req.user, 'accept');
-  audit(req.user, 'accept_complaint', 'complaint', row.code);
+  acceptComplaintCore(row, req.user);
   res.json({ complaint: complaintAdminMeta(db.prepare('SELECT * FROM appeal_complaints WHERE id = ?').get(row.id)) });
 });
 
@@ -937,5 +958,35 @@ manageRouter.get('/export.csv', (req, res) => {
 });
 
 router.use('/', processRouter, reviewRouter, inspectRouter, manageRouter);
+
+// ---------------------------------------------------------------------------
+// 自动审批:申诉与投诉受理(不自动做决定)。
+// ---------------------------------------------------------------------------
+registerAutoApprover('appeal', ({ cutoff, actor }) => {
+  let processed = 0;
+  const appeals = db
+    .prepare(
+      `SELECT * FROM appeal_appeals
+       WHERE status = 'pending_accept' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of appeals) {
+    processed += safeAutoApprove('appeal', `appeal:${row.id}`, () => acceptAppealCore(row, actor, { auto: true }));
+  }
+  const complaints = db
+    .prepare(
+      `SELECT * FROM appeal_complaints
+       WHERE status = 'pending_accept' AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  for (const row of complaints) {
+    processed += safeAutoApprove('appeal', `complaint:${row.id}`, () =>
+      acceptComplaintCore(row, actor, { auto: true })
+    );
+  }
+  return processed;
+});
 
 export default router;

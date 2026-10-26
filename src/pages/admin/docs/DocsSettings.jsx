@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { BanIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
+import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 
 export default function DocsSettings() {
   const { t } = useTranslation();
@@ -94,6 +95,10 @@ export default function DocsSettings() {
           {t('common.save')}
         </Button>
       </div>
+
+      <Card className="docs-block">
+        <AutoApproveSettings service="docs" />
+      </Card>
 
       <Card className="docs-block">
         <h3 className="docs-block-title">{t('docs.admin.settings.numbering')}</h3>

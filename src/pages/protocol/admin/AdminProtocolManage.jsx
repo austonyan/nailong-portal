@@ -16,6 +16,7 @@ import {
 } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
+import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { TextArea, fmtDateTime, toastProtocolError } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
 import AdminProtocolRisk from './AdminProtocolRisk.jsx';
@@ -267,6 +268,7 @@ export default function AdminProtocolManage() {
 
   const configTab = (
     <Card>
+      <AutoApproveSettings service="protocol" />
       <p className="muted-text">{t('protocol.admin.configHint')}</p>
       <div className="protocol-config-list">
         {CONFIG_KEYS.map((key) => (

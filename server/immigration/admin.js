@@ -21,6 +21,7 @@ import {
   crowding,
 } from './util.js';
 import { cachedCheck, checkVisa, markVisaUsed } from './visa.js';
+import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 
 ensureImmigrationSchema();
 
@@ -356,9 +357,8 @@ function serializeAdminDeclaration(row) {
   };
 }
 
-router.post('/declarations/:id/approve', ...inspector, (req, res) => {
-  const row = queueRow(Number(req.params.id));
-  if (!row) throw notFound('Declaration not found');
+// 人工审批与自动审批共用:状态、通关码、事件轨迹、站内信与审计。
+function approveDeclarationCore(row, actor, { note = '', auto = false } = {}) {
   if (!['pending', 'supplement'].includes(row.status)) {
     throw conflict('IMM_INVALID_STATE', 'Only pending/supplement declarations can be approved');
   }
@@ -366,22 +366,30 @@ router.post('/declarations/:id/approve', ...inspector, (req, res) => {
   const validUntil = new Date(Date.now() + PASS_VALID_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const codeNo = makeUniqueNo('PC', 'im_pass_codes', 'code_no');
   const approve = db.transaction(() => {
-    db.prepare("UPDATE im_declarations SET status = 'approved', reviewed_at = ?, reviewed_by = ?, updated_at = ? WHERE id = ?").run(
-      ts,
-      req.user.id,
-      ts,
-      row.id
-    );
+    const info = db
+      .prepare(
+        `UPDATE im_declarations SET status = 'approved', reviewed_at = ?, reviewed_by = ?, updated_at = ?
+         WHERE id = ? AND status IN ('pending', 'supplement')`
+      )
+      .run(ts, actor?.id ?? null, ts, row.id);
+    if (!info.changes) throw conflict('IMM_INVALID_STATE', 'Only pending/supplement declarations can be approved');
     db.prepare(
       `INSERT INTO im_pass_codes (declaration_id, user_id, port_id, code_no, token, status, valid_until, created_at)
        VALUES (?, ?, ?, ?, ?, 'unused', ?, ?)`
     ).run(row.id, row.user_id, row.port_id, codeNo, makeToken(), validUntil, ts);
-    logEvent(row.id, 'approve', req.user.id, String(req.body?.note || '').slice(0, 200));
+    logEvent(row.id, 'approve', actor?.id ?? null, note);
   });
   approve();
   notify(row.user_id, 'approved', { no: row.no, validUntil }, { declarationNo: row.no });
   notify(row.user_id, 'pass_code', { no: row.no, codeNo }, { declarationNo: row.no, codeNo });
-  audit(req.user.id, 'im:declaration.approve', 'declaration', row.no, { codeNo });
+  audit(actor?.id ?? null, 'im:declaration.approve', 'declaration', row.no, { codeNo, ...(auto ? { auto: true } : {}) });
+  return codeNo;
+}
+
+router.post('/declarations/:id/approve', ...inspector, (req, res) => {
+  const row = queueRow(Number(req.params.id));
+  if (!row) throw notFound('Declaration not found');
+  approveDeclarationCore(row, req.user, { note: String(req.body?.note || '').slice(0, 200) });
   res.json({ declaration: serializeAdminDeclaration(queueRow(row.id)) });
 });
 
@@ -813,6 +821,26 @@ router.get('/messages', ...adminOnly, (req, res) => {
     )
     .all(...params, pageSize, offset);
   res.json({ items: rows, total, page, pageSize });
+});
+
+// ---------------------------------------------------------------------------
+// 自动审批:仅处理 pending(补件中的申报需旅客重新提交后再进入队列)。
+// ---------------------------------------------------------------------------
+registerAutoApprover('immigration', ({ cutoff, actor }) => {
+  const rows = db
+    .prepare(
+      `SELECT * FROM im_declarations
+       WHERE status = 'pending' AND deleted_at IS NULL AND updated_at <= ?
+       ORDER BY updated_at, id LIMIT 20`
+    )
+    .all(cutoff);
+  let processed = 0;
+  for (const row of rows) {
+    processed += safeAutoApprove('immigration', `declaration:${row.id}`, () =>
+      approveDeclarationCore(row, actor, { auto: true })
+    );
+  }
+  return processed;
 });
 
 export default router;

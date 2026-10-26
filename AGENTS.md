@@ -125,13 +125,30 @@ visa eligibility + permit void-on-identity-loss. The per-office `/api/*/inter` r
 remain for independently deployed callers and still require their service tokens.
 Acceptance: `node server/scripts/smoke-linkage.mjs [baseUrl]`.
 
+## Cross-service auto-approval
+
+`server/autoApprove.js` owns the `service_auto_approve` table (one row per office:
+`off` | `immediate` | `delayed`, delay 1–10080 minutes) and one in-process scheduler
+that ticks every 5 seconds (`AUTO_APPROVE_INTERVAL_MS` overrides the interval for
+tests). Each office's admin router registers a processor at import time; the
+processor calls the **same approval core** as the manual endpoint, so status
+transitions, review records, audit, messages, downstream credentials (visa review,
+immigration pass code, resident card, diplomatic courtesy, protocol pass, document
+certificate) and cross-office checks never drift. Settings live at
+`GET/PATCH /api/auto-approve/:service`, guarded by that office's manage permission
+(`visa:manage`, `imm:admin`, `dip:admin`, `res:manage`, `evt:manage`, `docs:manage`,
+`appeal:manage`); every office admin settings page embeds
+`src/components/AutoApproveSettings.jsx` (immigration gained
+`/admin/immigration/settings`). Automatic decisions use the `system` actor and
+`detail.auto = true`. Visa issuance remains manual, and appeal auto-approval only
+performs acceptance (申诉/投诉受理), never a decision. Acceptance:
+`node server/scripts/smoke-auto-approve.mjs` (self-contained temporary DB).
+
 ## Current state
 
-As of 2026-10-26 the portal is functional end to end: auth (login/register/refresh), RBAC
-guards, portal service cards, profile management, and admin screens for users / roles /
-services. The UI is built entirely with animal-island-ui components + `--animal-*` tokens.
-The 奶龍國簽註申請署 (visa service, v0.2) is complete: apply → review → issue → verify loop,
-supplement flow, e-visa card, messages, stats/audit; port-authority check/writeback is live
-through `server/linkage.js`. Other in-SPA services (文书署/入境署) may appear in the working
-tree from parallel development sessions — treat untracked files you did not create as
-someone else's WIP.
+As of 2026-10-26 the portal and seven in-SPA offices are functional end to end: auth,
+RBAC, service cards, profile, admin screens, 签注 / 入境 / 外交 / 居民 / 礼宾活动 / 文书认证 /
+申诉监察. Cross-service linkage (`server/linkage.js`) and per-office auto-approval are
+live. The UI is built entirely with animal-island-ui components + `--animal-*` tokens.
+Acceptance scripts cover every office plus linkage, setup and auto-approval; run them
+against a fresh `NAILONG_DATA_DIR` when a script uses fixed usernames.
