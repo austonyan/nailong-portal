@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Button, Card, Input, Notification, Pagination, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS, normalizeDocNo } from '../../api/docs.js';
+import { toastError, toastWarning } from '../../components/toast.js';
 
 function ResultCard({ result }) {
   const { t } = useTranslation();
@@ -99,7 +100,7 @@ export default function DocsVerify() {
     async (value) => {
       const target = normalizeDocNo(value);
       if (!target) {
-        Notification.warning(t('docs.verify.inputRequired'));
+        toastWarning(t('docs.verify.inputRequired'));
         return;
       }
       setBusy(true);
@@ -108,7 +109,7 @@ export default function DocsVerify() {
         setResult(d);
         loadHistory();
       } catch (err) {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       } finally {
         setBusy(false);
       }
@@ -154,7 +155,7 @@ export default function DocsVerify() {
             size="large"
             onKeyDown={(e) => e.key === 'Enter' && query(no)}
           />
-          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => query(no)}>
+          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => query(no)} disabled={busy}>
             {t('docs.verify.query')}
           </Button>
         </div>
@@ -167,7 +168,7 @@ export default function DocsVerify() {
 
       <Card className="docs-block">
         <h3 className="docs-block-title">{t('docs.verify.historyTitle')}</h3>
-        <Table
+        <Table className="table-fit"
           columns={resultColumns}
           dataSource={history?.items || []}
           rowKey="id"

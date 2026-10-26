@@ -2,10 +2,11 @@
 // (编号规则、补件天数、限流)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { DipAdminNav, TextArea, toastDipError } from '../../../components/dip/shared.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 function TypeEditModal({ kind, initial, onClose, onSaved }) {
   const { t } = useTranslation();
@@ -19,6 +20,10 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
+    if (!name.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       const payload = {
@@ -31,7 +36,7 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
       };
       if (kind === 'relation') payload.validityDays = Number(validityDays) || 365;
       await api.patch(`/dip/admin/config/types/${kind}/${initial.id}`, payload);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       onSaved();
       onClose();
     } catch (err) {
@@ -50,8 +55,8 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
       width={540}
       footer={
         <>
-          <Button onClick={onClose}>{t('common.cancel')}</Button>
-          <Button type="primary" loading={busy} onClick={save}>{t('common.save')}</Button>
+          <Button onClick={onClose} disabled={busy}>{t('common.cancel')}</Button>
+          <Button type="primary" loading={busy} disabled={busy || !name.trim()} onClick={save}>{t('common.save')}</Button>
         </>
       }
     >
@@ -122,7 +127,7 @@ export default function AdminDipConfig() {
     try {
       const items = SETTINGS_ROWS.map((r) => ({ key: r.key, value: settings[r.key] ?? '' }));
       await api.put('/dip/admin/config/settings', { items });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       load();
     } catch (err) {
       toastDipError(t, err);
@@ -132,11 +137,11 @@ export default function AdminDipConfig() {
   };
 
   const typeTable = (kind, rows) => (
-    <Table
+    <Table className="table-fit"
       columns={[
         { title: t('common.key'), dataIndex: 'code', width: 160 },
         { title: t('common.name'), dataIndex: 'name', width: 130 },
-        { title: t('common.description'), dataIndex: 'description', ellipsis: true },
+        { title: t('common.description'), dataIndex: 'description', style: { maxWidth: 320 } },
         ...(kind === 'relation' ? [{ title: t('dip.config.validityDays'), dataIndex: 'validity_days', width: 100 }] : []),
         {
           title: t('common.status'),
@@ -192,11 +197,11 @@ export default function AdminDipConfig() {
       </Card>
       <Card>
         <Title size="small">{t('dip.config.courtesyTypes')}</Title>
-        <Table
+        <Table className="table-fit"
           columns={[
             { title: t('common.key'), dataIndex: 'code', width: 160 },
             { title: t('common.name'), dataIndex: 'name', width: 140 },
-            { title: t('common.description'), dataIndex: 'description', ellipsis: true },
+            { title: t('common.description'), dataIndex: 'description', style: { maxWidth: 320 } },
             {
               title: t('common.status'),
               dataIndex: 'enabled',
@@ -224,7 +229,7 @@ export default function AdminDipConfig() {
           ))}
         </div>
         <div className="dip-form-actions">
-          <Button type="primary" loading={busy} onClick={saveSettings}>{t('common.save')}</Button>
+          <Button type="primary" loading={busy} onClick={saveSettings} disabled={busy}>{t('common.save')}</Button>
         </div>
       </Card>
 

@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import QRCode from 'qrcode';
 import { Tag } from 'animal-island-ui';
 import { getAccessToken } from '../../api/client.js';
+import { toast } from '../../components/toast.js';
 
 const STATUS_STYLE = {
   draft: { color: 'default', variant: 'outlined' },
@@ -114,16 +115,7 @@ export function protocolErrMsg(t, err) {
 }
 
 export function protocolToast(kind, message) {
-  if (typeof document === 'undefined') return;
-  const el = document.createElement('div');
-  el.className = `protocol-toast protocol-toast-${kind}`;
-  el.textContent = String(message || '');
-  document.body.appendChild(el);
-  requestAnimationFrame(() => el.classList.add('show'));
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(() => el.remove(), 280);
-  }, 3200);
+  toast(kind, message);
 }
 
 export const toastSuccess = (message) => protocolToast('success', message);

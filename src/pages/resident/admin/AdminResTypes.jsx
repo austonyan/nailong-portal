@@ -1,11 +1,12 @@
 // 居民类型与规则配置:类型 CRUD、材料要求、有效期与开放状态。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Checkbox, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { TextArea, toastResError } from '../shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 const EMPTY_FORM = {
   id: null,
@@ -94,7 +95,7 @@ export default function AdminResTypes() {
       };
       if (form.id) await api.patch(`/resident/admin/types/${form.id}`, body);
       else await api.post('/resident/admin/types', body);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setModalOpen(false);
       load();
     } catch (err) {
@@ -154,7 +155,7 @@ export default function AdminResTypes() {
       <p className="muted-text">{t('res.admin.types.tip')}</p>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal
@@ -242,7 +243,7 @@ export default function AdminResTypes() {
             />
             <div className="res-type-switch">
               <span>{t('res.admin.types.enabled')}</span>
-              <Switch value={form.enabled} onChange={(v) => setForm({ ...form, enabled: v })} />
+              <Switch checked={!!form.enabled} onChange={(v) => setForm({ ...form, enabled: v })} />
             </div>
           </div>
         </div>

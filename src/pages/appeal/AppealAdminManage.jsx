@@ -2,21 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Input,
-  Modal,
-  Notification,
-  Select,
-  Table,
-  Tabs,
-  Tag,
-  Title,
-} from 'animal-island-ui';
+  Button, Card, Input, Modal, Select, Table, Tabs, Tag, Title } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
 import { TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const NOTICE_LEVELS = ['info', 'policy', 'event'];
 const PUBLICITY_KINDS = ['stats', 'case', 'report'];
@@ -77,7 +68,7 @@ export default function AppealAdminManage() {
     setBusy(true);
     try {
       await api.post('/appeal/admin/notices', { title: nTitle, titleTw: nTitleTw, body: nBody, bodyTw: nBodyTw, level: nLevel });
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       setNoticeOpen(false);
       setNTitle('');
       setNTitleTw('');
@@ -103,6 +94,7 @@ export default function AppealAdminManage() {
   const deleteNotice = async (n) => {
     try {
       await api.del(`/appeal/admin/notices/${n.id}`);
+      toastSuccess(t('common.deleted'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -113,7 +105,7 @@ export default function AppealAdminManage() {
     setBusy(true);
     try {
       await api.post('/appeal/admin/publicity', { title: pTitle, titleTw: pTitleTw, body: pBody, bodyTw: pBodyTw, kind: pKind });
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       setPubOpen(false);
       setPTitle('');
       setPTitleTw('');
@@ -130,7 +122,7 @@ export default function AppealAdminManage() {
   const setPubStatus = async (p, status) => {
     try {
       await api.patch(`/appeal/admin/publicity/${p.id}`, { status });
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -150,7 +142,7 @@ export default function AppealAdminManage() {
     setBusy(true);
     try {
       await api.post('/appeal/admin/blacklist', { userId: Number(blUser), scope: blScope, reason: blReason });
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       setBlOpen(false);
       setBlUser('');
       setBlReason('');
@@ -165,6 +157,7 @@ export default function AppealAdminManage() {
   const removeBlacklist = async (row) => {
     try {
       await api.del(`/appeal/admin/blacklist/${row.userId}`);
+      toastSuccess(t('common.deleted'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -174,7 +167,7 @@ export default function AppealAdminManage() {
   const saveConfig = async (key, value) => {
     try {
       await api.put('/appeal/admin/config', { [key]: value });
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -289,7 +282,7 @@ export default function AppealAdminManage() {
                   <div className="table-actions appeal-filter-bar">
                     <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeOpen(true)}>{t('appeal.admin.createNotice')}</Button>
                   </div>
-                  <Table columns={noticeColumns} dataSource={notices} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={noticeColumns} dataSource={notices} rowKey="id" pagination={false} emptyText={t('common.empty')} />
                 </>
               ),
             },
@@ -302,7 +295,7 @@ export default function AppealAdminManage() {
                     <Button type="primary" icon={<PlusIcon />} onClick={() => setPubOpen(true)}>{t('appeal.admin.createPublicity')}</Button>
                   </div>
                   <p className="muted-text">{t('appeal.admin.publicityTip')}</p>
-                  <Table columns={pubColumns} dataSource={publicity} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={pubColumns} dataSource={publicity} rowKey="id" pagination={false} emptyText={t('common.empty')} />
                 </>
               ),
             },
@@ -312,7 +305,7 @@ export default function AppealAdminManage() {
               children: (
                 <>
                   <p className="muted-text">{t('appeal.admin.templateTip')}</p>
-                  <Table columns={tplColumns} dataSource={templates} rowKey="type" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={tplColumns} dataSource={templates} rowKey="type" pagination={false} emptyText={t('common.empty')} />
                 </>
               ),
             },
@@ -325,10 +318,10 @@ export default function AppealAdminManage() {
                     <Button type="primary" icon={<PlusIcon />} onClick={() => setBlOpen(true)}>{t('appeal.admin.addBlacklist')}</Button>
                   </div>
                   <h4>{t('appeal.admin.tabBlacklist')}</h4>
-                  <Table columns={blColumns} dataSource={blacklist} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={blColumns} dataSource={blacklist} rowKey="id" pagination={false} emptyText={t('common.empty')} />
                   <h4>{t('appeal.admin.tabDuplicates')}</h4>
                   <p className="muted-text">{t('appeal.admin.dupTip')}</p>
-                  <Table columns={dupColumns} dataSource={duplicates} rowKey="codes" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={dupColumns} dataSource={duplicates} rowKey="codes" pagination={false} emptyText={t('common.empty')} />
                 </>
               ),
             },

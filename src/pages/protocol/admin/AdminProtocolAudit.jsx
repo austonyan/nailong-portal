@@ -68,7 +68,7 @@ export default function AdminProtocolAudit() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
         {total > 30 && (
           <div className="protocol-pagination">
             <Pagination total={total} current={page} pageSize={30} onChange={setPage} showTotal />

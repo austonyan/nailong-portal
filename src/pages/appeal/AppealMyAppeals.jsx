@@ -2,10 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Notification, Pagination, Select, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Pagination, Select, Tag, Title } from 'animal-island-ui';
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPEAL_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const STATUS_FILTERS = ['', 'draft', 'pending_accept', 'accepted', 'processing', 'supplement_required', 'resolved', 'rejected', 'withdrawn', 'closed'];
 
@@ -38,7 +39,7 @@ export default function AppealMyAppeals() {
     setBusy(true);
     try {
       await api.del(`/appeal/appeals/${delTarget.id}`);
-      Notification.success(t('common.deleted'));
+      toastSuccess(t('common.deleted'));
       setDelTarget(null);
       await load();
     } catch (err) {
@@ -131,7 +132,7 @@ export default function AppealMyAppeals() {
         footer={
           <>
             <Button onClick={() => setDelTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={doDelete}>
+            <Button type="primary" danger loading={busy} onClick={doDelete} disabled={busy}>
               {t('common.delete')}
             </Button>
           </>

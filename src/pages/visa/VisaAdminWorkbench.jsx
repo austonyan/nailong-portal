@@ -2,18 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Notification,
-  Pagination,
-  Select,
-  Table,
-  Tag,
-  Title,
-} from 'animal-island-ui';
+  Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial } from '../../api/visa.js';
@@ -25,6 +14,7 @@ import {
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const QUEUE_STATUS_OPTIONS = [
   { key: '', label: 'all' },
@@ -121,7 +111,7 @@ export default function VisaAdminWorkbench() {
       } else if (action.kind === 'markUsed') {
         await api.post(`/visa/admin/permits/${action.application.permit.visaNo}/mark-used`, { comment });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setAction(null);
       const data = await api.get(`/visa/admin/applications/${id}`);
       setDetail(data.application);
@@ -202,7 +192,7 @@ export default function VisaAdminWorkbench() {
       </div>
 
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}
@@ -330,11 +320,14 @@ export default function VisaAdminWorkbench() {
       <Modal
         open={action !== null}
         title={action ? ACTION_META[action.kind]?.title : ''}
-        onClose={() => setAction(null)}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('common.cancel')}</Button>
             <Button type="primary" loading={busy} disabled={action?.kind === 'reject' && !reason} onClick={runAction}>
               {t('common.confirm')}
             </Button>

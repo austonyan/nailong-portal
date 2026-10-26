@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Notification, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Modal, Tag, Title, Upload } from 'animal-island-ui';
 import { AlertTriangleIcon, PaperclipIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
@@ -12,6 +12,7 @@ import {
   TextArea,
   fmtDateTime,
   toastResError,
+  toastResSuccess,
 } from './shared.jsx';
 
 const REVIEW_ACTION_I18N = {
@@ -60,7 +61,7 @@ export default function ResidentApplicationDetail() {
     setBusy(true);
     try {
       await api.post(`/resident/applications/${app.id}/withdraw`);
-      Notification.success(t('res.detail.withdrawn'));
+      toastResSuccess(t('res.detail.withdrawn'));
       load();
     } catch (err) {
       toastResError(t, err);
@@ -76,7 +77,7 @@ export default function ResidentApplicationDetail() {
         onSuccess(material);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastResError(t, err);
         onError(err);
       });
   };
@@ -88,7 +89,7 @@ export default function ResidentApplicationDetail() {
       setSupplementOpen(false);
       setSupplementNote('');
       setSupplementMaterials([]);
-      Notification.success(t('res.detail.supplementSent'));
+      toastResSuccess(t('res.detail.supplementSent'));
       load();
     } catch (err) {
       toastResError(t, err);
@@ -226,7 +227,7 @@ export default function ResidentApplicationDetail() {
       <div className="res-guide-actions">
         <Button onClick={() => navigate('/resident/applications')}>{t('res.back')}</Button>
         {canWithdraw && (
-          <Button danger loading={busy} onClick={withdraw}>
+          <Button danger loading={busy} onClick={withdraw} disabled={busy}>
             {t('res.detail.withdraw')}
           </Button>
         )}

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Notification, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, REJECT_REASON_KEYS } from '../../../api/docs.js';
 import MaterialList from '../../docs/MaterialList.jsx';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 // 认证审核工作台: 队列隔离,认证员只处理文书认证队列。
 export default function DocsReview() {
@@ -42,7 +43,7 @@ export default function DocsReview() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [page, status, typeCode, q, t]);
@@ -59,7 +60,7 @@ export default function DocsReview() {
       const d = await api.get(`/docs/applications/${row.id}`);
       setDetail(d.item);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -67,7 +68,7 @@ export default function DocsReview() {
     setActing(true);
     try {
       await api.post(`/docs/admin/applications/${detail.id}/${path}`, body);
-      Notification.success(t('docs.admin.review.done'));
+      toastSuccess(t('docs.admin.review.done'));
       const d = await api.get(`/docs/applications/${detail.id}`);
       setDetail(d.item);
       setRejectOpen(false);
@@ -78,7 +79,7 @@ export default function DocsReview() {
       setApproveComment('');
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setActing(false);
     }
@@ -150,7 +151,7 @@ export default function DocsReview() {
       </Card>
 
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items || []}
           rowKey="id"
@@ -213,7 +214,7 @@ export default function DocsReview() {
             <div className="docs-review-actions">
               {canDecide && (
                 <>
-                  <Button type="primary" loading={acting} onClick={() => setApproveOpen(true)}>
+                  <Button type="primary" loading={acting} onClick={() => setApproveOpen(true)} disabled={acting}>
                     {t('docs.admin.review.approve')}
                   </Button>
                   <Button danger onClick={() => setRejectOpen(true)}>
@@ -232,10 +233,13 @@ export default function DocsReview() {
         open={approveOpen}
         title={t('docs.admin.review.approveConfirmTitle')}
         typewriter={false}
-        onClose={() => setApproveOpen(false)}
+        onClose={() => {
+          if (!acting) setApproveOpen(false);
+        }}
+        maskClosable={!acting}
         footer={
           <>
-            <Button onClick={() => setApproveOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setApproveOpen(false)} disabled={acting}>{t('common.cancel')}</Button>
             <Button type="primary" loading={acting} onClick={() => act('approve', { comment: approveComment })}>
               {t('docs.admin.review.approveAndIssue')}
             </Button>
@@ -250,11 +254,14 @@ export default function DocsReview() {
         open={rejectOpen}
         title={t('docs.admin.review.rejectTitle')}
         typewriter={false}
-        onClose={() => setRejectOpen(false)}
+        onClose={() => {
+          if (!acting) setRejectOpen(false);
+        }}
+        maskClosable={!acting}
         footer={
           <>
-            <Button onClick={() => setRejectOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={acting} onClick={() => act('reject', { reasonCode: rejectReason, comment: rejectComment })}>
+            <Button onClick={() => setRejectOpen(false)} disabled={acting}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={acting} disabled={acting || !rejectReason} onClick={() => act('reject', { reasonCode: rejectReason, comment: rejectComment })}>
               {t('docs.admin.review.reject')}
             </Button>
           </>
@@ -273,11 +280,14 @@ export default function DocsReview() {
         open={supplementOpen}
         title={t('docs.admin.review.supplementTitle')}
         typewriter={false}
-        onClose={() => setSupplementOpen(false)}
+        onClose={() => {
+          if (!acting) setSupplementOpen(false);
+        }}
+        maskClosable={!acting}
         footer={
           <>
-            <Button onClick={() => setSupplementOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={acting} onClick={() => act('require-supplement', { note: supplementNote })}>
+            <Button onClick={() => setSupplementOpen(false)} disabled={acting}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={acting} disabled={acting || !supplementNote.trim()} onClick={() => act('require-supplement', { note: supplementNote })}>
               {t('docs.admin.review.supplementSend')}
             </Button>
           </>

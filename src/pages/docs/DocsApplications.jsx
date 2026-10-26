@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Modal, Notification, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { EyeIcon, PencilIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS } from '../../api/docs.js';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 const STATUS_OPTIONS = ['all', 'draft', 'pending', 'supplementing', 'approved', 'rejected', 'withdrawn'];
 
@@ -24,7 +25,7 @@ export default function DocsApplications() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [page, status, t]);
@@ -37,11 +38,11 @@ export default function DocsApplications() {
     if (!deleteTarget) return;
     try {
       await api.del(`/docs/applications/${deleteTarget.id}`);
-      Notification.success(t('docs.appList.deleted'));
+      toastSuccess(t('docs.appList.deleted'));
       setDeleteTarget(null);
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -97,7 +98,7 @@ export default function DocsApplications() {
         </div>
       </div>
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items || []}
           rowKey="id"

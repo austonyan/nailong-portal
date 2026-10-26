@@ -2,10 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Notification, Select, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Modal, Select, Tag, Title } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { REVIEW_STATUS_COLORS, DECISION_TYPE_COLORS, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 export default function AppealReviews() {
   const { t } = useTranslation();
@@ -49,7 +50,7 @@ export default function AppealReviews() {
     setBusy(true);
     try {
       await api.post('/appeal/reviews', { appealId, reason });
-      Notification.success(t('appeal.review.submitDone'));
+      toastSuccess(t('appeal.review.submitDone'));
       setCreateOpen(false);
       setAppealId(null);
       setReason('');

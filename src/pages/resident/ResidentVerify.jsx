@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Input, Notification, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Input, Tag, Title, Typewriter } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon, UsersIcon } from 'naive-icons';
-import { CARD_STATUS_COLORS, fmtDate } from './shared.jsx';
+import { CARD_STATUS_COLORS, fmtDate, resToast } from './shared.jsx';
 
 export default function ResidentVerify() {
   const { t } = useTranslation();
@@ -24,12 +24,12 @@ export default function ResidentVerify() {
       const res = await fetch(`/api/resident/verify?${qs}`);
       const data = await res.json();
       if (!res.ok) {
-        Notification.error(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        resToast('error', t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
         return;
       }
       setResult({ ...data, query: value || '' });
     } catch {
-      Notification.error(t('api.NETWORK_ERROR'));
+      resToast('error', t('api.NETWORK_ERROR'));
     } finally {
       setBusy(false);
     }
@@ -70,7 +70,7 @@ export default function ResidentVerify() {
               if (e.key === 'Enter') verify();
             }}
           />
-          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => verify()}>
+          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => verify()} disabled={busy}>
             {t('res.verify.action')}
           </Button>
         </div>

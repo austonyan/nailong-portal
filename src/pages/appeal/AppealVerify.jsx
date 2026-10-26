@@ -72,7 +72,7 @@ export default function AppealVerify() {
             value={no}
             onChange={(e) => setNo(e.target.value)}
           />
-          <Button type="primary" size="large" loading={busy} disabled={!no.trim()} onClick={doVerify}>
+          <Button type="primary" size="large" loading={busy} disabled={busy || (!no.trim())} onClick={doVerify}>
             {t('appeal.verify.action')}
           </Button>
         </form>

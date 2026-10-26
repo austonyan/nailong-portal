@@ -1,10 +1,11 @@
 // 验真管理:验真记录查询、限流与防枚举配置。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { fmtDateTime, toastResError } from '../shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 export default function AdminResVerify() {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export default function AdminResVerify() {
         'res.verify_limit_per_5min': config['res.verify_limit_per_5min'] ?? '30',
         'res.card_remind_days': config['res.card_remind_days'] ?? '30',
       });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
     } catch (err) {
       toastResError(t, err);
     } finally {
@@ -102,14 +103,14 @@ export default function AdminResVerify() {
             />
           </label>
         </div>
-        <Button type="primary" loading={busy} onClick={saveConfig}>
+        <Button type="primary" loading={busy} onClick={saveConfig} disabled={busy}>
           {t('common.save')}
         </Button>
       </Card>
 
       <Card>
         <h4>{t('res.admin.verify.logsTitle')}</h4>
-        <Table columns={columns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={columns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
     </div>
   );

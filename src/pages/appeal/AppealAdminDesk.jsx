@@ -2,22 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Notification,
-  Select,
-  Table,
-  Tabs,
-  Tag,
-  Title,
-} from 'animal-island-ui';
+  Button, Card, Drawer, Input, Modal, Select, Table, Tabs, Tag, Title } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial } from '../../api/appeal.js';
 import { TextArea, COMPLAINT_STATUS_COLORS, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const COMPLAINT_STATUS = ['', 'pending_accept', 'processing', 'replied', 'closed'];
 const TICKET_STATUS = ['', 'pending', 'processing', 'replied', 'closed', 'escalated'];
@@ -87,7 +77,7 @@ export default function AppealAdminDesk() {
         else if (action === 'close') await api.post(`/appeal/admin/tickets/${data.id}/status`, { status: 'closed' });
         else if (action === 'escalated') await api.post(`/appeal/admin/tickets/${data.id}/status`, { status: 'escalated' });
       }
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       setAction(null);
       setReply('');
       if (type === 'complaint') {
@@ -197,7 +187,7 @@ export default function AppealAdminDesk() {
                     options={COMPLAINT_STATUS.map((s) => ({ key: s, label: s === '' ? t('appeal.admin.allStatus') : t(`appeal.complaintStatus.${s}`) }))}
                   />
                 </div>
-                <Table columns={complaintColumns} dataSource={complaints ?? []} loading={complaints === null} rowKey="id" pagination={false} emptyText={t('appeal.admin.queueEmpty')} />
+                <Table className="table-fit" columns={complaintColumns} dataSource={complaints ?? []} loading={complaints === null} rowKey="id" pagination={false} emptyText={t('appeal.admin.queueEmpty')} />
               </>
             ) },
             { key: 'tickets', label: t('appeal.admin.tabTickets'), children: (
@@ -209,7 +199,7 @@ export default function AppealAdminDesk() {
                     options={TICKET_STATUS.map((s) => ({ key: s, label: s === '' ? t('appeal.admin.allStatus') : t(`appeal.ticketStatus.${s}`) }))}
                   />
                 </div>
-                <Table columns={ticketColumns} dataSource={tickets ?? []} loading={tickets === null} rowKey="id" pagination={false} emptyText={t('appeal.admin.queueEmpty')} />
+                <Table className="table-fit" columns={ticketColumns} dataSource={tickets ?? []} loading={tickets === null} rowKey="id" pagination={false} emptyText={t('appeal.admin.queueEmpty')} />
               </>
             ) },
           ]}
@@ -335,16 +325,19 @@ export default function AppealAdminDesk() {
       <Modal
         open={action !== null}
         title={action ? t(`appeal.admin.action.${action === 'escalated' ? 'escalate' : action === 'processing' ? 'startProcess' : action}`) : ''}
-        onClose={() => setAction(null)}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         width={520}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('common.cancel')}</Button>
             <Button
               type="primary"
               loading={busy}
-              disabled={(action === 'reply' || action === 'close' || action === 'escalate') && !reply.trim()}
+              disabled={busy || ((action === 'reply' || action === 'close' || action === 'escalate') && !reply.trim())}
               onClick={runAction}
             >
               {t('common.confirm')}

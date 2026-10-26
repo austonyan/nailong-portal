@@ -104,7 +104,7 @@ export default function AdminProtocolCheckin() {
               { label: t('protocol.admin.checkOut'), value: 'out' },
             ]}
           />
-          <Button type="primary" size="large" icon={<CheckCircleIcon />} loading={busy} onClick={submit}>
+          <Button type="primary" size="large" icon={<CheckCircleIcon />} loading={busy} onClick={submit} disabled={busy}>
             {t('protocol.admin.doCheckin')}
           </Button>
         </div>
@@ -128,7 +128,7 @@ export default function AdminProtocolCheckin() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.checkinEmpty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.checkinEmpty')} />
         {total > 20 && (
           <div className="protocol-pagination">
             <Pagination total={total} current={page} pageSize={20} onChange={setPage} showTotal />

@@ -1,11 +1,12 @@
 // 互免协议管理: 创建 / 编辑 / 生效 / 终止 / 公示开关。协议变更全部审计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Notification, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import dayjs from 'dayjs';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 const TYPES = ['entry_courtesy', 'visa_waiver', 'event_pass'];
 
@@ -51,7 +52,7 @@ function AgreementModal({ initial, onClose, onSaved }) {
       };
       if (editing) await api.patch(`/dip/admin/agreements/${initial.id}`, payload);
       else await api.post('/dip/admin/agreements', payload);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       onSaved();
       onClose();
     } catch (err) {
@@ -145,7 +146,7 @@ export default function AdminDipAgreements() {
   const setStatus = async (row, status) => {
     try {
       await api.post(`/dip/admin/agreements/${row.id}/status`, { status });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       load();
     } catch (err) {
       toastDipError(t, err);
@@ -158,7 +159,7 @@ export default function AdminDipAgreements() {
     { title: t('dip.agreement.type'), dataIndex: 'type', width: 110, render: (v) => t(`dip.agreementType.${v}`, { defaultValue: v }) },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
     {
-      title: t('dip.agreement.validRange', { from: '', to: '' }),
+      title: t('dip.agreement.validRange'),
       width: 190,
       render: (_, r) => `${(r.effectiveFrom ?? '').slice(0, 10)} ~ ${(r.effectiveTo ?? '').slice(0, 10)}`,
     },
@@ -171,7 +172,7 @@ export default function AdminDipAgreements() {
     { title: t('dip.agreement.updatedAt'), dataIndex: 'updatedAt', width: 150, render: (v) => fmtDateTime(v) },
     {
       title: t('common.actions'),
-      width: 260,
+      width: 180,
       render: (_, r) => (
         <div className="table-actions">
           {['draft', 'pending_effect'].includes(r.status) && (
@@ -198,7 +199,7 @@ export default function AdminDipAgreements() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
       {modal !== null && <AgreementModal initial={modal} onClose={() => setModal(null)} onSaved={load} />}
     </div>

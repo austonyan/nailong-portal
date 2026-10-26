@@ -80,7 +80,7 @@ export default function AdminResResidents() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="userId" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="userId" pagination={false} emptyText={t('common.empty')} />
         <p className="muted-text res-mask-tip">{t('res.admin.residents.maskTip')}</p>
       </Card>
 

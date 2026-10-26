@@ -1,9 +1,10 @@
 // 监察与审核质量(只读):时效监控、异常操作检测、结果一致性、抽查预留、监察报告。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 export default function AppealAdminInspect() {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export default function AppealAdminInspect() {
     setBusy(true);
     try {
       await api.post('/appeal/admin/inspect/reports', { title, kind, content });
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       setCreateOpen(false);
       setTitle('');
       setContent('');
@@ -57,7 +58,7 @@ export default function AppealAdminInspect() {
     try {
       const data = await api.post('/appeal/admin/inspect/sampling', { bizType: sampleBiz, note: t('appeal.inspect.sampleNote') });
       setSampleResult(data.sample);
-      Notification.success(t('appeal.inspect.sampleDone', { count: data.sample?.items?.length ?? 0 }));
+      toastSuccess(t('appeal.inspect.sampleDone', { count: data.sample?.items?.length ?? 0 }));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -214,7 +215,7 @@ export default function AppealAdminInspect() {
 
       <Card>
         <h4>{t('appeal.inspect.recordsTitle')}</h4>
-        <Table columns={recordColumns} dataSource={records} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={recordColumns} dataSource={records} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal

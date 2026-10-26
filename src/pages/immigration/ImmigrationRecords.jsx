@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Notification, Select, Table, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Select, Table, Tabs, Tag, Title } from 'animal-island-ui';
 import { DownloadIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav, StampView, StatusTag, exportCsv } from '../../components/immigration/shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 function daysLeft(entry) {
   const deadline = Date.parse(`${entry.entry_date}T00:00:00`) + entry.stay_days * 24 * 60 * 60 * 1000;
@@ -42,7 +43,7 @@ function EntryTab({ onReload }) {
     setBusy(true);
     try {
       const data = await api.post(`/immigration/records/entry/${exitTarget.id}/exit`, { portId: ports.find((p) => p.code === exitPort)?.id });
-      Notification.success(t('imm.records.exitDone', { no: data.exitNo }));
+      toastSuccess(t('imm.records.exitDone', { no: data.exitNo }));
       setExitTarget(null);
       load();
       onReload?.();
@@ -105,7 +106,7 @@ function EntryTab({ onReload }) {
           {t('imm.records.export')}
         </Button>
       </div>
-      <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.records.empty')} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.records.empty')} />
       <Modal
         open={exitTarget !== null}
         title={t('imm.records.exitTitle', { no: exitTarget?.no })}
@@ -151,7 +152,7 @@ function ExitTab() {
   ];
 
   return (
-    <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.records.exitEmpty')} />
+    <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.records.exitEmpty')} />
   );
 }
 

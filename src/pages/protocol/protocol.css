@@ -1542,50 +1542,6 @@
   margin: 0;
 }
 
-/* Local toast: the library's imperative Notification API is broken in the
-   production bundle (it calls react-dom.createRoot, which React 19 no longer
-   exports from the main entry), so protocol pages use this self-contained one. */
-.protocol-toast {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translate(-50%, -12px);
-  z-index: 4000;
-  max-width: min(90vw, 520px);
-  padding: 11px 18px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
-  text-align: center;
-  background: var(--animal-bg-color-secondary);
-  color: var(--animal-text-color);
-  border: 1.5px solid var(--animal-border-color);
-  box-shadow: var(--animal-shadow-sm);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    transform var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.protocol-toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.protocol-toast-success {
-  background: var(--animal-primary-color-bg);
-  border-color: var(--animal-primary-color);
-  color: var(--animal-text-color);
-}
-
-.protocol-toast-error {
-  background: var(--animal-bg-color-secondary);
-  border-color: var(--animal-error-color, var(--animal-primary-color));
-  color: var(--animal-text-color);
-}
-
 .protocol-pass-info h3 {
   font-size: 16px;
   line-height: 1.4;

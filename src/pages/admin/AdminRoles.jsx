@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Notification, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AdminRoles() {
   const { t } = useTranslation();
@@ -20,7 +21,7 @@ export default function AdminRoles() {
 
   useEffect(() => {
     Promise.all([loadRoles(), api.get('/roles/permissions').then((d) => setPermissionGroups(d.groups))]).catch((err) => {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
       setRoles([]);
     });
   }, [loadRoles, t]);
@@ -70,11 +71,11 @@ export default function AdminRoles() {
           permissions: values.permissions ?? [],
         });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       closeModal();
       await loadRoles();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -84,11 +85,11 @@ export default function AdminRoles() {
     if (!deleteTarget) return;
     try {
       await api.del(`/roles/${deleteTarget.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       await loadRoles();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -148,7 +149,7 @@ export default function AdminRoles() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={roles ?? []} loading={roles === null} rowKey="key" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={roles ?? []} loading={roles === null} rowKey="key" pagination={false} />
       </Card>
 
       <Modal open={editing !== null} title={editing?.id ? t('admin.roles.edit') : t('admin.roles.create')} onClose={closeModal} footer={null} typewriter={false} width={560}>
@@ -182,7 +183,7 @@ export default function AdminRoles() {
             />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy}>
+            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
               {t('common.save')}
             </Button>
           </FormItem>

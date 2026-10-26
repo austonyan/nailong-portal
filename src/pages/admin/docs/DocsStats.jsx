@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Notification, Progress, Table, Tag, Title } from 'animal-island-ui';
+import { Card, Progress, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../../api/docs.js';
+import { toastError } from '../../../components/toast.js';
 
 function pct(v) {
   return v === null || v === undefined ? '—' : `${Math.round(v * 100)}%`;
@@ -16,7 +17,7 @@ export default function DocsStats() {
     api
       .get('/docs/admin/stats')
       .then(setStats)
-      .catch((err) => Notification.error(t(`api.${err.code}`, { defaultValue: err.message })));
+      .catch((err) => toastError(t(`api.${err.code}`, { defaultValue: err.message })));
   }, [t]);
 
   if (!stats) {
@@ -108,7 +109,7 @@ export default function DocsStats() {
       <div className="docs-detail-grid">
         <Card className="docs-block">
           <h3 className="docs-block-title">{t('docs.admin.stats.byType')}</h3>
-          <Table
+          <Table className="table-fit"
             columns={[
               { title: t('docs.appList.type'), dataIndex: 'name', render: (v, r) => v || r.code },
               { title: t('docs.admin.stats.count'), dataIndex: 'n', width: 90, align: 'right' },
@@ -121,7 +122,7 @@ export default function DocsStats() {
         </Card>
         <Card className="docs-block">
           <h3 className="docs-block-title">{t('docs.admin.stats.rejectReasons')}</h3>
-          <Table
+          <Table className="table-fit"
             columns={[
               {
                 title: t('docs.admin.review.rejectReason'),

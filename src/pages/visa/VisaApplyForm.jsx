@@ -3,23 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  FormItem,
-  Input,
-  Modal,
-  Notification,
-  Tag,
-  Title,
-  Upload,
-  useForm,
-} from 'animal-island-ui';
+  Button, Card, DatePicker, Form, FormItem, Input, Modal, Tag, Title, Upload, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadVisaMaterial } from '../../api/visa.js';
 import { TextArea, fmtDate, toastVisaError } from './shared.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function VisaApplyForm() {
   const { t } = useTranslation();
@@ -113,7 +102,7 @@ export default function VisaApplyForm() {
         planArrive: values.planArrive || undefined,
         planLeave: values.planLeave || undefined,
       });
-      if (!silent) Notification.success(t('visa.form.draftSaved'));
+      if (!silent) toastSuccess(t('visa.form.draftSaved'));
     } catch (err) {
       if (!silent) toastVisaError(t, err);
     } finally {
@@ -132,7 +121,7 @@ export default function VisaApplyForm() {
         onSuccess(material);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         onError(err);
       });
   };
@@ -164,7 +153,7 @@ export default function VisaApplyForm() {
       const data = await api.post(`/visa/applications/${appId}/submit`, values);
       setSubmitted(data.application);
       setConfirmOpen(false);
-      Notification.success(t('visa.form.submitSuccess'));
+      toastSuccess(t('visa.form.submitSuccess'));
     } catch (err) {
       toastVisaError(t, err);
     } finally {
@@ -319,7 +308,7 @@ export default function VisaApplyForm() {
 
       <div className="visa-guide-actions">
         <Button onClick={() => navigate('/visa/applications')}>{t('visa.back')}</Button>
-        <Button icon={<SaveIcon />} loading={busy} onClick={() => saveDraft(false)}>
+        <Button icon={<SaveIcon />} loading={busy} onClick={() => saveDraft(false)} disabled={busy}>
           {t('visa.form.saveDraft')}
         </Button>
         <Button type="primary" size="large" icon={<SendIcon />} onClick={openConfirm}>
@@ -336,7 +325,7 @@ export default function VisaApplyForm() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit} disabled={busy}>
               {t('visa.form.submit')}
             </Button>
           </>

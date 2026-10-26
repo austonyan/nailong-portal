@@ -6,7 +6,8 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import QRCode from 'qrcode';
-import { Notification, Tag } from 'animal-island-ui';
+import { Tag } from 'animal-island-ui';
+import { toastError } from '../toast.js';
 
 const STATUS_TAG = {
   draft: { color: 'default', variant: 'outlined' },
@@ -70,7 +71,7 @@ export function dipErrMsg(t, err) {
 }
 
 export function toastDipError(t, err) {
-  Notification.error(dipErrMsg(t, err));
+  toastError(dipErrMsg(t, err));
 }
 
 export function downloadDataUrl(dataUrl, filename) {

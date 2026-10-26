@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 const emptyMaterial = { key: '', label: '', required: true, accept: 'image/*,application/pdf', max_mb: 10, max_count: 3 };
 const emptyField = { key: '', label: '', required: false, max: 120, placeholder: '' };
@@ -39,7 +40,7 @@ export default function DocsTypesAdmin() {
       const d = await api.get('/docs/admin/types');
       setItems(d.items);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [t]);
@@ -78,16 +79,20 @@ export default function DocsTypesAdmin() {
   };
 
   const submit = async () => {
+    if (!form?.code?.trim() || !form?.name?.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       const body = { ...form, materials, formFields: fields };
       if (editing?.id) await api.patch(`/docs/admin/types/${editing.id}`, body);
       else await api.post('/docs/admin/types', body);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -132,7 +137,7 @@ export default function DocsTypesAdmin() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
       </Card>
 
       <Modal
@@ -143,8 +148,8 @@ export default function DocsTypesAdmin() {
         onClose={() => setEditing(null)}
         footer={
           <>
-            <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={submit}>
+            <Button onClick={() => setEditing(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !form?.code?.trim() || !form?.name?.trim()} onClick={submit}>
               {t('common.save')}
             </Button>
           </>

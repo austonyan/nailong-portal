@@ -1,11 +1,12 @@
 // 居民卡管理:状态管理、冻结/解冻/注销(原因+审计)、补发与到期批量提醒。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { BellIcon, RefreshIcon, SnowflakeIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { CARD_STATUS_COLORS, TextArea, fmtDate, toastResError } from '../shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 const CARD_STATUS_OPTIONS = ['valid', 'frozen', 'expired', 'voided'];
 
@@ -50,7 +51,7 @@ export default function AdminResCards() {
       else if (action.kind === 'unfreeze') await api.post(`/resident/admin/cards/${action.card.cardNo}/unfreeze`, { reason });
       else if (action.kind === 'void') await api.post(`/resident/admin/cards/${action.card.cardNo}/void`, { reason });
       else if (action.kind === 'reissue') await api.post(`/resident/admin/cards/${action.card.cardNo}/reissue`, { comment: reason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setAction(null);
       load();
     } catch (err) {
@@ -66,7 +67,7 @@ export default function AdminResCards() {
       const data = await api.post('/resident/admin/cards/expiry-remind', {
         days: remindDays ? Number(remindDays) : undefined,
       });
-      Notification.success(t('res.admin.cards.remindSent', { count: data.count }));
+      toastSuccess(t('res.admin.cards.remindSent', { count: data.count }));
       setRemindOpen(false);
     } catch (err) {
       toastResError(t, err);
@@ -149,7 +150,7 @@ export default function AdminResCards() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal
@@ -188,7 +189,7 @@ export default function AdminResCards() {
         footer={
           <>
             <Button onClick={() => setRemindOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={runRemind}>
+            <Button type="primary" loading={busy} onClick={runRemind} disabled={busy}>
               {t('common.confirm')}
             </Button>
           </>

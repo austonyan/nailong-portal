@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Notification, Switch, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Switch, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { EditIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AdminUsers() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export default function AdminUsers() {
 
   useEffect(() => {
     Promise.all([loadUsers(), api.get('/roles').then((d) => setRoles(d.items))]).catch((err) => {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
       setUsers([]);
     });
   }, [loadUsers, t]);
@@ -74,11 +75,11 @@ export default function AdminUsers() {
           roleKeys: values.roleKeys ?? [],
         });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       closeModal();
       await loadUsers();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -88,11 +89,11 @@ export default function AdminUsers() {
     if (!deleteTarget) return;
     try {
       await api.del(`/users/${deleteTarget.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       await loadUsers();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -167,7 +168,7 @@ export default function AdminUsers() {
         )}
       </div>
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={users ?? []}
           loading={users === null}
@@ -199,7 +200,7 @@ export default function AdminUsers() {
             </FormItem>
           )}
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy}>
+            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
               {t('common.save')}
             </Button>
           </FormItem>

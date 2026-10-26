@@ -1,10 +1,11 @@
 // 互免协议: 公示列表 / 详情 / 我的互免资格查询 / 常见问题。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Input, Notification, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Collapse, Input, Tag, Title } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
+import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 const FAQ_KEYS = ['effect', 'fee', 'reality'];
 
@@ -28,13 +29,13 @@ export default function DipAgreements() {
 
   const check = async () => {
     if (!code.trim()) {
-      Notification.warning(t('dip.agreement.codeFirst'));
+      toastWarning(t('dip.agreement.codeFirst'));
       return;
     }
     try {
       const data = await api.post('/dip/agreements/eligibility', { code: code.trim() });
       setResult(data);
-      Notification.success(
+      toastSuccess(
         data.items.length ? t('dip.agreement.hit', { count: data.items.length }) : t('dip.agreement.noHit')
       );
     } catch (err) {

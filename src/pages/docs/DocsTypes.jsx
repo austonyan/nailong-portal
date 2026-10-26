@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Button, Card, Collapse, Divider, Modal, Notification, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Collapse, Divider, Modal, Tag, Title } from 'animal-island-ui';
 import { ClipboardIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { toastError } from '../../components/toast.js';
 
 export default function DocsTypes() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function DocsTypes() {
         if (!cancelled) setTypes(d.items);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
         if (!cancelled) setTypes([]);
       });
     return () => {

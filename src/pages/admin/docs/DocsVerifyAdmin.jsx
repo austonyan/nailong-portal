@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Notification, Pagination, Progress, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Progress, Select, Table, Tag, Title } from 'animal-island-ui';
 import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
+import { toastError } from '../../../components/toast.js';
 
 const RESULT_OPTIONS = ['all', 'found', 'found_self', 'not_found'];
 
@@ -23,7 +24,7 @@ export default function DocsVerifyAdmin() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [page, q, result, t]);
@@ -112,7 +113,7 @@ export default function DocsVerifyAdmin() {
       </Card>
 
       <Card>
-        <Table columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
         {total > pageSize && (
           <div className="docs-pagination">
             <Pagination total={total} current={page} pageSize={pageSize} onChange={setPage} showTotal />

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Input, Modal, Notification, Select, Table, Tabs, Tag, Title,
-} from 'animal-island-ui';
+  Button, Card, Input, Modal, Select, Table, Tabs, Tag, Title } from 'animal-island-ui';
 import { DownloadIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, exportCsv } from '../../../components/immigration/shared.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 function AuditTab() {
   const { t } = useTranslation();
@@ -74,7 +74,7 @@ function AuditTab() {
           {t('imm.records.export')}
         </Button>
       </div>
-      <Table
+      <Table className="table-fit"
         columns={columns}
         dataSource={items ?? []}
         loading={items === null}
@@ -110,7 +110,7 @@ function BlacklistTab() {
     setBusy(true);
     try {
       await api.post('/immigration/admin/blacklist', { userId: Number(userId), level, reason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setAdding(false);
       setUserId('');
       setReason('');
@@ -149,19 +149,22 @@ function BlacklistTab() {
   return (
     <>
       <div className="im-tab-toolbar">
-        <Button type="primary" icon={<PlusIcon />} onClick={() => setAdding(true)}>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => { setUserId(''); setReason(''); setLevel('warn'); setAdding(true); }}>
           {t('imm.admin.blacklist.add')}
         </Button>
       </div>
-      <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       <Modal
         open={adding}
         title={t('imm.admin.blacklist.add')}
-        onClose={() => setAdding(false)}
+        onClose={() => {
+          if (!busy) setAdding(false);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setAdding(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setAdding(false)} disabled={busy}>{t('common.cancel')}</Button>
             <Button type="primary" loading={busy} onClick={add} disabled={!userId || !reason.trim()}>{t('common.confirm')}</Button>
           </>
         }
@@ -186,6 +189,7 @@ function TemplatesTab() {
   const [titleTw, setTitleTw] = useState('');
   const [bodyTw, setBodyTw] = useState('');
   const [enabled, setEnabled] = useState(true);
+  const [busy, setBusy] = useState(false);
 
   const load = useCallback(() => {
     api
@@ -200,13 +204,20 @@ function TemplatesTab() {
   useEffect(load, [load]);
 
   const save = async () => {
+    if (!title.trim() || !body.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
+    setBusy(true);
     try {
       await api.put(`/immigration/admin/templates/${editing.id}`, { title, body, titleTw, bodyTw, enabled });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -240,15 +251,18 @@ function TemplatesTab() {
 
   return (
     <>
-      <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       <Modal
         open={editing !== null}
         title={t('imm.admin.templates.editTitle', { code: editing?.code })}
-        onClose={() => setEditing(null)}
+        onClose={() => {
+          if (!busy) setEditing(null);
+        }}
+        maskClosable={!busy}
         footer={
           <>
-            <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" onClick={save}>{t('common.save')}</Button>
+            <Button onClick={() => setEditing(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !title.trim() || !body.trim()} onClick={save}>{t('common.save')}</Button>
           </>
         }
         width={560}
@@ -300,7 +314,7 @@ function SendLogTab() {
   ];
 
   return (
-    <Table
+    <Table className="table-fit"
       columns={columns}
       dataSource={items ?? []}
       loading={items === null}

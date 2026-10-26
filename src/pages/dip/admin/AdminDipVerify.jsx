@@ -1,10 +1,11 @@
 // 验真管理: 验真记录查询 / 限流配置 / 风控与黑名单。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 function BlacklistModal({ onClose, onSaved }) {
   const { t } = useTranslation();
@@ -17,7 +18,7 @@ function BlacklistModal({ onClose, onSaved }) {
     setBusy(true);
     try {
       await api.post('/dip/admin/blacklist', { userId: Number(userId), level, reason: reason.trim() });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       onSaved();
       onClose();
     } catch (err) {
@@ -108,7 +109,7 @@ export default function AdminDipVerify() {
   const saveLimit = async () => {
     try {
       await api.put('/dip/admin/config/settings', { items: [{ key: 'verify_limit_per_5min', value: limit }] });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
     } catch (err) {
       toastDipError(t, err);
     }
@@ -154,7 +155,7 @@ export default function AdminDipVerify() {
               <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('dip.verifyLog.query')} allowClear maxLength={40} />
               <Button onClick={loadLogs}>{t('common.search')}</Button>
             </div>
-            <Table
+            <Table className="table-fit"
               columns={logColumns}
               dataSource={logs ?? []}
               loading={logs === null}
@@ -179,7 +180,7 @@ export default function AdminDipVerify() {
             <Title size="small">{t('dip.verifyAdmin.tabRisk')}</Title>
             <Button type="primary" size="small" icon={<PlusIcon />} onClick={() => setAddOpen(true)}>{t('dip.blacklist.add')}</Button>
           </div>
-          <Table columns={blColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} />
+          <Table className="table-fit" columns={blColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} />
         </Card>
       )}
 

@@ -4,14 +4,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Drawer, Form, FormItem, Input, Modal, Notification, Select, Table, Tag, Title, useForm,
-} from 'animal-island-ui';
+  Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
   DipNav, DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
 } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 function InfoRow({ label, children }) {
   return (
@@ -96,7 +96,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
     setBusy(true);
     try {
       await api.post(path, body);
-      Notification.success(okMsg);
+      toastSuccess(okMsg);
       onChanged();
       load();
     } catch (err) {
@@ -154,7 +154,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
             type="primary"
             size="small"
             loading={busy}
-            disabled={!supplementText.trim()}
+            disabled={busy || (!supplementText.trim())}
             onClick={() => post(`/dip/identities/${d.id}/supplement`, { content: supplementText.trim() }, t('dip.relation.supplementSent'))}
           >
             {t('dip.relation.submitSupplement')}
@@ -189,14 +189,14 @@ function IdentityDetail({ id, onClose, onChanged }) {
             <Button
               danger
               loading={busy}
-              onClick={() => post(`/dip/identities/${d.id}/submit`, {}, t('dip.identity.submitted', { no: d.no }))}
+              onClick={() => post(`/dip/identities/${d.id}/submit`, {}, t('dip.identity.submitted', { no: d.no }))} disabled={busy}
             >
               {t('dip.apply.submit')}
             </Button>
           </>
         )}
         {d.status === 'pending_review' && (
-          <Button danger loading={busy} onClick={() => post(`/dip/identities/${d.id}/withdraw`, undefined, t('dip.relation.withdrawn'))}>
+          <Button danger loading={busy} onClick={() => post(`/dip/identities/${d.id}/withdraw`, undefined, t('dip.relation.withdrawn'))} disabled={busy}>
             {t('dip.relation.withdraw')}
           </Button>
         )}
@@ -268,7 +268,7 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
     try {
       const current = await persistDraft();
       const data = await api.post(`/dip/identities/${current.id}/submit`, {});
-      Notification.success(t('dip.identity.submitted', { no: data.identity.no }));
+      toastSuccess(t('dip.identity.submitted', { no: data.identity.no }));
       setConfirming(false);
       onSaved();
     } catch (err) {
@@ -334,13 +334,13 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
               onClick={async () => {
                 try {
                   const saved = await persistDraft();
-                  Notification.success(t('dip.apply.draftSaved'));
+                  toastSuccess(t('dip.apply.draftSaved'));
                   onSaved();
                   if (saved && !editing) navigate(`/dip/identity/${saved.id}`, { replace: true });
                 } catch (err) {
                   if (err?.code) toastDipError(t, err);
                 }
-              }}
+              }} disabled={busy}
             >
               {t('dip.apply.saveDraft')}
             </Button>
@@ -418,7 +418,7 @@ export default function DipIdentity() {
   const removeDraft = async () => {
     try {
       await api.del(`/dip/identities/${deleteTarget.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       load();
     } catch (err) {
@@ -491,7 +491,7 @@ export default function DipIdentity() {
       <IdentityForm key={editing ?? 'new'} catalog={catalog} relations={relations} editing={editing} onSaved={load} />
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
       <Drawer open={openId !== null} title={t('dip.identity.detailTitle')} onClose={() => setOpenId(null)} width={560}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Background, Button, Card, Collapse, Divider, Notification, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   BadgeCheckIcon,
@@ -11,6 +11,7 @@ import {
   SearchIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { toastError } from '../../components/toast.js';
 
 const NOTICE_LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
 
@@ -29,7 +30,7 @@ export default function DocsHome() {
         setTypes(tp.items || []);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
         if (!cancelled) {
           setNotices([]);
           setTypes([]);

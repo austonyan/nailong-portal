@@ -2,25 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  Modal,
-  Notification,
-  Select,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
-  Title,
-  useForm,
-} from 'animal-island-ui';
+  Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, Title, useForm } from 'animal-island-ui';
 import { PlusIcon, TrashIcon, EditIcon, BanIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
 import { TextArea, toastVisaError } from './shared.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 function TypesTab() {
   const { t } = useTranslation();
@@ -64,7 +51,7 @@ function TypesTab() {
       } else {
         await api.post('/visa/admin/types', { ...payload, code: values.code?.trim().toUpperCase() });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       await load();
     } catch (err) {
@@ -137,7 +124,7 @@ function TypesTab() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       </Card>
 
       <Modal
@@ -188,7 +175,7 @@ function TypesTab() {
             <Switch checkedChildren={t('common.enabled')} unCheckedChildren={t('common.disabled')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy}>
+            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
               {t('common.save')}
             </Button>
           </FormItem>
@@ -233,6 +220,10 @@ function NoticesTab() {
   };
 
   const submit = async () => {
+    if (!title.trim() || !body.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       if (editing?.id) {
@@ -240,7 +231,7 @@ function NoticesTab() {
       } else {
         await api.post('/visa/admin/notices', { title, body, titleTw, bodyTw, level });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       await load();
     } catch (err) {
@@ -262,6 +253,7 @@ function NoticesTab() {
   const remove = async (notice) => {
     try {
       await api.del(`/visa/admin/notices/${notice.id}`);
+      toastSuccess(t('common.deleted'));
       await load();
     } catch (err) {
       toastVisaError(t, err);
@@ -308,7 +300,7 @@ function NoticesTab() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       </Card>
 
       <Modal
@@ -319,8 +311,8 @@ function NoticesTab() {
         width={560}
         footer={
           <>
-            <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={submit}>
+            <Button onClick={() => setEditing(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !title.trim() || !body.trim()} onClick={submit}>
               {t('common.save')}
             </Button>
           </>
@@ -367,7 +359,7 @@ function ConfigTab() {
     setBusy(true);
     try {
       await api.put('/visa/admin/config', values);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
     } catch (err) {
       toastVisaError(t, err);
     } finally {
@@ -402,7 +394,7 @@ function ConfigTab() {
                 />
               </div>
             ))}
-            <Button type="primary" loading={busy} onClick={save}>
+            <Button type="primary" loading={busy} onClick={save} disabled={busy}>
               {t('common.save')}
             </Button>
           </div>
@@ -438,7 +430,7 @@ function BlacklistTab() {
     setBusy(true);
     try {
       await api.post('/visa/admin/blacklist', { userId: Number(userId), reason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setUserId('');
       setReason('');
       await load();
@@ -452,6 +444,7 @@ function BlacklistTab() {
   const remove = async (row) => {
     try {
       await api.del(`/visa/admin/blacklist/${row.userId}`);
+      toastSuccess(t('common.deleted'));
       await load();
     } catch (err) {
       toastVisaError(t, err);
@@ -485,12 +478,12 @@ function BlacklistTab() {
           <label>{t('visa.admin.blacklistReason')}</label>
           <Input size="middle" value={reason} onChange={(e) => setReason(e.target.value)} />
         </div>
-        <Button type="primary" icon={<BanIcon />} loading={busy} onClick={add}>
+        <Button type="primary" icon={<BanIcon />} loading={busy} onClick={add} disabled={busy}>
           {t('visa.admin.blacklistAdd')}
         </Button>
       </Card>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       </Card>
     </div>
   );

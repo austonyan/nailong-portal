@@ -203,7 +203,7 @@ export default function AdminProtocolCourtesy() {
                   <Input allowClear prefix={<SearchIcon size={14} />} value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('protocol.admin.searchCourtesy')} />
                 </div>
                 <Card>
-                  <Table columns={appColumns} dataSource={apps ?? []} loading={apps === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.queueEmpty')} />
+                  <Table className="table-fit" columns={appColumns} dataSource={apps ?? []} loading={apps === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.queueEmpty')} />
                   {total > 20 && (
                     <div className="protocol-pagination">
                       <Pagination total={total} current={page} pageSize={20} onChange={setPage} showTotal />
@@ -231,7 +231,7 @@ export default function AdminProtocolCourtesy() {
                   </Button>
                 </div>
                 <Card>
-                  <Table columns={typeColumns} dataSource={types} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+                  <Table className="table-fit" columns={typeColumns} dataSource={types} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
                 </Card>
               </div>
             ),
@@ -241,7 +241,7 @@ export default function AdminProtocolCourtesy() {
             label: t('protocol.admin.recordsTab'),
             children: (
               <Card>
-                <Table columns={recordColumns} dataSource={records ?? []} loading={records === null} rowKey="id" pagination={{ pageSize: 20 }} emptyText={t('protocol.common.noData')} />
+                <Table className="table-fit" columns={recordColumns} dataSource={records ?? []} loading={records === null} rowKey="id" pagination={{ pageSize: 20 }} emptyText={t('protocol.common.noData')} />
               </Card>
             ),
           },

@@ -96,7 +96,7 @@ export default function AdminProtocolRisk() {
   const lift = async (row) => {
     try {
       await api.del(`/protocol/admin/blacklist/${row.id}`);
-      toastSuccess(t('common.save'));
+      toastSuccess(t('common.deleted'));
       await loadRest();
     } catch (err) {
       toastProtocolError(t, err);
@@ -198,7 +198,7 @@ export default function AdminProtocolRisk() {
           <Input allowClear prefix={<SearchIcon size={14} />} value={logQ} onChange={(e) => setLogQ(e.target.value)} placeholder={t('protocol.admin.searchVerify')} />
         </div>
         <Card>
-          <Table columns={logColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+          <Table className="table-fit" columns={logColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
           {logTotal > 20 && (
             <div className="protocol-pagination">
               <Pagination total={logTotal} current={logPage} pageSize={20} onChange={setLogPage} showTotal />
@@ -216,14 +216,14 @@ export default function AdminProtocolRisk() {
           </Button>
         </div>
         <Card>
-          <Table columns={blacklistColumns} dataSource={blacklist} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+          <Table className="table-fit" columns={blacklistColumns} dataSource={blacklist} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
       </div>
 
       <div className="protocol-section">
         <Title size="small" color="app-orange">{t('protocol.admin.tickets')}</Title>
         <Card>
-          <Table columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={{ pageSize: 10 }} emptyText={t('protocol.common.noData')} />
+          <Table className="table-fit" columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={{ pageSize: 10 }} emptyText={t('protocol.common.noData')} />
         </Card>
       </div>
 

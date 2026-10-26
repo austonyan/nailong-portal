@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Table, Tag, Title } from 'animal-island-ui';
 import { CheckCircleIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
+import { toastSuccess, toastWarning, toastInfo } from '../../../components/toast.js';
 
 const RESULT_COLORS = {
   accepted: 'app-green',
@@ -38,13 +39,13 @@ export default function AdminImVerify() {
   const search = async () => {
     const codeNo = q.trim().toUpperCase();
     if (!codeNo) {
-      Notification.warning(t('imm.admin.verify.inputFirst'));
+      toastWarning(t('imm.admin.verify.inputFirst'));
       return;
     }
     try {
       const data = await api.get(`/immigration/admin/pass-codes?q=${encodeURIComponent(codeNo)}`);
       setResults(data.items);
-      if (data.items.length === 0) Notification.info(t('imm.admin.verify.notFound'));
+      if (data.items.length === 0) toastInfo(t('imm.admin.verify.notFound'));
     } catch (err) {
       toastApiError(err);
     }
@@ -55,9 +56,9 @@ export default function AdminImVerify() {
     try {
       const data = await api.post('/immigration/admin/pass-codes/verify', { codeNo: verifying.code_no });
       if (data.result === 'accepted') {
-        Notification.success(t('imm.admin.verify.accepted', { no: data.entryRecordNo }));
+        toastSuccess(t('imm.admin.verify.accepted', { no: data.entryRecordNo }));
       } else {
-        Notification.warning(t(`imm.admin.verify.result.${data.result}`, { defaultValue: data.result }));
+        toastWarning(t(`imm.admin.verify.result.${data.result}`, { defaultValue: data.result }));
       }
       setVerifying(null);
       search();
@@ -73,7 +74,7 @@ export default function AdminImVerify() {
     setBusy(true);
     try {
       await api.post(`/immigration/admin/pass-codes/${voiding.id}/void`, { reason: voidReason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setVoiding(null);
       setVoidReason('');
       search();
@@ -158,7 +159,7 @@ export default function AdminImVerify() {
 
       <Card className="im-checks-card">
         <b>{t('imm.admin.verify.checkLog')}</b>
-        <Table columns={checkColumns} dataSource={checks ?? []} loading={checks === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={checkColumns} dataSource={checks ?? []} loading={checks === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
       <Modal
@@ -180,12 +181,18 @@ export default function AdminImVerify() {
       <Modal
         open={voiding !== null}
         title={t('imm.admin.verify.voidTitle', { no: voiding?.code_no })}
-        onClose={() => setVoiding(null)}
+        onClose={() => {
+          if (!busy) {
+            setVoiding(null);
+            setVoidReason('');
+          }
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setVoiding(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={doVoid}>{t('imm.admin.verify.void')}</Button>
+            <Button onClick={() => { setVoiding(null); setVoidReason(''); }} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={busy} disabled={busy || !voidReason.trim()} onClick={doVoid}>{t('imm.admin.verify.void')}</Button>
           </>
         }
       >

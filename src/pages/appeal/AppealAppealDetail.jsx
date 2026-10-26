@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Notification, Rate, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Modal, Rate, Tag, Title, Upload } from 'animal-island-ui';
 import { EyeIcon, PaperclipIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
@@ -15,6 +15,7 @@ import {
   reviewDeadline,
   toastAppealError,
 } from './shared.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 const WITHDRAWABLE = ['pending_accept', 'accepted', 'processing'];
 
@@ -47,7 +48,7 @@ export default function AppealAppealDetail() {
     setBusy(true);
     try {
       await api.post(`/appeal/appeals/${appeal.id}/withdraw`, {});
-      Notification.success(t('appeal.detail.withdrawDone'));
+      toastSuccess(t('appeal.detail.withdrawDone'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -60,7 +61,7 @@ export default function AppealAppealDetail() {
     setBusy(true);
     try {
       await api.post(`/appeal/appeals/${appeal.id}/supplement`, { note: supplementNote });
-      Notification.success(t('appeal.detail.supplementDone'));
+      toastSuccess(t('appeal.detail.supplementDone'));
       setSupplementNote('');
       await load();
     } catch (err) {
@@ -77,7 +78,7 @@ export default function AppealAppealDetail() {
         load();
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         onError(err);
       });
   };
@@ -92,7 +93,7 @@ export default function AppealAppealDetail() {
     setBusy(true);
     try {
       await api.post(`/appeal/appeals/${appeal.id}/evaluate`, { rating: evalRating, comment: evalComment });
-      Notification.success(t('appeal.detail.evalDone'));
+      toastSuccess(t('appeal.detail.evalDone'));
       setEvalOpen(false);
       await load();
     } catch (err) {
@@ -168,7 +169,7 @@ export default function AppealAppealDetail() {
         </dl>
         <div className="table-actions appeal-detail-actions">
           {WITHDRAWABLE.includes(appeal.status) && (
-            <Button danger loading={busy} onClick={withdraw}>
+            <Button danger loading={busy} onClick={withdraw} disabled={busy}>
               {t('appeal.detail.withdraw')}
             </Button>
           )}
@@ -221,7 +222,7 @@ export default function AppealAppealDetail() {
               {t('appeal.detail.uploadSupplement')}
             </Upload>
           </div>
-          <Button type="primary" icon={<SendIcon />} loading={busy} disabled={!supplementNote.trim()} onClick={submitSupplement}>
+          <Button type="primary" icon={<SendIcon />} loading={busy} disabled={busy || (!supplementNote.trim())} onClick={submitSupplement}>
             {t('appeal.detail.submitSupplement')}
           </Button>
         </Card>

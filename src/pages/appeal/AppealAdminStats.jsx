@@ -58,7 +58,7 @@ export default function AppealAdminStats() {
       <div className="page-header">
         <Title size="middle">{t('appeal.stats.title')}</Title>
         <div className="table-actions appeal-filter-bar">
-          <Button loading={busy} onClick={doExport}>
+          <Button loading={busy} onClick={doExport} disabled={busy}>
             {t('appeal.stats.export')}
           </Button>
         </div>

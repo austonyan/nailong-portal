@@ -2,8 +2,9 @@
 // 各署后台把它放在自己的设置区,权限由服务端按署校验。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Notification, Select, Title } from 'animal-island-ui';
+import { Button, Input, Select, Title } from 'animal-island-ui';
 import { api } from '../api/client.js';
+import { toastSuccess, toastError } from './toast.js';
 
 const MODES = ['off', 'immediate', 'delayed'];
 
@@ -22,7 +23,7 @@ export default function AutoApproveSettings({ service }) {
       setMode(next.mode);
       setDelay(String(next.delayMinutes > 0 ? next.delayMinutes : 60));
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   }, [service, t]);
 
@@ -45,9 +46,9 @@ export default function AutoApproveSettings({ service }) {
       setSettings(next);
       setMode(next.mode);
       if (next.delayMinutes > 0) setDelay(String(next.delayMinutes));
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -85,7 +86,7 @@ export default function AutoApproveSettings({ service }) {
         </p>
       )}
       <div>
-        <Button type="primary" loading={busy} disabled={!canSave} onClick={save}>
+        <Button type="primary" loading={busy} disabled={busy || (!canSave)} onClick={save}>
           {t('common.save')}
         </Button>
       </div>

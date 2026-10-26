@@ -1,11 +1,12 @@
 // 变更与升级审批:信息变更/类型升级/续期申请的审批队列。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { CHANGE_TYPES, TextArea, fmtDateTime, toastResError } from '../shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 const CHANGE_STATUS_COLORS = {
   pending_review: 'app-yellow',
@@ -52,7 +53,7 @@ export default function AdminResChanges() {
       } else {
         await api.post(`/resident/admin/changes/${action.change.id}/reject`, { reasonCode: reason, note });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setAction(null);
       load();
     } catch (err) {
@@ -142,7 +143,7 @@ export default function AdminResChanges() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal
@@ -153,7 +154,7 @@ export default function AdminResChanges() {
         footer={
           <>
             <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={runAction}>
+            <Button type="primary" loading={busy} onClick={runAction} disabled={busy}>
               {t('common.confirm')}
             </Button>
           </>

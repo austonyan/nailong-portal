@@ -3,24 +3,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Checkbox,
-  Drawer,
-  Input,
-  Modal,
-  Notification,
-  Rate,
-  Radio,
-  Select,
-  Tag,
-  Title,
-  Upload,
-} from 'animal-island-ui';
+  Button, Card, Checkbox, Drawer, Input, Modal, Rate, Radio, Select, Tag, Title, Upload } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
 import { TextArea, COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AppealComplaints() {
   const { t } = useTranslation();
@@ -65,7 +53,7 @@ export default function AppealComplaints() {
         content,
         contact: anonymous.length > 0 ? '' : contact,
       });
-      Notification.success(t('appeal.complaint.submitDone', { no: data.complaint.code }));
+      toastSuccess(t('appeal.complaint.submitDone', { no: data.complaint.code }));
       setCreateOpen(false);
       setContent('');
       setContact('');
@@ -97,7 +85,7 @@ export default function AppealComplaints() {
     setBusy(true);
     try {
       await api.post(`/appeal/complaints/${detail.id}/evaluate`, { rating: evalRating, comment: evalComment });
-      Notification.success(t('appeal.detail.evalDone'));
+      toastSuccess(t('appeal.detail.evalDone'));
       setEvalOpen(false);
       const data = await api.get(`/appeal/complaints/${detail.id}`);
       setDetail(data.complaint);
@@ -115,7 +103,7 @@ export default function AppealComplaints() {
         openDetail(detail);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         onError(err);
       });
   };

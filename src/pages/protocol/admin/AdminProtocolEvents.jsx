@@ -24,7 +24,7 @@ import {
   fmtDateTime,
   toastProtocolError,
 } from '../shared.jsx';
-import { toastSuccess } from '../shared.jsx';
+import { toastError, toastSuccess } from '../shared.jsx';
 
 const STATUSES = ['draft', 'pending_publish', 'registration', 'registration_closed', 'ongoing', 'ended', 'cancelled'];
 const MATERIAL_KINDS = ['intro', 'letter', 'proof', 'community', 'other'];
@@ -153,6 +153,10 @@ export default function AdminProtocolEvents() {
   };
 
   const save = async () => {
+    if (!form.title?.trim() || !form.typeCode) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       const body = {
@@ -322,7 +326,7 @@ export default function AdminProtocolEvents() {
       </div>
 
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}
@@ -349,7 +353,7 @@ export default function AdminProtocolEvents() {
                 {t('protocol.action.delete')}
               </Button>
             )}
-            <Button type="primary" loading={busy} onClick={save}>
+            <Button type="primary" loading={busy} onClick={save} disabled={busy}>
               {t('protocol.action.save')}
             </Button>
           </div>

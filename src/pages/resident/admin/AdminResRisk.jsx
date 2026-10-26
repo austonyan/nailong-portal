@@ -1,11 +1,12 @@
 // 风控与黑名单:重复登记识别、验真限流概况与黑名单管理。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Table, Tag, Title } from 'animal-island-ui';
 import { BanIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { TextArea, fmtDateTime, toastResError } from '../shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 export default function AdminResRisk() {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export default function AdminResRisk() {
     setBusy(true);
     try {
       await api.post('/resident/admin/blacklist', { userId: Number(userId), reason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setAddOpen(false);
       setUserId('');
       setReason('');
@@ -56,7 +57,7 @@ export default function AdminResRisk() {
   const removeBlacklist = async (row) => {
     try {
       await api.del(`/resident/admin/blacklist/${row.userId}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       load();
     } catch (err) {
       toastResError(t, err);
@@ -100,7 +101,7 @@ export default function AdminResRisk() {
       <ResAdminNav />
       <div className="page-header">
         <Title size="middle">{t('res.admin.risk.title')}</Title>
-        <Button type="primary" icon={<PlusIcon />} onClick={() => setAddOpen(true)}>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => { setUserId(''); setReason(''); setAddOpen(true); }}>
           {t('res.admin.risk.add')}
         </Button>
       </div>
@@ -123,22 +124,29 @@ export default function AdminResRisk() {
       <Card>
         <h4>{t('res.admin.risk.duplicateTitle')}</h4>
         <p className="muted-text">{t('res.admin.risk.duplicateTip')}</p>
-        <Table columns={dupColumns} dataSource={risk?.duplicates ?? []} loading={risk === null} rowKey="user_id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={dupColumns} dataSource={risk?.duplicates ?? []} loading={risk === null} rowKey="user_id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Card>
         <h4>{t('res.admin.risk.blacklistTitle')}</h4>
-        <Table columns={blacklistColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+        <Table className="table-fit" columns={blacklistColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal
         open={addOpen}
         title={t('res.admin.risk.add')}
-        onClose={() => setAddOpen(false)}
+        onClose={() => {
+          if (!busy) {
+            setAddOpen(false);
+            setUserId('');
+            setReason('');
+          }
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setAddOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => { setAddOpen(false); setUserId(''); setReason(''); }} disabled={busy}>{t('common.cancel')}</Button>
             <Button type="primary" loading={busy} disabled={!Number(userId)} onClick={addBlacklist}>
               {t('common.confirm')}
             </Button>

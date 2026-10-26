@@ -2,10 +2,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Notification, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Tag, Title } from 'animal-island-ui';
 import { PrinterIcon, RefreshIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api, requestBlob } from '../../api/client.js';
-import { CARD_STATUS_COLORS, ResQr, StatusTag, fmtDate, fmtDateTime, toastResError } from './shared.jsx';
+import { CARD_STATUS_COLORS, ResQr, StatusTag, fmtDate, fmtDateTime, resToast, toastResError, toastResSuccess } from './shared.jsx';
 
 export default function ResidentCard() {
   const { t } = useTranslation();
@@ -73,9 +73,9 @@ export default function ResidentCard() {
   const copyVerifyLink = async () => {
     try {
       await navigator.clipboard.writeText(verifyUrl);
-      Notification.success(t('res.card.linkCopied'));
+      toastResSuccess(t('res.card.linkCopied'));
     } catch {
-      Notification.info(verifyUrl);
+      resToast('info', verifyUrl);
     }
   };
 
@@ -83,7 +83,7 @@ export default function ResidentCard() {
     setBusy(true);
     try {
       await api.post('/resident/card/reissue');
-      Notification.success(t('res.card.reissued'));
+      toastResSuccess(t('res.card.reissued'));
       setReissueOpen(false);
       load();
     } catch (err) {
@@ -217,7 +217,7 @@ export default function ResidentCard() {
         footer={
           <>
             <Button onClick={() => setReissueOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={reissue}>
+            <Button type="primary" loading={busy} onClick={reissue} disabled={busy}>
               {t('res.card.reissueConfirm')}
             </Button>
           </>

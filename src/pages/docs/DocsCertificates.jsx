@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Notification, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { BellIcon, EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../api/docs.js';
+import { toastError } from '../../components/toast.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
@@ -23,7 +24,7 @@ export default function DocsCertificates() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [page, status, t]);
@@ -88,7 +89,7 @@ export default function DocsCertificates() {
         </div>
       </div>
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items || []}
           rowKey="id"

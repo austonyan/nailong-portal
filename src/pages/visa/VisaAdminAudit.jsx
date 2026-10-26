@@ -67,7 +67,7 @@ export default function VisaAdminAudit() {
         />
       </div>
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}

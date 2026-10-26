@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Notification, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Title, useForm } from 'animal-island-ui';
 import AuthLayout from '../components/AuthLayout.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
+import { toastSuccess, toastError } from '../components/toast.js';
 
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,32}$/;
 
@@ -25,10 +26,10 @@ export default function Register() {
         displayName: values.displayName?.trim() || undefined,
         email: values.email?.trim() || undefined,
       });
-      Notification.success(t('auth.registerSuccess'));
+      toastSuccess(t('auth.registerSuccess'));
       navigate('/', { replace: true });
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -83,7 +84,7 @@ export default function Register() {
             <Input size="large" type="password" placeholder={t('auth.confirmPassword')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block size="large" loading={busy}>
+            <Button type="primary" htmlType="submit" block size="large" loading={busy} disabled={busy}>
               {t('auth.register')}
             </Button>
           </FormItem>

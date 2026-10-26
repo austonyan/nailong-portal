@@ -2,11 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Table, Tag, Title } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
+import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 function InfoRow({ label, children }) {
   return (
@@ -37,7 +38,7 @@ function RelationDetail({ id, onClose, onChanged }) {
     setBusy(true);
     try {
       await api.post(path, body);
-      Notification.success(okMsg);
+      toastSuccess(okMsg);
       onChanged();
       load();
     } catch (err) {
@@ -103,7 +104,7 @@ function RelationDetail({ id, onClose, onChanged }) {
             type="primary"
             size="small"
             loading={busy}
-            disabled={!supplementText.trim()}
+            disabled={busy || (!supplementText.trim())}
             onClick={() => post(`/dip/relations/${r.id}/supplement`, { content: supplementText.trim() }, t('dip.relation.supplementSent'))}
           >
             {t('dip.relation.submitSupplement')}
@@ -144,14 +145,14 @@ function RelationDetail({ id, onClose, onChanged }) {
             <Button
               danger
               loading={busy}
-              onClick={() => post(`/dip/relations/${r.id}/submit`, {}, t('dip.apply.submitted', { no: r.no }))}
+              onClick={() => post(`/dip/relations/${r.id}/submit`, {}, t('dip.apply.submitted', { no: r.no }))} disabled={busy}
             >
               {t('dip.apply.submit')}
             </Button>
           </>
         )}
         {r.status === 'pending_review' && (
-          <Button danger loading={busy} onClick={() => post(`/dip/relations/${r.id}/withdraw`, undefined, t('dip.relation.withdrawn'))}>
+          <Button danger loading={busy} onClick={() => post(`/dip/relations/${r.id}/withdraw`, undefined, t('dip.relation.withdrawn'))} disabled={busy}>
             {t('dip.relation.withdraw')}
           </Button>
         )}
@@ -162,11 +163,11 @@ function RelationDetail({ id, onClose, onChanged }) {
             loading={busy}
             onClick={async () => {
               if (!severText.trim()) {
-                Notification.warning(t('dip.relation.severReasonFirst'));
+                toastWarning(t('dip.relation.severReasonFirst'));
                 return;
               }
               await post(`/dip/relations/${r.id}/sever`, { reason: severText.trim() }, t('dip.relation.severRequested'));
-            }}
+            }} disabled={busy}
           >
             {t('dip.relation.severRequest')}
           </Button>
@@ -211,7 +212,7 @@ export default function DipRelations() {
   const removeDraft = async () => {
     try {
       await api.del(`/dip/relations/${deleteTarget.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       setOpenId(null);
       load();
@@ -272,7 +273,7 @@ export default function DipRelations() {
         </Link>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
       <Drawer open={openId !== null} title={t('dip.relation.detailTitle')} onClose={() => setOpenId(null)} width={560}>

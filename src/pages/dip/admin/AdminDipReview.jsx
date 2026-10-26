@@ -2,11 +2,12 @@
 // 支持:通过 / 驳回(原因+意见) / 补件 / 暂停恢复 / 断交复核 / 冻结解冻注销。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Notification, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { api, getAccessToken } from '../../../api/client.js';
 import {
   DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError,
 } from '../../../components/dip/shared.jsx';
+import { toastSuccess, toastWarning } from '../../../components/toast.js';
 
 const REJECT_REASONS = ['info_missing', 'info_false', 'duplicate', 'type_mismatch', 'other'];
 const RELATION_QUEUE_STATUSES = ['pending_review', 'supplement_required', 'sever_requested', 'established', 'rejected', 'suspended', 'withdrawn', 'draft'];
@@ -36,7 +37,7 @@ function InfoRow({ label, children }) {
 
 function ActionButton({ danger, loading, onClick, children }) {
   return (
-    <Button type="default" size="small" danger={danger} loading={loading} onClick={onClick}>
+    <Button type="default" size="small" danger={danger} loading={loading} disabled={loading || (!!loading)} onClick={onClick}>
       {children}
     </Button>
   );
@@ -99,7 +100,8 @@ function RelationDrawer({ id, onChanged }) {
     setBusy(true);
     try {
       await api.post(path, body);
-      Notification.success(okMsg);
+      setRejectOpen(false);
+      toastSuccess(okMsg);
       onChanged();
       load();
     } catch (err) {
@@ -155,7 +157,7 @@ function RelationDrawer({ id, onChanged }) {
       <div className="dip-detail-actions">
         {['pending_review', 'supplement_required'].includes(r.status) && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/approve`, { note }, t('dip.admin.established'))}>
+            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/approve`, { note }, t('dip.admin.established'))} disabled={busy}>
               {t('dip.admin.establish')}
             </Button>
             <ActionButton loading={busy} onClick={() => setRejectOpen(true)}>{t('dip.admin.reject')}</ActionButton>
@@ -164,7 +166,7 @@ function RelationDrawer({ id, onChanged }) {
                 loading={busy}
                 onClick={() => {
                   if (!note.trim()) {
-                    Notification.warning(t('dip.admin.noteFirst'));
+                    toastWarning(t('dip.admin.noteFirst'));
                     return;
                   }
                   decide(`/dip/admin/relations/${r.id}/supplement`, { note: note.trim() }, t('dip.admin.supplementSent'));
@@ -181,7 +183,7 @@ function RelationDrawer({ id, onChanged }) {
             loading={busy}
             onClick={() => {
               if (!note.trim()) {
-                Notification.warning(t('dip.admin.reasonFirst'));
+                toastWarning(t('dip.admin.reasonFirst'));
                 return;
               }
               decide(`/dip/admin/relations/${r.id}/suspend`, { reason: note.trim() }, t('dip.admin.suspended'));
@@ -191,13 +193,13 @@ function RelationDrawer({ id, onChanged }) {
           </ActionButton>
         )}
         {r.status === 'suspended' && (
-          <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/resume`, { note }, t('dip.admin.resumed'))}>
+          <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/resume`, { note }, t('dip.admin.resumed'))} disabled={busy}>
             {t('dip.admin.resume')}
           </Button>
         )}
         {['sever_requested', 'established'].includes(r.status) && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/sever`, { approve: true }, t('dip.admin.severed'))}>
+            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/sever`, { approve: true }, t('dip.admin.severed'))} disabled={busy}>
               {t('dip.admin.confirmSever')}
             </Button>
             {r.status === 'sever_requested' && (
@@ -213,15 +215,19 @@ function RelationDrawer({ id, onChanged }) {
       <Modal
         open={rejectOpen}
         title={t('dip.admin.rejectTitle')}
-        onClose={() => setRejectOpen(false)}
+        onClose={() => {
+          if (!busy) setRejectOpen(false);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setRejectOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setRejectOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
             <Button
               type="primary"
               danger
               loading={busy}
+              disabled={busy}
               onClick={() => decide(`/dip/admin/relations/${r.id}/reject`, { reason, comment }, t('dip.admin.rejected'))}
             >
               {t('dip.admin.reject')}
@@ -260,7 +266,8 @@ function IdentityDrawer({ id, onChanged }) {
     setBusy(true);
     try {
       await api.post(path, body);
-      Notification.success(okMsg);
+      setRejectOpen(false);
+      toastSuccess(okMsg);
       onChanged();
       load();
     } catch (err) {
@@ -314,7 +321,7 @@ function IdentityDrawer({ id, onChanged }) {
       <div className="dip-detail-actions">
         {['pending_review', 'supplement_required'].includes(d.status) && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/identities/${d.id}/approve`, { note }, t('dip.admin.identityApproved'))}>
+            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/identities/${d.id}/approve`, { note }, t('dip.admin.identityApproved'))} disabled={busy}>
               {t('dip.admin.approveIdentity')}
             </Button>
             <ActionButton loading={busy} onClick={() => setRejectOpen(true)}>{t('dip.admin.reject')}</ActionButton>
@@ -323,7 +330,7 @@ function IdentityDrawer({ id, onChanged }) {
                 loading={busy}
                 onClick={() => {
                   if (!note.trim()) {
-                    Notification.warning(t('dip.admin.noteFirst'));
+                    toastWarning(t('dip.admin.noteFirst'));
                     return;
                   }
                   decide(`/dip/admin/identities/${d.id}/supplement`, { note: note.trim() }, t('dip.admin.supplementSent'));
@@ -340,7 +347,7 @@ function IdentityDrawer({ id, onChanged }) {
             loading={busy}
             onClick={() => {
               if (!note.trim()) {
-                Notification.warning(t('dip.admin.reasonFirst'));
+                toastWarning(t('dip.admin.reasonFirst'));
                 return;
               }
               decide(`/dip/admin/identities/${d.id}/freeze`, { reason: note.trim() }, t('dip.admin.frozen'));
@@ -351,7 +358,7 @@ function IdentityDrawer({ id, onChanged }) {
         )}
         {d.status === 'frozen' && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/identities/${d.id}/unfreeze`, { note }, t('dip.admin.unfrozen'))}>
+            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/identities/${d.id}/unfreeze`, { note }, t('dip.admin.unfrozen'))} disabled={busy}>
               {t('dip.admin.unfreeze')}
             </Button>
             <ActionButton
@@ -359,7 +366,7 @@ function IdentityDrawer({ id, onChanged }) {
               loading={busy}
               onClick={() => {
                 if (!note.trim()) {
-                  Notification.warning(t('dip.admin.reasonFirst'));
+                  toastWarning(t('dip.admin.reasonFirst'));
                   return;
                 }
                 decide(`/dip/admin/identities/${d.id}/revoke`, { reason: note.trim() }, t('dip.admin.revoked'));
@@ -375,15 +382,19 @@ function IdentityDrawer({ id, onChanged }) {
       <Modal
         open={rejectOpen}
         title={t('dip.admin.rejectTitle')}
-        onClose={() => setRejectOpen(false)}
+        onClose={() => {
+          if (!busy) setRejectOpen(false);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setRejectOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setRejectOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
             <Button
               type="primary"
               danger
               loading={busy}
+              disabled={busy}
               onClick={() => decide(`/dip/admin/identities/${d.id}/reject`, { reason, comment }, t('dip.admin.rejected'))}
             >
               {t('dip.admin.reject')}
@@ -475,7 +486,7 @@ export default function AdminDipReview() {
           />
           <Button onClick={load}>{t('common.search')}</Button>
         </div>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={data?.items ?? []}
           loading={data === null}

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Notification, Pagination, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
+import { toastError } from '../../../components/toast.js';
 
 const ACTION_COLORS = {
   certify_approve: 'app-green',
@@ -34,7 +35,7 @@ export default function DocsAudit() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [page, action, q, t]);
@@ -75,7 +76,7 @@ export default function DocsAudit() {
         </div>
       </Card>
       <Card>
-        <Table columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
         {total > pageSize && (
           <div className="docs-pagination">
             <Pagination total={total} current={page} pageSize={pageSize} onChange={setPage} showTotal />

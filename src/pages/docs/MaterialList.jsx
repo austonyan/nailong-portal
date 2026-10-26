@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Image, Modal, Tag } from 'animal-island-ui';
 import { DownloadIcon, EyeIcon, PaperclipIcon } from 'naive-icons';
 import { downloadMaterial, formatBytes, isImageMime, materialPreviewUrl } from '../../api/docs.js';
+import { toastError } from '../../components/toast.js';
 
 // 只读材料列表(申请详情 / 审核工作台共用): 预览图片、下载、来源标记。
 export default function MaterialList({ materials, type }) {
@@ -11,8 +12,12 @@ export default function MaterialList({ materials, type }) {
 
   const kindLabel = (kind) => type?.materials?.find((m) => m.key === kind)?.label || kind;
   const openPreview = async (mat) => {
-    const url = await materialPreviewUrl(mat.id);
-    setPreview({ url, name: mat.filename });
+    try {
+      const url = await materialPreviewUrl(mat.id);
+      setPreview({ url, name: mat.filename });
+    } catch (err) {
+      toastError(t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') }));
+    }
   };
 
   if (!materials?.length) {

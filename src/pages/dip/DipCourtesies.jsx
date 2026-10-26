@@ -104,7 +104,7 @@ export default function DipCourtesies() {
 
       <Card>
         <Title size="small">{t('dip.courtesy.recordsTitle')}</Title>
-        <Table columns={recordColumns} dataSource={data?.items ?? []} loading={data === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={recordColumns} dataSource={data?.items ?? []} loading={data === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
     </div>
   );

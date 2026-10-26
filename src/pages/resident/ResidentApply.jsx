@@ -10,7 +10,6 @@ import {
   FormItem,
   Input,
   Modal,
-  Notification,
   Tag,
   Title,
   Upload,
@@ -19,9 +18,22 @@ import {
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
-import { PURPOSES, TextArea, toastResError } from './shared.jsx';
+import { PURPOSES, TextArea, resToast, toastResError, toastResSuccess } from './shared.jsx';
 
+// 路由 /resident/apply 与 /resident/apply/:typeCode 复用同一个组件:React Router
+// 按组件类型复用实例,useState 只在首次挂载时读路由参数。不按路由参数加 key 重挂载,
+// 从类型选择页点进具体类型时 URL 会变、页面却停在选择页(看起来像点击无反应)。
 export default function ResidentApply() {
+  const params = useParams();
+  const routeKey = params.typeCode
+    ? `type:${String(params.typeCode).toUpperCase()}`
+    : params.id
+      ? `draft:${params.id}`
+      : 'picker';
+  return <ResidentApplyScreen key={routeKey} />;
+}
+
+function ResidentApplyScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
@@ -30,7 +42,7 @@ export default function ResidentApply() {
   const [form] = useForm();
   const [appId, setAppId] = useState(draftId);
   const [appNo, setAppNo] = useState(null);
-  const [typeCode, setTypeCode] = useState(params.typeCode || null);
+  const [typeCode, setTypeCode] = useState(params.typeCode ? String(params.typeCode).toUpperCase() : null);
   const [typeInfo, setTypeInfo] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [reviewHours, setReviewHours] = useState(72);
@@ -96,7 +108,7 @@ export default function ResidentApply() {
     try {
       const values = await form.getFieldsValue();
       await api.put(`/resident/applications/${appId}`, { ...values, purposes });
-      if (!silent) Notification.success(t('res.form.draftSaved'));
+      if (!silent) toastResSuccess(t('res.form.draftSaved'));
     } catch (err) {
       if (!silent) toastResError(t, err);
     } finally {
@@ -115,7 +127,7 @@ export default function ResidentApply() {
         onSuccess(material);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastResError(t, err);
         onError(err);
       });
   };
@@ -133,7 +145,7 @@ export default function ResidentApply() {
     try {
       await form.validateFields();
       if (!purposes.length) {
-        Notification.error(t('res.form.purposes'));
+        resToast('error', t('res.form.purposes'));
         return;
       }
       await saveDraft(true);
@@ -150,7 +162,7 @@ export default function ResidentApply() {
       const data = await api.post(`/resident/applications/${appId}/submit`, values);
       setSubmitted(data.application);
       setConfirmOpen(false);
-      Notification.success(t('res.form.submitSuccess'));
+      toastResSuccess(t('res.form.submitSuccess'));
     } catch (err) {
       toastResError(t, err);
     } finally {
@@ -295,7 +307,7 @@ export default function ResidentApply() {
 
       <div className="res-guide-actions">
         <Button onClick={() => navigate('/resident/applications')}>{t('res.back')}</Button>
-        <Button icon={<SaveIcon />} loading={busy} onClick={() => saveDraft(false)}>
+        <Button icon={<SaveIcon />} loading={busy} onClick={() => saveDraft(false)} disabled={busy}>
           {t('res.form.saveDraft')}
         </Button>
         <Button type="primary" size="large" icon={<SendIcon />} onClick={openConfirm}>
@@ -312,7 +324,7 @@ export default function ResidentApply() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit} disabled={busy}>
               {t('res.form.submit')}
             </Button>
           </>

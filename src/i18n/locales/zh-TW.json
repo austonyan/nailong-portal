@@ -2523,7 +2523,7 @@
       "sourceIdentity": "外交身分",
       "sourceRelation": "建交關係",
       "entity": "所屬虛構實體",
-      "validRange": "效期 {from} ~ {to}",
+      "validRange": "效期",
       "scope": "適用人員",
       "courtesies": "禮遇內容",
       "partyA": "甲方(虛構實體)",

@@ -2,22 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Notification,
-  Pagination,
-  Select,
-  Table,
-  Tag,
-  Title,
-} from 'animal-island-ui';
+  Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial } from '../../api/appeal.js';
 import { TextArea, DECISION_TYPE_COLORS, REVIEW_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const STATUS_OPTIONS = ['', 'pending', 'reviewing', 'completed'];
 const DECIDE_TYPES = ['maintain', 'undo', 'change'];
@@ -65,8 +55,8 @@ export default function AppealAdminReviews() {
       } else {
         await api.post(`/appeal/admin/reviews/${detail.id}/decide`, { decisionType, reason });
       }
-      Notification.success(t('common.saved'));
       setAction(null);
+      toastSuccess(t('common.saved'));
       const data = await api.get(`/appeal/admin/reviews/${detail.id}`);
       setDetail(data.review);
       await load();
@@ -130,7 +120,7 @@ export default function AppealAdminReviews() {
 
       <Card>
         <p className="muted-text appeal-review-final-tip">{t('appeal.admin.reviewFinalTip')}</p>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={pageItems}
           loading={items === null}
@@ -245,15 +235,44 @@ export default function AppealAdminReviews() {
       </Drawer>
 
       <Modal
+        open={action === 'accept'}
+        title={t('appeal.admin.action.reviewAccept')}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
+        typewriter={false}
+        width={460}
+        footer={
+          <>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy} onClick={runAction}>
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      >
+        <p>{t('appeal.admin.acceptTip')}</p>
+      </Modal>
+
+      <Modal
         open={action === 'decide'}
         title={t('appeal.admin.action.reviewDecide')}
-        onClose={() => setAction(null)}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={reason.trim().length < 5} onClick={runAction}>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button
+              type="primary"
+              loading={busy}
+              disabled={busy || reason.trim().length < 5}
+              onClick={runAction}
+            >
               {t('common.confirm')}
             </Button>
           </>

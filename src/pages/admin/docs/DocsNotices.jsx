@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
 
@@ -21,7 +22,7 @@ export default function DocsNotices() {
       const d = await api.get('/docs/admin/notices');
       setItems(d.items);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [t]);
@@ -48,15 +49,19 @@ export default function DocsNotices() {
   };
 
   const submit = async () => {
+    if (!form?.title?.trim() || !form?.body?.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       if (editing?.id) await api.patch(`/docs/admin/notices/${editing.id}`, form);
       else await api.post('/docs/admin/notices', form);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -67,7 +72,7 @@ export default function DocsNotices() {
       await api.patch(`/docs/admin/notices/${n.id}`, { enabled: !n.enabled });
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -75,10 +80,11 @@ export default function DocsNotices() {
     if (!deleteTarget) return;
     try {
       await api.del(`/docs/admin/notices/${deleteTarget.id}`);
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -103,7 +109,7 @@ export default function DocsNotices() {
       width: 90,
       render: (v, row) => <Switch size="small" checked={!!v} onChange={() => toggle(row)} />,
     },
-    { title: t('common.createdAt'), dataIndex: 'createdAt', width: 110, render: (v) => String(v).slice(0, 10) },
+    { title: t('common.createdAt'), dataIndex: 'created_at', width: 110, render: (v) => (v ? String(v).slice(0, 10) : '-') },
     {
       title: t('common.actions'),
       width: 120,
@@ -112,7 +118,7 @@ export default function DocsNotices() {
           <Button size="small" onClick={() => openEdit(row)}>
             {t('common.edit')}
           </Button>
-          <Button size="small" danger icon={<TrashIcon />} onClick={() => setDeleteTarget(row)} />
+          <Button size="small" danger icon={<TrashIcon />} aria-label={t('common.delete')} onClick={() => setDeleteTarget(row)} />
         </div>
       ),
     },
@@ -127,7 +133,7 @@ export default function DocsNotices() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
       </Card>
 
       <Modal
@@ -138,8 +144,8 @@ export default function DocsNotices() {
         onClose={() => setEditing(null)}
         footer={
           <>
-            <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={submit}>
+            <Button onClick={() => setEditing(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !form?.title?.trim() || !form?.body?.trim()} onClick={submit}>
               {t('common.save')}
             </Button>
           </>

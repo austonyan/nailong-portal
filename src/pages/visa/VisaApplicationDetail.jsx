@@ -3,14 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Modal,
-  Notification,
-  Tag,
-  Title,
-  Upload,
-} from 'animal-island-ui';
+  Button, Card, Modal, Tag, Title, Upload } from 'animal-island-ui';
 import { EyeIcon, RefreshIcon, PrinterIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial, uploadVisaMaterial } from '../../api/visa.js';
@@ -21,6 +14,7 @@ import {
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
@@ -51,7 +45,7 @@ export default function VisaApplicationDetail() {
     setBusy(true);
     try {
       await api.post(`/visa/applications/${id}/withdraw`);
-      Notification.success(t('visa.my.withdrawn'));
+      toastSuccess(t('visa.my.withdrawn'));
       setWithdrawOpen(false);
       await load();
     } catch (err) {
@@ -65,7 +59,7 @@ export default function VisaApplicationDetail() {
     setBusy(true);
     try {
       await api.post(`/visa/applications/${id}/supplement`, { note: suppNote });
-      Notification.success(t('visa.detail.supplementSent'));
+      toastSuccess(t('visa.detail.supplementSent'));
       setSuppNote('');
       await load();
     } catch (err) {
@@ -93,7 +87,7 @@ export default function VisaApplicationDetail() {
         onSuccess(material);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         onError(err);
       });
   };
@@ -197,7 +191,7 @@ export default function VisaApplicationDetail() {
           )}
           <TextArea value={suppNote} onChange={(e) => setSuppNote(e.target.value)} placeholder={t('visa.detail.supplementNotePlaceholder')} />
           <div className="visa-guide-actions">
-            <Button type="primary" loading={busy} onClick={submitSupplement}>
+            <Button type="primary" loading={busy} onClick={submitSupplement} disabled={busy}>
               {t('visa.detail.submitSupplement')}
             </Button>
           </div>
@@ -267,7 +261,7 @@ export default function VisaApplicationDetail() {
         footer={
           <>
             <Button onClick={() => setWithdrawOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={withdraw}>
+            <Button type="primary" danger loading={busy} onClick={withdraw} disabled={busy}>
               {t('visa.my.withdraw')}
             </Button>
           </>

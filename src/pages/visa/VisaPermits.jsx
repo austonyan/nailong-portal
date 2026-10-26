@@ -1,10 +1,11 @@
 // 我的签注:电子签注卡、状态、验真链接与打印(PDF)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Notification, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tabs, Tag, Title } from 'animal-island-ui';
 import { DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { PERMIT_STATUS_COLORS, fmtDate, fmtDateTime, toastVisaError } from './shared.jsx';
+import { toastSuccess, toastInfo } from '../../components/toast.js';
 
 export default function VisaPermits() {
   const { t } = useTranslation();
@@ -46,9 +47,9 @@ export default function VisaPermits() {
     const url = `${window.location.origin}/visa/verify?token=${selected.verifyToken}`;
     try {
       await navigator.clipboard.writeText(url);
-      Notification.success(t('visa.permit.linkCopied'));
+      toastSuccess(t('visa.permit.linkCopied'));
     } catch {
-      Notification.info(url);
+      toastInfo(url);
     }
   };
 

@@ -2,11 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Table, Tag, Title } from 'animal-island-ui';
 import { DownloadIcon, FileIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { downloadVisaFile } from '../../api/visa.js';
 import { APPLICATION_STATUS_COLORS, fmtDateTime, toastVisaError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
@@ -36,7 +37,7 @@ export default function VisaMyApplications() {
     setBusy(true);
     try {
       await api.post(`/visa/applications/${withdrawTarget.id}/withdraw`);
-      Notification.success(t('visa.my.withdrawn'));
+      toastSuccess(t('visa.my.withdrawn'));
       setWithdrawTarget(null);
       await load();
     } catch (err) {
@@ -49,7 +50,7 @@ export default function VisaMyApplications() {
   const deleteDraft = async (app) => {
     try {
       await api.del(`/visa/applications/${app.id}`);
-      Notification.success(t('visa.my.draftDeleted'));
+      toastSuccess(t('visa.my.draftDeleted'));
       await load();
     } catch (err) {
       toastVisaError(t, err);
@@ -121,7 +122,7 @@ export default function VisaMyApplications() {
         </div>
       </div>
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}
@@ -139,7 +140,7 @@ export default function VisaMyApplications() {
         footer={
           <>
             <Button onClick={() => setWithdrawTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={confirmWithdraw}>
+            <Button type="primary" danger loading={busy} onClick={confirmWithdraw} disabled={busy}>
               {t('visa.my.withdraw')}
             </Button>
           </>

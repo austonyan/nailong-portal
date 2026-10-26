@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Badge, Button, Card, Notification, Pagination, Select, Tag, Title } from 'animal-island-ui';
+import { Badge, Button, Card, Pagination, Select, Tag, Title } from 'animal-island-ui';
 import {
   AlertCircleIcon,
   BellIcon,
@@ -13,6 +13,7 @@ import {
 } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DOCS_MSG_REFRESH } from './DocsLayout.jsx';
+import { toastError } from '../../components/toast.js';
 
 const MSG_ICONS = {
   submitted: SendIcon,
@@ -43,7 +44,7 @@ export default function DocsMessages() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [box, page, t]);
@@ -60,8 +61,8 @@ export default function DocsMessages() {
       await api.post(`/docs/messages/${m.id}/read`);
       ping();
       load();
-    } catch {
-      /* ignore */
+    } catch (err) {
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -71,7 +72,7 @@ export default function DocsMessages() {
       ping();
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -81,7 +82,7 @@ export default function DocsMessages() {
       ping();
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 

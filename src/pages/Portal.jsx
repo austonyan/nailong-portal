@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Background, Button, Card, Divider, Modal, Notification, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Avatar, Background, Button, Card, Divider, Modal, Tag, Title, Typewriter } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { serviceIcon } from '../components/icons.js';
+import { toastError } from '../components/toast.js';
 
 export default function Portal() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export default function Portal() {
         if (!cancelled) setServices(data.items);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
         if (!cancelled) setServices([]);
       });
     return () => {

@@ -97,7 +97,7 @@ export default function AdminProtocolStats() {
         </Card>
         <Card>
           <h4>{t('protocol.admin.eventByType')}</h4>
-          <Table
+          <Table className="table-fit"
             columns={[
               { title: t('protocol.field.type'), dataIndex: 'name' },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
@@ -113,15 +113,15 @@ export default function AdminProtocolStats() {
       <div className="protocol-stat-columns">
         <Card>
           <h4>{t('protocol.admin.registrationByStatus')}</h4>
-          <Table columns={statusColumns} dataSource={statusRows} rowKey="status" pagination={false} emptyText={t('protocol.common.noData')} />
+          <Table className="table-fit" columns={statusColumns} dataSource={statusRows} rowKey="status" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
         <Card>
           <h4>{t('protocol.admin.eventByStatus')}</h4>
-          <Table columns={statusColumns} dataSource={eventStatusRows} rowKey="status" pagination={false} emptyText={t('protocol.common.noData')} />
+          <Table className="table-fit" columns={statusColumns} dataSource={eventStatusRows} rowKey="status" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
         <Card>
           <h4>{t('protocol.admin.rejectReasons')}</h4>
-          <Table
+          <Table className="table-fit"
             columns={[
               { title: t('protocol.field.reason'), dataIndex: 'code', render: (v) => t(`protocol.rejectReason.${v}`, { defaultValue: v }) },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
@@ -134,7 +134,7 @@ export default function AdminProtocolStats() {
         </Card>
         <Card>
           <h4>{t('protocol.admin.courtesyByType')}</h4>
-          <Table
+          <Table className="table-fit"
             columns={[
               { title: t('protocol.field.type'), dataIndex: 'name' },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },

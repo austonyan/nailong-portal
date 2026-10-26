@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Table, Tabs, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Table, Tabs, Title } from 'animal-island-ui';
 import { AlertTriangleIcon, DownloadIcon, EditIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StampView, StatusTag, exportCsv } from '../../../components/immigration/shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 function EntryRecordsTab() {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ function EntryRecordsTab() {
   const saveEdit = async () => {
     try {
       await api.patch(`/immigration/admin/records/entry/${editing.id}`, { entryDate, note });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       load();
     } catch (err) {
@@ -45,7 +46,7 @@ function EntryRecordsTab() {
   const markInvalid = async (row) => {
     try {
       await api.post(`/immigration/admin/records/entry/${row.id}/mark`, { status: 'invalid' });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.saved'));
       load();
     } catch (err) {
       toastApiError(err);
@@ -110,7 +111,7 @@ function EntryRecordsTab() {
           {t('imm.records.export')}
         </Button>
       </div>
-      <Table
+      <Table className="table-fit"
         columns={columns}
         dataSource={items ?? []}
         loading={items === null}
@@ -168,7 +169,7 @@ function ExitRecordsTab() {
   ];
 
   return (
-    <Table
+    <Table className="table-fit"
       columns={columns}
       dataSource={items ?? []}
       loading={items === null}

@@ -4,10 +4,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Notification, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Tag, Title } from 'animal-island-ui';
 import { CompassIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { StatusTag, fmtDate } from '../../components/dip/shared.jsx';
+import { toastError } from '../../components/toast.js';
 
 export default function DipVerify() {
   const { t } = useTranslation();
@@ -22,10 +23,10 @@ export default function DipVerify() {
       setResult(data);
     } catch (err) {
       if (err?.status === 429) {
-        Notification.error(t('api.DIP_RATE_LIMITED', { defaultValue: t('dip.verify.rateLimited') }));
+        toastError(t('api.DIP_RATE_LIMITED', { defaultValue: t('dip.verify.rateLimited') }));
         return;
       }
-      Notification.error(t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -36,7 +37,7 @@ export default function DipVerify() {
       .then(setResult)
       .catch((err) => {
         if (err?.status === 429) {
-          Notification.error(t('api.DIP_RATE_LIMITED', { defaultValue: t('dip.verify.rateLimited') }));
+          toastError(t('api.DIP_RATE_LIMITED', { defaultValue: t('dip.verify.rateLimited') }));
           setResult(null);
           return;
         }

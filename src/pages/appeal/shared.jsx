@@ -1,7 +1,8 @@
 // Shared bits for the appeal pages: status palettes, constants, date
 // formatting and the common error toast mapper.
 import dayjs from 'dayjs';
-import { Notification } from 'animal-island-ui';
+import { toastError } from '../../components/toast.js';
+
 
 export const APPEAL_STATUS_COLORS = {
   draft: 'default',
@@ -86,7 +87,7 @@ export function appealErrMsg(t, err) {
 }
 
 export function toastAppealError(t, err) {
-  Notification.error(appealErrMsg(t, err));
+  toastError(appealErrMsg(t, err));
 }
 
 // 库里没有多行输入;按 Input 的视觉语言用 token 自定义(与签注署一致)。

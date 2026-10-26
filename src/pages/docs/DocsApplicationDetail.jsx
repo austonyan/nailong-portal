@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Countdown, Modal, Notification, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Countdown, Modal, Tag, Title, Upload } from 'animal-island-ui';
 import { ArrowRightIcon, ClockIcon, PaperclipIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../api/docs.js';
 import MaterialList from './MaterialList.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function DocsApplicationDetail() {
   const { t } = useTranslation();
@@ -20,7 +21,7 @@ export default function DocsApplicationDetail() {
       .get(`/docs/applications/${id}`)
       .then((d) => setItem(d.item))
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         setItem(false);
       });
   }, [id, t]);
@@ -33,11 +34,11 @@ export default function DocsApplicationDetail() {
     setBusy(true);
     try {
       await api.post(`/docs/applications/${id}/withdraw`);
-      Notification.success(t('docs.detail.withdrawn'));
+      toastSuccess(t('docs.detail.withdrawn'));
       setWithdrawOpen(false);
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -47,10 +48,10 @@ export default function DocsApplicationDetail() {
     setBusy(true);
     try {
       await api.post(`/docs/applications/${id}/resubmit`);
-      Notification.success(t('docs.detail.resubmitted'));
+      toastSuccess(t('docs.detail.resubmitted'));
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -62,10 +63,10 @@ export default function DocsApplicationDetail() {
     fd.append('kind', conf.key);
     try {
       await requestForm(`/docs/applications/${id}/materials`, fd);
-      Notification.success(t('docs.detail.uploaded'));
+      toastSuccess(t('docs.detail.uploaded'));
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -143,7 +144,7 @@ export default function DocsApplicationDetail() {
               </Upload>
             ))}
           </div>
-          <Button type="primary" loading={busy} icon={<SendIcon />} onClick={resubmit}>
+          <Button type="primary" loading={busy} icon={<SendIcon />} onClick={resubmit} disabled={busy}>
             {t('docs.detail.resubmit')}
           </Button>
         </Card>
@@ -252,7 +253,7 @@ export default function DocsApplicationDetail() {
         footer={
           <>
             <Button onClick={() => setWithdrawOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={withdraw}>
+            <Button type="primary" danger loading={busy} onClick={withdraw} disabled={busy}>
               {t('docs.detail.withdraw')}
             </Button>
           </>

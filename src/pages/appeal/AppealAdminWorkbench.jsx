@@ -3,18 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Notification,
-  Pagination,
-  Select,
-  Table,
-  Tag,
-  Title,
-} from 'animal-island-ui';
+  Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial } from '../../api/appeal.js';
@@ -27,6 +16,7 @@ import {
   fmtDateTime,
   toastAppealError,
 } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const QUEUE_STATUS = ['', 'pending_accept', 'accepted', 'processing', 'supplement_required', 'resolved', 'rejected', 'withdrawn', 'closed'];
 const DECIDE_TYPES = ['maintain', 'undo', 'change', 'transfer'];
@@ -119,7 +109,7 @@ export default function AppealAdminWorkbench() {
       } else if (action === 'merge') {
         await api.post('/appeal/admin/appeals/merge', { sourceId: detail.id, targetCode: mergeTarget.trim().toUpperCase() });
       }
-      Notification.success(t('common.saved'));
+      toastSuccess(t('common.saved'));
       setAction(null);
       const data = await api.get(`/appeal/admin/appeals/${detail.id}`);
       setDetail(data.appeal);
@@ -223,7 +213,7 @@ export default function AppealAdminWorkbench() {
       </div>
 
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}
@@ -395,16 +385,20 @@ export default function AppealAdminWorkbench() {
       <Modal
         open={action !== null}
         title={action ? ACTION_META[action] : ''}
-        onClose={() => setAction(null)}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('common.cancel')}</Button>
             <Button
               type="primary"
               loading={busy}
               disabled={
+                busy ||
                 (action === 'refuse' && !comment.trim()) ||
                 (action === 'decide' && !comment.trim()) ||
                 (action === 'supplement' && !comment.trim()) ||

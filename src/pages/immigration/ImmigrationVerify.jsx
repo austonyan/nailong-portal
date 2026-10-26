@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, Card, Notification, Tag } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { toastError } from '../../components/toast.js';
 
 const STATUS_COLOR = {
   unused: 'app-green',
@@ -27,7 +28,7 @@ export default function ImmigrationVerify() {
       .catch((err) => {
         if (err?.status === 404) setResult({ status: 'invalid' });
         else {
-          Notification.error(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
+          toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
           setResult({ status: 'error' });
         }
       });

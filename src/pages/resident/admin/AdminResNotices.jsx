@@ -1,11 +1,12 @@
 // 公告与消息模板:公告发布/编辑/下线,站内信模板编辑与发送记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Select, Switch, Table, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tabs, Tag, Title } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { NOTICE_LEVEL_COLORS, TextArea, fmtDateTime, toastResError } from '../shared.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 const LEVELS = ['info', 'policy', 'event'];
 const EMPTY_NOTICE = { id: null, title: '', titleTw: '', body: '', bodyTw: '', level: 'info', enabled: true };
@@ -75,7 +76,7 @@ export default function AdminResNotices() {
     try {
       if (noticeForm.id) await api.patch(`/resident/admin/notices/${noticeForm.id}`, noticeForm);
       else await api.post('/resident/admin/notices', noticeForm);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setModalOpen(false);
       load();
     } catch (err) {
@@ -88,7 +89,7 @@ export default function AdminResNotices() {
   const removeNotice = async (row) => {
     try {
       await api.del(`/resident/admin/notices/${row.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       load();
     } catch (err) {
       toastResError(t, err);
@@ -113,6 +114,10 @@ export default function AdminResNotices() {
   };
 
   const saveTemplate = async () => {
+    if (!tplTitle.trim() || !tplBody.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.patch(`/resident/admin/templates/${editingTpl.code}`, {
@@ -121,7 +126,7 @@ export default function AdminResNotices() {
         titleTemplateTw: tplTitleTw,
         bodyTemplateTw: tplBodyTw,
       });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditingTpl(null);
       load();
     } catch (err) {
@@ -148,7 +153,7 @@ export default function AdminResNotices() {
       title: t('res.admin.notices.enabled'),
       dataIndex: 'enabled',
       width: 90,
-      render: (v, record) => <Switch value={v} onChange={() => toggleNotice(record)} />,
+      render: (v, record) => <Switch checked={!!v} onChange={() => toggleNotice(record)} />,
     },
     { title: t('res.field.createdAt'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
     {
@@ -206,7 +211,7 @@ export default function AdminResNotices() {
                     {t('res.admin.notices.create')}
                   </Button>
                 </div>
-                <Table columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                <Table className="table-fit" columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
               </Card>
             ),
           },
@@ -244,7 +249,7 @@ export default function AdminResNotices() {
                 <div className="table-actions res-filter-bar">
                   <Input size="middle" allowClear placeholder={t('res.admin.searchPlaceholder')} value={msgQ} onChange={(e) => setMsgQ(e.target.value)} />
                 </div>
-                <Table columns={messageColumns} dataSource={messages ?? []} loading={messages === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                <Table className="table-fit" columns={messageColumns} dataSource={messages ?? []} loading={messages === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
               </Card>
             ),
           },
@@ -293,13 +298,16 @@ export default function AdminResNotices() {
       <Modal
         open={editingTpl !== null}
         title={editingTpl ? t(`res.msgTpl.${editingTpl.code}`, { defaultValue: editingTpl.code }) : ''}
-        onClose={() => setEditingTpl(null)}
+        onClose={() => {
+          if (!busy) setEditingTpl(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setEditingTpl(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={saveTemplate}>
+            <Button onClick={() => setEditingTpl(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !tplTitle.trim() || !tplBody.trim()} onClick={saveTemplate}>
               {t('common.save')}
             </Button>
           </>
@@ -313,6 +321,10 @@ export default function AdminResNotices() {
           <label>
             <span>{t('res.admin.notices.tplTitle')} · {t('common.traditional')}</span>
             <Input size="large" value={tplTitleTw} placeholder={t('common.twOptional')} onChange={(e) => setTplTitleTw(e.target.value)} />
+          </label>
+          <label>
+            <span>{t('res.admin.notices.tplBody')}</span>
+            <TextArea rows={5} maxLength={1000} value={tplBody} onChange={(e) => setTplBody(e.target.value)} />
           </label>
           <label>
             <span>{t('res.admin.notices.tplBody')} · {t('common.traditional')}</span>

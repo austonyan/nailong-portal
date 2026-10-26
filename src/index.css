@@ -34,7 +34,7 @@ h3 {
 }
 
 .app-header-inner {
-  max-width: 1100px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 10px 24px;
   display: flex;
@@ -130,7 +130,7 @@ h3 {
 .app-main {
   flex: 1;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 24px;
 }
@@ -180,7 +180,77 @@ h3 {
 
 .table-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
+}
+
+/* ---------- 统一轻提示 ---------- */
+
+.app-toast-host {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: min(92vw, 560px);
+  pointer-events: none;
+}
+
+.app-toast {
+  max-width: 100%;
+  padding: 11px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color);
+  border: 1.5px solid var(--animal-border-color);
+  box-shadow: var(--animal-shadow-sm);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    transform var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.app-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.app-toast-success {
+  background: var(--animal-primary-color-bg);
+  border-color: var(--animal-primary-color);
+}
+
+.app-toast-error {
+  border-color: var(--animal-error-color);
+}
+
+.app-toast-warning {
+  border-color: var(--animal-warning-color);
+}
+
+.app-toast-info {
+  border-color: var(--animal-primary-color);
+}
+
+/* PC 数据表:表头允许换行、长文本可断行,列多时压缩到容器内,不出现横向滚动 */
+.table-fit th {
+  white-space: normal;
+}
+
+.table-fit th,
+.table-fit td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* ---------- auth ---------- */
@@ -5040,9 +5110,13 @@ h3 {
 .appeal-list-page,
 .appeal-publicity-page,
 .appeal-doc-page,
-.appeal-verify-page,
-.appeal-admin-page {
+.appeal-verify-page {
   max-width: 1080px;
+}
+
+/* 管理页有多列表格,跟随 .app-main 的 PC 宽度 */
+.appeal-admin-page {
+  max-width: none;
 }
 
 .appeal-guide-block {

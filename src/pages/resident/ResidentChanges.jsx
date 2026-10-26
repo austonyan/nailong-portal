@@ -2,10 +2,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Notification, Select, Tabs, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, Title, useForm } from 'animal-island-ui';
 import { SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { CHANGE_TYPES, StatusTag, TextArea, fmtDateTime, toastResError } from './shared.jsx';
+import { CHANGE_TYPES, StatusTag, TextArea, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
 
 const CHANGE_STATUS_COLORS = {
   pending_review: 'app-yellow',
@@ -65,7 +65,7 @@ export default function ResidentChanges() {
 
   const openConfirm = async () => {
     try {
-      if (changeType === 'info') await form.validateFields();
+      await form.validateFields();
       setConfirmOpen(true);
     } catch {
       // 校验失败,FormItem 已显示
@@ -75,7 +75,7 @@ export default function ResidentChanges() {
   const submit = async () => {
     setBusy(true);
     try {
-      const values = await form.getFieldsValue();
+      const values = await form.validateFields();
       const body = { type: changeType };
       if (changeType === 'info') {
         if (values.contact) body.contact = values.contact;
@@ -86,7 +86,7 @@ export default function ResidentChanges() {
         body.note = values.note || '';
       }
       await api.post('/resident/changes', body);
-      Notification.success(t('res.changes.submitted'));
+      toastResSuccess(t('res.changes.submitted'));
       setConfirmOpen(false);
       form.resetFields();
       load();
@@ -100,7 +100,7 @@ export default function ResidentChanges() {
   const cancel = async (row) => {
     try {
       await api.post(`/resident/changes/${row.id}/cancel`);
-      Notification.success(t('res.changes.cancelled'));
+      toastResSuccess(t('res.changes.cancelled'));
       load();
     } catch (err) {
       toastResError(t, err);
@@ -166,7 +166,7 @@ export default function ResidentChanges() {
           }))}
         />
 
-        <Button type="primary" icon={<SendIcon />} loading={busy} onClick={openConfirm}>
+        <Button type="primary" icon={<SendIcon />} loading={busy} onClick={openConfirm} disabled={busy}>
           {t('res.changes.submit')}
         </Button>
       </Card>
@@ -215,7 +215,7 @@ export default function ResidentChanges() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={submit}>
+            <Button type="primary" loading={busy} onClick={submit} disabled={busy}>
               {t('res.changes.submit')}
             </Button>
           </>

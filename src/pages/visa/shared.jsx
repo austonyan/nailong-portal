@@ -1,7 +1,8 @@
 // Shared bits for the visa pages: status palette, date formatting and the
 // common error toast mapper.
 import dayjs from 'dayjs';
-import { Notification } from 'animal-island-ui';
+import { toastError } from '../../components/toast.js';
+
 
 export const APPLICATION_STATUS_COLORS = {
   draft: 'default',
@@ -40,7 +41,7 @@ export function visaErrMsg(t, err) {
 }
 
 export function toastVisaError(t, err) {
-  Notification.error(visaErrMsg(t, err));
+  toastError(visaErrMsg(t, err));
 }
 
 // 材料类型 → i18n key(visa.materialKind.*)

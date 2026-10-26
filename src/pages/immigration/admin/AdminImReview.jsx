@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Drawer, Input, Modal, Notification, Select, Table, Tag, Title,
-} from 'animal-island-ui';
+  Button, Card, Drawer, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { CheckCircleIcon, ClockIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 const QUEUE_STATUSES = ['pending', 'supplement', 'approved', 'rejected', 'entered', 'exited', 'withdrawn'];
 const REJECT_REASONS = ['visa_invalid', 'incomplete', 'duplicate', 'port_closed', 'other'];
@@ -44,7 +44,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
     setBusy(true);
     try {
       await api.post(path, body);
-      Notification.success(okMsg);
+      toastSuccess(okMsg);
       setRejecting(false);
       setSupplementing(false);
       onChanged();
@@ -135,7 +135,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
       {actionable && (
         <div className="im-detail-actions">
-          <Button type="primary" icon={<CheckCircleIcon />} loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/approve`, {}, t('imm.admin.review.approved'))}>
+          <Button type="primary" icon={<CheckCircleIcon />} loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/approve`, {}, t('imm.admin.review.approved'))} disabled={busy}>
             {t('imm.admin.review.approve')}
           </Button>
           <Button type="default" danger icon={<XCircleIcon />} onClick={() => setRejecting(true)}>
@@ -152,12 +152,15 @@ function ReviewDrawer({ id, onClose, onChanged }) {
       <Modal
         open={rejecting}
         title={t('imm.admin.review.rejectTitle', { no: d.no })}
-        onClose={() => setRejecting(false)}
+        onClose={() => {
+          if (!busy) setRejecting(false);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setRejecting(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/reject`, { reason, note }, t('imm.admin.review.rejected'))}>
+            <Button onClick={() => setRejecting(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={busy} disabled={busy || !reason} onClick={() => decide(`/immigration/admin/declarations/${d.id}/reject`, { reason, note }, t('imm.admin.review.rejected'))}>
               {t('imm.admin.review.rejectConfirm')}
             </Button>
           </>
@@ -172,12 +175,15 @@ function ReviewDrawer({ id, onClose, onChanged }) {
       <Modal
         open={supplementing}
         title={t('imm.admin.review.supplementTitle', { no: d.no })}
-        onClose={() => setSupplementing(false)}
+        onClose={() => {
+          if (!busy) setSupplementing(false);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setSupplementing(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/supplement`, { note: supplementNote }, t('imm.admin.review.supplementSent'))}>
+            <Button onClick={() => setSupplementing(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !supplementNote.trim()} onClick={() => decide(`/immigration/admin/declarations/${d.id}/supplement`, { note: supplementNote }, t('imm.admin.review.supplementSent'))}>
               {t('common.confirm')}
             </Button>
           </>
@@ -274,7 +280,7 @@ export default function AdminImReview() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
       <Drawer open={openId !== null} title={t('imm.admin.review.detailTitle')} onClose={() => setOpenId(null)} width={560}>

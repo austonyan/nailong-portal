@@ -160,7 +160,7 @@ export default function AdminProtocolHosts() {
       </div>
 
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.queueEmpty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.queueEmpty')} />
         {total > 20 && (
           <div className="protocol-pagination">
             <Pagination total={total} current={page} pageSize={20} onChange={setPage} showTotal />
@@ -248,7 +248,7 @@ export default function AdminProtocolHosts() {
                     <Switch checked={canInvite} onChange={setCanInvite} />
                   </label>
                 </div>
-                <Button type="dashed" size="small" loading={busy} onClick={savePermissions}>
+                <Button type="dashed" size="small" loading={busy} onClick={savePermissions} disabled={busy}>
                   {t('protocol.action.save')}
                 </Button>
               </>
@@ -260,12 +260,21 @@ export default function AdminProtocolHosts() {
       <Modal
         open={action !== null}
         title={action ? t(`protocol.admin.hostAction_${action.kind}`) : ''}
-        onClose={() => setAction(null)}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger={['reject', 'revoke'].includes(action?.kind)} loading={busy} onClick={runAction}>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button
+              type="primary"
+              danger={['reject', 'revoke'].includes(action?.kind)}
+              loading={busy}
+              disabled={busy || (['freeze', 'revoke'].includes(action?.kind) && !reason.trim())}
+              onClick={runAction}
+            >
               {t('common.confirm')}
             </Button>
           </>

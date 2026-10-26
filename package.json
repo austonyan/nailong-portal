@@ -7,8 +7,9 @@
     "dev": "vite",
     "dev:server": "node --watch server/index.js",
     "dev:all": "concurrently -n web,api -c cyan,magenta \"vite\" \"node --watch server/index.js\"",
-    "build": "npm run check:i18n && vite build",
+    "build": "npm run check:i18n && npm run check:ui && vite build",
     "check:i18n": "node scripts/check-i18n.mjs",
+    "check:ui": "node scripts/check-ui-conventions.mjs",
     "start": "node server/index.js",
     "lint": "oxlint",
     "preview": "vite preview"

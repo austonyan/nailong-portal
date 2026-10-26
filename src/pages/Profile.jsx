@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Divider, Form, FormItem, Input, Notification, Tag, Title, useForm } from 'animal-island-ui';
+import { Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, Title, useForm } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
+import { toastSuccess, toastError } from '../components/toast.js';
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -18,9 +19,9 @@ export default function Profile() {
         email: values.email?.trim() || '',
       });
       await reload();
-      Notification.success(t('profile.updateSuccess'));
+      toastSuccess(t('profile.updateSuccess'));
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -28,9 +29,9 @@ export default function Profile() {
     try {
       await api.post('/auth/change-password', { oldPassword: values.oldPassword, newPassword: values.newPassword });
       passwordForm.resetFields();
-      Notification.success(t('profile.passwordChanged'));
+      toastSuccess(t('profile.passwordChanged'));
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     }
   };
 

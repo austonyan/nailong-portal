@@ -1,23 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  Modal,
-  Notification,
-  Select,
-  Switch,
-  Table,
-  Tag,
-  Title,
-  useForm,
-} from 'animal-island-ui';
+  Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { SERVICE_COLORS, SERVICE_ICONS, serviceIcon } from '../../components/icons.js';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 const ICON_OPTIONS = Object.keys(SERVICE_ICONS).map((name) => ({ key: name, label: name.replace(/Icon$/, '') }));
 const COLOR_OPTIONS = SERVICE_COLORS.map((c) => ({ key: c, label: c }));
@@ -38,7 +26,7 @@ export default function AdminServices() {
 
   useEffect(() => {
     Promise.all([loadServices(), api.get('/roles/permissions').then((d) => setPermissions(d.items))]).catch((err) => {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
       setServices([]);
     });
   }, [loadServices, t]);
@@ -85,11 +73,11 @@ export default function AdminServices() {
       } else {
         await api.post('/services', { ...payload, key: values.key?.trim() });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       closeModal();
       await loadServices();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -99,11 +87,11 @@ export default function AdminServices() {
     if (!deleteTarget) return;
     try {
       await api.del(`/services/${deleteTarget.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       await loadServices();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -112,7 +100,7 @@ export default function AdminServices() {
       await api.patch(`/services/${service.id}`, { enabled: checked });
       await loadServices();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -184,7 +172,7 @@ export default function AdminServices() {
         </Button>
       </div>
       <Card>
-        <Table columns={columns} dataSource={services ?? []} loading={services === null} rowKey="key" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={services ?? []} loading={services === null} rowKey="key" pagination={false} />
       </Card>
 
       <Modal open={editing !== null} title={editing?.id ? t('admin.services.edit') : t('admin.services.create')} onClose={closeModal} footer={null} typewriter={false} width={540}>
@@ -227,7 +215,7 @@ export default function AdminServices() {
             <Switch checkedChildren={t('common.enabled')} unCheckedChildren={t('common.disabled')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy}>
+            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
               {t('common.save')}
             </Button>
           </FormItem>

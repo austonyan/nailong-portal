@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Notification, Progress, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Progress, Tag, Title, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, KeyIcon, LockIcon, ShieldIcon, SailboatIcon } from 'naive-icons';
 import AuthLayout from '../components/AuthLayout.jsx';
 import LanguageSelect from '../components/LanguageSelect.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { useSetup } from '../setup/SetupContext.jsx';
+import { toastSuccess, toastError } from '../components/toast.js';
 
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,32}$/;
 const TOTAL_STEPS = 3;
@@ -53,17 +54,17 @@ export default function Setup() {
       // the success screen can still be shown; the server has already closed
       // the entry point at this moment.
       setStep('done');
-      Notification.success(t('setup.successTitle'));
+      toastSuccess(t('setup.successTitle'));
     } catch (err) {
       // Another tab finished the wizard first: refresh the latch and leave the
       // now-closed entry point.
       if (err?.code === 'SETUP_COMPLETE') {
         await refresh();
-        Notification.error(t('api.SETUP_COMPLETE'));
+        toastError(t('api.SETUP_COMPLETE'));
         navigate('/login', { replace: true });
         return;
       }
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -251,7 +252,7 @@ export default function Setup() {
               <Button size="large" disabled={busy} onClick={() => setStep('account')}>
                 {t('setup.back')}
               </Button>
-              <Button type="primary" size="large" loading={busy} onClick={complete}>
+              <Button type="primary" size="large" loading={busy} onClick={complete} disabled={busy}>
                 {busy ? t('setup.submitting') : t('setup.confirmSubmit')}
               </Button>
             </div>

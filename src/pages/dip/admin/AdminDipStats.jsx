@@ -82,18 +82,18 @@ export default function AdminDipStats() {
       <div className="dip-stat-cols">
         <Card>
           <Title size="small">{t('dip.stats.objectDistribution')}</Title>
-          <Table columns={distColumns} dataSource={stats.objectDistribution} rowKey="type" pagination={false} size="small" />
+          <Table className="table-fit" columns={distColumns} dataSource={stats.objectDistribution} rowKey="type" pagination={false} />
         </Card>
         <Card>
           <Title size="small">{t('dip.stats.identityDistribution')}</Title>
-          <Table columns={distColumns} dataSource={stats.identityTypeDistribution} rowKey="type" pagination={false} size="small" />
+          <Table className="table-fit" columns={distColumns} dataSource={stats.identityTypeDistribution} rowKey="type" pagination={false} />
         </Card>
       </div>
 
       <div className="dip-stat-cols">
         <Card>
           <Title size="small">{t('dip.stats.courtesyUsage')}</Title>
-          <Table
+          <Table className="table-fit"
             columns={[
               { title: t('dip.courtesy.type'), dataIndex: 'name', render: (v, r) => v || t(`dip.courtesy.${r.code}`, { defaultValue: r.code }) },
               { title: t('dip.stats.count'), dataIndex: 'n', width: 100 },
@@ -106,7 +106,7 @@ export default function AdminDipStats() {
         </Card>
         <Card>
           <Title size="small">{t('dip.stats.rejectReasons')}</Title>
-          <Table
+          <Table className="table-fit"
             columns={[
               { title: t('dip.admin.rejectReason'), dataIndex: 'reason', render: (v) => t(`dip.rejectReason.${v}`, { defaultValue: v }) },
               { title: t('dip.stats.count'), dataIndex: 'n', width: 100 },

@@ -214,7 +214,7 @@ export default function AdminProtocolIssuance() {
         </Button>
       </div>
       <Card>
-        <Table columns={invColumns} dataSource={invItems ?? []} loading={invItems === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+        <Table className="table-fit" columns={invColumns} dataSource={invItems ?? []} loading={invItems === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
         {invTotal > 20 && (
           <div className="protocol-pagination">
             <Pagination total={invTotal} current={invPage} pageSize={20} onChange={setInvPage} showTotal />
@@ -235,7 +235,7 @@ export default function AdminProtocolIssuance() {
         <Input allowClear prefix={<SearchIcon size={14} />} value={passQ} onChange={(e) => setPassQ(e.target.value)} placeholder={t('protocol.admin.searchPass')} />
       </div>
       <Card>
-        <Table columns={passColumns} dataSource={passItems ?? []} loading={passItems === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+        <Table className="table-fit" columns={passColumns} dataSource={passItems ?? []} loading={passItems === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
         {passTotal > 20 && (
           <div className="protocol-pagination">
             <Pagination total={passTotal} current={passPage} pageSize={20} onChange={setPassPage} showTotal />
@@ -308,12 +308,18 @@ export default function AdminProtocolIssuance() {
       <Modal
         open={revokeTarget !== null}
         title={t('protocol.admin.revokeTitle')}
-        onClose={() => { setRevokeTarget(null); setRevokeReason(''); }}
+        onClose={() => {
+          if (!busy) {
+            setRevokeTarget(null);
+            setRevokeReason('');
+          }
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setRevokeTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={revoke}>{t('protocol.action.revoke')}</Button>
+            <Button onClick={() => setRevokeTarget(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={busy} disabled={busy || !revokeReason.trim()} onClick={revoke}>{t('protocol.action.revoke')}</Button>
           </>
         }
       >
@@ -327,12 +333,24 @@ export default function AdminProtocolIssuance() {
       <Modal
         open={passTarget !== null}
         title={passTarget?.kind === 'reissue' ? t('protocol.admin.reissueTitle') : t('protocol.admin.voidTitle')}
-        onClose={() => { setPassTarget(null); setPassReason(''); }}
+        onClose={() => {
+          if (!busy) {
+            setPassTarget(null);
+            setPassReason('');
+          }
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setPassTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger={passTarget?.kind === 'void'} loading={busy} onClick={runPassAction}>
+            <Button onClick={() => setPassTarget(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button
+              type="primary"
+              danger={passTarget?.kind === 'void'}
+              loading={busy}
+              disabled={busy || (passTarget?.kind === 'void' && !passReason.trim())}
+              onClick={runPassAction}
+            >
               {passTarget?.kind === 'reissue' ? t('protocol.action.reissue') : t('protocol.action.void')}
             </Button>
           </>

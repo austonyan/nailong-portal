@@ -141,7 +141,7 @@ export default function VisaAdminStats() {
 
       <Card>
         <h4>{t('visa.admin.stats.verifyLogs')}</h4>
-        <Table columns={logColumns} dataSource={verifyLogs ?? []} loading={verifyLogs === null} rowKey="id" pagination={{ pageSize: 10 }} />
+        <Table className="table-fit" columns={logColumns} dataSource={verifyLogs ?? []} loading={verifyLogs === null} rowKey="id" pagination={{ pageSize: 10 }} />
       </Card>
     </div>
   );

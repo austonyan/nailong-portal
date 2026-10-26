@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Background, Card, Input, Notification, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Button, Background, Card, Input, Tag, Title, Typewriter } from 'animal-island-ui';
 import { SailboatIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { PERMIT_STATUS_COLORS, fmtDate, toastVisaError } from './shared.jsx';
+import { toastError } from '../../components/toast.js';
 
 export default function VisaVerify() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export default function VisaVerify() {
       const res = await fetch(`/api/visa/verify?no=${encodeURIComponent(query)}`);
       const data = await res.json();
       if (!res.ok) {
-        Notification.error(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
         return;
       }
       setResult({ ...data, query });
@@ -39,7 +40,7 @@ export default function VisaVerify() {
       const res = await fetch(`/api/visa/verify?token=${encodeURIComponent(token)}`);
       const data = await res.json();
       if (!res.ok) {
-        Notification.error(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
         return;
       }
       setResult({ ...data, query: '' });
@@ -85,7 +86,7 @@ export default function VisaVerify() {
               if (e.key === 'Enter') verifyByNo();
             }}
           />
-          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => verifyByNo()}>
+          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => verifyByNo()} disabled={busy}>
             {t('visa.verify.action')}
           </Button>
         </div>

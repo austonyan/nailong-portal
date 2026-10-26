@@ -53,9 +53,11 @@ runner. Frontend consumes the published `animal-island-ui` npm package.
 - `npm run dev` — Vite dev server with HMR (proxies `/api` to :3001)
 - `npm run dev:server` — API server on http://localhost:3001 with watch
 - `npm run dev:all` — both at once (concurrently)
-- `npm run build` — production build (runs `check:i18n` first); `npm run start` — API server
-  (also serves `dist/` if present)
+- `npm run build` — production build (runs `check:i18n` and `check:ui` first); `npm run start` —
+  API server (also serves `dist/` if present)
 - `npm run check:i18n` — verify every referenced i18n key has zh-CN + zh-TW entries
+- `npm run check:ui` — enforce the frontend interaction conventions below
+  (no Notification, every table has `table-fit`, Switch uses `checked`, no invalid Table props)
 - `npm run lint` — **oxlint** (config in `.oxlintrc.json`; not ESLint)
 - No test, typecheck, or format scripts exist here.
 
@@ -143,6 +145,23 @@ short version:
 Exact token values and pixel-level component specs live in `docs/design-system/`
 (`design-tokens.md`, `design-rules.md`, `components/*.md`). `docs/adr/` records library-wide
 constraints (e.g. dayjs is the only sanctioned date layer for the date/time components).
+
+### 前端交互约定（`check:ui` 强制）
+
+- **不要使用 `animal-island-ui` 的 `Notification`**：它在 React 19 下从 `react-dom` 主入口取
+  `createRoot` 会抛异常，事件处理器会停在提示这一行，后续关弹窗/刷新都不执行。统一用
+  `src/components/toast.js` 的 `toastSuccess / toastError / toastInfo / toastWarning /
+  toastApiError`；任何提示辅助函数都委托给它。
+- 每个 `<Table>` 必须带 `className="table-fit"`。表格靠自动列宽 + 表头/长文本换行压缩进
+  容器，**不要加横向滚动**；不要给 Table 传 `size`，不要给列写 `ellipsis`。操作列用
+  `.table-actions`（已自动换行）。
+- 异步弹窗必须有 `busy`：提交/确认按钮 `loading={busy} disabled={busy}`，
+  `maskClosable={!busy}`，`onClose` 在 busy 时直接返回。成功后先关窗/重置表单，再 toast，
+  再 `await load()`；失败保持弹窗并 toast 错误。取消/重开时清空表单。
+- `Switch` 用 `checked`，不要用 `value`（库不支持，会让显示与服务器状态相反）。
+- 必填字段在提交前校验（用 `common.required`），空值不可提交；删除/作废/吊销等不可逆操作
+  要有确认、busy 和成功提示，删除成功文案用 `common.deleted`。
+- `npm run check:ui` 扫描以上约定并已接入 `npm run build`。
 
 ## Cross-service linkage
 

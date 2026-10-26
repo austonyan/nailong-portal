@@ -4,11 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Checkbox, Form, FormItem, Input, Modal, Notification, Radio, Select, Tag, Title, useForm,
-} from 'animal-island-ui';
+  Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, Title, useForm } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { DipNav, TextArea, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const PURPOSES = ['display', 'cooperation', 'visa_channel'];
 
@@ -108,7 +108,7 @@ export default function DipApply() {
     setBusy(true);
     try {
       const saved = await persistDraft();
-      Notification.success(t('dip.apply.draftSaved'));
+      toastSuccess(t('dip.apply.draftSaved'));
       if (!id && saved) navigate(`/dip/apply/${saved.id}`, { replace: true });
     } catch (err) {
       if (err?.code) toastDipError(t, err);
@@ -122,7 +122,7 @@ export default function DipApply() {
     try {
       const current = await persistDraft();
       const data = await api.post(`/dip/relations/${current.id}/submit`, {});
-      Notification.success(t('dip.apply.submitted', { no: data.relation.no }));
+      toastSuccess(t('dip.apply.submitted', { no: data.relation.no }));
       setConfirming(false);
       navigate('/dip/relations');
     } catch (err) {
@@ -196,7 +196,7 @@ export default function DipApply() {
 
           <FormItem>
             <div className="dip-form-actions">
-              <Button type="default" size="large" loading={busy} onClick={saveDraft}>
+              <Button type="default" size="large" loading={busy} onClick={saveDraft} disabled={busy}>
                 {t('dip.apply.saveDraft')}
               </Button>
               <Button type="primary" size="large" htmlType="submit">
@@ -230,7 +230,7 @@ export default function DipApply() {
         footer={
           <>
             <Button onClick={() => setConfirming(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit} disabled={busy}>
               {t('dip.apply.submit')}
             </Button>
           </>

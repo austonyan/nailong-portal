@@ -226,7 +226,7 @@ export default function ProtocolCourtesy() {
         footer={
           <>
             <Button onClick={() => setCancelTarget(null)}>{t('protocol.action.back')}</Button>
-            <Button type="primary" danger loading={busy} onClick={cancel}>
+            <Button type="primary" danger loading={busy} onClick={cancel} disabled={busy}>
               {t('protocol.action.confirmCancel')}
             </Button>
           </>

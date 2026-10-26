@@ -118,7 +118,7 @@ export default function ProtocolMyRegistrations() {
       </div>
 
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}
@@ -249,7 +249,7 @@ export default function ProtocolMyRegistrations() {
         footer={
           <>
             <Button onClick={() => setCancelTarget(null)}>{t('protocol.action.back')}</Button>
-            <Button type="primary" danger loading={busy} onClick={doCancel}>
+            <Button type="primary" danger loading={busy} onClick={doCancel} disabled={busy}>
               {t('protocol.action.confirmCancel')}
             </Button>
           </>

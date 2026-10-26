@@ -117,7 +117,7 @@ export default function PassCodes() {
         </Title>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.pass.empty')} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.pass.empty')} />
       </Card>
       {openCode && <PassCodeModal passCode={openCode} onClose={() => setOpenCode(null)} />}
     </div>

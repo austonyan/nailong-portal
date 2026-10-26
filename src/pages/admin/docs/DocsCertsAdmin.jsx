@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
 import { RefreshIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../../api/docs.js';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
@@ -29,7 +30,7 @@ export default function DocsCertsAdmin() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
   }, [page, status, typeCode, q, t]);
@@ -43,15 +44,19 @@ export default function DocsCertsAdmin() {
 
   const revoke = async () => {
     if (!revokeTarget) return;
+    if (!revokeReason.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.post(`/docs/admin/certificates/${revokeTarget.id}/revoke`, { reason: revokeReason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setRevokeTarget(null);
       setRevokeReason('');
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -60,10 +65,10 @@ export default function DocsCertsAdmin() {
   const markUsed = async (row) => {
     try {
       await api.post(`/docs/admin/certificates/${row.id}/mark-used`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.saved'));
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -72,11 +77,11 @@ export default function DocsCertsAdmin() {
     setBusy(true);
     try {
       await api.post(`/docs/admin/certificates/${regenTarget.id}/regenerate`);
-      Notification.success(t('docs.admin.certs.regenerated'));
+      toastSuccess(t('docs.admin.certs.regenerated'));
       setRegenTarget(null);
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -140,7 +145,7 @@ export default function DocsCertsAdmin() {
         </div>
       </Card>
       <Card>
-        <Table columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
         {total > pageSize && (
           <div className="docs-pagination">
             <Pagination total={total} current={page} pageSize={pageSize} onChange={setPage} showTotal />
@@ -152,11 +157,14 @@ export default function DocsCertsAdmin() {
         open={!!revokeTarget}
         title={t('docs.admin.certs.revokeTitle', { no: revokeTarget?.certNo })}
         typewriter={false}
-        onClose={() => setRevokeTarget(null)}
+        onClose={() => {
+          if (!busy) setRevokeTarget(null);
+        }}
+        maskClosable={!busy}
         footer={
           <>
-            <Button onClick={() => setRevokeTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={revoke}>
+            <Button onClick={() => setRevokeTarget(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={busy} disabled={busy || !revokeReason.trim()} onClick={revoke}>
               {t('docs.admin.certs.revoke')}
             </Button>
           </>
@@ -174,7 +182,7 @@ export default function DocsCertsAdmin() {
         footer={
           <>
             <Button onClick={() => setRegenTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={regenerate}>
+            <Button type="primary" loading={busy} onClick={regenerate} disabled={busy}>
               {t('docs.admin.certs.regenerate')}
             </Button>
           </>

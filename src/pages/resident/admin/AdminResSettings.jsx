@@ -1,11 +1,12 @@
 // 署内设置:编号规则、审核/补件参数。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Notification, Title } from 'animal-island-ui';
+import { Button, Card, Input, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { toastResError } from '../shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 // 可编辑配置(编号规则 + 流程参数)。
 const CONFIG_FIELDS = [
@@ -44,7 +45,7 @@ export default function AdminResSettings() {
       const body = {};
       for (const field of CONFIG_FIELDS) body[field.key] = config[field.key] ?? '';
       await api.put('/resident/admin/config', body);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       load();
     } catch (err) {
       toastResError(t, err);
@@ -80,7 +81,7 @@ export default function AdminResSettings() {
       </Card>
 
       <div className="res-guide-actions">
-        <Button type="primary" loading={busy} onClick={save}>
+        <Button type="primary" loading={busy} onClick={save} disabled={busy}>
           {t('common.save')}
         </Button>
       </div>

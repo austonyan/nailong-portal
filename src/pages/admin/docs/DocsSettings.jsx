@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { BanIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 export default function DocsSettings() {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function DocsSettings() {
       setConfig(map);
       setBlacklist(b.items);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   }, [t]);
 
@@ -38,25 +39,29 @@ export default function DocsSettings() {
       for (const [k, v] of Object.entries(config)) body[k] = v;
       body['docs.seal_enabled'] = config['docs.seal_enabled'] === '1' || config['docs.seal_enabled'] === true;
       await api.patch('/docs/admin/config', body);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
   };
 
   const addToBlacklist = async () => {
+    if (!addForm.userId.trim() || !Number(addForm.userId)) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.post('/docs/admin/blacklist', { userId: Number(addForm.userId), reason: addForm.reason });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setAddOpen(false);
       setAddForm({ userId: '', reason: '' });
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -65,9 +70,10 @@ export default function DocsSettings() {
   const removeFromBlacklist = async (row) => {
     try {
       await api.del(`/docs/admin/blacklist/${row.userId}`);
+      toastSuccess(t('common.deleted'));
       load();
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -91,7 +97,7 @@ export default function DocsSettings() {
     <div>
       <div className="page-header">
         <Title size="middle">{t('docs.admin.settings.title')}</Title>
-        <Button type="primary" loading={busy} onClick={save}>
+        <Button type="primary" loading={busy} onClick={save} disabled={busy}>
           {t('common.save')}
         </Button>
       </div>
@@ -128,12 +134,12 @@ export default function DocsSettings() {
       <Card className="docs-block">
         <div className="page-header">
           <h3 className="docs-block-title">{t('docs.admin.settings.riskTitle')}</h3>
-          <Button icon={<PlusIcon />} onClick={() => setAddOpen(true)}>
+          <Button icon={<PlusIcon />} onClick={() => { setAddForm({ userId: '', reason: '' }); setAddOpen(true); }}>
             {t('docs.admin.settings.blacklistAdd')}
           </Button>
         </div>
         <p className="muted-text">{t('docs.admin.settings.riskTip')}</p>
-        <Table
+        <Table className="table-fit"
           columns={[
             { title: t('docs.admin.settings.blacklistUser'), dataIndex: 'username', width: 140 },
             { title: t('docs.admin.settings.blacklistReason'), dataIndex: 'reason' },
@@ -160,11 +166,14 @@ export default function DocsSettings() {
         open={addOpen}
         title={t('docs.admin.settings.blacklistAdd')}
         typewriter={false}
-        onClose={() => setAddOpen(false)}
+        onClose={() => {
+          if (!busy) setAddOpen(false);
+        }}
+        maskClosable={!busy}
         footer={
           <>
-            <Button onClick={() => setAddOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} icon={<BanIcon />} onClick={addToBlacklist}>
+            <Button onClick={() => setAddOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={busy} disabled={busy || !addForm.userId.trim() || !Number(addForm.userId)} icon={<BanIcon />} onClick={addToBlacklist}>
               {t('docs.admin.settings.blacklistAdd')}
             </Button>
           </>

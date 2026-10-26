@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Form, FormItem, Input, Modal, Notification, Select, Switch, Table, Tabs, Tag, Title, useForm,
-} from 'animal-island-ui';
+  Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, Title, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 const PORT_TYPES = ['land', 'air', 'sea'];
 const PORT_STATUSES = ['open', 'closed', 'maintenance'];
@@ -40,7 +40,7 @@ function PortsTab() {
       } else {
         await api.post('/immigration/admin/ports', values);
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       load();
     } catch (err) {
@@ -51,7 +51,7 @@ function PortsTab() {
   const changeStatus = async (port, status) => {
     try {
       await api.post(`/immigration/admin/ports/${port.id}/status`, { status });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       load();
     } catch (err) {
       toastApiError(err);
@@ -61,7 +61,7 @@ function PortsTab() {
   const addChannel = async (values) => {
     try {
       await api.post(`/immigration/admin/ports/${channelTarget.id}/channels`, values);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setChannelTarget(null);
       load();
     } catch (err) {
@@ -108,7 +108,7 @@ function PortsTab() {
           <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ name: record.nameCn ?? record.name, nameTw: record.nameTw ?? '', type: record.type, openHours: record.openHoursCn ?? record.openHours, openHoursTw: record.openHoursTw ?? '', notice: record.noticeCn ?? record.notice, noticeTw: record.noticeTw ?? '', mapDesc: record.mapDescCn ?? record.mapDesc, mapDescTw: record.mapDescTw ?? '' }); }}>
             {t('common.edit')}
           </Button>
-          <Button type="default" size="small" icon={<PlusIcon />} onClick={() => { setChannelTarget(record); channelForm.resetFields(); }}>
+          <Button type="default" size="small" icon={<PlusIcon />} onClick={() => { setChannelTarget(record); channelForm.resetFields(); channelForm.setFieldsValue({ type: 'normal' }); }}>
             {t('imm.admin.addChannel')}
           </Button>
         </div>
@@ -119,11 +119,11 @@ function PortsTab() {
   return (
     <>
       <div className="im-tab-toolbar">
-        <Button type="primary" icon={<PlusIcon />} onClick={() => { setEditing({}); form.resetFields(); }}>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => { setEditing({}); form.resetFields(); form.setFieldsValue({ type: 'land' }); }}>
           {t('imm.admin.createPort')}
         </Button>
       </div>
-      <Table columns={columns} dataSource={ports ?? []} loading={ports === null} rowKey="id" pagination={false} />
+      <Table className="table-fit" columns={columns} dataSource={ports ?? []} loading={ports === null} rowKey="id" pagination={false} />
 
       <Modal
         open={editing !== null}
@@ -146,7 +146,7 @@ function PortsTab() {
             <Input size="large" placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem name="type" label={t('imm.admin.portTypeLabel')} rules={[{ required: true }]}>
-            <Select options={PORT_TYPES.map((p) => ({ key: p, label: t(`imm.portType.${p}`) }))} value={form.getFieldValue('type') ?? 'land'} onChange={(v) => form.setFieldValue('type', v)} />
+            <Select options={PORT_TYPES.map((p) => ({ key: p, label: t(`imm.portType.${p}`) }))} />
           </FormItem>
           <FormItem name="openHours" label={t('imm.admin.openHours')}>
             <Input size="large" placeholder="09:00 - 21:00" />
@@ -188,7 +188,7 @@ function PortsTab() {
             <Input size="large" placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem name="type" label={t('imm.admin.channelType')} rules={[{ required: true }]}>
-            <Select options={CHANNEL_TYPES.map((c) => ({ key: c, label: t(`imm.channelType.${c}`) }))} value={channelForm.getFieldValue('type') ?? 'normal'} onChange={(v) => channelForm.setFieldValue('type', v)} />
+            <Select options={CHANNEL_TYPES.map((c) => ({ key: c, label: t(`imm.channelType.${c}`) }))} />
           </FormItem>
           <FormItem name="description" label={t('common.description')}>
             <Input size="large" maxLength={120} />
@@ -252,7 +252,7 @@ function AnnouncementsTab() {
       } else {
         await api.post('/immigration/admin/announcements', { ...values, portId });
       }
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       setEditing(null);
       load();
     } catch (err) {
@@ -272,6 +272,7 @@ function AnnouncementsTab() {
   const remove = async (row) => {
     try {
       await api.del(`/immigration/admin/announcements/${row.id}`);
+      toastSuccess(t('common.deleted'));
       load();
     } catch (err) {
       toastApiError(err);
@@ -301,8 +302,6 @@ function AnnouncementsTab() {
     },
   ];
 
-  const levelValue = form.getFieldValue('level') ?? 'info';
-
   return (
     <>
       <div className="im-tab-toolbar">
@@ -310,7 +309,7 @@ function AnnouncementsTab() {
           {t('imm.admin.createAnn')}
         </Button>
       </div>
-      <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
 
       <Modal
         open={editing !== null}
@@ -334,13 +333,11 @@ function AnnouncementsTab() {
             <Input size="large" maxLength={1000} placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem name="level" label={t('imm.admin.level')} rules={[{ required: true }]}>
-            <Select options={LEVELS.map((l) => ({ key: l, label: t(`imm.level.${l}`) }))} value={levelValue} onChange={(v) => form.setFieldValue('level', v)} />
+            <Select options={LEVELS.map((l) => ({ key: l, label: t(`imm.level.${l}`) }))} />
           </FormItem>
           <FormItem name="portId" label={t('imm.admin.annPort')}>
             <Select
               options={[{ key: 'none', label: t('imm.admin.globalAnn') }, ...ports.map((p) => ({ key: String(p.id), label: p.name }))]}
-              value={form.getFieldValue('portId') ?? 'none'}
-              onChange={(v) => form.setFieldValue('portId', v)}
             />
           </FormItem>
           <FormItem>

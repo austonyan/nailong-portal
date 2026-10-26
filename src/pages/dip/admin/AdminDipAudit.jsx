@@ -1,9 +1,10 @@
 // 审计与合规: 审计日志查询 / 消息模板编辑 / 发送记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Notification, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { toastSuccess, toastError } from '../../../components/toast.js';
 
 function TemplateModal({ initial, onClose, onSaved }) {
   const { t } = useTranslation();
@@ -15,10 +16,14 @@ function TemplateModal({ initial, onClose, onSaved }) {
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
+    if (!title.trim() || !body.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.put(`/dip/admin/templates/${initial.id}`, { title: title.trim(), body: body.trim(), titleTw: titleTw.trim(), bodyTw: bodyTw.trim(), enabled });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       onSaved();
       onClose();
     } catch (err) {
@@ -37,8 +42,8 @@ function TemplateModal({ initial, onClose, onSaved }) {
       width={540}
       footer={
         <>
-          <Button onClick={onClose}>{t('common.cancel')}</Button>
-          <Button type="primary" loading={busy} onClick={save}>{t('common.save')}</Button>
+          <Button onClick={onClose} disabled={busy}>{t('common.cancel')}</Button>
+          <Button type="primary" loading={busy} disabled={busy || !title.trim() || !body.trim()} onClick={save}>{t('common.save')}</Button>
         </>
       }
     >
@@ -119,7 +124,7 @@ export default function AdminDipAudit() {
 
   const templateColumns = [
     { title: t('dip.templates.code'), dataIndex: 'code', width: 220 },
-    { title: t('dip.templates.title'), dataIndex: 'title', ellipsis: true },
+    { title: t('dip.templates.title'), dataIndex: 'title', style: { maxWidth: 320 } },
     { title: t('dip.templates.variables'), dataIndex: 'variables', width: 160 },
     {
       title: t('common.status'),
@@ -134,7 +139,7 @@ export default function AdminDipAudit() {
     { title: 'ID', dataIndex: 'id', width: 70 },
     { title: t('dip.blacklist.user'), dataIndex: 'username', width: 120 },
     { title: t('dip.templates.code'), dataIndex: 'template_code', width: 220 },
-    { title: t('dip.templates.title'), dataIndex: 'title', ellipsis: true },
+    { title: t('dip.templates.title'), dataIndex: 'title', style: { maxWidth: 320 } },
     { title: t('dip.messages.unread'), dataIndex: 'read', width: 90, render: (v) => (v ? t('dip.messages.read') : t('dip.messages.unread')) },
     { title: t('dip.audit.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
   ];
@@ -157,19 +162,19 @@ export default function AdminDipAudit() {
             <Input value={action} onChange={(e) => setAction(e.target.value)} placeholder={t('dip.audit.actionPrefix')} allowClear maxLength={40} />
             <Button onClick={load}>{t('common.search')}</Button>
           </div>
-          <Table columns={auditColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} />
+          <Table className="table-fit" columns={auditColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} />
         </Card>
       )}
 
       {tab === 'templates' && (
         <Card>
-          <Table columns={templateColumns} dataSource={templates ?? []} loading={templates === null} rowKey="id" pagination={false} />
+          <Table className="table-fit" columns={templateColumns} dataSource={templates ?? []} loading={templates === null} rowKey="id" pagination={false} />
         </Card>
       )}
 
       {tab === 'sendlog' && (
         <Card>
-          <Table columns={sendColumns} dataSource={sendLog ?? []} loading={sendLog === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} />
+          <Table className="table-fit" columns={sendColumns} dataSource={sendLog ?? []} loading={sendLog === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} />
         </Card>
       )}
 

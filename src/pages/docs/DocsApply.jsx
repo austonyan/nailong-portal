@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, Card, Input, Modal, Notification, Radio, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Radio, Tag, Title, Upload } from 'animal-island-ui';
 import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
+import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
 const emptyForm = {
   nickname: '',
@@ -36,7 +37,7 @@ export default function DocsApply() {
         if (!cancelled) setTypes(d.items);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
         if (!cancelled) setTypes([]);
       });
     return () => {
@@ -72,7 +73,7 @@ export default function DocsApply() {
           formData: item.formData || {},
         });
       })
-      .catch((err) => Notification.error(t(`api.${err.code}`, { defaultValue: err.message })));
+      .catch((err) => toastError(t(`api.${err.code}`, { defaultValue: err.message })));
     return () => {
       cancelled = true;
     };
@@ -102,17 +103,17 @@ export default function DocsApply() {
       try {
         if (appId) {
           await api.patch(`/docs/applications/${appId}`, payload());
-          if (!silent) Notification.success(t('docs.apply.draftSaved'));
+          if (!silent) toastSuccess(t('docs.apply.draftSaved'));
           return appId;
         }
         const d = await api.post('/docs/applications', payload());
         setAppId(d.item.id);
         setAppNo(d.item.appNo);
         setMaterials(d.item.materials || []);
-        if (!silent) Notification.success(t('docs.apply.draftSaved'));
+        if (!silent) toastSuccess(t('docs.apply.draftSaved'));
         return d.item.id;
       } catch (err) {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         return null;
       } finally {
         setSaving(false);
@@ -134,7 +135,7 @@ export default function DocsApply() {
       const d = await requestForm(`/docs/applications/${id}/materials`, fd);
       setMaterials((list) => [...list, d.item]);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -143,7 +144,7 @@ export default function DocsApply() {
       await api.del(`/docs/materials/${m.id}`);
       setMaterials((list) => list.filter((x) => x.id !== m.id));
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     }
   };
 
@@ -163,7 +164,7 @@ export default function DocsApply() {
   const submit = async () => {
     const problem = validateForSubmit();
     if (problem) {
-      Notification.warning(problem);
+      toastWarning(problem);
       setConfirming(false);
       return;
     }
@@ -176,11 +177,11 @@ export default function DocsApply() {
         id = d.item.id;
       }
       const d = await api.post(`/docs/applications/${id}/submit`, {});
-      Notification.success(t('docs.apply.submitted', { no: d.item.appNo }));
+      toastSuccess(t('docs.apply.submitted', { no: d.item.appNo }));
       setConfirming(false);
       navigate(`/docs/applications/${d.item.id}`);
     } catch (err) {
-      Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
     } finally {
       setBusy(false);
     }
@@ -188,7 +189,7 @@ export default function DocsApply() {
 
   const pickType = (code) => {
     if (appId) {
-      Notification.warning(t('docs.apply.typeLocked'));
+      toastWarning(t('docs.apply.typeLocked'));
       return;
     }
     setTypeCode(code);
@@ -312,8 +313,8 @@ export default function DocsApply() {
                         return file.type === r;
                       });
                     const okSize = file.size <= (Number(m.max_mb) || 10) * 1024 * 1024;
-                    if (!okType) Notification.error(t('docs.apply.fileTypeBad', { accept: m.accept }));
-                    if (!okSize) Notification.error(t('docs.apply.fileTooLarge', { mb: m.max_mb }));
+                    if (!okType) toastError(t('docs.apply.fileTypeBad', { accept: m.accept }));
+                    if (!okSize) toastError(t('docs.apply.fileTooLarge', { mb: m.max_mb }));
                     return okType && okSize;
                   }}
                 >
@@ -346,10 +347,10 @@ export default function DocsApply() {
 
           <Card className="docs-block">
             <div className="docs-apply-actions">
-              <Button onClick={() => saveDraft()} loading={saving} icon={<SaveIcon />}>
+              <Button onClick={() => saveDraft()} loading={saving} icon={<SaveIcon />} disabled={saving}>
                 {t('docs.apply.saveDraft')}
               </Button>
-              <Button type="primary" icon={<SendIcon />} onClick={() => setConfirming(true)} loading={busy}>
+              <Button type="primary" icon={<SendIcon />} onClick={() => setConfirming(true)} loading={busy} disabled={busy}>
                 {t('docs.apply.submit')}
               </Button>
               {appNo && (
@@ -371,7 +372,7 @@ export default function DocsApply() {
         footer={
           <>
             <Button onClick={() => setConfirming(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger={false} loading={busy} onClick={submit}>
+            <Button type="primary" danger={false} loading={busy} onClick={submit} disabled={busy}>
               {t('docs.apply.confirmSubmit')}
             </Button>
           </>

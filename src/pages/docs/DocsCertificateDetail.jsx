@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Notification, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag, Title } from 'animal-island-ui';
 import { CopyIcon, DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS, exportCertificatePng } from '../../api/docs.js';
 import CertificateView from './CertificateView.jsx';
+import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
 export default function DocsCertificateDetail() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export default function DocsCertificateDetail() {
         if (!cancelled) setItem(d.item);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         if (!cancelled) setItem(false);
       });
     return () => {
@@ -55,9 +56,9 @@ export default function DocsCertificateDetail() {
   const copyNo = async () => {
     try {
       await navigator.clipboard.writeText(item.certNo);
-      Notification.success(t('docs.cert.copied'));
+      toastSuccess(t('docs.cert.copied'));
     } catch {
-      Notification.warning(t('docs.cert.copyFailed'));
+      toastWarning(t('docs.cert.copyFailed'));
     }
   };
 
@@ -94,7 +95,7 @@ export default function DocsCertificateDetail() {
                   seal2: t('docs.cert.seal2'),
                   seal3: t('docs.cert.seal3'),
                 },
-              }).catch(() => Notification.error(t('docs.cert.exportFailed')))
+              }).catch(() => toastError(t('docs.cert.exportFailed')))
             }
           >
             {t('docs.cert.downloadPng')}

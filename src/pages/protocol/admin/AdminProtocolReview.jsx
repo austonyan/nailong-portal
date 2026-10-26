@@ -178,7 +178,7 @@ export default function AdminProtocolReview() {
       </div>
 
       <Card>
-        <Table
+        <Table className="table-fit"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}
@@ -273,12 +273,15 @@ export default function AdminProtocolReview() {
       <Modal
         open={action !== null}
         title={action ? t(`protocol.admin.action_${action.kind}`) : ''}
-        onClose={() => setAction(null)}
+        onClose={() => {
+          if (!busy) setAction(null);
+        }}
+        maskClosable={!busy}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('protocol.action.back')}</Button>
-            <Button type="primary" danger={action?.kind === 'reject'} loading={busy} disabled={action?.kind === 'reject' && !reason} onClick={runAction}>
+            <Button onClick={() => setAction(null)} disabled={busy}>{t('protocol.action.back')}</Button>
+            <Button type="primary" danger={action?.kind === 'reject'} loading={busy} disabled={busy || (action?.kind === 'reject' && !reason)} onClick={runAction}>
               {t('common.confirm')}
             </Button>
           </>

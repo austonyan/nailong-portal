@@ -77,13 +77,21 @@ export default function ProtocolMessages() {
   }, [load]);
 
   const markRead = async (msg) => {
-    await api.post(`/protocol/messages/${msg.id}/read`);
-    await load();
+    try {
+      await api.post(`/protocol/messages/${msg.id}/read`);
+      await load();
+    } catch (err) {
+      toastProtocolError(t, err);
+    }
   };
 
   const archive = async (msg) => {
-    await api.post(`/protocol/messages/${msg.id}/archive`);
-    await load();
+    try {
+      await api.post(`/protocol/messages/${msg.id}/archive`);
+      await load();
+    } catch (err) {
+      toastProtocolError(t, err);
+    }
   };
 
   const submitTicket = async () => {
@@ -124,7 +132,7 @@ export default function ProtocolMessages() {
           <span>{t('protocol.field.body')}</span>
           <TextArea rows={4} value={body} onChange={(e) => setBody(e.target.value)} placeholder={t('protocol.messages.bodyPlaceholder')} />
         </label>
-        <Button type="primary" icon={<SendIcon />} loading={busy} onClick={submitTicket}>
+        <Button type="primary" icon={<SendIcon />} loading={busy} onClick={submitTicket} disabled={busy}>
           {t('protocol.messages.submitSupport')}
         </Button>
       </Card>

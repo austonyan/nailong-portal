@@ -2,20 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Collapse,
-  Drawer,
-  Input,
-  Modal,
-  Notification,
-  Select,
-  Tag,
-  Title,
-} from 'animal-island-ui';
+  Button, Card, Collapse, Drawer, Input, Modal, Select, Tag, Title } from 'animal-island-ui';
 import { PlusIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TextArea, TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 const FAQ_KEYS = ['reset', 'unbind', 'slow', 'display', 'contact'];
 
@@ -50,7 +41,7 @@ export default function AppealTickets() {
     setBusy(true);
     try {
       const data = await api.post('/appeal/tickets', { category, priority, title, content });
-      Notification.success(t('appeal.ticket.submitDone', { no: data.ticket.code }));
+      toastSuccess(t('appeal.ticket.submitDone', { no: data.ticket.code }));
       setCreateOpen(false);
       setTitle('');
       setContent('');
@@ -76,7 +67,7 @@ export default function AppealTickets() {
     setBusy(true);
     try {
       await api.post(`/appeal/tickets/${detail.id}/reply`, { content: reply });
-      Notification.success(t('appeal.ticket.replyDone'));
+      toastSuccess(t('appeal.ticket.replyDone'));
       const data = await api.get(`/appeal/tickets/${detail.id}`);
       setDetail(data.ticket);
       setReply('');
@@ -91,7 +82,7 @@ export default function AppealTickets() {
     setBusy(true);
     try {
       await api.post(`/appeal/tickets/${detail.id}/close`, {});
-      Notification.success(t('appeal.ticket.closeDone'));
+      toastSuccess(t('appeal.ticket.closeDone'));
       const data = await api.get(`/appeal/tickets/${detail.id}`);
       setDetail(data.ticket);
       await load();
@@ -234,10 +225,10 @@ export default function AppealTickets() {
               <div className="appeal-ticket-reply-box">
                 <TextArea rows={3} maxLength={2000} value={reply} onChange={(e) => setReply(e.target.value)} placeholder={t('appeal.ticket.replyPlaceholder')} />
                 <div className="table-actions">
-                  <Button danger onClick={doClose} loading={busy}>
+                  <Button danger onClick={doClose} loading={busy} disabled={busy}>
                     {t('appeal.ticket.close')}
                   </Button>
-                  <Button type="primary" loading={busy} disabled={!reply.trim()} onClick={doReply}>
+                  <Button type="primary" loading={busy} disabled={busy || (!reply.trim())} onClick={doReply}>
                     {t('appeal.ticket.sendReply')}
                   </Button>
                 </div>

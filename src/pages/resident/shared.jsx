@@ -5,7 +5,8 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import QRCode from 'qrcode';
-import { Notification, Tag } from 'animal-island-ui';
+import { Tag } from 'animal-island-ui';
+import { toast } from '../../components/toast.js';
 
 export const APPLICATION_STATUS_COLORS = {
   draft: 'default',
@@ -42,8 +43,15 @@ export function resErrMsg(t, err) {
   return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
 }
 
+// 统一走全站 toast(库的通知 API 在 React 19 下会抛异常,不能用于关键流程)
+export function resToast(kind, message) {
+  toast(kind, message);
+}
+
+export const toastResSuccess = (message) => resToast('success', message);
+
 export function toastResError(t, err) {
-  Notification.error(resErrMsg(t, err));
+  resToast('error', resErrMsg(t, err));
 }
 
 // 材料类型 → i18n key(res.materialKind.*)

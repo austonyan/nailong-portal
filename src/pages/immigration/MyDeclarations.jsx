@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Notification, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Modal, Table, Tag, Title } from 'animal-island-ui';
 import { CodeIcon, EditIcon, PlusIcon, RefreshIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav, StatusTag } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
+import { toastSuccess } from '../../components/toast.js';
 
 function InfoRow({ label, children }) {
   return (
@@ -38,7 +39,7 @@ function DeclarationDetail({ id, onClose, onChanged }) {
     setBusy(true);
     try {
       await api.post(path);
-      Notification.success(okMsg);
+      toastSuccess(okMsg);
       onChanged();
       load();
     } catch (err) {
@@ -108,12 +109,12 @@ function DeclarationDetail({ id, onClose, onChanged }) {
             type="primary"
             size="small"
             loading={busy}
-            disabled={!supplementText.trim()}
+            disabled={busy || (!supplementText.trim())}
             onClick={async () => {
               setBusy(true);
               try {
                 await api.post(`/immigration/declarations/${d.id}/supplement`, { content: supplementText.trim() });
-                Notification.success(t('imm.mydecl.supplementSent'));
+                toastSuccess(t('imm.mydecl.supplementSent'));
                 setSupplementText('');
                 onChanged();
                 load();
@@ -153,13 +154,13 @@ function DeclarationDetail({ id, onClose, onChanged }) {
             <Link to={`/immigration/declare/${d.id}`}>
               <Button type="primary" icon={<EditIcon />} onClick={onClose}>{t('common.edit')}</Button>
             </Link>
-            <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/submit`, t('imm.declare.submitted', { no: d.no }))}>
+            <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/submit`, t('imm.declare.submitted', { no: d.no }))} disabled={busy}>
               {t('imm.declare.submit')}
             </Button>
           </>
         )}
         {d.status === 'pending' && (
-          <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/withdraw`, t('imm.mydecl.withdrawn'))}>
+          <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/withdraw`, t('imm.mydecl.withdrawn'))} disabled={busy}>
             {t('imm.mydecl.withdraw')}
           </Button>
         )}
@@ -199,7 +200,7 @@ export default function MyDeclarations() {
   const removeDraft = async () => {
     try {
       await api.del(`/immigration/declarations/${deleteTarget.id}`);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.deleted'));
       setDeleteTarget(null);
       setOpenId(null);
       load();
@@ -254,7 +255,7 @@ export default function MyDeclarations() {
         </Link>
       </div>
       <Card>
-        <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
       <Drawer open={openId !== null} title={t('imm.mydecl.detailTitle')} onClose={() => setOpenId(null)} width={540}>

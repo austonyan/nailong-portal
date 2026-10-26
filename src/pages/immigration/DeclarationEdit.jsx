@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Checkbox, Form, FormItem, Input, Modal, Notification, Radio, Select, Tag, Title, useForm,
-} from 'animal-island-ui';
+  Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, Title, useForm } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
+import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
 const ITEM_KEYS = ['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card'];
@@ -87,14 +87,14 @@ export default function DeclarationEdit() {
   const checkVisa = async () => {
     const visaNo = form.getFieldValue('visaNo');
     if (!visaNo) {
-      Notification.warning(t('imm.declare.visaFirst'));
+      toastWarning(t('imm.declare.visaFirst'));
       return;
     }
     try {
       const data = await api.post('/immigration/visa/check', { visaNo });
       setVisaState(data);
-      if (data.result === 'valid') Notification.success(t('imm.declare.visaOk'));
-      else Notification.warning(t(`api.IMM_VISA_${data.result.toUpperCase()}`, { defaultValue: data.result }));
+      if (data.result === 'valid') toastSuccess(t('imm.declare.visaOk'));
+      else toastWarning(t(`api.IMM_VISA_${data.result.toUpperCase()}`, { defaultValue: data.result }));
     } catch (err) {
       toastApiError(err);
     }
@@ -137,7 +137,7 @@ export default function DeclarationEdit() {
     try {
       const saved = await persistDraft();
       if (saved) {
-        Notification.success(t('imm.declare.draftSaved'));
+        toastSuccess(t('imm.declare.draftSaved'));
         if (!id) navigate(`/immigration/declare/${saved.id}`, { replace: true });
       }
     } catch (err) {
@@ -156,7 +156,7 @@ export default function DeclarationEdit() {
         return;
       }
       const data = await api.post(`/immigration/declarations/${current.id}/submit`, {});
-      Notification.success(t('imm.declare.submitted', { no: data.declaration.no }));
+      toastSuccess(t('imm.declare.submitted', { no: data.declaration.no }));
       setConfirming(false);
       navigate('/immigration/declarations');
     } catch (err) {
@@ -277,7 +277,7 @@ export default function DeclarationEdit() {
 
           <FormItem>
             <div className="im-form-actions">
-              <Button type="default" size="large" loading={busy} onClick={saveDraft}>
+              <Button type="default" size="large" loading={busy} onClick={saveDraft} disabled={busy}>
                 {t('imm.declare.saveDraft')}
               </Button>
               <Button type="primary" size="large" htmlType="submit">
@@ -309,7 +309,7 @@ export default function DeclarationEdit() {
         footer={
           <>
             <Button onClick={() => setConfirming(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit} disabled={busy}>
               {t('imm.declare.submit')}
             </Button>
           </>

@@ -145,6 +145,7 @@ export default function ProtocolHosts() {
     }
     try {
       await api.del(`/protocol/hosts/${editing.id}`);
+      toastSuccess(t('common.deleted'));
       setEditing(null);
       await load();
     } catch (err) {
@@ -223,7 +224,7 @@ export default function ProtocolHosts() {
                 </Button>
               )}
               {editable && (
-                <Button type="primary" loading={busy} icon={<SendIcon />} onClick={submit}>
+                <Button type="primary" loading={busy} icon={<SendIcon />} onClick={submit} disabled={busy}>
                   {t('protocol.action.submit')}
                 </Button>
               )}
@@ -324,12 +325,12 @@ export default function ProtocolHosts() {
             )}
 
             {editable && editing === 'new' && (
-              <Button type="primary" block loading={busy} onClick={() => saveDraft()}>
+              <Button type="primary" block loading={busy} onClick={() => saveDraft()} disabled={busy}>
                 {t('protocol.action.saveDraft')}
               </Button>
             )}
             {editable && editing !== 'new' && (
-              <Button block loading={busy} onClick={() => saveDraft()}>
+              <Button block loading={busy} onClick={() => saveDraft()} disabled={busy}>
                 {t('protocol.action.saveDraft')}
               </Button>
             )}

@@ -391,10 +391,10 @@ export default function ProtocolApply() {
             <p className="muted-text">{t('protocol.apply.summaryTip')}</p>
             {!readOnly && (
               <div className="protocol-apply-actions">
-                <Button block loading={busy} onClick={() => saveDraft()}>
+                <Button block loading={busy} onClick={() => saveDraft()} disabled={busy}>
                   {t('protocol.action.saveDraft')}
                 </Button>
-                <Button type="primary" block icon={<SendIcon />} loading={busy} onClick={openConfirm}>
+                <Button type="primary" block icon={<SendIcon />} loading={busy} onClick={openConfirm} disabled={busy}>
                   {t('protocol.action.nextConfirm')}
                 </Button>
               </div>
@@ -411,7 +411,7 @@ export default function ProtocolApply() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('protocol.action.back')}</Button>
-            <Button type="primary" loading={busy} onClick={submit}>
+            <Button type="primary" loading={busy} onClick={submit} disabled={busy}>
               {t('protocol.action.confirmSubmit')}
             </Button>
           </>

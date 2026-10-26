@@ -1,10 +1,11 @@
 // 虚构代表处管理: 代表处 CRUD / 状态(开放·关闭·维护) / 公告发布编辑下线。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Notification, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Modal, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { toastSuccess } from '../../../components/toast.js';
 
 function OfficeModal({ initial, onClose, onSaved }) {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ function OfficeModal({ initial, onClose, onSaved }) {
       };
       if (editing) await api.patch(`/dip/admin/offices/${initial.id}`, payload);
       else await api.post('/dip/admin/offices', payload);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       onSaved();
       onClose();
     } catch (err) {
@@ -141,7 +142,7 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
       const payload = { title: values.title, titleTw: values.titleTw, body: values.body, bodyTw: values.bodyTw, level: values.level, officeId: values.officeId ? Number(values.officeId) : null };
       if (editing) await api.patch(`/dip/admin/notices/${initial.id}`, payload);
       else await api.post('/dip/admin/notices', payload);
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       onSaved();
       onClose();
     } catch (err) {
@@ -222,7 +223,7 @@ export default function AdminDipOffices() {
   const setOfficeStatus = async (row, status) => {
     try {
       await api.post(`/dip/admin/offices/${row.id}/status`, { status });
-      Notification.success(t('common.save'));
+      toastSuccess(t('common.save'));
       load();
     } catch (err) {
       toastDipError(t, err);
@@ -232,6 +233,7 @@ export default function AdminDipOffices() {
   const offlineNotice = async (row) => {
     try {
       await api.post(`/dip/admin/notices/${row.id}/offline`);
+      toastSuccess(t('common.saved'));
       load();
     } catch (err) {
       toastDipError(t, err);
@@ -241,6 +243,7 @@ export default function AdminDipOffices() {
   const deleteNotice = async (row) => {
     try {
       await api.del(`/dip/admin/notices/${row.id}`);
+      toastSuccess(t('common.deleted'));
       load();
     } catch (err) {
       toastDipError(t, err);
@@ -299,7 +302,7 @@ export default function AdminDipOffices() {
       </div>
 
       <Card>
-        <Table columns={officeColumns} dataSource={offices ?? []} loading={offices === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={officeColumns} dataSource={offices ?? []} loading={offices === null} rowKey="id" pagination={false} />
       </Card>
 
       <div className="page-header">
@@ -307,7 +310,7 @@ export default function AdminDipOffices() {
         <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeModal({})}>{t('dip.notice.publish')}</Button>
       </div>
       <Card>
-        <Table columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} />
       </Card>
 
       {officeModal !== null && <OfficeModal initial={officeModal} onClose={() => setOfficeModal(null)} onSaved={load} />}

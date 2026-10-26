@@ -83,7 +83,7 @@ export default function AppealAdminAudit() {
                     />
                     <Button onClick={load}>{t('appeal.audit.refresh')}</Button>
                   </div>
-                  <Table columns={auditColumns} dataSource={items} loading={loading} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={auditColumns} dataSource={items} loading={loading} rowKey="id" pagination={false} emptyText={t('common.empty')} />
                 </>
               ),
             },
@@ -93,7 +93,7 @@ export default function AppealAdminAudit() {
               children: (
                 <>
                   <p className="muted-text">{t('appeal.audit.verifyTip')}</p>
-                  <Table columns={verifyColumns} dataSource={verifyLogs} loading={loading} rowKey="id" pagination={false} emptyText={t('common.empty')} />
+                  <Table className="table-fit" columns={verifyColumns} dataSource={verifyLogs} loading={loading} rowKey="id" pagination={false} emptyText={t('common.empty')} />
                 </>
               ),
             },

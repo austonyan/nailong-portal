@@ -4,23 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  Modal,
-  Notification,
-  Select,
-  Tag,
-  Title,
-  Upload,
-  useForm,
-} from 'animal-island-ui';
+  Button, Card, Form, FormItem, Input, Modal, Select, Tag, Title, Upload, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadAppealMaterial } from '../../api/appeal.js';
 import { BIZ_TYPES, MATERIAL_KINDS, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
+import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AppealApply() {
   const { t } = useTranslation();
@@ -84,7 +73,7 @@ export default function AppealApply() {
       const values = await form.getFieldsValue();
       const data = await api.put(`/appeal/appeals/${appeal.id}`, values);
       setAppeal(data.appeal);
-      if (!silent) Notification.success(t('common.saved'));
+      if (!silent) toastSuccess(t('common.saved'));
     } catch (err) {
       if (!silent) toastAppealError(t, err);
     } finally {
@@ -103,7 +92,7 @@ export default function AppealApply() {
         onSuccess(material);
       })
       .catch((err) => {
-        Notification.error(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
         onError(err);
       });
   };
@@ -134,7 +123,7 @@ export default function AppealApply() {
       const data = await api.post(`/appeal/appeals/${appeal.id}/submit`, {});
       setSubmitted(data.appeal);
       setConfirmOpen(false);
-      Notification.success(t('appeal.apply.submitSuccess'));
+      toastSuccess(t('appeal.apply.submitSuccess'));
     } catch (err) {
       toastAppealError(t, err);
     } finally {
@@ -192,7 +181,7 @@ export default function AppealApply() {
             onChange={(e) => setBizCode(e.target.value)}
           />
           {!appeal && (
-            <Button type="primary" loading={busy} disabled={!bizCode.trim()} onClick={createDraft}>
+            <Button type="primary" loading={busy} disabled={busy || (!bizCode.trim())} onClick={createDraft}>
               {t('appeal.apply.createDraft')}
             </Button>
           )}
@@ -259,7 +248,7 @@ export default function AppealApply() {
 
       <div className="appeal-guide-actions">
         <Button onClick={() => navigate('/appeal/my')}>{t('appeal.back')}</Button>
-        <Button icon={<SaveIcon />} loading={busy} disabled={!appeal} onClick={() => saveDraft(false)}>
+        <Button icon={<SaveIcon />} loading={busy} disabled={busy || (!appeal)} onClick={() => saveDraft(false)}>
           {t('appeal.apply.saveDraft')}
         </Button>
         <Button type="primary" size="large" icon={<SendIcon />} disabled={!appeal} onClick={openConfirm}>
@@ -276,7 +265,7 @@ export default function AppealApply() {
         footer={
           <>
             <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doSubmit}>
+            <Button type="primary" loading={busy} onClick={doSubmit} disabled={busy}>
               {t('appeal.apply.submit')}
             </Button>
           </>

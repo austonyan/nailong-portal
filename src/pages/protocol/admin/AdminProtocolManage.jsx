@@ -155,7 +155,7 @@ export default function AdminProtocolManage() {
     if (!deleteNotice) return;
     try {
       await api.del(`/protocol/admin/notices/${deleteNotice.id}`);
-      toastSuccess(t('common.delete'));
+      toastSuccess(t('common.deleted'));
       setDeleteNotice(null);
       await loadNotices();
     } catch (err) {
@@ -273,7 +273,7 @@ export default function AdminProtocolManage() {
         </Button>
       </div>
       <Card>
-        <Table columns={typeColumns} dataSource={types ?? []} loading={types === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+        <Table className="table-fit" columns={typeColumns} dataSource={types ?? []} loading={types === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
       </Card>
     </div>
   );
@@ -305,7 +305,7 @@ export default function AdminProtocolManage() {
         </Button>
       </div>
       <Card>
-        <Table columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
+        <Table className="table-fit" columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
       </Card>
     </div>
   );
@@ -313,7 +313,7 @@ export default function AdminProtocolManage() {
   const templatesTab = (
     <Card>
       <p className="muted-text">{t('protocol.admin.templateHint')}</p>
-      <Table columns={templateColumns} dataSource={templates ?? []} loading={templates === null} rowKey="code" pagination={false} emptyText={t('protocol.common.noData')} />
+      <Table className="table-fit" columns={templateColumns} dataSource={templates ?? []} loading={templates === null} rowKey="code" pagination={false} emptyText={t('protocol.common.noData')} />
     </Card>
   );
 

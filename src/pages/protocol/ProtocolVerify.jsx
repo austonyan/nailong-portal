@@ -71,7 +71,7 @@ export default function ProtocolVerify() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && run()}
           />
-          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => run()}>
+          <Button type="primary" size="large" icon={<SearchIcon />} loading={busy} onClick={() => run()} disabled={busy}>
             {t('protocol.verify.action')}
           </Button>
         </div>
