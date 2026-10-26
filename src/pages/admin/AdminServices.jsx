@@ -52,7 +52,13 @@ export default function AdminServices() {
   const openEdit = (service) => {
     setEditing(service);
     form.resetFields();
-    form.setFieldsValue({ ...service, requiredPermission: service.requiredPermission ?? '', enabled: service.enabled });
+    form.setFieldsValue({
+      ...service,
+      name: service.nameCn ?? service.name,
+      description: service.descriptionCn ?? service.description,
+      requiredPermission: service.requiredPermission ?? '',
+      enabled: service.enabled,
+    });
   };
 
   const closeModal = () => {
@@ -65,8 +71,10 @@ export default function AdminServices() {
     try {
       const payload = {
         name: values.name?.trim(),
+        nameTw: values.nameTw?.trim() || '',
         url: values.url?.trim(),
         description: values.description?.trim() ?? '',
+        descriptionTw: values.descriptionTw?.trim() || '',
         icon: values.icon,
         color: values.color,
         requiredPermission: values.requiredPermission || null,
@@ -184,6 +192,9 @@ export default function AdminServices() {
           <FormItem name="name" label={t('common.name')} rules={[{ required: true, message: t('common.name') }]}>
             <Input size="large" allowClear />
           </FormItem>
+          <FormItem name="nameTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} allowClear />
+          </FormItem>
           <FormItem name="key" label={t('common.key')} help={t('admin.roles.keyTip')} rules={[{ required: true, message: t('admin.roles.keyTip') }]}>
             <Input size="large" disabled={!!editing?.id} placeholder="wiki" />
           </FormItem>
@@ -192,6 +203,9 @@ export default function AdminServices() {
           </FormItem>
           <FormItem name="description" label={t('common.description')}>
             <Input size="large" allowClear />
+          </FormItem>
+          <FormItem name="descriptionTw" label={`${t('common.description')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} allowClear />
           </FormItem>
           <FormItem name="icon" label={t('admin.services.icon')} rules={[{ required: true, message: t('admin.services.icon') }]}>
             <Select options={ICON_OPTIONS} />

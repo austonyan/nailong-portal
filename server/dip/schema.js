@@ -4,6 +4,7 @@
 // dip_* tables plus INSERT-only additions to the shared permissions / roles /
 // services registries, so the other service workstreams stay untouched.
 import { db, now } from '../db.js';
+import { ensureTwColumns } from '../migrate.js';
 
 let ensured = false;
 
@@ -15,8 +16,11 @@ export function ensureDipSchema() {
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     code        TEXT NOT NULL UNIQUE,
     name        TEXT NOT NULL,
+    name_tw     TEXT,
     description TEXT NOT NULL DEFAULT '',
+    description_tw TEXT,
     guide       TEXT NOT NULL DEFAULT '',
+    guide_tw    TEXT,
     enabled     INTEGER NOT NULL DEFAULT 0,
     sort_order  INTEGER NOT NULL DEFAULT 0,
     created_at  TEXT NOT NULL,
@@ -27,8 +31,11 @@ export function ensureDipSchema() {
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     code          TEXT NOT NULL UNIQUE,
     name          TEXT NOT NULL,
+    name_tw       TEXT,
     description   TEXT NOT NULL DEFAULT '',
+    description_tw TEXT,
     guide         TEXT NOT NULL DEFAULT '',
+    guide_tw      TEXT,
     validity_days INTEGER NOT NULL DEFAULT 365,
     enabled       INTEGER NOT NULL DEFAULT 0,
     sort_order    INTEGER NOT NULL DEFAULT 0,
@@ -40,8 +47,11 @@ export function ensureDipSchema() {
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     code        TEXT NOT NULL UNIQUE,
     name        TEXT NOT NULL,
+    name_tw     TEXT,
     description TEXT NOT NULL DEFAULT '',
+    description_tw TEXT,
     guide       TEXT NOT NULL DEFAULT '',
+    guide_tw    TEXT,
     enabled     INTEGER NOT NULL DEFAULT 0,
     sort_order  INTEGER NOT NULL DEFAULT 0,
     created_at  TEXT NOT NULL,
@@ -52,7 +62,9 @@ export function ensureDipSchema() {
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     code        TEXT NOT NULL UNIQUE,
     name        TEXT NOT NULL,
+    name_tw     TEXT,
     description TEXT NOT NULL DEFAULT '',
+    description_tw TEXT,
     enabled     INTEGER NOT NULL DEFAULT 1,
     sort_order  INTEGER NOT NULL DEFAULT 0,
     created_at  TEXT NOT NULL,
@@ -141,13 +153,16 @@ export function ensureDipSchema() {
     party_b        TEXT NOT NULL,
     type           TEXT NOT NULL DEFAULT 'entry_courtesy',
     courtesies     TEXT NOT NULL DEFAULT '',
+    courtesies_tw  TEXT,
     covered_scope  TEXT NOT NULL DEFAULT '',
+    covered_scope_tw TEXT,
     effective_from TEXT,
     effective_to   TEXT,
     status         TEXT NOT NULL DEFAULT 'draft'
                    CHECK (status IN ('draft','pending_effect','active','expired','terminated')),
     published      INTEGER NOT NULL DEFAULT 0,
     note           TEXT NOT NULL DEFAULT '',
+    note_tw        TEXT,
     created_by     INTEGER,
     created_at     TEXT NOT NULL,
     updated_at     TEXT NOT NULL
@@ -157,11 +172,17 @@ export function ensureDipSchema() {
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     code       TEXT NOT NULL UNIQUE,
     name       TEXT NOT NULL,
+    name_tw    TEXT,
     location   TEXT NOT NULL DEFAULT '',
+    location_tw TEXT,
     open_hours TEXT NOT NULL DEFAULT '',
+    open_hours_tw TEXT,
     intro      TEXT NOT NULL DEFAULT '',
+    intro_tw   TEXT,
     contact    TEXT NOT NULL DEFAULT '',
+    contact_tw TEXT,
     services   TEXT NOT NULL DEFAULT '',
+    services_tw TEXT,
     status     TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'closed', 'maintenance')),
     sort_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL,
@@ -172,7 +193,9 @@ export function ensureDipSchema() {
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     office_id    INTEGER REFERENCES dip_offices(id) ON DELETE CASCADE,
     title        TEXT NOT NULL,
+    title_tw     TEXT,
     body         TEXT NOT NULL,
+    body_tw      TEXT,
     level        TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info', 'warning', 'critical')),
     status       TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('published', 'offline')),
     published_at TEXT,
@@ -269,6 +292,8 @@ export function ensureDipSchema() {
     template_code TEXT NOT NULL,
     title         TEXT NOT NULL,
     body          TEXT NOT NULL,
+    title_tw      TEXT,
+    body_tw       TEXT,
     related       TEXT NOT NULL DEFAULT '{}',
     read          INTEGER NOT NULL DEFAULT 0,
     archived      INTEGER NOT NULL DEFAULT 0,
@@ -281,6 +306,8 @@ export function ensureDipSchema() {
     code           TEXT NOT NULL UNIQUE,
     title_template TEXT NOT NULL,
     body_template  TEXT NOT NULL,
+    title_template_tw TEXT,
+    body_template_tw  TEXT,
     variables      TEXT NOT NULL DEFAULT '',
     enabled        INTEGER NOT NULL DEFAULT 1,
     updated_at     TEXT NOT NULL
@@ -293,6 +320,15 @@ export function ensureDipSchema() {
   );
   `);
 
+  ensureTwColumns(db, 'dip_messages', ['title', 'body']);
+  ensureTwColumns(db, 'dip_message_templates', ['title_template', 'body_template']);
+  for (const table of ['dip_object_types', 'dip_relation_types', 'dip_identity_types']) {
+    ensureTwColumns(db, table, ['name', 'description', 'guide']);
+  }
+  ensureTwColumns(db, 'dip_courtesy_types', ['name', 'description']);
+  ensureTwColumns(db, 'dip_offices', ['name', 'location', 'open_hours', 'intro', 'contact', 'services']);
+  ensureTwColumns(db, 'dip_notices', ['title', 'body']);
+  ensureTwColumns(db, 'dip_agreements', ['courtesies', 'covered_scope', 'note']);
   seedDiplomacy();
 }
 
@@ -311,102 +347,136 @@ const MESSAGE_TEMPLATES = [
     code: 'relation_submitted',
     title: '建交申请已提交:{{no}}',
     body: '你的建交申请 {{no}} 已提交皇家外交事务署,预计 {{hours}} 小时内完成审核。可在"我的建交"中查看进度。',
+    titleTw: '建交申請已提交:{{no}}',
+    bodyTw: '你的建交申請 {{no}} 已提交皇家外交事務署,預計 {{hours}} 小時內完成審核。可在「我的建交」中查看進度。',
     variables: 'no, hours',
   },
   {
     code: 'relation_supplement',
     title: '建交补件通知:{{no}}',
     body: '建交申请 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在"我的建交"详情页在线补交。',
+    titleTw: '建交補件通知:{{no}}',
+    bodyTw: '建交申請 {{no}} 需要補件:{{note}}。請在 {{deadline}} 前在「我的建交」詳情頁線上補交。',
     variables: 'no, note, deadline',
   },
   {
     code: 'relation_supplement_received',
     title: '补件已收到:{{no}}',
     body: '建交申请 {{no}} 的补件材料已收到,重新进入待审队列。',
+    titleTw: '補件已收到:{{no}}',
+    bodyTw: '建交申請 {{no}} 的補件材料已收到,重新進入待審佇列。',
     variables: 'no',
   },
   {
     code: 'relation_established',
     title: '建交公报已生效:{{no}}',
     body: '恭喜!奶龙国已与 {{entity}} 正式建立{{typeName}}关系(编号 {{no}})。可前往"外交身份"为你的使团登记外交身份。',
+    titleTw: '建交公報已生效:{{no}}',
+    bodyTw: '恭喜!奶龍國已與 {{entity}} 正式建立{{typeName}}關係(編號 {{no}})。可前往「外交身分」為你的使團登記外交身分。',
     variables: 'no, entity, typeName',
   },
   {
     code: 'relation_rejected',
     title: '建交申请未通过:{{no}}',
     body: '很遗憾,建交申请 {{no}} 未通过审核(原因:{{reason}})。{{comment}} 你可以修改后重新申请。',
+    titleTw: '建交申請未通過:{{no}}',
+    bodyTw: '很遺憾,建交申請 {{no}} 未通過審核(原因:{{reason}})。{{comment}} 你可以修改後重新申請。',
     variables: 'no, reason, comment',
   },
   {
     code: 'relation_sever_request',
     title: '断交申请已受理:{{no}}',
     body: '建交关系 {{no}} 的断交申请已受理,将在复核后生效。断交后相关外交身份将同步失效。',
+    titleTw: '斷交申請已受理:{{no}}',
+    bodyTw: '建交關係 {{no}} 的斷交申請已受理,將在複核後生效。斷交後相關外交身分將同步失效。',
     variables: 'no',
   },
   {
     code: 'relation_severed',
     title: '断交公报:{{no}}',
     body: '奶龙国与 {{entity}} 的建交关系 {{no}} 已正式断交,关联外交身份已同步失效。感谢这段虚构友谊!',
+    titleTw: '斷交公報:{{no}}',
+    bodyTw: '奶龍國與 {{entity}} 的建交關係 {{no}} 已正式斷交,關聯外交身分已同步失效。感謝這段虛構友誼!',
     variables: 'no, entity',
   },
   {
     code: 'identity_submitted',
     title: '外交身份登记已提交:{{no}}',
     body: '外交身份申请 {{no}} 已提交,预计 {{hours}} 小时内完成审核。',
+    titleTw: '外交身分登記已提交:{{no}}',
+    bodyTw: '外交身分申請 {{no}} 已提交,預計 {{hours}} 小時內完成審核。',
     variables: 'no, hours',
   },
   {
     code: 'identity_supplement',
     title: '身份补件通知:{{no}}',
     body: '外交身份申请 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在线补交。',
+    titleTw: '身分補件通知:{{no}}',
+    bodyTw: '外交身分申請 {{no}} 需要補件:{{note}}。請在 {{deadline}} 前線上補交。',
     variables: 'no, note, deadline',
   },
   {
     code: 'identity_supplement_received',
     title: '补件已收到:{{no}}',
     body: '外交身份申请 {{no}} 的补件材料已收到,重新进入待审队列。',
+    titleTw: '補件已收到:{{no}}',
+    bodyTw: '外交身分申請 {{no}} 的補件材料已收到,重新進入待審佇列。',
     variables: 'no',
   },
   {
     code: 'identity_approved',
     title: '外交身份已通过:{{no}}',
     body: '恭喜!你的外交身份 {{no}}({{typeName}})已通过审核并生效,任期至 {{termEnd}}。外交身份卡已生成,凭编号可申请外交签注。',
+    titleTw: '外交身分已通過:{{no}}',
+    bodyTw: '恭喜!你的外交身分 {{no}}({{typeName}})已通過審核並生效,任期至 {{termEnd}}。外交身分卡已產生,憑編號可申請外交簽注。',
     variables: 'no, typeName, termEnd',
   },
   {
     code: 'identity_rejected',
     title: '外交身份未通过:{{no}}',
     body: '很遗憾,外交身份申请 {{no}} 未通过审核(原因:{{reason}})。{{comment}}',
+    titleTw: '外交身分未通過:{{no}}',
+    bodyTw: '很遺憾,外交身分申請 {{no}} 未通過審核(原因:{{reason}})。{{comment}}',
     variables: 'no, reason, comment',
   },
   {
     code: 'identity_frozen',
     title: '外交身份已冻结:{{no}}',
     body: '外交身份 {{no}} 已被冻结:{{reason}}。冻结期间外交签注与礼遇资格同步暂停。',
+    titleTw: '外交身分已凍結:{{no}}',
+    bodyTw: '外交身分 {{no}} 已被凍結:{{reason}}。凍結期間外交簽注與禮遇資格同步暫停。',
     variables: 'no, reason',
   },
   {
     code: 'identity_renew',
     title: '外交身份即将到期:{{no}}',
     body: '外交身份 {{no}} 将于 {{termEnd}} 到期,如需继续履职请在到期后重新登记(暂不支持自动续期)。',
+    titleTw: '外交身分即將到期:{{no}}',
+    bodyTw: '外交身分 {{no}} 將於 {{termEnd}} 到期,如需繼續履職請在到期後重新登記(暫不支援自動續期)。',
     variables: 'no, termEnd',
   },
   {
     code: 'identity_invalidated',
     title: '外交身份已失效:{{no}}',
     body: '外交身份 {{no}} 已失效(原因:{{reason}}),关联的外交签注与礼遇资格同步失效。如需继续履职请重新登记。',
+    titleTw: '外交身分已失效:{{no}}',
+    bodyTw: '外交身分 {{no}} 已失效(原因:{{reason}}),關聯的外交簽注與禮遇資格同步失效。如需繼續履職請重新登記。',
     variables: 'no, reason',
   },
   {
     code: 'agreement_effective',
     title: '互免协议已生效:{{no}}',
     body: '互免协议 {{no}}({{partyA}} × {{partyB}})已生效,有效期至 {{effectiveTo}}。可凭外交身份编号查询互免资格。',
+    titleTw: '互免協議已生效:{{no}}',
+    bodyTw: '互免協議 {{no}}({{partyA}} × {{partyB}})已生效,有效期至 {{effectiveTo}}。可憑外交身分編號查詢互免資格。',
     variables: 'no, partyA, partyB, effectiveTo',
   },
   {
     code: 'appeal_reopened',
     title: '申诉复核:外交业务 {{no}} 重新进入待审',
     body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),{{no}} 重新进入待审核队列。',
+    titleTw: '申訴複核:外交業務 {{no}} 重新進入待審',
+    bodyTw: '皇家申訴與監察署已撤銷原駁回決定(決定書 {{decisionCode}}),{{no}} 重新進入待審核佇列。',
     variables: 'no, decisionCode, appealCode',
   },
 ];
@@ -603,10 +673,16 @@ function seedDiplomacy() {
 
     // --- message templates + settings --------------------------------------
     const insertTemplate = db.prepare(
-      `INSERT OR IGNORE INTO dip_message_templates (code, title_template, body_template, variables, enabled, updated_at)
-       VALUES (@code, @title, @body, @variables, 1, @ts)`
+      `INSERT OR IGNORE INTO dip_message_templates (code, title_template, body_template, title_template_tw, body_template_tw, variables, enabled, updated_at)
+       VALUES (@code, @title, @body, @titleTw, @bodyTw, @variables, 1, @ts)`
     );
-    for (const t of MESSAGE_TEMPLATES) insertTemplate.run({ ...t, ts });
+    for (const t of MESSAGE_TEMPLATES) insertTemplate.run({ ...t, titleTw: t.titleTw ?? '', bodyTw: t.bodyTw ?? '', ts });
+    const fillTemplateTw = db.prepare(
+      `UPDATE dip_message_templates
+       SET title_template_tw = ?, body_template_tw = ?
+       WHERE code = ? AND (title_template_tw IS NULL OR title_template_tw = '')`
+    );
+    for (const t of MESSAGE_TEMPLATES) fillTemplateTw.run(t.titleTw ?? '', t.bodyTw ?? '', t.code);
 
     const insertSetting = db.prepare('INSERT OR IGNORE INTO dip_settings (key, value, updated_at) VALUES (?, ?, ?)');
     for (const s of DEFAULT_SETTINGS) insertSetting.run(s.key, s.value, ts);

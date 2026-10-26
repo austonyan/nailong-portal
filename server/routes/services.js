@@ -21,7 +21,9 @@ function serialize(row) {
     id: row.id,
     key: row.key,
     name: row.name,
+    nameTw: row.name_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     url: row.url,
     icon: row.icon,
     color: row.color,
@@ -64,6 +66,8 @@ function validateServiceBody(body, { partial = false } = {}) {
     out.name = name.slice(0, 40);
   }
   if (body.description !== undefined) out.description = String(body.description).trim().slice(0, 200);
+  if (body.nameTw !== undefined) out.name_tw = String(body.nameTw || '').trim().slice(0, 40) || null;
+  if (body.descriptionTw !== undefined) out.description_tw = String(body.descriptionTw || '').trim().slice(0, 200) || null;
   if (!partial || body.url !== undefined) {
     const url = String(body.url || '').trim();
     if (!/^https?:\/\/.+/i.test(url)) throw badRequest('VALIDATION_ERROR', 'URL must start with http(s)://');
@@ -103,11 +107,13 @@ router.post('/', authenticate, requirePermission('services:write'), (req, res) =
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO services (key, name, description, url, icon, color, required_permission, enabled, sort_order, created_at, updated_at)
-       VALUES (@key, @name, @description, @url, @icon, @color, @requiredPermission, @enabled, @sortOrder, @ts, @ts)`
+      `INSERT INTO services (key, name, name_tw, description, description_tw, url, icon, color, required_permission, enabled, sort_order, created_at, updated_at)
+       VALUES (@key, @name, @name_tw, @description, @description_tw, @url, @icon, @color, @requiredPermission, @enabled, @sortOrder, @ts, @ts)`
     )
     .run({
       description: '',
+      name_tw: null,
+      description_tw: null,
       icon: 'RocketIcon',
       color: 'app-teal',
       requiredPermission: null,

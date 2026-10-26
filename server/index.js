@@ -27,6 +27,9 @@ import protocolInterRoutes from './protocol/inter.js';
 import appealRoutes from './routes/appeal.js';
 import appealAdminRoutes from './routes/appealAdmin.js';
 import { ApiError } from './http.js';
+import { db } from './db.js';
+import { backfillContentTranslations } from './content-i18n.js';
+import { localeMiddleware } from './locale.js';
 import { startAutoApproveScheduler } from './autoApprove.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,6 +37,7 @@ const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
+app.use(localeMiddleware);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, name: 'nailong-portal', time: new Date().toISOString() }));
 app.use('/api/setup', setupRoutes);
@@ -63,6 +67,10 @@ app.use('/api/protocol', protocolRoutes);
 // 皇家申诉与监察署:admin → 用户路由(公开验真接口在用户路由内注册于鉴权段之前)
 app.use('/api/appeal/admin', appealAdminRoutes);
 app.use('/api/appeal', appealRoutes);
+
+// All office schemas are ensured by the route imports above; fill Traditional
+// copies for built-in catalogs/notices before serving requests.
+backfillContentTranslations(db);
 
 app.use('/api', (_req, res) => res.status(404).json({ code: 'NOT_FOUND', message: 'Unknown API endpoint' }));
 

@@ -36,38 +36,38 @@ export default function AdminImStats() {
       <ImAdminNav />
       <div className="page-header">
         <Title size="middle" color="app-teal">
-          {t('imm.stats.title')}
+          {t('imm.admin.stats.title')}
         </Title>
       </div>
 
       <div className="portal-stats">
-        <StatCard label={t('imm.stats.submitted')} value={stats.submitted} />
-        <StatCard label={t('imm.stats.approved')} value={stats.approved} />
-        <StatCard label={t('imm.stats.rejected')} value={stats.rejected} />
-        <StatCard label={t('imm.stats.supplements')} value={stats.supplements} />
+        <StatCard label={t('imm.admin.stats.submitted')} value={stats.submitted} />
+        <StatCard label={t('imm.admin.stats.approved')} value={stats.approved} />
+        <StatCard label={t('imm.admin.stats.rejected')} value={stats.rejected} />
+        <StatCard label={t('imm.admin.stats.supplements')} value={stats.supplements} />
       </div>
 
       <div className="portal-stats">
         <Card className="stat-card">
-          <span className="stat-label">{t('imm.stats.passRate')}</span>
+          <span className="stat-label">{t('imm.admin.stats.passRate')}</span>
           <Progress percent={stats.passRate} infoFormat={(p) => `${Math.round(p)}%`} />
-          <span className="stat-label">{t('imm.stats.rejectRate')}</span>
+          <span className="stat-label">{t('imm.admin.stats.rejectRate')}</span>
           <Progress percent={stats.rejectRate} infoFormat={(p) => `${Math.round(p)}%`} />
-          <span className="stat-label">{t('imm.stats.supplementRate')}</span>
+          <span className="stat-label">{t('imm.admin.stats.supplementRate')}</span>
           <Progress percent={stats.supplementRate} infoFormat={(p) => `${Math.round(p)}%`} />
         </Card>
         <Card className="stat-card">
-          <span className="stat-label">{t('imm.stats.avgReview')}</span>
+          <span className="stat-label">{t('imm.admin.stats.avgReview')}</span>
           <span className="stat-number">{stats.avgReviewHours ?? '-'}{stats.avgReviewHours != null ? 'h' : ''}</span>
-          <span className="stat-label">{t('imm.stats.passChecks')}</span>
+          <span className="stat-label">{t('imm.admin.stats.passChecks')}</span>
           <span className="stat-number">{stats.passChecks}</span>
-          <span className="stat-label">{t('imm.stats.activePassCodes')}</span>
+          <span className="stat-label">{t('imm.admin.stats.activePassCodes')}</span>
           <span className="stat-number">{stats.passCodesActive}</span>
         </Card>
         <Card className="stat-card">
-          <span className="stat-label">{t('imm.stats.entryRecords')}</span>
+          <span className="stat-label">{t('imm.admin.stats.entryRecords')}</span>
           <span className="stat-number">{stats.entryRecords}</span>
-          <span className="stat-label">{t('imm.stats.exitRecords')}</span>
+          <span className="stat-label">{t('imm.admin.stats.exitRecords')}</span>
           <span className="stat-number">{stats.exitRecords}</span>
           <span className="stat-label">{t('imm.home.crowding')}</span>
           <CrowdMeter crowding={stats.crowding} />
@@ -76,7 +76,7 @@ export default function AdminImStats() {
 
       <div className="im-stats-grid">
         <Card>
-          <b>{t('imm.stats.trend7')}</b>
+          <b>{t('imm.admin.stats.trend7')}</b>
           <div className="im-trend">
             {stats.trend.map((d) => (
               <div key={d.day} className="im-trend-col">
@@ -88,7 +88,7 @@ export default function AdminImStats() {
           </div>
         </Card>
         <Card>
-          <b>{t('imm.stats.portTraffic')}</b>
+          <b>{t('imm.admin.stats.portTraffic')}</b>
           {stats.portTraffic.map((p) => (
             <p key={p.portName} className="im-info-row">
               <span>{p.portName}</span>
@@ -97,7 +97,7 @@ export default function AdminImStats() {
           ))}
         </Card>
         <Card>
-          <b>{t('imm.stats.rejectReasons')}</b>
+          <b>{t('imm.admin.stats.rejectReasons')}</b>
           {stats.rejectReasons.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
           {stats.rejectReasons.map((r) => (
             <p key={r.reason} className="im-info-row">

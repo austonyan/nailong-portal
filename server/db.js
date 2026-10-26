@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ensureTwColumns } from './migrate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, 'data');
@@ -29,7 +30,9 @@ CREATE TABLE IF NOT EXISTS roles (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   key         TEXT NOT NULL UNIQUE,
   name        TEXT NOT NULL,
+  name_tw     TEXT,
   description TEXT NOT NULL DEFAULT '',
+  description_tw TEXT,
   is_system   INTEGER NOT NULL DEFAULT 0,
   created_at  TEXT NOT NULL
 );
@@ -38,7 +41,9 @@ CREATE TABLE IF NOT EXISTS permissions (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   key         TEXT NOT NULL UNIQUE,
   name        TEXT NOT NULL,
+  name_tw     TEXT,
   description TEXT NOT NULL DEFAULT '',
+  description_tw TEXT,
   grp         TEXT NOT NULL
 );
 
@@ -74,7 +79,9 @@ CREATE TABLE IF NOT EXISTS services (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
   key                 TEXT NOT NULL UNIQUE,
   name                TEXT NOT NULL,
+  name_tw             TEXT,
   description         TEXT NOT NULL DEFAULT '',
+  description_tw      TEXT,
   url                 TEXT NOT NULL,
   icon                TEXT NOT NULL DEFAULT 'RocketIcon',
   color               TEXT NOT NULL DEFAULT 'app-teal',
@@ -103,8 +110,11 @@ CREATE TABLE IF NOT EXISTS visa_types (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   code        TEXT NOT NULL UNIQUE,
   name        TEXT NOT NULL,
+  name_tw     TEXT,
   description TEXT NOT NULL DEFAULT '',
+  description_tw TEXT,
   guide       TEXT NOT NULL DEFAULT '',
+  guide_tw    TEXT,
   stay_days   INTEGER NOT NULL DEFAULT 30,
   valid_days  INTEGER NOT NULL DEFAULT 90,
   renewable   INTEGER NOT NULL DEFAULT 0,
@@ -205,7 +215,9 @@ CREATE INDEX IF NOT EXISTS idx_visa_msg_user ON visa_messages (user_id, archived
 CREATE TABLE IF NOT EXISTS visa_notices (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   title      TEXT NOT NULL,
+  title_tw   TEXT,
   body       TEXT NOT NULL DEFAULT '',
+  body_tw    TEXT,
   level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
   enabled    INTEGER NOT NULL DEFAULT 1,
   created_at TEXT NOT NULL,
@@ -415,7 +427,9 @@ CREATE INDEX IF NOT EXISTS idx_appeal_dec_appeal ON appeal_decisions (appeal_id)
 CREATE TABLE IF NOT EXISTS appeal_notices (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   title      TEXT NOT NULL,
+  title_tw   TEXT,
   body       TEXT NOT NULL DEFAULT '',
+  body_tw    TEXT,
   level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
   enabled    INTEGER NOT NULL DEFAULT 1,
   created_at TEXT NOT NULL,
@@ -471,7 +485,9 @@ CREATE TABLE IF NOT EXISTS appeal_config (
 CREATE TABLE IF NOT EXISTS appeal_publicity (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   title       TEXT NOT NULL,
+  title_tw    TEXT,
   body        TEXT NOT NULL DEFAULT '',
+  body_tw     TEXT,
   kind        TEXT NOT NULL DEFAULT 'case' CHECK (kind IN ('stats','case','report')),
   status      TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published','offline')),
   published_at TEXT,
@@ -503,6 +519,13 @@ function migrate() {
   if (!serviceCols.includes('entry_mode')) {
     db.exec("ALTER TABLE services ADD COLUMN entry_mode TEXT NOT NULL DEFAULT 'external'");
   }
+  ensureTwColumns(db, 'services', ['name', 'description']);
+  ensureTwColumns(db, 'roles', ['name', 'description']);
+  ensureTwColumns(db, 'permissions', ['name', 'description']);
+  ensureTwColumns(db, 'visa_types', ['name', 'description', 'guide']);
+  ensureTwColumns(db, 'visa_notices', ['title', 'body']);
+  ensureTwColumns(db, 'appeal_notices', ['title', 'body']);
+  ensureTwColumns(db, 'appeal_publicity', ['title', 'body']);
 }
 migrate();
 

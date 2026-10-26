@@ -635,9 +635,11 @@ function notifyBusiness(bizType, target, vars) {
   const tpl = db.prepare(`SELECT * FROM ${table}_message_templates WHERE code = ? AND enabled = 1`).get('appeal_reopened');
   const title = renderTemplate(tpl?.title_template ?? '', { ...vars, no: target.code });
   const body = renderTemplate(tpl?.body_template ?? '', { ...vars, no: target.code });
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', { ...vars, no: target.code }) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', { ...vars, no: target.code }) || null;
   db.prepare(
-    `INSERT INTO ${table}_messages (user_id, template_code, title, body, related, created_at) VALUES (?, ?, ?, ?, ?, ?)`
-  ).run(target.ownerId, 'appeal_reopened', title, body, JSON.stringify({ ...vars, no: target.code }), ts);
+    `INSERT INTO ${table}_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(target.ownerId, 'appeal_reopened', title, body, titleTw, bodyTw, JSON.stringify({ ...vars, no: target.code }), ts);
 }
 
 function reopen(bizType, target) {

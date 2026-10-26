@@ -184,7 +184,7 @@ router.get('/home', (req, res) => {
   const notices = db
     .prepare('SELECT * FROM appeal_notices WHERE enabled = 1 ORDER BY id DESC LIMIT 10')
     .all()
-    .map((n) => ({ id: n.id, title: n.title, body: n.body, level: n.level, createdAt: n.created_at }));
+    .map((n) => ({ id: n.id, title: n.title, body: n.body, titleTw: n.title_tw, bodyTw: n.body_tw, level: n.level, createdAt: n.created_at }));
   const count = (sql, ...params) => db.prepare(sql).get(...params).n;
   res.json({
     notices,

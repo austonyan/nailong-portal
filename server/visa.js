@@ -240,8 +240,11 @@ export function serializeType(row) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     guide: row.guide,
+    guideTw: row.guide_tw,
     stayDays: row.stay_days,
     validDays: row.valid_days,
     renewable: !!row.renewable,
@@ -262,7 +265,8 @@ export function maskPermit(permit, typeRow) {
     valid: permit.status === 'valid',
     issuedAt: permit.issued_at,
     validUntil: permit.valid_until,
-    issuer: '奶龍國簽註申請署',
+    issuer: '奶龙国签注申请署',
+    issuerTw: '奶龍國簽註申請署',
   };
 }
 

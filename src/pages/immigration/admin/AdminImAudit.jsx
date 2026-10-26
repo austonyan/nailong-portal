@@ -38,11 +38,11 @@ function AuditTab() {
       'im-audit-logs.csv',
       [
         { key: 'id', label: 'ID' },
-        { key: 'actor', label: t('imm.verify.officer') },
-        { key: 'action', label: t('imm.audit.action') },
-        { key: 'target_type', label: t('imm.audit.targetType') },
-        { key: 'target_id', label: t('imm.audit.targetId') },
-        { key: 'detail', label: t('imm.audit.detail') },
+        { key: 'actor', label: t('imm.admin.verify.officer') },
+        { key: 'action', label: t('imm.admin.audit.action') },
+        { key: 'target_type', label: t('imm.admin.audit.targetType') },
+        { key: 'target_id', label: t('imm.admin.audit.targetId') },
+        { key: 'detail', label: t('imm.admin.audit.detail') },
         { key: 'created_at', label: t('common.createdAt') },
       ],
       items ?? []
@@ -51,11 +51,11 @@ function AuditTab() {
 
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
-    { title: t('imm.verify.officer'), dataIndex: 'actor', width: 110, render: (v) => v ?? 'system' },
-    { title: t('imm.audit.action'), dataIndex: 'action', width: 220, render: (v) => <Tag size="small" color="app-blue" variant="soft">{v}</Tag> },
-    { title: t('imm.audit.targetType'), dataIndex: 'target_type', width: 110 },
-    { title: t('imm.audit.targetId'), dataIndex: 'target_id', width: 170 },
-    { title: t('imm.audit.detail'), dataIndex: 'detail', render: (v) => <span className="im-audit-detail">{JSON.stringify(v)}</span> },
+    { title: t('imm.admin.verify.officer'), dataIndex: 'actor', width: 110, render: (v) => v ?? 'system' },
+    { title: t('imm.admin.audit.action'), dataIndex: 'action', width: 220, render: (v) => <Tag size="small" color="app-blue" variant="soft">{v}</Tag> },
+    { title: t('imm.admin.audit.targetType'), dataIndex: 'target_type', width: 110 },
+    { title: t('imm.admin.audit.targetId'), dataIndex: 'target_id', width: 170 },
+    { title: t('imm.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="im-audit-detail">{JSON.stringify(v)}</span> },
     { title: t('common.createdAt'), dataIndex: 'created_at', width: 160, render: (v) => v?.slice(0, 19).replace('T', ' ') },
   ];
 
@@ -66,7 +66,7 @@ function AuditTab() {
           value={actionFilter}
           onChange={(v) => { setActionFilter(v); setPage(1); }}
           options={[
-            { key: '', label: t('imm.audit.allActions') },
+            { key: '', label: t('imm.admin.audit.allActions') },
             ...['im:port', 'im:declaration', 'im:pass', 'im:record', 'im:visa', 'im:blacklist', 'im:template', 'im:settings', 'im:file', 'im:data'].map((a) => ({ key: a, label: a })),
           ]}
         />
@@ -134,14 +134,14 @@ function BlacklistTab() {
   const columns = [
     { title: t('admin.users.username'), dataIndex: 'username', width: 130 },
     { title: t('admin.users.displayName'), dataIndex: 'display_name', width: 120 },
-    { title: t('imm.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`imm.blacklist.${v}`)}</Tag> },
-    { title: t('imm.blacklist.reason'), dataIndex: 'reason' },
+    { title: t('imm.admin.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`imm.admin.blacklist.${v}`)}</Tag> },
+    { title: t('imm.admin.blacklist.reason'), dataIndex: 'reason' },
     { title: t('common.createdAt'), dataIndex: 'created_at', width: 150, render: (v) => v?.slice(0, 10) },
     {
       title: t('common.actions'),
       width: 100,
       render: (_, record) => (
-        <Button type="default" size="small" onClick={() => lift(record)}>{t('imm.blacklist.lift')}</Button>
+        <Button type="default" size="small" onClick={() => lift(record)}>{t('imm.admin.blacklist.lift')}</Button>
       ),
     },
   ];
@@ -150,13 +150,13 @@ function BlacklistTab() {
     <>
       <div className="im-tab-toolbar">
         <Button type="primary" icon={<PlusIcon />} onClick={() => setAdding(true)}>
-          {t('imm.blacklist.add')}
+          {t('imm.admin.blacklist.add')}
         </Button>
       </div>
       <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       <Modal
         open={adding}
-        title={t('imm.blacklist.add')}
+        title={t('imm.admin.blacklist.add')}
         onClose={() => setAdding(false)}
         typewriter={false}
         footer={
@@ -168,9 +168,9 @@ function BlacklistTab() {
       >
         <p className="im-field-label">User ID</p>
         <Input size="large" type="number" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="3" />
-        <p className="im-field-label">{t('imm.blacklist.level')}</p>
-        <Select value={level} onChange={setLevel} options={[{ key: 'warn', label: t('imm.blacklist.warn') }, { key: 'block', label: t('imm.blacklist.block') }]} />
-        <p className="im-field-label">{t('imm.blacklist.reason')}</p>
+        <p className="im-field-label">{t('imm.admin.blacklist.level')}</p>
+        <Select value={level} onChange={setLevel} options={[{ key: 'warn', label: t('imm.admin.blacklist.warn') }, { key: 'block', label: t('imm.admin.blacklist.block') }]} />
+        <p className="im-field-label">{t('imm.admin.blacklist.reason')}</p>
         <Input size="large" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={200} />
       </Modal>
     </>
@@ -183,6 +183,8 @@ function TemplatesTab() {
   const [editing, setEditing] = useState(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [titleTw, setTitleTw] = useState('');
+  const [bodyTw, setBodyTw] = useState('');
   const [enabled, setEnabled] = useState(true);
 
   const load = useCallback(() => {
@@ -199,7 +201,7 @@ function TemplatesTab() {
 
   const save = async () => {
     try {
-      await api.put(`/immigration/admin/templates/${editing.id}`, { title, body, enabled });
+      await api.put(`/immigration/admin/templates/${editing.id}`, { title, body, titleTw, bodyTw, enabled });
       Notification.success(t('common.save'));
       setEditing(null);
       load();
@@ -210,10 +212,10 @@ function TemplatesTab() {
 
   const columns = [
     { title: t('common.key'), dataIndex: 'code', width: 170 },
-    { title: t('imm.templates.title'), dataIndex: 'title', width: 240 },
-    { title: t('imm.templates.variables'), dataIndex: 'variables', width: 140, render: (v) => v || '-' },
+    { title: t('imm.admin.templates.title'), dataIndex: 'title', width: 240 },
+    { title: t('imm.admin.templates.variables'), dataIndex: 'variables', width: 140, render: (v) => v || '-' },
     { title: t('common.status'), dataIndex: 'enabled', width: 90, render: (v) => (v ? <Tag color="app-green" variant="soft">{t('common.enabled')}</Tag> : <Tag>{t('common.disabled')}</Tag>) },
-    { title: t('imm.templates.updatedAt'), dataIndex: 'updatedAt', width: 140, render: (v) => v?.slice(0, 10) },
+    { title: t('imm.admin.templates.updatedAt'), dataIndex: 'updatedAt', width: 140, render: (v) => v?.slice(0, 10) },
     {
       title: t('common.actions'),
       width: 90,
@@ -223,8 +225,10 @@ function TemplatesTab() {
           size="small"
           onClick={() => {
             setEditing(record);
-            setTitle(record.title);
-            setBody(record.body);
+            setTitle(record.titleCn ?? record.title);
+            setBody(record.bodyCn ?? record.body);
+            setTitleTw(record.titleTw ?? '');
+            setBodyTw(record.bodyTw ?? '');
             setEnabled(record.enabled);
           }}
         >
@@ -239,7 +243,7 @@ function TemplatesTab() {
       <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       <Modal
         open={editing !== null}
-        title={t('imm.templates.editTitle', { code: editing?.code })}
+        title={t('imm.admin.templates.editTitle', { code: editing?.code })}
         onClose={() => setEditing(null)}
         footer={
           <>
@@ -250,11 +254,15 @@ function TemplatesTab() {
         width={560}
         typewriter={false}
       >
-        <p className="muted-text">{t('imm.templates.varTip')}</p>
-        <p className="im-field-label">{t('imm.templates.title')}</p>
+        <p className="muted-text">{t('imm.admin.templates.varTip')}</p>
+        <p className="im-field-label">{t('imm.admin.templates.title')}</p>
         <Input size="large" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} />
-        <p className="im-field-label">{t('imm.templates.body')}</p>
+        <p className="im-field-label">{t('imm.admin.templates.title')} · {t('common.traditional')}</p>
+        <Input size="large" value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} maxLength={120} />
+        <p className="im-field-label">{t('imm.admin.templates.body')}</p>
         <textarea className="docs-textarea" value={body} onChange={(e) => setBody(e.target.value)} maxLength={600} />
+        <p className="im-field-label">{t('imm.admin.templates.body')} · {t('common.traditional')}</p>
+        <textarea className="docs-textarea" value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} maxLength={600} />
         <p className="im-field-label">{t('common.status')}</p>
         <Select value={enabled ? 'on' : 'off'} onChange={(v) => setEnabled(v === 'on')} options={[{ key: 'on', label: t('common.enabled') }, { key: 'off', label: t('common.disabled') }]} />
       </Modal>
@@ -285,8 +293,8 @@ function SendLogTab() {
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
     { title: t('admin.users.username'), dataIndex: 'username', width: 120 },
-    { title: t('imm.templates.code'), dataIndex: 'template_code', width: 170 },
-    { title: t('imm.templates.title'), dataIndex: 'title' },
+    { title: t('imm.admin.templates.code'), dataIndex: 'template_code', width: 170 },
+    { title: t('imm.admin.templates.title'), dataIndex: 'title' },
     { title: t('common.status'), dataIndex: 'read', width: 90, render: (v) => (v ? t('imm.msg.read') : t('imm.msg.unread')) },
     { title: t('common.createdAt'), dataIndex: 'created_at', width: 160, render: (v) => v?.slice(0, 16).replace('T', ' ') },
   ];
@@ -309,16 +317,16 @@ export default function AdminImAudit() {
       <ImAdminNav />
       <div className="page-header">
         <Title size="middle" color="app-teal">
-          {t('imm.audit.title')}
+          {t('imm.admin.audit.title')}
         </Title>
       </div>
       <Card>
         <Tabs
           items={[
-            { key: 'audit', label: t('imm.audit.tabLog'), children: <AuditTab /> },
-            { key: 'blacklist', label: t('imm.audit.tabBlacklist'), children: <BlacklistTab /> },
-            { key: 'templates', label: t('imm.audit.tabTemplates'), children: <TemplatesTab /> },
-            { key: 'sendlog', label: t('imm.audit.tabSendLog'), children: <SendLogTab /> },
+            { key: 'audit', label: t('imm.admin.audit.tabLog'), children: <AuditTab /> },
+            { key: 'blacklist', label: t('imm.admin.audit.tabBlacklist'), children: <BlacklistTab /> },
+            { key: 'templates', label: t('imm.admin.audit.tabTemplates'), children: <TemplatesTab /> },
+            { key: 'sendlog', label: t('imm.admin.audit.tabSendLog'), children: <SendLogTab /> },
           ]}
         />
       </Card>

@@ -218,8 +218,11 @@ export function serializeType(row) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     guide: row.guide,
+    guideTw: row.guide_tw,
     requiredFields: String(row.required_fields || '')
       .split(',')
       .map((s) => s.trim())
@@ -243,12 +246,18 @@ export function serializeEvent(row, { withCounts = true } = {}) {
     eventNo: row.event_no,
     typeCode: row.type_code,
     typeName: typeRow?.name ?? row.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     title: row.title,
+    titleTw: row.title_tw,
     subtitle: row.subtitle,
+    subtitleTw: row.subtitle_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     schedule: safeJson(row.schedule, []),
     venueName: row.venue_name,
+    venueNameTw: row.venue_name_tw,
     venueNote: row.venue_note,
+    venueNoteTw: row.venue_note_tw,
     capacity: row.capacity,
     seatsLeft,
     approvedCount: counts.approved,
@@ -262,12 +271,15 @@ export function serializeEvent(row, { withCounts = true } = {}) {
     startsAt: row.starts_at,
     endsAt: row.ends_at,
     conditions: row.conditions,
+    conditionsTw: row.conditions_tw,
     materials: safeJson(row.materials, []),
     notice: row.notice,
+    noticeTw: row.notice_tw,
     coverColor: row.cover_color,
     publishedAt: row.published_at,
     cancelledAt: row.cancelled_at,
     cancelReason: row.cancel_reason,
+    cancelReasonTw: row.cancel_reason_tw,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     url: `/protocol/events/${row.event_no}`,
@@ -323,19 +335,28 @@ export function serializeInvitation(row) {
     resident: '居民专属邀请函',
     diplomatic: '外交礼遇邀请函',
   };
+  const typeNamesTw = {
+    event: '活動邀請函',
+    foreign: '外賓邀請函',
+    resident: '居民專屬邀請函',
+    diplomatic: '外交禮遇邀請函',
+  };
   return {
     id: row.id,
     inviteNo: row.invite_no,
     eventId: row.event_id,
     eventNo: event?.event_no ?? '',
     eventTitle: event?.title ?? '',
+    eventTitleTw: event?.title_tw ?? null,
     eventStartsAt: event?.starts_at ?? null,
     eventEndsAt: event?.ends_at ?? null,
     venueName: event?.venue_name ?? '',
+    venueNameTw: event?.venue_name_tw ?? null,
     inviterName: row.inviter_name,
     inviteeName: row.invitee_name,
     type: row.type,
     typeName: typeNames[row.type] ?? row.type,
+    typeNameTw: typeNamesTw[row.type] ?? null,
     status: row.status,
     response: row.response,
     validFrom: row.valid_from,
@@ -360,10 +381,13 @@ export function serializePass(row) {
     eventId: row.event_id,
     eventNo: event?.event_no ?? '',
     eventTitle: event?.title ?? '',
+    eventTitleTw: event?.title_tw ?? null,
     eventStartsAt: event?.starts_at ?? null,
     eventEndsAt: event?.ends_at ?? null,
     venueName: event?.venue_name ?? '',
+    venueNameTw: event?.venue_name_tw ?? null,
     venueNote: event?.venue_note ?? '',
+    venueNoteTw: event?.venue_note_tw ?? null,
     holderName: row.holder_name,
     status: row.status,
     issuedAt: row.issued_at,
@@ -435,6 +459,8 @@ export function serializeMessage(row) {
     type: row.template_code,
     title: row.title,
     body: row.body,
+    titleTw: row.title_tw,
+    bodyTw: row.body_tw,
     related: safeJson(row.related, {}),
     read: !!row.read,
     archived: !!row.archived,
@@ -446,7 +472,9 @@ export function serializeNotice(row) {
   return {
     id: row.id,
     title: row.title,
+    titleTw: row.title_tw,
     body: row.body,
+    bodyTw: row.body_tw,
     level: row.level,
     enabled: !!row.enabled,
     createdAt: row.created_at,
@@ -461,16 +489,21 @@ export function serializeNotice(row) {
 export function maskInvitation(row) {
   const event = db.prepare('SELECT * FROM pro_events WHERE id = ?').get(row.event_id);
   const typeNames = { event: '活动邀请函', foreign: '外宾邀请函', resident: '居民专属邀请函', diplomatic: '外交礼遇邀请函' };
+  const typeNamesTw = { event: '活動邀請函', foreign: '外賓邀請函', resident: '居民專屬邀請函', diplomatic: '外交禮遇邀請函' };
   return {
     kind: 'invitation',
     no: row.invite_no,
     typeName: typeNames[row.type] ?? row.type,
+    typeNameTw: typeNamesTw[row.type] ?? null,
     status: row.status,
     eventTitle: event?.title ?? '',
+    eventTitleTw: event?.title_tw ?? null,
     eventTime: event?.starts_at ?? null,
     venueName: event?.venue_name ?? '',
+    venueNameTw: event?.venue_name_tw ?? null,
     validUntil: row.valid_until,
     issuedBy: '奶龙国皇家礼宾与活动署',
+    issuedByTw: '奶龍國皇家禮賓與活動署',
     valid: row.status === 'valid' && (!row.valid_until || row.valid_until >= now()),
     visaUsable: row.status === 'valid',
   };
@@ -482,12 +515,16 @@ export function maskPass(row) {
     kind: 'pass',
     no: row.pass_no,
     typeName: '活动凭证',
+    typeNameTw: '活動憑證',
     status: row.status,
     eventTitle: event?.title ?? '',
+    eventTitleTw: event?.title_tw ?? null,
     eventTime: event?.starts_at ?? null,
     venueName: event?.venue_name ?? '',
+    venueNameTw: event?.venue_name_tw ?? null,
     validUntil: row.valid_until,
     issuedBy: '奶龙国皇家礼宾与活动署',
+    issuedByTw: '奶龍國皇家禮賓與活動署',
     valid: row.status === 'pending' && (!row.valid_until || row.valid_until >= now()),
   };
 }
@@ -497,6 +534,7 @@ export function maskHost(row) {
     kind: 'host',
     no: row.host_no,
     typeName: '接待方认证',
+    typeNameTw: '接待方認證',
     name: row.name,
     status: row.status,
     certNo: row.cert_no,
@@ -662,9 +700,11 @@ export function notify(userId, code, vars = {}, related = {}) {
   const tpl = db.prepare('SELECT * FROM pro_message_templates WHERE code = ? AND enabled = 1').get(code);
   const title = renderTemplate(tpl?.title_template ?? code, vars);
   const body = renderTemplate(tpl?.body_template ?? '', vars);
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', vars) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', vars) || null;
   db.prepare(
-    'INSERT INTO pro_messages (user_id, template_code, title, body, related, created_at) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(userId, code, title, body, JSON.stringify(related), now());
+    'INSERT INTO pro_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(userId, code, title, body, titleTw, bodyTw, JSON.stringify(related), now());
 }
 
 export function notifyEventAttendees(eventId, code, vars = {}) {

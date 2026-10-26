@@ -75,9 +75,11 @@ export function notify(userId, code, vars = {}, related = {}) {
   const tpl = db.prepare('SELECT * FROM res_message_templates WHERE code = ? AND enabled = 1').get(code);
   const title = renderTemplate(tpl?.title_template ?? code, vars);
   const body = renderTemplate(tpl?.body_template ?? '', vars);
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', vars) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', vars) || null;
   db.prepare(
-    'INSERT INTO res_messages (user_id, template_code, title, body, related, created_at) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(userId, code, title, body, JSON.stringify(related), now());
+    'INSERT INTO res_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(userId, code, title, body, titleTw, bodyTw, JSON.stringify(related), now());
 }
 
 // ---------------------------------------------------------------------------
@@ -199,10 +201,15 @@ export function serializeType(row) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     guide: row.guide,
+    guideTw: row.guide_tw,
     benefits: row.benefits,
+    benefitsTw: row.benefits_tw,
     duties: row.duties,
+    dutiesTw: row.duties_tw,
     validYears: row.valid_years,
     requireAvatar: !!row.require_avatar,
     requireAddressProof: !!row.require_address_proof,
@@ -322,6 +329,8 @@ export function serializeMessage(row) {
     templateCode: row.template_code,
     title: row.title,
     body: row.body,
+    titleTw: row.title_tw,
+    bodyTw: row.body_tw,
     related,
     read: !!row.read,
     archived: !!row.archived,
@@ -342,5 +351,6 @@ export function maskCard(card, typeRow) {
     issuedAt: card.issued_at,
     validUntil: card.valid_until,
     issuer: '奶龙国皇家居民登记署',
+    issuerTw: '奶龍國皇家居民登記署',
   };
 }

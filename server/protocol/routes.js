@@ -12,6 +12,7 @@ import QRCode from 'qrcode';
 import { db, now } from '../db.js';
 import { authenticate } from '../auth.js';
 import { badRequest, conflict, forbidden, notFound } from '../http.js';
+import { reqLocale } from '../locale.js';
 import { ensureProtocolSchema, getConfig, getConfigInt } from './schema.js';
 import {
   actorKey,
@@ -729,17 +730,26 @@ router.get('/invitations/:id/file', async (req, res) => {
     color: { dark: '#5b4632', light: '#fffdf2' },
   });
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  const locale = reqLocale(req);
+  const tw = locale === 'zh-TW';
+  const inviteStatus = {
+    valid: tw ? '有效' : '有效',
+    used: tw ? '已使用' : '已使用',
+    expired: tw ? '已過期' : '已过期',
+    revoked: tw ? '已撤銷' : '已撤销',
+  };
   res.send(
     printDocument({
-      title: inv.typeName,
+      locale,
+      title: tw ? inv.typeNameTw || inv.typeName : inv.typeName,
       no: inv.inviteNo,
       qr,
       rows: [
-        ['活动名称', inv.eventTitle],
-        ['邀请人 / 接待方', inv.inviterName || '皇家礼宾与活动署'],
-        ['有效期至', inv.validUntil ? String(inv.validUntil).slice(0, 10) : '-'],
-        ['状态', inv.status],
-        ['使用说明', '请在活动签到时出示本邀请函；邀请函仅限本人使用，不可转让。'],
+        [tw ? '活動名稱' : '活动名称', tw ? inv.eventTitleTw || inv.eventTitle : inv.eventTitle],
+        [tw ? '邀請人 / 接待方' : '邀请人 / 接待方', inv.inviterName || (tw ? '皇家禮賓與活動署' : '皇家礼宾与活动署')],
+        [tw ? '有效期至' : '有效期至', inv.validUntil ? String(inv.validUntil).slice(0, 10) : '-'],
+        [tw ? '狀態' : '状态', inviteStatus[inv.status] || inv.status],
+        [tw ? '使用說明' : '使用说明', tw ? '請在活動簽到時出示本邀請函;邀請函僅限本人使用,不可轉讓。' : '请在活动签到时出示本邀请函;邀请函仅限本人使用,不可转让。'],
       ],
     })
   );
@@ -777,17 +787,26 @@ router.get('/passes/:id/file', async (req, res) => {
     color: { dark: '#5b4632', light: '#fffdf2' },
   });
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  const locale = reqLocale(req);
+  const tw = locale === 'zh-TW';
+  const passStatus = {
+    pending: tw ? '待使用' : '待使用',
+    used: tw ? '已使用' : '已使用',
+    expired: tw ? '已過期' : '已过期',
+    voided: tw ? '已作廢' : '已作废',
+  };
   res.send(
     printDocument({
-      title: '活动凭证 · 电子票',
+      locale,
+      title: tw ? '活動憑證 · 電子票' : '活动凭证 · 电子票',
       no: pass.passNo,
       qr,
       rows: [
-        ['活动名称', pass.eventTitle],
-        ['活动时间', pass.eventStartsAt ? String(pass.eventStartsAt).replace('T', ' ').slice(0, 16) : '-'],
-        ['活动地点', pass.venueName],
-        ['持票人昵称', pass.holderName],
-        ['状态', pass.status],
+        [tw ? '活動名稱' : '活动名称', tw ? pass.eventTitleTw || pass.eventTitle : pass.eventTitle],
+        [tw ? '活動時間' : '活动时间', pass.eventStartsAt ? String(pass.eventStartsAt).replace('T', ' ').slice(0, 16) : '-'],
+        [tw ? '活動地點' : '活动地点', tw ? pass.venueNameTw || pass.venueName : pass.venueName],
+        [tw ? '持票人暱稱' : '持票人昵称', pass.holderName],
+        [tw ? '狀態' : '状态', passStatus[pass.status] || pass.status],
       ],
     })
   );
@@ -1047,8 +1066,11 @@ function esc(value) {
     .replace(/"/g, '&quot;');
 }
 
-function printDocument({ title, no, qr, rows }) {
-  return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>${esc(no)}</title>
+function printDocument({ title, no, qr, rows, locale = 'zh-CN' }) {
+  const lang = locale === 'zh-TW' ? 'zh-TW' : 'zh-CN';
+  const office = locale === 'zh-TW' ? '奶龍國皇家禮賓與活動署' : '奶龙国皇家礼宾与活动署';
+  const qrLabel = locale === 'zh-TW' ? '驗真 QR 碼' : '验真二维码';
+  return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><title>${esc(no)}</title>
 <style>
   body{margin:0;padding:32px;background:#f7f3df;color:#725d42;font-family:"Noto Sans SC",system-ui,sans-serif}
   .doc{position:relative;max-width:720px;margin:0 auto;background:#fffdf2;border:2px solid #19c8b9;border-radius:24px;padding:32px;overflow:hidden}
@@ -1062,12 +1084,12 @@ function printDocument({ title, no, qr, rows }) {
   .qr img{width:160px;height:160px;border-radius:12px;background:#fff}
   @media print{body{background:#fff;padding:0}.doc{border-color:#19c8b9}}
 </style></head><body><div class="doc">
-<h1>${esc(title)}</h1><div class="office">奶龙国皇家礼宾与活动署</div>
+<h1>${esc(title)}</h1><div class="office">${office}</div>
 <div class="no">${esc(no)}</div>
 <div class="grid">${rows
     .map(([label, value]) => `<div><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`)
     .join('')}</div>
-<div class="qr"><img src="${qr}" alt="verify"><div><div class="label">验真二维码</div></div></div>
+<div class="qr"><img src="${qr}" alt="verify"><div><div class="label">${qrLabel}</div></div></div>
 </div></body></html>`;
 }
 

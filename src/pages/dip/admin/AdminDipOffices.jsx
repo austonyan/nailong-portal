@@ -16,12 +16,18 @@ function OfficeModal({ initial, onClose, onSaved }) {
     if (initial) {
       form.setFieldsValue({
         code: initial.code,
-        name: initial.name,
-        location: initial.location,
-        openHours: initial.openHours,
-        intro: initial.intro,
-        contact: initial.contact,
-        services: initial.services,
+        name: initial.nameCn ?? initial.name,
+        nameTw: initial.nameTw ?? '',
+        location: initial.locationCn ?? initial.location,
+        locationTw: initial.locationTw ?? '',
+        openHours: initial.openHoursCn ?? initial.openHours,
+        openHoursTw: initial.openHoursTw ?? '',
+        intro: initial.introCn ?? initial.intro,
+        introTw: initial.introTw ?? '',
+        contact: initial.contactCn ?? initial.contact,
+        contactTw: initial.contactTw ?? '',
+        services: initial.servicesCn ?? initial.services,
+        servicesTw: initial.servicesTw ?? '',
       });
     }
   }, [initial, form]);
@@ -70,21 +76,39 @@ function OfficeModal({ initial, onClose, onSaved }) {
           <FormItem name="name" label={t('dip.office.name')} rules={[{ required: true }]}>
             <Input maxLength={40} placeholder={t('dip.office.namePlaceholder')} />
           </FormItem>
+          <FormItem name="nameTw" label={`${t('dip.office.name')} · ${t('common.traditional')}`}>
+            <Input maxLength={40} placeholder={t('common.twOptional')} />
+          </FormItem>
         </div>
         <FormItem name="location" label={t('dip.office.location')}>
           <Input maxLength={80} placeholder={t('dip.office.locationPlaceholder')} />
         </FormItem>
+        <FormItem name="locationTw" label={`${t('dip.office.location')} · ${t('common.traditional')}`}>
+          <Input maxLength={80} placeholder={t('common.twOptional')} />
+        </FormItem>
         <FormItem name="openHours" label={t('dip.office.hours')}>
           <Input maxLength={80} placeholder={t('dip.office.hoursPlaceholder')} />
+        </FormItem>
+        <FormItem name="openHoursTw" label={`${t('dip.office.hours')} · ${t('common.traditional')}`}>
+          <Input maxLength={80} placeholder={t('common.twOptional')} />
         </FormItem>
         <FormItem name="intro" label={t('dip.office.intro')}>
           <TextArea rows={3} maxLength={500} />
         </FormItem>
+        <FormItem name="introTw" label={`${t('dip.office.intro')} · ${t('common.traditional')}`}>
+          <TextArea rows={3} maxLength={500} placeholder={t('common.twOptional')} />
+        </FormItem>
         <FormItem name="contact" label={t('dip.office.contact')}>
           <Input maxLength={200} placeholder={t('dip.office.contactPlaceholder')} />
         </FormItem>
+        <FormItem name="contactTw" label={`${t('dip.office.contact')} · ${t('common.traditional')}`}>
+          <Input maxLength={200} placeholder={t('common.twOptional')} />
+        </FormItem>
         <FormItem name="services" label={t('dip.office.services')}>
           <Input maxLength={300} />
+        </FormItem>
+        <FormItem name="servicesTw" label={`${t('dip.office.services')} · ${t('common.traditional')}`}>
+          <Input maxLength={300} placeholder={t('common.twOptional')} />
         </FormItem>
       </Form>
     </Modal>
@@ -99,7 +123,14 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
 
   useEffect(() => {
     if (initial) {
-      form.setFieldsValue({ title: initial.title, body: initial.body, level: initial.level ?? 'info', officeId: initial.officeId ? String(initial.officeId) : '' });
+      form.setFieldsValue({
+        title: initial.titleCn ?? initial.title,
+        titleTw: initial.titleTw ?? '',
+        body: initial.bodyCn ?? initial.body,
+        bodyTw: initial.bodyTw ?? '',
+        level: initial.level ?? 'info',
+        officeId: initial.officeId ? String(initial.officeId) : '',
+      });
     }
   }, [initial, form]);
 
@@ -107,7 +138,7 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
     const values = await form.validateFields();
     setBusy(true);
     try {
-      const payload = { title: values.title, body: values.body, level: values.level, officeId: values.officeId ? Number(values.officeId) : null };
+      const payload = { title: values.title, titleTw: values.titleTw, body: values.body, bodyTw: values.bodyTw, level: values.level, officeId: values.officeId ? Number(values.officeId) : null };
       if (editing) await api.patch(`/dip/admin/notices/${initial.id}`, payload);
       else await api.post('/dip/admin/notices', payload);
       Notification.success(t('common.save'));
@@ -138,8 +169,14 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
         <FormItem name="title" label={t('dip.notice.title')} rules={[{ required: true }]}>
           <Input maxLength={80} />
         </FormItem>
+        <FormItem name="titleTw" label={`${t('dip.notice.title')} · ${t('common.traditional')}`}>
+          <Input maxLength={80} placeholder={t('common.twOptional')} />
+        </FormItem>
         <FormItem name="body" label={t('dip.notice.body')} rules={[{ required: true }]}>
           <TextArea rows={4} maxLength={1000} />
+        </FormItem>
+        <FormItem name="bodyTw" label={`${t('dip.notice.body')} · ${t('common.traditional')}`}>
+          <TextArea rows={4} maxLength={1000} placeholder={t('common.twOptional')} />
         </FormItem>
         <div className="dip-form-row">
           <FormItem name="level" label={t('dip.notice.level')}>

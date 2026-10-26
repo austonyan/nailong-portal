@@ -24,10 +24,12 @@
   "common": {
     "actions": "操作",
     "save": "儲存",
+    "saved": "已儲存",
     "cancel": "取消",
     "create": "新增",
     "edit": "編輯",
     "delete": "刪除",
+    "deleted": "已刪除",
     "confirm": "確認",
     "confirmDeleteTitle": "確認刪除",
     "deleteTip": "此操作不可復原,確定要刪除嗎?",
@@ -40,6 +42,8 @@
     "no": "否",
     "empty": "暫無資料",
     "optional": "選填",
+    "traditional": "繁體",
+    "twOptional": "留空則使用簡體",
     "key": "標識",
     "name": "名稱",
     "description": "描述",
@@ -343,7 +347,13 @@
         "users": "使用者",
         "roles": "角色",
         "services": "服務",
-        "visa": "簽註"
+        "visa": "簽註",
+        "appeal": "申訴",
+        "immigration": "入境",
+        "diplomacy": "外交",
+        "docs": "文書認證",
+        "protocol": "禮賓活動",
+        "resident": "居民"
       }
     },
     "services": {
@@ -624,7 +634,9 @@
       "closed": "申請已關閉",
       "withdrawn": "申請已撤銷",
       "expiry_reminder": "到期提醒",
-      "system": "系統通知"
+      "system": "系統通知",
+      "appeal_reopened": "申訴複核重開",
+      "diplomatic_voided": "外交身分失效註銷"
     },
     "msg": {
       "submitted": {
@@ -752,6 +764,7 @@
       },
       "verifyQuery": "查詢內容",
       "verifyIp": "來源 IP",
+      "verifyResult": "結果",
       "verifyResult_valid": "命中 · 有效",
       "verifyResult_used": "命中 · 已使用",
       "verifyResult_expired": "命中 · 已過期",
@@ -976,6 +989,9 @@
       "downloadPdf": "下載 PDF",
       "verifyEntry": "去驗真",
       "exportFailed": "匯出失敗,請重試",
+      "seal1": "皇家文書與",
+      "seal2": "認證署",
+      "seal3": "認證專用章",
       "ariaLabel": "認證文書 {{no}}"
     },
     "certList": {
@@ -1494,7 +1510,12 @@
       "export": "匯出 CSV",
       "empty": "還沒有入境記錄",
       "exitEmpty": "還沒有出境記錄",
-      "note": "入境章樣式純屬虛構,與任何現實邊檢無關。"
+      "note": "入境章樣式純屬虛構,與任何現實邊檢無關。",
+      "traveler": "旅客",
+      "correct": "更正",
+      "markInvalid": "標記失效",
+      "correctTitle": "更正入境紀錄 {{no}}",
+      "correctTip": "僅更正入境日期與備註,操作會記入審計日誌。"
     },
     "msg": {
       "title": "站內訊息",
@@ -1559,7 +1580,8 @@
       "accepted": "核驗通過",
       "unknown": "未查到",
       "port_closed": "口岸關閉",
-      "visa_blocked": "簽注攔截"
+      "visa_blocked": "簽注攔截",
+      "error": "查詢失敗"
     },
     "admin": {
       "navLabel": "入境署管理導覽",
@@ -1593,6 +1615,8 @@
       "editAnn": "編輯公告",
       "published": "已發布",
       "takeOffline": "下線",
+      "offline": "已下線",
+      "portTypeLabel": "口岸類型",
       "review": {
         "title": "邊檢審核工作台",
         "queueNote": "邊檢員只處理入境申報佇列,與簽注審核佇列相互隔離。",
@@ -1639,6 +1663,7 @@
         "confirmTitle": "核驗通關碼 {{no}}",
         "confirmTip": "核驗通過將立即產生入境記錄並蓋章,通關碼隨之失效。",
         "confirmTip2": "請確認旅客本人與申報資訊一致(趣味流程,請配合蓋章儀式)。",
+        "resultTitle": "核驗結果",
         "result": {
           "accepted": "核驗通過",
           "used": "已使用",
@@ -1913,6 +1938,11 @@
       "type_mismatch": "類型不符",
       "other": "其他"
     },
+    "noticeLevel": {
+      "info": "通知",
+      "policy": "政策",
+      "event": "活動"
+    },
     "materialKind": {
       "avatar": "頭像",
       "address_proof": "地址證明",
@@ -2136,7 +2166,10 @@
         "result": {
           "valid": "有效",
           "not_found": "未找到",
-          "rate_limited": "已限流"
+          "rate_limited": "已限流",
+          "expired": "已過期",
+          "voided": "已註銷",
+          "frozen": "已凍結"
         }
       },
       "types": {
@@ -2170,6 +2203,7 @@
         "tplVars": "可用變數",
         "messages": {
           "to": "接收人",
+          "title": "標題",
           "template": "範本",
           "read": "已讀"
         }
@@ -2246,7 +2280,8 @@
       "card_expired": "居民卡過期",
       "expiry_reminder": "到期提醒",
       "change_approved": "變更通過",
-      "change_rejected": "變更駁回"
+      "change_rejected": "變更駁回",
+      "appeal_reopened": "申訴複核重開"
     }
   },
   "dip": {
@@ -2388,6 +2423,7 @@
       "submittedAt": "提交時間",
       "establishedAt": "建交時間",
       "rejected": "建交申請未通過",
+      "suspendedTitle": "關係已暫停",
       "supplementRequired": "需要補件",
       "supplementDeadline": "請在 {date} 前補交",
       "supplementSubmitted": "已補交",
@@ -2476,6 +2512,7 @@
     },
     "agreement": {
       "title": "互免協議",
+      "no": "協議編號",
       "listTitle": "互免協議公示",
       "checkTitle": "我的互免資格查詢",
       "checkTip": "輸入建交編號或外交身分編號,查詢命中的生效互免協議。",
@@ -2553,6 +2590,7 @@
     },
     "office": {
       "pageTitle": "使領館 / 代表處",
+      "name": "代表處名稱",
       "detailTitle": "代表處詳情",
       "location": "所在地點(虛構)",
       "hours": "開放時間",
@@ -2586,6 +2624,7 @@
       "officeAll": "署級公告",
       "officeTip": "署級公告全署可見,代表處公告僅在該代表處展示",
       "published": "已發布",
+      "publishedAt": "發布時間",
       "offline": "已下線",
       "offlineAction": "下線"
     },
@@ -3618,7 +3657,9 @@
       "escalate_appeal": "轉申訴指引",
       "mark_processing": "轉為處理中",
       "mark_closed": "關閉工單",
-      "mark_escalated": "升級工單"
+      "mark_escalated": "升級工單",
+      "review_accept": "複核受理",
+      "review_decide": "複核定案"
     },
     "noticeLevel": {
       "info": "通知",

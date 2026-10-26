@@ -132,7 +132,7 @@ function EntryRecordsTab() {
         <p className="muted-text">{t('imm.records.correctTip')}</p>
         <p className="im-field-label">{t('imm.records.entryDate')}</p>
         <Input size="large" value={entryDate} onChange={(e) => setEntryDate(e.target.value)} placeholder="YYYY-MM-DD" />
-        <p className="im-field-label">{t('imm.review.opinion')}</p>
+        <p className="im-field-label">{t('imm.admin.review.opinion')}</p>
         <Input size="large" value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} />
       </Modal>
     </>

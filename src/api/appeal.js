@@ -1,6 +1,6 @@
 // 奶龍國皇家申訴與監察署 — API helpers beyond the JSON wrapper: multipart
 // upload (with the in-memory token), private-file preview and downloads.
-import { getAccessToken } from './client.js';
+import { getAccessToken, getLocaleHeader } from './client.js';
 
 export function uploadAppealMaterial({ ownerType, ownerId, kind, file, onProgress }) {
   return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ export function uploadAppealMaterial({ ownerType, ownerId, kind, file, onProgres
 
 export async function openAppealMaterial(materialId) {
   const res = await fetch(`/api/appeal/materials/${materialId}`, {
-    headers: { Authorization: `Bearer ${getAccessToken()}` },
+    headers: { ...getLocaleHeader(), Authorization: `Bearer ${getAccessToken()}` },
   });
   if (!res.ok) throw Object.assign(new Error('preview failed'), { code: 'NOT_FOUND' });
   const blob = await res.blob();
@@ -44,7 +44,7 @@ export async function openAppealMaterial(materialId) {
 // Authenticated downloads (CSV exports) — plain links can't carry the
 // in-memory token, so fetch to a blob and trigger a download.
 export async function downloadAppealFile(path, filename) {
-  const res = await fetch(`/api${path}`, { headers: { Authorization: `Bearer ${getAccessToken()}` } });
+  const res = await fetch(`/api${path}`, { headers: { ...getLocaleHeader(), Authorization: `Bearer ${getAccessToken()}` } });
   if (!res.ok) throw Object.assign(new Error('download failed'), { code: 'INTERNAL_ERROR' });
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);

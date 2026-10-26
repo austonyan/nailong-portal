@@ -67,7 +67,7 @@ export default function AdminProtocolManage() {
   const [noticeEdit, setNoticeEdit] = useState(null);
   const [noticeForm, setNoticeForm] = useState({ title: '', body: '', level: 'info', enabled: true });
   const [templateEdit, setTemplateEdit] = useState(null);
-  const [templateForm, setTemplateForm] = useState({ title: '', body: '', enabled: true });
+  const [templateForm, setTemplateForm] = useState({ title: '', body: '', titleTw: '', bodyTw: '', enabled: true });
   const [deleteNotice, setDeleteNotice] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -195,9 +195,12 @@ export default function AdminProtocolManage() {
           onClick={() => {
             setTypeForm({
               code: row.code,
-              name: row.name,
-              description: row.description,
-              guide: row.guide,
+              name: row.nameCn ?? row.name,
+              nameTw: row.nameTw ?? '',
+              description: row.descriptionCn ?? row.description,
+              descriptionTw: row.descriptionTw ?? '',
+              guide: row.guideCn ?? row.guide,
+              guideTw: row.guideTw ?? '',
               requiredFields: row.requiredFields,
               materials: row.materials.map((m) => m.kind),
               allowCompanions: row.allowCompanions,
@@ -225,7 +228,7 @@ export default function AdminProtocolManage() {
       width: 140,
       render: (_, row) => (
         <div className="protocol-row-actions">
-          <Button type="text" size="small" onClick={() => { setNoticeForm({ title: row.title, body: row.body, level: row.level, enabled: !!row.enabled }); setNoticeEdit(row); }}>
+          <Button type="text" size="small" onClick={() => { setNoticeForm({ title: row.titleCn ?? row.title, titleTw: row.titleTw ?? '', body: row.bodyCn ?? row.body, bodyTw: row.bodyTw ?? '', level: row.level, enabled: !!row.enabled }); setNoticeEdit(row); }}>
             {t('protocol.action.edit')}
           </Button>
           <Button type="text" size="small" danger onClick={() => setDeleteNotice(row)}>{t('protocol.action.delete')}</Button>
@@ -242,7 +245,16 @@ export default function AdminProtocolManage() {
       title: t('common.actions'),
       width: 90,
       render: (_, row) => (
-        <Button type="text" size="small" onClick={() => { setTemplateForm({ title: row.title_template, body: row.body_template, enabled: !!row.enabled }); setTemplateEdit(row); }}>
+        <Button type="text" size="small" onClick={() => {
+          setTemplateForm({
+            title: row.title_templateCn ?? row.title_template,
+            body: row.body_templateCn ?? row.body_template,
+            titleTw: row.title_templateTw ?? '',
+            bodyTw: row.body_templateTw ?? '',
+            enabled: !!row.enabled,
+          });
+          setTemplateEdit(row);
+        }}>
           {t('protocol.action.edit')}
         </Button>
       ),
@@ -288,7 +300,7 @@ export default function AdminProtocolManage() {
   const noticesTab = (
     <div>
       <div className="protocol-filter-bar">
-        <Button type="primary" icon={<PlusIcon />} onClick={() => { setNoticeForm({ title: '', body: '', level: 'info', enabled: true }); setNoticeEdit('new'); }}>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => { setNoticeForm({ title: '', titleTw: '', body: '', bodyTw: '', level: 'info', enabled: true }); setNoticeEdit('new'); }}>
           {t('protocol.admin.addNotice')}
         </Button>
       </div>
@@ -347,12 +359,24 @@ export default function AdminProtocolManage() {
             <Input value={typeForm.name} onChange={(e) => setTypeForm((p) => ({ ...p, name: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.name')} · {t('common.traditional')}</span>
+            <Input value={typeForm.nameTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setTypeForm((p) => ({ ...p, nameTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.description')}</span>
             <Input value={typeForm.description} onChange={(e) => setTypeForm((p) => ({ ...p, description: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.description')} · {t('common.traditional')}</span>
+            <Input value={typeForm.descriptionTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setTypeForm((p) => ({ ...p, descriptionTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.guide')}</span>
             <TextArea rows={3} value={typeForm.guide} onChange={(e) => setTypeForm((p) => ({ ...p, guide: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.guide')} · {t('common.traditional')}</span>
+            <TextArea rows={3} value={typeForm.guideTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setTypeForm((p) => ({ ...p, guideTw: e.target.value }))} />
           </label>
           <div className="protocol-form-grid">
             <label className="protocol-field">
@@ -411,8 +435,16 @@ export default function AdminProtocolManage() {
             <Input value={noticeForm.title} onChange={(e) => setNoticeForm((p) => ({ ...p, title: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.title')} · {t('common.traditional')}</span>
+            <Input value={noticeForm.titleTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setNoticeForm((p) => ({ ...p, titleTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.body')}</span>
             <TextArea rows={5} value={noticeForm.body} onChange={(e) => setNoticeForm((p) => ({ ...p, body: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.body')} · {t('common.traditional')}</span>
+            <TextArea rows={5} value={noticeForm.bodyTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setNoticeForm((p) => ({ ...p, bodyTw: e.target.value }))} />
           </label>
           <Checkbox
             options={LEVELS.map((l) => ({ label: t(`protocol.level.${l}`), value: l }))}
@@ -460,8 +492,16 @@ export default function AdminProtocolManage() {
             <Input value={templateForm.title} onChange={(e) => setTemplateForm((p) => ({ ...p, title: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.titleTemplate')} · {t('common.traditional')}</span>
+            <Input value={templateForm.titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTemplateForm((p) => ({ ...p, titleTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.bodyTemplate')}</span>
             <TextArea rows={6} value={templateForm.body} onChange={(e) => setTemplateForm((p) => ({ ...p, body: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.bodyTemplate')} · {t('common.traditional')}</span>
+            <TextArea rows={6} value={templateForm.bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setTemplateForm((p) => ({ ...p, bodyTw: e.target.value }))} />
           </label>
           <p className="muted-text">{t('protocol.admin.templateVars', { vars: templateEdit?.variables || '-' })}</p>
           <label className="protocol-inline-gap">

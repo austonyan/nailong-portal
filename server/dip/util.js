@@ -271,9 +271,11 @@ export function notify(userId, code, vars = {}, related = {}) {
   const tpl = db.prepare('SELECT * FROM dip_message_templates WHERE code = ? AND enabled = 1').get(code);
   const title = renderTemplate(tpl?.title_template ?? code, vars);
   const body = renderTemplate(tpl?.body_template ?? '', vars);
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', vars) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', vars) || null;
   db.prepare(
-    'INSERT INTO dip_messages (user_id, template_code, title, body, related, created_at) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(userId, code, title, body, JSON.stringify(related), now());
+    'INSERT INTO dip_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(userId, code, title, body, titleTw, bodyTw, JSON.stringify(related), now());
 }
 
 // ---------------------------------------------------------------------------
@@ -289,6 +291,7 @@ export function maskRelation(row) {
     entityName: row.entity_name,
     status: row.status,
     issuedBy: '奶龙国皇家外交事务署',
+    issuedByTw: '奶龍國皇家外交事務署',
     establishedAt: row.established_at,
     valid: row.status === 'established',
   };
@@ -304,6 +307,7 @@ export function maskIdentity(row) {
     termStart: row.term_start,
     termEnd: row.term_end,
     issuedBy: '奶龙国皇家外交事务署',
+    issuedByTw: '奶龍國皇家外交事務署',
     valid: row.status === 'active',
   };
 }
@@ -319,6 +323,7 @@ export function maskAgreement(row) {
     effectiveFrom: row.effective_from,
     effectiveTo: row.effective_to,
     issuedBy: '奶龙国皇家外交事务署',
+    issuedByTw: '奶龍國皇家外交事務署',
     valid: row.status === 'active',
   };
 }

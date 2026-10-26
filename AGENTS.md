@@ -12,7 +12,35 @@ This portal uses **react-i18next** (docs: https://react.i18next.com/). The i18n 
 - Never hardcode user-visible strings in JSX — every string goes through `t(...)`.
 - Server error codes (`src/api/client.js` `ApiError.code`) are translated via the `api.*`
   keys; map unknown codes to a generic fallback, never show raw keys.
+- `npm run check:i18n` scans every `t('...')` / `` t(`prefix.${...}`) `` call against the two
+  locale files and fails on missing keys, dead dynamic prefixes and uncovered enum values.
+  `npm run build` runs it first. Dynamic keys built from a runtime variable must either carry
+  a `defaultValue` or be added to the enum whitelist in `scripts/check-i18n.mjs`; admin-office
+  keys live under `<namespace>.admin.*` (e.g. `imm.admin.review.*`), never a bare page prefix.
 - The language switcher must offer exactly these two locales.
+
+Server-stored content (catalogs, notices, message templates, event fields) follows the same
+rule through **bilingual columns**, not i18n keys:
+
+- Every display column has a nullable `_tw` sibling (`name_tw`, `title_tw`, …). Migrations are
+  additive (`server/migrate.js` `ensureColumn` / `ensureTwColumns`), so old databases gain the
+  columns on boot.
+- `src/api/client.js` sends `X-Nailong-Locale` with every request; `server/locale.js`
+  (`localeMiddleware`) rewrites JSON so `name` is the requested language, `nameTw` is the
+  Traditional value and (for zh-TW) `nameCn` is the Simplified source. Nested JSON keys such as
+  `labelTw` / `placeholderTw` / `titleTw` are localized too.
+- Admin forms edit both languages: bind the Simplified input to `fieldCn ?? field`, the
+  Traditional input to `fieldTw`, and submit `field` + `fieldTw`. An empty Traditional value
+  falls back to Simplified at read time.
+- Built-in seed content is translated in `server/content-i18n.js` (backfill by code or title,
+  never overwriting a non-empty admin value). Admin-created content stays single-language until
+  an admin fills the Traditional field; free-text business content (nicknames, comments,
+  reasons) is never machine-translated.
+- When adding a display column: add the `_tw` column to `CREATE TABLE`, add it to the office's
+  `ensureTwColumns` call, expose `fieldTw` from the serializer (or rely on the raw `_tw`
+  column), and add the paired input to the admin form.
+- Acceptance: `node server/scripts/smoke-i18n.mjs` (self-contained temporary DB; checks columns,
+  seed backfill and locale-aware responses).
 
 ## What this workspace is
 
@@ -25,7 +53,9 @@ runner. Frontend consumes the published `animal-island-ui` npm package.
 - `npm run dev` — Vite dev server with HMR (proxies `/api` to :3001)
 - `npm run dev:server` — API server on http://localhost:3001 with watch
 - `npm run dev:all` — both at once (concurrently)
-- `npm run build` — production build; `npm run start` — API server (also serves `dist/` if present)
+- `npm run build` — production build (runs `check:i18n` first); `npm run start` — API server
+  (also serves `dist/` if present)
+- `npm run check:i18n` — verify every referenced i18n key has zh-CN + zh-TW entries
 - `npm run lint` — **oxlint** (config in `.oxlintrc.json`; not ESLint)
 - No test, typecheck, or format scripts exist here.
 
@@ -150,5 +180,7 @@ As of 2026-10-26 the portal and seven in-SPA offices are functional end to end: 
 RBAC, service cards, profile, admin screens, 签注 / 入境 / 外交 / 居民 / 礼宾活动 / 文书认证 /
 申诉监察. Cross-service linkage (`server/linkage.js`) and per-office auto-approval are
 live. The UI is built entirely with animal-island-ui components + `--animal-*` tokens.
-Acceptance scripts cover every office plus linkage, setup and auto-approval; run them
-against a fresh `NAILONG_DATA_DIR` when a script uses fixed usernames.
+Acceptance scripts cover every office plus linkage, setup, auto-approval and bilingual content;
+run them against a fresh `NAILONG_DATA_DIR` when a script uses fixed usernames. Server-stored
+catalogs/notices/templates/event text are bilingual (`*_tw` columns localized at the API
+boundary); user-authored free text is intentionally left in its original language.

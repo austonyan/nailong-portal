@@ -24,10 +24,12 @@
   "common": {
     "actions": "操作",
     "save": "保存",
+    "saved": "已保存",
     "cancel": "取消",
     "create": "新建",
     "edit": "编辑",
     "delete": "删除",
+    "deleted": "已删除",
     "confirm": "确认",
     "confirmDeleteTitle": "确认删除",
     "deleteTip": "此操作不可撤销,确定要删除吗?",
@@ -40,6 +42,8 @@
     "no": "否",
     "empty": "暂无数据",
     "optional": "选填",
+    "traditional": "繁体",
+    "twOptional": "留空则使用简体",
     "key": "标识",
     "name": "名称",
     "description": "描述",
@@ -343,7 +347,13 @@
         "users": "用户",
         "roles": "角色",
         "services": "服务",
-        "visa": "签注"
+        "visa": "签注",
+        "appeal": "申诉",
+        "immigration": "入境",
+        "diplomacy": "外交",
+        "docs": "文书认证",
+        "protocol": "礼宾活动",
+        "resident": "居民"
       }
     },
     "services": {
@@ -624,7 +634,9 @@
       "closed": "申请已关闭",
       "withdrawn": "申请已撤销",
       "expiry_reminder": "到期提醒",
-      "system": "系统通知"
+      "system": "系统通知",
+      "appeal_reopened": "申诉复核重开",
+      "diplomatic_voided": "外交身份失效注销"
     },
     "msg": {
       "submitted": {
@@ -752,6 +764,7 @@
       },
       "verifyQuery": "查询内容",
       "verifyIp": "来源 IP",
+      "verifyResult": "结果",
       "verifyResult_valid": "命中 · 有效",
       "verifyResult_used": "命中 · 已使用",
       "verifyResult_expired": "命中 · 已过期",
@@ -976,6 +989,9 @@
       "downloadPdf": "下载 PDF",
       "verifyEntry": "去验真",
       "exportFailed": "导出失败,请重试",
+      "seal1": "皇家文书与",
+      "seal2": "认证署",
+      "seal3": "认证专用章",
       "ariaLabel": "认证文书 {{no}}"
     },
     "certList": {
@@ -1494,7 +1510,12 @@
       "export": "导出 CSV",
       "empty": "还没有入境记录",
       "exitEmpty": "还没有出境记录",
-      "note": "入境章样式纯属虚构,与任何现实边检无关。"
+      "note": "入境章样式纯属虚构,与任何现实边检无关。",
+      "traveler": "旅客",
+      "correct": "更正",
+      "markInvalid": "标记失效",
+      "correctTitle": "更正入境记录 {{no}}",
+      "correctTip": "仅更正入境日期与备注,操作会记入审计日志。"
     },
     "msg": {
       "title": "站内消息",
@@ -1559,7 +1580,8 @@
       "accepted": "核验通过",
       "unknown": "未查到",
       "port_closed": "口岸关闭",
-      "visa_blocked": "签注拦截"
+      "visa_blocked": "签注拦截",
+      "error": "查询失败"
     },
     "admin": {
       "navLabel": "入境署管理导航",
@@ -1593,6 +1615,8 @@
       "editAnn": "编辑公告",
       "published": "已发布",
       "takeOffline": "下线",
+      "offline": "已下线",
+      "portTypeLabel": "口岸类型",
       "review": {
         "title": "边检审核工作台",
         "queueNote": "边检员只处理入境申报队列,与签注审核队列相互隔离。",
@@ -1639,6 +1663,7 @@
         "confirmTitle": "核验通关码 {{no}}",
         "confirmTip": "核验通过将立即生成入境记录并盖章,通关码随之失效。",
         "confirmTip2": "请确认旅客本人与申报信息一致(趣味流程,请配合盖章仪式)。",
+        "resultTitle": "核验结果",
         "result": {
           "accepted": "核验通过",
           "used": "已使用",
@@ -1913,6 +1938,11 @@
       "type_mismatch": "类型不符",
       "other": "其他"
     },
+    "noticeLevel": {
+      "info": "通知",
+      "policy": "政策",
+      "event": "活动"
+    },
     "materialKind": {
       "avatar": "头像",
       "address_proof": "地址证明",
@@ -2136,7 +2166,10 @@
         "result": {
           "valid": "有效",
           "not_found": "未找到",
-          "rate_limited": "已限流"
+          "rate_limited": "已限流",
+          "expired": "已过期",
+          "voided": "已注销",
+          "frozen": "已冻结"
         }
       },
       "types": {
@@ -2170,6 +2203,7 @@
         "tplVars": "可用变量",
         "messages": {
           "to": "接收人",
+          "title": "标题",
           "template": "模板",
           "read": "已读"
         }
@@ -2246,7 +2280,8 @@
       "card_expired": "居民卡过期",
       "expiry_reminder": "到期提醒",
       "change_approved": "变更通过",
-      "change_rejected": "变更驳回"
+      "change_rejected": "变更驳回",
+      "appeal_reopened": "申诉复核重开"
     }
   },
   "dip": {
@@ -2388,6 +2423,7 @@
       "submittedAt": "提交时间",
       "establishedAt": "建交时间",
       "rejected": "建交申请未通过",
+      "suspendedTitle": "关系已暂停",
       "supplementRequired": "需要补件",
       "supplementDeadline": "请在 {date} 前补交",
       "supplementSubmitted": "已补交",
@@ -2476,6 +2512,7 @@
     },
     "agreement": {
       "title": "互免协议",
+      "no": "协议编号",
       "listTitle": "互免协议公示",
       "checkTitle": "我的互免资格查询",
       "checkTip": "输入建交编号或外交身份编号,查询命中的生效互免协议。",
@@ -2553,6 +2590,7 @@
     },
     "office": {
       "pageTitle": "使领馆 / 代表处",
+      "name": "代表处名称",
       "detailTitle": "代表处详情",
       "location": "所在地点(虚构)",
       "hours": "开放时间",
@@ -2586,6 +2624,7 @@
       "officeAll": "署级公告",
       "officeTip": "署级公告全署可见,代表处公告仅在该代表处展示",
       "published": "已发布",
+      "publishedAt": "发布时间",
       "offline": "已下线",
       "offlineAction": "下线"
     },
@@ -3618,7 +3657,9 @@
       "escalate_appeal": "转申诉指引",
       "mark_processing": "转为处理中",
       "mark_closed": "关闭工单",
-      "mark_escalated": "升级工单"
+      "mark_escalated": "升级工单",
+      "review_accept": "复核受理",
+      "review_decide": "复核定案"
     },
     "noticeLevel": {
       "info": "通知",

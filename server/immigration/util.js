@@ -64,10 +64,10 @@ export function assertTransition(from, to, message) {
   }
 }
 
-export function logEvent(declarationId, action, actorId, note = '') {
+export function logEvent(declarationId, action, actorId, note = '', noteTw = null) {
   db.prepare(
-    'INSERT INTO im_declaration_events (declaration_id, action, actor_id, note, created_at) VALUES (?, ?, ?, ?, ?)'
-  ).run(declarationId, action, actorId ?? null, note, now());
+    'INSERT INTO im_declaration_events (declaration_id, action, actor_id, note, note_tw, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(declarationId, action, actorId ?? null, note, noteTw, now());
 }
 
 // ---------------------------------------------------------------------------
@@ -175,9 +175,11 @@ export function notify(userId, code, vars = {}, related = {}) {
   const tpl = db.prepare('SELECT * FROM im_message_templates WHERE code = ? AND enabled = 1').get(code);
   const title = renderTemplate(tpl?.title_template ?? code, vars);
   const body = renderTemplate(tpl?.body_template ?? '', vars);
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', vars) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', vars) || null;
   db.prepare(
-    'INSERT INTO im_messages (user_id, template_code, title, body, related, created_at) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(userId, code, title, body, JSON.stringify(related), now());
+    'INSERT INTO im_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(userId, code, title, body, titleTw, bodyTw, JSON.stringify(related), now());
 }
 
 // ---------------------------------------------------------------------------

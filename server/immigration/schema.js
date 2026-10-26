@@ -5,6 +5,7 @@
 // additions to the shared permissions / roles / services registries, so the
 // visa-office workstream can evolve independently.
 import { db, now } from '../db.js';
+import { ensureTwColumns } from '../migrate.js';
 
 let ensured = false;
 
@@ -16,11 +17,15 @@ export function ensureImmigrationSchema() {
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     code        TEXT NOT NULL UNIQUE,
     name        TEXT NOT NULL,
+    name_tw     TEXT,
     type        TEXT NOT NULL DEFAULT 'land' CHECK (type IN ('land', 'air', 'sea')),
     status      TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'closed', 'maintenance')),
     open_hours  TEXT NOT NULL DEFAULT '',
+    open_hours_tw TEXT,
     notice      TEXT NOT NULL DEFAULT '',
+    notice_tw   TEXT,
     map_desc    TEXT NOT NULL DEFAULT '',
+    map_desc_tw TEXT,
     sort_order  INTEGER NOT NULL DEFAULT 0,
     created_at  TEXT NOT NULL,
     updated_at  TEXT NOT NULL
@@ -30,8 +35,10 @@ export function ensureImmigrationSchema() {
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     port_id     INTEGER NOT NULL REFERENCES im_ports(id) ON DELETE CASCADE,
     name        TEXT NOT NULL,
+    name_tw     TEXT,
     type        TEXT NOT NULL DEFAULT 'normal' CHECK (type IN ('normal', 'reserved', 'special')),
     description TEXT NOT NULL DEFAULT '',
+    description_tw TEXT,
     enabled     INTEGER NOT NULL DEFAULT 1,
     created_at  TEXT NOT NULL
   );
@@ -40,7 +47,9 @@ export function ensureImmigrationSchema() {
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     port_id      INTEGER REFERENCES im_ports(id) ON DELETE CASCADE,
     title        TEXT NOT NULL,
+    title_tw     TEXT,
     body         TEXT NOT NULL,
+    body_tw      TEXT,
     level        TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info', 'warning', 'critical')),
     status       TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('published', 'offline')),
     published_at TEXT,
@@ -88,6 +97,7 @@ export function ensureImmigrationSchema() {
     action         TEXT NOT NULL,
     actor_id       INTEGER REFERENCES users(id),
     note           TEXT NOT NULL DEFAULT '',
+    note_tw        TEXT,
     created_at     TEXT NOT NULL
   );
   CREATE INDEX IF NOT EXISTS idx_im_decl_event ON im_declaration_events (declaration_id);
@@ -165,6 +175,8 @@ export function ensureImmigrationSchema() {
     template_code TEXT NOT NULL,
     title        TEXT NOT NULL,
     body         TEXT NOT NULL,
+    title_tw     TEXT,
+    body_tw      TEXT,
     related      TEXT NOT NULL DEFAULT '{}',
     read         INTEGER NOT NULL DEFAULT 0,
     archived     INTEGER NOT NULL DEFAULT 0,
@@ -177,6 +189,8 @@ export function ensureImmigrationSchema() {
     code          TEXT NOT NULL UNIQUE,
     title_template   TEXT NOT NULL,
     body_template    TEXT NOT NULL,
+    title_template_tw TEXT,
+    body_template_tw  TEXT,
     variables     TEXT NOT NULL DEFAULT '',
     enabled       INTEGER NOT NULL DEFAULT 1,
     updated_at    TEXT NOT NULL
@@ -231,6 +245,12 @@ export function ensureImmigrationSchema() {
   );
   `);
 
+  ensureTwColumns(db, 'im_messages', ['title', 'body']);
+  ensureTwColumns(db, 'im_message_templates', ['title_template', 'body_template']);
+  ensureTwColumns(db, 'im_ports', ['name', 'open_hours', 'notice', 'map_desc']);
+  ensureTwColumns(db, 'im_channels', ['name', 'description']);
+  ensureTwColumns(db, 'im_announcements', ['title', 'body']);
+  ensureTwColumns(db, 'im_declaration_events', ['note']);
   seedImmigration();
 }
 
@@ -250,54 +270,72 @@ const MESSAGE_TEMPLATES = [
     code: 'submit_success',
     title: '申报已提交:{{no}}',
     body: '你的入境申报 {{no}} 已提交皇家口岸,预计 3 个奶龙工作日内完成审核。可在"我的申报"中查看进度。',
+    titleTw: '申報已提交:{{no}}',
+    bodyTw: '你的入境申報 {{no}} 已提交皇家口岸,預計 3 個奶龍工作天內完成審核。可在「我的申報」中查看進度。',
     variables: 'no',
   },
   {
     code: 'supplement',
     title: '补件通知:{{no}}',
     body: '申报 {{no}} 需要补件:{{note}}。请在"我的申报"详情页在线补交。',
+    titleTw: '補件通知:{{no}}',
+    bodyTw: '申報 {{no}} 需要補件:{{note}}。請在「我的申報」詳情頁線上補交。',
     variables: 'no, note',
   },
   {
     code: 'approved',
     title: '申报已通过:{{no}}',
     body: '太棒啦!申报 {{no}} 已通过边检审核,通关码已生成,有效期至 {{validUntil}}。记得出示二维码通关。',
+    titleTw: '申報已通過:{{no}}',
+    bodyTw: '太棒啦!申報 {{no}} 已通過邊檢審核,通關碼已產生,有效期至 {{validUntil}}。記得出示 QR 碼通關。',
     variables: 'no, validUntil',
   },
   {
     code: 'rejected',
     title: '申报未通过:{{no}}',
     body: '很遗憾,申报 {{no}} 未通过审核(原因:{{reason}})。{{note}} 你可以修改后重新申报。',
+    titleTw: '申報未通過:{{no}}',
+    bodyTw: '很遺憾,申報 {{no}} 未通過審核(原因:{{reason}})。{{note}} 你可以修改後重新申報。',
     variables: 'no, reason, note',
   },
   {
     code: 'supplement_received',
     title: '补件已收到:{{no}}',
     body: '申报 {{no}} 的补件材料已收到,重新进入待检队列。',
+    titleTw: '補件已收到:{{no}}',
+    bodyTw: '申報 {{no}} 的補件材料已收到,重新進入待檢佇列。',
     variables: 'no',
   },
   {
     code: 'pass_code',
     title: '通关码已生成:{{no}}',
     body: '申报 {{no}} 的通关码 {{codeNo}} 已生成,请前往"我的通关码"查看二维码。',
+    titleTw: '通關碼已產生:{{no}}',
+    bodyTw: '申報 {{no}} 的通關碼 {{codeNo}} 已產生,請前往「我的通關碼」查看 QR 碼。',
     variables: 'no, codeNo',
   },
   {
     code: 'entry_record',
     title: '入境章盖好啦:{{no}}',
     body: '你已于 {{date}} 从皇家口岸入境奶龙岛,入境记录编号 {{recordNo}}。欢迎回到岛上!',
+    titleTw: '入境章蓋好啦:{{no}}',
+    bodyTw: '你已於 {{date}} 從皇家口岸入境奶龍島,入境記錄編號 {{recordNo}}。歡迎回到島上!',
     variables: 'no, date, recordNo',
   },
   {
     code: 'exit_reminder',
     title: '出境小提醒:{{recordNo}}',
     body: '你的入境记录 {{recordNo}} 计划停留 {{days}} 天即将到期,记得办理趣味出境登记哦。',
+    titleTw: '出境小提醒:{{recordNo}}',
+    bodyTw: '你的入境記錄 {{recordNo}} 計畫停留 {{days}} 天即將到期,記得辦理趣味出境登記喔。',
     variables: 'recordNo, days',
   },
   {
     code: 'appeal_reopened',
     title: '申诉复核:申报 {{no}} 重新进入待检',
     body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),申报 {{no}} 重新进入待检队列,请留意后续审核结果。',
+    titleTw: '申訴複核:申報 {{no}} 重新進入待檢',
+    bodyTw: '皇家申訴與監察署已撤銷原駁回決定(決定書 {{decisionCode}}),申報 {{no}} 重新進入待檢佇列,請留意後續審核結果。',
     variables: 'no, decisionCode, appealCode',
   },
 ];
@@ -394,10 +432,16 @@ function seedImmigration() {
 
     // --- message templates + settings --------------------------------------
     const insertTemplate = db.prepare(
-      `INSERT OR IGNORE INTO im_message_templates (code, title_template, body_template, variables, enabled, updated_at)
-       VALUES (@code, @title, @body, @variables, 1, @ts)`
+      `INSERT OR IGNORE INTO im_message_templates (code, title_template, body_template, title_template_tw, body_template_tw, variables, enabled, updated_at)
+       VALUES (@code, @title, @body, @titleTw, @bodyTw, @variables, 1, @ts)`
     );
-    for (const t of MESSAGE_TEMPLATES) insertTemplate.run({ ...t, title: t.title, body: t.body, ts });
+    for (const t of MESSAGE_TEMPLATES) insertTemplate.run({ ...t, titleTw: t.titleTw ?? '', bodyTw: t.bodyTw ?? '', ts });
+    const fillTemplateTw = db.prepare(
+      `UPDATE im_message_templates
+       SET title_template_tw = ?, body_template_tw = ?
+       WHERE code = ? AND (title_template_tw IS NULL OR title_template_tw = '')`
+    );
+    for (const t of MESSAGE_TEMPLATES) fillTemplateTw.run(t.titleTw ?? '', t.bodyTw ?? '', t.code);
   });
   run();
 }

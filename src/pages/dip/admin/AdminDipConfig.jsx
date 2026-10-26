@@ -9,16 +9,26 @@ import { DipAdminNav, TextArea, toastDipError } from '../../../components/dip/sh
 
 function TypeEditModal({ kind, initial, onClose, onSaved }) {
   const { t } = useTranslation();
-  const [name, setName] = useState(initial?.name ?? '');
-  const [description, setDescription] = useState(initial?.description ?? '');
-  const [guide, setGuide] = useState(initial?.guide ?? '');
+  const [name, setName] = useState(initial?.nameCn ?? initial?.name ?? '');
+  const [nameTw, setNameTw] = useState(initial?.nameTw ?? '');
+  const [description, setDescription] = useState(initial?.descriptionCn ?? initial?.description ?? '');
+  const [descriptionTw, setDescriptionTw] = useState(initial?.descriptionTw ?? '');
+  const [guide, setGuide] = useState(initial?.guideCn ?? initial?.guide ?? '');
+  const [guideTw, setGuideTw] = useState(initial?.guideTw ?? '');
   const [validityDays, setValidityDays] = useState(String(initial?.validity_days ?? 365));
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
     setBusy(true);
     try {
-      const payload = { name: name.trim(), description, guide };
+      const payload = {
+        name: name.trim(),
+        nameTw: nameTw.trim(),
+        description,
+        descriptionTw,
+        guide,
+        guideTw,
+      };
       if (kind === 'relation') payload.validityDays = Number(validityDays) || 365;
       await api.patch(`/dip/admin/config/types/${kind}/${initial.id}`, payload);
       Notification.success(t('common.save'));
@@ -47,13 +57,19 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
     >
       <div className="dip-config-form">
         <p className="dip-info-row"><span className="dip-info-label">{t('common.name')}</span><Input value={name} onChange={(e) => setName(e.target.value)} maxLength={40} /></p>
+        <p className="dip-info-row"><span className="dip-info-label">{t('common.name')} · {t('common.traditional')}</span><Input value={nameTw} placeholder={t('common.twOptional')} onChange={(e) => setNameTw(e.target.value)} maxLength={40} /></p>
         <p className="dip-info-row"><span className="dip-info-label">{t('common.description')}</span><Input value={description} onChange={(e) => setDescription(e.target.value)} maxLength={200} /></p>
+        <p className="dip-info-row"><span className="dip-info-label">{t('common.description')} · {t('common.traditional')}</span><Input value={descriptionTw} placeholder={t('common.twOptional')} onChange={(e) => setDescriptionTw(e.target.value)} maxLength={200} /></p>
         {kind === 'relation' && (
           <p className="dip-info-row"><span className="dip-info-label">{t('dip.config.validityDays')}</span><Input value={validityDays} onChange={(e) => setValidityDays(e.target.value.replace(/\D/g, ''))} /></p>
         )}
         <p className="dip-config-guide">
           <span className="dip-info-label">{t('dip.config.guide')}</span>
           <TextArea rows={5} value={guide} onChange={(e) => setGuide(e.target.value)} maxLength={1000} placeholder={t('dip.config.guideTip')} />
+        </p>
+        <p className="dip-config-guide">
+          <span className="dip-info-label">{t('dip.config.guide')} · {t('common.traditional')}</span>
+          <TextArea rows={5} value={guideTw} onChange={(e) => setGuideTw(e.target.value)} maxLength={1000} placeholder={t('common.twOptional')} />
         </p>
       </div>
     </Modal>

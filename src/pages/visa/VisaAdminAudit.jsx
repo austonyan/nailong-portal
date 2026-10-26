@@ -38,7 +38,7 @@ export default function VisaAdminAudit() {
 
   const columns = [
     {
-      title: t('visa.admin.auditAction'),
+      title: t('visa.admin.audit.auditAction'),
       dataIndex: 'action',
       width: 220,
       render: (v) => (
@@ -47,9 +47,9 @@ export default function VisaAdminAudit() {
         </Tag>
       ),
     },
-    { title: t('visa.admin.auditActor'), dataIndex: 'actor_name', width: 140 },
-    { title: t('visa.admin.auditTarget'), dataIndex: 'target_id', width: 200 },
-    { title: t('visa.admin.auditDetail'), dataIndex: 'detail' },
+    { title: t('visa.admin.audit.auditActor'), dataIndex: 'actor_name', width: 140 },
+    { title: t('visa.admin.audit.auditTarget'), dataIndex: 'target_id', width: 200 },
+    { title: t('visa.admin.audit.auditDetail'), dataIndex: 'detail' },
     { title: t('common.createdAt'), dataIndex: 'created_at', width: 170, render: fmtDateTime },
   ];
 
@@ -61,7 +61,7 @@ export default function VisaAdminAudit() {
           size="middle"
           allowClear
           prefix={<SearchIcon size={14} />}
-          placeholder={t('visa.admin.auditFilter')}
+          placeholder={t('visa.admin.audit.auditFilter')}
           value={action}
           onChange={(e) => setAction(e.target.value)}
         />

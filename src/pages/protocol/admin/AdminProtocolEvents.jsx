@@ -32,11 +32,16 @@ const COLORS = ['app-teal', 'app-orange', 'app-pink', 'app-blue', 'purple', 'app
 const EMPTY_FORM = {
   typeCode: 'CULTURE',
   title: '',
+  titleTw: '',
   subtitle: '',
+  subtitleTw: '',
   description: '',
-  schedule: [{ time: '', title: '' }],
+  descriptionTw: '',
+  schedule: [{ time: '', title: '', titleTw: '' }],
   venueName: '',
+  venueNameTw: '',
   venueNote: '',
+  venueNoteTw: '',
   capacity: 100,
   waitlistEnabled: true,
   residentOnly: false,
@@ -45,7 +50,9 @@ const EMPTY_FORM = {
   startsDate: '',
   endsDate: '',
   conditions: '',
+  conditionsTw: '',
   notice: '',
+  noticeTw: '',
   coverColor: 'app-teal',
   requiredMaterials: [],
 };
@@ -53,12 +60,17 @@ const EMPTY_FORM = {
 function eventToForm(ev) {
   return {
     typeCode: ev.typeCode,
-    title: ev.title,
-    subtitle: ev.subtitle,
-    description: ev.description,
-    schedule: ev.schedule.length ? ev.schedule : [{ time: '', title: '' }],
-    venueName: ev.venueName,
-    venueNote: ev.venueNote,
+    title: ev.titleCn ?? ev.title,
+    titleTw: ev.titleTw ?? '',
+    subtitle: ev.subtitleCn ?? ev.subtitle,
+    subtitleTw: ev.subtitleTw ?? '',
+    description: ev.descriptionCn ?? ev.description,
+    descriptionTw: ev.descriptionTw ?? '',
+    schedule: ev.schedule.length ? ev.schedule : [{ time: '', title: '', titleTw: '' }],
+    venueName: ev.venueNameCn ?? ev.venueName,
+    venueNameTw: ev.venueNameTw ?? '',
+    venueNote: ev.venueNoteCn ?? ev.venueNote,
+    venueNoteTw: ev.venueNoteTw ?? '',
     capacity: ev.capacity,
     waitlistEnabled: ev.waitlistEnabled,
     residentOnly: ev.residentOnly,
@@ -66,8 +78,10 @@ function eventToForm(ev) {
     registrationDeadline: ev.registrationDeadline ? ev.registrationDeadline.slice(0, 10) : '',
     startsDate: ev.startsAt ? ev.startsAt.slice(0, 10) : '',
     endsDate: ev.endsAt ? ev.endsAt.slice(0, 10) : '',
-    conditions: ev.conditions,
-    notice: ev.notice,
+    conditions: ev.conditionsCn ?? ev.conditions,
+    conditionsTw: ev.conditionsTw ?? '',
+    notice: ev.noticeCn ?? ev.notice,
+    noticeTw: ev.noticeTw ?? '',
     coverColor: ev.coverColor,
     requiredMaterials: ev.materials.map((m) => m.kind),
   };
@@ -144,11 +158,16 @@ export default function AdminProtocolEvents() {
       const body = {
         typeCode: form.typeCode,
         title: form.title,
+        titleTw: form.titleTw,
         subtitle: form.subtitle,
+        subtitleTw: form.subtitleTw,
         description: form.description,
+        descriptionTw: form.descriptionTw,
         schedule: form.schedule.filter((s) => s.time || s.title),
         venueName: form.venueName,
+        venueNameTw: form.venueNameTw,
         venueNote: form.venueNote,
+        venueNoteTw: form.venueNoteTw,
         capacity: Number(form.capacity) || 100,
         waitlistEnabled: form.waitlistEnabled,
         residentOnly: form.residentOnly,
@@ -157,7 +176,9 @@ export default function AdminProtocolEvents() {
         startsAt: dateAt(form.startsDate, '10:00'),
         endsAt: dateAt(form.endsDate, '18:00'),
         conditions: form.conditions,
+        conditionsTw: form.conditionsTw,
         notice: form.notice,
+        noticeTw: form.noticeTw,
         coverColor: form.coverColor,
         materials: form.requiredMaterials.map((kind) => ({ kind, required: 1 })),
       };
@@ -355,12 +376,24 @@ export default function AdminProtocolEvents() {
             <Input value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.title')} · {t('common.traditional')}</span>
+            <Input value={form.titleTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, titleTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.subtitle')}</span>
             <Input value={form.subtitle} onChange={(e) => setForm((p) => ({ ...p, subtitle: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.subtitle')} · {t('common.traditional')}</span>
+            <Input value={form.subtitleTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, subtitleTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.description')}</span>
             <TextArea rows={4} value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.description')} · {t('common.traditional')}</span>
+            <TextArea rows={4} value={form.descriptionTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, descriptionTw: e.target.value }))} />
           </label>
           <div className="protocol-form-grid">
             <label className="protocol-field">
@@ -386,6 +419,10 @@ export default function AdminProtocolEvents() {
               <Input value={form.venueName} onChange={(e) => setForm((p) => ({ ...p, venueName: e.target.value }))} />
             </label>
             <label className="protocol-field">
+              <span>{t('protocol.field.venue')} · {t('common.traditional')}</span>
+              <Input value={form.venueNameTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, venueNameTw: e.target.value }))} />
+            </label>
+            <label className="protocol-field">
               <span>{t('protocol.field.coverColor')}</span>
               <Select value={form.coverColor} onChange={(v) => setForm((p) => ({ ...p, coverColor: v }))} options={COLORS.map((c) => ({ key: c, label: c }))} />
             </label>
@@ -394,16 +431,21 @@ export default function AdminProtocolEvents() {
             <span>{t('protocol.field.venueNote')}</span>
             <Input value={form.venueNote} onChange={(e) => setForm((p) => ({ ...p, venueNote: e.target.value }))} />
           </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.venueNote')} · {t('common.traditional')}</span>
+            <Input value={form.venueNoteTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, venueNoteTw: e.target.value }))} />
+          </label>
 
           <h4>{t('protocol.field.schedule')}</h4>
           {form.schedule.map((row, i) => (
             <div key={i} className="protocol-schedule-edit">
               <Input value={row.time} onChange={(e) => setForm((p) => ({ ...p, schedule: p.schedule.map((s, idx) => (idx === i ? { ...s, time: e.target.value } : s)) }))} placeholder={t('protocol.admin.scheduleTime')} />
               <Input value={row.title} onChange={(e) => setForm((p) => ({ ...p, schedule: p.schedule.map((s, idx) => (idx === i ? { ...s, title: e.target.value } : s)) }))} placeholder={t('protocol.admin.scheduleTitle')} />
+              <Input value={row.titleTw ?? ''} onChange={(e) => setForm((p) => ({ ...p, schedule: p.schedule.map((s, idx) => (idx === i ? { ...s, titleTw: e.target.value } : s)) }))} placeholder={t('common.twOptional')} />
               <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => setForm((p) => ({ ...p, schedule: p.schedule.filter((_, idx) => idx !== i) }))} />
             </div>
           ))}
-          <Button type="dashed" size="small" icon={<PlusIcon />} onClick={() => setForm((p) => ({ ...p, schedule: [...p.schedule, { time: '', title: '' }] }))}>
+          <Button type="dashed" size="small" icon={<PlusIcon />} onClick={() => setForm((p) => ({ ...p, schedule: [...p.schedule, { time: '', title: '', titleTw: '' }] }))}>
             {t('protocol.admin.addSchedule')}
           </Button>
 
@@ -412,8 +454,16 @@ export default function AdminProtocolEvents() {
             <TextArea rows={3} value={form.conditions} onChange={(e) => setForm((p) => ({ ...p, conditions: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.conditions')} · {t('common.traditional')}</span>
+            <TextArea rows={3} value={form.conditionsTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, conditionsTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.notice')}</span>
             <TextArea rows={2} value={form.notice} onChange={(e) => setForm((p) => ({ ...p, notice: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.notice')} · {t('common.traditional')}</span>
+            <TextArea rows={2} value={form.noticeTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, noticeTw: e.target.value }))} />
           </label>
 
           <h4>{t('protocol.admin.materialsConfig')}</h4>

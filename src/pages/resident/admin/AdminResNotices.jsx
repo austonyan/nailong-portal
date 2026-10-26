@@ -8,7 +8,7 @@ import { ResAdminNav } from '../ResidentShell.jsx';
 import { NOTICE_LEVEL_COLORS, TextArea, fmtDateTime, toastResError } from '../shared.jsx';
 
 const LEVELS = ['info', 'policy', 'event'];
-const EMPTY_NOTICE = { id: null, title: '', body: '', level: 'info', enabled: true };
+const EMPTY_NOTICE = { id: null, title: '', titleTw: '', body: '', bodyTw: '', level: 'info', enabled: true };
 
 export default function AdminResNotices() {
   const { t } = useTranslation();
@@ -21,6 +21,8 @@ export default function AdminResNotices() {
   const [editingTpl, setEditingTpl] = useState(null);
   const [tplTitle, setTplTitle] = useState('');
   const [tplBody, setTplBody] = useState('');
+  const [tplTitleTw, setTplTitleTw] = useState('');
+  const [tplBodyTw, setTplBodyTw] = useState('');
   const [busy, setBusy] = useState(false);
   const [msgQ, setMsgQ] = useState('');
 
@@ -56,7 +58,15 @@ export default function AdminResNotices() {
   };
 
   const openEdit = (row) => {
-    setNoticeForm({ id: row.id, title: row.title, body: row.body, level: row.level, enabled: row.enabled });
+    setNoticeForm({
+      id: row.id,
+      title: row.titleCn ?? row.title,
+      titleTw: row.titleTw ?? '',
+      body: row.bodyCn ?? row.body,
+      bodyTw: row.bodyTw ?? '',
+      level: row.level,
+      enabled: row.enabled,
+    });
     setModalOpen(true);
   };
 
@@ -96,14 +106,21 @@ export default function AdminResNotices() {
 
   const openTemplate = (tpl) => {
     setEditingTpl(tpl);
-    setTplTitle(tpl.titleTemplate);
-    setTplBody(tpl.bodyTemplate);
+    setTplTitle(tpl.titleTemplateCn ?? tpl.titleTemplate);
+    setTplBody(tpl.bodyTemplateCn ?? tpl.bodyTemplate);
+    setTplTitleTw(tpl.titleTemplateTw ?? '');
+    setTplBodyTw(tpl.bodyTemplateTw ?? '');
   };
 
   const saveTemplate = async () => {
     setBusy(true);
     try {
-      await api.patch(`/resident/admin/templates/${editingTpl.code}`, { titleTemplate: tplTitle, bodyTemplate: tplBody });
+      await api.patch(`/resident/admin/templates/${editingTpl.code}`, {
+        titleTemplate: tplTitle,
+        bodyTemplate: tplBody,
+        titleTemplateTw: tplTitleTw,
+        bodyTemplateTw: tplBodyTw,
+      });
       Notification.success(t('common.save'));
       setEditingTpl(null);
       load();
@@ -152,11 +169,11 @@ export default function AdminResNotices() {
   ];
 
   const messageColumns = [
-    { title: t('res.admin.messages.to'), dataIndex: 'username', width: 120 },
-    { title: t('res.admin.messages.title'), dataIndex: 'title' },
-    { title: t('res.admin.messages.template'), dataIndex: 'template_code', width: 160 },
+    { title: t('res.admin.notices.messages.to'), dataIndex: 'username', width: 120 },
+    { title: t('res.admin.notices.messages.title'), dataIndex: 'title' },
+    { title: t('res.admin.notices.messages.template'), dataIndex: 'template_code', width: 160 },
     {
-      title: t('res.admin.messages.read'),
+      title: t('res.admin.notices.messages.read'),
       dataIndex: 'read',
       width: 90,
       render: (v) => (
@@ -255,12 +272,20 @@ export default function AdminResNotices() {
             <Input size="large" value={noticeForm.title} onChange={(e) => setNoticeForm({ ...noticeForm, title: e.target.value })} />
           </label>
           <label>
+            <span>{t('res.admin.notices.title')} · {t('common.traditional')}</span>
+            <Input size="large" value={noticeForm.titleTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setNoticeForm({ ...noticeForm, titleTw: e.target.value })} />
+          </label>
+          <label>
             <span>{t('res.admin.notices.level')}</span>
             <Select value={noticeForm.level} onChange={(v) => setNoticeForm({ ...noticeForm, level: v })} options={LEVELS.map((l) => ({ key: l, label: t(`res.noticeLevel.${l}`) }))} />
           </label>
           <label>
             <span>{t('res.admin.notices.body')}</span>
             <TextArea rows={4} maxLength={2000} value={noticeForm.body} onChange={(e) => setNoticeForm({ ...noticeForm, body: e.target.value })} />
+          </label>
+          <label>
+            <span>{t('res.admin.notices.body')} · {t('common.traditional')}</span>
+            <TextArea rows={4} maxLength={2000} value={noticeForm.bodyTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setNoticeForm({ ...noticeForm, bodyTw: e.target.value })} />
           </label>
         </div>
       </Modal>
@@ -286,8 +311,12 @@ export default function AdminResNotices() {
             <Input size="large" value={tplTitle} onChange={(e) => setTplTitle(e.target.value)} />
           </label>
           <label>
-            <span>{t('res.admin.notices.tplBody')}</span>
-            <TextArea rows={5} maxLength={1000} value={tplBody} onChange={(e) => setTplBody(e.target.value)} />
+            <span>{t('res.admin.notices.tplTitle')} · {t('common.traditional')}</span>
+            <Input size="large" value={tplTitleTw} placeholder={t('common.twOptional')} onChange={(e) => setTplTitleTw(e.target.value)} />
+          </label>
+          <label>
+            <span>{t('res.admin.notices.tplBody')} · {t('common.traditional')}</span>
+            <TextArea rows={5} maxLength={1000} value={tplBodyTw} placeholder={t('common.twOptional')} onChange={(e) => setTplBodyTw(e.target.value)} />
           </label>
           {editingTpl && (
             <p className="muted-text">

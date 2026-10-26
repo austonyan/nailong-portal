@@ -27,6 +27,9 @@ import { diplomaticCourtesyFor, upcomingProtocolEvents } from '../linkage.js';
 
 ensureImmigrationSchema();
 
+const VISA_RESULT_CN = { valid: '有效', invalid: '无效', expired: '已过期', revoked: '已注销', used: '已使用', not_found: '未找到' };
+const VISA_RESULT_TW = { valid: '有效', invalid: '無效', expired: '已過期', revoked: '已註銷', used: '已使用', not_found: '未找到' };
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadDir = path.join(
   process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data'),
@@ -74,11 +77,15 @@ function serializePort(row) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     type: row.type,
     status: row.status,
     openHours: row.open_hours,
+    openHoursTw: row.open_hours_tw,
     notice: row.notice,
+    noticeTw: row.notice_tw,
     mapDesc: row.map_desc,
+    mapDescTw: row.map_desc_tw,
     sortOrder: row.sort_order,
   };
 }
@@ -88,7 +95,9 @@ function serializeAnnouncement(row) {
     id: row.id,
     portId: row.port_id,
     title: row.title,
+    titleTw: row.title_tw,
     body: row.body,
+    bodyTw: row.body_tw,
     level: row.level,
     publishedAt: row.published_at,
   };
@@ -97,7 +106,7 @@ function serializeAnnouncement(row) {
 function declarationRow(id) {
   return db
     .prepare(
-      `SELECT d.*, p.code AS port_code, p.name AS port_name
+      `SELECT d.*, p.code AS port_code, p.name AS port_name, p.name_tw AS port_name_tw
        FROM im_declarations d JOIN im_ports p ON p.id = d.port_id
        WHERE d.id = ? AND d.deleted_at IS NULL`
     )
@@ -110,6 +119,7 @@ function serializeDeclaration(row, { detail = false } = {}) {
     no: row.no,
     portCode: row.port_code,
     portName: row.port_name,
+    portNameTw: row.port_name_tw,
     nickname: row.nickname,
     contact: row.contact,
     purpose: row.purpose,
@@ -134,7 +144,7 @@ function serializeDeclaration(row, { detail = false } = {}) {
   if (!detail) return base;
   base.events = db
     .prepare(
-      `SELECT e.action, e.note, e.created_at, u.display_name AS actor
+      `SELECT e.action, e.note, e.note_tw, e.created_at, u.display_name AS actor
        FROM im_declaration_events e LEFT JOIN users u ON u.id = e.actor_id
        WHERE e.declaration_id = ? ORDER BY e.id`
     )
@@ -401,7 +411,7 @@ router.post('/declarations/:id/submit', ...portalOnly, (req, res) => {
      SET status = 'pending', visa_result = ?, visa_checked_at = ?, submitted_at = ?, updated_at = ?
      WHERE id = ?`
   ).run(check.result, check.checkedAt, ts, ts, row.id);
-  logEvent(row.id, 'submit', req.user.id, `签注校验:${check.result}`);
+  logEvent(row.id, 'submit', req.user.id, `签注校验:${VISA_RESULT_CN[check.result] ?? check.result}`, `簽註校驗:${VISA_RESULT_TW[check.result] ?? check.result}`);
   notify(req.user.id, 'submit_success', { no: row.no }, { declarationNo: row.no });
   audit(req.user.id, 'im:declaration.submit', 'declaration', row.no, {});
   res.json({ declaration: serializeDeclaration(declarationRow(row.id), { detail: true }) });
@@ -411,7 +421,7 @@ router.post('/declarations/:id/withdraw', ...portalOnly, (req, res) => {
   const row = ownDeclaration(req, req.params.id);
   assertTransition(row.status, 'withdrawn', 'Only pending declarations can be withdrawn');
   db.prepare("UPDATE im_declarations SET status = 'withdrawn', updated_at = ? WHERE id = ?").run(now(), row.id);
-  logEvent(row.id, 'withdraw', req.user.id, '旅客撤销申报');
+  logEvent(row.id, 'withdraw', req.user.id, '旅客撤销申报', '旅客撤銷申報');
   audit(req.user.id, 'im:declaration.withdraw', 'declaration', row.no, {});
   res.json({ declaration: serializeDeclaration(declarationRow(row.id), { detail: true }) });
 });
@@ -597,7 +607,7 @@ router.post('/records/entry/:id/exit', ...portalOnly, (req, res) => {
     ).run(exitNo, req.user.id, entry.id, portId, ts.slice(0, 10), req.user.id, ts);
     db.prepare("UPDATE im_entry_records SET status = 'exited', updated_at = ? WHERE id = ?").run(ts, entry.id);
     db.prepare("UPDATE im_declarations SET status = 'exited', updated_at = ? WHERE id = ?").run(ts, entry.declaration_id);
-    logEvent(entry.declaration_id, 'exit', req.user.id, `出境登记 ${exitNo}`);
+    logEvent(entry.declaration_id, 'exit', req.user.id, `出境登记 ${exitNo}`, `出境登記 ${exitNo}`);
   });
   insert();
   audit(req.user.id, 'im:record.exit_register', 'entry_record', entry.no, { exitNo });
@@ -629,6 +639,8 @@ router.get('/messages', ...portalOnly, (req, res) => {
       templateCode: m.template_code,
       title: m.title,
       body: m.body,
+      titleTw: m.title_tw,
+      bodyTw: m.body_tw,
       related: JSON.parse(m.related || '{}'),
       read: !!m.read,
       createdAt: m.created_at,

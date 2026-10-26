@@ -197,7 +197,7 @@ router.get('/home', (req, res) => {
   const notices = db
     .prepare('SELECT * FROM visa_notices WHERE enabled = 1 ORDER BY id DESC LIMIT 10')
     .all()
-    .map((n) => ({ id: n.id, title: n.title, body: n.body, level: n.level, createdAt: n.created_at }));
+    .map((n) => ({ id: n.id, title: n.title, body: n.body, titleTw: n.title_tw, bodyTw: n.body_tw, level: n.level, createdAt: n.created_at }));
   const types = db
     .prepare('SELECT * FROM visa_types WHERE enabled = 1 ORDER BY sort_order, id')
     .all()

@@ -338,7 +338,9 @@ export function serializeNotice(row) {
   return {
     id: row.id,
     title: row.title,
+    titleTw: row.title_tw,
     body: row.body,
+    bodyTw: row.body_tw,
     level: row.level,
     enabled: !!row.enabled,
     createdAt: row.created_at,
@@ -351,7 +353,9 @@ export function serializePublicity(row) {
   return {
     id: row.id,
     title: row.title,
+    titleTw: row.title_tw,
     body: row.body,
+    bodyTw: row.body_tw,
     kind: row.kind,
     status: row.status,
     publishedAt: row.published_at,

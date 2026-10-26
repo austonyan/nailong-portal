@@ -69,11 +69,11 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
       {(d.risk?.flags ?? []).length > 0 && (
         <Card color="app-red" className="im-risk-card">
-          <b>{t('imm.review.riskFlags')}:</b>
+          <b>{t('imm.admin.review.riskFlags')}:</b>
           {d.risk.flags.map((f) => (
-            <Tag key={f} color="app-red" variant="soft" size="small">{t(`imm.risk.${f}`)}</Tag>
+            <Tag key={f} color="app-red" variant="soft" size="small">{t(`imm.admin.risk.${f}`)}</Tag>
           ))}
-          <p className="muted-text">{t('imm.review.rejectedCount', { count: d.risk.rejected })}</p>
+          <p className="muted-text">{t('imm.admin.review.rejectedCount', { count: d.risk.rejected })}</p>
         </Card>
       )}
 
@@ -97,8 +97,8 @@ function ReviewDrawer({ id, onClose, onChanged }) {
           )}
         </InfoRow>
         {d.visaCached?.detail?.type && (
-          <InfoRow label={t('imm.review.visaDetail')}>
-            {d.visaCached.detail.type} · {t('imm.visaResult.validUntil', { date: d.visaCached.detail.validUntil })}
+          <InfoRow label={t('imm.admin.review.visaDetail')}>
+            {d.visaCached.detail.type} · {t('imm.visaResult.validUntil', { date: d.visaCached.detail.validUntil?.slice(0, 16).replace('T', ' ') })}
           </InfoRow>
         )}
         {d.supplementRequest && (
@@ -135,15 +135,15 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
       {actionable && (
         <div className="im-detail-actions">
-          <Button type="primary" icon={<CheckCircleIcon />} loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/approve`, {}, t('imm.review.approved'))}>
-            {t('imm.review.approve')}
+          <Button type="primary" icon={<CheckCircleIcon />} loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/approve`, {}, t('imm.admin.review.approved'))}>
+            {t('imm.admin.review.approve')}
           </Button>
           <Button type="default" danger icon={<XCircleIcon />} onClick={() => setRejecting(true)}>
-            {t('imm.review.reject')}
+            {t('imm.admin.review.reject')}
           </Button>
           {d.status === 'pending' && (
             <Button type="default" icon={<ClockIcon />} onClick={() => setSupplementing(true)}>
-              {t('imm.review.supplement')}
+              {t('imm.admin.review.supplement')}
             </Button>
           )}
         </div>
@@ -151,40 +151,40 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
       <Modal
         open={rejecting}
-        title={t('imm.review.rejectTitle', { no: d.no })}
+        title={t('imm.admin.review.rejectTitle', { no: d.no })}
         onClose={() => setRejecting(false)}
         typewriter={false}
         footer={
           <>
             <Button onClick={() => setRejecting(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/reject`, { reason, note }, t('imm.review.rejected'))}>
-              {t('imm.review.rejectConfirm')}
+            <Button type="primary" danger loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/reject`, { reason, note }, t('imm.admin.review.rejected'))}>
+              {t('imm.admin.review.rejectConfirm')}
             </Button>
           </>
         }
       >
-        <p className="im-field-label">{t('imm.review.rejectReason')}</p>
+        <p className="im-field-label">{t('imm.admin.review.rejectReason')}</p>
         <Select value={reason} onChange={setReason} options={REJECT_REASONS.map((r) => ({ key: r, label: t(`imm.rejectReason.${r}`) }))} />
-        <p className="im-field-label">{t('imm.review.opinion')}</p>
-        <Input size="large" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} placeholder={t('imm.review.opinionPlaceholder')} />
+        <p className="im-field-label">{t('imm.admin.review.opinion')}</p>
+        <Input size="large" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} placeholder={t('imm.admin.review.opinionPlaceholder')} />
       </Modal>
 
       <Modal
         open={supplementing}
-        title={t('imm.review.supplementTitle', { no: d.no })}
+        title={t('imm.admin.review.supplementTitle', { no: d.no })}
         onClose={() => setSupplementing(false)}
         typewriter={false}
         footer={
           <>
             <Button onClick={() => setSupplementing(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/supplement`, { note: supplementNote }, t('imm.review.supplementSent'))}>
+            <Button type="primary" loading={busy} onClick={() => decide(`/immigration/admin/declarations/${d.id}/supplement`, { note: supplementNote }, t('imm.admin.review.supplementSent'))}>
               {t('common.confirm')}
             </Button>
           </>
         }
       >
-        <p className="im-field-label">{t('imm.review.supplementNote')}</p>
-        <Input size="large" value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} maxLength={300} placeholder={t('imm.review.supplementPlaceholder')} />
+        <p className="im-field-label">{t('imm.admin.review.supplementNote')}</p>
+        <Input size="large" value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} maxLength={300} placeholder={t('imm.admin.review.supplementPlaceholder')} />
       </Modal>
     </div>
   );
@@ -224,13 +224,13 @@ export default function AdminImReview() {
     { title: t('imm.declare.visaNo'), dataIndex: 'visaNo', width: 150, render: (v) => v ?? '-' },
     { title: t('imm.mydecl.submittedAt'), dataIndex: 'submittedAt', width: 150, render: (v) => v?.slice(0, 16).replace('T', ' ') || '-' },
     {
-      title: t('imm.review.risk'),
+      title: t('imm.admin.review.risk'),
       dataIndex: 'risk',
       width: 110,
       render: (_, record) =>
         (record.risk?.flags ?? []).length > 0 ? (
           (record.risk.flags).map((f) => (
-            <Tag key={f} color="app-red" variant="soft" size="small">{t(`imm.risk.${f}`)}</Tag>
+            <Tag key={f} color="app-red" variant="soft" size="small">{t(`imm.admin.risk.${f}`)}</Tag>
           ))
         ) : (
           <span className="muted-text">-</span>
@@ -241,7 +241,7 @@ export default function AdminImReview() {
       width: 100,
       render: (_, record) => (
         <Button type="default" size="small" onClick={() => setOpenId(record.id)}>
-          {t('imm.review.inspect')}
+          {t('imm.admin.review.inspect')}
         </Button>
       ),
     },
@@ -252,22 +252,22 @@ export default function AdminImReview() {
       <ImAdminNav />
       <div className="page-header">
         <Title size="middle" color="app-orange">
-          {t('imm.review.title')}
+          {t('imm.admin.review.title')}
         </Title>
       </div>
-      <p className="muted-text">{t('imm.review.queueNote')}</p>
+      <p className="muted-text">{t('imm.admin.review.queueNote')}</p>
 
       <div className="im-review-toolbar">
         <Select
           value={status}
           onChange={setStatus}
-          options={[{ key: '', label: t('imm.review.allStatuses') }, ...QUEUE_STATUSES.map((s) => ({ key: s, label: `${t(`imm.status.${s}`)} (${counts[s] ?? 0})` }))]}
+          options={[{ key: '', label: t('imm.admin.review.allStatuses') }, ...QUEUE_STATUSES.map((s) => ({ key: s, label: `${t(`imm.status.${s}`)} (${counts[s] ?? 0})` }))]}
         />
         <Input
           size="large"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder={t('imm.review.searchPlaceholder')}
+          placeholder={t('imm.admin.review.searchPlaceholder')}
           allowClear
         />
         <Button type="default" onClick={load}>{t('common.search')}</Button>
@@ -277,7 +277,7 @@ export default function AdminImReview() {
         <Table columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
-      <Drawer open={openId !== null} title={t('imm.review.detailTitle')} onClose={() => setOpenId(null)} width={560}>
+      <Drawer open={openId !== null} title={t('imm.admin.review.detailTitle')} onClose={() => setOpenId(null)} width={560}>
         {openId !== null && <ReviewDrawer id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
     </div>

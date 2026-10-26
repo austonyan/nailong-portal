@@ -52,11 +52,16 @@ export default function AdminResTypes() {
     setForm({
       id: row.id,
       code: row.code,
-      name: row.name,
-      description: row.description,
-      guide: row.guide,
-      benefits: row.benefits,
-      duties: row.duties,
+      name: row.nameCn ?? row.name,
+      nameTw: row.nameTw ?? '',
+      description: row.descriptionCn ?? row.description,
+      descriptionTw: row.descriptionTw ?? '',
+      guide: row.guideCn ?? row.guide,
+      guideTw: row.guideTw ?? '',
+      benefits: row.benefitsCn ?? row.benefits,
+      benefitsTw: row.benefitsTw ?? '',
+      duties: row.dutiesCn ?? row.duties,
+      dutiesTw: row.dutiesTw ?? '',
       validYears: String(row.validYears),
       requireAvatar: row.requireAvatar,
       requireAddressProof: row.requireAddressProof,
@@ -72,10 +77,15 @@ export default function AdminResTypes() {
       const body = {
         code: form.code,
         name: form.name,
+        nameTw: form.nameTw,
         description: form.description,
+        descriptionTw: form.descriptionTw,
         guide: form.guide,
+        guideTw: form.guideTw,
         benefits: form.benefits,
+        benefitsTw: form.benefitsTw,
         duties: form.duties,
+        dutiesTw: form.dutiesTw,
         validYears: Number(form.validYears) || 1,
         requireAvatar: form.requireAvatar,
         requireAddressProof: form.requireAddressProof,
@@ -172,22 +182,42 @@ export default function AdminResTypes() {
               <span>{t('res.admin.types.name')} *</span>
               <Input size="large" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </label>
+            <label>
+              <span>{t('res.admin.types.name')} · {t('common.traditional')}</span>
+              <Input size="large" value={form.nameTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm({ ...form, nameTw: e.target.value })} />
+            </label>
           </div>
           <label>
             <span>{t('res.admin.types.description')}</span>
             <TextArea rows={2} maxLength={300} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </label>
           <label>
+            <span>{t('res.admin.types.description')} · {t('common.traditional')}</span>
+            <TextArea rows={2} maxLength={300} value={form.descriptionTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm({ ...form, descriptionTw: e.target.value })} />
+          </label>
+          <label>
             <span>{t('res.type.guide')}</span>
             <TextArea rows={3} maxLength={2000} value={form.guide} onChange={(e) => setForm({ ...form, guide: e.target.value })} />
+          </label>
+          <label>
+            <span>{t('res.type.guide')} · {t('common.traditional')}</span>
+            <TextArea rows={3} maxLength={2000} value={form.guideTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm({ ...form, guideTw: e.target.value })} />
           </label>
           <label>
             <span>{t('res.type.benefits')}</span>
             <TextArea rows={2} maxLength={1000} value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} />
           </label>
           <label>
+            <span>{t('res.type.benefits')} · {t('common.traditional')}</span>
+            <TextArea rows={2} maxLength={1000} value={form.benefitsTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm({ ...form, benefitsTw: e.target.value })} />
+          </label>
+          <label>
             <span>{t('res.type.duties')}</span>
             <TextArea rows={2} maxLength={1000} value={form.duties} onChange={(e) => setForm({ ...form, duties: e.target.value })} />
+          </label>
+          <label>
+            <span>{t('res.type.duties')} · {t('common.traditional')}</span>
+            <TextArea rows={2} maxLength={1000} value={form.dutiesTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm({ ...form, dutiesTw: e.target.value })} />
           </label>
           <div className="res-config-grid">
             <label>

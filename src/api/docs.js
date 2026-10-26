@@ -69,7 +69,7 @@ export function normalizeDocNo(text) {
 }
 
 // 证书画布导出 PNG(下载图片用): 按证书字段重绘,不截图 DOM。
-export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer, sealEnabled }) {
+export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer, sealEnabled, labels = {} }) {
   const W = 960;
   const H = 660;
   const canvas = document.createElement('canvas');
@@ -110,12 +110,12 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
 
   // 字段
   const rows = [
-    ['文书编号', cert.certNo],
-    ['文书类型', typeName],
-    ['持有人', cert.holderName],
-    [bizNoLabel || '关联业务编号', cert.bizNo || '—'],
-    ['认证日期', String(cert.issuedAt || '').slice(0, 10)],
-    ['有效期至', String(cert.expiresAt || '').slice(0, 10)],
+    [labels.certNo || '文书编号', cert.certNo],
+    [labels.type || '文书类型', typeName],
+    [labels.holder || '持有人', cert.holderName],
+    [bizNoLabel || labels.bizNo || '关联业务编号', cert.bizNo || '—'],
+    [labels.issuedAt || '认证日期', String(cert.issuedAt || '').slice(0, 10)],
+    [labels.expiresAt || '有效期至', String(cert.expiresAt || '').slice(0, 10)],
   ];
   ctx.textAlign = 'left';
   let y = 190;
@@ -149,10 +149,10 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
     ctx.fillStyle = red;
     ctx.textAlign = 'center';
     ctx.font = '700 15px "Noto Sans SC", sans-serif';
-    ctx.fillText('皇家文书与', cx, cy - 30);
-    ctx.fillText('认证署', cx, cy - 10);
+    ctx.fillText(labels.seal1 || '皇家文书与', cx, cy - 30);
+    ctx.fillText(labels.seal2 || '认证署', cx, cy - 10);
     ctx.font = '900 20px "Noto Sans SC", sans-serif';
-    ctx.fillText('认证专用章', cx, cy + 24);
+    ctx.fillText(labels.seal3 || '认证专用章', cx, cy + 24);
     ctx.restore();
   }
 

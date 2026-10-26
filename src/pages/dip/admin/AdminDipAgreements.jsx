@@ -22,11 +22,14 @@ function AgreementModal({ initial, onClose, onSaved }) {
         partyA: initial.partyA,
         partyB: initial.partyB,
         type: initial.type ?? 'entry_courtesy',
-        courtesies: initial.courtesies,
-        coveredScope: initial.coveredScope,
+        courtesies: initial.courtesiesCn ?? initial.courtesies,
+        courtesiesTw: initial.courtesiesTw ?? '',
+        coveredScope: initial.coveredScopeCn ?? initial.coveredScope,
+        coveredScopeTw: initial.coveredScopeTw ?? '',
         effectiveFrom: (initial.effectiveFrom ?? '').slice(0, 10),
         effectiveTo: (initial.effectiveTo ?? '').slice(0, 10),
-        note: initial.note,
+        note: initial.noteCn ?? initial.note,
+        noteTw: initial.noteTw ?? '',
       });
       setPublished(!!initial.published);
     }
@@ -39,8 +42,11 @@ function AgreementModal({ initial, onClose, onSaved }) {
       const payload = {
         ...values,
         courtesies: values.courtesies?.trim() ?? '',
+        courtesiesTw: values.courtesiesTw?.trim() ?? '',
         coveredScope: values.coveredScope?.trim() ?? '',
+        coveredScopeTw: values.coveredScopeTw?.trim() ?? '',
         note: values.note?.trim() ?? '',
+        noteTw: values.noteTw?.trim() ?? '',
         published,
       };
       if (editing) await api.patch(`/dip/admin/agreements/${initial.id}`, payload);
@@ -92,11 +98,20 @@ function AgreementModal({ initial, onClose, onSaved }) {
         <FormItem name="courtesies" label={t('dip.agreement.courtesies')}>
           <TextArea rows={2} maxLength={500} placeholder={t('dip.agreement.courtesiesTip')} />
         </FormItem>
+        <FormItem name="courtesiesTw" label={`${t('dip.agreement.courtesies')} · ${t('common.traditional')}`}>
+          <TextArea rows={2} maxLength={500} placeholder={t('common.twOptional')} />
+        </FormItem>
         <FormItem name="coveredScope" label={t('dip.agreement.scope')}>
           <Input maxLength={300} placeholder={t('dip.agreement.scopeTip')} />
         </FormItem>
+        <FormItem name="coveredScopeTw" label={`${t('dip.agreement.scope')} · ${t('common.traditional')}`}>
+          <Input maxLength={300} placeholder={t('common.twOptional')} />
+        </FormItem>
         <FormItem name="note" label={t('dip.agreement.note')}>
           <Input maxLength={300} />
+        </FormItem>
+        <FormItem name="noteTw" label={`${t('dip.agreement.note')} · ${t('common.traditional')}`}>
+          <Input maxLength={300} placeholder={t('common.twOptional')} />
         </FormItem>
         <FormItem>
           <Checkbox

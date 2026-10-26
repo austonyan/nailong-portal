@@ -1,6 +1,6 @@
 // 奶龙国皇家居民登记署 — API helpers beyond the JSON wrapper: multipart upload
 // (with the in-memory token), authenticated private-file preview and downloads.
-import { getAccessToken } from './client.js';
+import { getAccessToken, getLocaleHeader } from './client.js';
 
 export function uploadResidentMaterial({ applicationId, kind, file, onProgress }) {
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ export function uploadResidentMaterial({ applicationId, kind, file, onProgress }
 
 export async function openResidentMaterial(materialId) {
   const res = await fetch(`/api/resident/materials/${materialId}`, {
-    headers: { Authorization: `Bearer ${getAccessToken()}` },
+    headers: { ...getLocaleHeader(), Authorization: `Bearer ${getAccessToken()}` },
   });
   if (!res.ok) throw Object.assign(new Error('preview failed'), { code: 'NOT_FOUND' });
   const blob = await res.blob();
@@ -43,7 +43,7 @@ export async function openResidentMaterial(materialId) {
 // Authenticated file downloads (CSV exports) — plain links can't carry the
 // in-memory token, so fetch to a blob and trigger a download.
 export async function downloadResidentFile(path, filename) {
-  const res = await fetch(`/api${path}`, { headers: { Authorization: `Bearer ${getAccessToken()}` } });
+  const res = await fetch(`/api${path}`, { headers: { ...getLocaleHeader(), Authorization: `Bearer ${getAccessToken()}` } });
   if (!res.ok) throw Object.assign(new Error('download failed'), { code: 'INTERNAL_ERROR' });
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);

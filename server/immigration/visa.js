@@ -17,6 +17,7 @@ const VISA_REMOTE_RE = /^[A-Z]{2,4}-\d{6,8}-[A-Z0-9]{4,12}$/; // 签注署格式
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
 const FUN_VISA_TYPES = ['观光奶龙签注', '深度贴贴签注', '演出巡游签注', '美食突袭签注', '串门探亲签注'];
+const FUN_VISA_TYPES_TW = ['觀光奶龍簽註', '深度貼貼簽註', '演出巡遊簽註', '美食突襲簽註', '串門探親簽註'];
 
 function hashPick(text, list) {
   const h = crypto.createHash('sha1').update(text).digest();
@@ -48,9 +49,11 @@ function stubValidate(visaNo, user) {
     result: 'valid',
     detail: {
       type: hashPick(visaNo, FUN_VISA_TYPES),
+      typeTw: hashPick(visaNo, FUN_VISA_TYPES_TW),
       holder: maskHolder(user?.displayName || user?.username),
       validUntil,
-      issuer: '奶龍國簽註申請署(演示数据)',
+      issuer: '奶龙国签注申请署(演示数据)',
+      issuerTw: '奶龍國簽註申請署(演示資料)',
     },
   };
 }
@@ -72,9 +75,11 @@ function liveValidate(permit, typeRow, user) {
     result,
     detail: {
       type: typeRow?.name ?? permit.type_code,
+      typeTw: typeRow?.name_tw ?? null,
       holder: maskHolder(permit.holder_name),
       validUntil: permit.valid_until,
-      issuer: '奶龍國簽註申請署',
+      issuer: '奶龙国签注申请署',
+      issuerTw: '奶龍國簽註申請署',
       visaNo: permit.visa_no,
     },
   };

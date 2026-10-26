@@ -129,7 +129,7 @@ export default function AdminProtocolCourtesy() {
           type="text"
           size="small"
           onClick={() => {
-            setTypeForm({ code: row.code, name: row.name, description: row.description, requirements: row.requirements, enabled: !!row.enabled, sortOrder: row.sort_order });
+            setTypeForm({ code: row.code, name: row.nameCn ?? row.name, nameTw: row.nameTw ?? '', description: row.descriptionCn ?? row.description, descriptionTw: row.descriptionTw ?? '', requirements: row.requirementsCn ?? row.requirements, requirementsTw: row.requirementsTw ?? '', enabled: !!row.enabled, sortOrder: row.sort_order });
             setTypeEdit(row);
           }}
         >
@@ -223,7 +223,7 @@ export default function AdminProtocolCourtesy() {
                     type="primary"
                     icon={<PlusIcon />}
                     onClick={() => {
-                      setTypeForm({ code: '', name: '', description: '', requirements: '', enabled: true, sortOrder: 99 });
+                      setTypeForm({ code: '', name: '', nameTw: '', description: '', descriptionTw: '', requirements: '', requirementsTw: '', enabled: true, sortOrder: 99 });
                       setTypeEdit('new');
                     }}
                   >
@@ -270,12 +270,24 @@ export default function AdminProtocolCourtesy() {
             <Input value={typeForm.name} onChange={(e) => setTypeForm((p) => ({ ...p, name: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.name')} · {t('common.traditional')}</span>
+            <Input value={typeForm.nameTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setTypeForm((p) => ({ ...p, nameTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.description')}</span>
             <Input value={typeForm.description} onChange={(e) => setTypeForm((p) => ({ ...p, description: e.target.value }))} />
           </label>
           <label className="protocol-field">
+            <span>{t('protocol.field.description')} · {t('common.traditional')}</span>
+            <Input value={typeForm.descriptionTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setTypeForm((p) => ({ ...p, descriptionTw: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
             <span>{t('protocol.field.requirements')}</span>
             <TextArea rows={3} value={typeForm.requirements} onChange={(e) => setTypeForm((p) => ({ ...p, requirements: e.target.value }))} />
+          </label>
+          <label className="protocol-field">
+            <span>{t('protocol.field.requirements')} · {t('common.traditional')}</span>
+            <TextArea rows={3} value={typeForm.requirementsTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setTypeForm((p) => ({ ...p, requirementsTw: e.target.value }))} />
           </label>
           <label className="protocol-inline-gap">
             <span>{t('common.enabled')}</span>

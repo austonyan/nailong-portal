@@ -37,10 +37,14 @@ export default function AppealAdminManage() {
   const [blScope, setBlScope] = useState('all');
   const [blReason, setBlReason] = useState('');
   const [nTitle, setNTitle] = useState('');
+  const [nTitleTw, setNTitleTw] = useState('');
   const [nBody, setNBody] = useState('');
+  const [nBodyTw, setNBodyTw] = useState('');
   const [nLevel, setNLevel] = useState('info');
   const [pTitle, setPTitle] = useState('');
+  const [pTitleTw, setPTitleTw] = useState('');
   const [pBody, setPBody] = useState('');
+  const [pBodyTw, setPBodyTw] = useState('');
   const [pKind, setPKind] = useState('case');
   const [busy, setBusy] = useState(false);
 
@@ -72,11 +76,13 @@ export default function AppealAdminManage() {
   const createNotice = async () => {
     setBusy(true);
     try {
-      await api.post('/appeal/admin/notices', { title: nTitle, body: nBody, level: nLevel });
+      await api.post('/appeal/admin/notices', { title: nTitle, titleTw: nTitleTw, body: nBody, bodyTw: nBodyTw, level: nLevel });
       Notification.success(t('common.saved'));
       setNoticeOpen(false);
       setNTitle('');
+      setNTitleTw('');
       setNBody('');
+      setNBodyTw('');
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -106,11 +112,13 @@ export default function AppealAdminManage() {
   const createPublicity = async () => {
     setBusy(true);
     try {
-      await api.post('/appeal/admin/publicity', { title: pTitle, body: pBody, kind: pKind });
+      await api.post('/appeal/admin/publicity', { title: pTitle, titleTw: pTitleTw, body: pBody, bodyTw: pBodyTw, kind: pKind });
       Notification.success(t('common.saved'));
       setPubOpen(false);
       setPTitle('');
+      setPTitleTw('');
       setPBody('');
+      setPBodyTw('');
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -367,8 +375,12 @@ export default function AppealAdminManage() {
           <Select value={nLevel} onChange={setNLevel} options={NOTICE_LEVELS.map((l) => ({ key: l, label: t(`appeal.noticeLevel.${l}`) }))} />
           <p>{t('appeal.admin.colTitle')}</p>
           <Input size="large" maxLength={120} value={nTitle} onChange={(e) => setNTitle(e.target.value)} />
+          <p>{t('appeal.admin.colTitle')} · {t('common.traditional')}</p>
+          <Input size="large" maxLength={120} value={nTitleTw} placeholder={t('common.twOptional')} onChange={(e) => setNTitleTw(e.target.value)} />
           <p>{t('appeal.admin.colBody')}</p>
           <TextArea rows={5} maxLength={2000} value={nBody} onChange={(e) => setNBody(e.target.value)} />
+          <p>{t('appeal.admin.colBody')} · {t('common.traditional')}</p>
+          <TextArea rows={5} maxLength={2000} value={nBodyTw} placeholder={t('common.twOptional')} onChange={(e) => setNBodyTw(e.target.value)} />
         </div>
       </Modal>
 
@@ -390,8 +402,12 @@ export default function AppealAdminManage() {
           <Select value={pKind} onChange={setPKind} options={PUBLICITY_KINDS.map((k) => ({ key: k, label: t(`appeal.publicityKind.${k}`) }))} />
           <p>{t('appeal.admin.colTitle')}</p>
           <Input size="large" maxLength={120} value={pTitle} onChange={(e) => setPTitle(e.target.value)} />
+          <p>{t('appeal.admin.colTitle')} · {t('common.traditional')}</p>
+          <Input size="large" maxLength={120} value={pTitleTw} placeholder={t('common.twOptional')} onChange={(e) => setPTitleTw(e.target.value)} />
           <p>{t('appeal.admin.colBody')}</p>
           <TextArea rows={6} maxLength={4000} value={pBody} onChange={(e) => setPBody(e.target.value)} placeholder={t('appeal.admin.publicityPlaceholder')} />
+          <p>{t('appeal.admin.colBody')} · {t('common.traditional')}</p>
+          <TextArea rows={6} maxLength={4000} value={pBodyTw} placeholder={t('common.twOptional')} onChange={(e) => setPBodyTw(e.target.value)} />
         </div>
       </Modal>
 

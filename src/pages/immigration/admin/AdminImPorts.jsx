@@ -81,7 +81,7 @@ function PortsTab() {
   const columns = [
     { title: t('common.name'), dataIndex: 'name', width: 120 },
     { title: t('common.key'), dataIndex: 'code', width: 120 },
-    { title: t('imm.admin.portType'), dataIndex: 'type', width: 100, render: (v) => t(`imm.portType.${v}`) },
+    { title: t('imm.admin.portTypeLabel'), dataIndex: 'type', width: 100, render: (v) => t(`imm.portType.${v}`) },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} i18nPrefix="imm.portStatus" /> },
     { title: t('imm.admin.openHours'), dataIndex: 'openHours', width: 170 },
     {
@@ -105,7 +105,7 @@ function PortsTab() {
             options={PORT_STATUSES.map((s) => ({ key: s, label: t(`imm.portStatus.${s}`) }))}
             aria-label={t('imm.admin.portStatus')}
           />
-          <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ name: record.name, type: record.type, openHours: record.openHours, notice: record.notice, mapDesc: record.mapDesc }); }}>
+          <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ name: record.nameCn ?? record.name, nameTw: record.nameTw ?? '', type: record.type, openHours: record.openHoursCn ?? record.openHours, openHoursTw: record.openHoursTw ?? '', notice: record.noticeCn ?? record.notice, noticeTw: record.noticeTw ?? '', mapDesc: record.mapDescCn ?? record.mapDesc, mapDescTw: record.mapDescTw ?? '' }); }}>
             {t('common.edit')}
           </Button>
           <Button type="default" size="small" icon={<PlusIcon />} onClick={() => { setChannelTarget(record); channelForm.resetFields(); }}>
@@ -142,17 +142,29 @@ function PortsTab() {
           <FormItem name="name" label={t('common.name')} rules={[{ required: true }]}>
             <Input size="large" />
           </FormItem>
-          <FormItem name="type" label={t('imm.admin.portType')} rules={[{ required: true }]}>
+          <FormItem name="nameTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} />
+          </FormItem>
+          <FormItem name="type" label={t('imm.admin.portTypeLabel')} rules={[{ required: true }]}>
             <Select options={PORT_TYPES.map((p) => ({ key: p, label: t(`imm.portType.${p}`) }))} value={form.getFieldValue('type') ?? 'land'} onChange={(v) => form.setFieldValue('type', v)} />
           </FormItem>
           <FormItem name="openHours" label={t('imm.admin.openHours')}>
             <Input size="large" placeholder="09:00 - 21:00" />
           </FormItem>
+          <FormItem name="openHoursTw" label={`${t('imm.admin.openHours')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} />
+          </FormItem>
           <FormItem name="notice" label={t('imm.ports.notice')}>
             <Input size="large" maxLength={300} />
           </FormItem>
+          <FormItem name="noticeTw" label={`${t('imm.ports.notice')} · ${t('common.traditional')}`}>
+            <Input size="large" maxLength={300} placeholder={t('common.twOptional')} />
+          </FormItem>
           <FormItem name="mapDesc" label={t('imm.admin.mapDesc')}>
             <Input size="large" maxLength={500} />
+          </FormItem>
+          <FormItem name="mapDescTw" label={`${t('imm.admin.mapDesc')} · ${t('common.traditional')}`}>
+            <Input size="large" maxLength={500} placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem>
             <Button type="primary" htmlType="submit" block>{t('common.save')}</Button>
@@ -172,11 +184,17 @@ function PortsTab() {
           <FormItem name="name" label={t('common.name')} rules={[{ required: true }]}>
             <Input size="large" />
           </FormItem>
+          <FormItem name="nameTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} />
+          </FormItem>
           <FormItem name="type" label={t('imm.admin.channelType')} rules={[{ required: true }]}>
             <Select options={CHANNEL_TYPES.map((c) => ({ key: c, label: t(`imm.channelType.${c}`) }))} value={channelForm.getFieldValue('type') ?? 'normal'} onChange={(v) => channelForm.setFieldValue('type', v)} />
           </FormItem>
           <FormItem name="description" label={t('common.description')}>
             <Input size="large" maxLength={120} />
+          </FormItem>
+          <FormItem name="descriptionTw" label={`${t('common.description')} · ${t('common.traditional')}`}>
+            <Input size="large" maxLength={120} placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem>
             <Button type="primary" htmlType="submit" block>{t('common.save')}</Button>
@@ -271,7 +289,7 @@ function AnnouncementsTab() {
       width: 220,
       render: (_, record) => (
         <div className="table-actions">
-          <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ title: record.title, body: record.body, level: record.level, portId: record.portId ? String(record.portId) : 'none' }); }}>
+          <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ title: record.titleCn ?? record.title, titleTw: record.titleTw ?? '', body: record.bodyCn ?? record.body, bodyTw: record.bodyTw ?? '', level: record.level, portId: record.portId ? String(record.portId) : 'none' }); }}>
             {t('common.edit')}
           </Button>
           {record.status === 'published' && (
@@ -306,8 +324,14 @@ function AnnouncementsTab() {
           <FormItem name="title" label={t('common.name')} rules={[{ required: true }]}>
             <Input size="large" maxLength={80} />
           </FormItem>
+          <FormItem name="titleTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
+            <Input size="large" maxLength={80} placeholder={t('common.twOptional')} />
+          </FormItem>
           <FormItem name="body" label={t('imm.admin.annBody')} rules={[{ required: true }]}>
             <Input size="large" maxLength={1000} />
+          </FormItem>
+          <FormItem name="bodyTw" label={`${t('imm.admin.annBody')} · ${t('common.traditional')}`}>
+            <Input size="large" maxLength={1000} placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem name="level" label={t('imm.admin.level')} rules={[{ required: true }]}>
             <Select options={LEVELS.map((l) => ({ key: l, label: t(`imm.level.${l}`) }))} value={levelValue} onChange={(v) => form.setFieldValue('level', v)} />

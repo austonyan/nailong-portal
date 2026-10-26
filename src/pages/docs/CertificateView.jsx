@@ -43,9 +43,9 @@ export default function CertificateView({ cert, typeName, bizNoLabel, issuer, se
       {sealEnabled && (
         <div className="doc-cert-seal" aria-hidden="true">
           <StarIcon size={22} />
-          <span className="doc-cert-seal-line">皇家文书与</span>
-          <span className="doc-cert-seal-line">认证署</span>
-          <strong>认证专用章</strong>
+          <span className="doc-cert-seal-line">{t('docs.cert.seal1')}</span>
+          <span className="doc-cert-seal-line">{t('docs.cert.seal2')}</span>
+          <strong>{t('docs.cert.seal3')}</strong>
         </div>
       )}
       <footer className="doc-cert-foot">

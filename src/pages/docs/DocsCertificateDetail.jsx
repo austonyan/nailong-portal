@@ -83,6 +83,17 @@ export default function DocsCertificateDetail() {
                 bizNoLabel: item.application?.type?.bizNoLabel,
                 issuer: item.issuer,
                 sealEnabled: item.sealEnabled,
+                labels: {
+                  certNo: t('docs.cert.certNo'),
+                  type: t('docs.appList.type'),
+                  holder: t('docs.cert.holder'),
+                  bizNo: t('docs.cert.bizNo'),
+                  issuedAt: t('docs.cert.issuedAt'),
+                  expiresAt: t('docs.cert.expiresAt'),
+                  seal1: t('docs.cert.seal1'),
+                  seal2: t('docs.cert.seal2'),
+                  seal3: t('docs.cert.seal3'),
+                },
               }).catch(() => Notification.error(t('docs.cert.exportFailed')))
             }
           >

@@ -80,6 +80,13 @@ if (!i18n.isInitialized) {
     nonExplicitSupportedLngs: false,
     interpolation: { escapeValue: false },
     returnEmptyString: false,
+    // Render raw keys instead of throwing, but surface them in dev so a
+    // drifted prefix cannot ship silently (i18next only calls the handler
+    // when saveMissing is on).
+    saveMissing: import.meta.env.DEV,
+    missingKeyHandler: import.meta.env.DEV
+      ? (lngs, ns, key) => console.warn(`[i18n] missing key: ${lngs.join(',')} / ${key}`)
+      : undefined,
   });
   document.documentElement.lang = i18n.language;
 }

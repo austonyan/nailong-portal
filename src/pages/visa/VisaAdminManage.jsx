@@ -48,8 +48,11 @@ function TypesTab() {
     try {
       const payload = {
         name: values.name?.trim(),
+        nameTw: values.nameTw?.trim() || '',
         description: values.description?.trim() ?? '',
+        descriptionTw: values.descriptionTw?.trim() || '',
         guide: values.guide?.trim() ?? '',
+        guideTw: values.guideTw?.trim() || '',
         stayDays: Number(values.stayDays) || 30,
         validDays: Number(values.validDays) || 90,
         renewable: !!values.renewable,
@@ -103,7 +106,12 @@ function TypesTab() {
           onClick={() => {
             setEditing(record);
             form.resetFields();
-            form.setFieldsValue({ ...record });
+            form.setFieldsValue({
+              ...record,
+              name: record.nameCn ?? record.name,
+              description: record.descriptionCn ?? record.description,
+              guide: record.guideCn ?? record.guide,
+            });
           }}
         >
           {t('common.edit')}
@@ -147,11 +155,20 @@ function TypesTab() {
           <FormItem name="name" label={t('common.name')} rules={[{ required: true, message: t('common.name') }]}>
             <Input size="large" />
           </FormItem>
+          <FormItem name="nameTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} />
+          </FormItem>
           <FormItem name="description" label={t('common.description')}>
             <Input size="large" />
           </FormItem>
+          <FormItem name="descriptionTw" label={`${t('common.description')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} />
+          </FormItem>
           <FormItem name="guide" label={t('visa.admin.typesGuide')}>
             <TextArea rows={3} />
+          </FormItem>
+          <FormItem name="guideTw" label={`${t('visa.admin.typesGuide')} · ${t('common.traditional')}`}>
+            <TextArea rows={3} placeholder={t('common.twOptional')} />
           </FormItem>
           <div className="visa-form-grid">
             <FormItem name="stayDays" label={t('visa.typeMeta.stayShort')}>
@@ -187,6 +204,8 @@ function NoticesTab() {
   const [editing, setEditing] = useState(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [titleTw, setTitleTw] = useState('');
+  const [bodyTw, setBodyTw] = useState('');
   const [level, setLevel] = useState('info');
   const [busy, setBusy] = useState(false);
 
@@ -206,8 +225,10 @@ function NoticesTab() {
 
   const openEdit = (notice) => {
     setEditing(notice ?? {});
-    setTitle(notice?.title ?? '');
-    setBody(notice?.body ?? '');
+    setTitle(notice?.titleCn ?? notice?.title ?? '');
+    setBody(notice?.bodyCn ?? notice?.body ?? '');
+    setTitleTw(notice?.titleTw ?? '');
+    setBodyTw(notice?.bodyTw ?? '');
     setLevel(notice?.level ?? 'info');
   };
 
@@ -215,9 +236,9 @@ function NoticesTab() {
     setBusy(true);
     try {
       if (editing?.id) {
-        await api.patch(`/visa/admin/notices/${editing.id}`, { title, body, level });
+        await api.patch(`/visa/admin/notices/${editing.id}`, { title, body, titleTw, bodyTw, level });
       } else {
-        await api.post('/visa/admin/notices', { title, body, level });
+        await api.post('/visa/admin/notices', { title, body, titleTw, bodyTw, level });
       }
       Notification.success(t('common.save'));
       setEditing(null);
@@ -308,6 +329,8 @@ function NoticesTab() {
         <div className="visa-action-form">
           <p>{t('common.name')}</p>
           <Input size="large" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <p>{t('common.name')} · {t('common.traditional')}</p>
+          <Input size="large" value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} />
           <p>{t('visa.admin.noticeLevel')}</p>
           <Select
             value={level}
@@ -316,6 +339,8 @@ function NoticesTab() {
           />
           <p>{t('common.description')}</p>
           <TextArea value={body} onChange={(e) => setBody(e.target.value)} rows={4} />
+          <p>{t('common.description')} · {t('common.traditional')}</p>
+          <TextArea value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} rows={4} />
         </div>
       </Modal>
     </div>

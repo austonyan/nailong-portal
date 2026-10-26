@@ -4,6 +4,7 @@
 // (permissions / roles / services) only ever receive INSERT OR IGNORE rows, so
 // parallel service workstreams never disturb each other.
 import { db, now } from '../db.js';
+import { ensureTwColumns } from '../migrate.js';
 
 let ensured = false;
 
@@ -15,8 +16,11 @@ export function ensureProtocolSchema() {
     id               INTEGER PRIMARY KEY AUTOINCREMENT,
     code             TEXT NOT NULL UNIQUE,
     name             TEXT NOT NULL,
+    name_tw          TEXT,
     description      TEXT NOT NULL DEFAULT '',
+    description_tw   TEXT,
     guide            TEXT NOT NULL DEFAULT '',
+    guide_tw         TEXT,
     required_fields  TEXT NOT NULL DEFAULT 'nickname,contact',
     materials        TEXT NOT NULL DEFAULT '[]',
     allow_companions INTEGER NOT NULL DEFAULT 1,
@@ -35,11 +39,16 @@ export function ensureProtocolSchema() {
     event_no              TEXT NOT NULL UNIQUE,
     type_code             TEXT NOT NULL,
     title                 TEXT NOT NULL,
+    title_tw              TEXT,
     subtitle              TEXT NOT NULL DEFAULT '',
+    subtitle_tw           TEXT,
     description           TEXT NOT NULL DEFAULT '',
+    description_tw        TEXT,
     schedule              TEXT NOT NULL DEFAULT '[]',
     venue_name            TEXT NOT NULL DEFAULT '',
+    venue_name_tw         TEXT,
     venue_note            TEXT NOT NULL DEFAULT '',
+    venue_note_tw         TEXT,
     capacity              INTEGER NOT NULL DEFAULT 100,
     waitlist_enabled      INTEGER NOT NULL DEFAULT 1,
     status                TEXT NOT NULL DEFAULT 'draft'
@@ -50,13 +59,16 @@ export function ensureProtocolSchema() {
     starts_at             TEXT,
     ends_at               TEXT,
     conditions            TEXT NOT NULL DEFAULT '',
+    conditions_tw         TEXT,
     materials             TEXT NOT NULL DEFAULT '[]',
     notice                TEXT NOT NULL DEFAULT '',
+    notice_tw             TEXT,
     cover_color           TEXT NOT NULL DEFAULT 'app-teal',
     created_by            INTEGER,
     published_at          TEXT,
     cancelled_at          TEXT,
     cancel_reason         TEXT NOT NULL DEFAULT '',
+    cancel_reason_tw      TEXT,
     deleted_at            TEXT,
     created_at            TEXT NOT NULL,
     updated_at            TEXT NOT NULL
@@ -68,7 +80,9 @@ export function ensureProtocolSchema() {
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     event_id   INTEGER NOT NULL REFERENCES pro_events(id) ON DELETE CASCADE,
     title      TEXT NOT NULL,
+    title_tw   TEXT,
     body       TEXT NOT NULL DEFAULT '',
+    body_tw    TEXT,
     level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','change','cancel')),
     created_at TEXT NOT NULL
   );
@@ -205,8 +219,11 @@ export function ensureProtocolSchema() {
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     code         TEXT NOT NULL UNIQUE,
     name         TEXT NOT NULL,
+    name_tw      TEXT,
     description  TEXT NOT NULL DEFAULT '',
+    description_tw TEXT,
     requirements TEXT NOT NULL DEFAULT '',
+    requirements_tw TEXT,
     enabled      INTEGER NOT NULL DEFAULT 1,
     sort_order   INTEGER NOT NULL DEFAULT 0,
     created_at   TEXT NOT NULL,
@@ -275,7 +292,9 @@ export function ensureProtocolSchema() {
   CREATE TABLE IF NOT EXISTS pro_notices (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     title      TEXT NOT NULL,
+    title_tw   TEXT,
     body       TEXT NOT NULL DEFAULT '',
+    body_tw    TEXT,
     level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
     enabled    INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL,
@@ -288,6 +307,8 @@ export function ensureProtocolSchema() {
     template_code TEXT NOT NULL,
     title         TEXT NOT NULL,
     body          TEXT NOT NULL,
+    title_tw      TEXT,
+    body_tw       TEXT,
     related       TEXT NOT NULL DEFAULT '{}',
     read          INTEGER NOT NULL DEFAULT 0,
     archived      INTEGER NOT NULL DEFAULT 0,
@@ -299,6 +320,8 @@ export function ensureProtocolSchema() {
     code           TEXT PRIMARY KEY,
     title_template TEXT NOT NULL,
     body_template  TEXT NOT NULL,
+    title_template_tw TEXT,
+    body_template_tw  TEXT,
     variables      TEXT NOT NULL DEFAULT '',
     enabled        INTEGER NOT NULL DEFAULT 1,
     updated_at     TEXT NOT NULL
@@ -352,6 +375,13 @@ export function ensureProtocolSchema() {
   );
   `);
 
+  ensureTwColumns(db, 'pro_messages', ['title', 'body']);
+  ensureTwColumns(db, 'pro_message_templates', ['title_template', 'body_template']);
+  ensureTwColumns(db, 'pro_event_types', ['name', 'description', 'guide']);
+  ensureTwColumns(db, 'pro_courtesy_types', ['name', 'description', 'requirements']);
+  ensureTwColumns(db, 'pro_notices', ['title', 'body']);
+  ensureTwColumns(db, 'pro_events', ['title', 'subtitle', 'description', 'venue_name', 'venue_note', 'conditions', 'notice', 'cancel_reason']);
+  ensureTwColumns(db, 'pro_event_notices', ['title', 'body']);
   seedProtocol();
 }
 
@@ -367,28 +397,28 @@ const PROTOCOL_PERMISSIONS = [
 ];
 
 const MESSAGE_TEMPLATES = [
-  { code: 'registration_submitted', title: '报名已提交:{{no}}', body: '你的活动报名 {{no}} 已提交至皇家礼宾与活动署,预计 {{hours}} 小时内完成审核。可在"我的报名"查看进度。', variables: 'no, hours' },
-  { code: 'registration_approved', title: '报名已通过:{{no}}', body: '恭喜!活动"{{event}}"的报名 {{no}} 已通过审核。活动凭证 {{passNo}} 已生成,可在"我的活动凭证"查看。', variables: 'no, event, passNo' },
-  { code: 'registration_waitlisted', title: '已进入候补名单:{{no}}', body: '活动"{{event}}"名额已满,报名 {{no}} 已进入候补。如有名额释放,系统将按顺序自动转正并通知你。', variables: 'no, event' },
-  { code: 'registration_promoted', title: '候补转正:{{no}}', body: '好消息!活动"{{event}}"有空余名额,你的报名 {{no}} 已转为正式名额,活动凭证 {{passNo}} 已生成。', variables: 'no, event, passNo' },
-  { code: 'registration_rejected', title: '报名未通过:{{no}}', body: '很遗憾,活动报名 {{no}} 未通过审核(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
-  { code: 'registration_cancelled', title: '报名已取消:{{no}}', body: '你的活动报名 {{no}} 已取消。活动"{{event}}"欢迎你下次再来。', variables: 'no, event' },
-  { code: 'event_changed', title: '活动变更通知:{{event}}', body: '你报名的活动"{{event}}"有新的安排:{{note}}。请前往活动详情查看最新信息。', variables: 'event, note' },
-  { code: 'event_cancelled', title: '活动取消通知:{{event}}', body: '很遗憾,活动"{{event}}"已取消(原因:{{reason}})。相关报名将自动取消,无需操作。', variables: 'event, reason' },
-  { code: 'invitation_issued', title: '收到活动邀请函:{{no}}', body: '你收到活动"{{event}}"的邀请函 {{no}}({{typeName}}),有效期至 {{validUntil}}。可在"我的邀请函"查看、接受或下载。', variables: 'no, event, typeName, validUntil' },
-  { code: 'invitation_revoked', title: '邀请函已撤销:{{no}}', body: '活动"{{event}}"的邀请函 {{no}} 已被发起方撤销。{{reason}}', variables: 'no, event, reason' },
-  { code: 'pass_issued', title: '活动凭证已生成:{{passNo}}', body: '活动"{{event}}"的活动凭证 {{passNo}} 已生成,活动时间 {{startsAt}},地点 {{venue}}。请凭凭证编号或二维码签到。', variables: 'passNo, event, startsAt, venue' },
-  { code: 'pass_voided', title: '活动凭证已作废:{{passNo}}', body: '你的活动凭证 {{passNo}} 已作废(原因:{{reason}})。如有疑问可在"消息与帮助"提交工单。', variables: 'passNo, reason' },
-  { code: 'pass_reissued', title: '活动凭证已补发:{{passNo}}', body: '活动凭证已补发为 {{passNo}},原凭证同时作废。请使用新凭证签到。', variables: 'passNo' },
-  { code: 'host_submitted', title: '接待方认证已提交:{{no}}', body: '接待方认证申请 {{no}} 已提交,预计 {{hours}} 小时内完成审核。', variables: 'no, hours' },
-  { code: 'host_approved', title: '接待方认证已通过:{{no}}', body: '恭喜!接待方"{{name}}"已通过认证(编号 {{no}}),认证证书 {{certNo}} 已生成。认证后可发起邀请函与发布活动(需权限)。', variables: 'no, name, certNo' },
-  { code: 'host_rejected', title: '接待方认证未通过:{{no}}', body: '很遗憾,接待方认证 {{no}} 未通过(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
-  { code: 'host_supplement', title: '接待方认证补件通知:{{no}}', body: '接待方认证 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在线补交。', variables: 'no, note, deadline' },
-  { code: 'courtesy_submitted', title: '礼遇申请已提交:{{no}}', body: '礼宾服务申请 {{no}} 已提交,预计 {{hours}} 小时内完成审核。', variables: 'no, hours' },
-  { code: 'courtesy_approved', title: '礼遇申请已通过:{{no}}', body: '礼宾服务申请 {{no}} 已通过({{typeName}}),有效期至 {{validUntil}}。', variables: 'no, typeName, validUntil' },
-  { code: 'courtesy_rejected', title: '礼遇申请未通过:{{no}}', body: '很遗憾,礼宾服务申请 {{no}} 未通过(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
-  { code: 'checkin_done', title: '签到成功:{{event}}', body: '你已成功签到活动"{{event}}"(凭证 {{passNo}}),签到时间 {{time}}。祝你在奶龙岛玩得开心!', variables: 'event, passNo, time' },
-  { code: 'ticket_replied', title: '工单回复:{{subject}}', body: '你的工单"{{subject}}"已收到回复:{{reply}}', variables: 'subject, reply' },
+  { code: 'registration_submitted', title: '报名已提交:{{no}}', body: '你的活动报名 {{no}} 已提交至皇家礼宾与活动署,预计 {{hours}} 小时内完成审核。可在"我的报名"查看进度。', titleTw: '報名已提交:{{no}}', bodyTw: '你的活動報名 {{no}} 已提交至皇家禮賓與活動署,預計 {{hours}} 小時內完成審核。可在「我的報名」查看進度。', variables: 'no, hours' },
+  { code: 'registration_approved', title: '报名已通过:{{no}}', body: '恭喜!活动"{{event}}"的报名 {{no}} 已通过审核。活动凭证 {{passNo}} 已生成,可在"我的活动凭证"查看。', titleTw: '報名已通過:{{no}}', bodyTw: '恭喜!活動「{{event}}」的報名 {{no}} 已通過審核。活動憑證 {{passNo}} 已產生,可在「我的活動憑證」查看。', variables: 'no, event, passNo' },
+  { code: 'registration_waitlisted', title: '已进入候补名单:{{no}}', body: '活动"{{event}}"名额已满,报名 {{no}} 已进入候补。如有名额释放,系统将按顺序自动转正并通知你。', titleTw: '已進入候補名單:{{no}}', bodyTw: '活動「{{event}}」名額已滿,報名 {{no}} 已進入候補。如有名額釋出,系統將按順序自動轉正並通知你。', variables: 'no, event' },
+  { code: 'registration_promoted', title: '候补转正:{{no}}', body: '好消息!活动"{{event}}"有空余名额,你的报名 {{no}} 已转为正式名额,活动凭证 {{passNo}} 已生成。', titleTw: '候補轉正:{{no}}', bodyTw: '好消息!活動「{{event}}」有空餘名額,你的報名 {{no}} 已轉為正式名額,活動憑證 {{passNo}} 已產生。', variables: 'no, event, passNo' },
+  { code: 'registration_rejected', title: '报名未通过:{{no}}', body: '很遗憾,活动报名 {{no}} 未通过审核(原因:{{reason}})。{{comment}}', titleTw: '報名未通過:{{no}}', bodyTw: '很遺憾,活動報名 {{no}} 未通過審核(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
+  { code: 'registration_cancelled', title: '报名已取消:{{no}}', body: '你的活动报名 {{no}} 已取消。活动"{{event}}"欢迎你下次再来。', titleTw: '報名已取消:{{no}}', bodyTw: '你的活動報名 {{no}} 已取消。活動「{{event}}」歡迎你下次再來。', variables: 'no, event' },
+  { code: 'event_changed', title: '活动变更通知:{{event}}', body: '你报名的活动"{{event}}"有新的安排:{{note}}。请前往活动详情查看最新信息。', titleTw: '活動變更通知:{{event}}', bodyTw: '你報名的活動「{{event}}」有新的安排:{{note}}。請前往活動詳情查看最新資訊。', variables: 'event, note' },
+  { code: 'event_cancelled', title: '活动取消通知:{{event}}', body: '很遗憾,活动"{{event}}"已取消(原因:{{reason}})。相关报名将自动取消,无需操作。', titleTw: '活動取消通知:{{event}}', bodyTw: '很遺憾,活動「{{event}}」已取消(原因:{{reason}})。相關報名將自動取消,無需操作。', variables: 'event, reason' },
+  { code: 'invitation_issued', title: '收到活动邀请函:{{no}}', body: '你收到活动"{{event}}"的邀请函 {{no}}({{typeName}}),有效期至 {{validUntil}}。可在"我的邀请函"查看、接受或下载。', titleTw: '收到活動邀請函:{{no}}', bodyTw: '你收到活動「{{event}}」的邀請函 {{no}}({{typeName}}),有效期至 {{validUntil}}。可在「我的邀請函」查看、接受或下載。', variables: 'no, event, typeName, validUntil' },
+  { code: 'invitation_revoked', title: '邀请函已撤销:{{no}}', body: '活动"{{event}}"的邀请函 {{no}} 已被发起方撤销。{{reason}}', titleTw: '邀請函已撤銷:{{no}}', bodyTw: '活動「{{event}}」的邀請函 {{no}} 已被發起方撤銷。{{reason}}', variables: 'no, event, reason' },
+  { code: 'pass_issued', title: '活动凭证已生成:{{passNo}}', body: '活动"{{event}}"的活动凭证 {{passNo}} 已生成,活动时间 {{startsAt}},地点 {{venue}}。请凭凭证编号或二维码签到。', titleTw: '活動憑證已產生:{{passNo}}', bodyTw: '活動「{{event}}」的活動憑證 {{passNo}} 已產生,活動時間 {{startsAt}},地點 {{venue}}。請憑憑證編號或 QR 碼簽到。', variables: 'passNo, event, startsAt, venue' },
+  { code: 'pass_voided', title: '活动凭证已作废:{{passNo}}', body: '你的活动凭证 {{passNo}} 已作废(原因:{{reason}})。如有疑问可在"消息与帮助"提交工单。', titleTw: '活動憑證已作廢:{{passNo}}', bodyTw: '你的活動憑證 {{passNo}} 已作廢(原因:{{reason}})。如有疑問可在「訊息與幫助」提交工單。', variables: 'passNo, reason' },
+  { code: 'pass_reissued', title: '活动凭证已补发:{{passNo}}', body: '活动凭证已补发为 {{passNo}},原凭证同时作废。请使用新凭证签到。', titleTw: '活動憑證已補發:{{passNo}}', bodyTw: '活動憑證已補發為 {{passNo}},原憑證同時作廢。請使用新憑證簽到。', variables: 'passNo' },
+  { code: 'host_submitted', title: '接待方认证已提交:{{no}}', body: '接待方认证申请 {{no}} 已提交,预计 {{hours}} 小时内完成审核。', titleTw: '接待方認證已提交:{{no}}', bodyTw: '接待方認證申請 {{no}} 已提交,預計 {{hours}} 小時內完成審核。', variables: 'no, hours' },
+  { code: 'host_approved', title: '接待方认证已通过:{{no}}', body: '恭喜!接待方"{{name}}"已通过认证(编号 {{no}}),认证证书 {{certNo}} 已生成。认证后可发起邀请函与发布活动(需权限)。', titleTw: '接待方認證已通過:{{no}}', bodyTw: '恭喜!接待方「{{name}}」已通過認證(編號 {{no}}),認證證書 {{certNo}} 已產生。認證後可發起邀請函與發布活動(需權限)。', variables: 'no, name, certNo' },
+  { code: 'host_rejected', title: '接待方认证未通过:{{no}}', body: '很遗憾,接待方认证 {{no}} 未通过(原因:{{reason}})。{{comment}}', titleTw: '接待方認證未通過:{{no}}', bodyTw: '很遺憾,接待方認證 {{no}} 未通過(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
+  { code: 'host_supplement', title: '接待方认证补件通知:{{no}}', body: '接待方认证 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在线补交。', titleTw: '接待方認證補件通知:{{no}}', bodyTw: '接待方認證 {{no}} 需要補件:{{note}}。請在 {{deadline}} 前線上補交。', variables: 'no, note, deadline' },
+  { code: 'courtesy_submitted', title: '礼遇申请已提交:{{no}}', body: '礼宾服务申请 {{no}} 已提交,预计 {{hours}} 小时内完成审核。', titleTw: '禮遇申請已提交:{{no}}', bodyTw: '禮賓服務申請 {{no}} 已提交,預計 {{hours}} 小時內完成審核。', variables: 'no, hours' },
+  { code: 'courtesy_approved', title: '礼遇申请已通过:{{no}}', body: '礼宾服务申请 {{no}} 已通过({{typeName}}),有效期至 {{validUntil}}。', titleTw: '禮遇申請已通過:{{no}}', bodyTw: '禮賓服務申請 {{no}} 已通過({{typeName}}),有效期至 {{validUntil}}。', variables: 'no, typeName, validUntil' },
+  { code: 'courtesy_rejected', title: '礼遇申请未通过:{{no}}', body: '很遗憾,礼宾服务申请 {{no}} 未通过(原因:{{reason}})。{{comment}}', titleTw: '禮遇申請未通過:{{no}}', bodyTw: '很遺憾,禮賓服務申請 {{no}} 未通過(原因:{{reason}})。{{comment}}', variables: 'no, reason, comment' },
+  { code: 'checkin_done', title: '签到成功:{{event}}', body: '你已成功签到活动"{{event}}"(凭证 {{passNo}}),签到时间 {{time}}。祝你在奶龙岛玩得开心!', titleTw: '簽到成功:{{event}}', bodyTw: '你已成功簽到活動「{{event}}」(憑證 {{passNo}}),簽到時間 {{time}}。祝你在奶龍島玩得開心!', variables: 'event, passNo, time' },
+  { code: 'ticket_replied', title: '工单回复:{{subject}}', body: '你的工单"{{subject}}"已收到回复:{{reply}}', titleTw: '工單回覆:{{subject}}', bodyTw: '你的工單「{{subject}}」已收到回覆:{{reply}}', variables: 'subject, reply' },
 ];
 
 const DEFAULT_CONFIG = {
@@ -619,10 +649,16 @@ function seedProtocol() {
 
     // --- message templates + config ---------------------------------------
     const insertTemplate = db.prepare(
-      `INSERT OR IGNORE INTO pro_message_templates (code, title_template, body_template, variables, enabled, updated_at)
-       VALUES (@code, @title, @body, @variables, 1, @ts)`
+      `INSERT OR IGNORE INTO pro_message_templates (code, title_template, body_template, title_template_tw, body_template_tw, variables, enabled, updated_at)
+       VALUES (@code, @title, @body, @titleTw, @bodyTw, @variables, 1, @ts)`
     );
-    for (const tpl of MESSAGE_TEMPLATES) insertTemplate.run({ ...tpl, ts });
+    for (const tpl of MESSAGE_TEMPLATES) insertTemplate.run({ ...tpl, titleTw: tpl.titleTw ?? '', bodyTw: tpl.bodyTw ?? '', ts });
+    const fillTemplateTw = db.prepare(
+      `UPDATE pro_message_templates
+       SET title_template_tw = ?, body_template_tw = ?
+       WHERE code = ? AND (title_template_tw IS NULL OR title_template_tw = '')`
+    );
+    for (const tpl of MESSAGE_TEMPLATES) fillTemplateTw.run(tpl.titleTw ?? '', tpl.bodyTw ?? '', tpl.code);
 
     const insertConfig = db.prepare('INSERT OR IGNORE INTO pro_config (key, value, updated_at) VALUES (?, ?, ?)');
     for (const [k, v] of Object.entries(DEFAULT_CONFIG)) insertConfig.run(k, v, ts);

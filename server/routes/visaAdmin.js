@@ -286,7 +286,10 @@ function validateTypeBody(body, { partial = false } = {}) {
     out.name = name.slice(0, 40);
   }
   if (body.description !== undefined) out.description = String(body.description).trim().slice(0, 300);
+  if (body.nameTw !== undefined) out.name_tw = String(body.nameTw || '').trim().slice(0, 40) || null;
+  if (body.descriptionTw !== undefined) out.description_tw = String(body.descriptionTw || '').trim().slice(0, 300) || null;
   if (body.guide !== undefined) out.guide = String(body.guide).trim().slice(0, 2000);
+  if (body.guideTw !== undefined) out.guide_tw = String(body.guideTw || '').trim().slice(0, 2000) || null;
   if (body.stayDays !== undefined) out.stay_days = Math.min(3650, Math.max(1, Number(body.stayDays) || 30));
   if (body.validDays !== undefined) out.valid_days = Math.min(3650, Math.max(1, Number(body.validDays) || 90));
   if (body.renewable !== undefined) out.renewable = body.renewable ? 1 : 0;
@@ -300,10 +303,10 @@ router.post('/types', (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO visa_types (code, name, description, guide, stay_days, valid_days, renewable, enabled, sort_order, created_at, updated_at)
-       VALUES (@code, @name, @description, @guide, @stay_days, @valid_days, @renewable, @enabled, @sort_order, @ts, @ts)`
+      `INSERT INTO visa_types (code, name, name_tw, description, description_tw, guide, guide_tw, stay_days, valid_days, renewable, enabled, sort_order, created_at, updated_at)
+       VALUES (@code, @name, @name_tw, @description, @description_tw, @guide, @guide_tw, @stay_days, @valid_days, @renewable, @enabled, @sort_order, @ts, @ts)`
     )
-    .run({ description: '', guide: '', stay_days: 30, valid_days: 90, renewable: 0, enabled: 1, sort_order: 0, ...data, ts });
+    .run({ description: '', guide: '', name_tw: null, description_tw: null, guide_tw: null, stay_days: 30, valid_days: 90, renewable: 0, enabled: 1, sort_order: 0, ...data, ts });
   audit(req.user, 'create_visa_type', 'visa_type', data.code);
   res.status(201).json({ type: serializeType(db.prepare('SELECT * FROM visa_types WHERE id = ?').get(info.lastInsertRowid)) });
 });
@@ -323,18 +326,20 @@ router.patch('/types/:id', (req, res) => {
 
 router.get('/notices', (_req, res) => {
   const rows = db.prepare('SELECT * FROM visa_notices ORDER BY id DESC').all();
-  res.json({ items: rows.map((n) => ({ id: n.id, title: n.title, body: n.body, level: n.level, enabled: !!n.enabled, createdAt: n.created_at })) });
+  res.json({ items: rows.map((n) => ({ id: n.id, title: n.title, body: n.body, titleTw: n.title_tw, bodyTw: n.body_tw, level: n.level, enabled: !!n.enabled, createdAt: n.created_at })) });
 });
 
 router.post('/notices', (req, res) => {
   const title = String(req.body?.title || '').trim().slice(0, 120);
   const body = String(req.body?.body || '').trim().slice(0, 2000);
+  const titleTw = String(req.body?.titleTw || '').trim().slice(0, 120) || null;
+  const bodyTw = String(req.body?.bodyTw || '').trim().slice(0, 2000) || null;
   const level = ['info', 'policy', 'event'].includes(req.body?.level) ? req.body.level : 'info';
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
   const ts = now();
   const info = db
-    .prepare('INSERT INTO visa_notices (title, body, level, enabled, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)')
-    .run(title, body, level, ts, ts);
+    .prepare('INSERT INTO visa_notices (title, title_tw, body, body_tw, level, enabled, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)')
+    .run(title, titleTw, body, bodyTw, level, ts, ts);
   audit(req.user, 'create_notice', 'notice', info.lastInsertRowid);
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
 });
@@ -344,11 +349,13 @@ router.patch('/notices/:id', (req, res) => {
   if (!row) throw notFound('Notice not found');
   const title = req.body?.title !== undefined ? String(req.body.title).trim().slice(0, 120) : row.title;
   const body = req.body?.body !== undefined ? String(req.body.body).trim().slice(0, 2000) : row.body;
+  const titleTw = req.body?.titleTw !== undefined ? String(req.body.titleTw || '').trim().slice(0, 120) || null : row.title_tw;
+  const bodyTw = req.body?.bodyTw !== undefined ? String(req.body.bodyTw || '').trim().slice(0, 2000) || null : row.body_tw;
   const level = req.body?.level !== undefined && ['info', 'policy', 'event'].includes(req.body.level) ? req.body.level : row.level;
   const enabled = req.body?.enabled !== undefined ? (req.body.enabled ? 1 : 0) : row.enabled;
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
-  db.prepare('UPDATE visa_notices SET title = ?, body = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
-    title, body, level, enabled, now(), row.id
+  db.prepare('UPDATE visa_notices SET title = ?, title_tw = ?, body = ?, body_tw = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+    title, titleTw, body, bodyTw, level, enabled, now(), row.id
   );
   audit(req.user, 'update_notice', 'notice', row.id, { enabled });
   res.json({ ok: true });

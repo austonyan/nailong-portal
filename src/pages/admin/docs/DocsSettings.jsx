@@ -121,6 +121,7 @@ export default function DocsSettings() {
             <Switch checked={config['docs.seal_enabled'] === '1' || config['docs.seal_enabled'] === true} onChange={(v) => setKey('docs.seal_enabled', v ? '1' : '0')} />
           </label>
           {textField('docs.issuer_name', t('docs.admin.settings.issuer'), '', 60)}
+          {textField('docs.issuer_name_tw', `${t('docs.admin.settings.issuer')} · ${t('common.traditional')}`, t('common.twOptional'), 60)}
         </div>
       </Card>
 

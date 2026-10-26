@@ -1,6 +1,8 @@
 // Thin fetch wrapper: attaches the in-memory access token, transparently
 // rotates expired sessions via the httpOnly refresh cookie, and surfaces
 // server error codes for i18n mapping.
+import i18n from '../i18n/index.js';
+
 let accessToken = null;
 
 export const setAccessToken = (token) => {
@@ -18,8 +20,14 @@ export class ApiError extends Error {
   }
 }
 
+// Server-stored content (catalogs, notices, messages) is localized at the API
+// boundary; every request carries the language currently selected in the SPA.
+export function getLocaleHeader() {
+  return { 'X-Nailong-Locale': i18n.language === 'zh-TW' ? 'zh-TW' : 'zh-CN' };
+}
+
 async function rawRequest(path, { method = 'GET', body } = {}) {
-  const headers = {};
+  const headers = { ...getLocaleHeader() };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
   let res;
@@ -86,7 +94,9 @@ export const api = {
 // --- multipart / binary helpers (shared; do not alter JSON paths above) ---
 
 function authHeaders(extra = {}) {
-  return accessToken ? { Authorization: `Bearer ${accessToken}`, ...extra } : extra;
+  return accessToken
+    ? { ...getLocaleHeader(), Authorization: `Bearer ${accessToken}`, ...extra }
+    : { ...getLocaleHeader(), ...extra };
 }
 
 async function withRetry(fn) {

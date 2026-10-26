@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { db, now } from './db.js';
+import { ensureTwColumns } from './migrate.js';
 import { BIZ_SOURCE_TO_TYPE, attachDecisionCertificate, verifyBusinessRecord } from './linkage.js';
 export { attachDecisionCertificate };
 
@@ -20,9 +21,13 @@ CREATE TABLE IF NOT EXISTS doc_types (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   code           TEXT NOT NULL UNIQUE,
   name           TEXT NOT NULL,
+  name_tw        TEXT,
   description    TEXT NOT NULL DEFAULT '',
+  description_tw TEXT,
   guide          TEXT NOT NULL DEFAULT '',
+  guide_tw       TEXT,
   biz_no_label   TEXT NOT NULL DEFAULT '',
+  biz_no_label_tw TEXT,
   biz_required   INTEGER NOT NULL DEFAULT 0,
   biz_source     TEXT NOT NULL DEFAULT '',
   validity_days  INTEGER NOT NULL DEFAULT 365,
@@ -138,7 +143,9 @@ CREATE INDEX IF NOT EXISTS idx_doc_msg_user ON doc_messages (user_id, archived, 
 CREATE TABLE IF NOT EXISTS doc_notices (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   title      TEXT NOT NULL,
+  title_tw   TEXT,
   body       TEXT NOT NULL DEFAULT '',
+  body_tw    TEXT,
   level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
   enabled    INTEGER NOT NULL DEFAULT 1,
   created_at TEXT NOT NULL,
@@ -174,6 +181,8 @@ CREATE TABLE IF NOT EXISTS doc_config (
 // certificates table used to carry a UNIQUE(application_id) which conflicts
 // with certificate regeneration (reissue). Rebuild it once, keeping rows.
 function migrateDocs() {
+  ensureTwColumns(db, 'doc_types', ['name', 'description', 'guide', 'biz_no_label']);
+  ensureTwColumns(db, 'doc_notices', ['title', 'body']);
   const sql = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'doc_certificates'").get()?.sql || '';
   if (!sql.includes('UNIQUE REFERENCES doc_applications')) return;
   db.exec(`
@@ -418,10 +427,15 @@ function seedDocs() {
       'docs.apply_daily_limit': '10',
       'docs.upload_max_mb': '10',
       'docs.seal_enabled': '1',
-      'docs.issuer_name': '奶龍國皇家文書與認證署',
+      'docs.issuer_name': '奶龙国皇家文书与认证署',
+      'docs.issuer_name_tw': '奶龍國皇家文書與認證署',
     };
     const insertConfig = db.prepare('INSERT OR IGNORE INTO doc_config (key, value) VALUES (?, ?)');
     for (const [k, v] of Object.entries(defaults)) insertConfig.run(k, v);
+    // Existing databases were seeded with the Traditional name in the CN slot.
+    db.prepare(
+      "UPDATE doc_config SET value = '奶龙国皇家文书与认证署' WHERE key = 'docs.issuer_name' AND value = '奶龍國皇家文書與認證署'"
+    ).run();
   });
   run();
 }
@@ -660,9 +674,13 @@ export function serializeType(row, { withConfig = true } = {}) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     guide: row.guide,
+    guideTw: row.guide_tw,
     bizNoLabel: row.biz_no_label,
+    bizNoLabelTw: row.biz_no_label_tw,
     bizRequired: !!row.biz_required,
     bizSource: row.biz_source,
     validityDays: row.validity_days,
@@ -773,7 +791,8 @@ export function maskCertificate(cert, typeRow) {
     valid: cert.status === 'valid',
     issuedAt: cert.issued_at,
     expiresAt: cert.expires_at,
-    issuer: getConfig('docs.issuer_name', '奶龍國皇家文書與認證署'),
+    issuer: getConfig('docs.issuer_name', '奶龙国皇家文书与认证署'),
+    issuerTw: getConfig('docs.issuer_name_tw', '奶龍國皇家文書與認證署'),
   };
 }
 

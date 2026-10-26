@@ -32,12 +32,19 @@ export default function DocsNotices() {
 
   const openCreate = () => {
     setEditing({});
-    setForm({ title: '', body: '', level: 'info', enabled: true });
+    setForm({ title: '', titleTw: '', body: '', bodyTw: '', level: 'info', enabled: true });
   };
 
   const openEdit = (n) => {
     setEditing(n);
-    setForm({ title: n.title, body: n.body, level: n.level, enabled: !!n.enabled });
+    setForm({
+      title: n.titleCn ?? n.title,
+      titleTw: n.titleTw ?? '',
+      body: n.bodyCn ?? n.body,
+      bodyTw: n.bodyTw ?? '',
+      level: n.level,
+      enabled: !!n.enabled,
+    });
   };
 
   const submit = async () => {
@@ -145,12 +152,20 @@ export default function DocsNotices() {
               <Input value={form.title} onChange={(e) => setF('title', e.target.value)} maxLength={120} />
             </label>
             <label className="docs-field">
+              <span className="docs-field-label">{t('docs.admin.notices.titleCol')} · {t('common.traditional')}</span>
+              <Input value={form.titleTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setF('titleTw', e.target.value)} maxLength={120} />
+            </label>
+            <label className="docs-field">
               <span className="docs-field-label">{t('docs.admin.notices.level')}</span>
               <Select value={form.level} onChange={(v) => setF('level', v)} options={['info', 'policy', 'event'].map((l) => ({ key: l, label: t(`docs.noticeLevel.${l}`) }))} />
             </label>
             <label className="docs-field docs-field-wide">
               <span className="docs-field-label">{t('common.description')}</span>
               <DocsTextarea value={form.body} onChange={(v) => setF('body', v)} rows={5} maxLength={2000} />
+            </label>
+            <label className="docs-field docs-field-wide">
+              <span className="docs-field-label">{t('common.description')} · {t('common.traditional')}</span>
+              <DocsTextarea value={form.bodyTw ?? ''} onChange={(v) => setF('bodyTw', v)} rows={5} maxLength={2000} placeholder={t('common.twOptional')} />
             </label>
             <label className="docs-field">
               <span className="docs-field-label">{t('common.enabled')}</span>

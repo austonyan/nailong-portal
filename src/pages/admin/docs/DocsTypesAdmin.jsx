@@ -59,10 +59,14 @@ export default function DocsTypesAdmin() {
     setEditing(item);
     setForm({
       code: item.code,
-      name: item.name,
-      description: item.description,
-      guide: item.guide,
-      biz_no_label: item.bizNoLabel || '',
+      name: item.nameCn ?? item.name,
+      name_tw: item.nameTw ?? '',
+      description: item.descriptionCn ?? item.description,
+      description_tw: item.descriptionTw ?? '',
+      guide: item.guideCn ?? item.guide,
+      guide_tw: item.guideTw ?? '',
+      biz_no_label: (item.bizNoLabelCn ?? item.bizNoLabel) || '',
+      biz_no_label_tw: item.bizNoLabelTw ?? '',
       biz_source: item.bizSource || '',
       biz_required: item.bizRequired,
       validity_days: item.validityDays,
@@ -158,16 +162,32 @@ export default function DocsTypesAdmin() {
                 <Input value={form.name} onChange={(e) => setF('name', e.target.value)} maxLength={80} />
               </label>
               <label className="docs-field">
+                <span className="docs-field-label">{t('common.name')} · {t('common.traditional')}</span>
+                <Input value={form.name_tw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setF('name_tw', e.target.value)} maxLength={80} />
+              </label>
+              <label className="docs-field">
                 <span className="docs-field-label">{t('common.description')}</span>
                 <Input value={form.description} onChange={(e) => setF('description', e.target.value)} maxLength={300} />
+              </label>
+              <label className="docs-field">
+                <span className="docs-field-label">{t('common.description')} · {t('common.traditional')}</span>
+                <Input value={form.description_tw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setF('description_tw', e.target.value)} maxLength={300} />
               </label>
               <label className="docs-field docs-field-wide">
                 <span className="docs-field-label">{t('docs.admin.types.guide')}</span>
                 <DocsTextarea value={form.guide} onChange={(v) => setF('guide', v)} placeholder={t('docs.admin.types.guidePh')} rows={4} />
               </label>
+              <label className="docs-field docs-field-wide">
+                <span className="docs-field-label">{t('docs.admin.types.guide')} · {t('common.traditional')}</span>
+                <DocsTextarea value={form.guide_tw ?? ''} onChange={(v) => setF('guide_tw', v)} placeholder={t('common.twOptional')} rows={4} />
+              </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.admin.types.bizLabel')}</span>
                 <Input value={form.biz_no_label} onChange={(e) => setF('biz_no_label', e.target.value)} maxLength={40} placeholder={t('docs.admin.types.bizLabelPh')} />
+              </label>
+              <label className="docs-field">
+                <span className="docs-field-label">{t('docs.admin.types.bizLabel')} · {t('common.traditional')}</span>
+                <Input value={form.biz_no_label_tw ?? ''} onChange={(e) => setF('biz_no_label_tw', e.target.value)} maxLength={40} placeholder={t('common.twOptional')} />
               </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.admin.types.bizSource')}</span>
@@ -201,6 +221,7 @@ export default function DocsTypesAdmin() {
                 <>
                   <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder="key" className="docs-editor-key" />
                   <Input value={row.label} onChange={(e) => set({ label: e.target.value })} placeholder={t('docs.admin.types.materialLabel')} />
+                  <Input value={row.labelTw ?? ''} onChange={(e) => set({ labelTw: e.target.value })} placeholder={t('common.twOptional')} />
                   <label className="docs-editor-check">
                     <Switch size="small" checked={!!row.required} onChange={(v) => set({ required: v })} />
                     <span>{t('docs.apply.required')}</span>
@@ -222,11 +243,13 @@ export default function DocsTypesAdmin() {
                 <>
                   <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder="key" className="docs-editor-key" />
                   <Input value={row.label} onChange={(e) => set({ label: e.target.value })} placeholder={t('docs.admin.types.fieldLabel')} />
+                  <Input value={row.labelTw ?? ''} onChange={(e) => set({ labelTw: e.target.value })} placeholder={t('common.twOptional')} />
                   <label className="docs-editor-check">
                     <Switch size="small" checked={!!row.required} onChange={(v) => set({ required: v })} />
                     <span>{t('docs.apply.required')}</span>
                   </label>
                   <Input value={row.placeholder} onChange={(e) => set({ placeholder: e.target.value })} placeholder="placeholder" className="docs-editor-accept" />
+                  <Input value={row.placeholderTw ?? ''} onChange={(e) => set({ placeholderTw: e.target.value })} placeholder={t('common.twOptional')} className="docs-editor-accept" />
                 </>
               )}
             />

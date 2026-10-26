@@ -7,15 +7,17 @@ import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../comp
 
 function TemplateModal({ initial, onClose, onSaved }) {
   const { t } = useTranslation();
-  const [title, setTitle] = useState(initial.title);
-  const [body, setBody] = useState(initial.body);
+  const [title, setTitle] = useState(initial.titleCn ?? initial.title);
+  const [body, setBody] = useState(initial.bodyCn ?? initial.body);
+  const [titleTw, setTitleTw] = useState(initial.titleTw ?? '');
+  const [bodyTw, setBodyTw] = useState(initial.bodyTw ?? '');
   const [enabled, setEnabled] = useState(initial.enabled);
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
     setBusy(true);
     try {
-      await api.put(`/dip/admin/templates/${initial.id}`, { title: title.trim(), body: body.trim(), enabled });
+      await api.put(`/dip/admin/templates/${initial.id}`, { title: title.trim(), body: body.trim(), titleTw: titleTw.trim(), bodyTw: bodyTw.trim(), enabled });
       Notification.success(t('common.save'));
       onSaved();
       onClose();
@@ -42,9 +44,14 @@ function TemplateModal({ initial, onClose, onSaved }) {
     >
       <div className="dip-config-form">
         <p className="dip-info-row"><span className="dip-info-label">{t('dip.templates.title')}</span><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} /></p>
+        <p className="dip-info-row"><span className="dip-info-label">{t('dip.templates.title')} · {t('common.traditional')}</span><Input value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} maxLength={120} /></p>
         <p className="dip-config-guide">
           <span className="dip-info-label">{t('dip.templates.body')}</span>
           <TextArea rows={5} value={body} onChange={(e) => setBody(e.target.value)} maxLength={600} />
+        </p>
+        <p className="dip-config-guide">
+          <span className="dip-info-label">{t('dip.templates.body')} · {t('common.traditional')}</span>
+          <TextArea rows={5} value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} maxLength={600} />
         </p>
         <p className="muted-text">{t('dip.templates.varTip')}</p>
         <p className="dip-info-row">

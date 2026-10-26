@@ -520,12 +520,15 @@ function serializeAgreement(row) {
     partyB: row.party_b,
     type: row.type,
     courtesies: row.courtesies,
+    courtesiesTw: row.courtesies_tw,
     coveredScope: row.covered_scope,
+    coveredScopeTw: row.covered_scope_tw,
     effectiveFrom: row.effective_from,
     effectiveTo: row.effective_to,
     status: row.status,
     published: !!row.published,
     note: row.note,
+    noteTw: row.note_tw,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -565,8 +568,8 @@ router.post('/agreements', ...adminOnly, (req, res) => {
   const no = makeUniqueNo(getSetting('agreement_no_prefix') || 'NLG', 'dip_agreements');
   const info = db
     .prepare(
-      `INSERT INTO dip_agreements (no, party_a, party_b, type, courtesies, covered_scope, effective_from, effective_to, status, published, note, created_by, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO dip_agreements (no, party_a, party_b, type, courtesies, courtesies_tw, covered_scope, covered_scope_tw, effective_from, effective_to, status, published, note, note_tw, created_by, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       no,
@@ -574,12 +577,15 @@ router.post('/agreements', ...adminOnly, (req, res) => {
       partyB,
       body.type,
       String(body.courtesies || '').slice(0, 500),
+      String(body.courtesiesTw || '').slice(0, 500) || null,
       String(body.coveredScope || '').slice(0, 300),
+      String(body.coveredScopeTw || '').slice(0, 300) || null,
       effectiveFrom,
       effectiveTo,
       status,
       body.published ? 1 : 0,
       String(body.note || '').slice(0, 300),
+      String(body.noteTw || '').slice(0, 300) || null,
       req.user.id,
       now(),
       now()
@@ -603,8 +609,11 @@ router.patch('/agreements/:id', ...adminOnly, (req, res) => {
     updates.type = body.type;
   }
   if (body.courtesies !== undefined) updates.courtesies = String(body.courtesies || '').slice(0, 500);
+  if (body.courtesiesTw !== undefined) updates.courtesies_tw = String(body.courtesiesTw || '').slice(0, 500) || null;
   if (body.coveredScope !== undefined) updates.covered_scope = String(body.coveredScope || '').slice(0, 300);
+  if (body.coveredScopeTw !== undefined) updates.covered_scope_tw = String(body.coveredScopeTw || '').slice(0, 300) || null;
   if (body.note !== undefined) updates.note = String(body.note || '').slice(0, 300);
+  if (body.noteTw !== undefined) updates.note_tw = String(body.noteTw || '').slice(0, 300) || null;
   if (body.published !== undefined) updates.published = body.published ? 1 : 0;
   const cols = Object.keys(updates);
   if (cols.length) {
@@ -658,11 +667,17 @@ function serializeOffice(row) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     location: row.location,
+    locationTw: row.location_tw,
     openHours: row.open_hours,
+    openHoursTw: row.open_hours_tw,
     intro: row.intro,
+    introTw: row.intro_tw,
     contact: row.contact,
+    contactTw: row.contact_tw,
     services: row.services,
+    servicesTw: row.services_tw,
     status: row.status,
     sortOrder: row.sort_order,
     updatedAt: row.updated_at,
@@ -681,20 +696,27 @@ router.post('/offices', ...adminOnly, (req, res) => {
     throw badRequest('VALIDATION_ERROR', 'Office code must be 3-20 chars: A-Z, 0-9 or _');
   }
   const name = readString(body.name, { name: 'name', min: 2, max: 40 });
+  const nameTw = readString(body.nameTw, { name: 'nameTw', min: 2, max: 40, optional: true });
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO dip_offices (code, name, location, open_hours, intro, contact, services, status, sort_order, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'closed', ?, ?, ?)`
+      `INSERT INTO dip_offices (code, name, name_tw, location, location_tw, open_hours, open_hours_tw, intro, intro_tw, contact, contact_tw, services, services_tw, status, sort_order, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'closed', ?, ?, ?)`
     )
     .run(
       code,
       name,
+      nameTw,
       String(body.location || '').slice(0, 80),
+      String(body.locationTw || '').slice(0, 80) || null,
       String(body.openHours || '').slice(0, 80),
+      String(body.openHoursTw || '').slice(0, 80) || null,
       String(body.intro || '').slice(0, 500),
+      String(body.introTw || '').slice(0, 500) || null,
       String(body.contact || '').slice(0, 200),
+      String(body.contactTw || '').slice(0, 200) || null,
       String(body.services || '').slice(0, 300),
+      String(body.servicesTw || '').slice(0, 300) || null,
       Number(body.sortOrder) || 0,
       ts,
       ts
@@ -709,11 +731,17 @@ router.patch('/offices/:id', ...adminOnly, (req, res) => {
   const body = req.body || {};
   const updates = {};
   if (body.name !== undefined) updates.name = readString(body.name, { name: 'name', min: 2, max: 40 });
+  if (body.nameTw !== undefined) updates.name_tw = readString(body.nameTw, { name: 'nameTw', min: 2, max: 40, optional: true });
   if (body.location !== undefined) updates.location = String(body.location || '').slice(0, 80);
+  if (body.locationTw !== undefined) updates.location_tw = String(body.locationTw || '').slice(0, 80) || null;
   if (body.openHours !== undefined) updates.open_hours = String(body.openHours || '').slice(0, 80);
+  if (body.openHoursTw !== undefined) updates.open_hours_tw = String(body.openHoursTw || '').slice(0, 80) || null;
   if (body.intro !== undefined) updates.intro = String(body.intro || '').slice(0, 500);
+  if (body.introTw !== undefined) updates.intro_tw = String(body.introTw || '').slice(0, 500) || null;
   if (body.contact !== undefined) updates.contact = String(body.contact || '').slice(0, 200);
+  if (body.contactTw !== undefined) updates.contact_tw = String(body.contactTw || '').slice(0, 200) || null;
   if (body.services !== undefined) updates.services = String(body.services || '').slice(0, 300);
+  if (body.servicesTw !== undefined) updates.services_tw = String(body.servicesTw || '').slice(0, 300) || null;
   if (body.sortOrder !== undefined) updates.sort_order = Number(body.sortOrder) || 0;
   const cols = Object.keys(updates);
   if (cols.length) {
@@ -741,8 +769,11 @@ function serializeNotice(row) {
     id: row.id,
     officeId: row.office_id,
     officeName: row.office_name ?? null,
+    officeNameTw: row.office_name_tw ?? null,
     title: row.title,
+    titleTw: row.title_tw,
     body: row.body,
+    bodyTw: row.body_tw,
     level: row.level,
     status: row.status,
     publishedAt: row.published_at,
@@ -750,7 +781,7 @@ function serializeNotice(row) {
   };
 }
 
-const NOTICE_SELECT = `SELECT n.*, o.name AS office_name FROM dip_notices n
+const NOTICE_SELECT = `SELECT n.*, o.name AS office_name, o.name_tw AS office_name_tw FROM dip_notices n
   LEFT JOIN dip_offices o ON o.id = n.office_id WHERE n.deleted_at IS NULL`;
 
 router.get('/notices', ...adminOnly, (_req, res) => {
@@ -761,12 +792,14 @@ router.get('/notices', ...adminOnly, (_req, res) => {
 function readNoticeFields(body) {
   const title = readString(body.title, { name: 'title', min: 2, max: 80 });
   const content = readString(body.body, { name: 'body', min: 2, max: 1000 });
+  const titleTw = readString(body.titleTw, { name: 'titleTw', min: 2, max: 80, optional: true });
+  const bodyTw = readString(body.bodyTw, { name: 'bodyTw', min: 2, max: 1000, optional: true });
   const level = ['info', 'warning', 'critical'].includes(body.level) ? body.level : 'info';
   const officeId = body.officeId ? Number(body.officeId) : null;
   if (officeId && !db.prepare('SELECT id FROM dip_offices WHERE id = ?').get(officeId)) {
     throw badRequest('VALIDATION_ERROR', 'Unknown officeId');
   }
-  return { title, body: content, level, office_id: officeId };
+  return { title, title_tw: titleTw, body: content, body_tw: bodyTw, level, office_id: officeId };
 }
 
 router.post('/notices', ...adminOnly, (req, res) => {
@@ -774,8 +807,8 @@ router.post('/notices', ...adminOnly, (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO dip_notices (office_id, title, body, level, status, published_at, created_at, updated_at)
-       VALUES (@office_id, @title, @body, @level, 'published', @ts, @ts, @ts)`
+      `INSERT INTO dip_notices (office_id, title, title_tw, body, body_tw, level, status, published_at, created_at, updated_at)
+       VALUES (@office_id, @title, @title_tw, @body, @body_tw, @level, 'published', @ts, @ts, @ts)`
     )
     .run({ ...fields, ts });
   audit(req.user.id, 'dip:notice.publish', 'notice', info.lastInsertRowid, { title: fields.title });
@@ -786,7 +819,7 @@ router.patch('/notices/:id', ...adminOnly, (req, res) => {
   const row = db.prepare('SELECT * FROM dip_notices WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
   if (!row) throw notFound('Notice not found');
   const fields = readNoticeFields({ ...row, officeId: row.office_id, ...req.body });
-  db.prepare('UPDATE dip_notices SET title = @title, body = @body, level = @level, office_id = @office_id, updated_at = @ts WHERE id = @id').run({
+  db.prepare('UPDATE dip_notices SET title = @title, title_tw = @title_tw, body = @body, body_tw = @body_tw, level = @level, office_id = @office_id, updated_at = @ts WHERE id = @id').run({
     ...fields,
     ts: now(),
     id: row.id,
@@ -839,8 +872,11 @@ router.patch('/config/types/:kind/:id', ...adminOnly, (req, res) => {
   const updates = {};
   const body = req.body || {};
   if (body.name !== undefined) updates.name = readString(body.name, { name: 'name', min: 2, max: 40 });
+  if (body.nameTw !== undefined) updates.name_tw = readString(body.nameTw, { name: 'nameTw', min: 2, max: 40, optional: true });
   if (body.description !== undefined) updates.description = String(body.description || '').slice(0, 200);
+  if (body.descriptionTw !== undefined) updates.description_tw = String(body.descriptionTw || '').slice(0, 200) || null;
   if (body.guide !== undefined) updates.guide = String(body.guide || '').slice(0, 1000);
+  if (body.guideTw !== undefined) updates.guide_tw = String(body.guideTw || '').slice(0, 1000) || null;
   if (body.enabled !== undefined) updates.enabled = body.enabled ? 1 : 0;
   if (body.sortOrder !== undefined) updates.sort_order = Number(body.sortOrder) || 0;
   if (body.validityDays !== undefined && req.params.kind === 'relation') {
@@ -863,7 +899,9 @@ router.patch('/config/courtesies/:id', ...adminOnly, (req, res) => {
   if (!row) throw notFound('Courtesy type not found');
   const updates = {};
   if (req.body?.name !== undefined) updates.name = readString(req.body.name, { name: 'name', min: 2, max: 40 });
+  if (req.body?.nameTw !== undefined) updates.name_tw = readString(req.body.nameTw, { name: 'nameTw', min: 2, max: 40, optional: true });
   if (req.body?.description !== undefined) updates.description = String(req.body.description || '').slice(0, 200);
+  if (req.body?.descriptionTw !== undefined) updates.description_tw = String(req.body.descriptionTw || '').slice(0, 200) || null;
   if (req.body?.enabled !== undefined) updates.enabled = req.body.enabled ? 1 : 0;
   const cols = Object.keys(updates);
   if (cols.length) {
@@ -1057,6 +1095,7 @@ router.get('/templates', ...adminOnly, (_req, res) => {
   res.json({
     items: rows.map((r) => ({
       id: r.id, code: r.code, title: r.title_template, body: r.body_template,
+      titleTw: r.title_template_tw, bodyTw: r.body_template_tw,
       variables: r.variables, enabled: !!r.enabled, updatedAt: r.updated_at,
     })),
   });
@@ -1067,10 +1106,14 @@ router.put('/templates/:id', ...adminOnly, (req, res) => {
   if (!row) throw notFound('Template not found');
   const title = readString(req.body?.title, { name: 'title', min: 2, max: 120 });
   const body = readString(req.body?.body, { name: 'body', min: 2, max: 600 });
+  const titleTw = readString(req.body?.titleTw, { name: 'titleTw', min: 2, max: 120, optional: true });
+  const bodyTw = readString(req.body?.bodyTw, { name: 'bodyTw', min: 2, max: 600, optional: true });
   const enabled = req.body?.enabled === undefined ? !!row.enabled : !!req.body.enabled;
-  db.prepare('UPDATE dip_message_templates SET title_template = ?, body_template = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+  db.prepare('UPDATE dip_message_templates SET title_template = ?, body_template = ?, title_template_tw = ?, body_template_tw = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
     title,
     body,
+    titleTw,
+    bodyTw,
     enabled ? 1 : 0,
     now(),
     row.id
@@ -1095,7 +1138,7 @@ router.get('/messages', ...adminOnly, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM dip_messages m ${whereSql}`).get(...params).n;
   const rows = db
     .prepare(
-      `SELECT m.id, m.template_code, m.title, m.read, m.created_at, u.username
+      `SELECT m.id, m.template_code, m.title, m.title_tw, m.read, m.created_at, u.username
        FROM dip_messages m JOIN users u ON u.id = m.user_id ${whereSql} ORDER BY m.id DESC LIMIT ? OFFSET ?`
     )
     .all(...params, pageSize, offset);

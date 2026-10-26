@@ -33,7 +33,14 @@ export default function AdminRoles() {
   const openEdit = (role) => {
     setEditing(role);
     form.resetFields();
-    form.setFieldsValue({ key: role.key, name: role.name, description: role.description, permissions: role.permissions });
+    form.setFieldsValue({
+      key: role.key,
+      name: role.nameCn ?? role.name,
+      nameTw: role.nameTw ?? '',
+      description: role.descriptionCn ?? role.description,
+      descriptionTw: role.descriptionTw ?? '',
+      permissions: role.permissions,
+    });
   };
 
   const closeModal = () => {
@@ -45,14 +52,21 @@ export default function AdminRoles() {
     setBusy(true);
     try {
       if (editing?.id) {
-        const payload = { name: values.name?.trim(), description: values.description?.trim() ?? '' };
+        const payload = {
+          name: values.name?.trim(),
+          nameTw: values.nameTw?.trim() || '',
+          description: values.description?.trim() ?? '',
+          descriptionTw: values.descriptionTw?.trim() || '',
+        };
         if (editing.key !== 'admin') payload.permissions = values.permissions ?? [];
         await api.patch(`/roles/${editing.id}`, payload);
       } else {
         await api.post('/roles', {
           key: values.key?.trim(),
           name: values.name?.trim(),
+          nameTw: values.nameTw?.trim() || '',
           description: values.description?.trim() ?? '',
+          descriptionTw: values.descriptionTw?.trim() || '',
           permissions: values.permissions ?? [],
         });
       }
@@ -145,8 +159,14 @@ export default function AdminRoles() {
           <FormItem name="name" label={t('admin.roles.name')} rules={[{ required: true, message: t('admin.roles.name') }]}>
             <Input size="large" allowClear />
           </FormItem>
+          <FormItem name="nameTw" label={`${t('admin.roles.name')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} allowClear />
+          </FormItem>
           <FormItem name="description" label={t('common.description')}>
             <Input size="large" allowClear />
+          </FormItem>
+          <FormItem name="descriptionTw" label={`${t('common.description')} · ${t('common.traditional')}`}>
+            <Input size="large" placeholder={t('common.twOptional')} allowClear />
           </FormItem>
           <FormItem
             name="permissions"

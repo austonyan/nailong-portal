@@ -552,9 +552,14 @@ function validateTypeBody(body, { partial = false } = {}) {
     out.name = name.slice(0, 40);
   }
   if (body.description !== undefined) out.description = String(body.description).trim().slice(0, 300);
+  if (body.nameTw !== undefined) out.name_tw = String(body.nameTw || '').trim().slice(0, 40) || null;
+  if (body.descriptionTw !== undefined) out.description_tw = String(body.descriptionTw || '').trim().slice(0, 300) || null;
   if (body.guide !== undefined) out.guide = String(body.guide).trim().slice(0, 2000);
+  if (body.guideTw !== undefined) out.guide_tw = String(body.guideTw || '').trim().slice(0, 2000) || null;
   if (body.benefits !== undefined) out.benefits = String(body.benefits).trim().slice(0, 1000);
+  if (body.benefitsTw !== undefined) out.benefits_tw = String(body.benefitsTw || '').trim().slice(0, 1000) || null;
   if (body.duties !== undefined) out.duties = String(body.duties).trim().slice(0, 1000);
+  if (body.dutiesTw !== undefined) out.duties_tw = String(body.dutiesTw || '').trim().slice(0, 1000) || null;
   if (body.validYears !== undefined) out.valid_years = Math.min(100, Math.max(1, Number(body.validYears) || 1));
   if (body.requireAvatar !== undefined) out.require_avatar = body.requireAvatar ? 1 : 0;
   if (body.requireAddressProof !== undefined) out.require_address_proof = body.requireAddressProof ? 1 : 0;
@@ -568,11 +573,12 @@ router.post('/types', (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO res_types (code, name, description, guide, benefits, duties, valid_years, require_avatar, require_address_proof, enabled, sort_order, created_at, updated_at)
-       VALUES (@code, @name, @description, @guide, @benefits, @duties, @valid_years, @require_avatar, @require_address_proof, @enabled, @sort_order, @ts, @ts)`
+      `INSERT INTO res_types (code, name, name_tw, description, description_tw, guide, guide_tw, benefits, benefits_tw, duties, duties_tw, valid_years, require_avatar, require_address_proof, enabled, sort_order, created_at, updated_at)
+       VALUES (@code, @name, @name_tw, @description, @description_tw, @guide, @guide_tw, @benefits, @benefits_tw, @duties, @duties_tw, @valid_years, @require_avatar, @require_address_proof, @enabled, @sort_order, @ts, @ts)`
     )
     .run({
       description: '', guide: '', benefits: '', duties: '',
+      name_tw: null, description_tw: null, guide_tw: null, benefits_tw: null, duties_tw: null,
       valid_years: 1, require_avatar: 1, require_address_proof: 0, enabled: 1, sort_order: 0,
       ...data, ts,
     });
@@ -603,11 +609,13 @@ router.get('/notices', (_req, res) => {
 router.post('/notices', (req, res) => {
   const title = String(req.body?.title || '').trim().slice(0, 120);
   const body = String(req.body?.body || '').trim().slice(0, 2000);
+  const titleTw = String(req.body?.titleTw || '').trim().slice(0, 120) || null;
+  const bodyTw = String(req.body?.bodyTw || '').trim().slice(0, 2000) || null;
   const level = ['info', 'policy', 'event'].includes(req.body?.level) ? req.body.level : 'info';
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
   const ts = now();
-  const info = db.prepare('INSERT INTO res_notices (title, body, level, enabled, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)').run(
-    title, body, level, ts, ts
+  const info = db.prepare('INSERT INTO res_notices (title, title_tw, body, body_tw, level, enabled, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)').run(
+    title, titleTw, body, bodyTw, level, ts, ts
   );
   audit(req.user, 'create_notice', 'notice', info.lastInsertRowid);
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
@@ -618,11 +626,13 @@ router.patch('/notices/:id', (req, res) => {
   if (!row) throw notFound('Notice not found');
   const title = req.body?.title !== undefined ? String(req.body.title).trim().slice(0, 120) : row.title;
   const body = req.body?.body !== undefined ? String(req.body.body).trim().slice(0, 2000) : row.body;
+  const titleTw = req.body?.titleTw !== undefined ? String(req.body.titleTw || '').trim().slice(0, 120) || null : row.title_tw;
+  const bodyTw = req.body?.bodyTw !== undefined ? String(req.body.bodyTw || '').trim().slice(0, 2000) || null : row.body_tw;
   const level = req.body?.level !== undefined && ['info', 'policy', 'event'].includes(req.body.level) ? req.body.level : row.level;
   const enabled = req.body?.enabled !== undefined ? (req.body.enabled ? 1 : 0) : row.enabled;
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
-  db.prepare('UPDATE res_notices SET title = ?, body = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
-    title, body, level, enabled, now(), row.id
+  db.prepare('UPDATE res_notices SET title = ?, title_tw = ?, body = ?, body_tw = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+    title, titleTw, body, bodyTw, level, enabled, now(), row.id
   );
   audit(req.user, 'update_notice', 'notice', row.id, { enabled });
   res.json({ ok: true });
@@ -644,6 +654,8 @@ router.get('/templates', (_req, res) => {
       code: t.code,
       titleTemplate: t.title_template,
       bodyTemplate: t.body_template,
+      titleTemplateTw: t.title_template_tw,
+      bodyTemplateTw: t.body_template_tw,
       variables: t.variables,
       enabled: !!t.enabled,
       updatedAt: t.updated_at,
@@ -656,10 +668,12 @@ router.patch('/templates/:code', (req, res) => {
   if (!row) throw notFound('Template not found');
   const title = req.body?.titleTemplate !== undefined ? String(req.body.titleTemplate).trim().slice(0, 120) : row.title_template;
   const body = req.body?.bodyTemplate !== undefined ? String(req.body.bodyTemplate).trim().slice(0, 1000) : row.body_template;
+  const titleTw = req.body?.titleTemplateTw !== undefined ? String(req.body.titleTemplateTw ?? '').trim().slice(0, 120) || null : row.title_template_tw;
+  const bodyTw = req.body?.bodyTemplateTw !== undefined ? String(req.body.bodyTemplateTw ?? '').trim().slice(0, 1000) || null : row.body_template_tw;
   const enabled = req.body?.enabled !== undefined ? (req.body.enabled ? 1 : 0) : row.enabled;
   if (!title || !body) throw badRequest('VALIDATION_ERROR', 'Title and body templates are required');
-  db.prepare('UPDATE res_message_templates SET title_template = ?, body_template = ?, enabled = ?, updated_at = ? WHERE code = ?').run(
-    title, body, enabled, now(), row.code
+  db.prepare('UPDATE res_message_templates SET title_template = ?, body_template = ?, title_template_tw = ?, body_template_tw = ?, enabled = ?, updated_at = ? WHERE code = ?').run(
+    title, body, titleTw, bodyTw, enabled, now(), row.code
   );
   audit(req.user, 'update_message_template', 'template', row.code, { enabled });
   res.json({ ok: true });
@@ -677,7 +691,7 @@ router.get('/messages', (req, res) => {
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
   const rows = db
     .prepare(
-      `SELECT m.id, m.user_id, m.template_code, m.title, m.read, m.archived, m.created_at, u.username
+      `SELECT m.id, m.user_id, m.template_code, m.title, m.title_tw, m.read, m.archived, m.created_at, u.username
        FROM res_messages m JOIN users u ON u.id = m.user_id ${whereSql} ORDER BY m.id DESC LIMIT 200`
     )
     .all(...params);

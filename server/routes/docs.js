@@ -571,7 +571,8 @@ router.get('/certificates/:id', applyAuth, (req, res) => {
       ...D.serializeCertificate(row),
       typeName: row.type_name ?? cert.type_code,
       application: serializeApplicationDetail(D.getApplicationRow(cert.application_id)),
-      issuer: D.getConfig('docs.issuer_name', '奶龍國皇家文書與認證署'),
+      issuer: D.getConfig('docs.issuer_name', '奶龙国皇家文书与认证署'),
+      issuerTw: D.getConfig('docs.issuer_name_tw', '奶龍國皇家文書與認證署'),
       sealEnabled: D.getConfig('docs.seal_enabled', '1') === '1',
     },
   });
@@ -796,9 +797,13 @@ function validateTypePayload(body, { partial = false } = {}) {
     out.code = code;
   }
   str('name', 80);
+  str('name_tw', 80);
   str('description', 300);
+  str('description_tw', 300);
   str('guide', 2000);
+  str('guide_tw', 2000);
   str('biz_no_label', 40);
+  str('biz_no_label_tw', 40);
   str('biz_source', 30);
   num('validity_days', 365, 1, 3650);
   num('sort_order', 0, -999, 999);
@@ -812,9 +817,11 @@ function validateTypePayload(body, { partial = false } = {}) {
       fields.slice(0, 10).map((f) => ({
         key: sanitizeText(f.key, 30).replace(/[^a-zA-Z0-9_]/g, ''),
         label: sanitizeText(f.label, 60),
+        labelTw: sanitizeText(f.labelTw, 60),
         required: f.required ? 1 : 0,
         max: Math.min(500, Math.max(1, Number(f.max) || 120)),
         placeholder: sanitizeText(f.placeholder, 120),
+        placeholderTw: sanitizeText(f.placeholderTw, 120),
       })).filter((f) => f.key && f.label)
     );
   } else if (!partial) out.form_fields = '[]';
@@ -826,6 +833,7 @@ function validateTypePayload(body, { partial = false } = {}) {
       mats.slice(0, 6).map((m) => ({
         key: sanitizeText(m.key, 30).replace(/[^a-zA-Z0-9_]/g, ''),
         label: sanitizeText(m.label, 60),
+        labelTw: sanitizeText(m.labelTw, 60),
         required: m.required ? 1 : 0,
         accept: sanitizeText(m.accept, 200) || 'image/*,application/pdf',
         max_mb: Math.min(20, Math.max(1, Number(m.max_mb) || 10)),
@@ -1012,12 +1020,14 @@ router.get('/admin/notices', manageAuth, (_req, res) => {
 router.post('/admin/notices', manageAuth, (req, res) => {
   const title = sanitizeText(req.body?.title, 120);
   const body = sanitizeText(req.body?.body, 2000);
+  const titleTw = sanitizeText(req.body?.titleTw, 120) || null;
+  const bodyTw = sanitizeText(req.body?.bodyTw, 2000) || null;
   const level = ['info', 'policy', 'event'].includes(req.body?.level) ? req.body.level : 'info';
   if (!title) throw badRequest('VALIDATION_ERROR', 'title is required');
   const ts = now();
   const info = db
-    .prepare('INSERT INTO doc_notices (title, body, level, enabled, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)')
-    .run(title, body, level, ts, ts);
+    .prepare('INSERT INTO doc_notices (title, title_tw, body, body_tw, level, enabled, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)')
+    .run(title, titleTw, body, bodyTw, level, ts, ts);
   D.audit(req.user, 'notice_create', 'notice', String(info.lastInsertRowid), { title });
   res.json({ item: db.prepare('SELECT * FROM doc_notices WHERE id = ?').get(info.lastInsertRowid) });
 });
@@ -1027,11 +1037,15 @@ router.patch('/admin/notices/:id', manageAuth, (req, res) => {
   if (!row) throw notFound('Notice not found');
   const title = req.body?.title !== undefined ? sanitizeText(req.body.title, 120) : row.title;
   const body = req.body?.body !== undefined ? sanitizeText(req.body.body, 2000) : row.body;
+  const titleTw = req.body?.titleTw !== undefined ? sanitizeText(req.body.titleTw, 120) || null : row.title_tw;
+  const bodyTw = req.body?.bodyTw !== undefined ? sanitizeText(req.body.bodyTw, 2000) || null : row.body_tw;
   const level = req.body?.level !== undefined && ['info', 'policy', 'event'].includes(req.body.level) ? req.body.level : row.level;
   const enabled = req.body?.enabled !== undefined ? (req.body.enabled ? 1 : 0) : row.enabled;
-  db.prepare('UPDATE doc_notices SET title = ?, body = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+  db.prepare('UPDATE doc_notices SET title = ?, title_tw = ?, body = ?, body_tw = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
     title,
+    titleTw,
     body,
+    bodyTw,
     level,
     enabled,
     now(),
@@ -1059,6 +1073,7 @@ const CONFIG_WHITELIST = new Set([
   'docs.upload_max_mb',
   'docs.seal_enabled',
   'docs.issuer_name',
+  'docs.issuer_name_tw',
 ]);
 
 router.get('/admin/config', manageAuth, (_req, res) => {

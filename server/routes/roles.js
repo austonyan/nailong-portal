@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { db, now, PERMISSIONS } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, notFound, forbidden, conflict } from '../http.js';
+import { CONTENT_PERMISSIONS } from '../content-i18n.js';
 
 const router = Router();
 router.use(authenticate);
@@ -20,7 +21,9 @@ function roleWithPermissions(row) {
     id: row.id,
     key: row.key,
     name: row.name,
+    nameTw: row.name_tw,
     description: row.description,
+    descriptionTw: row.description_tw,
     isSystem: !!row.is_system,
     permissions,
     userCount,
@@ -35,11 +38,12 @@ router.get('/', requirePermission('roles:read'), (_req, res) => {
 
 // GET /api/permissions — full catalog for assignment UIs.
 router.get('/permissions', requirePermission('roles:read'), (_req, res) => {
+  const items = PERMISSIONS.map((p) => ({ ...p, ...(CONTENT_PERMISSIONS[p.key] || {}) }));
   const groups = {};
-  for (const p of PERMISSIONS) {
+  for (const p of items) {
     (groups[p.grp] ??= []).push(p);
   }
-  res.json({ items: PERMISSIONS, groups });
+  res.json({ items, groups });
 });
 
 router.post('/', requirePermission('roles:write'), (req, res) => {
@@ -54,10 +58,12 @@ router.post('/', requirePermission('roles:write'), (req, res) => {
   validatePermissionKeys(permissionKeys);
 
   const description = String(body.description || '').trim();
+  const nameTw = body.nameTw !== undefined ? String(body.nameTw || '').trim() || null : null;
+  const descriptionTw = body.descriptionTw !== undefined ? String(body.descriptionTw || '').trim() || null : null;
   const create = db.transaction(() => {
     const info = db
-      .prepare('INSERT INTO roles (key, name, description, is_system, created_at) VALUES (?, ?, ?, 0, ?)')
-      .run(key, name, description, now());
+      .prepare('INSERT INTO roles (key, name, name_tw, description, description_tw, is_system, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)')
+      .run(key, name, nameTw, description, descriptionTw, now());
     for (const p of permissionKeys) {
       db.prepare('INSERT OR IGNORE INTO role_permissions (role_id, permission_id) SELECT ?, id FROM permissions WHERE key = ?').run(
         info.lastInsertRowid,
@@ -91,6 +97,14 @@ router.patch('/:id', requirePermission('roles:write'), (req, res) => {
   if (body.description !== undefined) {
     updates.push('description = ?');
     params.push(String(body.description).trim());
+  }
+  if (body.nameTw !== undefined) {
+    updates.push('name_tw = ?');
+    params.push(String(body.nameTw || '').trim() || null);
+  }
+  if (body.descriptionTw !== undefined) {
+    updates.push('description_tw = ?');
+    params.push(String(body.descriptionTw || '').trim() || null);
   }
 
   let permissionKeys = null;

@@ -713,11 +713,13 @@ manageRouter.get('/notices', (_req, res) => {
 manageRouter.post('/notices', (req, res) => {
   const title = String(req.body?.title || '').trim().slice(0, 120);
   const body = String(req.body?.body || '').trim().slice(0, 2000);
+  const titleTw = String(req.body?.titleTw || '').trim().slice(0, 120) || null;
+  const bodyTw = String(req.body?.bodyTw || '').trim().slice(0, 2000) || null;
   const level = ['info', 'policy', 'event'].includes(req.body?.level) ? req.body.level : 'info';
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
   const ts = now();
-  const info = db.prepare('INSERT INTO appeal_notices (title, body, level, enabled, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)').run(
-    title, body, level, ts, ts
+  const info = db.prepare('INSERT INTO appeal_notices (title, title_tw, body, body_tw, level, enabled, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)').run(
+    title, titleTw, body, bodyTw, level, ts, ts
   );
   audit(req.user, 'create_appeal_notice', 'notice', info.lastInsertRowid);
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
@@ -728,11 +730,13 @@ manageRouter.patch('/notices/:id', (req, res) => {
   if (!row) throw notFound('Notice not found');
   const title = req.body?.title !== undefined ? String(req.body.title).trim().slice(0, 120) : row.title;
   const body = req.body?.body !== undefined ? String(req.body.body).trim().slice(0, 2000) : row.body;
+  const titleTw = req.body?.titleTw !== undefined ? String(req.body.titleTw || '').trim().slice(0, 120) || null : row.title_tw;
+  const bodyTw = req.body?.bodyTw !== undefined ? String(req.body.bodyTw || '').trim().slice(0, 2000) || null : row.body_tw;
   const level = req.body?.level !== undefined && ['info', 'policy', 'event'].includes(req.body.level) ? req.body.level : row.level;
   const enabled = req.body?.enabled !== undefined ? (req.body.enabled ? 1 : 0) : row.enabled;
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
-  db.prepare('UPDATE appeal_notices SET title = ?, body = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
-    title, body, level, enabled, now(), row.id
+  db.prepare('UPDATE appeal_notices SET title = ?, title_tw = ?, body = ?, body_tw = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+    title, titleTw, body, bodyTw, level, enabled, now(), row.id
   );
   audit(req.user, 'update_appeal_notice', 'notice', row.id, { enabled });
   res.json({ ok: true });
@@ -754,12 +758,14 @@ manageRouter.get('/publicity', (_req, res) => {
 manageRouter.post('/publicity', (req, res) => {
   const title = String(req.body?.title || '').trim().slice(0, 120);
   const body = String(req.body?.body || '').trim().slice(0, 4000);
+  const titleTw = String(req.body?.titleTw || '').trim().slice(0, 120) || null;
+  const bodyTw = String(req.body?.bodyTw || '').trim().slice(0, 4000) || null;
   const kind = ['stats', 'case', 'report'].includes(req.body?.kind) ? req.body.kind : 'case';
   if (!title) throw badRequest('VALIDATION_ERROR', 'Title is required');
   const ts = now();
   const info = db
-    .prepare("INSERT INTO appeal_publicity (title, body, kind, status, created_at, updated_at) VALUES (?, ?, ?, 'draft', ?, ?)")
-    .run(title, body, kind, ts, ts);
+    .prepare("INSERT INTO appeal_publicity (title, title_tw, body, body_tw, kind, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 'draft', ?, ?)")
+    .run(title, titleTw, body, bodyTw, kind, ts, ts);
   audit(req.user, 'create_publicity', 'publicity', info.lastInsertRowid, { kind });
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
 });
@@ -769,12 +775,14 @@ manageRouter.patch('/publicity/:id', (req, res) => {
   if (!row) throw notFound('Publicity not found');
   const title = req.body?.title !== undefined ? String(req.body.title).trim().slice(0, 120) : row.title;
   const body = req.body?.body !== undefined ? String(req.body.body).trim().slice(0, 4000) : row.body;
+  const titleTw = req.body?.titleTw !== undefined ? String(req.body.titleTw || '').trim().slice(0, 120) || null : row.title_tw;
+  const bodyTw = req.body?.bodyTw !== undefined ? String(req.body.bodyTw || '').trim().slice(0, 4000) || null : row.body_tw;
   let status = row.status;
   if (req.body?.status !== undefined) {
     status = ['draft', 'published', 'offline'].includes(req.body.status) ? req.body.status : row.status;
   }
-  db.prepare('UPDATE appeal_publicity SET title = ?, body = ?, status = ?, published_at = ?, updated_at = ? WHERE id = ?').run(
-    title, body, status, status === 'published' ? row.published_at ?? now() : row.published_at, now(), row.id
+  db.prepare('UPDATE appeal_publicity SET title = ?, title_tw = ?, body = ?, body_tw = ?, status = ?, published_at = ?, updated_at = ? WHERE id = ?').run(
+    title, titleTw, body, bodyTw, status, status === 'published' ? row.published_at ?? now() : row.published_at, now(), row.id
   );
   audit(req.user, 'update_publicity', 'publicity', row.id, { status });
   res.json({ ok: true });

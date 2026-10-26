@@ -38,13 +38,13 @@ export default function AdminImVerify() {
   const search = async () => {
     const codeNo = q.trim().toUpperCase();
     if (!codeNo) {
-      Notification.warning(t('imm.verify.inputFirst'));
+      Notification.warning(t('imm.admin.verify.inputFirst'));
       return;
     }
     try {
       const data = await api.get(`/immigration/admin/pass-codes?q=${encodeURIComponent(codeNo)}`);
       setResults(data.items);
-      if (data.items.length === 0) Notification.info(t('imm.verify.notFound'));
+      if (data.items.length === 0) Notification.info(t('imm.admin.verify.notFound'));
     } catch (err) {
       toastApiError(err);
     }
@@ -55,9 +55,9 @@ export default function AdminImVerify() {
     try {
       const data = await api.post('/immigration/admin/pass-codes/verify', { codeNo: verifying.code_no });
       if (data.result === 'accepted') {
-        Notification.success(t('imm.verify.accepted', { no: data.entryRecordNo }));
+        Notification.success(t('imm.admin.verify.accepted', { no: data.entryRecordNo }));
       } else {
-        Notification.warning(t(`imm.verify.result.${data.result}`, { defaultValue: data.result }));
+        Notification.warning(t(`imm.admin.verify.result.${data.result}`, { defaultValue: data.result }));
       }
       setVerifying(null);
       search();
@@ -87,9 +87,9 @@ export default function AdminImVerify() {
 
   const checkColumns = [
     { title: t('imm.pass.codeNo'), dataIndex: 'codeNo', width: 190 },
-    { title: t('imm.verify.result'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'default'} variant="soft">{t(`imm.verify.result.${v}`, { defaultValue: v })}</Tag> },
-    { title: t('imm.review.opinion'), dataIndex: 'note', render: (v) => v || '-' },
-    { title: t('imm.verify.officer'), dataIndex: 'officer', width: 110, render: (v) => v ?? '-' },
+    { title: t('imm.admin.verify.resultTitle'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'default'} variant="soft">{t(`imm.admin.verify.result.${v}`, { defaultValue: v })}</Tag> },
+    { title: t('imm.admin.review.opinion'), dataIndex: 'note', render: (v) => v || '-' },
+    { title: t('imm.admin.verify.officer'), dataIndex: 'officer', width: 110, render: (v) => v ?? '-' },
     { title: t('common.createdAt'), dataIndex: 'createdAt', width: 160, render: (v) => v?.slice(0, 16).replace('T', ' ') },
   ];
 
@@ -98,7 +98,7 @@ export default function AdminImVerify() {
       <ImAdminNav />
       <div className="page-header">
         <Title size="middle" color="app-teal">
-          {t('imm.verify.workbenchTitle')}
+          {t('imm.admin.verify.workbenchTitle')}
         </Title>
       </div>
 
@@ -108,10 +108,10 @@ export default function AdminImVerify() {
             size="large"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder={t('imm.verify.queryPlaceholder')}
+            placeholder={t('imm.admin.verify.queryPlaceholder')}
             allowClear
           />
-          <Button type="primary" icon={<SearchIcon />} onClick={search}>{t('imm.verify.query')}</Button>
+          <Button type="primary" icon={<SearchIcon />} onClick={search}>{t('imm.admin.verify.query')}</Button>
         </div>
 
         {results !== null && results.length > 0 && (
@@ -127,7 +127,7 @@ export default function AdminImVerify() {
                 </p>
                 <p className="muted-text">
                   {t('imm.pass.validUntil')}: {r.valid_until?.slice(0, 16).replace('T', ' ')}
-                  {r.void_reason ? ` · ${t('imm.verify.voidReason')}: ${r.void_reason}` : ''}
+                  {r.void_reason ? ` · ${t('imm.admin.verify.voidReason')}: ${r.void_reason}` : ''}
                 </p>
                 <div className="table-actions">
                   <Button
@@ -137,7 +137,7 @@ export default function AdminImVerify() {
                     disabled={r.effectiveStatus !== 'unused'}
                     onClick={() => setVerifying(r)}
                   >
-                    {t('imm.verify.accept')}
+                    {t('imm.admin.verify.accept')}
                   </Button>
                   <Button
                     type="default"
@@ -147,7 +147,7 @@ export default function AdminImVerify() {
                     disabled={r.status !== 'unused'}
                     onClick={() => setVoiding(r)}
                   >
-                    {t('imm.verify.void')}
+                    {t('imm.admin.verify.void')}
                   </Button>
                 </div>
               </Card>
@@ -157,40 +157,40 @@ export default function AdminImVerify() {
       </Card>
 
       <Card className="im-checks-card">
-        <b>{t('imm.verify.checkLog')}</b>
+        <b>{t('imm.admin.verify.checkLog')}</b>
         <Table columns={checkColumns} dataSource={checks ?? []} loading={checks === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
       <Modal
         open={verifying !== null}
-        title={t('imm.verify.confirmTitle', { no: verifying?.code_no })}
+        title={t('imm.admin.verify.confirmTitle', { no: verifying?.code_no })}
         onClose={() => setVerifying(null)}
         typewriter={false}
         footer={
           <>
             <Button onClick={() => setVerifying(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doVerify}>{t('imm.verify.accept')}</Button>
+            <Button type="primary" loading={busy} onClick={doVerify}>{t('imm.admin.verify.accept')}</Button>
           </>
         }
       >
-        <p>{t('imm.verify.confirmTip', { no: verifying?.declaration_no })}</p>
-        <p className="muted-text">{t('imm.verify.confirmTip2')}</p>
+        <p>{t('imm.admin.verify.confirmTip', { no: verifying?.declaration_no })}</p>
+        <p className="muted-text">{t('imm.admin.verify.confirmTip2')}</p>
       </Modal>
 
       <Modal
         open={voiding !== null}
-        title={t('imm.verify.voidTitle', { no: voiding?.code_no })}
+        title={t('imm.admin.verify.voidTitle', { no: voiding?.code_no })}
         onClose={() => setVoiding(null)}
         typewriter={false}
         footer={
           <>
             <Button onClick={() => setVoiding(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={doVoid}>{t('imm.verify.void')}</Button>
+            <Button type="primary" danger loading={busy} onClick={doVoid}>{t('imm.admin.verify.void')}</Button>
           </>
         }
       >
-        <p className="im-field-label">{t('imm.verify.voidReason')}</p>
-        <Input size="large" value={voidReason} onChange={(e) => setVoidReason(e.target.value)} maxLength={120} placeholder={t('imm.verify.voidReasonPlaceholder')} />
+        <p className="im-field-label">{t('imm.admin.verify.voidReason')}</p>
+        <Input size="large" value={voidReason} onChange={(e) => setVoidReason(e.target.value)} maxLength={120} placeholder={t('imm.admin.verify.voidReasonPlaceholder')} />
       </Modal>
     </div>
   );

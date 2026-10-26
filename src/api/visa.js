@@ -1,6 +1,6 @@
 // 奶龍國簽註申請署 — API helpers beyond the JSON wrapper: multipart upload
 // (with the in-memory token) and authenticated private-file preview.
-import { getAccessToken } from './client.js';
+import { getAccessToken, getLocaleHeader } from './client.js';
 
 export function uploadVisaMaterial({ applicationId, kind, file, onProgress }) {
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ export function uploadVisaMaterial({ applicationId, kind, file, onProgress }) {
 
 export async function openVisaMaterial(materialId) {
   const res = await fetch(`/api/visa/materials/${materialId}`, {
-    headers: { Authorization: `Bearer ${getAccessToken()}` },
+    headers: { ...getLocaleHeader(), Authorization: `Bearer ${getAccessToken()}` },
   });
   if (!res.ok) throw Object.assign(new Error('preview failed'), { code: 'NOT_FOUND' });
   const blob = await res.blob();
@@ -43,7 +43,7 @@ export async function openVisaMaterial(materialId) {
 // Authenticated file downloads (CSV exports) — plain links can't carry the
 // in-memory token, so fetch to a blob and trigger a download.
 export async function downloadVisaFile(path, filename) {
-  const res = await fetch(`/api${path}`, { headers: { Authorization: `Bearer ${getAccessToken()}` } });
+  const res = await fetch(`/api${path}`, { headers: { ...getLocaleHeader(), Authorization: `Bearer ${getAccessToken()}` } });
   if (!res.ok) throw Object.assign(new Error('download failed'), { code: 'INTERNAL_ERROR' });
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);

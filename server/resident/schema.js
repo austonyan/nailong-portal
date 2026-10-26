@@ -5,6 +5,7 @@
 // only ever receive INSERT OR IGNORE rows, so parallel service workstreams
 // never disturb each other.
 import { db, now } from '../db.js';
+import { ensureTwColumns } from '../migrate.js';
 
 let ensured = false;
 
@@ -16,10 +17,15 @@ export function ensureResidentSchema() {
     id                   INTEGER PRIMARY KEY AUTOINCREMENT,
     code                 TEXT NOT NULL UNIQUE,
     name                 TEXT NOT NULL,
+    name_tw              TEXT,
     description          TEXT NOT NULL DEFAULT '',
+    description_tw       TEXT,
     guide                TEXT NOT NULL DEFAULT '',
+    guide_tw             TEXT,
     benefits             TEXT NOT NULL DEFAULT '',
+    benefits_tw          TEXT,
     duties               TEXT NOT NULL DEFAULT '',
+    duties_tw            TEXT,
     valid_years          INTEGER NOT NULL DEFAULT 1,
     require_avatar       INTEGER NOT NULL DEFAULT 1,
     require_address_proof INTEGER NOT NULL DEFAULT 0,
@@ -140,7 +146,9 @@ export function ensureResidentSchema() {
   CREATE TABLE IF NOT EXISTS res_notices (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     title      TEXT NOT NULL,
+    title_tw   TEXT,
     body       TEXT NOT NULL DEFAULT '',
+    body_tw    TEXT,
     level      TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info','policy','event')),
     enabled    INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL,
@@ -153,6 +161,8 @@ export function ensureResidentSchema() {
     template_code TEXT NOT NULL,
     title         TEXT NOT NULL,
     body          TEXT NOT NULL,
+    title_tw      TEXT,
+    body_tw       TEXT,
     related       TEXT NOT NULL DEFAULT '{}',
     read          INTEGER NOT NULL DEFAULT 0,
     archived      INTEGER NOT NULL DEFAULT 0,
@@ -165,6 +175,8 @@ export function ensureResidentSchema() {
     code           TEXT NOT NULL UNIQUE,
     title_template TEXT NOT NULL,
     body_template  TEXT NOT NULL,
+    title_template_tw TEXT,
+    body_template_tw  TEXT,
     variables      TEXT NOT NULL DEFAULT '',
     enabled        INTEGER NOT NULL DEFAULT 1,
     updated_at     TEXT NOT NULL
@@ -205,6 +217,10 @@ export function ensureResidentSchema() {
   );
   `);
 
+  ensureTwColumns(db, 'res_messages', ['title', 'body']);
+  ensureTwColumns(db, 'res_message_templates', ['title_template', 'body_template']);
+  ensureTwColumns(db, 'res_types', ['name', 'description', 'guide', 'benefits', 'duties']);
+  ensureTwColumns(db, 'res_notices', ['title', 'body']);
   seedResident();
 }
 
@@ -221,23 +237,23 @@ const RES_PERMISSIONS = [
 const PURPOSES = ['collect', 'activity', 'visa_fast', 'other'];
 
 const MESSAGE_TEMPLATES = [
-  { code: 'submitted', title: '登记申请已提交:{{no}}', body: '你的居民登记申请 {{no}} 已提交皇家居民登记署,预计 {{hours}} 小时内完成审核。可在"我的登记"中查看进度。', variables: 'no, hours' },
-  { code: 'supplement_required', title: '补件通知:{{no}}', body: '登记申请 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在申请详情页在线补交,逾期申请将自动关闭。', variables: 'no, note, deadline' },
-  { code: 'supplement_received', title: '补件已收到:{{no}}', body: '登记申请 {{no}} 的补件材料已收到,重新进入待审核队列。', variables: 'no' },
-  { code: 'approved', title: '登记已通过:{{no}}', body: '恭喜!登记申请 {{no}} 已通过审核,你的电子居民卡 {{cardNo}} 已生成,有效期至 {{validUntil}}。欢迎成为奶龙国居民!', variables: 'no, cardNo, validUntil' },
-  { code: 'rejected', title: '登记未通过:{{no}}', body: '很遗憾,登记申请 {{no}} 未通过审核(原因:{{reason}})。{{note}} 你可以补充信息后重新申请。', variables: 'no, reason, note' },
-  { code: 'withdrawn', title: '申请已撤销:{{no}}', body: '登记申请 {{no}} 已撤销。如需登记可随时重新提交。', variables: 'no' },
-  { code: 'closed', title: '申请已关闭:{{no}}', body: '登记申请 {{no}} 因补件超时自动关闭。可以发起新的登记申请。', variables: 'no' },
-  { code: 'card_issued', title: '电子居民卡已生成:{{cardNo}}', body: '你的电子居民卡 {{cardNo}} 已生成,有效期至 {{validUntil}}。可在"我的居民卡"查看、下载与验真。', variables: 'cardNo, validUntil' },
-  { code: 'card_frozen', title: '居民卡已冻结:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已被冻结(原因:{{reason}})。冻结期间居民卡暂停使用,如有疑问请联系居民署。', variables: 'cardNo, reason' },
-  { code: 'card_unfrozen', title: '居民卡已解冻:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已解除冻结,恢复正常使用。', variables: 'cardNo' },
-  { code: 'card_voided', title: '居民卡已注销:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已注销(原因:{{reason}})。居民身份同步失效,如需再次登记请重新申请。', variables: 'cardNo, reason' },
-  { code: 'card_reissued', title: '居民卡已补发:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已补发,原验真二维码已失效,请使用新的验真链接。', variables: 'cardNo' },
-  { code: 'card_expired', title: '居民卡已过期:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已过期。可在"变更与续期"发起续期申请,居民编号保持不变。', variables: 'cardNo' },
-  { code: 'expiry_reminder', title: '居民卡即将到期:{{cardNo}}', body: '你的居民卡 {{cardNo}} 将于 {{validUntil}} 到期,记得及时续期哦。', variables: 'cardNo, validUntil' },
-  { code: 'change_approved', title: '变更申请已通过:{{no}}', body: '你的变更申请 {{no}} 已通过审核,居民卡信息已同步更新。', variables: 'no' },
-  { code: 'change_rejected', title: '变更申请未通过:{{no}}', body: '你的变更申请 {{no}} 未通过审核(原因:{{reason}})。{{note}}', variables: 'no, reason, note' },
-  { code: 'appeal_reopened', title: '申诉复核:登记申请 {{no}} 重新进入待审', body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),登记申请 {{no}} 重新进入待审核队列。', variables: 'no, decisionCode, appealCode' },
+  { code: 'submitted', title: '登记申请已提交:{{no}}', body: '你的居民登记申请 {{no}} 已提交皇家居民登记署,预计 {{hours}} 小时内完成审核。可在"我的登记"中查看进度。', titleTw: '登記申請已提交:{{no}}', bodyTw: '你的居民登記申請 {{no}} 已提交皇家居民登記署,預計 {{hours}} 小時內完成審核。可在「我的登記」中查看進度。', variables: 'no, hours' },
+  { code: 'supplement_required', title: '补件通知:{{no}}', body: '登记申请 {{no}} 需要补件:{{note}}。请在 {{deadline}} 前在申请详情页在线补交,逾期申请将自动关闭。', titleTw: '補件通知:{{no}}', bodyTw: '登記申請 {{no}} 需要補件:{{note}}。請在 {{deadline}} 前在申請詳情頁線上補交,逾期申請將自動關閉。', variables: 'no, note, deadline' },
+  { code: 'supplement_received', title: '补件已收到:{{no}}', body: '登记申请 {{no}} 的补件材料已收到,重新进入待审核队列。', titleTw: '補件已收到:{{no}}', bodyTw: '登記申請 {{no}} 的補件材料已收到,重新進入待審核佇列。', variables: 'no' },
+  { code: 'approved', title: '登记已通过:{{no}}', body: '恭喜!登记申请 {{no}} 已通过审核,你的电子居民卡 {{cardNo}} 已生成,有效期至 {{validUntil}}。欢迎成为奶龙国居民!', titleTw: '登記已通過:{{no}}', bodyTw: '恭喜!登記申請 {{no}} 已通過審核,你的電子居民卡 {{cardNo}} 已產生,有效期至 {{validUntil}}。歡迎成為奶龍國居民!', variables: 'no, cardNo, validUntil' },
+  { code: 'rejected', title: '登记未通过:{{no}}', body: '很遗憾,登记申请 {{no}} 未通过审核(原因:{{reason}})。{{note}} 你可以补充信息后重新申请。', titleTw: '登記未通過:{{no}}', bodyTw: '很遺憾,登記申請 {{no}} 未通過審核(原因:{{reason}})。{{note}} 你可以補充資訊後重新申請。', variables: 'no, reason, note' },
+  { code: 'withdrawn', title: '申请已撤销:{{no}}', body: '登记申请 {{no}} 已撤销。如需登记可随时重新提交。', titleTw: '申請已撤銷:{{no}}', bodyTw: '登記申請 {{no}} 已撤銷。如需登記可隨時重新提交。', variables: 'no' },
+  { code: 'closed', title: '申请已关闭:{{no}}', body: '登记申请 {{no}} 因补件超时自动关闭。可以发起新的登记申请。', titleTw: '申請已關閉:{{no}}', bodyTw: '登記申請 {{no}} 因補件逾時自動關閉。可以發起新的登記申請。', variables: 'no' },
+  { code: 'card_issued', title: '电子居民卡已生成:{{cardNo}}', body: '你的电子居民卡 {{cardNo}} 已生成,有效期至 {{validUntil}}。可在"我的居民卡"查看、下载与验真。', titleTw: '電子居民卡已產生:{{cardNo}}', bodyTw: '你的電子居民卡 {{cardNo}} 已產生,有效期至 {{validUntil}}。可在「我的居民卡」查看、下載與驗真。', variables: 'cardNo, validUntil' },
+  { code: 'card_frozen', title: '居民卡已冻结:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已被冻结(原因:{{reason}})。冻结期间居民卡暂停使用,如有疑问请联系居民署。', titleTw: '居民卡已凍結:{{cardNo}}', bodyTw: '你的居民卡 {{cardNo}} 已被凍結(原因:{{reason}})。凍結期間居民卡暫停使用,如有疑問請聯絡居民署。', variables: 'cardNo, reason' },
+  { code: 'card_unfrozen', title: '居民卡已解冻:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已解除冻结,恢复正常使用。', titleTw: '居民卡已解凍:{{cardNo}}', bodyTw: '你的居民卡 {{cardNo}} 已解除凍結,恢復正常使用。', variables: 'cardNo' },
+  { code: 'card_voided', title: '居民卡已注销:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已注销(原因:{{reason}})。居民身份同步失效,如需再次登记请重新申请。', titleTw: '居民卡已註銷:{{cardNo}}', bodyTw: '你的居民卡 {{cardNo}} 已註銷(原因:{{reason}})。居民身分同步失效,如需再次登記請重新申請。', variables: 'cardNo, reason' },
+  { code: 'card_reissued', title: '居民卡已补发:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已补发,原验真二维码已失效,请使用新的验真链接。', titleTw: '居民卡已補發:{{cardNo}}', bodyTw: '你的居民卡 {{cardNo}} 已補發,原驗真 QR 碼已失效,請使用新的驗真連結。', variables: 'cardNo' },
+  { code: 'card_expired', title: '居民卡已过期:{{cardNo}}', body: '你的居民卡 {{cardNo}} 已过期。可在"变更与续期"发起续期申请,居民编号保持不变。', titleTw: '居民卡已過期:{{cardNo}}', bodyTw: '你的居民卡 {{cardNo}} 已過期。可在「變更與續期」發起續期申請,居民編號保持不變。', variables: 'cardNo' },
+  { code: 'expiry_reminder', title: '居民卡即将到期:{{cardNo}}', body: '你的居民卡 {{cardNo}} 将于 {{validUntil}} 到期,记得及时续期哦。', titleTw: '居民卡即將到期:{{cardNo}}', bodyTw: '你的居民卡 {{cardNo}} 將於 {{validUntil}} 到期,記得及時續期喔。', variables: 'cardNo, validUntil' },
+  { code: 'change_approved', title: '变更申请已通过:{{no}}', body: '你的变更申请 {{no}} 已通过审核,居民卡信息已同步更新。', titleTw: '變更申請已通過:{{no}}', bodyTw: '你的變更申請 {{no}} 已通過審核,居民卡資訊已同步更新。', variables: 'no' },
+  { code: 'change_rejected', title: '变更申请未通过:{{no}}', body: '你的变更申请 {{no}} 未通过审核(原因:{{reason}})。{{note}}', titleTw: '變更申請未通過:{{no}}', bodyTw: '你的變更申請 {{no}} 未通過審核(原因:{{reason}})。{{note}}', variables: 'no, reason, note' },
+  { code: 'appeal_reopened', title: '申诉复核:登记申请 {{no}} 重新进入待审', body: '皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),登记申请 {{no}} 重新进入待审核队列。', titleTw: '申訴複核:登記申請 {{no}} 重新進入待審', bodyTw: '皇家申訴與監察署已撤銷原駁回決定(決定書 {{decisionCode}}),登記申請 {{no}} 重新進入待審核佇列。', variables: 'no, decisionCode, appealCode' },
 ];
 
 const DEFAULT_CONFIG = {
@@ -356,10 +372,16 @@ function seedResident() {
 
     // --- message templates + config -----------------------------------------
     const insertTemplate = db.prepare(
-      `INSERT OR IGNORE INTO res_message_templates (code, title_template, body_template, variables, enabled, updated_at)
-       VALUES (@code, @title, @body, @variables, 1, @ts)`
+      `INSERT OR IGNORE INTO res_message_templates (code, title_template, body_template, title_template_tw, body_template_tw, variables, enabled, updated_at)
+       VALUES (@code, @title, @body, @titleTw, @bodyTw, @variables, 1, @ts)`
     );
-    for (const tpl of MESSAGE_TEMPLATES) insertTemplate.run({ ...tpl, ts });
+    for (const tpl of MESSAGE_TEMPLATES) insertTemplate.run({ ...tpl, titleTw: tpl.titleTw ?? '', bodyTw: tpl.bodyTw ?? '', ts });
+    const fillTemplateTw = db.prepare(
+      `UPDATE res_message_templates
+       SET title_template_tw = ?, body_template_tw = ?
+       WHERE code = ? AND (title_template_tw IS NULL OR title_template_tw = '')`
+    );
+    for (const tpl of MESSAGE_TEMPLATES) fillTemplateTw.run(tpl.titleTw ?? '', tpl.bodyTw ?? '', tpl.code);
 
     const insertConfig = db.prepare('INSERT OR IGNORE INTO res_config (key, value) VALUES (?, ?)');
     for (const [k, v] of Object.entries(DEFAULT_CONFIG)) insertConfig.run(k, v);

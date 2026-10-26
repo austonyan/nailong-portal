@@ -47,17 +47,21 @@ function serializePort(row, withChannels = false) {
     id: row.id,
     code: row.code,
     name: row.name,
+    nameTw: row.name_tw,
     type: row.type,
     status: row.status,
     openHours: row.open_hours,
+    openHoursTw: row.open_hours_tw,
     notice: row.notice,
+    noticeTw: row.notice_tw,
     mapDesc: row.map_desc,
+    mapDescTw: row.map_desc_tw,
     sortOrder: row.sort_order,
     updatedAt: row.updated_at,
   };
   if (withChannels) {
     out.channels = db
-      .prepare('SELECT id, name, type, description, enabled FROM im_channels WHERE port_id = ? ORDER BY id')
+      .prepare('SELECT id, name, name_tw, type, description, description_tw, enabled FROM im_channels WHERE port_id = ? ORDER BY id')
       .all(row.id);
   }
   return out;
@@ -75,15 +79,17 @@ router.post('/ports', ...adminOnly, (req, res) => {
     throw badRequest('VALIDATION_ERROR', 'Port code must be 3-20 chars: A-Z, 0-9 or _');
   }
   const name = readString(body.name, { name: 'name', min: 2, max: 40 });
+  const nameTw = readString(body.nameTw, { name: 'nameTw', min: 2, max: 40, optional: true });
   const type = PORT_TYPES.has(body.type) ? body.type : 'land';
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO im_ports (code, name, type, status, open_hours, notice, map_desc, sort_order, created_at, updated_at)
-       VALUES (?, ?, ?, 'closed', ?, ?, ?, 0, ?, ?)`
+      `INSERT INTO im_ports (code, name, name_tw, type, status, open_hours, open_hours_tw, notice, notice_tw, map_desc, map_desc_tw, sort_order, created_at, updated_at)
+       VALUES (?, ?, ?, ?, 'closed', ?, ?, ?, ?, ?, ?, 0, ?, ?)`
     )
-    .run(code, name, type, String(body.openHours || '').slice(0, 80), String(body.notice || '').slice(0, 300),
-      String(body.mapDesc || '').slice(0, 500), ts, ts);
+    .run(code, name, nameTw, type, String(body.openHours || '').slice(0, 80), String(body.openHoursTw || '').slice(0, 80) || null,
+      String(body.notice || '').slice(0, 300), String(body.noticeTw || '').slice(0, 300) || null,
+      String(body.mapDesc || '').slice(0, 500), String(body.mapDescTw || '').slice(0, 500) || null, ts, ts);
   audit(req.user.id, 'im:port.create', 'port', code, {});
   res.status(201).json({ port: serializePort(db.prepare('SELECT * FROM im_ports WHERE id = ?').get(info.lastInsertRowid)) });
 });
@@ -94,13 +100,17 @@ router.patch('/ports/:id', ...adminOnly, (req, res) => {
   const body = req.body || {};
   const updates = {};
   if (body.name !== undefined) updates.name = readString(body.name, { name: 'name', min: 2, max: 40 });
+  if (body.nameTw !== undefined) updates.name_tw = readString(body.nameTw, { name: 'nameTw', min: 2, max: 40, optional: true });
   if (body.type !== undefined) {
     if (!PORT_TYPES.has(body.type)) throw badRequest('VALIDATION_ERROR', 'Invalid port type');
     updates.type = body.type;
   }
   if (body.openHours !== undefined) updates.open_hours = String(body.openHours || '').slice(0, 80);
+  if (body.openHoursTw !== undefined) updates.open_hours_tw = String(body.openHoursTw || '').slice(0, 80) || null;
   if (body.notice !== undefined) updates.notice = String(body.notice || '').slice(0, 300);
+  if (body.noticeTw !== undefined) updates.notice_tw = String(body.noticeTw || '').slice(0, 300) || null;
   if (body.mapDesc !== undefined) updates.map_desc = String(body.mapDesc || '').slice(0, 500);
+  if (body.mapDescTw !== undefined) updates.map_desc_tw = String(body.mapDescTw || '').slice(0, 500) || null;
   if (body.sortOrder !== undefined) updates.sort_order = Number(body.sortOrder) || 0;
   const cols = Object.keys(updates);
   if (cols.length) {
@@ -127,10 +137,12 @@ router.post('/ports/:id/channels', ...adminOnly, (req, res) => {
   const port = db.prepare('SELECT id FROM im_ports WHERE id = ?').get(Number(req.params.id));
   if (!port) throw notFound('Port not found');
   const name = readString(req.body?.name, { name: 'name', min: 2, max: 30 });
+  const nameTw = readString(req.body?.nameTw, { name: 'nameTw', min: 2, max: 30, optional: true });
   if (!CHANNEL_TYPES.has(req.body?.type)) throw badRequest('VALIDATION_ERROR', 'Invalid channel type');
   const info = db
-    .prepare('INSERT INTO im_channels (port_id, name, type, description, enabled, created_at) VALUES (?, ?, ?, ?, ?, ?)')
-    .run(port.id, name, req.body.type, String(req.body?.description || '').slice(0, 120), req.body?.enabled === false ? 0 : 1, now());
+    .prepare('INSERT INTO im_channels (port_id, name, name_tw, type, description, description_tw, enabled, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .run(port.id, name, nameTw, req.body.type, String(req.body?.description || '').slice(0, 120),
+      String(req.body?.descriptionTw || '').slice(0, 120) || null, req.body?.enabled === false ? 0 : 1, now());
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
 });
 
@@ -139,7 +151,9 @@ router.patch('/channels/:id', ...adminOnly, (req, res) => {
   if (!row) throw notFound('Channel not found');
   const updates = {};
   if (req.body?.name !== undefined) updates.name = readString(req.body.name, { name: 'name', min: 2, max: 30 });
+  if (req.body?.nameTw !== undefined) updates.name_tw = readString(req.body.nameTw, { name: 'nameTw', min: 2, max: 30, optional: true });
   if (req.body?.description !== undefined) updates.description = String(req.body.description || '').slice(0, 120);
+  if (req.body?.descriptionTw !== undefined) updates.description_tw = String(req.body.descriptionTw || '').slice(0, 120) || null;
   if (req.body?.enabled !== undefined) updates.enabled = req.body.enabled ? 1 : 0;
   const cols = Object.keys(updates);
   if (cols.length) {
@@ -160,8 +174,11 @@ function serializeAnnouncement(row) {
     id: row.id,
     portId: row.port_id,
     portName: row.port_name ?? null,
+    portNameTw: row.port_name_tw ?? null,
     title: row.title,
+    titleTw: row.title_tw,
     body: row.body,
+    bodyTw: row.body_tw,
     level: row.level,
     status: row.status,
     publishedAt: row.published_at,
@@ -170,7 +187,7 @@ function serializeAnnouncement(row) {
   };
 }
 
-const ANN_SELECT = `SELECT a.*, p.name AS port_name FROM im_announcements a
+const ANN_SELECT = `SELECT a.*, p.name AS port_name, p.name_tw AS port_name_tw FROM im_announcements a
   LEFT JOIN im_ports p ON p.id = a.port_id WHERE a.deleted_at IS NULL`;
 
 router.get('/announcements', ...adminOnly, (_req, res) => {
@@ -181,12 +198,14 @@ router.get('/announcements', ...adminOnly, (_req, res) => {
 function readAnnouncementFields(body) {
   const title = readString(body.title, { name: 'title', min: 2, max: 80 });
   const content = readString(body.body, { name: 'body', min: 2, max: 1000 });
+  const titleTw = readString(body.titleTw, { name: 'titleTw', min: 2, max: 80, optional: true });
+  const bodyTw = readString(body.bodyTw, { name: 'bodyTw', min: 2, max: 1000, optional: true });
   const level = ['info', 'warning', 'critical'].includes(body.level) ? body.level : 'info';
   const portId = body.portId ? Number(body.portId) : null;
   if (portId && !db.prepare('SELECT id FROM im_ports WHERE id = ?').get(portId)) {
     throw badRequest('VALIDATION_ERROR', 'Unknown portId');
   }
-  return { title, body: content, level, port_id: portId };
+  return { title, title_tw: titleTw, body: content, body_tw: bodyTw, level, port_id: portId };
 }
 
 router.post('/announcements', ...adminOnly, (req, res) => {
@@ -194,8 +213,8 @@ router.post('/announcements', ...adminOnly, (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO im_announcements (port_id, title, body, level, status, published_at, created_at, updated_at)
-       VALUES (@port_id, @title, @body, @level, 'published', @ts, @ts, @ts)`
+      `INSERT INTO im_announcements (port_id, title, title_tw, body, body_tw, level, status, published_at, created_at, updated_at)
+       VALUES (@port_id, @title, @title_tw, @body, @body_tw, @level, 'published', @ts, @ts, @ts)`
     )
     .run({ ...fields, ts });
   audit(req.user.id, 'im:announcement.publish', 'announcement', info.lastInsertRowid, { title: fields.title });
@@ -207,7 +226,7 @@ router.patch('/announcements/:id', ...adminOnly, (req, res) => {
   const row = db.prepare('SELECT * FROM im_announcements WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
   if (!row) throw notFound('Announcement not found');
   const fields = readAnnouncementFields({ ...row, ...req.body });
-  db.prepare('UPDATE im_announcements SET title = @title, body = @body, level = @level, port_id = @port_id, updated_at = @ts WHERE id = @id').run({
+  db.prepare('UPDATE im_announcements SET title = @title, title_tw = @title_tw, body = @body, body_tw = @body_tw, level = @level, port_id = @port_id, updated_at = @ts WHERE id = @id').run({
     ...fields,
     ts: now(),
     id: row.id,
@@ -525,7 +544,7 @@ router.post('/pass-codes/verify', ...verifier, (req, res) => {
       )
       .run(entryNo, row.user_id, row.declaration_id, row.port_id, row.visa_no, ts.slice(0, 10), row.stay_days, stampStyle, req.user.id, ts, ts);
     db.prepare("UPDATE im_declarations SET status = 'entered', updated_at = ? WHERE id = ?").run(ts, row.declaration_id);
-    logEvent(row.declaration_id, 'enter', req.user.id, `入境盖章 ${entryNo}`);
+    logEvent(row.declaration_id, 'enter', req.user.id, `入境盖章 ${entryNo}`, `入境蓋章 ${entryNo}`);
     markVisaUsed(row.visa_no, req.user.id, row.declaration_no);
     return info.lastInsertRowid;
   });
@@ -778,6 +797,7 @@ router.get('/templates', ...adminOnly, (_req, res) => {
   res.json({
     items: rows.map((r) => ({
       id: r.id, code: r.code, title: r.title_template, body: r.body_template,
+      titleTw: r.title_template_tw, bodyTw: r.body_template_tw,
       variables: r.variables, enabled: !!r.enabled, updatedAt: r.updated_at,
     })),
   });
@@ -788,10 +808,14 @@ router.put('/templates/:id', ...adminOnly, (req, res) => {
   if (!row) throw notFound('Template not found');
   const title = readString(req.body?.title, { name: 'title', min: 2, max: 120 });
   const body = readString(req.body?.body, { name: 'body', min: 2, max: 600 });
+  const titleTw = readString(req.body?.titleTw, { name: 'titleTw', min: 2, max: 120, optional: true });
+  const bodyTw = readString(req.body?.bodyTw, { name: 'bodyTw', min: 2, max: 600, optional: true });
   const enabled = req.body?.enabled === undefined ? !!row.enabled : !!req.body.enabled;
-  db.prepare('UPDATE im_message_templates SET title_template = ?, body_template = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+  db.prepare('UPDATE im_message_templates SET title_template = ?, body_template = ?, title_template_tw = ?, body_template_tw = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
     title,
     body,
+    titleTw,
+    bodyTw,
     enabled ? 1 : 0,
     now(),
     row.id
@@ -816,7 +840,7 @@ router.get('/messages', ...adminOnly, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM im_messages m ${whereSql}`).get(...params).n;
   const rows = db
     .prepare(
-      `SELECT m.id, m.template_code, m.title, m.read, m.created_at, u.username
+      `SELECT m.id, m.template_code, m.title, m.title_tw, m.read, m.created_at, u.username
        FROM im_messages m JOIN users u ON u.id = m.user_id ${whereSql} ORDER BY m.id DESC LIMIT ? OFFSET ?`
     )
     .all(...params, pageSize, offset);

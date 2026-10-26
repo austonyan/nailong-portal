@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { db, now } from '../db.js';
 import { authenticate } from '../auth.js';
 import { badRequest, conflict, forbidden, notFound } from '../http.js';
+import { reqLocale } from '../locale.js';
 import { ensureProtocolSchema, getConfig, getConfigInt, setConfig } from './schema.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 import {
@@ -172,15 +173,18 @@ router.post('/types', manager, (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO pro_event_types (code, name, description, guide, required_fields, materials, allow_companions, max_companions,
+      `INSERT INTO pro_event_types (code, name, name_tw, description, description_tw, guide, guide_tw, required_fields, materials, allow_companions, max_companions,
          default_capacity, enabled, sort_order, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       code,
       str(req.body?.name, 60) || code,
+      str(req.body?.nameTw, 60) || null,
       str(req.body?.description, 300),
+      str(req.body?.descriptionTw, 300) || null,
       str(req.body?.guide, 2000),
+      str(req.body?.guideTw, 2000) || null,
       Array.isArray(req.body?.requiredFields) ? req.body.requiredFields.join(',') : 'nickname,contact',
       JSON.stringify(jsonArray(req.body?.materials)),
       intBool(req.body?.allowCompanions ?? true),
@@ -199,12 +203,15 @@ router.patch('/types/:id', manager, (req, res) => {
   const row = db.prepare('SELECT * FROM pro_event_types WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Type not found');
   db.prepare(
-    `UPDATE pro_event_types SET name = ?, description = ?, guide = ?, required_fields = ?, materials = ?,
+    `UPDATE pro_event_types SET name = ?, name_tw = ?, description = ?, description_tw = ?, guide = ?, guide_tw = ?, required_fields = ?, materials = ?,
        allow_companions = ?, max_companions = ?, default_capacity = ?, enabled = ?, sort_order = ?, updated_at = ? WHERE id = ?`
   ).run(
     str(req.body?.name, 60, row.name),
+    str(req.body?.nameTw, 60, row.name_tw) || null,
     str(req.body?.description, 300, row.description),
+    str(req.body?.descriptionTw, 300, row.description_tw) || null,
     str(req.body?.guide, 2000, row.guide),
+    str(req.body?.guideTw, 2000, row.guide_tw) || null,
     Array.isArray(req.body?.requiredFields) ? req.body.requiredFields.join(',') : row.required_fields,
     req.body?.materials !== undefined ? JSON.stringify(jsonArray(req.body.materials)) : row.materials,
     req.body?.allowCompanions !== undefined ? intBool(req.body.allowCompanions) : row.allow_companions,
@@ -255,20 +262,25 @@ router.post('/events', manager, (req, res) => {
   const capacity = Math.max(1, num(req.body?.capacity, type.default_capacity));
   const info = db
     .prepare(
-      `INSERT INTO pro_events (event_no, type_code, title, subtitle, description, schedule, venue_name, venue_note,
+      `INSERT INTO pro_events (event_no, type_code, title, title_tw, subtitle, subtitle_tw, description, description_tw, schedule, venue_name, venue_name_tw, venue_note, venue_note_tw,
          capacity, waitlist_enabled, status, resident_only, diplomatic_only, registration_deadline, starts_at, ends_at,
-         conditions, materials, notice, cover_color, created_by, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+         conditions, conditions_tw, materials, notice, notice_tw, cover_color, created_by, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       eventNo,
       type.code,
       title,
+      str(req.body?.titleTw, 120) || null,
       str(req.body?.subtitle, 200),
+      str(req.body?.subtitleTw, 200) || null,
       str(req.body?.description, 4000),
+      str(req.body?.descriptionTw, 4000) || null,
       JSON.stringify(jsonArray(req.body?.schedule)),
       str(req.body?.venueName, 160),
+      str(req.body?.venueNameTw, 160) || null,
       str(req.body?.venueNote, 500),
+      str(req.body?.venueNoteTw, 500) || null,
       capacity,
       intBool(req.body?.waitlistEnabled ?? true),
       intBool(req.body?.residentOnly),
@@ -277,8 +289,10 @@ router.post('/events', manager, (req, res) => {
       startsAt,
       endsAt,
       str(req.body?.conditions, 2000),
+      str(req.body?.conditionsTw, 2000) || null,
       JSON.stringify(jsonArray(req.body?.materials)),
       str(req.body?.notice, 1000),
+      str(req.body?.noticeTw, 1000) || null,
       str(req.body?.coverColor, 30, 'app-teal'),
       req.user.id,
       ts,
@@ -295,16 +309,21 @@ router.patch('/events/:id', manager, (req, res) => {
   const endsAt = req.body?.endsAt !== undefined ? toIso(req.body.endsAt) : event.ends_at;
   if (startsAt && endsAt && endsAt < startsAt) throw badRequest('EVT_TIME_RANGE', 'endsAt must be after startsAt');
   db.prepare(
-    `UPDATE pro_events SET title = ?, subtitle = ?, description = ?, schedule = ?, venue_name = ?, venue_note = ?,
+    `UPDATE pro_events SET title = ?, title_tw = ?, subtitle = ?, subtitle_tw = ?, description = ?, description_tw = ?, schedule = ?, venue_name = ?, venue_name_tw = ?, venue_note = ?, venue_note_tw = ?,
        capacity = ?, waitlist_enabled = ?, resident_only = ?, diplomatic_only = ?, registration_deadline = ?,
-       starts_at = ?, ends_at = ?, conditions = ?, materials = ?, notice = ?, cover_color = ?, updated_at = ? WHERE id = ?`
+       starts_at = ?, ends_at = ?, conditions = ?, conditions_tw = ?, materials = ?, notice = ?, notice_tw = ?, cover_color = ?, updated_at = ? WHERE id = ?`
   ).run(
     str(req.body?.title, 120, event.title),
+    str(req.body?.titleTw, 120, event.title_tw) || null,
     str(req.body?.subtitle, 200, event.subtitle),
+    str(req.body?.subtitleTw, 200, event.subtitle_tw) || null,
     str(req.body?.description, 4000, event.description),
+    str(req.body?.descriptionTw, 4000, event.description_tw) || null,
     req.body?.schedule !== undefined ? JSON.stringify(jsonArray(req.body.schedule)) : event.schedule,
     str(req.body?.venueName, 160, event.venue_name),
+    str(req.body?.venueNameTw, 160, event.venue_name_tw) || null,
     str(req.body?.venueNote, 500, event.venue_note),
+    str(req.body?.venueNoteTw, 500, event.venue_note_tw) || null,
     req.body?.capacity !== undefined ? Math.max(1, num(req.body.capacity, event.capacity)) : event.capacity,
     req.body?.waitlistEnabled !== undefined ? intBool(req.body.waitlistEnabled) : event.waitlist_enabled,
     req.body?.residentOnly !== undefined ? intBool(req.body.residentOnly) : event.resident_only,
@@ -315,8 +334,10 @@ router.patch('/events/:id', manager, (req, res) => {
     startsAt,
     endsAt,
     str(req.body?.conditions, 2000, event.conditions),
+    str(req.body?.conditionsTw, 2000, event.conditions_tw) || null,
     req.body?.materials !== undefined ? JSON.stringify(jsonArray(req.body.materials)) : event.materials,
     str(req.body?.notice, 1000, event.notice),
+    str(req.body?.noticeTw, 1000, event.notice_tw) || null,
     str(req.body?.coverColor, 30, event.cover_color),
     now(),
     event.id
@@ -383,11 +404,13 @@ router.post('/events/:id/notices', manager, (req, res) => {
   const event = requireEvent(req.params.id);
   const title = str(req.body?.title, 120);
   const body = str(req.body?.body, 2000);
+  const titleTw = str(req.body?.titleTw, 120) || null;
+  const bodyTw = str(req.body?.bodyTw, 2000) || null;
   if (!title || !body) throw badRequest('EVT_FIELD_REQUIRED', 'title and body are required');
   const level = ['info', 'change', 'cancel'].includes(req.body?.level) ? req.body.level : 'info';
   const info = db
-    .prepare('INSERT INTO pro_event_notices (event_id, title, body, level, created_at) VALUES (?, ?, ?, ?, ?)')
-    .run(event.id, title, body, level, now());
+    .prepare('INSERT INTO pro_event_notices (event_id, title, title_tw, body, body_tw, level, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .run(event.id, title, titleTw, body, bodyTw, level, now());
   if (level !== 'info') notifyEventAttendees(event.id, 'event_changed', { event: event.title, note: title });
   audit(req.user, 'event_notice', 'event', event.event_no, { level, title });
   res.status(201).json({ notice: db.prepare('SELECT * FROM pro_event_notices WHERE id = ?').get(info.lastInsertRowid) });
@@ -846,14 +869,17 @@ router.post('/courtesy/types', manager, (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO pro_courtesy_types (code, name, description, requirements, enabled, sort_order, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO pro_courtesy_types (code, name, name_tw, description, description_tw, requirements, requirements_tw, enabled, sort_order, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       code,
       str(req.body?.name, 60) || code,
+      str(req.body?.nameTw, 60) || null,
       str(req.body?.description, 300),
+      str(req.body?.descriptionTw, 300) || null,
       str(req.body?.requirements, 500),
+      str(req.body?.requirementsTw, 500) || null,
       intBool(req.body?.enabled ?? true),
       num(req.body?.sortOrder, 99),
       ts,
@@ -866,10 +892,13 @@ router.post('/courtesy/types', manager, (req, res) => {
 router.patch('/courtesy/types/:id', manager, (req, res) => {
   const row = db.prepare('SELECT * FROM pro_courtesy_types WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Courtesy type not found');
-  db.prepare('UPDATE pro_courtesy_types SET name = ?, description = ?, requirements = ?, enabled = ?, sort_order = ?, updated_at = ? WHERE id = ?').run(
+  db.prepare('UPDATE pro_courtesy_types SET name = ?, name_tw = ?, description = ?, description_tw = ?, requirements = ?, requirements_tw = ?, enabled = ?, sort_order = ?, updated_at = ? WHERE id = ?').run(
     str(req.body?.name, 60, row.name),
+    str(req.body?.nameTw, 60, row.name_tw) || null,
     str(req.body?.description, 300, row.description),
+    str(req.body?.descriptionTw, 300, row.description_tw) || null,
     str(req.body?.requirements, 500, row.requirements),
+    str(req.body?.requirementsTw, 500, row.requirements_tw) || null,
     req.body?.enabled !== undefined ? intBool(req.body.enabled) : row.enabled,
     req.body?.sortOrder !== undefined ? num(req.body.sortOrder, row.sort_order) : row.sort_order,
     now(),
@@ -1167,12 +1196,14 @@ router.get('/notices', manager, (_req, res) => {
 router.post('/notices', manager, (req, res) => {
   const title = str(req.body?.title, 120);
   const body = str(req.body?.body, 2000);
+  const titleTw = str(req.body?.titleTw, 120) || null;
+  const bodyTw = str(req.body?.bodyTw, 2000) || null;
   if (!title || !body) throw badRequest('EVT_FIELD_REQUIRED', 'title and body are required');
   const level = ['info', 'policy', 'event'].includes(req.body?.level) ? req.body.level : 'info';
   const ts = now();
   const info = db
-    .prepare('INSERT INTO pro_notices (title, body, level, enabled, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)')
-    .run(title, body, level, ts, ts);
+    .prepare('INSERT INTO pro_notices (title, title_tw, body, body_tw, level, enabled, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)')
+    .run(title, titleTw, body, bodyTw, level, ts, ts);
   audit(req.user, 'notice_create', 'notice', info.lastInsertRowid, { title });
   res.status(201).json({ notice: db.prepare('SELECT * FROM pro_notices WHERE id = ?').get(info.lastInsertRowid) });
 });
@@ -1180,9 +1211,11 @@ router.post('/notices', manager, (req, res) => {
 router.patch('/notices/:id', manager, (req, res) => {
   const row = db.prepare('SELECT * FROM pro_notices WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Notice not found');
-  db.prepare('UPDATE pro_notices SET title = ?, body = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
+  db.prepare('UPDATE pro_notices SET title = ?, title_tw = ?, body = ?, body_tw = ?, level = ?, enabled = ?, updated_at = ? WHERE id = ?').run(
     str(req.body?.title, 120, row.title),
+    str(req.body?.titleTw, 120, row.title_tw) || null,
     str(req.body?.body, 2000, row.body),
+    str(req.body?.bodyTw, 2000, row.body_tw) || null,
     ['info', 'policy', 'event'].includes(req.body?.level) ? req.body.level : row.level,
     req.body?.enabled !== undefined ? intBool(req.body.enabled) : row.enabled,
     now(),
@@ -1207,9 +1240,11 @@ router.get('/templates', manager, (_req, res) => {
 router.patch('/templates/:code', manager, (req, res) => {
   const row = db.prepare('SELECT * FROM pro_message_templates WHERE code = ?').get(String(req.params.code));
   if (!row) throw notFound('Template not found');
-  db.prepare('UPDATE pro_message_templates SET title_template = ?, body_template = ?, enabled = ?, updated_at = ? WHERE code = ?').run(
+  db.prepare('UPDATE pro_message_templates SET title_template = ?, body_template = ?, title_template_tw = ?, body_template_tw = ?, enabled = ?, updated_at = ? WHERE code = ?').run(
     str(req.body?.title, 200, row.title_template),
     str(req.body?.body, 1000, row.body_template),
+    str(req.body?.titleTw, 200, row.title_template_tw) || null,
+    str(req.body?.bodyTw, 1000, row.body_template_tw) || null,
     req.body?.enabled !== undefined ? intBool(req.body.enabled) : row.enabled,
     now(),
     row.code
@@ -1302,20 +1337,23 @@ router.get('/stats', manager, (_req, res) => {
 
 router.get('/export/:kind', manager, (req, res) => {
   const kind = req.params.kind;
+  const tw = reqLocale(req) === 'zh-TW';
   const ts = now().slice(0, 10);
   audit(req.user, 'export_csv', 'export', kind, {});
   if (kind === 'registrations') {
     const rows = db
       .prepare(
-        `SELECT r.reg_no, e.title, r.nickname, r.status, r.identity_type, r.party_size, r.submitted_at, u.username
+        `SELECT r.reg_no, e.title, e.title_tw, r.nickname, r.status, r.identity_type, r.party_size, r.submitted_at, u.username
          FROM pro_registrations r JOIN pro_events e ON e.id = r.event_id JOIN users u ON u.id = r.user_id ORDER BY r.id`
       )
       .all();
     return sendCsv(
       res,
       `protocol-registrations-${ts}.csv`,
-      ['报名编号', '活动', '昵称', '状态', '身份类型', '人数', '提交时间', '账号'],
-      rows.map((r) => [r.reg_no, r.title, r.nickname, r.status, r.identity_type, r.party_size, r.submitted_at, r.username])
+      tw
+        ? ['報名編號', '活動', '暱稱', '狀態', '身分', '人數', '提交時間', '帳號']
+        : ['报名编号', '活动', '昵称', '状态', '身份类型', '人数', '提交时间', '账号'],
+      rows.map((r) => [r.reg_no, tw ? r.title_tw || r.title : r.title, r.nickname, r.status, r.identity_type, r.party_size, r.submitted_at, r.username])
     );
   }
   if (kind === 'events') {
@@ -1323,10 +1361,12 @@ router.get('/export/:kind', manager, (req, res) => {
     return sendCsv(
       res,
       `protocol-events-${ts}.csv`,
-      ['活动编号', '名称', '类型', '状态', '名额', '开始时间', '结束时间'],
+      tw
+        ? ['活動編號', '名稱', '類型', '狀態', '名額', '開始時間', '結束時間']
+        : ['活动编号', '名称', '类型', '状态', '名额', '开始时间', '结束时间'],
       rows.map((r) => {
         const counts = eventCounts(r.id);
-        return [r.event_no, r.title, r.type_code, r.status, `${counts.approved}/${r.capacity}`, r.starts_at, r.ends_at];
+        return [r.event_no, tw ? r.title_tw || r.title : r.title, r.type_code, r.status, `${counts.approved}/${r.capacity}`, r.starts_at, r.ends_at];
       })
     );
   }
@@ -1335,7 +1375,9 @@ router.get('/export/:kind', manager, (req, res) => {
     return sendCsv(
       res,
       `protocol-audit-${ts}.csv`,
-      ['时间', '操作人', '操作', '对象类型', '对象编号', '详情'],
+      tw
+        ? ['時間', '操作人', '操作', '對象類型', '對象編號', '詳情']
+        : ['时间', '操作人', '操作', '对象类型', '对象编号', '详情'],
       rows.map((r) => [r.created_at, r.actor_name, r.action, r.target_type, r.target_id, r.detail])
     );
   }
@@ -1344,22 +1386,24 @@ router.get('/export/:kind', manager, (req, res) => {
     return sendCsv(
       res,
       `protocol-verify-${ts}.csv`,
-      ['时间', '查询', '类型', '结果', 'IP'],
+      tw ? ['時間', '查詢', '類型', '結果', 'IP'] : ['时间', '查询', '类型', '结果', 'IP'],
       rows.map((r) => [r.created_at, r.query, r.kind, r.result, r.ip])
     );
   }
   if (kind === 'checkins') {
     const rows = db
       .prepare(
-        `SELECT l.*, p.pass_no, p.holder_name, e.title FROM pro_checkin_logs l
+        `SELECT l.*, p.pass_no, p.holder_name, e.title, e.title_tw FROM pro_checkin_logs l
          LEFT JOIN pro_passes p ON p.id = l.pass_id LEFT JOIN pro_events e ON e.id = l.event_id ORDER BY l.id DESC LIMIT 5000`
       )
       .all();
     return sendCsv(
       res,
       `protocol-checkins-${ts}.csv`,
-      ['时间', '活动', '凭证编号', '持票人', '动作', '来源'],
-      rows.map((r) => [r.created_at, r.title, r.pass_no, r.holder_name, r.action, r.source])
+      tw
+        ? ['時間', '活動', '憑證編號', '持票人', '動作', '來源']
+        : ['时间', '活动', '凭证编号', '持票人', '动作', '来源'],
+      rows.map((r) => [r.created_at, tw ? r.title_tw || r.title : r.title, r.pass_no, r.holder_name, r.action, r.source])
     );
   }
   throw badRequest('VALIDATION_ERROR', 'Unknown export kind');
