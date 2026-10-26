@@ -4,6 +4,8 @@
 // 覆盖:建交申请(草稿/材料/确认/补件/通过)→ 外交身份(登记/通过/身份卡)
 //       → 互免协议(创建/公示/资格查询)→ 验真(编号/token/脱敏)
 //       → 断交(申请/复核/身份级联失效)→ 代表处/礼遇/统计/审计/黑名单/联动 stub。
+import { ensureAdmin } from './bootstrap-admin.mjs';
+
 const base = process.argv[2] || 'http://localhost:3001';
 const interToken = process.argv[3] || process.env.DIP_INTER_SERVICE_TOKEN || 'smoke-dip-token';
 
@@ -63,6 +65,7 @@ async function register(suffix = 'a') {
 }
 
 async function login(username) {
+  if (username === 'admin') await ensureAdmin(base);
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;

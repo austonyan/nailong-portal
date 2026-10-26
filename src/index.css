@@ -209,6 +209,150 @@ h3 {
   text-decoration: underline;
 }
 
+/* ---------- first-run setup ---------- */
+
+.setup-language {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.setup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.setup-mark,
+.setup-point-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.setup-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 18px;
+}
+
+.setup-point-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+}
+
+.setup-progress {
+  margin-bottom: 18px;
+}
+
+.setup-points {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 4px 0 22px;
+}
+
+.setup-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.setup-point strong {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.setup-point p {
+  margin: 2px 0 0;
+}
+
+.setup-summary {
+  margin: 4px 0 16px;
+  padding: 4px 16px;
+  border: var(--animal-border-width) solid var(--animal-border-color-light);
+  border-radius: var(--animal-border-radius-lg);
+  background: var(--animal-bg-color-secondary);
+}
+
+.setup-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: var(--animal-border-width) solid var(--animal-border-color-light);
+}
+
+.setup-summary-row:last-child {
+  border-bottom: none;
+}
+
+.setup-summary-row dt {
+  color: var(--animal-text-color-muted);
+  font-size: 14px;
+}
+
+.setup-summary-row dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-all;
+}
+
+.setup-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: var(--animal-border-radius-base);
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color-secondary);
+  font-size: 14px;
+}
+
+.setup-note > svg {
+  flex: none;
+  color: var(--animal-warning-color);
+}
+
+.setup-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.setup-actions > * {
+  flex: 1;
+}
+
+.setup-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0 4px;
+  text-align: center;
+}
+
+.setup-success p {
+  margin: 0;
+}
+
+.setup-success-icon {
+  color: var(--animal-success-color);
+}
+
+.setup-success .muted-text {
+  margin-bottom: 10px;
+}
+
 /* ---------- portal ---------- */
 
 .portal-hero {

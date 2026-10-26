@@ -4,6 +4,7 @@
 // traveler journey: register -> draft -> submit -> officer approve -> pass
 // code -> verification -> entry stamp -> exit record -> messages -> verify URL.
 import process from 'node:process';
+import { ensureAdmin } from '../scripts/bootstrap-admin.mjs';
 
 const PORT = Number(process.env.SMOKE_PORT) || 3210;
 const BASE = `http://127.0.0.1:${PORT}/api`;
@@ -44,6 +45,7 @@ async function main() {
   check('register traveler', reg.status === 201 && reg.data.accessToken);
   const user = reg.data.accessToken;
 
+  await ensureAdmin(`http://127.0.0.1:${PORT}`);
   const adminLogin = await api('/auth/login', { method: 'POST', body: { username: 'admin', password: 'admin123' } });
   check('admin login', adminLogin.status === 200);
   const admin = adminLogin.data.accessToken;

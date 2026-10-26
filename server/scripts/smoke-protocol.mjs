@@ -3,6 +3,8 @@
 //   node server/scripts/smoke-protocol.mjs [baseUrl]
 // 覆盖:首页→活动→报名草稿→材料→提交→审核→凭证→验真→邀请函→礼遇→
 //       接待方认证→签到→统计/审计/导出。
+import { ensureAdmin } from './bootstrap-admin.mjs';
+
 const base = process.argv[2] || 'http://localhost:3001';
 
 let failures = 0;
@@ -51,6 +53,7 @@ const stamp = Date.now().toString(36);
 const username = `proto_${stamp}`;
 const password = 'smoke-pass-123';
 
+await ensureAdmin(base);
 const adminLogin = await api('/auth/login', { method: 'POST', body: { username: 'admin', password: process.env.ADMIN_PASSWORD || 'admin123' } });
 check('管理员登录', !!adminLogin.data.accessToken, JSON.stringify(adminLogin.data));
 const adminToken = adminLogin.data.accessToken;

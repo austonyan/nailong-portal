@@ -32,16 +32,23 @@ runner. Frontend consumes the published `animal-island-ui` npm package.
 ## Architecture
 
 - `server/` — Express 5 API. `server/db.js` holds the SQLite schema (better-sqlite3, WAL) and
-  seeds permissions/roles/admin/demo services; DB file lives in `server/data/` (gitignored).
+  seeds permissions/roles/demo services; DB file lives in `server/data/` (gitignored).
 - Auth: JWT access token (30 min, in-memory on the client) + refresh token (7 days) in an
   httpOnly cookie scoped to `/api/auth`, with a `sessions` table so refresh tokens rotate and
   replay is rejected. Password hashing via bcryptjs.
+- First-run setup: a fresh database has **no users**. `GET /api/setup/status` reports
+  `required: true`, the SPA gate redirects every route to `/setup`, and
+  `POST /api/setup/admin` creates the first admin (username + display name + email +
+  password) and signs them in. Completion is latched in the `app_meta` table
+  (`setup.completed_at`): afterwards that POST returns 409 `SETUP_COMPLETE` and `/setup`
+  redirects to login. Existing databases with an admin are latched on boot, so the wizard can
+  never reopen. Setting `ADMIN_PASSWORD` only on a first boot keeps the non-interactive
+  `admin` seeding path and skips the wizard.
 - RBAC: `permissions` / `roles` / `role_permissions` / `user_roles` tables. Permissions are
   code-defined in `server/db.js` (`PERMISSIONS`); middleware `requirePermission('x:y')` in
   `server/auth.js`. Built-in roles: `admin` (all, locked), `user` (portal:access + visa:apply),
-  `visa_reviewer`, `visa_admin`. Seeded admin account `admin` / `ADMIN_PASSWORD` env or
-  `admin123`. System-role permission lists are backfilled on every boot, so new permissions
-  reach existing databases automatically.
+  `visa_reviewer`, `visa_admin`. System-role permission lists are backfilled on every boot, so
+  new permissions reach existing databases automatically.
 - Services registry (`services` table) is the foundation for future service integration:
   portal users see enabled services their permissions allow (`GET /api/services`); admins
   manage the registry (`/api/services/admin`). `POST /api/auth/introspect` lets other services

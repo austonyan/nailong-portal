@@ -8,6 +8,8 @@
 //   4. 居民卡 → 居民权益通道 / 礼宾居民礼遇资格
 //   5. 外交身份 → 外交签注申请资格拦截
 //   6. 申诉监察跨署抽查
+import { ensureAdmin } from './bootstrap-admin.mjs';
+
 const base = process.argv[2] || 'http://localhost:3001';
 
 let failures = 0;
@@ -54,6 +56,7 @@ async function register(suffix) {
 }
 
 async function login(username) {
+  if (username === 'admin') await ensureAdmin(base);
   const r = await api('/auth/login', {
     method: 'POST',
     body: { username, password: username === 'admin' ? 'admin123' : password },

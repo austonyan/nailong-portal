@@ -4,6 +4,8 @@
 // 覆盖:注册→登记(草稿/材料/提交)→审核(补件/通过)→居民卡生成→验真→
 //       变更/续期→冻结/补发→驳回/黑名单→统计/审计/导出。
 // 若设置了 RESIDENT_INTER_SERVICE_TOKEN(与服务端一致),还会验证署间校验接口。
+import { ensureAdmin } from './bootstrap-admin.mjs';
+
 const base = process.argv[2] || 'http://localhost:3001';
 
 let failures = 0;
@@ -51,6 +53,7 @@ async function register(suffix = 'a') {
 }
 
 async function login(username) {
+  if (username === 'admin') await ensureAdmin(base);
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;

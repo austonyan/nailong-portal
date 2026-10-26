@@ -11,7 +11,9 @@ npm run dev:all   # 同时启动前端 (Vite, :5173) 和 API 服务器 (:3001)
 
 生产模式:`npm run build && npm run start`(API 服务器同时托管 `dist/`,单端口 3001)。
 
-默认管理员:`admin / admin123`(可用 `ADMIN_PASSWORD` 环境变量覆盖;请尽快在页面上修改密码)。
+首次启动:数据库为空时,前端会强制进入 `/setup` 管理员引导页。填写管理员账号、显示名称、邮箱与密码后,
+首位管理员创建完成,引导入口立即永久关闭(`/api/setup/admin` 之后一律返回 409,`/setup` 也会跳回登录页)。
+需要非交互部署时,可在首次启动前设置 `ADMIN_PASSWORD`;服务端会按旧方式自动创建 `admin` 并跳过引导。
 
 ## 架构
 
@@ -35,12 +37,14 @@ npm run dev:all   # 同时启动前端 (Vite, :5173) 和 API 服务器 (:3001)
 | `npm run build` / `npm run start` | 构建 / 生产运行 |
 | `npm run lint` | oxlint |
 
+首次启动引导验收:`node server/scripts/smoke-setup.mjs`(自包含,会自行启动临时 API 实例)。
+
 ## 环境变量
 
 | 变量 | 默认 | 说明 |
 | --- | --- | --- |
 | `PORT` | `3001` | API 服务器端口 |
 | `JWT_SECRET` | 自动生成并持久化 | JWT 签名密钥 |
-| `ADMIN_PASSWORD` | `admin123` | 首次初始化的管理员密码 |
+| `ADMIN_PASSWORD` | 未设置 | 可选;首次启动时自动创建 `admin` 并跳过 `/setup` 引导 |
 | `ACCESS_TOKEN_TTL` | `30m` | 访问令牌有效期 |
 | `REFRESH_TOKEN_TTL_DAYS` | `7` | 刷新令牌天数 |

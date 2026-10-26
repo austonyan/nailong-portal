@@ -3,6 +3,8 @@
 //   node server/scripts/smoke-appeal.mjs [baseUrl]
 // 覆盖:申诉草稿→材料→提交→受理/补件/决定→决定书验真→复核终局→
 //       投诉建议→工单→公示/公告/模板→黑名单/合并→统计/审计/导出。
+import { ensureAdmin } from './bootstrap-admin.mjs';
+
 const base = process.argv[2] || 'http://localhost:3001';
 
 let failures = 0;
@@ -48,6 +50,7 @@ async function register(suffix = 'a') {
 }
 
 async function login(username) {
+  if (username === 'admin') await ensureAdmin(base);
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;

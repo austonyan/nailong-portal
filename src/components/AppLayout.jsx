@@ -1,24 +1,9 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Select } from 'animal-island-ui';
+import { Avatar, Button } from 'animal-island-ui';
 import { PowerIcon, SailboatIcon } from 'naive-icons';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { setLanguage, REQUIRED_LOCALES } from '../i18n/index.js';
-
-const LOCALE_LABELS = { 'zh-CN': '简体中文', 'zh-TW': '繁體中文' };
-
-function LanguageSelect() {
-  const { i18n, t } = useTranslation();
-  return (
-    <div className="language-select" role="group" aria-label={t('nav.language')}>
-      <Select
-        value={REQUIRED_LOCALES.includes(i18n.language) ? i18n.language : 'zh-CN'}
-        onChange={setLanguage}
-        options={REQUIRED_LOCALES.map((lng) => ({ key: lng, label: LOCALE_LABELS[lng] ?? lng }))}
-      />
-    </div>
-  );
-}
+import LanguageSelect from './LanguageSelect.jsx';
 
 export default function AppLayout() {
   const { t } = useTranslation();

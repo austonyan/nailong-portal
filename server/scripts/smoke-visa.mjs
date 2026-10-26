@@ -2,6 +2,8 @@
 // 用法:先启动 API(server/index.js,PORT 默认 3001),然后:
 //   node server/scripts/smoke-visa.mjs [baseUrl]
 // 覆盖:注册→申请→材料→提交→审核(通过/补件/驳回)→签发→验真→回写已使用。
+import { ensureAdmin } from './bootstrap-admin.mjs';
+
 const base = process.argv[2] || 'http://localhost:3001';
 
 let failures = 0;
@@ -49,6 +51,7 @@ async function register(suffix = 'a') {
 }
 
 async function login(username) {
+  if (username === 'admin') await ensureAdmin(base);
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;

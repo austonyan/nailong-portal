@@ -1,10 +1,13 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Card } from 'animal-island-ui';
 import AppLayout from './components/AppLayout.jsx';
-import { RequireAuth, RequirePermission } from './auth/guards.jsx';
+import { FullLoading, RequireAuth, RequirePermission } from './auth/guards.jsx';
+import { useAuth } from './auth/AuthContext.jsx';
+import { useSetup } from './setup/SetupContext.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import Setup from './pages/Setup.jsx';
 import Portal from './pages/Portal.jsx';
 import Profile from './pages/Profile.jsx';
 import VisaShell from './pages/visa/VisaShell.jsx';
@@ -160,11 +163,28 @@ function NotFound() {
   );
 }
 
+// Global first-run gate: until the initial admin exists, every route is
+// redirected to /setup. Once the setup latch is set, /setup itself becomes
+// unreachable and falls back to the portal (or login).
+function SetupGate({ children }) {
+  const { t } = useTranslation();
+  const { required, loading } = useSetup();
+  const { user, loading: authLoading } = useAuth();
+  const location = useLocation();
+
+  if (loading || authLoading) return <FullLoading tip={t('setup.checking')} />;
+  if (required && location.pathname !== '/setup') return <Navigate to="/setup" replace />;
+  if (!required && location.pathname === '/setup') return <Navigate to={user ? '/' : '/login'} replace />;
+  return children;
+}
+
 export default function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <SetupGate>
+      <Routes>
+        <Route path="/setup" element={<Setup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       {/* 验真中心:公开页,不需要登录 */}
       <Route path="/visa/verify" element={<VisaVerify />} />
       {/* 皇家口岸入境署验真页(二维码 token,公开) */}
@@ -889,6 +909,7 @@ export default function App() {
       </Route>
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />
-    </Routes>
+      </Routes>
+    </SetupGate>
   );
 }

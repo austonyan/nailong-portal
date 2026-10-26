@@ -45,6 +45,14 @@ export function AuthProvider({ children }) {
     return data.user;
   }, []);
 
+  // First-run wizard: creates the initial admin and signs them straight in.
+  const setupAdmin = useCallback(async (payload) => {
+    const data = await api.post('/setup/admin', payload);
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+    return data.user;
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await api.post('/auth/logout');
@@ -69,12 +77,13 @@ export function AuthProvider({ children }) {
       loading,
       login,
       register,
+      setupAdmin,
       logout,
       reload,
       can: (permission) => permissions.has(permission),
       hasRole: (roleKey) => roles.has(roleKey),
     };
-  }, [user, loading, login, register, logout, reload]);
+  }, [user, loading, login, register, setupAdmin, logout, reload]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

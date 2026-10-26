@@ -62,6 +62,14 @@ CREATE TABLE IF NOT EXISTS sessions (
   user_agent TEXT NOT NULL DEFAULT ''
 );
 
+-- One-off portal facts (first-run setup marker, etc.). Written by the server
+-- only; there is no admin UI for editing these keys.
+CREATE TABLE IF NOT EXISTS app_meta (
+  key        TEXT PRIMARY KEY,
+  value      TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS services (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
   key                 TEXT NOT NULL UNIQUE,
@@ -491,7 +499,30 @@ migrate();
 export const now = () => new Date().toISOString();
 
 // ---------------------------------------------------------------------------
-// Seed: permissions, roles, the initial admin account and a few demo services.
+// First-run setup state. `setup.completed_at` is a one-way latch: once it is
+// set (by the setup wizard, by ADMIN_PASSWORD seeding, or by a boot that finds
+// an existing admin in a pre-setup database), /setup stays closed forever.
+// ---------------------------------------------------------------------------
+export const SETUP_COMPLETED_KEY = 'setup.completed_at';
+export const SETUP_ADMIN_KEY = 'setup.admin_username';
+
+export function isSetupComplete() {
+  return !!db.prepare('SELECT 1 FROM app_meta WHERE key = ?').get(SETUP_COMPLETED_KEY);
+}
+
+export function markSetupComplete(adminUsername) {
+  const ts = now();
+  const stmt = db.prepare('INSERT OR REPLACE INTO app_meta (key, value, updated_at) VALUES (?, ?, ?)');
+  stmt.run(SETUP_COMPLETED_KEY, ts, ts);
+  if (adminUsername) stmt.run(SETUP_ADMIN_KEY, adminUsername, ts);
+  return ts;
+}
+
+// ---------------------------------------------------------------------------
+// Seed: permissions, roles, optional env-driven admin and demo services.
+// A fresh database intentionally starts with NO users — the first admin comes
+// from the /setup wizard. Setting ADMIN_PASSWORD keeps the old non-interactive
+// bootstrap path for deployments and acceptance scripts.
 // ---------------------------------------------------------------------------
 
 export const PERMISSIONS = [
@@ -550,19 +581,18 @@ function seed() {
       for (const key of keys) insertRolePermission.run(roleId, key);
     }
 
-    if (db.prepare('SELECT COUNT(*) AS n FROM users').get().n === 0) {
-      const password = process.env.ADMIN_PASSWORD || 'admin123';
-      if (!process.env.ADMIN_PASSWORD) {
-        console.warn('[nailong] 未设置 ADMIN_PASSWORD,已使用默认密码创建管理员 admin / admin123 —— 请尽快修改!');
-      }
+    // Non-interactive bootstrap is opt-in: without ADMIN_PASSWORD a fresh
+    // database stays userless and the SPA sends the operator to /setup.
+    if (db.prepare('SELECT COUNT(*) AS n FROM users').get().n === 0 && process.env.ADMIN_PASSWORD) {
       const ts = now();
       const info = db
         .prepare(
           "INSERT INTO users (username, display_name, password_hash, status, created_at, updated_at) VALUES ('admin', '站长', ?, 'active', ?, ?)"
         )
-        .run(bcrypt.hashSync(password, 10), ts, ts);
+        .run(bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10), ts, ts);
       const adminRole = db.prepare('SELECT id FROM roles WHERE key = ?').get('admin');
       db.prepare('INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)').run(info.lastInsertRowid, adminRole.id);
+      console.log('[nailong] 已通过 ADMIN_PASSWORD 创建初始管理员 admin，首次启动引导已跳过。');
     }
 
     if (db.prepare('SELECT COUNT(*) AS n FROM services').get().n === 0) {
@@ -713,6 +743,18 @@ function seed() {
     };
     const insertAppealConfig = db.prepare('INSERT OR IGNORE INTO appeal_config (key, value) VALUES (?, ?)');
     for (const [k, v] of Object.entries(appealDefaults)) insertAppealConfig.run(k, v);
+
+    // Pre-setup databases and env-seeded installs already have an admin: latch
+    // setup as completed so the wizard can never be used to take over later.
+    const hasAdmin = db
+      .prepare(
+        `SELECT 1 FROM users u
+         JOIN user_roles ur ON ur.user_id = u.id
+         JOIN roles r ON r.id = ur.role_id
+         WHERE r.key = 'admin' LIMIT 1`
+      )
+      .get();
+    if (hasAdmin && !isSetupComplete()) markSetupComplete();
   });
   run();
 }
