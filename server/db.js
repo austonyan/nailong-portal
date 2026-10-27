@@ -512,6 +512,26 @@ CREATE TABLE IF NOT EXISTS appeal_inspect_reports (
 );
 `);
 
+// ---------------------------------------------------------------------------
+// 跨署联动读取审计：按 SSO 账户自动取件 / 手动编号校验的每一次读取都留痕，
+// 供申诉监察署后续核查"谁在何时从哪个署读了什么"。
+// ---------------------------------------------------------------------------
+db.exec(`
+CREATE TABLE IF NOT EXISTS linkage_access_logs (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id    INTEGER NOT NULL REFERENCES users(id),
+  consumer   TEXT NOT NULL,
+  source     TEXT NOT NULL,
+  action     TEXT NOT NULL DEFAULT 'list' CHECK (action IN ('list','verify')),
+  count      INTEGER NOT NULL DEFAULT 0,
+  detail     TEXT NOT NULL DEFAULT '{}',
+  ip         TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_linkage_logs_user ON linkage_access_logs (user_id, id);
+CREATE INDEX IF NOT EXISTS idx_linkage_logs_source ON linkage_access_logs (source, created_at);
+`);
+
 // Lightweight migration for databases created before a schema change. Only
 // additive column changes live here — new tables are covered by CREATE above.
 function migrate() {

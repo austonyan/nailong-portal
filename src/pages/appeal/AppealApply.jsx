@@ -8,6 +8,7 @@ import {
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadAppealMaterial } from '../../api/appeal.js';
+import LinkageField from '../../components/linkage/LinkageField.jsx';
 import { BIZ_TYPES, MATERIAL_KINDS, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 
@@ -167,19 +168,26 @@ export default function AppealApply() {
         <div className="appeal-biz-row">
           <Select
             value={bizType}
-            onChange={(v) => setBizType(v)}
+            onChange={(value) => {
+              setBizType(value);
+              if (!appeal) setBizCode('');
+            }}
             disabled={!!appeal}
             options={BIZ_TYPES.map((b) => ({ key: b, label: t(`appeal.bizType.${b}`) }))}
           />
-          <Input
-            size="large"
-            allowClear
-            maxLength={64}
-            disabled={!!appeal}
-            placeholder={t('appeal.apply.bizCodePlaceholder')}
-            value={bizCode}
-            onChange={(e) => setBizCode(e.target.value)}
-          />
+          {appeal ? (
+            <Input size="large" disabled value={bizCode} />
+          ) : (
+            <LinkageField
+              consumer="appeal_apply"
+              source={bizType}
+              credentialLabel={t(`linkage.credential.${bizType}`)}
+              placeholder={t('appeal.apply.bizCodePlaceholder')}
+              disabled={busy}
+              value={bizCode}
+              onChange={(next) => setBizCode(String(next || ''))}
+            />
+          )}
           {!appeal && (
             <Button type="primary" loading={busy} disabled={busy || (!bizCode.trim())} onClick={createDraft}>
               {t('appeal.apply.createDraft')}

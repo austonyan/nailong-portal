@@ -22,6 +22,13 @@ h3 {
 .app-shell {
   min-height: 100vh;
   display: flex;
+  align-items: stretch;
+}
+
+.app-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
 }
 
@@ -57,34 +64,188 @@ h3 {
   color: var(--animal-primary-color);
 }
 
-.app-nav {
+/* 管理员侧栏:门户首页 / 12 个署(各挂一条管理台) / 账号 / 系统管理。
+   普通用户不渲染侧栏,正文仍整幅居中。 */
+.app-sider {
+  flex: 0 0 260px;
+  width: 260px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
   display: flex;
-  gap: 4px;
-  flex: 1;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 12px;
+  background: var(--animal-bg-color-secondary);
+  border-right: var(--animal-border-width) solid var(--animal-border-color-light);
+  z-index: 110;
 }
 
-.nav-link {
-  padding: 7px 14px;
+/* 移动端抽屉里复用同一个侧栏,去掉固定定位与自身底色 */
+.app-sider-embedded {
+  position: static;
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border-right: none;
+}
+
+.sider-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--animal-text-color);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.app-sider-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--animal-border-color) transparent;
+}
+
+.app-sider-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-sider-nav::-webkit-scrollbar-thumb {
+  background: var(--animal-border-color);
+  border-radius: 999px;
+}
+
+.app-sider-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sider-section {
+  margin: 12px 10px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--animal-text-color-secondary);
+}
+
+.sider-office {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sider-link,
+.sider-sublink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
   border-radius: 999px;
   color: var(--animal-text-color-secondary);
   text-decoration: none;
-  font-weight: 500;
   font-size: 14px;
+  font-weight: 500;
   transition:
     color var(--animal-motion-duration-fast) var(--animal-motion-ease),
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.nav-link:hover {
+.sider-link:hover,
+.sider-sublink:hover {
   color: var(--animal-primary-color);
   background: var(--animal-primary-color-bg);
 }
 
-.nav-link.active {
+.sider-link.active {
   color: var(--animal-primary-color);
   background: var(--animal-primary-color-bg);
   font-weight: 600;
+}
+
+.sider-sublink {
+  margin-left: 26px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.sider-sublink.active {
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 600;
+}
+
+/* 侧栏只在 >=1025px 常驻,窄屏收进抽屉,由这个按钮唤出 */
+.app-menu-btn {
+  display: none;
+}
+
+.app-crumbs {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--animal-text-color-secondary);
+}
+
+.app-crumbs .crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-crumbs .crumb.current {
+  color: var(--animal-text-color);
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .app-sider:not(.app-sider-embedded) {
+    display: none;
+  }
+
+  .app-menu-btn {
+    display: inline-flex;
+  }
+}
+
+/* 手机宽度:账号操作独占一行并右对齐,避免顶栏把整页撑出横向滚动 */
+@media (max-width: 640px) {
+  .app-header-inner {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 10px 16px;
+  }
+
+  .header-right {
+    gap: 6px;
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .user-chip-name {
+    display: none;
+  }
+
+  /* 只留图标:退出登录文字隐藏后顶栏能单行放下,避免三行堆叠 */
+  .logout-label {
+    display: none;
+  }
 }
 
 .header-right {
@@ -139,6 +300,72 @@ h3 {
   text-align: center;
   padding: 20px;
   font-size: 12px;
+}
+
+/* ---------- inbox (顶栏跨署站内信) ---------- */
+
+.inbox-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.inbox-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inbox-hint {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.inbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inbox-item {
+  cursor: pointer;
+}
+
+.inbox-item.unread {
+  border-left: 4px solid var(--animal-primary-color);
+}
+
+.inbox-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.inbox-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--animal-error-color);
+}
+
+.inbox-time {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.inbox-item-title {
+  margin-top: 8px;
+  font-weight: 600;
+  color: var(--animal-text-color);
+}
+
+.inbox-item-body {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+  line-height: 1.5;
 }
 
 /* ---------- shared ---------- */
@@ -1311,6 +1538,7 @@ h3 {
 @media print {
   .app-header,
   .app-footer,
+  .app-sider,
   .visa-nav,
   .visa-office-banner,
   .page-header,

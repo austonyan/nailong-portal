@@ -19,7 +19,34 @@
     "diplomacy": "外交事务署",
     "diplomacyAdmin": "外交署管理",
     "protocol": "礼宾与活动署",
-    "protocolAdmin": "礼宾管理"
+    "protocolAdmin": "礼宾管理",
+    "resident": "居民登记署",
+    "appeal": "申诉与监察署",
+    "archives": "档案与记录署",
+    "postal": "邮政与通信署",
+    "tourism": "文化旅游署",
+    "stats": "统计署",
+    "education": "教育与科学署",
+    "adminDesk": "管理台",
+    "sectionServices": "政务服务",
+    "sectionAccount": "账号",
+    "system": "系统管理",
+    "menu": "导航菜单"
+  },
+  "inbox": {
+    "title": "站内信",
+    "open": "打开站内信",
+    "all": "全部",
+    "unread": "未读",
+    "empty": "暂无站内信",
+    "markAll": "全部标为已读",
+    "markedAll": "已全部标为已读",
+    "loadFailed": "站内信加载失败",
+    "viewInbox": "前往信箱",
+    "total": "共 {{count}} 条",
+    "fallbackTitle": "你有一条新消息",
+    "fallbackBody": "请前往对应服务查看详情。",
+    "allOffices": "全部署"
   },
   "common": {
     "actions": "操作",
@@ -135,6 +162,83 @@
     "successBody": "门户已准备就绪，现在可以使用管理员账号登录并开始使用。",
     "successAccount": "管理员账号：{{username}}",
     "enterPortal": "进入门户"
+  },
+  "linkage": {
+    "office": {
+      "visa": "签注申请署",
+      "immigration": "皇家口岸入境署",
+      "resident": "皇家居民登记署",
+      "diplomatic": "皇家外交事务署",
+      "document": "皇家文书与认证署",
+      "protocol": "皇家礼宾与活动署",
+      "appeal": "皇家申诉与监察署",
+      "archives": "皇家档案与记录署"
+    },
+    "credential": {
+      "visa": "签注信息",
+      "immigration": "入境记录",
+      "resident": "居民证件信息",
+      "diplomatic": "外交身份信息",
+      "document": "文书认证信息",
+      "protocol": "礼宾邀请与通行证",
+      "appeal": "申诉决定信息",
+      "archives": "档案办理记录"
+    },
+    "consumer": {
+      "docs_apply": "皇家文书与认证署",
+      "immigration_declare": "皇家口岸入境署",
+      "protocol_courtesy": "礼宾与活动署",
+      "protocol_registration": "活动报名",
+      "appeal_apply": "皇家申诉与监察署"
+    },
+    "consent": {
+      "title": "授权获取本人信息",
+      "body": "是否授权{{consumer}}从{{source}}获取您的{{credential}}?",
+      "identityResident": "您将以居民证{{cardNo}}({{holder}})的身份授权",
+      "identitySso": "您将以门户账户 @{{username}} 的身份授权",
+      "tip": "授权仅在当前浏览器会话内有效。对方服务只能读取与您账户关联的记录,无法查看他人信息。",
+      "confirm": "授权并获取"
+    },
+    "picker": {
+      "title": "选择我的{{credential}}",
+      "subtitle": "以下记录均与您的账户绑定,选择后自动填入编号。",
+      "fetch": "获取我的{{credential}}",
+      "manual": "手动填写编号",
+      "manualHint": "也可以手动填写编号,提交时同样会校验是否属于本人。",
+      "empty": "暂未查到 {{source}} 与您账户关联的记录,请先到来源办理,或手动填写编号。",
+      "failed": "获取记录失败,请稍后重试。",
+      "retry": "重试",
+      "pick": "使用此记录",
+      "change": "更换记录",
+      "clear": "清除",
+      "owned": "本人记录",
+      "appealable": "可申诉",
+      "holder": "持有人 {{name}}",
+      "issuedAt": "签发于 {{date}}",
+      "validUntil": "有效期至 {{date}}"
+    },
+    "kind": {
+      "permit": "签注",
+      "application": "申请",
+      "declaration": "申报",
+      "entry": "入境记录",
+      "card": "居民证",
+      "change": "变更",
+      "identity": "外交身份",
+      "relation": "外交关系",
+      "certificate": "认证证书",
+      "invitation": "邀请函",
+      "pass": "通行证",
+      "decision": "申诉决定",
+      "deletion": "档案办理"
+    },
+    "verify": {
+      "action": "校验",
+      "owned": "本人记录 · {{status}}",
+      "notOwned": "非本人记录,无法关联",
+      "notPersonal": "该记录不属于个人账户",
+      "notFound": "未找到该编号"
+    }
   },
   "api": {
     "UNAUTHORIZED": "请先登录",
@@ -271,6 +375,9 @@
     "VISA_DIP_IDENTITY_REQUIRED": "申请外交签注需持有有效外交身份",
     "VISA_DIP_IDENTITY_INACTIVE": "申请人当前没有有效外交身份,无法继续",
     "DOC_BIZ_INVALID": "关联业务编号未通过核验,请确认编号与归属",
+    "DOC_BIZ_NOT_OWNED": "该编号不属于当前账户,无法关联",
+    "LINKAGE_SOURCE_INVALID": "联动来源无效",
+    "LINKAGE_CONSUMER_INVALID": "联动调用方无效",
     "APPEAL_BIZ_NOT_OWNED": "该业务编号属于其他账号,不能代为申诉",
     "APPEAL_ALREADY_EVALUATED": "该申诉已评价,不能重复评价。",
     "APPEAL_ASSIGNEE_INVALID": "分派对象无效或不可用。",

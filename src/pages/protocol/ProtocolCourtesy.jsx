@@ -4,10 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Select, Title } from 'animal-island-ui';
 import { BanIcon, SearchIcon, ShieldIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import LinkageField from '../../components/linkage/LinkageField.jsx';
 import { StatusTag, TextArea, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
 import { toastSuccess } from './shared.jsx';
 
 const BASIS_TYPES = ['resident', 'diplomatic', 'invitation'];
+
+// 礼遇依据 → 联动来源署 / 记录种类。
+const BASIS_SOURCE = { resident: 'resident', diplomatic: 'diplomatic', invitation: 'protocol' };
+const BASIS_KIND = { resident: 'card', diplomatic: 'identity', invitation: 'invitation' };
 
 export default function ProtocolCourtesy() {
   const { t } = useTranslation();
@@ -41,14 +46,21 @@ export default function ProtocolCourtesy() {
     load();
   }, [load]);
 
-  const check = async () => {
-    if (!basisNo.trim()) return;
+  const check = async (codeArg) => {
+    const no = String(codeArg || basisNo).trim();
+    if (!no) return;
     try {
-      const data = await api.post('/protocol/courtesy/eligibility', { basisType, basisNo: basisNo.trim() });
+      const data = await api.post('/protocol/courtesy/eligibility', { basisType, basisNo: no });
       setEligibility(data);
     } catch (err) {
       toastProtocolError(t, err);
     }
+  };
+
+  const changeBasisType = (value) => {
+    setBasisType(value);
+    setBasisNo('');
+    setEligibility(null);
   };
 
   const apply = async () => {
@@ -95,17 +107,25 @@ export default function ProtocolCourtesy() {
           <div className="protocol-eligibility-form">
             <Select
               value={basisType}
-              onChange={setBasisType}
+              onChange={changeBasisType}
               options={BASIS_TYPES.map((code) => ({ key: code, label: t(`protocol.basisType.${code}`) }))}
             />
-            <Input
-              value={basisNo}
-              allowClear
-              onChange={(e) => setBasisNo(e.target.value.toUpperCase())}
+            <LinkageField
+              consumer="protocol_courtesy"
+              source={BASIS_SOURCE[basisType]}
+              kind={BASIS_KIND[basisType]}
+              credentialLabel={t(`protocol.basisType.${basisType}`)}
               placeholder={t(`protocol.courtesy.basisPlaceholder_${basisType}`)}
-              onKeyDown={(e) => e.key === 'Enter' && check()}
+              disabled={busy}
+              verifyOn={false}
+              value={basisNo}
+              onChange={(next) => {
+                setBasisNo(String(next || '').toUpperCase());
+                setEligibility(null);
+              }}
+              onPicked={(item) => check(item.code)}
             />
-            <Button type="primary" icon={<SearchIcon />} onClick={check}>
+            <Button type="primary" icon={<SearchIcon />} onClick={() => check()}>
               {t('protocol.courtesy.query')}
             </Button>
           </div>

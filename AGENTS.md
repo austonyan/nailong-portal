@@ -181,7 +181,21 @@ five offices (plus appeal decisions), appeal validate/snapshot/writeback/inspect
 sampling, protocol identity/courtesy checks, resident benefit channels, and diplomatic
 visa eligibility + permit void-on-identity-loss. The per-office `/api/*/inter` routes
 remain for independently deployed callers and still require their service tokens.
-Acceptance: `node server/scripts/smoke-linkage.mjs [baseUrl]`.
+
+User-facing linkage is **identity-bound**: `/api/linkage` (any authenticated user)
+lists only the caller's own records (`listOwnedRecords`, filtered by `users.id`), so the
+five entry points (docs apply, immigration declaration, protocol courtesy/registration,
+appeal apply) can offer "fetch my record" instead of copy-pasting a number. Before the
+first fetch per service+source in a browser tab, `src/components/linkage/LinkageConsentModal.jsx`
+asks for session-scoped consent and shows the identity basis (resident card when one
+exists, otherwise the portal account). Every fetch/verify writes `linkage_access_logs`.
+Ownership is strict: `verifyBusinessRecord` treats ownerless records (protocol events,
+diplomatic agreements) and other users' records as `owned:false`, hides title/detail for
+non-owners, and docs rejects any typed business number that is not found+owned even for
+optional `biz_source` types (`DOC_BIZ_NOT_OWNED`). New UI must use
+`src/components/linkage/LinkageField.jsx` rather than a bare number input.
+Acceptance: `node server/scripts/smoke-linkage.mjs [baseUrl]` and
+`node server/scripts/smoke-linkage-identity.mjs` (self-contained temp DB).
 
 ## Cross-service auto-approval
 
@@ -201,6 +215,67 @@ certificate) and cross-office checks never drift. Settings live at
 `detail.auto = true`. Visa issuance remains manual, and appeal auto-approval only
 performs acceptance (申诉/投诉受理), never a decision. Acceptance:
 `node server/scripts/smoke-auto-approve.mjs` (self-contained temporary DB).
+
+## App shell and the admin sidebar
+
+`src/components/AppLayout.jsx` is the only authenticated shell. It renders two
+different layouts:
+
+- **Admin** — `src/components/Sidebar.jsx` (260 px, sticky, own scroll) with
+  门户首页 / 12 offices / 个人资料 / 系统管理, plus a slim header holding the
+  breadcrumb, the inbox bell, language, avatar and logout. Below 1025 px the
+  sidebar moves into a left `Drawer` opened by a menu button (the drawer is
+  `maskClosable={false}` like every other dialog).
+- **Everyone else** — no sidebar at all: the header keeps the brand and the
+  account actions, and services are entered from the portal cards, with each
+  office's own horizontal tab bar (署内导航) once inside.
+
+"Admin" means `hasRole('admin')` or holding any management permission; the rule
+lives in `isPortalAdmin()` in `src/nav/navConfig.js`. That file is the single
+source for the sidebar/breadcrumb: `{ key, base, labelKey, icon, permission,
+admin: { base, entries } }` per office, where `admin.entries` lists candidate
+管理台 landings and the first permitted one wins. Sidebar depth stops at
+「署 → 管理台」 — do not duplicate the in-office tab rows there.
+
+`navConfig.js` must stay dependency-free: `scripts/check-i18n.mjs` imports it and
+verifies every `NAV_LABEL_KEYS` entry exists in both locales (those keys reach
+`t()` through a variable, so the normal source scan cannot see them). Adding an
+office means adding it to `OFFICE_NAV`, its `nav.*` label to both locale files,
+and its admin entries.
+
+## Cross-service inbox (`/api/messages`)
+
+`server/routes/messages.js` aggregates every office mailbox for the signed-in
+user: `visa_messages`, `doc_messages`, `appeal_messages`, `arch_messages`,
+`im_messages`, `dip_messages`, `res_messages`, `pro_messages` and
+`post_messages`. It is deliberately **read-only over existing tables** — no new
+table, no dual writes — and marking read writes back to the originating table,
+so the per-office inbox pages and the global one never disagree.
+
+- `GET /api/messages?status=all|unread&office=&limit=50` →
+  `{ items, unread: { total, byOffice }, offices }`; items are
+  `{ office, source?, id, type, params, title, body, read, createdAt }`, merged
+  by `createdAt` descending.
+- `GET /api/messages/unread` → `{ total, byOffice }` (header badge polling).
+- `POST /api/messages/read` `{ office, id }`, `POST /api/messages/read-all`
+  `{ office? }`.
+- Inclusion is gated by each office's portal permission (`visa:apply`,
+  `imm:portal`, …), so the aggregate never shows a mailbox the caller could not
+  open.
+- Two normalizations to keep in mind: `arch_messages` has no `archived` column,
+  and archives also mirrors notifications into `post_messages` (types prefixed
+  `archives_`) — the postal sweep excludes `source = 'archives'` so nothing is
+  counted twice. `post_messages` also carries tourism/education/stats notices,
+  which is why those three offices need no mailbox of their own.
+- Titles: immigration/dip/resident/protocol return server-rendered `title`/`body`
+  (plus `*Tw` so `localeMiddleware` localizes them); visa/docs/appeal/archives/postal
+  return `type` + `params` and `src/components/InboxDrawer.jsx` renders them with
+  the office's existing `visa.msg.*` / `docMsg.*` / `appeal.msg.*` / `arch.msg.*` /
+  `post.msg.*` keys. New message types on those five offices need both locale
+  entries as usual.
+- Acceptance: `node server/scripts/smoke-messages.mjs` (self-contained temp DB;
+  covers merge ordering, archived exclusion, archive-mirror dedupe, locale
+  switching and read write-back).
 
 ## Current state
 

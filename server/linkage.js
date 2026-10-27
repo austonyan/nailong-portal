@@ -65,6 +65,7 @@ function notFoundResult(bizType, code) {
     integrated: !!LINKED_OFFICES[bizType],
     found: false,
     owned: false,
+    personal: false,
     valid: false,
     certifiable: false,
     appealable: false,
@@ -514,11 +515,15 @@ function resolveTarget(bizType, code) {
 export function verifyBusinessRecord(bizType, code, userId) {
   const target = resolveTarget(bizType, code);
   if (!target) return notFoundResult(bizType, code);
-  const owned = target.ownerId == null ? true : target.ownerId === userId;
+  // 严格归属:只有记录上带 user_id 且等于当前 SSO 账户才算本人。
+  // 无主记录(礼宾活动、外交互免协议)不是任何人的个人证件,不能认领。
+  const personal = target.ownerId != null;
+  const owned = personal && target.ownerId === userId;
   return {
     integrated: true,
     found: true,
     owned,
+    personal,
     valid: owned && target.valid,
     certifiable: owned && target.certifiable,
     appealable: owned && target.appealable,
@@ -526,9 +531,10 @@ export function verifyBusinessRecord(bizType, code, userId) {
     code: target.code,
     kind: target.kind,
     status: target.status,
-    title: target.title,
+    // 非本人记录不返回类型名与明细(持有人等),避免用手动编号探测他人信息。
+    title: owned ? target.title : '',
     office: LINKED_OFFICES[bizType] || '',
-    detail: target.detail || {},
+    detail: owned ? target.detail || {} : {},
     checkedAt: now(),
   };
 }
@@ -540,6 +546,530 @@ export function classifyBizStatus(bizType, code, userId) {
   if (!check.owned) return { status: 'not_owned', check };
   if (!check.appealable) return { status: 'not_appealable', check };
   return { status: 'verified', check };
+}
+
+// ---------------------------------------------------------------------------
+// 按 SSO 账户自动取件
+// ---------------------------------------------------------------------------
+
+// 只查当前账户自己的记录；无主记录(活动、协议)不会出现在候选里。
+// 返回条目与 verifyBusinessRecord 同构，另有 name/name_tw 供简繁本地化。
+const OWNED_LISTERS = {
+  visa(userId) {
+    const permits = db
+      .prepare(
+        `SELECT p.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM visa_permits p LEFT JOIN visa_types t ON t.code = p.type_code
+         WHERE p.user_id = ? ORDER BY p.id DESC`
+      )
+      .all(userId)
+      .map((p) => {
+        const status = p.status === 'valid' && isPast(p.valid_until) ? 'expired' : p.status;
+        const holder = maskName(p.holder_name);
+        return {
+          _order: p.id,
+          code: p.visa_no,
+          kind: 'permit',
+          status,
+          name: p.type_name || p.type_code,
+          name_tw: p.type_name_tw || null,
+          holder,
+          valid: status === 'valid',
+          certifiable: true,
+          appealable: VISA_PERMIT_APPEALABLE.has(status),
+          issuedAt: p.issued_at,
+          validUntil: p.valid_until,
+          detail: {
+            typeName: p.type_name || p.type_code,
+            typeNameTw: p.type_name_tw || null,
+            issuedAt: p.issued_at,
+            validUntil: p.valid_until,
+            holder,
+          },
+        };
+      });
+    const applications = db
+      .prepare(
+        `SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM visa_applications a LEFT JOIN visa_types t ON t.code = a.type_code
+         WHERE a.user_id = ? ORDER BY a.id DESC`
+      )
+      .all(userId)
+      .map((a) => ({
+        _order: a.id,
+        code: a.app_no,
+        kind: 'application',
+        status: a.status,
+        name: a.type_name || a.type_code,
+        name_tw: a.type_name_tw || null,
+        holder: maskName(a.nickname),
+        valid: ['approved', 'issued'].includes(a.status),
+        certifiable: a.status !== 'draft',
+        appealable: VISA_APP_APPEALABLE.has(a.status),
+        issuedAt: a.issued_at,
+        validUntil: '',
+        detail: {
+          typeName: a.type_name || a.type_code,
+          typeNameTw: a.type_name_tw || null,
+          submittedAt: a.submitted_at,
+          decidedAt: a.decided_at,
+          issuedAt: a.issued_at,
+        },
+      }));
+    return [...permits, ...applications];
+  },
+
+  immigration(userId) {
+    const declarations = db
+      .prepare(
+        `SELECT d.*, p.name AS port_name, p.name_tw AS port_name_tw
+         FROM im_declarations d LEFT JOIN im_ports p ON p.id = d.port_id
+         WHERE d.user_id = ? AND d.deleted_at IS NULL ORDER BY d.id DESC`
+      )
+      .all(userId)
+      .map((d) => ({
+        _order: d.id,
+        code: d.no,
+        kind: 'declaration',
+        status: d.status,
+        name: d.port_name || '',
+        name_tw: d.port_name_tw || null,
+        holder: maskName(d.nickname),
+        valid: ['approved', 'entered', 'exited'].includes(d.status),
+        certifiable: d.status !== 'draft',
+        appealable: IMM_DECL_APPEALABLE.has(d.status),
+        issuedAt: d.submitted_at,
+        validUntil: '',
+        detail: {
+          portName: d.port_name || '',
+          portNameTw: d.port_name_tw || null,
+          stayDays: d.stay_days,
+          submittedAt: d.submitted_at,
+          reviewedAt: d.reviewed_at,
+        },
+      }));
+    const entries = db
+      .prepare(
+        `SELECT e.*, p.name AS port_name, p.name_tw AS port_name_tw
+         FROM im_entry_records e LEFT JOIN im_ports p ON p.id = e.port_id
+         WHERE e.user_id = ? AND e.deleted_at IS NULL ORDER BY e.id DESC`
+      )
+      .all(userId)
+      .map((e) => ({
+        _order: e.id,
+        code: e.no,
+        kind: 'entry',
+        status: e.status,
+        name: e.port_name || '',
+        name_tw: e.port_name_tw || null,
+        holder: '',
+        valid: true,
+        certifiable: true,
+        appealable: false,
+        issuedAt: e.entry_date,
+        validUntil: '',
+        detail: {
+          entryDate: e.entry_date,
+          stayDays: e.stay_days,
+          portName: e.port_name || '',
+          portNameTw: e.port_name_tw || null,
+        },
+      }));
+    return [...declarations, ...entries];
+  },
+
+  resident(userId) {
+    const cards = db
+      .prepare(
+        `SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM res_cards c LEFT JOIN res_types t ON t.code = c.type_code
+         WHERE c.user_id = ? ORDER BY c.id DESC`
+      )
+      .all(userId)
+      .map((c) => {
+        const status = c.status === 'valid' && isPast(c.valid_until) ? 'expired' : c.status;
+        const holder = maskName(c.nickname);
+        return {
+          _order: c.id,
+          code: c.card_no,
+          kind: 'card',
+          status,
+          name: c.type_name || c.type_code,
+          name_tw: c.type_name_tw || null,
+          holder,
+          valid: status === 'valid',
+          certifiable: true,
+          appealable: RES_CARD_APPEALABLE.has(status),
+          issuedAt: c.issued_at,
+          validUntil: c.valid_until,
+          detail: {
+            typeName: c.type_name || c.type_code,
+            typeNameTw: c.type_name_tw || null,
+            issuedAt: c.issued_at,
+            validUntil: c.valid_until,
+            holder,
+          },
+        };
+      });
+    const applications = db
+      .prepare(
+        `SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM res_applications a LEFT JOIN res_types t ON t.code = a.type_code
+         WHERE a.user_id = ? ORDER BY a.id DESC`
+      )
+      .all(userId)
+      .map((a) => ({
+        _order: a.id,
+        code: a.app_no,
+        kind: 'application',
+        status: a.status,
+        name: a.type_name || a.type_code,
+        name_tw: a.type_name_tw || null,
+        holder: maskName(a.nickname),
+        valid: a.status === 'approved',
+        certifiable: a.status !== 'draft',
+        appealable: RES_APP_APPEALABLE.has(a.status),
+        issuedAt: a.submitted_at,
+        validUntil: '',
+        detail: {
+          typeName: a.type_name || a.type_code,
+          typeNameTw: a.type_name_tw || null,
+          submittedAt: a.submitted_at,
+          decidedAt: a.decided_at,
+        },
+      }));
+    const changes = db
+      .prepare(
+        `SELECT ch.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM res_changes ch
+         LEFT JOIN res_cards c ON c.id = ch.card_id
+         LEFT JOIN res_types t ON t.code = c.type_code
+         WHERE ch.user_id = ? ORDER BY ch.id DESC`
+      )
+      .all(userId)
+      .map((ch) => ({
+        _order: ch.id,
+        code: ch.no,
+        kind: 'change',
+        status: ch.status,
+        name: ch.type_name || '',
+        name_tw: ch.type_name_tw || null,
+        holder: '',
+        valid: false,
+        certifiable: true,
+        appealable: RES_CHANGE_APPEALABLE.has(ch.status),
+        issuedAt: ch.created_at,
+        validUntil: '',
+        detail: {
+          typeName: ch.type_name || '',
+          typeNameTw: ch.type_name_tw || null,
+          changeType: ch.type,
+          createdAt: ch.created_at,
+        },
+      }));
+    return [...cards, ...applications, ...changes];
+  },
+
+  diplomatic(userId) {
+    const identities = db
+      .prepare(
+        `SELECT i.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM dip_identities i LEFT JOIN dip_identity_types t ON t.code = i.identity_type
+         WHERE i.user_id = ? AND i.deleted_at IS NULL ORDER BY i.id DESC`
+      )
+      .all(userId)
+      .map((i) => {
+        const status =
+          i.status === 'active' && i.term_end && i.term_end < now().slice(0, 10) ? 'expired' : i.status;
+        const holder = maskName(i.nickname);
+        return {
+          _order: i.id,
+          code: i.no,
+          kind: 'identity',
+          status,
+          name: i.type_name || i.identity_type,
+          name_tw: i.type_name_tw || null,
+          holder,
+          valid: status === 'active',
+          certifiable: true,
+          appealable: DIP_IDENTITY_APPEALABLE.has(status),
+          issuedAt: i.term_start,
+          validUntil: i.term_end,
+          detail: {
+            typeName: i.type_name || i.identity_type,
+            typeNameTw: i.type_name_tw || null,
+            entityName: i.entity_name,
+            termEnd: i.term_end,
+            holder,
+          },
+        };
+      });
+    const relations = db
+      .prepare(
+        `SELECT r.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM dip_relations r LEFT JOIN dip_relation_types t ON t.code = r.relation_type
+         WHERE r.user_id = ? AND r.deleted_at IS NULL ORDER BY r.id DESC`
+      )
+      .all(userId)
+      .map((r) => ({
+        _order: r.id,
+        code: r.no,
+        kind: 'relation',
+        status: r.status,
+        name: r.type_name || r.relation_type,
+        name_tw: r.type_name_tw || null,
+        holder: maskName(r.rep_nickname),
+        valid: r.status === 'established',
+        certifiable: true,
+        appealable: DIP_RELATION_APPEALABLE.has(r.status),
+        issuedAt: r.established_at,
+        validUntil: '',
+        detail: {
+          typeName: r.type_name || r.relation_type,
+          typeNameTw: r.type_name_tw || null,
+          entityName: r.entity_name,
+          establishedAt: r.established_at,
+        },
+      }));
+    return [...identities, ...relations];
+  },
+
+  document(userId) {
+    const certificates = db
+      .prepare(
+        `SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM doc_certificates c LEFT JOIN doc_types t ON t.code = c.type_code
+         WHERE c.user_id = ? ORDER BY c.id DESC`
+      )
+      .all(userId)
+      .map((c) => {
+        const holder = maskName(c.holder_name);
+        return {
+          _order: c.id,
+          code: c.cert_no,
+          kind: 'certificate',
+          status: c.status,
+          name: c.type_name || c.type_code,
+          name_tw: c.type_name_tw || null,
+          holder,
+          valid: c.status === 'valid' && !isPast(c.expires_at),
+          certifiable: true,
+          appealable: DOC_CERT_APPEALABLE.has(c.status),
+          issuedAt: c.issued_at,
+          validUntil: c.expires_at,
+          detail: {
+            typeName: c.type_name || c.type_code,
+            typeNameTw: c.type_name_tw || null,
+            holder,
+            issuedAt: c.issued_at,
+            expiresAt: c.expires_at,
+          },
+        };
+      });
+    const applications = db
+      .prepare(
+        `SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw
+         FROM doc_applications a LEFT JOIN doc_types t ON t.code = a.type_code
+         WHERE a.user_id = ? ORDER BY a.id DESC`
+      )
+      .all(userId)
+      .map((a) => ({
+        _order: a.id,
+        code: a.app_no,
+        kind: 'application',
+        status: a.status,
+        name: a.type_name || a.type_code,
+        name_tw: a.type_name_tw || null,
+        holder: maskName(a.nickname),
+        valid: a.status === 'approved',
+        certifiable: a.status !== 'draft',
+        appealable: DOC_APP_APPEALABLE.has(a.status),
+        issuedAt: a.submitted_at,
+        validUntil: '',
+        detail: {
+          typeName: a.type_name || a.type_code,
+          typeNameTw: a.type_name_tw || null,
+          bizNo: a.biz_no,
+          submittedAt: a.submitted_at,
+          decidedAt: a.decided_at,
+        },
+      }));
+    return [...certificates, ...applications];
+  },
+
+  protocol(userId) {
+    const invitations = db
+      .prepare(
+        `SELECT i.*, e.title AS event_title, e.title_tw AS event_title_tw
+         FROM pro_invitations i LEFT JOIN pro_events e ON e.id = i.event_id
+         WHERE i.invitee_user_id = ? ORDER BY i.id DESC`
+      )
+      .all(userId)
+      .map((i) => ({
+        _order: i.id,
+        code: i.invite_no,
+        kind: 'invitation',
+        status: i.status,
+        name: i.event_title || '',
+        name_tw: i.event_title_tw || null,
+        holder: maskName(i.invitee_name),
+        valid: i.status === 'valid' && !isPast(i.valid_until),
+        certifiable: true,
+        appealable: false,
+        issuedAt: i.valid_from,
+        validUntil: i.valid_until,
+        detail: {
+          eventTitle: i.event_title || '',
+          eventTitleTw: i.event_title_tw || null,
+          validUntil: i.valid_until,
+        },
+      }));
+    const passes = db
+      .prepare(
+        `SELECT p.*, e.title AS event_title, e.title_tw AS event_title_tw
+         FROM pro_passes p LEFT JOIN pro_events e ON e.id = p.event_id
+         WHERE p.user_id = ? ORDER BY p.id DESC`
+      )
+      .all(userId)
+      .map((p) => ({
+        _order: p.id,
+        code: p.pass_no,
+        kind: 'pass',
+        status: p.status,
+        name: p.event_title || '',
+        name_tw: p.event_title_tw || null,
+        holder: maskName(p.holder_name),
+        valid: p.status === 'pending' && !isPast(p.valid_until),
+        certifiable: true,
+        appealable: false,
+        issuedAt: p.issued_at,
+        validUntil: p.valid_until,
+        detail: {
+          eventTitle: p.event_title || '',
+          eventTitleTw: p.event_title_tw || null,
+          validUntil: p.valid_until,
+        },
+      }));
+    return [...invitations, ...passes];
+  },
+
+  appeal(userId) {
+    return db
+      .prepare('SELECT * FROM appeal_decisions WHERE user_id = ? ORDER BY id DESC')
+      .all(userId)
+      .map((d) => ({
+        _order: d.id,
+        code: d.code,
+        kind: 'decision',
+        status: d.status,
+        name: d.appeal_code || '',
+        name_tw: null,
+        holder: '',
+        valid: d.status === 'valid',
+        certifiable: false,
+        appealable: false,
+        issuedAt: d.effective_at,
+        validUntil: '',
+        detail: {
+          appealCode: d.appeal_code || '',
+          decisionType: d.decision_type,
+          effectiveAt: d.effective_at,
+          certCode: d.cert_code || '',
+        },
+      }));
+  },
+
+  archives(userId) {
+    return db
+      .prepare(
+        'SELECT * FROM arch_deletion_requests WHERE user_id = ? AND deleted_at IS NULL ORDER BY id DESC'
+      )
+      .all(userId)
+      .map((r) => ({
+        _order: r.id,
+        code: r.no,
+        kind: 'deletion',
+        status: r.status,
+        name: r.receipt_no || '',
+        name_tw: null,
+        holder: '',
+        valid: false,
+        certifiable: false,
+        appealable: ARCH_REQ_APPEALABLE.has(r.status),
+        issuedAt: r.created_at,
+        validUntil: '',
+        detail: {
+          affectedCount: r.affected_count,
+          submittedAt: r.created_at,
+          completedAt: r.completed_at,
+        },
+      }));
+  },
+};
+
+export function listOwnedRecords(bizType, userId, { kind = '', limit = 50 } = {}) {
+  const lister = OWNED_LISTERS[bizType];
+  if (!lister) return [];
+  const wanted = String(kind || '').trim();
+  const capped = Math.min(50, Math.max(1, Number(limit) || 50));
+  return lister(userId)
+    .filter((item) => !wanted || item.kind === wanted)
+    .sort((a, b) => Number(b.valid) - Number(a.valid) || b._order - a._order)
+    .slice(0, capped)
+    .map(({ _order, ...item }) => item);
+}
+
+// 授权弹窗展示的身份凭证:有居民证用居民证号,未办证回落到 SSO 账户。
+export function linkageIdentity(userId) {
+  const user = db.prepare('SELECT id, username, display_name FROM users WHERE id = ?').get(userId);
+  const base = {
+    basis: 'sso',
+    cardNo: '',
+    holder: '',
+    cardStatus: '',
+    validUntil: '',
+    typeName: '',
+    typeNameTw: null,
+    username: user?.username || '',
+    displayName: user?.display_name || '',
+  };
+  const card = db
+    .prepare(
+      `SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw
+       FROM res_cards c LEFT JOIN res_types t ON t.code = c.type_code
+       WHERE c.user_id = ?
+       ORDER BY CASE WHEN c.status = 'valid' THEN 0 ELSE 1 END, c.id DESC
+       LIMIT 1`
+    )
+    .get(userId);
+  if (!card) return base;
+  const status = card.status === 'valid' && isPast(card.valid_until) ? 'expired' : card.status;
+  return {
+    ...base,
+    basis: 'resident_card',
+    cardNo: card.card_no,
+    holder: maskName(card.nickname),
+    cardStatus: status,
+    validUntil: card.valid_until,
+    typeName: card.type_name || card.type_code,
+    typeNameTw: card.type_name_tw || null,
+  };
+}
+
+export function recordLinkageAccess({ userId, consumer, source, action = 'list', count = 0, detail = {}, ip = '' }) {
+  db.prepare(
+    `INSERT INTO linkage_access_logs (user_id, consumer, source, action, count, detail, ip, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(
+    userId,
+    String(consumer || '').slice(0, 64),
+    String(source || '').slice(0, 32),
+    action === 'verify' ? 'verify' : 'list',
+    Number(count) || 0,
+    JSON.stringify(detail || {}),
+    String(ip || '').slice(0, 64),
+    now()
+  );
 }
 
 // ---------------------------------------------------------------------------

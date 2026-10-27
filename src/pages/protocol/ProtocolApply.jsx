@@ -15,6 +15,7 @@ import {
 } from 'animal-island-ui';
 import { EyeIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import LinkageField from '../../components/linkage/LinkageField.jsx';
 import {
   TextArea,
   fmtDateTime,
@@ -265,16 +266,20 @@ export default function ProtocolApply() {
               disabled={readOnly}
             />
             {(form.identityType === 'resident' || form.identityType === 'diplomatic') && (
-              <label className="protocol-field protocol-field-spaced">
+              <div className="protocol-field protocol-field-spaced">
                 <span>{t('protocol.field.identityNo')}</span>
-                <Input
-                  value={form.identityNo}
-                  onChange={(e) => update({ identityNo: e.target.value.toUpperCase() })}
+                <LinkageField
+                  consumer="protocol_registration"
+                  source={form.identityType}
+                  kind={form.identityType === 'resident' ? 'card' : 'identity'}
+                  credentialLabel={t(`protocol.basisType.${form.identityType}`)}
                   placeholder={t(`protocol.apply.identityNoPlaceholder_${form.identityType}`)}
                   disabled={readOnly}
+                  value={form.identityNo}
+                  onChange={(next) => update({ identityNo: String(next || '').toUpperCase() })}
                 />
                 <small className="muted-text">{t('protocol.apply.identityHint')}</small>
-              </label>
+              </div>
             )}
 
             <h4>{t('protocol.apply.companionsSection')}</h4>

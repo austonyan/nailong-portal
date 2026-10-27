@@ -1,0 +1,189 @@
+/* 跨署联动字段 / 授权弹窗 / 记录选择器 — 颜色与圆角全部走 --animal-* token。 */
+
+.linkage-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.linkage-field-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.linkage-manual {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linkage-required-hint {
+  font-size: 12px;
+  color: var(--animal-error-color);
+}
+
+.linkage-verify-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.linkage-selected {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.linkage-selected-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.linkage-selected-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.linkage-selected-code {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--animal-text-color-secondary);
+}
+
+.linkage-selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.linkage-selected-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--animal-text-color-secondary);
+}
+
+.linkage-selected-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- 授权弹窗 ---------- */
+
+.linkage-consent-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.linkage-consent-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.linkage-consent-name {
+  font-weight: 700;
+}
+
+.linkage-consent-account {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.linkage-consent-card p {
+  margin: 0;
+}
+
+.linkage-consent-basis {
+  margin: 0;
+  font-weight: 600;
+}
+
+.linkage-consent-question {
+  margin: 0;
+  line-height: var(--animal-line-height-base);
+}
+
+/* ---------- 记录选择器 ---------- */
+
+.linkage-picker-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.linkage-picker-empty,
+.linkage-picker-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px;
+  text-align: center;
+}
+
+.linkage-picker-empty p,
+.linkage-picker-error p {
+  margin: 0;
+}
+
+.linkage-record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linkage-record {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.linkage-record-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.linkage-record-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.linkage-record-code {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--animal-text-color-secondary);
+}
+
+.linkage-record-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.linkage-record-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--animal-text-color-secondary);
+}

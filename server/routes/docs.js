@@ -356,17 +356,22 @@ router.post('/applications/:id/submit', applyAuth, (req, res) => {
     }
   }
 
-  // 关联业务校验(已联动) — 结果缓存进 biz_check;必填类型必须命中、属于本人且可认证。
+  // 关联业务校验(已联动) — 结果缓存进 biz_check。
+  // 只要填了编号,就必须是当前账户自己的真实记录;必填类型还必须可认证。
   const bizCheck = D.checkBizNo(typeRow, payload.bizNo, req.user.id);
-  if (typeRow.biz_required && bizCheck.checked && !bizCheck.certifiable) {
-    throw conflict(
-      'DOC_BIZ_INVALID',
-      !bizCheck.found
-        ? 'The linked business record was not found'
-        : !bizCheck.owned
-          ? 'The linked business record does not belong to you'
-          : 'The linked business record is no longer valid for certification'
-    );
+  if (payload.bizNo) {
+    if (!bizCheck.checked) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business source is not integrated');
+    }
+    if (!bizCheck.found) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business record was not found');
+    }
+    if (!bizCheck.owned) {
+      throw forbidden('DOC_BIZ_NOT_OWNED', 'The linked business record does not belong to you');
+    }
+    if (typeRow.biz_required && !bizCheck.certifiable) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business record is no longer valid for certification');
+    }
   }
 
   const ts = now();
@@ -677,12 +682,21 @@ function approveApplicationCore(app, actor, { comment = '', auto = false } = {})
   if (!typeRow) throw notFound('Document type not found');
   if (D.getCertRowByApplication(app.id)) throw conflict('DOC_DUPLICATE', 'Certificate already issued');
 
-  // 签发前复检关联业务编号,避免提交后业务件被注销/失效仍签发。
+  // 签发前复检关联业务编号,避免提交后业务件被注销/失效或易主仍签发。
   let bizCheck = null;
-  if (app.biz_no && typeRow.biz_source) {
+  if (app.biz_no) {
     bizCheck = D.checkBizNo(typeRow, app.biz_no, app.user_id);
-    if (typeRow.biz_required && bizCheck.checked && !bizCheck.certifiable) {
-      throw conflict('DOC_BIZ_INVALID', 'The linked business record is no longer valid for this applicant');
+    if (!bizCheck.checked) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business source is not integrated');
+    }
+    if (!bizCheck.found) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business record was not found');
+    }
+    if (!bizCheck.owned) {
+      throw forbidden('DOC_BIZ_NOT_OWNED', 'The linked business record does not belong to the applicant');
+    }
+    if (typeRow.biz_required && !bizCheck.certifiable) {
+      throw conflict('DOC_BIZ_INVALID', 'The linked business record is no longer valid for certification');
     }
   }
 

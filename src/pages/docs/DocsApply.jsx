@@ -5,6 +5,8 @@ import { Button, Card, Input, Modal, Radio, Tag, Title, Upload } from 'animal-is
 import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
+import LinkageField from '../../components/linkage/LinkageField.jsx';
+import { DOC_BIZ_SOURCE } from '../../components/linkage/shared.js';
 import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
 const emptyForm = {
@@ -13,6 +15,13 @@ const emptyForm = {
   bizNo: '',
   purpose: 'display',
   formData: {},
+};
+
+// 文书类型只认一个"最常用"的记录种类;未列出的来源允许选择该署全部个人记录。
+const DOC_BIZ_KIND = {
+  visa: 'permit',
+  resident: 'card',
+  appeal: 'decision',
 };
 
 export default function DocsApply() {
@@ -243,13 +252,23 @@ export default function DocsApply() {
                 <Input value={form.contact} onChange={(e) => setField('contact', e.target.value)} placeholder={t('docs.apply.contactPh')} allowClear maxLength={120} />
               </label>
               {type.bizNoLabel && (
-                <label className="docs-field">
+                <div className="docs-field">
                   <span className="docs-field-label">
                     {type.bizNoLabel} {type.bizRequired && <em>*</em>}
                   </span>
-                  <Input value={form.bizNo} onChange={(e) => setField('bizNo', e.target.value)} placeholder={t('docs.apply.bizPh')} allowClear maxLength={64} />
+                  <LinkageField
+                    consumer="docs_apply"
+                    source={DOC_BIZ_SOURCE[type.bizSource] || ''}
+                    kind={DOC_BIZ_KIND[type.bizSource]}
+                    credentialLabel={type.bizNoLabel}
+                    required={type.bizRequired}
+                    disabled={busy || saving}
+                    placeholder={t('docs.apply.bizPh')}
+                    value={form.bizNo}
+                    onChange={(next) => setField('bizNo', String(next || '').toUpperCase())}
+                  />
                   <span className="muted-text docs-field-hint">{t('docs.apply.bizHint', { label: type.bizNoLabel })}</span>
-                </label>
+                </div>
               )}
               {(type.formFields || []).map((f) => (
                 <label className="docs-field" key={f.key}>

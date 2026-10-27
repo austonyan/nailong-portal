@@ -13,7 +13,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const localesDir = path.join(root, 'src', 'i18n', 'locales');
@@ -208,6 +208,19 @@ const ENUMS = {
   'edu.recordStatus': ['in_progress', 'completed'],
   'edu.reviewAction': ['approve', 'reject'],
   'edu.targetType': ['entry', 'article', 'task', 'badge'],
+  'linkage.office': [
+    'visa', 'immigration', 'resident', 'diplomatic', 'document', 'protocol', 'appeal', 'archives',
+  ],
+  'linkage.credential': [
+    'visa', 'immigration', 'resident', 'diplomatic', 'document', 'protocol', 'appeal', 'archives',
+  ],
+  'linkage.consumer': [
+    'docs_apply', 'immigration_declare', 'protocol_courtesy', 'protocol_registration', 'appeal_apply',
+  ],
+  'linkage.kind': [
+    'permit', 'application', 'declaration', 'entry', 'card', 'change', 'identity', 'relation',
+    'certificate', 'invitation', 'pass', 'decision', 'deletion',
+  ],
 };
 
 for (const [prefix, values] of Object.entries(ENUMS)) {
@@ -219,6 +232,14 @@ for (const [prefix, values] of Object.entries(ENUMS)) {
       errors.push({ kind: 'enum', key, prefix });
     }
   }
+}
+
+// 3b. 侧栏 / 面包屑词条 -------------------------------------------------------
+// navConfig 里的 labelKey 是经变量传给 t() 的,静态扫描看不到;直接 import
+// 这份纯数据配置,逐个确认词条存在(简繁一致性由上面的 locale 检查兜底)。
+const navModule = await import(pathToFileURL(path.join(root, 'src', 'nav', 'navConfig.js')).href);
+for (const key of navModule.NAV_LABEL_KEYS ?? []) {
+  if (!cn.has(key)) errors.push({ kind: 'missing', key, locations: ['src/nav/navConfig.js'] });
 }
 
 // 4. Report ------------------------------------------------------------------

@@ -8,6 +8,7 @@ import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
+import LinkageField from '../../components/linkage/LinkageField.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
@@ -84,8 +85,8 @@ export default function DeclarationEdit() {
     }
   }, [id, fromId, applyDeclaration]);
 
-  const checkVisa = async () => {
-    const visaNo = form.getFieldValue('visaNo');
+  const checkVisa = async (codeArg) => {
+    const visaNo = codeArg || form.getFieldValue('visaNo');
     if (!visaNo) {
       toastWarning(t('imm.declare.visaFirst'));
       return;
@@ -227,12 +228,16 @@ export default function DeclarationEdit() {
             rules={[{ required: true, message: t('imm.declare.required') }]}
             help={t('imm.declare.visaTip')}
           >
-            <Input
-              size="large"
+            <LinkageField
+              consumer="immigration_declare"
+              source="visa"
+              kind="permit"
+              credentialLabel={t('imm.declare.visaNo')}
               placeholder="NL-1234-ABCD"
-              allowClear
-              suffix={
-                <Button type="text" size="small" icon={<SearchIcon />} onClick={checkVisa}>
+              onPicked={(item) => checkVisa(item.code)}
+              onCleared={() => setVisaState(null)}
+              manualSuffix={
+                <Button type="text" size="small" icon={<SearchIcon />} onClick={() => checkVisa()}>
                   {t('imm.declare.checkVisa')}
                 </Button>
               }

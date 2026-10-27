@@ -111,6 +111,56 @@ async function main() {
   // -------------------------------------------------------------------------
   const visaA = await issueVisaFor(userA.token, adminToken, `联动甲${stamp}`);
 
+  // -------------------------------------------------------------------------
+  // 1b. 联动按 SSO 账户自动取件 / 严格本人校验
+  // -------------------------------------------------------------------------
+  const identityBefore = await api('/linkage/identity', { token: userA.token });
+  check('未办居民证时联动身份为 SSO', identityBefore.status === 200 && identityBefore.data.basis === 'sso', JSON.stringify(identityBefore.data));
+
+  const recordsA = await api('/linkage/records?source=visa&consumer=docs_apply', { token: userA.token });
+  check(
+    '联动取件返回本人签注',
+    recordsA.status === 200 && recordsA.data.records.some((r) => r.code === visaA.visaNo),
+    JSON.stringify(recordsA.data).slice(0, 300)
+  );
+  const recordsB = await api('/linkage/records?source=visa&consumer=docs_apply', { token: userB.token });
+  check('联动取件不返回他人签注', recordsB.status === 200 && !recordsB.data.records.some((r) => r.code === visaA.visaNo));
+
+  const foreignVerify = await api(`/linkage/verify?source=visa&code=${encodeURIComponent(visaA.visaNo)}&consumer=manual`, {
+    token: userB.token,
+  });
+  check(
+    '联动即时校验拒绝他人签注',
+    foreignVerify.status === 200 &&
+      foreignVerify.data.owned === false &&
+      Object.keys(foreignVerify.data.detail || {}).length === 0,
+    JSON.stringify(foreignVerify.data)
+  );
+  const ownVerify = await api(`/linkage/verify?source=visa&code=${encodeURIComponent(visaA.visaNo)}&consumer=manual`, {
+    token: userA.token,
+  });
+  check('联动即时校验通过本人签注', ownVerify.status === 200 && ownVerify.data.owned === true, JSON.stringify(ownVerify.data));
+
+  // 无主记录(活动本身不属于任何账户)不能被任何用户认领
+  const ownerlessEvent = await api('/protocol/admin/events', {
+    method: 'POST',
+    token: adminToken,
+    body: { typeCode: 'CULTURE', title: `联动验收无主活动${stamp}`, capacity: 10 },
+  });
+  const ownerlessNo = ownerlessEvent.data.event?.eventNo;
+  check('创建无主礼宾活动', ownerlessEvent.status === 201 && !!ownerlessNo, JSON.stringify(ownerlessEvent.data).slice(0, 200));
+  const ownerlessVerify = await api(`/linkage/verify?source=protocol&code=${encodeURIComponent(ownerlessNo)}&consumer=manual`, {
+    token: userA.token,
+  });
+  check(
+    '无主活动不能被认领',
+    ownerlessVerify.status === 200 &&
+      ownerlessVerify.data.found === true &&
+      ownerlessVerify.data.owned === false &&
+      ownerlessVerify.data.personal === false,
+    JSON.stringify(ownerlessVerify.data)
+  );
+
   const portDetail = await api('/immigration/ports/ROYAL_PORT', { token: userA.token });
   check('口岸详情含活动提示', portDetail.status === 200 && Array.isArray(portDetail.data.eventHints), JSON.stringify(portDetail.data).slice(0, 200));
   check('口岸详情含外交礼遇联动', portDetail.status === 200 && portDetail.data.courtesies?.eligible === false);
@@ -210,7 +260,11 @@ async function main() {
   docBUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'visa.png');
   await api(`/docs/applications/${docBId}/materials`, { method: 'POST', token: userB.token, form: docBUpload });
   const docBSubmit = await api(`/docs/applications/${docBId}/submit`, { method: 'POST', token: userB.token });
-  check('非本人签注不能认证', docBSubmit.status === 409 && docBSubmit.data.code === 'DOC_BIZ_INVALID', JSON.stringify(docBSubmit.data));
+  check(
+    '非本人签注不能认证',
+    docBSubmit.status === 403 && docBSubmit.data.code === 'DOC_BIZ_NOT_OWNED',
+    JSON.stringify(docBSubmit.data)
+  );
 
   // -------------------------------------------------------------------------
   // 3. 申诉署 ↔ 签注署(驳回 → 申诉 → 撤销原决定 → 重开)
@@ -334,6 +388,39 @@ async function main() {
   const resApprove = await api(`/resident/admin/applications/${resAppId}/approve`, { method: 'POST', token: adminToken, body: { comment: '联动验收' } });
   const cardNo = resApprove.data.application?.card?.cardNo;
   check('居民卡生成', resApprove.status === 200 && /^NRC-/.test(cardNo || ''), JSON.stringify(resApprove.data).slice(0, 200));
+
+  const identityAfter = await api('/linkage/identity', { token: userA.token });
+  check(
+    '办证后联动身份切换为居民证',
+    identityAfter.status === 200 && identityAfter.data.basis === 'resident_card' && identityAfter.data.cardNo === cardNo,
+    JSON.stringify(identityAfter.data)
+  );
+
+  // 可选关联类型同样不能借用他人编号(此前只提示不拦截)。
+  const optDoc = await api('/docs/applications', { method: 'POST', token: userB.token, body: { typeCode: 'RESIDENT_CARD' } });
+  const optDocId = optDoc.data.item?.id;
+  check('创建可选关联文书草稿', optDoc.status === 200 && optDocId > 0, JSON.stringify(optDoc.data).slice(0, 200));
+  await api(`/docs/applications/${optDocId}`, {
+    method: 'PATCH',
+    token: userB.token,
+    body: {
+      nickname: `联动乙${stamp}`,
+      contact: 'b@example.com',
+      bizNo: cardNo,
+      purpose: 'display',
+      formData: { district: '南瓜街' },
+    },
+  });
+  const optUpload = new FormData();
+  optUpload.append('kind', 'proof');
+  optUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'resident.png');
+  await api(`/docs/applications/${optDocId}/materials`, { method: 'POST', token: userB.token, form: optUpload });
+  const optSubmit = await api(`/docs/applications/${optDocId}/submit`, { method: 'POST', token: userB.token });
+  check(
+    '可选关联类型也拒绝非本人编号',
+    optSubmit.status === 403 && optSubmit.data.code === 'DOC_BIZ_NOT_OWNED',
+    JSON.stringify(optSubmit.data)
+  );
 
   const benefits = await api('/resident/benefits', { token: userA.token });
   check(
