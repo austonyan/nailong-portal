@@ -148,6 +148,77 @@ import AppealAdminInspect from './pages/appeal/AppealAdminInspect.jsx';
 import AppealAdminManage from './pages/appeal/AppealAdminManage.jsx';
 import AppealAdminStats from './pages/appeal/AppealAdminStats.jsx';
 import AppealAdminAudit from './pages/appeal/AppealAdminAudit.jsx';
+// 奶龙国皇家档案与记录署
+import ArchShell from './pages/archives/ArchShell.jsx';
+import ArchHome from './pages/archives/ArchHome.jsx';
+import ArchRecords from './pages/archives/ArchRecords.jsx';
+import ArchRecordDetail from './pages/archives/ArchRecordDetail.jsx';
+import ArchRequests from './pages/archives/ArchRequests.jsx';
+import ArchRequestDetail from './pages/archives/ArchRequestDetail.jsx';
+import ArchMessages from './pages/archives/ArchMessages.jsx';
+import ArchHelp from './pages/archives/ArchHelp.jsx';
+import AdminArchRules from './pages/archives/admin/AdminArchRules.jsx';
+import AdminArchRecords from './pages/archives/admin/AdminArchRecords.jsx';
+import AdminArchRequests from './pages/archives/admin/AdminArchRequests.jsx';
+import AdminArchAccess from './pages/archives/admin/AdminArchAccess.jsx';
+import AdminArchAudit from './pages/archives/admin/AdminArchAudit.jsx';
+import AdminArchSettings from './pages/archives/admin/AdminArchSettings.jsx';
+// 奶龙国皇家邮政与通信署
+import PostalShell from './pages/postal/PostalShell.jsx';
+import PostalHome from './pages/postal/PostalHome.jsx';
+import PostalNotices from './pages/postal/PostalNotices.jsx';
+import PostalMessages from './pages/postal/PostalMessages.jsx';
+import PostalPostcards from './pages/postal/PostalPostcards.jsx';
+import PostalCompose from './pages/postal/PostalCompose.jsx';
+import PostalSubscription from './pages/postal/PostalSubscription.jsx';
+import AdminPostNotices from './pages/postal/admin/AdminPostNotices.jsx';
+import AdminPostTemplates from './pages/postal/admin/AdminPostTemplates.jsx';
+import AdminPostCardTemplates from './pages/postal/admin/AdminPostCardTemplates.jsx';
+import AdminPostCards from './pages/postal/admin/AdminPostCards.jsx';
+import AdminPostStats from './pages/postal/admin/AdminPostStats.jsx';
+import AdminPostAudit from './pages/postal/admin/AdminPostAudit.jsx';
+// 奶龙国皇家文化旅游署
+import TourismShell from './pages/tourism/TourismShell.jsx';
+import TourismHome from './pages/tourism/TourismHome.jsx';
+import TourismAttractions from './pages/tourism/TourismAttractions.jsx';
+import TourismAttractionDetail from './pages/tourism/TourismAttractionDetail.jsx';
+import TourismArticles from './pages/tourism/TourismArticles.jsx';
+import TourismArticleDetail from './pages/tourism/TourismArticleDetail.jsx';
+import TourismCollection from './pages/tourism/TourismCollection.jsx';
+import TourismBadges from './pages/tourism/TourismBadges.jsx';
+import TourismMy from './pages/tourism/TourismMy.jsx';
+import AdminTourAttractions from './pages/tourism/admin/AdminTourAttractions.jsx';
+import AdminTourArticles from './pages/tourism/admin/AdminTourArticles.jsx';
+import AdminTourRules from './pages/tourism/admin/AdminTourRules.jsx';
+import AdminTourBadges from './pages/tourism/admin/AdminTourBadges.jsx';
+import AdminTourStats from './pages/tourism/admin/AdminTourStats.jsx';
+import AdminTourAudit from './pages/tourism/admin/AdminTourAudit.jsx';
+// 奶龙国皇家统计署
+import StatsShell from './pages/stats/StatsShell.jsx';
+import StatsHome from './pages/stats/StatsHome.jsx';
+import StatsReports from './pages/stats/StatsReports.jsx';
+import StatsReportDetail from './pages/stats/StatsReportDetail.jsx';
+import StatsGuide from './pages/stats/StatsGuide.jsx';
+import AdminStatDashboard from './pages/stats/admin/AdminStatDashboard.jsx';
+import AdminStatMetrics from './pages/stats/admin/AdminStatMetrics.jsx';
+import AdminStatExport from './pages/stats/admin/AdminStatExport.jsx';
+import AdminStatAudit from './pages/stats/admin/AdminStatAudit.jsx';
+// 奶龙国皇家教育与科学署
+import EduShell from './pages/education/EduShell.jsx';
+import EduHome from './pages/education/EduHome.jsx';
+import EduEntries from './pages/education/EduEntries.jsx';
+import EduEntryDetail from './pages/education/EduEntryDetail.jsx';
+import EduArticles from './pages/education/EduArticles.jsx';
+import EduArticleDetail from './pages/education/EduArticleDetail.jsx';
+import EduTasks from './pages/education/EduTasks.jsx';
+import EduMy from './pages/education/EduMy.jsx';
+import AdminEduReview from './pages/education/admin/AdminEduReview.jsx';
+import AdminEduEntries from './pages/education/admin/AdminEduEntries.jsx';
+import AdminEduArticles from './pages/education/admin/AdminEduArticles.jsx';
+import AdminEduTasks from './pages/education/admin/AdminEduTasks.jsx';
+import AdminEduStats from './pages/education/admin/AdminEduStats.jsx';
+import AdminEduAudit from './pages/education/admin/AdminEduAudit.jsx';
+import AdminEduSettings from './pages/education/admin/AdminEduSettings.jsx';
 
 function NotFound() {
   const { t } = useTranslation();
@@ -915,6 +986,78 @@ export default function App() {
         <Route path="/appeal/admin/manage" element={<AppealShell permission="appeal:manage"><AppealAdminManage /></AppealShell>} />
         <Route path="/appeal/admin/stats" element={<AppealShell permission="appeal:manage"><AppealAdminStats /></AppealShell>} />
         <Route path="/appeal/admin/audit" element={<AppealShell permission="appeal:manage"><AppealAdminAudit /></AppealShell>} />
+        {/* 奶龙国皇家档案与记录署:前台 */}
+        <Route path="/archives" element={<ArchShell><ArchHome /></ArchShell>} />
+        <Route path="/archives/records" element={<ArchShell><ArchRecords /></ArchShell>} />
+        <Route path="/archives/records/:type/:id" element={<ArchShell><ArchRecordDetail /></ArchShell>} />
+        <Route path="/archives/requests" element={<ArchShell><ArchRequests /></ArchShell>} />
+        <Route path="/archives/requests/:id" element={<ArchShell><ArchRequestDetail /></ArchShell>} />
+        <Route path="/archives/messages" element={<ArchShell><ArchMessages /></ArchShell>} />
+        <Route path="/archives/help" element={<ArchShell><ArchHelp /></ArchShell>} />
+        {/* 奶龙国皇家档案与记录署:管理端(arch:manage) */}
+        <Route path="/archives/admin/rules" element={<ArchShell permission="arch:manage" admin><AdminArchRules /></ArchShell>} />
+        <Route path="/archives/admin/records" element={<ArchShell permission="arch:manage" admin><AdminArchRecords /></ArchShell>} />
+        <Route path="/archives/admin/requests" element={<ArchShell permission="arch:manage" admin><AdminArchRequests /></ArchShell>} />
+        <Route path="/archives/admin/access" element={<ArchShell permission="arch:manage" admin><AdminArchAccess /></ArchShell>} />
+        <Route path="/archives/admin/audit" element={<ArchShell permission="arch:manage" admin><AdminArchAudit /></ArchShell>} />
+        <Route path="/archives/admin/settings" element={<ArchShell permission="arch:manage" admin><AdminArchSettings /></ArchShell>} />
+        {/* 奶龙国皇家邮政与通信署：前台（SSO 确认在 PostalShell 内，直连 URL 同样强制） */}
+        <Route path="/postal" element={<PostalShell><PostalHome /></PostalShell>} />
+        <Route path="/postal/notices" element={<PostalShell><PostalNotices /></PostalShell>} />
+        <Route path="/postal/notices/:id" element={<PostalShell><PostalNotices /></PostalShell>} />
+        <Route path="/postal/messages" element={<PostalShell><PostalMessages /></PostalShell>} />
+        <Route path="/postal/postcards" element={<PostalShell><PostalPostcards /></PostalShell>} />
+        <Route path="/postal/postcards/new" element={<PostalShell><PostalCompose /></PostalShell>} />
+        <Route path="/postal/subscription" element={<PostalShell><PostalSubscription /></PostalShell>} />
+        {/* 奶龙国皇家邮政与通信署：管理端 */}
+        <Route path="/postal/admin/notices" element={<PostalShell permission="post:manage"><AdminPostNotices /></PostalShell>} />
+        <Route path="/postal/admin/templates" element={<PostalShell permission="post:manage"><AdminPostTemplates /></PostalShell>} />
+        <Route path="/postal/admin/card-templates" element={<PostalShell permission="post:manage"><AdminPostCardTemplates /></PostalShell>} />
+        <Route path="/postal/admin/postcards" element={<PostalShell permission="post:manage"><AdminPostCards /></PostalShell>} />
+        <Route path="/postal/admin/stats" element={<PostalShell permission="post:manage"><AdminPostStats /></PostalShell>} />
+        <Route path="/postal/admin/audit" element={<PostalShell permission="post:manage"><AdminPostAudit /></PostalShell>} />
+        {/* 奶龙国皇家文化旅游署:前台 */}
+        <Route path="/tourism" element={<TourismShell><TourismHome /></TourismShell>} />
+        <Route path="/tourism/attractions" element={<TourismShell><TourismAttractions /></TourismShell>} />
+        <Route path="/tourism/attractions/:id" element={<TourismShell><TourismAttractionDetail /></TourismShell>} />
+        <Route path="/tourism/articles" element={<TourismShell><TourismArticles /></TourismShell>} />
+        <Route path="/tourism/articles/:id" element={<TourismShell><TourismArticleDetail /></TourismShell>} />
+        <Route path="/tourism/collection" element={<TourismShell><TourismCollection /></TourismShell>} />
+        <Route path="/tourism/badges" element={<TourismShell><TourismBadges /></TourismShell>} />
+        <Route path="/tourism/my" element={<TourismShell><TourismMy /></TourismShell>} />
+        {/* 奶龙国皇家文化旅游署:管理端 */}
+        <Route path="/tourism/admin/attractions" element={<TourismShell permission="tour:manage"><AdminTourAttractions /></TourismShell>} />
+        <Route path="/tourism/admin/articles" element={<TourismShell permission="tour:manage"><AdminTourArticles /></TourismShell>} />
+        <Route path="/tourism/admin/rules" element={<TourismShell permission="tour:manage"><AdminTourRules /></TourismShell>} />
+        <Route path="/tourism/admin/badges" element={<TourismShell permission="tour:manage"><AdminTourBadges /></TourismShell>} />
+        <Route path="/tourism/admin/stats" element={<TourismShell permission="tour:manage"><AdminTourStats /></TourismShell>} />
+        <Route path="/tourism/admin/audit" element={<TourismShell permission="tour:manage"><AdminTourAudit /></TourismShell>} />
+        {/* 奶龙国皇家统计署:前台 */}
+        <Route path="/stats" element={<StatsShell><StatsHome /></StatsShell>} />
+        <Route path="/stats/reports" element={<StatsShell><StatsReports /></StatsShell>} />
+        <Route path="/stats/reports/:id" element={<StatsShell><StatsReportDetail /></StatsShell>} />
+        <Route path="/stats/guide" element={<StatsShell><StatsGuide /></StatsShell>} />
+        {/* 奶龙国皇家统计署:管理端(stat:manage) */}
+        <Route path="/stats/admin/dashboard" element={<StatsShell permission="stat:manage"><AdminStatDashboard /></StatsShell>} />
+        <Route path="/stats/admin/metrics" element={<StatsShell permission="stat:manage"><AdminStatMetrics /></StatsShell>} />
+        <Route path="/stats/admin/export" element={<StatsShell permission="stat:manage"><AdminStatExport /></StatsShell>} />
+        <Route path="/stats/admin/audit" element={<StatsShell permission="stat:manage"><AdminStatAudit /></StatsShell>} />
+        {/* 奶龙国皇家教育与科学署:前台 */}
+        <Route path="/education" element={<EduShell><EduHome /></EduShell>} />
+        <Route path="/education/entries" element={<EduShell><EduEntries /></EduShell>} />
+        <Route path="/education/entries/:id" element={<EduShell><EduEntryDetail /></EduShell>} />
+        <Route path="/education/articles" element={<EduShell><EduArticles /></EduShell>} />
+        <Route path="/education/articles/:id" element={<EduShell><EduArticleDetail /></EduShell>} />
+        <Route path="/education/tasks" element={<EduShell><EduTasks /></EduShell>} />
+        <Route path="/education/my" element={<EduShell><EduMy /></EduShell>} />
+        {/* 奶龙国皇家教育与科学署:管理端(review 与 manage 分权) */}
+        <Route path="/education/admin/review" element={<EduShell permission="edu:review"><AdminEduReview /></EduShell>} />
+        <Route path="/education/admin/entries" element={<EduShell permission="edu:manage"><AdminEduEntries /></EduShell>} />
+        <Route path="/education/admin/articles" element={<EduShell permission="edu:manage"><AdminEduArticles /></EduShell>} />
+        <Route path="/education/admin/tasks" element={<EduShell permission="edu:manage"><AdminEduTasks /></EduShell>} />
+        <Route path="/education/admin/stats" element={<EduShell permission="edu:manage"><AdminEduStats /></EduShell>} />
+        <Route path="/education/admin/audit" element={<EduShell permission="edu:manage"><AdminEduAudit /></EduShell>} />
+        <Route path="/education/admin/settings" element={<EduShell permission="edu:manage"><AdminEduSettings /></EduShell>} />
       </Route>
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />

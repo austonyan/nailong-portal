@@ -1,0 +1,464 @@
+/* ---------- 奶龙国皇家邮政与通信署 (postal service) ---------- */
+
+.postal-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.postal-office-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.postal-office-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.postal-office-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+}
+
+.postal-office-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.postal-office-sub {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.postal-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.postal-nav-link {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+  text-decoration: none;
+  background: var(--animal-bg-color-secondary);
+  transition:
+    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.postal-nav-link:hover {
+  color: var(--animal-primary-color);
+}
+
+.postal-nav-link.active {
+  background: var(--animal-primary-color);
+  color: var(--animal-bg-color);
+}
+
+.postal-nav-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--animal-border-color-light);
+  margin: 2px 4px;
+}
+
+.postal-sso-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.postal-sso-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.postal-sso-name {
+  font-weight: 700;
+}
+
+.postal-sso-account {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+/* ---------- home ---------- */
+
+.postal-home {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.postal-hero {
+  padding: 26px;
+  border-radius: var(--animal-border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.postal-hero-sub {
+  margin: 0;
+  font-size: 15px;
+  /* 横幅是深色 app-blue 卡片,secondary 文字色只有约 1.1:1 对比度,改用暖底色做浅字 */
+  color: var(--animal-bg-color);
+  max-width: 640px;
+}
+
+.postal-hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.postal-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.postal-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.postal-stat-value {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.postal-stat-label {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.postal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.postal-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- notices ---------- */
+
+.postal-notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.postal-notice-item {
+  cursor: pointer;
+}
+
+.postal-notice-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.postal-notice-head b {
+  font-size: 16px;
+}
+
+.postal-notice-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+  margin-top: 6px;
+}
+
+.postal-notice-body {
+  margin: 8px 0 0;
+  color: var(--animal-text-color-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.postal-detail-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ---------- filters / forms ---------- */
+
+.postal-filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.postal-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 16px;
+}
+
+.postal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.postal-field-wide {
+  grid-column: 1 / -1;
+}
+
+.postal-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  font-family: var(--animal-font-family);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--animal-text-color);
+  background: var(--animal-bg-color);
+  border: var(--animal-border-width) solid var(--animal-border-color);
+  border-radius: var(--animal-border-radius-lg);
+  resize: vertical;
+  outline: none;
+}
+
+.postal-textarea:focus {
+  border-color: var(--animal-focus-yellow);
+  box-shadow: 0 0 0 3px var(--animal-primary-color-bg);
+}
+
+.postal-textarea::placeholder {
+  color: var(--animal-text-color-muted);
+}
+
+/* ---------- messages ---------- */
+
+.postal-msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.postal-msg-item.unread {
+  border-left: 5px solid var(--animal-primary-color);
+}
+
+.postal-msg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.postal-msg-body {
+  margin: 8px 0;
+  color: var(--animal-text-color-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.postal-msg-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.postal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 0;
+  color: var(--animal-text-color-muted);
+}
+
+/* ---------- postcards ---------- */
+
+.postal-quota {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.postal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.postal-card-tile {
+  border-radius: var(--animal-border-radius-lg);
+  padding: 2px;
+  transition: outline-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
+  outline: 3px solid transparent;
+  cursor: pointer;
+}
+
+.postal-card-tile.selected {
+  outline-color: var(--animal-primary-color);
+}
+
+.postal-card-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 96px;
+}
+
+.postal-card-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.postal-card-desc {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.postal-postcard-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.postal-postcard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.postal-postcard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.postal-postcard-from {
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.postal-blessing {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--animal-border-radius-base);
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color);
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 56px;
+}
+
+.postal-postcard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.postal-recipient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.postal-recipient-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--animal-border-radius-base);
+  background: var(--animal-bg-color-secondary);
+}
+
+.postal-recipient-name {
+  font-weight: 600;
+}
+
+.postal-recipient-account {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+/* ---------- admin ---------- */
+
+.postal-admin-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px dashed var(--animal-border-color-light);
+}
+
+.postal-tpl-preview {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--animal-text-color-secondary);
+  margin: 4px 0 0;
+}
+
+.postal-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.postal-kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+@media (max-width: 720px) {
+  .postal-nav {
+    overflow-x: auto;
+  }
+  .postal-postcard-list {
+    grid-template-columns: 1fr;
+  }
+}

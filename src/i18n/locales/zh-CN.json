@@ -26,6 +26,7 @@
     "save": "保存",
     "saved": "已保存",
     "cancel": "取消",
+    "close": "关闭",
     "create": "新建",
     "edit": "编辑",
     "delete": "删除",
@@ -254,6 +255,8 @@
     "EVT_INVITATION_EVENT": "邀请函不属于该活动",
     "EVT_INVITATION_TYPE": "邀请函类型与活动不匹配",
     "EVT_MATERIAL_REQUIRED": "缺少活动要求的材料",
+    "EVT_EVENT_NOT_FOUND": "活动不存在或已被删除,请刷新后重试",
+    "EVT_INVITEE_NOT_FOUND": "被邀请人的门户账号不存在,请核对用户名",
     "EVT_DUPLICATE": "已存在进行中的记录",
     "EVT_TOO_MANY_ACTIVE": "进行中的报名过多",
     "EVT_INVALID_STATE": "当前状态不允许该操作",
@@ -293,7 +296,51 @@
     "APPEAL_TOO_MANY_ACTIVE": "在办申诉过多,请先完成现有申诉。",
     "APPEAL_TOO_MANY_FILES": "材料数量超过限制。",
     "APPEAL_VERIFY_LIMITED": "查询过于频繁,请稍后再试。",
-    "SETUP_COMPLETE": "首次启动引导已完成，入口已关闭。"
+    "SETUP_COMPLETE": "首次启动引导已完成，入口已关闭。",
+    "ARCH_CONFIRM_REQUIRED": "该操作需要二次确认",
+    "ARCH_EXPORT_LIMIT": "今日导出次数已达上限(每天 3 次),请明天再试",
+    "ARCH_FIELD_REQUIRED": "必填字段未填写",
+    "ARCH_INVALID_STATE": "当前状态不允许该操作",
+    "ARCH_REASON_REQUIRED": "请填写不予处理的理由",
+    "ARCH_REQUEST_ACTIVE": "已有一个删除申请正在处理中",
+    "ARCH_RULE_UNKNOWN": "未知的记录类型",
+    "ARCH_SCOPE_EMPTY": "请至少选择一个记录类型",
+    "ARCH_SCOPE_INVALID": "包含未纳档或未知的记录类型",
+    "POST_DAILY_LIMIT": "今日的明信片额度已用完,请明天再试",
+    "POST_RECIPIENT_INVALID": "收件人不存在或已被停用",
+    "POST_SELF_SEND": "不能给自己寄明信片哦",
+    "POST_INVALID_STATE": "当前状态不允许该操作",
+    "POST_CARD_TEMPLATE_UNAVAILABLE": "明信片模板不存在或已停用",
+    "POST_CARD_TAKEN_DOWN": "该明信片已被管理员下架",
+    "POST_CARD_TEMPLATE_DUPLICATE": "已存在相同编码的明信片模板",
+    "POST_CARD_TEMPLATE_IN_USE": "该明信片模板已被明信片使用,无法删除",
+    "POST_TEMPLATE_DUPLICATE": "该来源与类型的通知模板已存在",
+    "TOUR_ATTRACTION_NOT_FOUND": "景点不存在或已下线",
+    "TOUR_ARTICLE_NOT_FOUND": "文章不存在或已下线",
+    "TOUR_ATTRACTION_CLOSED": "景点关闭中,暂不能打卡",
+    "TOUR_ALREADY_CHECKED_IN": "这个景点今天已经打卡过了",
+    "TOUR_DAILY_LIMIT": "今天的打卡次数已达上限,明天再来吧",
+    "TOUR_SITE_LIMIT": "全站今日打卡已达上限,明天再来吧",
+    "TOUR_DUPLICATE_BADGE_CODE": "已有使用这个识别码的徽章",
+    "TOUR_BADGE_NOT_AWARDED": "该用户未获得过这枚徽章",
+    "TOUR_BADGE_ALREADY_REVOKED": "这枚徽章已经被回收过了",
+    "STAT_REPORT_NOT_FOUND": "年度报告不存在",
+    "STAT_YEAR_INVALID": "年度无效:请填写 2000 至今年之间的整数",
+    "STAT_RATE_LIMITED": "生成太频繁了,请稍后再试(每小时最多 6 次)",
+    "STAT_STATUS_INVALID": "状态筛选值不合法,或来源表没有 status 列",
+    "STAT_METRIC_TABLE_INVALID": "来源表不在业务表白名单内",
+    "STAT_METRIC_CODE_EXISTS": "指标代码已存在",
+    "STAT_METRIC_NOT_FOUND": "统计口径不存在",
+    "STAT_EXPORT_EMPTY": "没有可导出的指标,请先勾选",
+    "EDU_UNKNOWN_TARGET": "未知的内容类型",
+    "EDU_INVALID_STATE": "当前状态不允许该操作,请刷新后重试",
+    "EDU_NOT_PUBLISHED": "内容不存在或尚未发布",
+    "EDU_UNKNOWN_CATEGORY": "分类不存在或已停用",
+    "EDU_RELATED_LIMIT": "关联词条最多 6 个",
+    "EDU_RELATED_INVALID": "关联的词条不存在",
+    "EDU_INCOMPLETE": "标题和正文填写完整后才能提交审核",
+    "EDU_REVIEW_NOTE_REQUIRED": "驳回时必须填写审核意见",
+    "EDU_TASK_CODE_TAKEN": "任务代码已被使用,请换一个"
   },
   "portal": {
     "tagline": "这里是奶龙统一门户,所有服务从这里出发",
@@ -353,7 +400,12 @@
         "diplomacy": "外交",
         "docs": "文书认证",
         "protocol": "礼宾活动",
-        "resident": "居民"
+        "resident": "居民",
+        "archives": "档案署",
+        "postal": "邮政",
+        "tourism": "文化旅游",
+        "stats": "统计署",
+        "education": "教育与科学署"
       }
     },
     "services": {
@@ -361,6 +413,9 @@
       "create": "注册服务",
       "edit": "编辑服务",
       "url": "服务地址",
+      "urlTip": "内置服务填站内路径(如 /visa),外部服务填完整链接。",
+      "urlPlaceholder": "https://example.com 或 /visa",
+      "urlInvalid": "请填写以 / 开头的站内路径,或 http(s):// 开头的完整链接",
       "icon": "图标",
       "color": "颜色",
       "requiredPermission": "所需权限",
@@ -412,11 +467,20 @@
       "guideValidity": "有效期说明",
       "guideValidityBody": "签发后 {{days}} 天内有效,单次最长停留 {{stay}} 天,过期自动失效。",
       "faq": "常见问题",
-      "supportTip": "还有疑问?给署里发一封站内信吧:"
+      "supportTip": "还有疑问?给署里发一封站内信吧:",
+      "tourismTitle": "岛上游玩推荐",
+      "tourismSub": "与文化旅游署联动:办签注之余,看看这些正在开放的景点。",
+      "tourismAll": "去文化旅游署看看"
     },
     "typeAvail": {
       "open": "开放申请",
       "soon": "即将开放"
+    },
+    "tourismType": {
+      "landmark": "地标",
+      "nature": "自然",
+      "culture": "人文",
+      "food": "美食"
     },
     "typeMeta": {
       "stay": "单次停留 {{days}} 天",
@@ -1720,7 +1784,7 @@
         "variables": "可用变量",
         "code": "模板编码",
         "editTitle": "编辑模板 {{code}}",
-        "varTip": "正文支持 {{var}} 变量,保存后立即生效。",
+        "varTip": "正文支持用双大括号包裹的变量名(如编号、日期),保存后立即生效。",
         "updatedAt": "更新时间"
       }
     }
@@ -2197,7 +2261,7 @@
         "level": "级别",
         "body": "正文",
         "enabled": "上线",
-        "templatesTip": "站内信模板支持 {{var}} 变量,修改后立即生效。",
+        "templatesTip": "站内信模板支持用双大括号包裹的变量名,修改后立即生效。",
         "tplTitle": "标题模板",
         "tplBody": "正文模板",
         "tplVars": "可用变量",
@@ -2806,7 +2870,7 @@
       "variables": "可用变量",
       "code": "模板编码",
       "editTitle": "编辑模板 {{code}}",
-      "varTip": "正文支持 {{var}} 变量,保存后立即生效。"
+      "varTip": "正文支持用双大括号包裹的变量名(如编号、日期),保存后立即生效。"
     }
   },
   "protocol": {
@@ -3445,6 +3509,7 @@
       "passesTab": "活动凭证",
       "issueInvitation": "发起邀请函",
       "inviteePlaceholder": "被邀请人门户账号(用户名)",
+      "inviteeTip": "按门户用户名精确匹配,账号不存在时无法生成邀请函。",
       "invitationIssued": "邀请函已生成并通知被邀请人",
       "inviteTypeTip": "居民专属邀请函需居民专属活动,外交礼遇邀请函需外交活动;普通活动邀请函无此限制。",
       "revokeTitle": "撤销邀请函",
@@ -3604,7 +3669,8 @@
       "immigration": "入境事务",
       "resident": "居民登记",
       "diplomatic": "外交事务",
-      "document": "文书与认证"
+      "document": "文书与认证",
+      "archives": "档案与记录"
     },
     "bizStatus": {
       "verified": "已与业务署核验",
@@ -4362,6 +4428,1366 @@
         "sampling": "抽查",
         "inspect_report": "监察报告",
         "ticket": "工单"
+      }
+    }
+  },
+  "arch": {
+    "officeName": "奶龙国皇家档案与记录署",
+    "officeSub": "各署业务记录的归档与本人查询出口",
+    "bannerPublic": "本人档案查询",
+    "bannerAdmin": "档案管理台",
+    "sso": {
+      "title": "以当前身份进入档案署",
+      "tip": "皇家档案与记录署将以你当前登录的身份展示本人在各署的归档记录,只读查看,不会修改任何业务数据。",
+      "confirm": "确认并进入"
+    },
+    "nav": {
+      "label": "档案署导航",
+      "adminLabel": "档案管理台导航",
+      "home": "首页",
+      "records": "我的档案",
+      "requests": "删除申请",
+      "messages": "消息",
+      "help": "办事指南",
+      "rules": "归档规则",
+      "access": "访问日志",
+      "audit": "审计",
+      "admin": "档案管理台",
+      "settings": "设置"
+    },
+    "home": {
+      "hero": "你的记录,好好归档",
+      "tagline": "皇家档案与记录署统一归档你在签注署与入境署产生的记录,本人随时查询。",
+      "totalArchived": "归档记录总数",
+      "exportQuota": "今日导出余量",
+      "quickEntries": "快捷入口",
+      "activeRequest": "有一个删除申请正在处理中",
+      "viewProgress": "查看进度",
+      "unreadTip": "你有 {{count}} 条未读档案消息",
+      "catalog": "服务目录",
+      "noTypes": "当前没有纳入归档的记录类型",
+      "guides": "办事指南",
+      "noGuides": "暂无办事指南",
+      "noteTitle": "温馨提示",
+      "noteBody": "本署不复制业务主数据:档案详情与导出一律脱敏展示,如需办理业务请前往原署页面。"
+    },
+    "catalog": {
+      "title": "我的档案",
+      "allOffices": "全部署",
+      "allTypes": "全部类型",
+      "from": "开始日期",
+      "to": "结束日期",
+      "keyword": "编号关键字",
+      "reset": "重置",
+      "typeName": "记录类型",
+      "office": "所属署",
+      "no": "编号(脱敏)",
+      "date": "记录日期",
+      "contact": "联系方式(脱敏)",
+      "view": "查看详情",
+      "empty": "没有符合条件的归档记录",
+      "maskedTip": "证件号与联系方式类字段已打码;每次查看目录都会写入访问日志。",
+      "readOnlyTip": "本署只读展示,办理业务请前往原署",
+      "export": "导出档案汇总(CSV)",
+      "exportTitle": "导出档案汇总",
+      "exportTip": "将按当前筛选条件导出脱敏后的档案汇总 CSV,并写入访问与审计日志。",
+      "exportNote": "每人每天最多导出 3 次,导出内容不含未脱敏信息。",
+      "exportConfirm": "开始导出",
+      "exportDone": "已导出 {{count}} 条记录"
+    },
+    "detail": {
+      "title": "档案详情",
+      "back": "返回目录",
+      "notFound": "记录不存在,或已随删除申请隐藏。",
+      "maskedTip": "详情字段与目录同样脱敏,原始数据仅原署可见。",
+      "sourceTip": "需要办理业务或查看原始记录?前往原署页面。",
+      "openSource": "前往原署查看"
+    },
+    "request": {
+      "title": "数据删除 / 注销申请",
+      "new": "新建删除申请",
+      "no": "申请编号",
+      "scope": "删除范围",
+      "scopeTip": "勾选需要隐藏的记录类型,执行完成后这些归档记录将不再对你展示。",
+      "scopeRequired": "请至少选择一个记录类型",
+      "impact": "影响说明",
+      "impactPlaceholder": "请说明申请删除的原因与预期影响(至少 5 个字)",
+      "impactRequired": "请填写影响说明(至少 5 个字)",
+      "reason": "补充说明",
+      "reasonPlaceholder": "选填:需要让处理人员了解的其他信息",
+      "next": "下一步:确认",
+      "back": "返回修改",
+      "confirmTitle": "二次确认",
+      "confirmBody": "请确认以下申请内容。提交后将进入「待处理」队列,由档案署管理员受理。",
+      "confirmNote": "执行完成只隐藏本署归档映射,不会删除原署业务数据。",
+      "confirmSubmit": "确认提交",
+      "submitted": "删除申请已提交",
+      "activeTip": "已有一个申请正在处理,处理完成前不能再次提交。",
+      "processTip": "处理流程:待处理 → 受理中 → 执行中 → 已完成;不予处理时会写明理由。",
+      "empty": "还没有提交过删除申请",
+      "progress": "查看进度",
+      "detailTitle": "申请详情",
+      "notFound": "申请不存在,或已被清理。",
+      "reviewNote": "受理意见",
+      "rejectReason": "不予处理理由",
+      "receipt": "执行回执",
+      "affected": "隐藏记录数",
+      "affectedValue": "{{count}} 条",
+      "completedAt": "完成时间",
+      "appealHint": "对不予处理的理由有异议?你可以向皇家申诉与监察署提出申诉。",
+      "goAppeal": "前往申诉署",
+      "timeline": "处理进度"
+    },
+    "messages": {
+      "title": "档案消息",
+      "markAll": "全部标为已读",
+      "empty": "暂无消息"
+    },
+    "msgType": {
+      "submitted": "申请已提交",
+      "reviewing": "已受理",
+      "executing": "执行中",
+      "completed": "已完成",
+      "rejected": "不予处理",
+      "appeal_reopened": "申诉复核重开"
+    },
+    "msg": {
+      "submitted": {
+        "title": "删除申请 {{no}} 已提交",
+        "body": "你的数据删除申请已进入待处理队列,可随时在「删除申请」页查看进度。"
+      },
+      "reviewing": {
+        "title": "删除申请 {{no}} 已受理",
+        "body": "档案署管理员已受理你的申请,即将进入审核。"
+      },
+      "executing": {
+        "title": "删除申请 {{no}} 已通过",
+        "body": "申请已通过审核,正在执行隐藏操作,完成后将出具回执。"
+      },
+      "completed": {
+        "title": "删除申请 {{no}} 已完成",
+        "body": "已隐藏 {{total}} 条归档记录,回执编号 {{receiptNo}}。原署业务数据不受影响。"
+      },
+      "rejected": {
+        "title": "删除申请 {{no}} 不予处理",
+        "body": "理由:{{reason}}。如有异议,可向皇家申诉与监察署提出申诉。"
+      },
+      "appeal_reopened": {
+        "title": "申诉复核重开:{{no}}",
+        "body": "申诉 {{appealCode}} 的复核撤销了原不予处理决定,申请已退回待处理队列。"
+      }
+    },
+    "status": {
+      "pending": "待处理",
+      "reviewing": "受理中",
+      "executing": "执行中",
+      "completed": "已完成",
+      "rejected": "不予处理"
+    },
+    "office": {
+      "visa": "签注申请署",
+      "immigration": "皇家口岸入境署"
+    },
+    "action": {
+      "list": "查询目录",
+      "detail": "查看详情",
+      "export": "导出"
+    },
+    "event": {
+      "submit": "提交申请",
+      "accept": "受理",
+      "approve": "审核通过",
+      "execute": "执行完成",
+      "reject": "不予处理",
+      "appeal_reopened": "申诉复核重开"
+    },
+    "recStatus": {
+      "draft": "草稿",
+      "pending": "待审核",
+      "pending_review": "待审核",
+      "supplement": "待补件",
+      "supplement_required": "待补件",
+      "approved": "已通过",
+      "issued": "已签发",
+      "valid": "有效",
+      "rejected": "未通过",
+      "invalid": "已失效",
+      "withdrawn": "已撤回",
+      "closed": "已关闭",
+      "used": "已使用",
+      "expired": "已过期",
+      "voided": "已注销",
+      "entered": "已入境",
+      "exited": "已出境"
+    },
+    "field": {
+      "applicationNo": "申请编号",
+      "visaNo": "签注编号",
+      "appNo": "关联申请",
+      "type": "记录类型",
+      "status": "状态",
+      "submittedAt": "提交时间",
+      "issuedAt": "签发时间",
+      "validUntil": "有效期至",
+      "planArrive": "计划入境日",
+      "planLeave": "计划离境日",
+      "purpose": "事由",
+      "contact": "联系方式",
+      "declarationNo": "申报编号",
+      "port": "口岸",
+      "stayDays": "停留天数",
+      "recordNo": "记录编号",
+      "entryDate": "入境日期",
+      "exitDate": "出境日期"
+    },
+    "help": {
+      "title": "办事指南",
+      "introTitle": "皇家档案与记录署是做什么的?",
+      "intro": "本署归档你在签注署与入境署产生的业务记录,提供本人查询、档案汇总导出与数据删除申请。归档范围由管理员在归档规则中配置。",
+      "tagReadonly": "只读归档",
+      "tagMasked": "全程脱敏",
+      "tagLogged": "访问留痕",
+      "guides": "办事指南",
+      "faq": "常见问题",
+      "whatArchived": {
+        "q": "哪些记录会被归档?",
+        "a": "目前归档两类业务:签注署的签注申请与电子签注,入境署的入境申报与出入境记录。管理员可以随时调整是否纳档。"
+      },
+      "masked": {
+        "q": "为什么编号和联系方式是打码的?",
+        "a": "档案目录、详情与导出一律脱敏,防止截图外泄。原始数据仅保存在原署,如需完整信息请前往原署页面查看。"
+      },
+      "exportLimit": {
+        "q": "档案汇总每天能导出几次?",
+        "a": "每人每天最多 3 次,每次导出都会写入审计日志。额度在次日重置。"
+      },
+      "deleteFlow": {
+        "q": "删除申请是怎么处理的?",
+        "a": "提交后流程为:待处理 → 受理中 → 执行中 → 已完成。执行完成只在本署隐藏归档映射并出具回执,不会删除原署业务数据。"
+      },
+      "rejectedAppeal": {
+        "q": "申请被驳回怎么办?",
+        "a": "不予处理时会写明理由;对理由有异议,可以在申请详情页一键前往皇家申诉与监察署提出申诉。"
+      }
+    },
+    "admin": {
+      "rules": {
+        "title": "归档规则配置",
+        "tip": "决定每种记录类型是否纳入归档;关闭后该类型不再出现在用户目录中,已归档数据不受影响。",
+        "type": "记录类型",
+        "included": "是否纳档",
+        "includedOn": "纳档中",
+        "includedOff": "已停用",
+        "retention": "保留说明(简体)",
+        "retentionTw": "保留说明(繁体)",
+        "retentionRequired": "请填写保留说明",
+        "updatedAt": "更新时间",
+        "editTitle": "编辑归档规则:{{name}}"
+      },
+      "records": {
+        "title": "档案查询",
+        "userId": "用户 ID",
+        "no": "编号",
+        "applicant": "档案归属",
+        "hidden": "隐藏标记",
+        "hiddenYes": "已隐藏",
+        "maskedTip": "管理端同样只展示脱敏后的档案;每次查询都会写入审计。",
+        "export": "导出(CSV)",
+        "exportTitle": "导出档案(管理端)",
+        "exportTip": "将按当前筛选条件导出脱敏档案汇总,并写入审计日志。确认继续?",
+        "exportConfirm": "确认导出",
+        "exportDone": "已导出 {{count}} 条记录"
+      },
+      "requests": {
+        "title": "删除申请处理",
+        "allStatuses": "全部状态",
+        "applicant": "申请人",
+        "detail": "详情",
+        "detailTitle": "处理申请:{{no}}",
+        "accept": "受理",
+        "approve": "通过",
+        "execute": "执行并出回执",
+        "reject": "驳回",
+        "rejectTitle": "驳回申请:{{no}}",
+        "rejectConfirm": "确认驳回",
+        "rejectTip": "驳回必须写明理由,理由会通知申请人;被驳回后申请人可向申诉署提出申诉。",
+        "reasonPlaceholder": "请填写不予处理的理由(至少 2 个字)"
+      },
+      "access": {
+        "title": "访问日志",
+        "allActions": "全部行为",
+        "user": "查看人",
+        "action": "行为",
+        "recordType": "记录类型",
+        "detail": "详情"
+      },
+      "audit": {
+        "title": "审计",
+        "allActions": "全部操作",
+        "actor": "操作人",
+        "action": "操作",
+        "targetType": "对象类型",
+        "targetId": "对象编号",
+        "detail": "明细"
+      }
+    }
+  },
+  "post": {
+    "officeName": "奶龙国皇家邮政与通信署",
+    "officeSub": "站内消息 · 公告订阅 · 虚拟明信片",
+    "sso": {
+      "title": "身份确认",
+      "confirm": "进入邮政与通信署",
+      "tip": "将以当前登录身份使用消息中心、公告订阅与虚拟明信片。"
+    },
+    "nav": {
+      "home": "邮政首页",
+      "notices": "公告",
+      "messages": "消息中心",
+      "postcards": "明信片",
+      "subscription": "订阅与偏好",
+      "adminNotices": "公告管理",
+      "adminTemplates": "通知模板",
+      "adminCardTemplates": "明信片模板",
+      "adminPostcards": "明信片管理",
+      "adminStats": "统计",
+      "adminAudit": "审计"
+    },
+    "home": {
+      "tagline": "全站消息都在这里汇总:订阅你关心的公告,给岛上的朋友寄一张虚拟明信片,再也不会漏看任何署的通知。",
+      "writeCard": "写一张明信片",
+      "openMessages": "进入消息中心",
+      "openSubscription": "订阅与偏好",
+      "statUnread": "未读消息",
+      "statSubscription": "公告订阅",
+      "subscribedOn": "已订阅",
+      "subscribedOff": "未订阅",
+      "statQuota": "今日明信片",
+      "latestNotices": "最新公告",
+      "viewAll": "查看全部",
+      "noNotices": "还没有已发布的公告",
+      "recentCards": "最近收到的明信片",
+      "cardHall": "明信片模板"
+    },
+    "level": {
+      "info": "一般",
+      "important": "重要",
+      "event": "活动"
+    },
+    "notices": {
+      "title": "公告列表",
+      "searchPlaceholder": "搜索公告标题或正文",
+      "allLevels": "全部级别",
+      "empty": "没有符合条件的公告",
+      "backToList": "返回公告列表",
+      "notFound": "公告不存在或已下线"
+    },
+    "messages": {
+      "title": "消息中心",
+      "unread": "未读 {{count}} 条",
+      "inbox": "收件箱",
+      "archivedTab": "已归档",
+      "empty": "没有消息,去逛逛其他署吧",
+      "unreadTag": "未读",
+      "statusAll": "全部状态",
+      "statusUnread": "未读",
+      "statusRead": "已读",
+      "allSources": "全部来源",
+      "searchPlaceholder": "搜索消息内容、类型或来源",
+      "select": "选择",
+      "selected": "已选",
+      "bulkRead": "标记已读 ({{count}})",
+      "bulkArchive": "归档所选 ({{count}})",
+      "bulkDone": "已处理 {{count}} 条消息",
+      "readAll": "全部标为已读",
+      "readAllDone": "已全部标为已读",
+      "archiveAll": "归档全部已读",
+      "archiveAllDone": "已归档全部已读消息",
+      "markRead": "标为已读",
+      "markUnread": "标为未读",
+      "archive": "归档",
+      "unarchive": "取消归档"
+    },
+    "subscription": {
+      "title": "订阅与通知偏好",
+      "noticeTitle": "订阅邮政署公告",
+      "noticeTip": "订阅后,新公告发布时会自动收到一条站内消息。",
+      "prefTitle": "按署开关通知",
+      "prefTip": "每个署的消息可以单独关闭;关闭后该署的新消息不再进入你的信箱。",
+      "sourcesCount": "共 {{count}} 个来源",
+      "sourceOnHint": "接收该署的消息",
+      "sourceOffHint": "已关闭,该署消息将被跳过",
+      "subscribedDone": "已订阅邮政署公告",
+      "unsubscribedDone": "已退订邮政署公告",
+      "privacyTip": "邮政署只做站内消息与趣味体验,不会发送真实短信或邮件。"
+    },
+    "postcards": {
+      "title": "我的明信片",
+      "write": "写一张",
+      "quota": "今日已寄 {{used}} / {{limit}} 张",
+      "quotaTip": "每用户每天最多寄出 10 张明信片。",
+      "inbox": "收件箱",
+      "sent": "寄件记录",
+      "favorites": "收藏夹",
+      "empty": "这里还空空如也",
+      "fromWhom": "来自 {{name}}",
+      "toWhom": "寄给 {{name}}",
+      "from": "寄件人",
+      "to": "收件人",
+      "receive": "签收",
+      "receivedDone": "明信片已签收",
+      "favorite": "收藏",
+      "unfavorite": "取消收藏",
+      "sendNow": "立即寄出",
+      "sentDone": "明信片已寄出",
+      "sentAt": "寄出时间",
+      "receivedAt": "签收时间",
+      "takedownReason": "下架原因:{{reason}}",
+      "deleteTip": "明信片会从你的列表中隐藏,另一侧仍保留记录;此操作不可恢复。"
+    },
+    "compose": {
+      "title": "写一张明信片",
+      "back": "返回明信片",
+      "pickTemplate": "挑选模板",
+      "noTemplates": "暂时没有可用的明信片模板",
+      "blessing": "祝福语",
+      "blessingPlaceholder": "写下你想对 TA 说的话(200 字以内)",
+      "blessingTip": "已输入 {{count}} / 200 字。祝福语按原文展示,不做翻译。",
+      "pickRecipient": "选择收件人",
+      "searchPlaceholder": "输入用户名或昵称搜索",
+      "searchHint": "输入关键词搜索站内用户,然后点击「选择」。",
+      "searchEmpty": "没有找到可寄送的收件人:明信片不能寄给自己,搜自己的账号不会有结果。",
+      "pick": "选择",
+      "selected": "已选中",
+      "sendNow": "立即寄出",
+      "saveDraft": "存为草稿",
+      "sentDone": "明信片已寄出,等 TA 签收吧",
+      "draftDone": "草稿已保存,可稍后寄出",
+      "quotaReached": "今日的明信片额度已用完,明天再来吧"
+    },
+    "msg": {
+      "notice_published": {
+        "title": "新公告:{{title}}",
+        "body": "《{{title}}》已发布,编号 {{no}}。前往公告列表即可查看全文。"
+      },
+      "postcard_received": {
+        "title": "你收到一张明信片",
+        "body": "{{from}} 寄来一张明信片(编号 {{no}}),祝福语:{{blessing}}"
+      },
+      "postcard_taken_down": {
+        "title": "明信片 {{no}} 已被下架",
+        "body": "下架原因:{{reason}}。明信片已从收件箱移除。"
+      },
+      "subscription_confirmed": {
+        "title": "公告订阅已开启",
+        "body": "订阅成功!邮政署发布新公告时会第一时间通知你。"
+      },
+      "subscription_cancelled": {
+        "title": "公告订阅已关闭",
+        "body": "已停止接收公告通知,随时可以在「订阅与偏好」里重新打开。"
+      },
+      "fallback": {
+        "title": "你有一条新消息",
+        "body": "这是一条系统消息,请前往消息中心查看详情。"
+      },
+      "tour_checkin": {
+        "title": "打卡成功",
+        "body": "你在「{{attractionName}}」完成打卡(编号 {{checkinNo}}),继续逛逛收集更多徽章吧。"
+      },
+      "tour_badge": {
+        "title": "获得新徽章:{{badgeName}}",
+        "body": "累计打卡 {{checkinCount}} 次,达成「{{badgeName}}」,快去徽章墙看看吧。"
+      },
+      "task_completed": {
+        "title": "阅读任务完成:{{taskTitle}}",
+        "body": "你已读满目标篇数,获得徽章「{{badgeName}}」。快去教育与科学署「我的学习」看看吧。"
+      },
+      "archives_submitted": {
+        "title": "删除申请已提交:{{no}}",
+        "body": "你的数据删除申请 {{no}} 已提交,档案与记录署将按流程处理。"
+      },
+      "archives_reviewing": {
+        "title": "删除申请已受理:{{no}}",
+        "body": "你的数据删除申请 {{no}} 已受理,请留意后续进度通知。"
+      },
+      "archives_executing": {
+        "title": "删除申请执行中:{{no}}",
+        "body": "你的数据删除申请 {{no}} 已通过审核,正在执行隐藏操作,完成后将出具回执。"
+      },
+      "archives_completed": {
+        "title": "删除申请已完成:{{no}}",
+        "body": "你的数据删除申请 {{no}} 已执行完成,回执 {{receiptNo}},共隐藏 {{count}} 条记录。"
+      },
+      "archives_rejected": {
+        "title": "删除申请未通过:{{no}}",
+        "body": "你的数据删除申请 {{no}} 未通过。理由:{{reason}}。如有异议,可到申诉与监察署提交申诉。"
+      },
+      "archives_appeal_reopened": {
+        "title": "申诉复核重开删除申请:{{no}}",
+        "body": "你的数据删除申请 {{no}} 经申诉复核重新进入处理流程,请留意进度更新。"
+      }
+    },
+    "postcardStatus": {
+      "draft": "草稿",
+      "sent": "已寄出",
+      "received": "已签收",
+      "taken_down": "已下架"
+    },
+    "source": {
+      "postal": "邮政与通信署",
+      "visa": "签注申请署",
+      "immigration": "口岸入境署",
+      "diplomacy": "外交事务署",
+      "resident": "居民登记署",
+      "protocol": "礼宾与活动署",
+      "docs": "文书与认证署",
+      "appeal": "申诉与监察署",
+      "system": "系统",
+      "tourism": "文化旅游署",
+      "education": "教育与科学署",
+      "archives": "档案与记录署",
+      "stats": "统计署"
+    },
+    "field": {
+      "no": "编号",
+      "publishedAt": "发布时间"
+    },
+    "admin": {
+      "allStatus": "全部状态",
+      "searchPlaceholder": "搜索编号、标题或关键词",
+      "notices": {
+        "title": "标题",
+        "create": "新建公告",
+        "edit": "编辑公告",
+        "level": "级别",
+        "body": "正文",
+        "notified": "通知数",
+        "publish": "发布",
+        "published": "公告已发布,订阅者将收到通知",
+        "offline": "下线",
+        "offlineDone": "公告已下线",
+        "deleteTip": "公告《{{title}}》将被软删除,不再对外展示。确定删除吗?"
+      },
+      "noticeStatus": {
+        "draft": "草稿",
+        "published": "已发布",
+        "offline": "已下线"
+      },
+      "templates": {
+        "title": "通知模板管理",
+        "tip": "模板命中「来源 + 类型」后,sendPostalMessage 会用 {{变量}} 渲染标题与正文并随消息存储;未命中的消息由前端按消息类型渲染。",
+        "create": "新建模板",
+        "edit": "编辑模板",
+        "source": "来源署",
+        "anySource": "任意来源",
+        "type": "消息类型",
+        "typeRule": "消息类型只能使用小写字母、数字和下划线",
+        "titleTemplate": "标题模板",
+        "bodyTemplate": "正文模板",
+        "variables": "变量清单",
+        "varTip": "变量用双花括号包裹,如 {{no}}、{{title}};发送时用 params 里同名字段替换,缺省为空。",
+        "updatedAt": "更新时间",
+        "deleteTip": "模板 {{type}} 将被软删除,不再参与渲染。确定删除吗?"
+      },
+      "postcards": {
+        "title": "明信片管理",
+        "searchPlaceholder": "搜索编号、祝福语或收发件人",
+        "template": "模板",
+        "takedown": "下架",
+        "takedownTitle": "下架明信片 {{no}}",
+        "takedownTip": "下架后明信片从用户端隐藏,寄件人会收到一条通知。",
+        "reason": "下架原因",
+        "takedownDone": "明信片已下架"
+      },
+      "cardTemplates": {
+        "title": "明信片模板管理",
+        "tip": "用户写明信片时挑选的卡片款式;停用后不再出现在挑选列表,已寄出的明信片不受影响。",
+        "create": "新建模板",
+        "edit": "编辑模板",
+        "code": "模板编码",
+        "codeRule": "编码只能使用大写字母、数字和下划线",
+        "name": "模板名称",
+        "scene": "场景",
+        "scene_festival": "节日",
+        "scene_scenery": "风景",
+        "scene_daily": "日常",
+        "color": "卡片配色",
+        "description": "模板描述",
+        "sortOrder": "排序",
+        "deleteTip": "模板 {{code}} 将被删除;已有明信片使用过的模板会被拒绝删除。确定删除吗?"
+      },
+      "stats": {
+        "title": "基础统计",
+        "messageTotal": "消息总量",
+        "readRate": "已读率",
+        "unreadCount": "未读数",
+        "archivedCount": "已归档",
+        "postcardTotal": "明信片总数",
+        "postcardToday": "今日寄出",
+        "postcardReceived": "已签收",
+        "postcardTaken": "已下架",
+        "noticesPublished": "公告(已发布)",
+        "noticesDraft": "草稿",
+        "noticesOffline": "已下线",
+        "subscribers": "公告订阅数",
+        "templatesEnabled": "启用模板",
+        "bySource": "按署统计",
+        "byType": "按消息类型统计",
+        "source": "来源",
+        "messageCount": "消息量"
+      },
+      "audit": {
+        "title": "审计日志",
+        "actor": "操作人",
+        "system": "系统",
+        "action": "动作",
+        "target": "对象",
+        "detail": "详情",
+        "time": "时间",
+        "searchPlaceholder": "按动作关键字筛选"
+      }
+    }
+  },
+  "tour": {
+    "officeName": "奶龙国皇家文化旅游署",
+    "officeSub": "景点导览 · 文化内容 · 打卡收集",
+    "sso": {
+      "title": "身份确认",
+      "confirm": "进入文化旅游署",
+      "tip": "将以当前登录身份使用景点导览、文化内容与打卡收集。"
+    },
+    "nav": {
+      "home": "旅游首页",
+      "attractions": "景点",
+      "articles": "文化内容",
+      "collection": "收集册",
+      "badges": "成就徽章",
+      "my": "我的旅游",
+      "manage": "管理入口"
+    },
+    "admin": {
+      "navLabel": "文化旅游署管理",
+      "tabs": {
+        "attractions": "景点管理",
+        "articles": "内容管理",
+        "rules": "打卡规则",
+        "badges": "徽章管理",
+        "stats": "统计",
+        "audit": "审计"
+      },
+      "allStatus": "全部状态",
+      "status": {
+        "online": "已上线",
+        "offline": "已下线"
+      },
+      "online": "上线",
+      "offline": "下线",
+      "onlineDone": "景点已上线",
+      "offlineDone": "景点已下线",
+      "articleOnline": "发布",
+      "articleOffline": "下线",
+      "articleOnlineDone": "文章已发布",
+      "articleOfflineDone": "文章已下线",
+      "articleStatus": {
+        "published": "已发布",
+        "offline": "已下线"
+      },
+      "attractions": {
+        "title": "景点管理",
+        "tip": "只有「已上线」的景点会出现在用户端;下线不会删除打卡记录。",
+        "create": "新建景点",
+        "edit": "编辑景点",
+        "searchPlaceholder": "搜索名称或编号",
+        "empty": "还没有景点,先建一个吧",
+        "namePlaceholder": "景点的简体名称",
+        "pointsPlaceholder": "一行一个打卡点",
+        "pointsTip": "打卡点按行拆分展示;繁体留空时用户端回退显示简体。",
+        "deleteTip": "景点「{{name}}」将被软删除,不再对用户展示。确定删除吗?"
+      },
+      "articles": {
+        "title": "文化内容管理",
+        "tip": "「已发布」的文章会出现在用户端;下线只是隐藏,随时可再发布。",
+        "create": "新建文章",
+        "edit": "编辑文章",
+        "searchPlaceholder": "搜索标题或编号",
+        "empty": "还没有文章,先写一篇吧",
+        "titlePlaceholder": "文章的简体标题",
+        "deleteTip": "文章《{{title}}》将被软删除,不再对用户展示。确定删除吗?"
+      },
+      "rules": {
+        "title": "打卡规则",
+        "tip": "规则保存后立即对新的打卡生效,不影响已成功的打卡。",
+        "dailyLimit": "每用户每日打卡上限(1-100)",
+        "siteDailyLimit": "全站每日打卡上限(0 = 不限)",
+        "siteTip": "全站上限用于节日活动限流;达到上限后当天全站不能再打卡。",
+        "invalidDaily": "每用户每日上限必须是 1-100 的整数",
+        "invalidSite": "全站每日上限必须是 0-100000 的整数"
+      },
+      "badges": {
+        "title": "徽章管理",
+        "tip": "用户累计打卡次数达到阈值即自动发放;停用后不再发放,已发放的不收回。",
+        "create": "新建徽章",
+        "edit": "编辑徽章",
+        "code": "识别码",
+        "codeTip": "识别码创建后不可修改,用小写字母、数字与下划线。",
+        "threshold": "打卡次数阈值",
+        "invalidThreshold": "打卡次数阈值必须是 1-1000 的整数",
+        "awardCount": "发放数",
+        "empty": "还没有徽章定义",
+        "deleteTip": "徽章「{{name}}」将被软删除;已发放的记录保留。确定删除吗?",
+        "awardsTitle": "发放记录",
+        "allBadges": "全部徽章",
+        "badge": "徽章",
+        "user": "用户",
+        "checkinCount": "达成打卡数",
+        "awardedAt": "获得时间",
+        "noAwards": "还没有发放记录",
+        "holding": "持有中",
+        "revoked": "已回收",
+        "revoke": "回收",
+        "revokeTitle": "回收徽章:{{name}}",
+        "revokeTip": "回收后 {{user}} 的这枚徽章立即失效;若之后重新达标也不会自动补发。",
+        "revokeReasonPlaceholder": "回收原因(可选,200 字以内)",
+        "revokeDone": "徽章已回收"
+      },
+      "stats": {
+        "title": "基础统计",
+        "attractions": "景点总数",
+        "onlineAttractions": "其中上线 {{count}} 个",
+        "articles": "文章总数",
+        "publishedArticles": "其中发布 {{count}} 篇",
+        "checkinsTotal": "打卡总量",
+        "checkinsToday": "今日 {{count}} 次",
+        "checkinUsers": "打卡用户数",
+        "distinctCheckinUsers": "去重后",
+        "badgeDefinitions": "徽章定义",
+        "badgeAwards": "有效发放 {{count}} 枚",
+        "badgeRevoked": "已回收徽章",
+        "badgeRevokedHint": "回收不改打卡记录",
+        "trendTitle": "近 7 日打卡趋势",
+        "topAttractions": "热门景点",
+        "top5": "前 5 名",
+        "checkins": "打卡量",
+        "noData": "暂无数据"
+      },
+      "audit": {
+        "title": "审计日志",
+        "tip": "记录景点与内容变更、打卡、徽章发放与回收、规则调整。",
+        "time": "时间",
+        "actor": "操作人",
+        "action": "动作",
+        "target": "对象",
+        "detail": "详情",
+        "searchPlaceholder": "按动作关键字筛选,如 badge",
+        "empty": "没有符合条件的审计记录"
+      }
+    },
+    "type": {
+      "landmark": "地标",
+      "nature": "自然",
+      "culture": "文化",
+      "food": "美食"
+    },
+    "openState": {
+      "open": "开放中",
+      "limited": "限流中",
+      "closed": "关闭"
+    },
+    "articleType": {
+      "festival": "节庆",
+      "folk": "民俗",
+      "world": "世界观"
+    },
+    "stamp": {
+      "style": {
+        "wave": "海浪章",
+        "star": "星章",
+        "claw": "奶龙爪章"
+      },
+      "status": {
+        "entered": "已入境",
+        "exited": "已离境",
+        "invalid": "已作废"
+      }
+    },
+    "field": {
+      "no": "编号",
+      "type": "类型",
+      "openState": "开放状态",
+      "summary": "简介",
+      "description": "介绍",
+      "checkinPoints": "打卡点",
+      "sortOrder": "排序",
+      "title": "标题",
+      "body": "正文",
+      "publishedAt": "发布时间",
+      "icon": "图标",
+      "updatedAt": "更新时间"
+    },
+    "filter": {
+      "allTypes": "全部类型",
+      "type": "按类型筛选"
+    },
+    "home": {
+      "hero": "欢迎来到奶龙岛",
+      "tagline": "走走看看,随处打卡,把奶龙岛一点点收进你的收集册。",
+      "statCheckins": "我的打卡",
+      "statBadges": "我的徽章",
+      "statStamps": "入境纪念章",
+      "statToday": "今日打卡",
+      "recommendations": "景点推荐",
+      "viewAll": "查看全部",
+      "noRecommendations": "暂时没有上线的景点",
+      "quickEntries": "快捷入口",
+      "festivals": "节庆公告",
+      "viewAllArticles": "全部内容",
+      "noFestivals": "最近没有节庆公告",
+      "rulesTitle": "打卡小规则",
+      "rulePerAttraction": "每个景点每人每天可以打卡 1 次。",
+      "ruleDaily": "每天最多打卡 {{limit}} 次,好风景要慢慢逛。",
+      "startCheckin": "出发打卡"
+    },
+    "attractions": {
+      "title": "景点列表",
+      "tip": "筛选类型或搜索名称,点开景点卡片即可查看详情与打卡。",
+      "searchPlaceholder": "搜索景点名称或简介",
+      "empty": "没有符合条件的景点",
+      "points": "打卡点",
+      "noPoints": "这个景点还没有登记打卡点",
+      "notFound": "景点不存在或已下线",
+      "backToList": "返回景点列表"
+    },
+    "checkin": {
+      "title": "在这里打卡",
+      "rule": "同一景点每天可打卡 1 次,打卡会记入收集册并累积成就徽章。",
+      "notePlaceholder": "写一句打卡心情(可选,200 字以内)",
+      "button": "打卡",
+      "success": "在「{{name}}」打卡成功!",
+      "newBadge": "获得新徽章:{{name}}",
+      "doneToday": "今天已打卡",
+      "comeBackTomorrow": "明天再来吧",
+      "closed": "景点关闭中,暂不能打卡"
+    },
+    "articles": {
+      "title": "文化内容",
+      "tip": "节庆、民俗与奶龙国世界观的小文章。",
+      "searchPlaceholder": "搜索文章标题或正文",
+      "empty": "没有符合条件的文章",
+      "notFound": "文章不存在或已下线",
+      "backToList": "返回内容列表"
+    },
+    "collection": {
+      "title": "收集册",
+      "moreCheckins": "去打卡",
+      "statCheckins": "打卡次数",
+      "statVisited": "去过的景点",
+      "statStamps": "入境纪念章",
+      "stampsTitle": "入境纪念章",
+      "stampsHint": "每次从口岸入境奶龙国,这里会自动盖一枚纪念章(来自入境署通关记录)。",
+      "unknownPort": "未知口岸",
+      "noStamps": "还没有入境纪念章",
+      "goImmigration": "去入境署通关",
+      "checkinsTitle": "我的打卡记录",
+      "checkinNo": "打卡编号",
+      "attraction": "景点",
+      "date": "打卡日期",
+      "note": "心情",
+      "time": "打卡时间",
+      "noCheckins": "还没有打卡记录,去景点页面转转吧",
+      "footnote": "纪念章只作收集展示,不是通关凭证;真实出入境请以入境署记录为准。"
+    },
+    "badges": {
+      "title": "成就徽章",
+      "tip": "累计打卡 {{total}} 次,达成条件即可自动获得徽章。",
+      "goCheckin": "继续打卡",
+      "awardedAt": "{{time}} 获得",
+      "inProgress": "收集中",
+      "empty": "暂时没有可收集的徽章"
+    },
+    "my": {
+      "title": "我的旅游",
+      "todayLine": "今天已打卡 {{today}} / {{limit}} 次。",
+      "statCheckins": "打卡次数",
+      "statVisited": "去过的景点",
+      "statBadges": "徽章",
+      "statStamps": "纪念章",
+      "badgesTitle": "我的徽章",
+      "viewBadges": "徽章墙",
+      "noBadges": "还没有徽章,打一次卡就能拿到第一枚",
+      "stampsTitle": "最近纪念章",
+      "viewCollection": "打开收集册",
+      "noStamps": "还没有入境纪念章",
+      "recentCheckins": "最近打卡",
+      "goCheckin": "去打卡",
+      "badgeCount": "已收集 {{count}} 枚徽章"
+    },
+    "error": {
+      "loadFailed": "加载失败,请稍后重试"
+    }
+  },
+  "stat": {
+    "officeName": "奶龙国皇家统计署",
+    "officeSub": "全岛数据总账房 · 只做趣味聚合",
+    "nav": {
+      "home": "趣味统计",
+      "reports": "我的年度报告",
+      "guide": "数据说明",
+      "dashboard": "平台总看板",
+      "metrics": "统计口径",
+      "export": "数据导出",
+      "audit": "审计日志"
+    },
+    "sso": {
+      "title": "身份确认",
+      "confirm": "确认进入",
+      "tip": "进入皇家统计署即代表你同意以当前身份查看聚合数据;所有数字均为跨署只读统计,不含任何个人明细。"
+    },
+    "home": {
+      "heroTitle": "奶龙岛年度数字地图",
+      "heroSub": "签注、通关、打卡、徽章……每一枚数字都是岛上生活的脚印。所有数据只做聚合展示,口径随时可查。",
+      "entryReports": "生成我的年度报告",
+      "entryGuide": "先看数据说明",
+      "metricsTitle": "全岛趣味统计",
+      "metricsTip": "以下数字由各署业务表实时 COUNT 而来,仅作趣味展示,不构成任何官方统计。",
+      "updatedAt": "数据更新时间:{{time}}",
+      "unavailable": "暂不可用",
+      "latestTitle": "最近一份年度报告",
+      "latestYear": "{{year}} 年度报告",
+      "latestGenerated": "生成于 {{time}}",
+      "openLatest": "打开报告",
+      "latestEmpty": "还没有生成过年度报告。生成一份,看看你在奶龙岛留下了多少脚印。"
+    },
+    "reports": {
+      "title": "我的年度报告",
+      "tip": "按年度汇总你自己的签注、入境、打卡、徽章、活动报名等数据;生成后保存快照,可随时回看与打印。",
+      "generate": "生成年度报告",
+      "generateTitle": "生成年度报告",
+      "generateTip": "同一年度可重复生成,新快照会覆盖旧版;每小时最多生成 6 次。",
+      "year": "年度",
+      "yearOption": "{{year}} 年",
+      "yearPlaceholder": "选择要汇总的年度",
+      "reportNo": "报告编号",
+      "generatedAt": "生成时间",
+      "generatedToast": "{{year}} 年度报告已生成",
+      "regeneratedToast": "{{year}} 年度报告已更新",
+      "empty": "还没有年度报告,点右上角生成一份。",
+      "view": "查看"
+    },
+    "report": {
+      "title": "{{year}} 年度报告",
+      "paperTitle": "奶龙国皇家统计署 · {{year}} 年度个人报告",
+      "paperSub": "本报告由你自己的业务记录聚合而成,仅供趣味留念,不含他人数据。",
+      "generatedAt": "生成时间:{{time}}",
+      "print": "打印报告",
+      "regenerate": "重新生成",
+      "back": "返回列表",
+      "notFound": "报告不存在或已被删除。",
+      "empty": "这一年还没有可汇总的记录。",
+      "footnote": "数据截至报告生成时刻 · 皇家统计署只做聚合展示,不发布真实统计",
+      "section": {
+        "visa": "签注足迹",
+        "immigration": "口岸通关",
+        "tourism": "景点打卡",
+        "protocol": "活动时光",
+        "education": "阅读学习",
+        "documents": "文书认证",
+        "resident": "居民身份",
+        "appeal": "申诉监察",
+        "diplomatic": "外交事务",
+        "postal": "邮政往来",
+        "archives": "档案记录"
+      },
+      "item": {
+        "applications": "签注申请",
+        "issued": "签注签发",
+        "approved": "签注通过",
+        "declarations": "入境申报",
+        "entries": "入境次数",
+        "exits": "出境次数",
+        "checkins": "景点打卡",
+        "badges": "获得徽章",
+        "registrations": "活动报名",
+        "checkedIn": "活动签到",
+        "reads": "百科阅读",
+        "certificates": "认证文书",
+        "relations": "外交关系建立",
+        "identities": "外交身份登记",
+        "postcardsSent": "寄出明信片",
+        "postcardsReceived": "收到明信片",
+        "deletionRequests": "删除申请",
+        "resident": "已是注册居民",
+        "cards": "居民卡签发",
+        "submitted": "提交申诉",
+        "resolved": "申诉办结"
+      }
+    },
+    "guide": {
+      "title": "数据说明",
+      "tip": "统计署是全岛的后台账房:这里解释每个数字怎么来、多久更新、能看到什么、看不到什么。",
+      "frequencyTitle": "更新方式",
+      "frequencyBody": "所有指标在页面打开时从各署业务表实时 COUNT,没有缓存、没有预估值;页面顶部的时间即本次统计时刻。",
+      "privacyTitle": "隐私边界",
+      "privacyBody": "全站数字只做跨署聚合,不展示任何可识别个人的数据;你的年度报告仅本人可见,由你自己的业务记录聚合而成。",
+      "scopeTitle": "功能边界",
+      "scopeBody": "本署只做聚合展示,不发布真实统计、不参与任何署的审核流程;数字口径由管理端统一维护,口径变化不影响各署业务数据。",
+      "metricsTitle": "指标口径一览",
+      "formula": "口径说明",
+      "source": "来源表"
+    },
+    "office": {
+      "portal": "统一门户",
+      "visa": "签注申请署",
+      "immigration": "口岸入境署",
+      "dip": "外交关系署",
+      "resident": "居民登记署",
+      "protocol": "礼宾活动署",
+      "docs": "文书认证署",
+      "appeal": "申诉监察署",
+      "tourism": "文化旅游署",
+      "postal": "邮政通信署",
+      "archives": "档案记录署",
+      "stats": "皇家统计署",
+      "education": "教育科学署"
+    },
+    "admin": {
+      "navLabel": "统计署管理导航",
+      "tabs": {
+        "dashboard": "平台总看板",
+        "metrics": "统计口径",
+        "export": "数据导出",
+        "audit": "审计日志"
+      },
+      "actions": {
+        "metric_create": "新增口径",
+        "metric_update": "编辑口径",
+        "metric_delete": "删除口径",
+        "export": "导出数据",
+        "report_generate": "生成年度报告"
+      },
+      "dashboard": {
+        "title": "平台总看板",
+        "tip": "分署卡片只展示申请量、通过率、平均处理时长等聚合 COUNT;署的业务表尚未并入时整卡显示为暂不可用。",
+        "refresh": "刷新看板",
+        "total": "累计件量",
+        "pending": "待处理",
+        "approvalRate": "通过率",
+        "avgHours": "平均处理时长(小时)",
+        "live": "数据正常",
+        "unavailable": "暂不可用",
+        "unavailableTip": "该署的业务表尚未并入本库,并表后此处会自动亮起。"
+      },
+      "extra": {
+        "issued": "已签发",
+        "passCodes": "通关码",
+        "ports": "口岸",
+        "identities": "外交身份",
+        "agreements": "建交关系",
+        "cards": "居民卡",
+        "events": "活动",
+        "passes": "活动凭证",
+        "certificates": "认证文书",
+        "decisions": "决定书",
+        "spots": "景点",
+        "badges": "徽章",
+        "postcards": "明信片",
+        "notices": "公告",
+        "accessLogs": "查阅日志",
+        "articles": "百科条目",
+        "metrics": "口径",
+        "exports": "导出次数"
+      },
+      "metrics": {
+        "title": "统计口径管理",
+        "tip": "口径决定首页与说明页展示哪些数字:名称双语、来源署与来源表、可选状态筛选;数值在读取时实时计算。",
+        "create": "新增口径",
+        "edit": "编辑口径",
+        "code": "指标代码",
+        "name": "指标名称",
+        "sourceOffice": "来源署",
+        "sourceTable": "来源表",
+        "tablePlaceholder": "先选来源署,再选业务表",
+        "statusValue": "状态筛选",
+        "statusTip": "状态筛选只在来源表带 status 列时生效;留空表示统计全部记录。",
+        "value": "当前数值",
+        "sortOrder": "排序",
+        "description": "指标说明",
+        "formula": "口径定义",
+        "deleteConfirm": "确定删除口径「{{name}}」吗?删除后前台立即不再展示。"
+      },
+      "export": {
+        "title": "数据导出",
+        "tip": "勾选指标导出 CSV;每次导出都会写入导出日志(操作人、时间、指标与行数)。",
+        "refresh": "刷新",
+        "selectAll": "全选",
+        "clearAll": "清空",
+        "selected": "已选 {{count}} 项",
+        "download": "导出 CSV",
+        "noSelection": "先勾选至少一项指标",
+        "done": "CSV 已导出",
+        "logsTitle": "导出记录",
+        "logsEmpty": "还没有导出记录。",
+        "actor": "操作人",
+        "metrics": "导出指标",
+        "rowCount": "行数",
+        "time": "导出时间"
+      },
+      "audit": {
+        "title": "审计日志",
+        "tip": "口径增删改、数据导出与年度报告生成全部留痕;按动作过滤可快速定位。",
+        "refresh": "刷新",
+        "allActions": "全部动作",
+        "time": "时间",
+        "actor": "操作人",
+        "action": "动作",
+        "targetType": "对象类型",
+        "targetId": "对象标识",
+        "detail": "详情"
+      }
+    }
+  },
+  "edu": {
+    "officeName": "奶龙国皇家教育与科学署",
+    "officeSub": "世界观知识 · 科普内容 · 学习任务",
+    "sso": {
+      "title": "进入教育与科学署",
+      "confirm": "确认进入",
+      "tip": "皇家教育与科学署负责奶龙国的世界观百科、科普专题与阅读学习任务,内容仅用于趣味学习,不涉及真实学历与科研认证。"
+    },
+    "nav": {
+      "home": "首页",
+      "entries": "百科词条",
+      "articles": "科普文章",
+      "tasks": "学习任务",
+      "my": "我的学习",
+      "adminReview": "内容审核",
+      "adminEntries": "词条管理",
+      "adminArticles": "文章管理",
+      "adminTasks": "任务管理",
+      "adminStats": "基础统计",
+      "adminAudit": "稽核日志",
+      "adminSettings": "设置"
+    },
+    "status": {
+      "draft": "草稿",
+      "pending_review": "待审核",
+      "published": "已发布",
+      "offline": "已下架"
+    },
+    "recordStatus": {
+      "in_progress": "进行中",
+      "completed": "已完成"
+    },
+    "reviewAction": {
+      "approve": "通过",
+      "reject": "驳回"
+    },
+    "targetType": {
+      "entry": "词条",
+      "article": "文章",
+      "task": "任务",
+      "badge": "徽章"
+    },
+    "field": {
+      "no": "编号",
+      "title": "标题",
+      "summary": "摘要",
+      "body": "正文",
+      "tags": "标签",
+      "category": "分类",
+      "type": "类型",
+      "related": "关联词条",
+      "viewCount": "阅读 {{count}} 次",
+      "viewCountCol": "阅读次数",
+      "favoriteCount": "收藏数",
+      "submitter": "提交人",
+      "submittedAt": "提交时间",
+      "reviewedAt": "审核时间",
+      "reviewer": "审核人",
+      "targetNo": "对象编号",
+      "code": "任务代码",
+      "targetCount": "目标篇数",
+      "badge": "徽章名称",
+      "badgeCode": "徽章代码",
+      "username": "用户名",
+      "displayName": "昵称",
+      "description": "描述",
+      "completedAt": "完成时间",
+      "updatedAt": "更新时间",
+      "createdAt": "记录时间"
+    },
+    "home": {
+      "hero": "欢迎来到皇家教育与科学署",
+      "heroSub": "在这里了解奶龙国的世界观百科、读一读有趣的科普专题,再用阅读打卡任务给自己攒几枚徽章。",
+      "entryCta": "去逛百科",
+      "articleCta": "读科普专题",
+      "taskCta": "做打卡任务",
+      "countEntries": "已发布词条 {{count}} 条",
+      "countArticles": "科普文章 {{count}} 篇",
+      "countReads": "我的阅读 {{count}} 次",
+      "countBadges": "我的徽章 {{count}} 枚",
+      "services": "快捷入口",
+      "viewAll": "查看全部",
+      "featuredEntries": "最新词条",
+      "featuredArticles": "最新专题",
+      "tasksTitle": "学习任务进度",
+      "myTitle": "我的学习概览",
+      "myReads": "累计阅读",
+      "myFavorites": "我的收藏",
+      "myCompleted": "完成任务",
+      "myBadges": "获得徽章",
+      "service": {
+        "entries": "百科词条",
+        "articles": "科普文章",
+        "tasks": "学习任务"
+      },
+      "serviceTip": {
+        "entries": "世界观知识一站查",
+        "articles": "有趣的观察与实验",
+        "tasks": "读满打卡拿徽章"
+      }
+    },
+    "entries": {
+      "title": "百科词条",
+      "tip": "搜索或按分类浏览已发布的词条,点开详情即可收藏。",
+      "searchPlaceholder": "搜索词条标题、正文或标签",
+      "allCategories": "全部分类",
+      "empty": "暂无已发布的词条",
+      "notFound": "词条不存在或尚未发布",
+      "backToList": "返回词条列表",
+      "related": "关联词条"
+    },
+    "articles": {
+      "title": "科普文章",
+      "tip": "岛上的自然观察、生活常识与小实验。",
+      "searchPlaceholder": "搜索文章标题、正文或标签",
+      "empty": "暂无已发布的文章",
+      "notFound": "文章不存在或尚未发布",
+      "backToList": "返回文章列表",
+      "more": "继续读一点"
+    },
+    "favorite": {
+      "add": "收藏",
+      "remove": "取消收藏",
+      "added": "已加入收藏",
+      "removed": "已取消收藏"
+    },
+    "task": {
+      "badgeLabel": "完成徽章:{{name}}",
+      "noBadge": "无徽章",
+      "progressLabel": "已读 {{progress}} / {{target}} 篇",
+      "progressLabelShort": "阅读进度",
+      "completedToast": "任务「{{title}}」完成!获得徽章「{{badge}}」",
+      "completedAt": "完成于 {{time}}"
+    },
+    "tasks": {
+      "title": "学习任务",
+      "tip": "读满任务要求的篇数(词条或文章都算),即可点亮徽章,通知会送到邮政消息中心。",
+      "empty": "暂无进行中的学习任务"
+    },
+    "badges": {
+      "title": "我的成就徽章",
+      "viewAll": "在我的学习里查看",
+      "empty": "还没有徽章,去读一篇词条或文章吧"
+    },
+    "my": {
+      "title": "我的学习",
+      "history": "阅读历史",
+      "favorites": "我的收藏",
+      "readable": "可再读",
+      "unavailable": "暂不可读",
+      "historyEmpty": "还没有阅读记录,打开一篇词条或文章就会出现在这里。",
+      "favoritesEmpty": "还没有收藏,详情页里点「收藏」即可保存。",
+      "continueReading": "继续阅读"
+    },
+    "admin": {
+      "allStatus": "全部状态",
+      "allTypes": "全部类型",
+      "review": {
+        "title": "内容审核",
+        "tip": "本队列只服务内容审核员(edu:review),与内容管理相互隔离;驳回必须填写审核意见。",
+        "view": "查看",
+        "approve": "通过",
+        "reject": "驳回",
+        "approved": "已通过,内容已发布",
+        "rejected": "已驳回,内容退回草稿",
+        "approveTitle": "通过「{{title}}」",
+        "rejectTitle": "驳回「{{title}}」",
+        "approveTip": "通过后内容立即对全体居民可见。",
+        "rejectTip": "驳回后内容退回草稿,提交人可修改后重新提交。",
+        "note": "审核意见",
+        "searchPlaceholder": "搜索待审内容",
+        "pendingEntries": "待审词条 {{count}} 条",
+        "pendingArticles": "待审文章 {{count}} 篇",
+        "queueEmpty": "队列里没有待审内容",
+        "historyTitle": "审核历史",
+        "action": "结论"
+      },
+      "entries": {
+        "title": "百科词条管理",
+        "tip": "新建或编辑词条后提交审核,审核通过即发布;待审核期间不可编辑与删除。",
+        "searchPlaceholder": "搜索编号、标题或摘要",
+        "create": "新建词条",
+        "edit": "编辑词条",
+        "empty": "暂无词条,点「新建词条」开始",
+        "submit": "提交审核",
+        "submitted": "已提交审核",
+        "offline": "下架",
+        "republish": "重新上线",
+        "offlineDone": "内容已下架",
+        "publishedDone": "内容已上线",
+        "deleteTip": "确定删除词条「{{title}}」吗?删除后前台不再展示。",
+        "titlePlaceholder": "给词条起个标题",
+        "tagsPlaceholder": "用逗号分隔,最多 12 个",
+        "relatedPick": "选择要关联的词条",
+        "relatedAdd": "添加关联",
+        "relatedEmpty": "暂无关联词条"
+      },
+      "articles": {
+        "title": "科普文章管理",
+        "tip": "文章与词条共用同一套状态机:草稿 → 待审核 → 已发布 → 已下架。",
+        "searchPlaceholder": "搜索编号、标题或摘要",
+        "create": "新建文章",
+        "edit": "编辑文章",
+        "empty": "暂无文章,点「新建文章」开始"
+      },
+      "tasks": {
+        "title": "学习任务管理",
+        "tip": "阅读打卡任务:居民读满目标篇数即完成并获得徽章;停用后不再推进新进度。",
+        "create": "新建任务",
+        "edit": "编辑任务",
+        "empty": "暂无任务,点「新建任务」开始",
+        "records": "完成情况",
+        "recordsTitle": "「{{title}}」完成情况",
+        "recordsEmpty": "还没有居民参与这个任务",
+        "deleteTip": "确定删除任务「{{title}}」吗?居民的完成记录将一并隐藏。",
+        "activate": "启用",
+        "deactivate": "停用",
+        "participants": "参与人数",
+        "completionRate": "完成率",
+        "completedCol": "已完成人数",
+        "codePlaceholder": "唯一代码,如 READ3",
+        "badgeCodePlaceholder": "留空则不发放徽章"
+      },
+      "stats": {
+        "title": "基础统计",
+        "reads": "累计阅读",
+        "readsToday": "今日阅读",
+        "readers": "阅读人数",
+        "favorites": "总收藏",
+        "badges": "已发徽章",
+        "pendingReview": "待审内容",
+        "contentTitle": "内容状态分布",
+        "tasksTitle": "任务完成情况",
+        "entriesCol": "词条",
+        "articlesCol": "文章"
+      },
+      "audit": {
+        "title": "稽核日志",
+        "actor": "操作人",
+        "action": "操作",
+        "target": "对象",
+        "detail": "详情",
+        "allActions": "全部操作"
       }
     }
   }

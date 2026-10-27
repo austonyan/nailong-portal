@@ -1,0 +1,428 @@
+/* ---------- archives (奶龙国皇家档案与记录署) ---------- */
+
+.arch-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.arch-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  border-radius: var(--animal-border-radius-lg);
+  background: var(--animal-bg-color-secondary);
+  border: var(--animal-border-width) solid var(--animal-border-color-light);
+}
+
+.arch-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.arch-emblem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.arch-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--animal-text-color);
+}
+
+.arch-sub {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.arch-banner-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--animal-text-color-secondary);
+  background: var(--animal-primary-color-bg);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.arch-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.arch-nav-link {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+  text-decoration: none;
+  background: var(--animal-bg-color-secondary);
+  transition:
+    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.arch-nav-link:hover {
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.arch-nav-link.active {
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 600;
+}
+
+.arch-nav-admin {
+  border: var(--animal-border-width) dashed var(--animal-border-color);
+}
+
+.arch-subnav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 6px;
+  background: var(--animal-primary-color-bg);
+  border-radius: 999px;
+}
+
+.arch-subnav-link {
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--animal-text-color-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.arch-subnav-link:hover {
+  color: var(--animal-primary-color);
+  background: var(--animal-bg-color);
+}
+
+.arch-subnav-link.active {
+  color: var(--animal-bg-color);
+  background: var(--animal-primary-color);
+  font-weight: 600;
+}
+
+.arch-hero {
+  border-radius: var(--animal-border-radius-lg);
+  padding: 30px 28px;
+}
+
+.arch-hero-sub {
+  margin: 12px 0 0;
+  color: var(--animal-text-color-secondary);
+  font-size: 15px;
+}
+
+.arch-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.arch-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: var(--animal-border-radius-lg);
+  background: var(--animal-bg-color-secondary);
+  border: var(--animal-border-width) solid var(--animal-border-color-light);
+}
+
+.arch-stat-label {
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.arch-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--animal-text-color);
+}
+
+.arch-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.arch-quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.arch-quick-card h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.arch-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.arch-type-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.arch-type-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.arch-type-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.arch-type-desc {
+  margin: 0;
+  color: var(--animal-text-color-secondary);
+  font-size: 13px;
+}
+
+.arch-type-retention {
+  margin: 0;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.arch-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.arch-toolbar > * {
+  min-width: 150px;
+}
+
+.arch-field-label {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--animal-text-color-secondary);
+}
+
+.arch-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 92px;
+  padding: 12px 16px;
+  border-radius: var(--animal-border-radius-md);
+  border: var(--animal-border-width) solid var(--animal-border-color);
+  background: var(--animal-bg-color);
+  color: var(--animal-text-color);
+  font-family: var(--animal-font-family);
+  font-size: var(--animal-font-size-base);
+  line-height: var(--animal-line-height-base);
+  outline: none;
+  transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.arch-textarea:focus {
+  border-color: var(--animal-focus-yellow);
+}
+
+.arch-textarea::placeholder {
+  color: var(--animal-text-color-disabled);
+}
+
+.arch-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.arch-detail-item {
+  padding: 10px 14px;
+  border-radius: var(--animal-border-radius-md);
+  background: var(--animal-bg-color-secondary);
+  border: var(--animal-border-width) solid var(--animal-border-color-light);
+}
+
+.arch-detail-key {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+  margin-bottom: 4px;
+}
+
+.arch-detail-value {
+  font-size: 14px;
+  color: var(--animal-text-color);
+  word-break: break-all;
+}
+
+.arch-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 6px;
+  border-left: var(--animal-border-width) dashed var(--animal-border-color);
+  margin-left: 8px;
+}
+
+.arch-timeline-item {
+  position: relative;
+  padding-left: 18px;
+}
+
+.arch-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--animal-primary-color);
+}
+
+.arch-timeline-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--animal-text-color);
+}
+
+.arch-timeline-note {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+  word-break: break-word;
+}
+
+.arch-timeline-time {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.arch-msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.arch-msg-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.arch-msg-card.unread {
+  border-left: 4px solid var(--animal-primary-color);
+}
+
+.arch-msg-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.arch-msg-body {
+  margin: 0;
+  color: var(--animal-text-color-secondary);
+  font-size: 14px;
+}
+
+.arch-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.arch-empty {
+  padding: 18px;
+  text-align: center;
+  color: var(--animal-text-color-muted);
+}
+
+.arch-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.arch-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.arch-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.arch-summary-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--animal-text-color);
+}
+
+.arch-summary-row > span:first-child {
+  flex: 0 0 88px;
+  color: var(--animal-text-color-muted);
+  font-size: 13px;
+}
+
+.arch-hidden-tag {
+  color: var(--animal-error-color);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.arch-guide-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .arch-banner {
+    padding: 14px;
+  }
+
+  .arch-toolbar > * {
+    min-width: 0;
+    flex: 1 1 150px;
+  }
+}

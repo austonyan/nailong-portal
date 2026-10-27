@@ -139,14 +139,85 @@ const ENUMS = {
   ],
   'admin.roles.group': [
     'portal', 'users', 'roles', 'services', 'visa', 'appeal', 'immigration', 'diplomacy',
-    'docs', 'protocol', 'resident',
+    'docs', 'protocol', 'resident', 'archives', 'postal', 'tourism', 'stats', 'education',
   ],
+  'arch.msgType': ['submitted', 'reviewing', 'executing', 'completed', 'rejected'],
+  'arch.status': ['pending', 'reviewing', 'executing', 'completed', 'rejected'],
+  'arch.recStatus': [
+    'draft', 'pending', 'pending_review', 'supplement', 'supplement_required', 'approved',
+    'issued', 'valid', 'rejected', 'invalid', 'withdrawn', 'closed', 'used', 'expired',
+    'voided', 'entered', 'exited',
+  ],
+  'arch.office': ['visa', 'immigration'],
+  'arch.action': ['list', 'detail', 'export'],
+  'arch.event': ['submit', 'accept', 'approve', 'execute', 'reject'],
+  'arch.field': [
+    'applicationNo', 'visaNo', 'appNo', 'type', 'status', 'submittedAt', 'issuedAt',
+    'validUntil', 'planArrive', 'planLeave', 'purpose', 'contact', 'declarationNo', 'port',
+    'stayDays', 'recordNo', 'entryDate', 'exitDate',
+  ],
+  'post.nav': [
+    'home', 'notices', 'messages', 'postcards', 'subscription', 'adminNotices',
+    'adminTemplates', 'adminPostcards', 'adminStats', 'adminAudit',
+  ],
+  'post.level': ['info', 'important', 'event'],
+  'post.postcardStatus': ['draft', 'sent', 'received', 'taken_down'],
+  'post.admin.noticeStatus': ['draft', 'published', 'offline'],
+  'post.source': [
+    'postal', 'visa', 'immigration', 'diplomacy', 'resident', 'protocol', 'docs', 'appeal',
+    'system',
+  ],
+  'post.msg': [
+    'notice_published', 'postcard_received', 'postcard_taken_down',
+    'subscription_confirmed', 'subscription_cancelled', 'fallback',
+    // 文化旅游署经邮政契约投递的消息类型(词条随 .tmp-tourism-i18n 词典交付)
+    'tour_checkin', 'tour_badge',
+    // 教育与科学署经邮政契约投递的消息类型(词条随 .tmp-education-i18n 词典交付)
+    'task_completed',
+  ],
+  'tour.type': ['landmark', 'nature', 'culture', 'food'],
+  'tour.openState': ['open', 'limited', 'closed'],
+  'tour.articleType': ['festival', 'folk', 'world'],
+  'tour.nav': ['home', 'attractions', 'articles', 'collection', 'badges', 'my', 'manage'],
+  'tour.admin.tabs': ['attractions', 'articles', 'rules', 'badges', 'stats', 'audit'],
+  'tour.stamp.style': ['wave', 'star', 'claw'],
+  'tour.stamp.status': ['entered', 'exited', 'invalid'],
+  'stat.office': [
+    'portal', 'visa', 'immigration', 'dip', 'resident', 'protocol', 'docs', 'appeal',
+    'tourism', 'postal', 'archives', 'stats', 'education',
+  ],
+  'stat.report.section': [
+    'visa', 'immigration', 'tourism', 'protocol', 'education', 'documents', 'resident',
+    'appeal',
+  ],
+  'stat.report.item': [
+    'applications', 'issued', 'approved', 'declarations', 'entries', 'exits', 'checkins',
+    'badges', 'registrations', 'checkedIn', 'reads', 'certificates', 'resident', 'cards',
+    'submitted', 'resolved',
+  ],
+  'stat.admin.tabs': ['dashboard', 'metrics', 'export', 'audit'],
+  'stat.admin.actions': [
+    'metric_create', 'metric_update', 'metric_delete', 'export', 'report_generate',
+  ],
+  'stat.admin.extra': [
+    'issued', 'passCodes', 'ports', 'identities', 'agreements', 'cards', 'events',
+    'passes', 'certificates', 'decisions', 'spots', 'badges', 'postcards', 'notices',
+    'accessLogs', 'articles', 'metrics', 'exports',
+  ],
+  'edu.status': ['draft', 'pending_review', 'published', 'offline'],
+  'edu.recordStatus': ['in_progress', 'completed'],
+  'edu.reviewAction': ['approve', 'reject'],
+  'edu.targetType': ['entry', 'article', 'task', 'badge'],
 };
 
 for (const [prefix, values] of Object.entries(ENUMS)) {
   for (const value of values) {
     const key = prefix.endsWith('_') ? `${prefix}${value}` : `${prefix}.${value}`;
-    if (!cn.has(key)) errors.push({ kind: 'enum', key, prefix });
+    // 消息模板类枚举的词条可能是 {title, body} 子树而非扁平叶子
+    // (如 post.msg.<type>.title)，子树下存在任一叶子即视为已覆盖。
+    if (!cn.has(key) && !leafKeys.some((leaf) => leaf.startsWith(`${key}.`))) {
+      errors.push({ kind: 'enum', key, prefix });
+    }
   }
 }
 

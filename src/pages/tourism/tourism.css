@@ -1,0 +1,537 @@
+/* 奶龙国皇家文化旅游署 — 页面样式（全部走 --animal-* 令牌）。 */
+
+.tour-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-office-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tour-office-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tour-office-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+}
+
+.tour-office-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.tour-office-sub {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.tour-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tour-nav-link {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+  text-decoration: none;
+  background: var(--animal-bg-color-secondary);
+  transition:
+    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
+    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.tour-nav-link:hover {
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.tour-nav-link.active {
+  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 600;
+}
+
+.tour-admin-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--animal-border-color);
+}
+
+.tour-hero {
+  border-radius: var(--animal-border-radius-lg);
+  padding: 28px 24px;
+  margin-bottom: 20px;
+}
+
+.tour-hero-sub {
+  margin: 12px 0 0;
+  font-size: 15px;
+  color: var(--animal-text-color-secondary);
+}
+
+.tour-section {
+  margin-top: 22px;
+}
+
+.tour-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.tour-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.tour-attraction-card,
+.tour-article-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.tour-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tour-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+  flex: none;
+}
+
+.tour-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tour-card-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tour-card-summary {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--animal-text-color-secondary);
+}
+
+.tour-meta-line {
+  margin: 0;
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.tour-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tour-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tour-stat-label {
+  font-size: 12px;
+  color: var(--animal-text-color-muted);
+}
+
+.tour-stat-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--animal-primary-color);
+}
+
+.tour-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.tour-quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.tour-quick-card h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.tour-ann-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.tour-ann-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tour-ann-body {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--animal-text-color-secondary);
+  white-space: pre-wrap;
+}
+
+.tour-center-btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.tour-textarea {
+  width: 100%;
+  border: var(--animal-border-width) solid var(--animal-border-color);
+  border-radius: var(--animal-border-radius-md);
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color);
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  resize: vertical;
+  transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+.tour-textarea:focus {
+  outline: none;
+  border-color: var(--animal-focus-yellow);
+}
+
+.tour-textarea::placeholder {
+  color: var(--animal-text-color-muted);
+  font-weight: 400;
+}
+
+/* 详情页 */
+.tour-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tour-detail-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.tour-detail-head .tour-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+}
+
+.tour-detail-title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.tour-detail-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--animal-text-color-secondary);
+  white-space: pre-wrap;
+}
+
+.tour-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tour-checkin-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.tour-checkin-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tour-stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tour-stamp-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tour-stamp-emblem {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+  border: 2px dashed var(--animal-primary-color);
+}
+
+.tour-stamp-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tour-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.tour-badge-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tour-badge-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tour-badge-emblem {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-primary-color);
+  flex: none;
+}
+
+.tour-badge-emblem.locked {
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color-muted);
+  opacity: 0.7;
+}
+
+.tour-badge-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tour-badge-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 管理端 */
+.tour-admin-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tour-filter-bar > *:not(:last-child) {
+  min-width: 160px;
+}
+
+.tour-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tour-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 16px;
+}
+
+.tour-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--animal-text-color-secondary);
+}
+
+.tour-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.tour-inline-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tour-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.tour-trend {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  min-height: 130px;
+  margin-top: 12px;
+}
+
+.tour-trend-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tour-trend-bar {
+  width: 100%;
+  max-width: 34px;
+  border-radius: 8px;
+  background: var(--animal-primary-color-bg);
+  border: 1.5px solid var(--animal-primary-color);
+  min-height: 4px;
+}
+
+.tour-trend-n {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--animal-primary-color);
+}
+
+.tour-audit-detail {
+  font-size: 12px;
+  word-break: break-all;
+  color: var(--animal-text-color-muted);
+}
+
+.tour-config-card {
+  max-width: 620px;
+}
+
+.tour-config-tip {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--animal-text-color-muted);
+}
+
+/* SSO 确认弹窗（与署内其它页面保持一致的布局） */
+.tour-sso-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tour-sso-card {
+  padding: 14px 16px;
+}
+
+.tour-sso-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tour-sso-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.tour-sso-account {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+@media (max-width: 720px) {
+  .tour-office-banner {
+    align-items: flex-start;
+  }
+
+  .tour-hero {
+    padding: 20px 16px;
+  }
+}
