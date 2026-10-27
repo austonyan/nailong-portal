@@ -17,6 +17,7 @@ import {
   AlertTriangleIcon,
   FileIcon,
   HelpCircleIcon,
+  MapIcon,
   SearchIcon,
   SendIcon,
 } from 'naive-icons';
@@ -27,6 +28,7 @@ export default function VisaHome() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [home, setHome] = useState(null);
+  const [recs, setRecs] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,6 +45,23 @@ export default function VisaHome() {
       cancelled = true;
     };
   }, [t]);
+
+  // 跨署联动:文化旅游署的上线景点推荐(/tourism/recs 仅要求登录)。
+  // 拉取失败或没有数据时整节隐藏,不影响签注署页面本身。
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get('/tourism/recs')
+      .then((data) => {
+        if (!cancelled) setRecs(Array.isArray(data?.items) ? data.items : []);
+      })
+      .catch(() => {
+        if (!cancelled) setRecs([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!home) {
     return (
@@ -137,6 +156,34 @@ export default function VisaHome() {
           )}
         </div>
       </section>
+
+      {!!recs?.length && (
+        <section className="visa-section">
+          <div className="visa-notice-head">
+            <Title size="middle" color="app-green">
+              {t('visa.home.tourismTitle')}
+            </Title>
+            <Link to="/tourism" className="visa-link">
+              {t('visa.home.tourismAll')}
+            </Link>
+          </div>
+          <p className="muted-text">{t('visa.home.tourismSub')}</p>
+          <div className="visa-type-grid">
+            {recs.map((spot) => (
+              <Card key={spot.id} hoverable className="visa-type-card" onClick={() => navigate('/tourism')}>
+                <div className="visa-type-top">
+                  <MapIcon size={30} />
+                  <Tag color="app-green" variant="soft">
+                    {t(`visa.tourismType.${spot.type}`)}
+                  </Tag>
+                </div>
+                <h3 className="visa-type-name">{spot.name}</h3>
+                <p className="visa-type-desc">{spot.summary || spot.description}</p>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="visa-section">
         <Title size="middle" color="app-blue">
