@@ -1,0 +1,24 @@
+/* Select 选项面板:由 src/components/selectFloat.js 定位到触发器下方并收进最近裁剪框。
+   库把面板固定画在触发器右侧(left: 100%)且只按视口判断,弹窗/卡片里会被裁掉。
+   注意:库的类名带 CSS Modules 哈希(animal-dropdown-xxxx),只能按子串匹配。 */
+[class*="animal-dropdown"][data-nl-float] {
+  left: var(--nl-select-left, 0) !important;
+  right: auto !important;
+  top: var(--nl-select-top, 0) !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+  width: max-content;
+  min-width: 100%;
+  max-width: var(--nl-select-max-width, calc(100vw - 20px));
+  max-height: var(--nl-select-max-height, 320px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: 120;
+}
+
+/* 面板被裁剪框限宽后,长选项换行而不是撑出圆角。 */
+[class*="animal-dropdown"][data-nl-float] > [class*="animal-option-"] {
+  white-space: normal;
+}

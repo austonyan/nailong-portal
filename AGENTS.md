@@ -163,6 +163,11 @@ constraints (e.g. dayjs is the only sanctioned date layer for the date/time comp
   `onClose` 在 busy 时直接返回。成功后先关窗/重置表单，再 toast，再 `await load()`；
   失败保持弹窗并 toast 错误。取消/重开时清空表单。
 - `Switch` 用 `checked`，不要用 `value`（库不支持，会让显示与服务器状态相反）。
+- `<Select>` 的选项面板由 `src/components/selectFloat.js`（CSS 在 `selectFloat.css`，在
+  `main.jsx` 里安装一次）全局接管：库默认把面板画在触发器**右侧**且只按视口判断，弹窗、
+  抽屉、卡片里会被 `overflow` 裁掉。接管后统一在触发器下方展开、空间不足时上翻，宽高收进
+  最近的裁剪容器并自带滚动；面板打开时 Esc 只收起面板、不会连带关闭外层弹窗。
+  **不要在页面里为下拉框另写定位覆盖**；新增页面无需改动即可生效。
 - 必填字段在提交前校验（用 `common.required`），空值不可提交；删除/作废/吊销等不可逆操作
   要有确认、busy 和成功提示，删除成功文案用 `common.deleted`。
 - `npm run check:ui` 扫描以上约定并已接入 `npm run build`。
