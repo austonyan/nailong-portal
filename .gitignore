@@ -25,3 +25,7 @@ dist-ssr
 
 # Nailong portal local data (SQLite + JWT secret)
 server/data
+
+# Local scratch: agent sessions, screenshots, temporary DBs and pid files
+.tmp-*
+.zcode/
