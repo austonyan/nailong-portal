@@ -87,6 +87,7 @@ export default function DocsTypes() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={!!focus}
         title={focus ? `${focus.name} · ${focus.code}` : ''}
         width={640}

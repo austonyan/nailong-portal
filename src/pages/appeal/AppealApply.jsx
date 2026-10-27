@@ -257,6 +257,7 @@ export default function AppealApply() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={confirmOpen}
         title={t('appeal.apply.confirmTitle')}
         onClose={() => setConfirmOpen(false)}

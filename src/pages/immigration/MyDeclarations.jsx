@@ -258,11 +258,12 @@ export default function MyDeclarations() {
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
-      <Drawer open={openId !== null} title={t('imm.mydecl.detailTitle')} onClose={() => setOpenId(null)} width={540}>
+      <Drawer maskClosable={false} open={openId !== null} title={t('imm.mydecl.detailTitle')} onClose={() => setOpenId(null)} width={540}>
         {openId !== null && <DeclarationDetail id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteTarget(null)}

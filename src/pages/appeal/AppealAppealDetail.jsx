@@ -265,6 +265,7 @@ export default function AppealAppealDetail() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={evalOpen}
         title={t('appeal.detail.evaluateTitle')}
         onClose={() => setEvalOpen(false)}

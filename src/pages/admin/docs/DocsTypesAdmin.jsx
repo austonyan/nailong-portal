@@ -141,6 +141,7 @@ export default function DocsTypesAdmin() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={!!editing}
         title={editing?.id ? t('docs.admin.types.editTitle', { name: editing.name }) : t('docs.admin.types.create')}
         width={720}

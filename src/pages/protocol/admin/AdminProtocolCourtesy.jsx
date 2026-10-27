@@ -249,6 +249,7 @@ export default function AdminProtocolCourtesy() {
       />
 
       <Modal
+        maskClosable={false}
         open={typeEdit !== null}
         title={typeEdit === 'new' ? t('protocol.admin.addType') : t('protocol.admin.editType')}
         onClose={() => setTypeEdit(null)}
@@ -297,6 +298,7 @@ export default function AdminProtocolCourtesy() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={action !== null}
         title={action ? t(`protocol.admin.courtesyAction_${action.kind}`) : ''}
         onClose={() => setAction(null)}

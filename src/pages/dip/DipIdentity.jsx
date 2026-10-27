@@ -38,6 +38,7 @@ function IdentityCardModal({ id, open, onClose }) {
 
   return (
     <Modal
+      maskClosable={false}
       open={open}
       title={t('dip.identity.cardTitle')}
       onClose={onClose}
@@ -368,6 +369,7 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
       )}
 
       <Modal
+        maskClosable={false}
         open={confirming}
         title={t('dip.apply.confirmTitle')}
         onClose={() => setConfirming(false)}
@@ -494,11 +496,12 @@ export default function DipIdentity() {
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
-      <Drawer open={openId !== null} title={t('dip.identity.detailTitle')} onClose={() => setOpenId(null)} width={560}>
+      <Drawer maskClosable={false} open={openId !== null} title={t('dip.identity.detailTitle')} onClose={() => setOpenId(null)} width={560}>
         {openId !== null && <IdentityDetail id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteTarget(null)}

@@ -129,6 +129,7 @@ export default function ProtocolMyRegistrations() {
       </Card>
 
       <Drawer
+        maskClosable={false}
         open={detail !== null}
         title={detail?.regNo}
         width={620}
@@ -242,6 +243,7 @@ export default function ProtocolMyRegistrations() {
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={cancelTarget !== null}
         title={t('protocol.my.cancelTitle')}
         onClose={() => setCancelTarget(null)}

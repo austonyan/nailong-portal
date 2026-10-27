@@ -364,6 +364,7 @@ export default function DocsApply() {
       )}
 
       <Modal
+        maskClosable={false}
         open={confirming}
         title={t('docs.apply.confirmTitle')}
         width={560}

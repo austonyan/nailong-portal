@@ -317,6 +317,7 @@ export default function VisaApplyForm() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={confirmOpen}
         title={t('visa.form.confirmTitle')}
         onClose={() => setConfirmOpen(false)}

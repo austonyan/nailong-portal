@@ -152,7 +152,7 @@ export default function AdminRoles() {
         <Table className="table-fit" columns={columns} dataSource={roles ?? []} loading={roles === null} rowKey="key" pagination={false} />
       </Card>
 
-      <Modal open={editing !== null} title={editing?.id ? t('admin.roles.edit') : t('admin.roles.create')} onClose={closeModal} footer={null} typewriter={false} width={560}>
+      <Modal maskClosable={false} open={editing !== null} title={editing?.id ? t('admin.roles.edit') : t('admin.roles.create')} onClose={closeModal} footer={null} typewriter={false} width={560}>
         <Form form={form} layout="vertical" onFinish={submit}>
           <FormItem name="key" label={t('admin.roles.key')} help={t('admin.roles.keyTip')} rules={[{ required: true, message: t('admin.roles.keyTip') }]}>
             <Input size="large" disabled={!!editing?.id} placeholder="editor" />
@@ -183,14 +183,20 @@ export default function AdminRoles() {
             />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
-              {t('common.save')}
-            </Button>
+            <div className="form-actions">
+              <Button onClick={closeModal} disabled={busy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={busy} disabled={busy}>
+                {t('common.save')}
+              </Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteTarget(null)}

@@ -351,6 +351,7 @@ export default function AppealAdminManage() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={noticeOpen}
         title={t('appeal.admin.createNotice')}
         onClose={() => setNoticeOpen(false)}
@@ -378,6 +379,7 @@ export default function AppealAdminManage() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={pubOpen}
         title={t('appeal.admin.createPublicity')}
         onClose={() => setPubOpen(false)}
@@ -405,6 +407,7 @@ export default function AppealAdminManage() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={blOpen}
         title={t('appeal.admin.addBlacklist')}
         onClose={() => setBlOpen(false)}

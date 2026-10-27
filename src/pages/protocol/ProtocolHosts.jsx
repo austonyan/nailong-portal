@@ -211,6 +211,7 @@ export default function ProtocolHosts() {
       </Card>
 
       <Drawer
+        maskClosable={false}
         open={editing !== null}
         title={editing === 'new' ? t('protocol.hosts.applyTitle') : editing?.hostNo}
         width={620}
@@ -349,6 +350,7 @@ export default function ProtocolHosts() {
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={deleteOpen}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteOpen(false)}

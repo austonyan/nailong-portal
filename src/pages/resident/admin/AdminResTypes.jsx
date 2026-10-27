@@ -159,6 +159,7 @@ export default function AdminResTypes() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={modalOpen}
         title={form.id ? t('res.admin.types.edit') : t('res.admin.types.create')}
         onClose={() => setModalOpen(false)}

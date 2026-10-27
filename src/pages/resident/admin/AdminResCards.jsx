@@ -154,6 +154,7 @@ export default function AdminResCards() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={action !== null}
         title={action ? ACTION_TITLE[action.kind] : ''}
         onClose={() => setAction(null)}
@@ -182,6 +183,7 @@ export default function AdminResCards() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={remindOpen}
         title={t('res.admin.cards.batchRemind')}
         onClose={() => setRemindOpen(false)}

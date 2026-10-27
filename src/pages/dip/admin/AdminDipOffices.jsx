@@ -57,6 +57,7 @@ function OfficeModal({ initial, onClose, onSaved }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={editing ? t('dip.office.editTitle', { name: initial.name }) : t('dip.office.createTitle')}
       onClose={onClose}
@@ -154,6 +155,7 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={editing ? t('dip.notice.editTitle') : t('dip.notice.createTitle')}
       onClose={onClose}

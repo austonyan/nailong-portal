@@ -114,6 +114,7 @@ export default function DocsApplications() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={!!deleteTarget}
         title={t('common.confirmDeleteTitle')}
         typewriter={false}

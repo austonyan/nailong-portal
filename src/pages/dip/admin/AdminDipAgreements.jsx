@@ -64,6 +64,7 @@ function AgreementModal({ initial, onClose, onSaved }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={editing ? t('dip.agreement.editTitle', { no: initial.no }) : t('dip.agreement.createTitle')}
       onClose={onClose}

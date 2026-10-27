@@ -169,6 +169,7 @@ export default function AdminProtocolHosts() {
       </Card>
 
       <Drawer
+        maskClosable={false}
         open={detail !== null}
         title={detail?.hostNo}
         width={640}
@@ -263,7 +264,7 @@ export default function AdminProtocolHosts() {
         onClose={() => {
           if (!busy) setAction(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>

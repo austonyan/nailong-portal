@@ -104,6 +104,7 @@ export default function ProtocolShell({ permission, variant = 'user', children }
       {children}
 
       <Modal
+        maskClosable={false}
         open={ssoOpen}
         title={t('protocol.sso.title')}
         onClose={cancelSso}

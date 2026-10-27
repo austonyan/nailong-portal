@@ -160,7 +160,7 @@ function BlacklistTab() {
         onClose={() => {
           if (!busy) setAdding(false);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>
@@ -258,7 +258,7 @@ function TemplatesTab() {
         onClose={() => {
           if (!busy) setEditing(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         footer={
           <>
             <Button onClick={() => setEditing(null)} disabled={busy}>{t('common.cancel')}</Button>

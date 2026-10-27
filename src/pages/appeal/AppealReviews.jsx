@@ -130,6 +130,7 @@ export default function AppealReviews() {
       ))}
 
       <Modal
+        maskClosable={false}
         open={createOpen}
         title={t('appeal.review.createTitle')}
         onClose={() => setCreateOpen(false)}
@@ -158,7 +159,7 @@ export default function AppealReviews() {
         </div>
       </Modal>
 
-      <Drawer open={!!detail} title={detail?.code} onClose={() => setDetail(null)} width={520}>
+      <Drawer maskClosable={false} open={!!detail} title={detail?.code} onClose={() => setDetail(null)} width={520}>
         {detail && (
           <div className="appeal-detail-body">
             <dl className="appeal-field-list">

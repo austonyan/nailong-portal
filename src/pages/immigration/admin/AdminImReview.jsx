@@ -155,7 +155,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
         onClose={() => {
           if (!busy) setRejecting(false);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>
@@ -178,7 +178,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
         onClose={() => {
           if (!busy) setSupplementing(false);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>
@@ -283,7 +283,7 @@ export default function AdminImReview() {
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
-      <Drawer open={openId !== null} title={t('imm.admin.review.detailTitle')} onClose={() => setOpenId(null)} width={560}>
+      <Drawer maskClosable={false} open={openId !== null} title={t('imm.admin.review.detailTitle')} onClose={() => setOpenId(null)} width={560}>
         {openId !== null && <ReviewDrawer id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
     </div>

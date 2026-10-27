@@ -93,6 +93,7 @@ export default function ResidentShell({ permission, children }) {
       {children}
 
       <Modal
+        maskClosable={false}
         open={ssoOpen}
         title={t('res.sso.title')}
         onClose={cancelSso}

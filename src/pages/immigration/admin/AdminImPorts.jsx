@@ -126,6 +126,7 @@ function PortsTab() {
       <Table className="table-fit" columns={columns} dataSource={ports ?? []} loading={ports === null} rowKey="id" pagination={false} />
 
       <Modal
+        maskClosable={false}
         open={editing !== null}
         title={editing?.id ? t('imm.admin.editPort') : t('imm.admin.createPort')}
         onClose={() => setEditing(null)}
@@ -167,12 +168,16 @@ function PortsTab() {
             <Input size="large" maxLength={500} placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block>{t('common.save')}</Button>
+            <div className="form-actions">
+              <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
+              <Button type="primary" htmlType="submit">{t('common.save')}</Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={channelTarget !== null}
         title={`${t('imm.admin.addChannel')} · ${channelTarget?.name ?? ''}`}
         onClose={() => setChannelTarget(null)}
@@ -197,7 +202,10 @@ function PortsTab() {
             <Input size="large" maxLength={120} placeholder={t('common.twOptional')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block>{t('common.save')}</Button>
+            <div className="form-actions">
+              <Button onClick={() => setChannelTarget(null)}>{t('common.cancel')}</Button>
+              <Button type="primary" htmlType="submit">{t('common.save')}</Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>
@@ -312,6 +320,7 @@ function AnnouncementsTab() {
       <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
 
       <Modal
+        maskClosable={false}
         open={editing !== null}
         title={editing?.id ? t('imm.admin.editAnn') : t('imm.admin.createAnn')}
         onClose={() => setEditing(null)}
@@ -341,7 +350,10 @@ function AnnouncementsTab() {
             />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block>{t('common.save')}</Button>
+            <div className="form-actions">
+              <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
+              <Button type="primary" htmlType="submit">{t('common.save')}</Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>

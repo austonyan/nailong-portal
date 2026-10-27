@@ -337,6 +337,7 @@ export default function AdminProtocolManage() {
       />
 
       <Modal
+        maskClosable={false}
         open={typeEdit !== null}
         title={typeEdit === 'new' ? t('protocol.admin.addType') : t('protocol.admin.editType')}
         onClose={() => setTypeEdit(null)}
@@ -418,6 +419,7 @@ export default function AdminProtocolManage() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={noticeEdit !== null}
         title={noticeEdit === 'new' ? t('protocol.admin.addNotice') : t('protocol.action.edit')}
         onClose={() => setNoticeEdit(null)}
@@ -459,6 +461,7 @@ export default function AdminProtocolManage() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={deleteNotice !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteNotice(null)}
@@ -474,6 +477,7 @@ export default function AdminProtocolManage() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={templateEdit !== null}
         title={templateEdit?.code}
         onClose={() => setTemplateEdit(null)}

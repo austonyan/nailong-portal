@@ -224,6 +224,7 @@ export default function DipApply() {
       )}
 
       <Modal
+        maskClosable={false}
         open={confirming}
         title={t('dip.apply.confirmTitle')}
         onClose={() => setConfirming(false)}

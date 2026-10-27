@@ -108,6 +108,7 @@ function EntryTab({ onReload }) {
       </div>
       <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.records.empty')} />
       <Modal
+        maskClosable={false}
         open={exitTarget !== null}
         title={t('imm.records.exitTitle', { no: exitTarget?.no })}
         onClose={() => setExitTarget(null)}

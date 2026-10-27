@@ -35,6 +35,7 @@ function TemplateModal({ initial, onClose, onSaved }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={t('dip.templates.editTitle', { code: initial.code })}
       onClose={onClose}

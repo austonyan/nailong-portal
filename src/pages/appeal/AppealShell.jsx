@@ -124,6 +124,7 @@ export default function AppealShell({ permission, children }) {
       {children}
 
       <Modal
+        maskClosable={false}
         open={ssoOpen}
         title={t('appeal.sso.title')}
         onClose={cancelSso}

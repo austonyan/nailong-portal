@@ -155,9 +155,13 @@ constraints (e.g. dayjs is the only sanctioned date layer for the date/time comp
 - 每个 `<Table>` 必须带 `className="table-fit"`。表格靠自动列宽 + 表头/长文本换行压缩进
   容器，**不要加横向滚动**；不要给 Table 传 `size`，不要给列写 `ellipsis`。操作列用
   `.table-actions`（已自动换行）。
+- **弹窗只能显式关闭**：每个 `<Modal>` / `<Drawer>` 都必须写 `maskClosable={false}`，点遮罩
+  不再关闭（库默认是 `true`，误点一下就会丢掉整张表单）。关闭入口是「取消/关闭」按钮、抽屉
+  右上角的 ×，或 Esc。`footer={null}` 的弹窗要自带取消/关闭按钮（用 `.form-actions` 排版）。
+  `npm run check:ui` 会检查是否显式写了 `maskClosable={false}`。
 - 异步弹窗必须有 `busy`：提交/确认按钮 `loading={busy} disabled={busy}`，
-  `maskClosable={!busy}`，`onClose` 在 busy 时直接返回。成功后先关窗/重置表单，再 toast，
-  再 `await load()`；失败保持弹窗并 toast 错误。取消/重开时清空表单。
+  `onClose` 在 busy 时直接返回。成功后先关窗/重置表单，再 toast，再 `await load()`；
+  失败保持弹窗并 toast 错误。取消/重开时清空表单。
 - `Switch` 用 `checked`，不要用 `value`（库不支持，会让显示与服务器状态相反）。
 - 必填字段在提交前校验（用 `common.required`），空值不可提交；删除/作废/吊销等不可逆操作
   要有确认、busy 和成功提示，删除成功文案用 `common.deleted`。

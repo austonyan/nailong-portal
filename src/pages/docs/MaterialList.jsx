@@ -45,8 +45,11 @@ export default function MaterialList({ materials, type }) {
           </div>
         </li>
       ))}
-      <Modal open={!!preview} title={preview?.name} typewriter={false} footer={null} width={640} onClose={() => setPreview(null)}>
+      <Modal maskClosable={false} open={!!preview} title={preview?.name} typewriter={false} width={640} onClose={() => setPreview(null)}>
         {preview && <Image src={preview.url} alt={preview.name} width="100%" />}
+        <div className="form-actions">
+          <Button onClick={() => setPreview(null)}>{t('common.close')}</Button>
+        </div>
       </Modal>
     </ul>
   );

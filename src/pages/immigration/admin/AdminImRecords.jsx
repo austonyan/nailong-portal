@@ -119,6 +119,7 @@ function EntryRecordsTab() {
         pagination={{ current: page, pageSize, total, onChange: (p) => setPage(p), showTotal: true }}
       />
       <Modal
+        maskClosable={false}
         open={editing !== null}
         title={t('imm.records.correctTitle', { no: editing?.no })}
         onClose={() => setEditing(null)}

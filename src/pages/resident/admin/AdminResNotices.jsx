@@ -257,6 +257,7 @@ export default function AdminResNotices() {
       />
 
       <Modal
+        maskClosable={false}
         open={modalOpen}
         title={noticeForm.id ? t('res.admin.notices.edit') : t('res.admin.notices.create')}
         onClose={() => setModalOpen(false)}
@@ -301,7 +302,7 @@ export default function AdminResNotices() {
         onClose={() => {
           if (!busy) setEditingTpl(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         width={560}
         footer={

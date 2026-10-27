@@ -175,7 +175,7 @@ export default function AdminServices() {
         <Table className="table-fit" columns={columns} dataSource={services ?? []} loading={services === null} rowKey="key" pagination={false} />
       </Card>
 
-      <Modal open={editing !== null} title={editing?.id ? t('admin.services.edit') : t('admin.services.create')} onClose={closeModal} footer={null} typewriter={false} width={540}>
+      <Modal maskClosable={false} open={editing !== null} title={editing?.id ? t('admin.services.edit') : t('admin.services.create')} onClose={closeModal} footer={null} typewriter={false} width={540}>
         <Form form={form} layout="vertical" onFinish={submit}>
           <FormItem name="name" label={t('common.name')} rules={[{ required: true, message: t('common.name') }]}>
             <Input size="large" allowClear />
@@ -215,14 +215,20 @@ export default function AdminServices() {
             <Switch checkedChildren={t('common.enabled')} unCheckedChildren={t('common.disabled')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
-              {t('common.save')}
-            </Button>
+            <div className="form-actions">
+              <Button onClick={closeModal} disabled={busy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={busy} disabled={busy}>
+                {t('common.save')}
+              </Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteTarget(null)}

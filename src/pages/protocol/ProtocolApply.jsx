@@ -404,6 +404,7 @@ export default function ProtocolApply() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={confirmOpen}
         title={t('protocol.apply.confirmTitle')}
         onClose={() => setConfirmOpen(false)}

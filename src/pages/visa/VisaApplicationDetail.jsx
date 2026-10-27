@@ -254,6 +254,7 @@ export default function VisaApplicationDetail() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={withdrawOpen}
         title={t('visa.my.withdrawConfirmTitle')}
         onClose={() => setWithdrawOpen(false)}

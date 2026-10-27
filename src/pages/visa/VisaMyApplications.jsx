@@ -133,6 +133,7 @@ export default function VisaMyApplications() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={withdrawTarget !== null}
         title={t('visa.my.withdrawConfirmTitle')}
         onClose={() => setWithdrawTarget(null)}

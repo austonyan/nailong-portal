@@ -160,7 +160,7 @@ export default function DocsCertsAdmin() {
         onClose={() => {
           if (!busy) setRevokeTarget(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         footer={
           <>
             <Button onClick={() => setRevokeTarget(null)} disabled={busy}>{t('common.cancel')}</Button>
@@ -175,6 +175,7 @@ export default function DocsCertsAdmin() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={!!regenTarget}
         title={t('docs.admin.certs.regenerateTitle', { no: regenTarget?.certNo })}
         typewriter={false}

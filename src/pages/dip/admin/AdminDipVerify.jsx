@@ -30,6 +30,7 @@ function BlacklistModal({ onClose, onSaved }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={t('dip.blacklist.add')}
       onClose={onClose}

@@ -218,7 +218,7 @@ function RelationDrawer({ id, onChanged }) {
         onClose={() => {
           if (!busy) setRejectOpen(false);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>
@@ -385,7 +385,7 @@ function IdentityDrawer({ id, onChanged }) {
         onClose={() => {
           if (!busy) setRejectOpen(false);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>
@@ -496,6 +496,7 @@ export default function AdminDipReview() {
       </Card>
 
       <Drawer
+        maskClosable={false}
         open={openId !== null}
         title={kind === 'relation' ? t('dip.relation.detailTitle') : t('dip.identity.detailTitle')}
         onClose={() => setOpenId(null)}

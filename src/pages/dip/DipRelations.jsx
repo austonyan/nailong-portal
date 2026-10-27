@@ -276,11 +276,12 @@ export default function DipRelations() {
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
       </Card>
 
-      <Drawer open={openId !== null} title={t('dip.relation.detailTitle')} onClose={() => setOpenId(null)} width={560}>
+      <Drawer maskClosable={false} open={openId !== null} title={t('dip.relation.detailTitle')} onClose={() => setOpenId(null)} width={560}>
         {openId !== null && <RelationDetail id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteTarget(null)}

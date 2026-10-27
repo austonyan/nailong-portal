@@ -54,6 +54,7 @@ export default function DipShell({ permission, children }) {
       {children}
 
       <Modal
+        maskClosable={false}
         open={ssoOpen}
         title={t('dip.sso.title')}
         onClose={cancelSso}

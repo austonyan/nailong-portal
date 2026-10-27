@@ -147,6 +147,7 @@ export default function AdminResChanges() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={action !== null}
         title={action ? (action.kind === 'approve' ? t('res.admin.actions.approve') : t('res.admin.actions.reject')) : ''}
         onClose={() => setAction(null)}

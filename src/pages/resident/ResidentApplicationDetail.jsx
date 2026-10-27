@@ -239,6 +239,7 @@ export default function ResidentApplicationDetail() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={supplementOpen}
         title={t('res.detail.supplementModalTitle')}
         onClose={() => setSupplementOpen(false)}

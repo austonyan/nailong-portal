@@ -121,6 +121,7 @@ export default function Portal() {
       </section>
 
       <Modal
+        maskClosable={false}
         open={ssoService !== null}
         title={t('visa.sso.title')}
         onClose={() => setSsoService(null)}

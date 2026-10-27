@@ -135,7 +135,7 @@ export default function AppealAdminReviews() {
         )}
       </Card>
 
-      <Drawer open={detail !== null} title={detail?.code} onClose={() => setDetail(null)} width={600}>
+      <Drawer maskClosable={false} open={detail !== null} title={detail?.code} onClose={() => setDetail(null)} width={600}>
         {detail && (
           <div className="appeal-detail-body">
             <div className="appeal-detail-head">
@@ -240,7 +240,7 @@ export default function AppealAdminReviews() {
         onClose={() => {
           if (!busy) setAction(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         width={460}
         footer={
@@ -261,7 +261,7 @@ export default function AppealAdminReviews() {
         onClose={() => {
           if (!busy) setAction(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         width={560}
         footer={

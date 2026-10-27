@@ -56,7 +56,7 @@ export default function DipOffices() {
         {(items ?? []).length === 0 && <p className="muted-text">{t('common.empty')}</p>}
       </div>
 
-      <Drawer open={openCode !== null} title={detail?.office?.name ?? t('dip.office.detailTitle')} onClose={() => setOpenCode(null)} width={520}>
+      <Drawer maskClosable={false} open={openCode !== null} title={detail?.office?.name ?? t('dip.office.detailTitle')} onClose={() => setOpenCode(null)} width={520}>
         {!detail ? (
           <p className="muted-text">{t('common.loading')}</p>
         ) : (

@@ -137,6 +137,7 @@ export default function DocsNotices() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={!!editing}
         title={editing?.id ? t('docs.admin.notices.edit') : t('docs.admin.notices.create')}
         width={640}
@@ -182,6 +183,7 @@ export default function DocsNotices() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={!!deleteTarget}
         title={t('common.confirmDeleteTitle')}
         typewriter={false}

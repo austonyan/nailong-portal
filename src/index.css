@@ -5687,3 +5687,15 @@ h3 {
     max-width: none;
   }
 }
+
+/* ---------- dialog actions ---------- */
+
+/* 弹窗底部/表单末尾的按钮行：取消在左、主操作在右 */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}

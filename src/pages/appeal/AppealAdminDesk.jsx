@@ -208,7 +208,7 @@ export default function AppealAdminDesk() {
         />
       </Card>
 
-      <Drawer open={detail !== null} title={detail?.data?.code} onClose={() => setDetail(null)} width={560}>
+      <Drawer maskClosable={false} open={detail !== null} title={detail?.data?.code} onClose={() => setDetail(null)} width={560}>
         {detail && (
           <div className="appeal-detail-body">
             {detail.type === 'complaint' ? (
@@ -328,7 +328,7 @@ export default function AppealAdminDesk() {
         onClose={() => {
           if (!busy) setAction(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         width={520}
         footer={

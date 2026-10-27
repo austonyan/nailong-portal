@@ -125,6 +125,7 @@ export default function AppealMyAppeals() {
       )}
 
       <Modal
+        maskClosable={false}
         open={!!delTarget}
         title={t('appeal.my.deleteTitle')}
         onClose={() => setDelTarget(null)}

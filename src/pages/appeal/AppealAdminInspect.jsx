@@ -219,6 +219,7 @@ export default function AppealAdminInspect() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={createOpen}
         title={t('appeal.inspect.createReportTitle')}
         onClose={() => setCreateOpen(false)}

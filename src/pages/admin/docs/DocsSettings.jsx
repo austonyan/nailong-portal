@@ -169,7 +169,7 @@ export default function DocsSettings() {
         onClose={() => {
           if (!busy) setAddOpen(false);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         footer={
           <>
             <Button onClick={() => setAddOpen(false)} disabled={busy}>{t('common.cancel')}</Button>

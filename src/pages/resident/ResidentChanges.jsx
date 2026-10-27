@@ -208,6 +208,7 @@ export default function ResidentChanges() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={confirmOpen}
         title={t('res.changes.confirmTitle')}
         onClose={() => setConfirmOpen(false)}

@@ -207,7 +207,7 @@ export default function VisaAdminWorkbench() {
         )}
       </Card>
 
-      <Drawer open={detail !== null} title={detail?.appNo} onClose={() => setDetail(null)} width={560}>
+      <Drawer maskClosable={false} open={detail !== null} title={detail?.appNo} onClose={() => setDetail(null)} width={560}>
         {detail && (
           <div className="visa-admin-detail">
             <div className="visa-admin-detail-head">
@@ -323,7 +323,7 @@ export default function VisaAdminWorkbench() {
         onClose={() => {
           if (!busy) setAction(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>

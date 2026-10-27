@@ -303,6 +303,7 @@ export default function DeclarationEdit() {
       )}
 
       <Modal
+        maskClosable={false}
         open={confirming}
         title={t('imm.declare.confirmTitle')}
         onClose={() => setConfirming(false)}

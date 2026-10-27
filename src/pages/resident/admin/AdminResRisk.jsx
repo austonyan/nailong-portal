@@ -142,7 +142,7 @@ export default function AdminResRisk() {
             setReason('');
           }
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>

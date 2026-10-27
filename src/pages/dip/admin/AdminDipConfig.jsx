@@ -48,6 +48,7 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={`${t('dip.config.editType')} · ${initial.code}`}
       onClose={onClose}

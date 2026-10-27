@@ -189,6 +189,7 @@ export default function ProtocolCourtesy() {
       </section>
 
       <Modal
+        maskClosable={false}
         open={applyOpen}
         title={t('protocol.courtesy.applyTitle')}
         onClose={() => setApplyOpen(false)}
@@ -219,6 +220,7 @@ export default function ProtocolCourtesy() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={cancelTarget !== null}
         title={t('protocol.courtesy.cancelTitle')}
         onClose={() => setCancelTarget(null)}

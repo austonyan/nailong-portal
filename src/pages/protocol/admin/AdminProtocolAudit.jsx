@@ -77,6 +77,7 @@ export default function AdminProtocolAudit() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={detail !== null}
         title={detail?.action}
         onClose={() => setDetail(null)}

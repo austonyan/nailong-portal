@@ -157,6 +157,7 @@ export default function AppealComplaints() {
       ))}
 
       <Modal
+        maskClosable={false}
         open={createOpen}
         title={t('appeal.complaint.createTitle')}
         onClose={() => setCreateOpen(false)}
@@ -210,7 +211,7 @@ export default function AppealComplaints() {
         </div>
       </Modal>
 
-      <Drawer open={!!detail} title={detail?.code} onClose={() => setDetail(null)} width={520}>
+      <Drawer maskClosable={false} open={!!detail} title={detail?.code} onClose={() => setDetail(null)} width={520}>
         {detail && (
           <div className="appeal-detail-body">
             <dl className="appeal-field-list">
@@ -279,6 +280,7 @@ export default function AppealComplaints() {
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={evalOpen}
         title={t('appeal.detail.evaluateTitle')}
         onClose={() => setEvalOpen(false)}

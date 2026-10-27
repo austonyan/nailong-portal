@@ -316,6 +316,7 @@ function ResidentApplyScreen() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={confirmOpen}
         title={t('res.form.confirmTitle')}
         onClose={() => setConfirmOpen(false)}

@@ -191,7 +191,7 @@ export default function AdminResReview() {
         )}
       </Card>
 
-      <Drawer open={detail !== null} title={detail?.appNo} onClose={() => setDetail(null)} width={560}>
+      <Drawer maskClosable={false} open={detail !== null} title={detail?.appNo} onClose={() => setDetail(null)} width={560}>
         {detail && (
           <div className="res-admin-detail">
             <div className="res-admin-detail-head">
@@ -296,7 +296,7 @@ export default function AdminResReview() {
         onClose={() => {
           if (!busy) setAction(null);
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>

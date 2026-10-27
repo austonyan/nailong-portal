@@ -187,6 +187,7 @@ export default function ProtocolMessages() {
       />
 
       <Modal
+        maskClosable={false}
         open={eraseOpen}
         title={t('protocol.messages.eraseTitle')}
         onClose={() => setEraseOpen(false)}

@@ -163,6 +163,7 @@ export default function AdminImVerify() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={verifying !== null}
         title={t('imm.admin.verify.confirmTitle', { no: verifying?.code_no })}
         onClose={() => setVerifying(null)}
@@ -187,7 +188,7 @@ export default function AdminImVerify() {
             setVoidReason('');
           }
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>

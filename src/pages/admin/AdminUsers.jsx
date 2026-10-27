@@ -177,7 +177,7 @@ export default function AdminUsers() {
         />
       </Card>
 
-      <Modal open={editing !== null} title={editing?.id ? t('admin.users.edit') : t('admin.users.create')} onClose={closeModal} footer={null} typewriter={false} width={520}>
+      <Modal maskClosable={false} open={editing !== null} title={editing?.id ? t('admin.users.edit') : t('admin.users.create')} onClose={closeModal} footer={null} typewriter={false} width={520}>
         <Form form={form} layout="vertical" onFinish={submit}>
           <FormItem name="username" label={t('admin.users.username')} rules={[{ required: true, message: t('auth.usernamePlaceholder') }]}>
             <Input size="large" disabled={!!editing?.id} placeholder={t('auth.usernamePlaceholder')} />
@@ -200,14 +200,20 @@ export default function AdminUsers() {
             </FormItem>
           )}
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
-              {t('common.save')}
-            </Button>
+            <div className="form-actions">
+              <Button onClick={closeModal} disabled={busy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={busy} disabled={busy}>
+                {t('common.save')}
+              </Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('common.confirmDeleteTitle')}
         onClose={() => setDeleteTarget(null)}

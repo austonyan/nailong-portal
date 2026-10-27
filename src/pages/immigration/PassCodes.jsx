@@ -32,6 +32,7 @@ function PassCodeModal({ passCode, onClose }) {
 
   return (
     <Modal
+      maskClosable={false}
       open
       title={t('imm.pass.detailTitle')}
       onClose={onClose}

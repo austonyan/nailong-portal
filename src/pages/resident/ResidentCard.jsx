@@ -210,6 +210,7 @@ export default function ResidentCard() {
       <p className="muted-text res-card-meta">{t('res.card.meta', { time: fmtDateTime(card.issuedAt) })}</p>
 
       <Modal
+        maskClosable={false}
         open={reissueOpen}
         title={t('res.card.reissueTitle')}
         onClose={() => setReissueOpen(false)}

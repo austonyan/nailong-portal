@@ -84,7 +84,7 @@ export default function AdminResResidents() {
         <p className="muted-text res-mask-tip">{t('res.admin.residents.maskTip')}</p>
       </Card>
 
-      <Drawer open={detail !== null} title={detail?.resident?.nickname || detail?.username || ''} onClose={() => setDetail(null)} width={560}>
+      <Drawer maskClosable={false} open={detail !== null} title={detail?.resident?.nickname || detail?.username || ''} onClose={() => setDetail(null)} width={560}>
         {detail && (
           <div className="res-admin-detail">
             <div className="res-admin-detail-head">

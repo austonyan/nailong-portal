@@ -342,6 +342,7 @@ export default function AdminProtocolEvents() {
       </Card>
 
       <Drawer
+        maskClosable={false}
         open={editing !== null}
         title={editing === 'new' ? t('protocol.admin.createEvent') : editing?.eventNo}
         width={680}
@@ -495,6 +496,7 @@ export default function AdminProtocolEvents() {
       </Drawer>
 
       <Modal
+        maskClosable={false}
         open={statusTarget !== null}
         title={statusTarget?.label || t('common.confirm')}
         onClose={() => { setStatusTarget(null); setCancelReason(''); }}
@@ -523,6 +525,7 @@ export default function AdminProtocolEvents() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={deleteTarget !== null}
         title={t('protocol.admin.deleteEventTitle')}
         onClose={() => setDeleteTarget(null)}
@@ -538,6 +541,7 @@ export default function AdminProtocolEvents() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={noticeTarget !== null}
         title={t('protocol.admin.notices')}
         onClose={() => setNoticeTarget(null)}

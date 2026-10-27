@@ -128,6 +128,7 @@ function TypesTab() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={editing !== null}
         title={editing?.id ? t('visa.admin.typesEdit') : t('visa.admin.typesCreate')}
         onClose={() => setEditing(null)}
@@ -175,9 +176,14 @@ function TypesTab() {
             <Switch checkedChildren={t('common.enabled')} unCheckedChildren={t('common.disabled')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" block loading={busy} disabled={busy}>
-              {t('common.save')}
-            </Button>
+            <div className="form-actions">
+              <Button onClick={() => setEditing(null)} disabled={busy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={busy} disabled={busy}>
+                {t('common.save')}
+              </Button>
+            </div>
           </FormItem>
         </Form>
       </Modal>
@@ -304,6 +310,7 @@ function NoticesTab() {
       </Card>
 
       <Modal
+        maskClosable={false}
         open={editing !== null}
         title={editing?.id ? t('visa.admin.noticesEdit') : t('visa.admin.noticesCreate')}
         onClose={() => setEditing(null)}

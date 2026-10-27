@@ -81,6 +81,7 @@ export default function VisaShell({ permission, children }) {
       {children}
 
       <Modal
+        maskClosable={false}
         open={ssoOpen}
         title={t('visa.sso.title')}
         onClose={cancelSso}

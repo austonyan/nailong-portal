@@ -262,6 +262,7 @@ export default function AdminProtocolIssuance() {
       />
 
       <Modal
+        maskClosable={false}
         open={issueOpen}
         title={t('protocol.admin.issueInvitation')}
         onClose={() => setIssueOpen(false)}
@@ -314,7 +315,7 @@ export default function AdminProtocolIssuance() {
             setRevokeReason('');
           }
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>
@@ -339,7 +340,7 @@ export default function AdminProtocolIssuance() {
             setPassReason('');
           }
         }}
-        maskClosable={!busy}
+        maskClosable={false}
         typewriter={false}
         footer={
           <>

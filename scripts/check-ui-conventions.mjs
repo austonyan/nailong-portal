@@ -3,6 +3,7 @@
 // - 所有数据表必须带 table-fit,让列压缩换行而不是溢出
 // - Switch 必须用 checked,不能用 value
 // - Table 不支持 size / 列 ellipsis,不要写无效属性
+// - Modal / Drawer 必须显式 maskClosable={false},点遮罩不关弹窗
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -16,8 +17,44 @@ function walk(dir) {
   });
 }
 
+// 从 `<Tag` 起扫描完整开标签(跳过 {}、字符串、模板串),返回标签文本。
+function openingTag(source, start, tagLength) {
+  let depth = 0;
+  let quote = null;
+  for (let i = start; i < source.length; i += 1) {
+    const ch = source[i];
+    if (quote) {
+      if (ch === quote && source[i - 1] !== '\\') quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === '`') quote = ch;
+    else if (ch === '{') depth += 1;
+    else if (ch === '}') depth -= 1;
+    else if (ch === '>' && depth === 0) return source.slice(start, i + 1);
+  }
+  return source.slice(start, start + tagLength);
+}
+
+function dialogTags(content, tag) {
+  const tags = [];
+  let index = 0;
+  for (;;) {
+    const at = content.indexOf(`<${tag}`, index);
+    if (at === -1) return tags;
+    const after = content[at + tag.length + 1];
+    if (!/[\s>]/.test(after ?? '')) {
+      index = at + tag.length;
+      continue;
+    }
+    const text = openingTag(content, at, tag.length);
+    tags.push({ text, line: content.slice(0, at).split('\n').length });
+    index = at + text.length;
+  }
+}
+
 const errors = [];
 let tableCount = 0;
+let dialogCount = 0;
 
 for (const file of walk(src)) {
   const rel = path.relative(process.cwd(), file).split(path.sep).join('/');
@@ -32,6 +69,15 @@ for (const file of walk(src)) {
   tableCount += tables.length;
   if (tables.length !== fitted.length) {
     errors.push(`${rel}: 有 ${tables.length - fitted.length} 个 <Table> 缺少 className="table-fit"`);
+  }
+
+  for (const tag of ['Modal', 'Drawer']) {
+    for (const { text, line } of dialogTags(content, tag)) {
+      dialogCount += 1;
+      if (!/maskClosable=\{false\}/.test(text)) {
+        errors.push(`${rel}:${line} <${tag}> 必须显式写 maskClosable={false}(点遮罩不应关闭弹窗)`);
+      }
+    }
   }
 
   if (/<Switch\b[^>]*\bvalue=/.test(content)) {
@@ -53,4 +99,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`UI conventions OK (${tableCount} tables checked).`);
+console.log(`UI conventions OK (${tableCount} tables, ${dialogCount} dialogs checked).`);

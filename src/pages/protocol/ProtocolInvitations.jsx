@@ -122,6 +122,7 @@ export default function ProtocolInvitations() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={action !== null}
         title={action?.kind === 'accept' ? t('protocol.invitations.acceptTitle') : t('protocol.invitations.declineTitle')}
         onClose={() => setAction(null)}

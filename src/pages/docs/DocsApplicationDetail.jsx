@@ -246,6 +246,7 @@ export default function DocsApplicationDetail() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={withdrawOpen}
         title={t('docs.detail.withdrawConfirmTitle')}
         typewriter={false}

@@ -247,6 +247,7 @@ export default function AdminProtocolRisk() {
       </div>
 
       <Modal
+        maskClosable={false}
         open={blacklistOpen}
         title={t('protocol.admin.blacklistAdd')}
         onClose={() => setBlacklistOpen(false)}
@@ -284,6 +285,7 @@ export default function AdminProtocolRisk() {
       </Modal>
 
       <Modal
+        maskClosable={false}
         open={ticketTarget !== null}
         title={t('protocol.admin.replyTicket')}
         onClose={() => setTicketTarget(null)}

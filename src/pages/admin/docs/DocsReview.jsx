@@ -166,7 +166,7 @@ export default function DocsReview() {
         )}
       </Card>
 
-      <Drawer open={!!detail} title={detail ? `${t('docs.admin.review.detailTitle')} · ${detail.appNo}` : ''} width={620} onClose={() => setDetail(null)}>
+      <Drawer maskClosable={false} open={!!detail} title={detail ? `${t('docs.admin.review.detailTitle')} · ${detail.appNo}` : ''} width={620} onClose={() => setDetail(null)}>
         {detail && (
           <div className="docs-review-detail">
             <dl className="docs-kv">
@@ -236,7 +236,7 @@ export default function DocsReview() {
         onClose={() => {
           if (!acting) setApproveOpen(false);
         }}
-        maskClosable={!acting}
+        maskClosable={false}
         footer={
           <>
             <Button onClick={() => setApproveOpen(false)} disabled={acting}>{t('common.cancel')}</Button>
@@ -257,7 +257,7 @@ export default function DocsReview() {
         onClose={() => {
           if (!acting) setRejectOpen(false);
         }}
-        maskClosable={!acting}
+        maskClosable={false}
         footer={
           <>
             <Button onClick={() => setRejectOpen(false)} disabled={acting}>{t('common.cancel')}</Button>
@@ -283,7 +283,7 @@ export default function DocsReview() {
         onClose={() => {
           if (!acting) setSupplementOpen(false);
         }}
-        maskClosable={!acting}
+        maskClosable={false}
         footer={
           <>
             <Button onClick={() => setSupplementOpen(false)} disabled={acting}>{t('common.cancel')}</Button>
