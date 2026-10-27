@@ -290,12 +290,13 @@ export default function AdminProtocolIssuance() {
             <span>{t('protocol.field.invitee')}</span>
             <Input value={issueForm.inviteeUsername} onChange={(e) => setIssueForm((p) => ({ ...p, inviteeUsername: e.target.value }))} placeholder={t('protocol.admin.inviteePlaceholder')} />
           </label>
+          <p className="muted-text">{t('protocol.admin.inviteeTip')}</p>
           <label className="protocol-field">
             <span>{t('protocol.field.invType')}</span>
             <Select value={issueForm.type} onChange={(v) => setIssueForm((p) => ({ ...p, type: v }))} options={INV_TYPES.map((s) => ({ key: s, label: t(`protocol.invType.${s}`) }))} />
           </label>
           <label className="protocol-field">
-            <span>{t('protocol.invitations.validUntil')}</span>
+            <span>{t('protocol.field.validUntil')}</span>
             <DatePicker value={issueForm.validUntil} onChange={(v) => setIssueForm((p) => ({ ...p, validUntil: v || '' }))} />
           </label>
           <label className="protocol-field">

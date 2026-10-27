@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { db, now } from '../db.js';
 import { authenticate } from '../auth.js';
-import { badRequest, conflict, forbidden, notFound } from '../http.js';
+import { ApiError, badRequest, conflict, forbidden, notFound } from '../http.js';
 import { reqLocale } from '../locale.js';
 import { ensureProtocolSchema, getConfig, getConfigInt, setConfig } from './schema.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
@@ -105,7 +105,7 @@ function eventById(id) {
 
 function requireEvent(id) {
   const event = eventById(id);
-  if (!event) throw notFound('Event not found');
+  if (!event) throw new ApiError(404, 'EVT_EVENT_NOT_FOUND', 'Event not found');
   return event;
 }
 
@@ -592,11 +592,10 @@ router.get('/invitations', manager, (req, res) => {
 router.post('/invitations', manager, (req, res) => {
   const event = requireEvent(req.body?.eventId);
   if (['cancelled', 'ended'].includes(event.status)) throw conflict('EVT_INVALID_STATE', 'Event is closed');
-  const invitee = db.prepare('SELECT * FROM users WHERE username = ? OR id = ?').get(
-    String(req.body?.inviteeUsername || '').trim(),
-    Number(req.body?.inviteeUserId) || 0
-  );
-  if (!invitee) throw notFound('Invitee not found');
+  const rawInvitee = String(req.body?.inviteeUsername || '').trim();
+  const inviteeAsId = Number(req.body?.inviteeUserId) || (/^\d{1,9}$/.test(rawInvitee) ? Number(rawInvitee) : 0);
+  const invitee = db.prepare('SELECT * FROM users WHERE username = ? OR id = ?').get(rawInvitee, inviteeAsId);
+  if (!invitee) throw new ApiError(404, 'EVT_INVITEE_NOT_FOUND', 'Invitee not found');
   const type = ['event', 'foreign', 'resident', 'diplomatic'].includes(req.body?.type) ? req.body.type : 'event';
   if (type === 'resident' && !event.resident_only) throw badRequest('EVT_INVITATION_TYPE', 'Resident invitation requires a residents-only event');
   if (type === 'diplomatic' && !event.diplomatic_only) throw badRequest('EVT_INVITATION_TYPE', 'Diplomatic invitation requires a diplomatic event');
