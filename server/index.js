@@ -26,6 +26,16 @@ import protocolAdminRoutes from './protocol/admin.js';
 import protocolInterRoutes from './protocol/inter.js';
 import appealRoutes from './routes/appeal.js';
 import appealAdminRoutes from './routes/appealAdmin.js';
+import archivesRoutes from './archives/routes.js';
+import archivesAdminRoutes from './archives/admin.js';
+import postalRoutes from './postal/routes.js';
+import postalAdminRoutes from './postal/admin.js';
+import tourismRoutes from './tourism/routes.js';
+import tourismAdminRoutes from './tourism/admin.js';
+import statsRoutes from './stats/routes.js';
+import statsAdminRoutes from './stats/admin.js';
+import eduRoutes from './education/routes.js';
+import eduAdminRoutes from './education/admin.js';
 import { ApiError } from './http.js';
 import { db } from './db.js';
 import { backfillContentTranslations } from './content-i18n.js';
@@ -67,6 +77,21 @@ app.use('/api/protocol', protocolRoutes);
 // 皇家申诉与监察署:admin → 用户路由(公开验真接口在用户路由内注册于鉴权段之前)
 app.use('/api/appeal/admin', appealAdminRoutes);
 app.use('/api/appeal', appealRoutes);
+// 奶龙国皇家档案与记录署:admin → 用户路由(顺序与其他署一致;schema 由路由模块顶层 ensure)
+app.use('/api/archives/admin', archivesAdminRoutes);
+app.use('/api/archives', archivesRoutes);
+// 皇家邮政与通信署：admin → 用户路由（与其他署顺序一致）
+app.use('/api/postal/admin', postalAdminRoutes);
+app.use('/api/postal', postalRoutes);
+// 奶龙国皇家文化旅游署：admin → 用户路由（/tourism/recs 只需登录；schema 由路由模块顶层 ensure）
+app.use('/api/tourism/admin', tourismAdminRoutes);
+app.use('/api/tourism', tourismRoutes);
+// 皇家统计署:admin → 用户路由(顺序与其他署一致;schema 由路由模块顶层 ensure)
+app.use('/api/stats/admin', statsAdminRoutes);
+app.use('/api/stats', statsRoutes);
+// 皇家教育与科学署:admin → 用户路由(admin 必须在 base 之前,与签证署一致;schema 由路由模块顶层 ensure)
+app.use('/api/education/admin', eduAdminRoutes);
+app.use('/api/education', eduRoutes);
 
 // All office schemas are ensured by the route imports above; fill Traditional
 // copies for built-in catalogs/notices before serving requests.

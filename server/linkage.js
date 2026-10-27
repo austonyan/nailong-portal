@@ -8,6 +8,7 @@
 //   - writebackBusiness(...)                       申诉决定回写业务署(只重开被驳回件);
 //   - sampleBusinessRecords(...)                   监察抽查跨署审核记录。
 import { db, now } from './db.js';
+import { sendPostalMessage as sendPlatformPostal } from './postal/notify.js';
 
 export const LINKED_OFFICES = {
   visa: '奶龍國簽註申請署',
@@ -17,6 +18,7 @@ export const LINKED_OFFICES = {
   document: '皇家文書與認證署',
   protocol: '皇家禮賓與活動署',
   appeal: '皇家申訴與監察署',
+  archives: '奶龍國皇家檔案與紀錄署',
 };
 
 // 文书署 doc_types.biz_source → 联动业务类型
@@ -27,9 +29,10 @@ export const BIZ_SOURCE_TO_TYPE = {
   resident: 'resident',
   foreign: 'diplomatic',
   appeal: 'appeal',
+  archives: 'archives',
 };
 
-const APPEAL_BIZ_TYPES = ['visa', 'immigration', 'resident', 'diplomatic', 'document'];
+const APPEAL_BIZ_TYPES = ['visa', 'immigration', 'resident', 'diplomatic', 'document', 'archives'];
 
 const VISA_PERMIT_APPEALABLE = new Set(['voided', 'expired']);
 const VISA_APP_APPEALABLE = new Set(['rejected', 'closed', 'approved', 'issued']);
@@ -41,6 +44,7 @@ const DIP_RELATION_APPEALABLE = new Set(['rejected', 'suspended', 'severed']);
 const DIP_IDENTITY_APPEALABLE = new Set(['rejected', 'frozen', 'revoked', 'expired']);
 const DOC_APP_APPEALABLE = new Set(['rejected', 'approved']);
 const DOC_CERT_APPEALABLE = new Set(['voided', 'expired']);
+const ARCH_REQ_APPEALABLE = new Set(['rejected']);
 
 function normalizeCode(code) {
   return String(code || '').trim().toUpperCase();
@@ -430,6 +434,31 @@ function protocolTarget(code) {
   };
 }
 
+// 档案与记录署:数据删除/注销申请。仅"被驳回"(终态)可申诉;
+// 处理中的申请仍归档案署自己的流程,已完成件不允许通过申诉翻案。
+function archivesTarget(code) {
+  const row = db.prepare('SELECT * FROM arch_deletion_requests WHERE no = ? AND deleted_at IS NULL').get(code);
+  if (!row) return null;
+  return {
+    rowId: row.id,
+    kind: 'deletion',
+    targetType: 'deletion_request',
+    code: row.no,
+    status: row.status,
+    title: `数据删除申请 · ${row.no}`,
+    ownerId: row.user_id,
+    valid: row.status === 'completed',
+    certifiable: true,
+    appealable: ARCH_REQ_APPEALABLE.has(row.status),
+    detail: {
+      submittedAt: row.created_at,
+      decidedAt: row.completed_at || row.updated_at,
+      handledName: row.handled_name || '',
+      rejectReason: row.reject_reason || '',
+    },
+  };
+}
+
 function appealTarget(code) {
   const row = db.prepare('SELECT * FROM appeal_decisions WHERE code = ?').get(code);
   if (!row) return null;
@@ -471,6 +500,8 @@ function resolveTarget(bizType, code) {
       return protocolTarget(value);
     case 'appeal':
       return appealTarget(value);
+    case 'archives':
+      return archivesTarget(value);
     default:
       return null;
   }
@@ -555,6 +586,14 @@ function timelineFor(bizType, target) {
       .all(target.kind === 'certificate' ? target.rowId : -1, target.kind === 'application' ? target.rowId : -1, limit);
     return rows.map((r) => ({ action: r.action, actor: r.actor || '', comment: r.comment || '', createdAt: r.created_at }));
   }
+  if (bizType === 'archives' && target.kind === 'deletion') {
+    return db
+      .prepare(
+        'SELECT action, note AS comment, actor_name AS actor, created_at FROM arch_request_events WHERE request_id = ? ORDER BY id DESC LIMIT ?'
+      )
+      .all(target.rowId, limit)
+      .map((r) => ({ action: r.action, actor: r.actor || '', comment: r.comment || '', createdAt: r.created_at }));
+  }
   return [];
 }
 
@@ -610,6 +649,10 @@ function auditBusiness(bizType, target, detail) {
     db.prepare(
       'INSERT INTO doc_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
     ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+  } else if (bizType === 'archives') {
+    db.prepare(
+      'INSERT INTO arch_audit_logs (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
   }
 }
 
@@ -629,6 +672,25 @@ function notifyBusiness(bizType, target, vars) {
     db.prepare(
       'INSERT INTO doc_messages (user_id, application_id, type, params, read, archived, created_at) VALUES (?, ?, ?, ?, 0, 0, ?)'
     ).run(target.ownerId, target.kind === 'application' ? target.rowId : null, 'appeal_reopened', JSON.stringify(vars), ts);
+    return;
+  }
+  if (bizType === 'archives') {
+    db.prepare(
+      `INSERT INTO arch_messages (user_id, request_id, type, params, source, channel, read, created_at)
+       VALUES (?, ?, 'appeal_reopened', ?, 'archives', 'postal', 0, ?)`
+    ).run(target.ownerId, target.kind === 'deletion' ? target.rowId : null, JSON.stringify({ ...vars, no: target.code }), ts);
+    try {
+      // 与档案署 sendPostalMessage wrapper 同口径:转发到全站消息中心,
+      // type 加 archives_ 前缀;失败静默跳过,不影响回写本身。
+      sendPlatformPostal({
+        userId: target.ownerId,
+        source: 'archives',
+        type: 'archives_appeal_reopened',
+        params: { ...vars, no: target.code },
+      });
+    } catch {
+      // 邮政转发失败不回滚本署邮箱,业务侧无需感知。
+    }
     return;
   }
   const table = bizType === 'immigration' ? 'im' : bizType === 'resident' ? 'res' : 'dip';
@@ -687,6 +749,17 @@ function reopen(bizType, target) {
       `UPDATE doc_applications SET status = 'pending', reject_code = NULL, reject_comment = '',
        decided_by = NULL, decided_at = NULL, updated_at = ? WHERE id = ?`
     ).run(ts, target.rowId);
+    return 'pending';
+  }
+  if (bizType === 'archives' && target.kind === 'deletion' && target.status === 'rejected') {
+    // 申诉复核撤销原驳回:整单退回待处理队列重新走档案署自己的流程。
+    db.prepare(
+      `UPDATE arch_deletion_requests SET status = 'pending', reject_reason = NULL, review_note = '',
+       handled_by = NULL, handled_name = '', accepted_at = NULL, updated_at = ? WHERE id = ?`
+    ).run(ts, target.rowId);
+    db.prepare(
+      'INSERT INTO arch_request_events (request_id, action, status, actor_id, actor_name, note, created_at) VALUES (?, ?, ?, NULL, ?, ?, ?)'
+    ).run(target.rowId, 'appeal_reopened', 'pending', '皇家申訴與監察署', '申诉复核撤销原驳回决定,申请重新进入待处理队列', ts);
     return 'pending';
   }
   return null;
@@ -778,6 +851,14 @@ const SAMPLE_QUERIES = {
           ORDER BY a.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM doc_applications',
     dist: 'SELECT status, COUNT(*) AS n FROM doc_applications GROUP BY status ORDER BY n DESC',
+  },
+  archives: {
+    table: 'arch_deletion_requests',
+    sql: `SELECT r.no AS code, r.status, u.display_name AS title, r.updated_at
+          FROM arch_deletion_requests r LEFT JOIN users u ON u.id = r.user_id
+          WHERE r.deleted_at IS NULL ORDER BY r.id DESC LIMIT ?`,
+    count: 'SELECT COUNT(*) AS n FROM arch_deletion_requests WHERE deleted_at IS NULL',
+    dist: 'SELECT status, COUNT(*) AS n FROM arch_deletion_requests WHERE deleted_at IS NULL GROUP BY status ORDER BY n DESC',
   },
 };
 

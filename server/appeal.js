@@ -93,6 +93,7 @@ export const BIZ_TYPES = [
   { key: 'resident', office: '居民登记署' },
   { key: 'diplomatic', office: '外交事务署' },
   { key: 'document', office: '文书与认证署' },
+  { key: 'archives', office: '档案与记录署' },
 ];
 
 const BIZ_HANDLERS = Object.fromEntries(

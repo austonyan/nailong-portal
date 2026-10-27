@@ -18,6 +18,8 @@ export const AUTO_APPROVE_SERVICES = Object.freeze({
   protocol: { permission: 'evt:manage' },
   docs: { permission: 'docs:manage' },
   appeal: { permission: 'appeal:manage' },
+  archives: { permission: 'arch:manage' },
+  education: { permission: 'edu:manage' },
 });
 
 export const SYSTEM_ACTOR = Object.freeze({

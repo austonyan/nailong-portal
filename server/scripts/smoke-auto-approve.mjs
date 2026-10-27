@@ -165,7 +165,7 @@ async function main() {
   const plainPatch = await api('/auto-approve/visa', { method: 'PATCH', token: plainToken, body: { mode: 'immediate' } });
   check('无管理权限写入被拒绝', plainPatch.status === 403, JSON.stringify(plainPatch.data));
 
-  const services = ['visa', 'immigration', 'dip', 'resident', 'protocol', 'docs', 'appeal'];
+  const services = ['visa', 'immigration', 'dip', 'resident', 'protocol', 'docs', 'appeal', 'archives', 'education'];
   for (const service of services) {
     const res = await api(`/auto-approve/${service}`, { method: 'PATCH', token, body: { mode: 'immediate' } });
     check(`开启立即审批 ${service}`, res.status === 200 && res.data.settings?.mode === 'immediate', JSON.stringify(res.data));
@@ -265,7 +265,23 @@ async function main() {
     )
     .run(`AUTO-CMP-${suffix}`, adminId, now, now, now).lastInsertRowid;
 
-  check('七署待审件已写入', true);
+  const archReqId = db
+    .prepare(
+      `INSERT INTO arch_deletion_requests
+       (no, user_id, scope, impact, status, created_at, updated_at)
+       VALUES (?, ?, ?, '自动审批验收', 'pending', ?, ?)`
+    )
+    .run(`AUTO-ARCH-${suffix}`, adminId, JSON.stringify(['visa_application']), now, now).lastInsertRowid;
+
+  const eduEntryId = db
+    .prepare(
+      `INSERT INTO edu_entries
+       (no, category_code, title, title_tw, summary, body, status, submitted_at, created_by, created_at, updated_at)
+       VALUES (?, 'WORLD', '自动审批词条', '自動審批詞條', '自动审批验收', '自动审批验收正文', 'pending_review', ?, ?, ?, ?)`
+    )
+    .run(`AUTO-EDU-${suffix}`, now, adminId, now, now).lastInsertRowid;
+
+  check('九署待审件已写入', true);
 
   // -------------------------------------------------------------------------
   // 立即审批:状态与下游副作用
@@ -295,6 +311,19 @@ async function main() {
   check('文书已签发', !!row('SELECT id FROM doc_certificates WHERE application_id = ?', docId));
   const acceptedAppeal = row('SELECT * FROM appeal_appeals WHERE id = ?', appealId);
   check('申诉受理人为系统', acceptedAppeal.handler_name === 'system', JSON.stringify(acceptedAppeal));
+
+  await waitFor('档案删除申请自动完成', () => row('SELECT status FROM arch_deletion_requests WHERE id = ?', archReqId).status === 'completed');
+  check('档案隐藏标记已写入', !!row('SELECT id FROM arch_hidden_records WHERE request_no = ?', `AUTO-ARCH-${suffix}`));
+  check('档案回执已生成', !!row('SELECT receipt_no FROM arch_deletion_requests WHERE id = ?', archReqId).receipt_no);
+  const archAudit = row("SELECT * FROM arch_audit_logs WHERE action = 'request.execute' AND target_id = ?", `AUTO-ARCH-${suffix}`);
+  check('档案审计标记 auto', archAudit && JSON.parse(archAudit.detail).auto === true, JSON.stringify(archAudit));
+  await waitFor('教育词条自动发布', () => row('SELECT status FROM edu_entries WHERE id = ?', eduEntryId).status === 'published');
+  check(
+    '教育审核轨迹以系统身份写入',
+    !!row("SELECT id FROM edu_reviews WHERE target_type = 'entry' AND target_id = ? AND action = 'approve' AND reviewer_name = 'system'", eduEntryId)
+  );
+  const eduAudit = row("SELECT * FROM edu_audit_logs WHERE action = 'approve_content' AND target_id = ?", `AUTO-EDU-${suffix}`);
+  check('教育审计标记 auto', eduAudit && JSON.parse(eduAudit.detail).auto === true, JSON.stringify(eduAudit));
 
   // 居民变更需要先有居民卡,卡片生成后再插入
   const card = row('SELECT * FROM res_cards WHERE application_id = ?', resAppId);

@@ -73,6 +73,17 @@ export const CONTENT_PERMISSIONS = {
   'evt:review': { name: '活動審核', description: '審核活動報名、接待方認證與禮遇申請(佇列隔離)' },
   'evt:checkin': { name: '活動簽到', description: '核銷活動憑證、處理簽到與簽退記錄' },
   'evt:manage': { name: '禮賓與活動署管理', description: '活動發布、類型配置、邀請函/憑證、驗真、風控、統計與審計' },
+  'arch:portal': { name: '檔案署存取', description: '查詢本人簽註與入境檔案、匯出檔案彙總並提交資料刪除申請' },
+  'arch:manage': { name: '檔案署管理', description: '歸檔規則設定、全量檔案查詢與匯出、刪除申請處理、存取日誌與稽核' },
+  'post:portal': { name: '郵政署存取', description: '使用皇家郵政與通信署的訊息中心、公告訂閱與虛擬明信片' },
+  'post:manage': { name: '郵政署管理', description: '公告、通知範本、明信片與統計稽核管理' },
+  'tour:portal': { name: '文化旅遊署存取', description: '瀏覽景點與文化內容、參與打卡、收集紀念章與徽章' },
+  'tour:manage': { name: '文化旅遊署管理', description: '景點、文化內容、打卡規則、徽章、統計與稽核管理' },
+  'stat:portal': { name: '統計署存取', description: '檢視平台趣味統計並產生自己的年度報告' },
+  'stat:manage': { name: '統計署管理', description: '平台總看板、統計口徑管理、資料匯出與稽核檢視' },
+  'edu:portal': { name: '教育與科學署訪問', description: '瀏覽百科詞條、科普文章與學習任務' },
+  'edu:review': { name: '內容審核', description: '審核百科詞條與科普文章的發布申請(僅審核佇列,不含內容管理)' },
+  'edu:manage': { name: '教育與科學署管理', description: '詞條、文章、任務、統計與稽核管理' },
 };
 
 const VISA_TYPES = {

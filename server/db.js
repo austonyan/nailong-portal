@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ensureTwColumns } from './migrate.js';
+import { ensureAppealBizTypes, ensureTwColumns } from './migrate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, 'data');
@@ -271,7 +271,7 @@ CREATE TABLE IF NOT EXISTS appeal_appeals (
   id                   INTEGER PRIMARY KEY AUTOINCREMENT,
   code                 TEXT NOT NULL UNIQUE,
   user_id              INTEGER NOT NULL REFERENCES users(id),
-  biz_type             TEXT NOT NULL CHECK (biz_type IN ('visa','immigration','resident','diplomatic','document')),
+  biz_type             TEXT NOT NULL CHECK (biz_type IN ('visa','immigration','resident','diplomatic','document','archives')),
   biz_code             TEXT NOT NULL,
   biz_status           TEXT NOT NULL DEFAULT 'unverified',
   status               TEXT NOT NULL DEFAULT 'draft'
@@ -526,6 +526,8 @@ function migrate() {
   ensureTwColumns(db, 'visa_notices', ['title', 'body']);
   ensureTwColumns(db, 'appeal_notices', ['title', 'body']);
   ensureTwColumns(db, 'appeal_publicity', ['title', 'body']);
+  // 申诉目标随联动扩展:旧库的 biz_type CHECK 需要一次性表重建才能放行新署。
+  ensureAppealBizTypes(db, ['archives']);
 }
 migrate();
 
@@ -574,6 +576,17 @@ export const PERMISSIONS = [
   { key: 'appeal:review', name: '申诉复核', description: '复核申诉处理决定(一次终局)', grp: 'appeal' },
   { key: 'appeal:inspect', name: '监察抽查', description: '监察申诉处理时效与质量(只读分析)', grp: 'appeal' },
   { key: 'appeal:manage', name: '申诉署管理', description: '公告、公示、模板、黑名单、配置、统计与审计', grp: 'appeal' },
+  { key: 'arch:portal', name: '档案署访问', description: '查询本人签注与入境档案、导出档案汇总并提交数据删除申请', grp: 'archives' },
+  { key: 'arch:manage', name: '档案署管理', description: '归档规则配置、全量档案查询与导出、删除申请处理、访问日志与审计', grp: 'archives' },
+  { key: 'post:portal', name: '邮政署访问', description: '使用皇家邮政与通信署的消息中心、公告订阅与虚拟明信片', grp: 'postal' },
+  { key: 'post:manage', name: '邮政署管理', description: '公告、通知模板、明信片、统计与审计管理', grp: 'postal' },
+  { key: 'tour:portal', name: '文化旅游署访问', description: '浏览景点与文化内容、参与打卡、收集纪念章与徽章', grp: 'tourism' },
+  { key: 'tour:manage', name: '文化旅游署管理', description: '景点、文化内容、打卡规则、徽章、统计与审计管理', grp: 'tourism' },
+  { key: 'stat:portal', name: '统计署访问', description: '查看平台趣味统计并生成自己的年度报告', grp: 'stats' },
+  { key: 'stat:manage', name: '统计署管理', description: '平台总看板、统计口径管理、数据导出与审计查看', grp: 'stats' },
+  { key: 'edu:portal', name: '教育与科学署访问', description: '浏览百科词条、科普文章与学习任务', grp: 'education' },
+  { key: 'edu:review', name: '内容审核', description: '审核百科词条与科普文章的发布申请(仅审核队列,不含内容管理)', grp: 'education' },
+  { key: 'edu:manage', name: '教育与科学署管理', description: '词条、文章、任务、统计与审计管理', grp: 'education' },
 ];
 
 const ROLES = [
