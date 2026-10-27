@@ -186,8 +186,16 @@ export default function AdminServices() {
           <FormItem name="key" label={t('common.key')} help={t('admin.roles.keyTip')} rules={[{ required: true, message: t('admin.roles.keyTip') }]}>
             <Input size="large" disabled={!!editing?.id} placeholder="wiki" />
           </FormItem>
-          <FormItem name="url" label={t('admin.services.url')} rules={[{ required: true, message: t('admin.services.url') }, { pattern: /^https?:\/\/.+/i, message: t('api.VALIDATION_ERROR') }]}>
-            <Input size="large" placeholder="https://example.com" allowClear />
+          <FormItem
+            name="url"
+            label={t('admin.services.url')}
+            help={t('admin.services.urlTip')}
+            rules={[
+              { required: true, message: t('admin.services.url') },
+              { pattern: /^(https?:\/\/.+|\/(?!\/).*)$/i, message: t('admin.services.urlInvalid') },
+            ]}
+          >
+            <Input size="large" placeholder={t('admin.services.urlPlaceholder')} allowClear />
           </FormItem>
           <FormItem name="description" label={t('common.description')}>
             <Input size="large" allowClear />

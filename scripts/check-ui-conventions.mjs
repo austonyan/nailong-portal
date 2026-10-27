@@ -93,6 +93,34 @@ for (const file of walk(src)) {
   }
 }
 
+// 服务卡图标白名单必须前后端一致:前端列出可选项,服务端校验落库值。
+const iconsFile = path.resolve('src/components/icons.js');
+const servicesRoute = path.resolve('server/routes/services.js');
+if (fs.existsSync(iconsFile) && fs.existsSync(servicesRoute)) {
+  const iconsSource = fs.readFileSync(iconsFile, 'utf8');
+  const routeSource = fs.readFileSync(servicesRoute, 'utf8');
+  const clientBlock = iconsSource.match(/SERVICE_ICONS\s*=\s*\{([\s\S]*?)\}/);
+  const serverBlock = routeSource.match(/const ICONS\s*=\s*new Set\(\[([\s\S]*?)\]\)/);
+  if (!clientBlock || !serverBlock) {
+    errors.push('无法解析服务图标白名单(src/components/icons.js 与 server/routes/services.js 需保持可识别的写法)');
+  } else {
+    // 前端用简写属性(无引号),服务端是带引号的字符串,统一按标识符提取。
+    const names = (text) => new Set([...text.matchAll(/([A-Za-z0-9]+Icon)\b/g)].map((m) => m[1]));
+    const clientIcons = names(clientBlock[1]);
+    const serverIcons = names(serverBlock[1]);
+    for (const name of clientIcons) {
+      if (!serverIcons.has(name)) {
+        errors.push(`server/routes/services.js: ICONS 缺少 ${name},编辑使用该图标的服务会被拒绝(VALIDATION_ERROR)`);
+      }
+    }
+    for (const name of serverIcons) {
+      if (!clientIcons.has(name)) {
+        errors.push(`src/components/icons.js: SERVICE_ICONS 缺少 ${name},编辑服务时图标会显示为空`);
+      }
+    }
+  }
+}
+
 if (errors.length) {
   console.error(`UI conventions check failed (${errors.length}):`);
   for (const error of errors) console.error(`  - ${error}`);

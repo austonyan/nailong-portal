@@ -37,11 +37,27 @@ router.get('/', requirePermission('roles:read'), (_req, res) => {
 });
 
 // GET /api/permissions — full catalog for assignment UIs.
+// 权限的真实全集在 permissions 表里(各署启动时注册自己的 key),PERMISSIONS 只覆盖
+// 基础/签注/申诉这批的文案;只按代码清单返回会让服务管理与角色分配看不到各署权限。
 router.get('/permissions', requirePermission('roles:read'), (_req, res) => {
-  const items = PERMISSIONS.map((p) => ({ ...p, ...(CONTENT_PERMISSIONS[p.key] || {}) }));
+  const defined = new Map(PERMISSIONS.map((p) => [p.key, p]));
+  const rows = db.prepare('SELECT * FROM permissions ORDER BY grp, key').all();
+  const items = rows.map((row) => {
+    const code = defined.get(row.key);
+    return {
+      ...(code ?? { key: row.key, name: row.name, description: row.description || '', grp: row.grp }),
+      nameTw: row.name_tw ?? null,
+      descriptionTw: row.description_tw ?? null,
+      ...(CONTENT_PERMISSIONS[row.key] || {}),
+    };
+  });
+  const seen = new Set(items.map((p) => p.key));
+  for (const code of PERMISSIONS) {
+    if (!seen.has(code.key)) items.push({ ...code, ...(CONTENT_PERMISSIONS[code.key] || {}) });
+  }
   const groups = {};
   for (const p of items) {
-    (groups[p.grp] ??= []).push(p);
+    (groups[p.grp ?? 'other'] ??= []).push(p);
   }
   res.json({ items, groups });
 });

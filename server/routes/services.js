@@ -5,11 +5,13 @@ import { badRequest, notFound } from '../http.js';
 
 const router = Router();
 
+// 必须与 src/components/icons.js 的 SERVICE_ICONS 保持一致(npm run check:ui 会比对)。
 const ICONS = new Set([
   'RocketIcon', 'BookIcon', 'GiftIcon', 'CloudIcon', 'StarIcon', 'HeartIcon', 'MusicIcon',
   'CoffeeIcon', 'CompassIcon', 'FlagIcon', 'LeafIcon', 'CatIcon', 'FoxIcon', 'MailIcon',
   'CalendarIcon', 'CameraIcon', 'HomeIcon', 'UsersIcon', 'ShieldIcon', 'KeyIcon',
-  'SettingsIcon', 'BellIcon', 'FishIcon', 'MapIcon',
+  'SettingsIcon', 'BellIcon', 'FishIcon', 'MapIcon', 'BadgeCheckIcon', 'AirplaneIcon',
+  'BulbIcon',
 ]);
 const COLORS = new Set([
   'app-teal', 'app-yellow', 'app-orange', 'app-pink', 'app-blue', 'app-green',
@@ -70,7 +72,10 @@ function validateServiceBody(body, { partial = false } = {}) {
   if (body.descriptionTw !== undefined) out.description_tw = String(body.descriptionTw || '').trim().slice(0, 200) || null;
   if (!partial || body.url !== undefined) {
     const url = String(body.url || '').trim();
-    if (!/^https?:\/\/.+/i.test(url)) throw badRequest('VALIDATION_ERROR', 'URL must start with http(s)://');
+    // 内置服务用站内路径(/visa、/docs…),外部服务用完整 http(s) 链接。
+    if (!/^(https?:\/\/.+|\/(?!\/).*)$/i.test(url)) {
+      throw badRequest('VALIDATION_ERROR', 'URL must start with http(s):// or be an in-app path starting with /');
+    }
     out.url = url;
   }
   if (body.icon !== undefined) {
@@ -88,7 +93,7 @@ function validateServiceBody(body, { partial = false } = {}) {
     if (perm && !db.prepare('SELECT id FROM permissions WHERE key = ?').get(perm)) {
       throw badRequest('VALIDATION_ERROR', `Unknown permission: ${perm}`);
     }
-    out.requiredPermission = perm;
+    out.required_permission = perm;
   }
   if (body.entryMode !== undefined) {
     const mode = String(body.entryMode);
@@ -98,7 +103,8 @@ function validateServiceBody(body, { partial = false } = {}) {
     out.entry_mode = mode;
   }
   if (body.enabled !== undefined) out.enabled = body.enabled ? 1 : 0;
-  if (body.sortOrder !== undefined) out.sortOrder = Number(body.sortOrder) || 0;
+  // 以下键直接拼进 UPDATE 的列名,必须是真实的数据库列(snake_case)。
+  if (body.sortOrder !== undefined) out.sort_order = Number(body.sortOrder) || 0;
   return out;
 }
 
@@ -108,7 +114,7 @@ router.post('/', authenticate, requirePermission('services:write'), (req, res) =
   const info = db
     .prepare(
       `INSERT INTO services (key, name, name_tw, description, description_tw, url, icon, color, required_permission, enabled, sort_order, created_at, updated_at)
-       VALUES (@key, @name, @name_tw, @description, @description_tw, @url, @icon, @color, @requiredPermission, @enabled, @sortOrder, @ts, @ts)`
+       VALUES (@key, @name, @name_tw, @description, @description_tw, @url, @icon, @color, @required_permission, @enabled, @sort_order, @ts, @ts)`
     )
     .run({
       description: '',
@@ -116,9 +122,9 @@ router.post('/', authenticate, requirePermission('services:write'), (req, res) =
       description_tw: null,
       icon: 'RocketIcon',
       color: 'app-teal',
-      requiredPermission: null,
+      required_permission: null,
       enabled: 1,
-      sortOrder: 0,
+      sort_order: 0,
       ...data,
       ts,
     });
