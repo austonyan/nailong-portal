@@ -34,11 +34,14 @@ export default function Portal() {
   const displayName = user?.displayName || user?.username || '';
 
   // 服务入口:external 新开外链;internal 直接进 SPA 路由;internal_sso 先弹
-  // 单点登录身份确认,确认后再进入(签注申请署等站内服务)。
+  // 单点登录身份确认,确认后再进入(签注申请署等站内服务);本会话确认过
+  // (sessionStorage 标志,确认时写入)则直接进入,与各署 Shell 直连行为一致。
   const openService = (s) => {
     if (s.entryMode === 'external') {
       window.open(s.url, '_blank', 'noopener,noreferrer');
     } else if (s.entryMode === 'internal') {
+      navigate(s.url);
+    } else if (sessionStorage.getItem(`nailong.${s.key}.sso`) === '1') {
       navigate(s.url);
     } else {
       setSsoService(s);
