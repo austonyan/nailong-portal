@@ -15,6 +15,10 @@ export default function VisaVerify() {
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
 
+  // 验真请求失败时也要出结果面板:只 toast 的话页面一片空白,拿链接/编号的人
+  // 会以为服务坏了。限流单独标出来,下方提示重试,而不是谎报「未找到」。
+  const failedResult = (data) => ({ found: false, query: '', limited: data?.code === 'VISA_VERIFY_LIMITED' });
+
   const verifyByNo = async (value) => {
     const query = String(value ?? no).trim();
     if (!query) return;
@@ -24,11 +28,13 @@ export default function VisaVerify() {
       const data = await res.json();
       if (!res.ok) {
         toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        setResult(failedResult(data));
         return;
       }
       setResult({ ...data, query });
     } catch (err) {
       toastVisaError(t, err);
+      setResult({ found: false, query });
     } finally {
       setBusy(false);
     }
@@ -41,22 +47,26 @@ export default function VisaVerify() {
       const data = await res.json();
       if (!res.ok) {
         toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        setResult(failedResult(data));
         return;
       }
       setResult({ ...data, query: '' });
     } catch (err) {
       toastVisaError(t, err);
+      setResult({ found: false, query: '' });
     } finally {
       setBusy(false);
     }
   };
 
-  // 验真链接(扫码预留):带 token 直接查询
+  // 验真链接(扫码预留):带 token 直接查询。
+  // 依赖必须是 token 字符串:`searchParams` 每次渲染都是新的 URLSearchParams 对象,
+  // 用它当依赖会在任何 setState 后重新验真,把公开验真的限流额度(VISA_VERIFY_LIMITED)耗光。
+  const token = searchParams.get('token');
   useEffect(() => {
-    const token = searchParams.get('token');
     if (token) verifyByToken(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [token]);
 
   return (
     <div className="visa-verify-page">
@@ -124,6 +134,7 @@ export default function VisaVerify() {
             <div className="visa-verify-missing">
               <ShieldIcon size={28} />
               <p>{t('visa.verify.notFound')}</p>
+              {result.limited && <p className="muted-text">{t('visa.verify.limitTip')}</p>}
             </div>
           )}
         </Card>
