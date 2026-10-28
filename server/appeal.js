@@ -94,6 +94,7 @@ export const BIZ_TYPES = [
   { key: 'diplomatic', office: '外交事务署' },
   { key: 'document', office: '文书与认证署' },
   { key: 'archives', office: '档案与记录署' },
+  { key: 'protocol', office: '礼宾与活动署' },
 ];
 
 const BIZ_HANDLERS = Object.fromEntries(

@@ -5,7 +5,9 @@ import { authenticate } from '../auth.js';
 import { badRequest } from '../http.js';
 import {
   LINKED_OFFICES,
+  crossOfficeAlerts,
   listOwnedRecords,
+  listUserCertificates,
   linkageIdentity,
   recordLinkageAccess,
   verifyBusinessRecord,
@@ -73,6 +75,26 @@ router.get('/records', (req, res) => {
     records,
     fetchedAt: now(),
   });
+});
+
+// 统一"证件库":聚合当前账户各署本人有效证件,供前端统一展示与到期提醒。
+router.get('/certificates', (req, res) => {
+  const certificates = listUserCertificates(req.user.id);
+  recordLinkageAccess({
+    userId: req.user.id,
+    consumer: 'manual',
+    source: 'all',
+    action: 'list',
+    count: certificates.length,
+    detail: {},
+    ip: clientIp(req),
+  });
+  res.json({ certificates, fetchedAt: now() });
+});
+
+// 跨署状态级联提示:居民证/外交身份失效时,关联证件可能受影响。
+router.get('/alerts', (req, res) => {
+  res.json({ alerts: crossOfficeAlerts(req.user.id), fetchedAt: now() });
 });
 
 // 手动填写编号后的即时校验:严格按当前 SSO 账户归属,非本人不返回明细。

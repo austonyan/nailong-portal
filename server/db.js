@@ -271,7 +271,7 @@ CREATE TABLE IF NOT EXISTS appeal_appeals (
   id                   INTEGER PRIMARY KEY AUTOINCREMENT,
   code                 TEXT NOT NULL UNIQUE,
   user_id              INTEGER NOT NULL REFERENCES users(id),
-  biz_type             TEXT NOT NULL CHECK (biz_type IN ('visa','immigration','resident','diplomatic','document','archives')),
+  biz_type             TEXT NOT NULL CHECK (biz_type IN ('visa','immigration','resident','diplomatic','document','archives','protocol')),
   biz_code             TEXT NOT NULL,
   biz_status           TEXT NOT NULL DEFAULT 'unverified',
   status               TEXT NOT NULL DEFAULT 'draft'
@@ -547,7 +547,7 @@ function migrate() {
   ensureTwColumns(db, 'appeal_notices', ['title', 'body']);
   ensureTwColumns(db, 'appeal_publicity', ['title', 'body']);
   // 申诉目标随联动扩展:旧库的 biz_type CHECK 需要一次性表重建才能放行新署。
-  ensureAppealBizTypes(db, ['archives']);
+  ensureAppealBizTypes(db, ['archives', 'protocol']);
 }
 migrate();
 

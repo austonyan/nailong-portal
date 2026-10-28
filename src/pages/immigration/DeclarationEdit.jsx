@@ -9,6 +9,7 @@ import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
+import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
@@ -20,6 +21,7 @@ export default function DeclarationEdit() {
   const { id } = useParams(); // draft id when editing
   const [searchParams] = useSearchParams();
   const fromId = searchParams.get('from');
+  const visaNoParam = searchParams.get('visaNo');
   const [form] = useForm();
 
   const [ports, setPorts] = useState([]);
@@ -82,8 +84,12 @@ export default function DeclarationEdit() {
           setDecl(null);
         })
         .catch(toastApiError);
+    } else if (visaNoParam) {
+      // 从签注页跳转:预填签证号并自动校验
+      form.setFieldValue('visaNo', visaNoParam);
+      checkVisa(visaNoParam);
     }
-  }, [id, fromId, applyDeclaration]);
+  }, [id, fromId, visaNoParam, applyDeclaration]);
 
   const checkVisa = async (codeArg) => {
     const visaNo = codeArg || form.getFieldValue('visaNo');
@@ -167,6 +173,15 @@ export default function DeclarationEdit() {
     }
   };
 
+  const fillFromResident = (data) => {
+    if (!data) return;
+    form.setFieldsValue({
+      nickname: data.nickname || '',
+      contact: data.contact || '',
+    });
+    toastSuccess(t('residentPrefill.filled'));
+  };
+
   const openConfirm = async () => {
     if (itemKeys.length === 0) {
       setItemsError(true);
@@ -190,6 +205,7 @@ export default function DeclarationEdit() {
       </div>
 
       <Card>
+        <ResidentPrefill onFill={fillFromResident} />
         <Form form={form} layout="vertical" onFinish={openConfirm}>
           <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true }]}>
             <Select

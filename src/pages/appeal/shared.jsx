@@ -64,7 +64,7 @@ export const PRIORITY_COLORS = {
 };
 
 // 关联业务类型(与其他署联动,当前为预留)
-export const BIZ_TYPES = ['visa', 'immigration', 'resident', 'diplomatic', 'document', 'archives'];
+export const BIZ_TYPES = ['visa', 'immigration', 'resident', 'diplomatic', 'document', 'archives', 'protocol'];
 export const COMPLAINT_KINDS = ['complaint', 'suggestion'];
 export const COMPLAINT_CATEGORIES = {
   complaint: ['attitude', 'process', 'notice', 'staff', 'system', 'other'],

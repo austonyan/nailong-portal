@@ -175,6 +175,7 @@ export const SYSTEM_NAV = [
   { to: '/admin/users', labelKey: 'nav.users', permission: 'users:read' },
   { to: '/admin/roles', labelKey: 'nav.roles', permission: 'roles:read' },
   { to: '/admin/services', labelKey: 'nav.services', permission: 'services:read' },
+  { to: '/admin/recognize', labelKey: 'nav.recognize', permission: 'services:read' },
 ];
 
 // 侧栏/面包屑会渲染的所有词条 —— 供 check:i18n 校验。

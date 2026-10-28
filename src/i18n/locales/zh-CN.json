@@ -31,7 +31,8 @@
     "sectionServices": "政务服务",
     "sectionAccount": "账号",
     "system": "系统管理",
-    "menu": "导航菜单"
+    "menu": "导航菜单",
+    "recognize": "互认规则"
   },
   "inbox": {
     "title": "站内信",
@@ -78,7 +79,8 @@
     "createdAt": "创建时间",
     "lastLogin": "最后登录",
     "system": "系统",
-    "required": "必填"
+    "required": "必填",
+    "refresh": "刷新"
   },
   "autoApprove": {
     "title": "自动审批",
@@ -237,7 +239,8 @@
       "owned": "本人记录 · {{status}}",
       "notOwned": "非本人记录,无法关联",
       "notPersonal": "该记录不属于个人账户",
-      "notFound": "未找到该编号"
+      "notFound": "未找到该编号",
+      "referenced": "已被 {{count}} 份文书引用"
     }
   },
   "api": {
@@ -782,6 +785,7 @@
       "print": "打印 / 保存 PDF",
       "verifyLink": "打开验真链接",
       "copyLink": "复制验真链接",
+      "toImmigration": "去入境申报",
       "linkCopied": "验真链接已复制",
       "meta": "本签注由奶龍國簽註申請署于 {{time}} 签发,验真请前往验真中心。"
     },
@@ -3777,7 +3781,8 @@
       "resident": "居民登记",
       "diplomatic": "外交事务",
       "document": "文书与认证",
-      "archives": "档案与记录"
+      "archives": "档案与记录",
+      "protocol": "礼宾与活动"
     },
     "bizStatus": {
       "verified": "已与业务署核验",
@@ -5896,6 +5901,91 @@
         "detail": "详情",
         "allActions": "全部操作"
       }
+    }
+  },
+  "certificates": {
+    "title": "我的证件库",
+    "subtitle": "与您账户关联的有效证件与记录,跨署统一查看与到期提醒。",
+    "empty": "暂无证件记录,先到各署办理业务后会自动出现在这里。",
+    "refresh": "刷新",
+    "noExpiry": "长期有效",
+    "expiringSoon": "即将到期",
+    "expired": "已过期",
+    "valid": "有效",
+    "column": {
+      "office": "签发署",
+      "type": "证件类型",
+      "number": "证件编号",
+      "status": "状态",
+      "validUntil": "有效期至"
+    },
+    "viewDetail": "查看详情",
+    "goTo": "前往{{office}}",
+    "status": {
+      "valid": "有效",
+      "issued": "已签发",
+      "approved": "已批准",
+      "entered": "已入境",
+      "exited": "已离境",
+      "established": "已建立",
+      "active": "激活",
+      "pending": "待处理",
+      "used": "已使用",
+      "expired": "已过期",
+      "voided": "已注销",
+      "rejected": "已驳回"
+    },
+    "alert": {
+      "title": "跨署提醒",
+      "residentCardInvalid": "您的居民证{{status}}，有 {{count}} 份关联证件可能受影响",
+      "diplomaticOrphaned": "您的外交身份已失效，仍有 {{count}} 份外交签注处于有效状态"
+    },
+    "benefits": {
+      "title": "我的互认权益",
+      "empty": "暂无可享受的互认权益"
+    }
+  },
+  "residentPrefill": {
+    "title": "使用居民证信息",
+    "body": "检测到您持有有效居民证 {{cardNo}}，是否用居民证持卡人信息预填本表单？",
+    "holder": "持卡人 {{name}}",
+    "type": "类型 {{type}}",
+    "validUntil": "有效期至 {{date}}",
+    "fill": "使用居民证信息",
+    "skip": "暂不使用",
+    "filled": "已从居民证预填"
+  },
+  "recognizeAdmin": {
+    "title": "跨署互认规则",
+    "subtitle": "配置持有哪些证件可免办、简化或优先办理哪些业务；规则启停即时生效，业务申请时自动校验。",
+    "create": "新增规则",
+    "edit": "编辑规则",
+    "delete": "删除规则",
+    "deleteConfirm": "确定删除互认规则「{{benefit}}」吗？",
+    "service": "目标业务",
+    "holderSource": "持有证件署",
+    "holderKind": "证件种类",
+    "effect": "互认方式",
+    "benefit": "权益说明(简体)",
+    "benefitTw": "权益说明(繁体)",
+    "empty": "暂无互认规则",
+    "created": "规则已创建",
+    "updated": "规则已更新",
+    "benefitRequired": "请填写权益说明",
+    "serviceKey": {
+      "visa": "签注申请署",
+      "immigration": "皇家口岸入境署",
+      "resident": "皇家居民登记署",
+      "dip": "皇家外交事务署",
+      "protocol": "皇家礼宾与活动署",
+      "docs": "皇家文书与认证署",
+      "appeal": "皇家申诉与监察署",
+      "archives": "皇家档案与记录署"
+    },
+    "effects": {
+      "simplify": "简化办理",
+      "waive": "免于办理",
+      "priority": "优先办理"
     }
   }
 }

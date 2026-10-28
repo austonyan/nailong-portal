@@ -9,6 +9,7 @@ import { api } from '../../api/client.js';
 import { uploadVisaMaterial } from '../../api/visa.js';
 import { TextArea, fmtDate, toastVisaError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
+import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 
 export default function VisaApplyForm() {
   const { t } = useTranslation();
@@ -161,6 +162,16 @@ export default function VisaApplyForm() {
     }
   };
 
+  const fillFromResident = (data) => {
+    if (!data) return;
+    form.setFieldsValue({
+      nickname: data.nickname || '',
+      contact: data.contact || '',
+      virtualId: data.virtualId || '',
+    });
+    toastSuccess(t('residentPrefill.filled'));
+  };
+
   if (submitted) {
     return (
       <div className="visa-form-page">
@@ -196,6 +207,7 @@ export default function VisaApplyForm() {
       )}
 
       <Card className="visa-form-card">
+        <ResidentPrefill onFill={fillFromResident} />
         <Form form={form} layout="vertical" requiredMark>
           <div className="visa-form-grid">
             <FormItem name="nickname" label={t('visa.form.nickname')} rules={[{ required: true, message: t('visa.form.nickname') }]}>

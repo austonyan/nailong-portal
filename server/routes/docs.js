@@ -698,6 +698,14 @@ function approveApplicationCore(app, actor, { comment = '', auto = false } = {})
     if (typeRow.biz_required && !bizCheck.certifiable) {
       throw conflict('DOC_BIZ_INVALID', 'The linked business record is no longer valid for certification');
     }
+    // 引用占用:同一源证件号在同一文书类型下只允许签发一份有效证书,避免重复消费;
+    // 证书吊销后 status 变为 revoked,引用自动解除,可重新签发。
+    const linked = db
+      .prepare("SELECT cert_no FROM doc_certificates WHERE type_code = ? AND biz_no = ? AND status = 'valid' LIMIT 1")
+      .get(app.type_code, app.biz_no);
+    if (linked) {
+      throw conflict('DOC_BIZ_ALREADY_CERTIFIED', `The linked business record is already certified by ${linked.cert_no}`);
+    }
   }
 
   const ts = now();

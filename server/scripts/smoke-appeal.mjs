@@ -83,7 +83,7 @@ async function main() {
   // 首页聚合
   const home = await api('/appeal/home', { token: userToken });
   check('署内公告与提示', home.status === 200 && home.data.notices.length > 0 && home.data.hints.reviewDays > 0);
-  check('可申诉业务类型', Array.isArray(home.data.bizTypes) && home.data.bizTypes.length === 6 && home.data.bizTypes.some((b) => b.key === 'archives'));
+  check('可申诉业务类型', Array.isArray(home.data.bizTypes) && home.data.bizTypes.length === 7 && home.data.bizTypes.some((b) => b.key === 'archives') && home.data.bizTypes.some((b) => b.key === 'protocol'));
 
   // 申诉:草稿 → 字段 → 材料 → 提交
   const draft = await api('/appeal/appeals', { method: 'POST', token: userToken, body: { bizType: 'visa', bizCode: FIELDS.bizCode } });

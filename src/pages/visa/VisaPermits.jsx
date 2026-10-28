@@ -1,5 +1,6 @@
 // 我的签注:电子签注卡、状态、验真链接与打印(PDF)。
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Tabs, Tag, Title } from 'animal-island-ui';
 import { DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
@@ -9,6 +10,7 @@ import { toastSuccess, toastInfo } from '../../components/toast.js';
 
 export default function VisaPermits() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [selected, setSelected] = useState(null);
 
@@ -81,6 +83,11 @@ export default function VisaPermits() {
             <Button icon={<DownloadIcon />} onClick={copyVerifyLink}>
               {t('visa.permit.copyLink')}
             </Button>
+            {selected.status === 'valid' && (
+              <Button type="default" onClick={() => navigate(`/immigration/declare?visaNo=${encodeURIComponent(selected.visaNo)}`)}>
+                {t('visa.permit.toImmigration')}
+              </Button>
+            )}
           </Card>
 
           <p className="muted-text visa-permit-meta">

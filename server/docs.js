@@ -652,7 +652,12 @@ export function checkBizNo(typeRow, bizNo, userId) {
     return { ...base, unavailable: true, found: false, owned: false, valid: false, certifiable: false, status: 'unsupported' };
   }
   const result = verifyBusinessRecord(bizType, value, userId);
-  return { ...base, ...result, checked: true, reserved: false };
+  // 引用占用:该业务号已被多少份有效证书引用;吊销(revoked)的证书不计入,
+  // 因而证书吊销后引用自动解除。
+  const refCount = db
+    .prepare("SELECT COUNT(*) AS n FROM doc_certificates WHERE biz_no = ? AND status = 'valid'")
+    .get(value).n;
+  return { ...base, ...result, checked: true, reserved: refCount > 0, refCount };
 }
 
 // ---------------------------------------------------------------------------

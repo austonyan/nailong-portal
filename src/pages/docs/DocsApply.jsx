@@ -6,6 +6,7 @@ import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
+import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 import { DOC_BIZ_SOURCE } from '../../components/linkage/shared.js';
 import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
@@ -196,6 +197,16 @@ export default function DocsApply() {
     }
   };
 
+  const fillFromResident = (data) => {
+    if (!data) return;
+    setForm((f) => ({
+      ...f,
+      nickname: data.nickname || '',
+      contact: data.contact || '',
+    }));
+    toastSuccess(t('residentPrefill.filled'));
+  };
+
   const pickType = (code) => {
     if (appId) {
       toastWarning(t('docs.apply.typeLocked'));
@@ -239,6 +250,7 @@ export default function DocsApply() {
       {type && (
         <>
           <Card className="docs-block">
+            <ResidentPrefill onFill={fillFromResident} />
             <h3 className="docs-block-title">{t('docs.apply.step2')}</h3>
             <div className="docs-form-grid">
               <label className="docs-field">

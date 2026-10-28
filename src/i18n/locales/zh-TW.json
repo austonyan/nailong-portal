@@ -31,7 +31,8 @@
     "sectionServices": "政務服務",
     "sectionAccount": "帳號",
     "system": "系統管理",
-    "menu": "導覽選單"
+    "menu": "導覽選單",
+    "recognize": "互認規則"
   },
   "inbox": {
     "title": "站內信",
@@ -78,7 +79,8 @@
     "createdAt": "建立時間",
     "lastLogin": "最後登入",
     "system": "系統",
-    "required": "必填"
+    "required": "必填",
+    "refresh": "重新整理"
   },
   "autoApprove": {
     "title": "自動審批",
@@ -237,7 +239,8 @@
       "owned": "本人紀錄 · {{status}}",
       "notOwned": "非本人紀錄,無法關聯",
       "notPersonal": "該紀錄不屬於個人帳戶",
-      "notFound": "未找到該編號"
+      "notFound": "未找到該編號",
+      "referenced": "已被 {{count}} 份文書引用"
     }
   },
   "api": {
@@ -782,6 +785,7 @@
       "print": "列印 / 保存 PDF",
       "verifyLink": "開啟驗真連結",
       "copyLink": "複製驗真連結",
+      "toImmigration": "去入境申報",
       "linkCopied": "驗真連結已複製",
       "meta": "本簽註由奶龍國簽註申請署於 {{time}} 簽發,驗真請前往驗真中心。"
     },
@@ -3777,7 +3781,8 @@
       "resident": "居民登記",
       "diplomatic": "外交事務",
       "document": "文書與認證",
-      "archives": "檔案與紀錄"
+      "archives": "檔案與紀錄",
+      "protocol": "禮賓與活動"
     },
     "bizStatus": {
       "verified": "已與業務署校驗",
@@ -5896,6 +5901,91 @@
         "detail": "詳情",
         "allActions": "全部操作"
       }
+    }
+  },
+  "certificates": {
+    "title": "我的證件庫",
+    "subtitle": "與您帳戶關聯的有效證件與紀錄,跨署統一查看與到期提醒。",
+    "empty": "暫無證件紀錄,先到各署辦理業務後會自動出現在這裡。",
+    "refresh": "重新整理",
+    "noExpiry": "長期有效",
+    "expiringSoon": "即將到期",
+    "expired": "已過期",
+    "valid": "有效",
+    "column": {
+      "office": "簽發署",
+      "type": "證件類型",
+      "number": "證件編號",
+      "status": "狀態",
+      "validUntil": "有效期至"
+    },
+    "viewDetail": "查看詳情",
+    "goTo": "前往{{office}}",
+    "status": {
+      "valid": "有效",
+      "issued": "已簽發",
+      "approved": "已批准",
+      "entered": "已入境",
+      "exited": "已出境",
+      "established": "已建立",
+      "active": "啟用",
+      "pending": "待處理",
+      "used": "已使用",
+      "expired": "已過期",
+      "voided": "已註銷",
+      "rejected": "已駁回"
+    },
+    "alert": {
+      "title": "跨署提醒",
+      "residentCardInvalid": "您的居民證{{status}}，有 {{count}} 份關聯證件可能受影響",
+      "diplomaticOrphaned": "您的外交身分已失效，仍有 {{count}} 份外交簽註處於有效狀態"
+    },
+    "benefits": {
+      "title": "我的互認權益",
+      "empty": "暫無可享受的互認權益"
+    }
+  },
+  "residentPrefill": {
+    "title": "使用居民證資訊",
+    "body": "偵測到您持有有效居民證 {{cardNo}}，是否用居民證持卡人資訊預填本表單？",
+    "holder": "持卡人 {{name}}",
+    "type": "類型 {{type}}",
+    "validUntil": "有效期至 {{date}}",
+    "fill": "使用居民證資訊",
+    "skip": "暫不使用",
+    "filled": "已從居民證預填"
+  },
+  "recognizeAdmin": {
+    "title": "跨署互認規則",
+    "subtitle": "配置持有哪些證件可免辦、簡化或優先辦理哪些業務；規則啟停即時生效，業務申請時自動校驗。",
+    "create": "新增規則",
+    "edit": "編輯規則",
+    "delete": "刪除規則",
+    "deleteConfirm": "確定刪除互認規則「{{benefit}}」嗎？",
+    "service": "目標業務",
+    "holderSource": "持有證件署",
+    "holderKind": "證件種類",
+    "effect": "互認方式",
+    "benefit": "權益說明(簡體)",
+    "benefitTw": "權益說明(繁體)",
+    "empty": "暫無互認規則",
+    "created": "規則已建立",
+    "updated": "規則已更新",
+    "benefitRequired": "請填寫權益說明",
+    "serviceKey": {
+      "visa": "簽註申請署",
+      "immigration": "皇家口岸入境署",
+      "resident": "皇家居民登記署",
+      "dip": "皇家外交事務署",
+      "protocol": "皇家禮賓與活動署",
+      "docs": "皇家文書與認證署",
+      "appeal": "皇家申訴與監察署",
+      "archives": "皇家檔案與紀錄署"
+    },
+    "effects": {
+      "simplify": "簡化辦理",
+      "waive": "免於辦理",
+      "priority": "優先辦理"
     }
   }
 }
