@@ -21,6 +21,7 @@ function PortsTab() {
   const [busy, setBusy] = useState(false); // 口岸弹窗提交中
   const [channelBusy, setChannelBusy] = useState(false); // 通道弹窗提交中
   const [togglingId, setTogglingId] = useState(null); // 正在切换的通道 id
+  const [statusBusyId, setStatusBusyId] = useState(null); // 正在改状态的口岸 id
   const [form] = useForm();
   const [channelForm] = useForm();
 
@@ -57,12 +58,17 @@ function PortsTab() {
   };
 
   const changeStatus = async (port, status) => {
+    // 状态下拉一次只飞一个请求:连点两个状态会并发提交,最后落库的是哪个不可预期。
+    if (statusBusyId !== null) return;
+    setStatusBusyId(port.id);
     try {
       await api.post(`/immigration/admin/ports/${port.id}/status`, { status });
-      toastSuccess(t('common.save'));
-      load();
+      toastSuccess(t('imm.admin.portStatusUpdated', { status: t(`imm.portStatus.${status}`) }));
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setStatusBusyId(null);
     }
   };
 
@@ -133,6 +139,7 @@ function PortsTab() {
             onChange={(status) => changeStatus(record, status)}
             options={PORT_STATUSES.map((s) => ({ key: s, label: t(`imm.portStatus.${s}`) }))}
             aria-label={t('imm.admin.portStatus')}
+            disabled={statusBusyId !== null}
           />
           <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ name: record.nameCn ?? record.name, nameTw: record.nameTw ?? '', type: record.type, openHours: record.openHoursCn ?? record.openHours, openHoursTw: record.openHoursTw ?? '', notice: record.noticeCn ?? record.notice, noticeTw: record.noticeTw ?? '', mapDesc: record.mapDescCn ?? record.mapDesc, mapDescTw: record.mapDescTw ?? '' }); }}>
             {t('common.edit')}

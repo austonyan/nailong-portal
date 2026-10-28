@@ -5,7 +5,8 @@ import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-is
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
-import { toastSuccess } from '../../../components/toast.js';
+import { toastSuccess, toastError } from '../../../components/toast.js';
+import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
 function BlacklistModal({ onClose, onSaved }) {
   const { t } = useTranslation();
@@ -66,6 +67,7 @@ export default function AdminDipVerify() {
   const [blacklist, setBlacklist] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [limit, setLimit] = useState('');
+  const { confirm, dialog } = useConfirmAction();
 
   const loadLogs = useCallback(() => {
     const params = new URLSearchParams({ page: String(page), pageSize: '20' });
@@ -102,22 +104,33 @@ export default function AdminDipVerify() {
     else loadBlacklist();
   }, [tab, loadLogs, loadBlacklist]);
 
-  const lift = async (row) => {
-    try {
-      await api.post(`/dip/admin/blacklist/${row.id}/lift`);
-      loadBlacklist();
-    } catch (err) {
-      toastDipError(t, err);
-    }
-  };
+  const lift = (row) =>
+    confirm({
+      title: t('dip.blacklist.lift'),
+      tip: t('dip.blacklist.liftConfirm', { user: `${row.display_name || row.username} (#${row.user_id})` }),
+      confirmText: t('dip.blacklist.lift'),
+      action: () => api.post(`/dip/admin/blacklist/${row.id}/lift`),
+      success: t('dip.blacklist.lifted'),
+      onDone: loadBlacklist,
+      onError: (err) => toastDipError(t, err),
+    });
 
-  const saveLimit = async () => {
-    try {
-      await api.put('/dip/admin/config/settings', { items: [{ key: 'verify_limit_per_5min', value: limit }] });
-      toastSuccess(t('common.save'));
-    } catch (err) {
-      toastDipError(t, err);
+  const saveLimit = () => {
+    // 1–1000 的整数:空值 / 0 / 1e9 都直接拒绝,不再悄悄写进配置。
+    const value = String(limit).trim();
+    if (!/^\d+$/.test(value) || Number(value) < 1 || Number(value) > 1000) {
+      toastError(t('protocol.admin.limitRange'));
+      return;
     }
+    confirm({
+      danger: false,
+      title: t('dip.verifyAdmin.limitTitle'),
+      tip: t('dip.verifyAdmin.limitConfirm', { count: value }),
+      confirmText: t('common.save'),
+      action: () => api.put('/dip/admin/config/settings', { items: [{ key: 'verify_limit_per_5min', value }] }),
+      success: t('dip.verifyAdmin.limitSaved', { count: value }),
+      onError: (err) => toastDipError(t, err),
+    });
   };
 
   const logColumns = [
@@ -212,6 +225,7 @@ export default function AdminDipVerify() {
       )}
 
       {addOpen && <BlacklistModal onClose={() => setAddOpen(false)} onSaved={loadBlacklist} />}
+      {dialog}
     </div>
   );
 }

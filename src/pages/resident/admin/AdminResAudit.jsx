@@ -32,7 +32,7 @@ export default function AdminResAudit() {
 
   const columns = [
     { title: t('res.admin.audit.actor'), dataIndex: 'actor_name', width: 120 },
-    { title: t('res.admin.audit.action'), dataIndex: 'action', width: 220, render: (v) => <b>{v}</b> },
+    { title: t('res.admin.audit.action'), dataIndex: 'action', width: 220, render: (v) => <b>{t(`res.admin.audit.actionName.${v}`, { defaultValue: v })}</b> },
     { title: t('res.admin.audit.target'), dataIndex: 'target_id', width: 180 },
     { title: t('res.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="res-audit-detail">{v}</span> },
     { title: t('res.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },
