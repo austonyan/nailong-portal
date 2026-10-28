@@ -91,6 +91,29 @@ for (const file of walk(src)) {
   if (/\bellipsis:\s*true/.test(content)) {
     errors.push(`${rel}: 列定义使用了库不支持的 ellipsis,请用 style.maxWidth + 换行`);
   }
+
+  // 时间不许用字符串切片格式化:换个时区/换种日期格式就错,而且 zh-TW 与 zh-CN 会不一致。
+  if (/\.replace\(\s*['"]T['"]\s*,\s*['"] ['"]\s*\)/.test(content)) {
+    errors.push(`${rel}: 时间用了字符串切片/replace('T',' '),请用 dayjs 的 fmtDateTime / fmtDate`);
+  }
+
+  // useSearchParams() 返回的对象每次渲染都是新引用,放进依赖数组会无限重取
+  // (公开验真页会因此耗光限流额度)。
+  if (/\},\s*\[[^\]]*\bsearchParams\b/.test(content)) {
+    errors.push(`${rel}: 依赖数组里有 searchParams 对象,请改为具体的 searchParams.get('x') 字符串`);
+  }
+
+  // 异步确认弹窗必须有 busy:footer 里有 primary + onClick 就必须有 loading。
+  // 打印按钮是同步动作,不存在重复提交问题(见 check:ui 的 window.print 豁免)。
+  for (const { text, line } of dialogTags(content, 'Modal')) {
+    const footer = text.match(/footer=\{([\s\S]*?)\}\s*(?:width|title|onClose|open|>)/);
+    const body = footer ? footer[1] : text;
+    // window.print() / 纯导航类按钮是同步动作,没有重复提交窗口,不要求 busy。
+    if (/window\.print\(|navigate\(/.test(body)) continue;
+    if (/type=["']primary["']/.test(body) && /onClick=/.test(body) && !/loading=/.test(body)) {
+      errors.push(`${rel}:${line} <Modal> 的确认按钮缺 loading(busy),双击会重复提交`);
+    }
+  }
 }
 
 // 服务卡图标白名单必须前后端一致:前端列出可选项,服务端校验落库值。
