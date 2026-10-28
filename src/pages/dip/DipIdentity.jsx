@@ -11,6 +11,7 @@ import {
   DipNav, DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
 } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 function InfoRow({ label, children }) {
@@ -83,6 +84,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
   const [supplementText, setSupplementText] = useState('');
   const [busy, setBusy] = useState(false);
   const [cardOpen, setCardOpen] = useState(false);
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(() => {
     api
@@ -106,6 +108,18 @@ function IdentityDetail({ id, onClose, onChanged }) {
       setBusy(false);
     }
   };
+
+  // 送审 / 撤销不可逆:先确认,busy 由确认弹窗托管
+  const decide = (options, path, body, okMsg) => confirm({
+    ...options,
+    action: () => api.post(path, body),
+    success: okMsg,
+    onDone: async () => {
+      onChanged();
+      load();
+    },
+    onError: (err) => toastDipError(t, err),
+  });
 
   if (!idt) return <p className="muted-text">{t('common.loading')}</p>;
   const d = idt;
@@ -189,15 +203,25 @@ function IdentityDetail({ id, onClose, onChanged }) {
             </Link>
             <Button
               danger
-              loading={busy}
-              onClick={() => post(`/dip/identities/${d.id}/submit`, {}, t('dip.identity.submitted', { no: d.no }))} disabled={busy}
+              onClick={() => decide({
+                title: t('dip.apply.confirmTitle'),
+                tip: t('dip.identity.submitConfirmBody', { no: d.no }),
+                confirmText: t('dip.apply.submit'),
+              }, `/dip/identities/${d.id}/submit`, {}, t('dip.identity.submitted', { no: d.no }))}
             >
               {t('dip.apply.submit')}
             </Button>
           </>
         )}
         {d.status === 'pending_review' && (
-          <Button danger loading={busy} onClick={() => post(`/dip/identities/${d.id}/withdraw`, undefined, t('dip.relation.withdrawn'))} disabled={busy}>
+          <Button
+            danger
+            onClick={() => decide({
+              title: t('dip.identity.withdrawConfirmTitle'),
+              tip: t('dip.identity.withdrawConfirmBody', { no: d.no }),
+              confirmText: t('dip.relation.withdraw'),
+            }, `/dip/identities/${d.id}/withdraw`, undefined, t('dip.relation.withdrawn'))}
+          >
             {t('dip.relation.withdraw')}
           </Button>
         )}
@@ -207,6 +231,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
       </div>
 
       <IdentityCardModal id={d.id} open={cardOpen} onClose={() => setCardOpen(false)} />
+      {dialog}
     </div>
   );
 }
@@ -372,11 +397,14 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
         maskClosable={false}
         open={confirming}
         title={t('dip.apply.confirmTitle')}
-        onClose={() => setConfirming(false)}
+        onClose={() => {
+          if (busy) return;
+          setConfirming(false);
+        }}
         footer={
           <>
-            <Button onClick={() => setConfirming(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={doSubmit}>{t('dip.apply.submit')}</Button>
+            <Button onClick={() => setConfirming(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy} onClick={doSubmit}>{t('dip.apply.submit')}</Button>
           </>
         }
         width={520}
@@ -395,7 +423,7 @@ export default function DipIdentity() {
   const [relations, setRelations] = useState([]);
   const [items, setItems] = useState(null);
   const [openId, setOpenId] = useState(null);
-  const [deleteTarget, setDeleteTarget] = useState(null);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(() => {
     api
@@ -417,16 +445,18 @@ export default function DipIdentity() {
 
   useEffect(load, [load]);
 
-  const removeDraft = async () => {
-    try {
-      await api.del(`/dip/identities/${deleteTarget.id}`);
-      toastSuccess(t('common.deleted'));
-      setDeleteTarget(null);
+  const askDelete = (record) => confirm({
+    title: t('common.confirmDeleteTitle'),
+    tip: t('dip.relation.deleteConfirm', { no: record.no }),
+    confirmText: t('common.delete'),
+    action: () => api.del(`/dip/identities/${record.id}`),
+    success: t('common.deleted'),
+    onDone: async () => {
+      setOpenId(null);
       load();
-    } catch (err) {
-      toastDipError(t, err);
-    }
-  };
+    },
+    onError: (err) => toastDipError(t, err),
+  });
 
   const activeIdentity = (items ?? []).find((i) => i.status === 'active');
 
@@ -458,7 +488,7 @@ export default function DipIdentity() {
               <Link to={`/dip/identity/${record.id}`}>
                 <Button type="default" size="small" icon={<EditIcon />}>{t('common.edit')}</Button>
               </Link>
-              <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => setDeleteTarget(record)}>
+              <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => askDelete(record)}>
                 {t('common.delete')}
               </Button>
             </>
@@ -500,21 +530,7 @@ export default function DipIdentity() {
         {openId !== null && <IdentityDetail id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
 
-      <Modal
-        maskClosable={false}
-        open={deleteTarget !== null}
-        title={t('common.confirmDeleteTitle')}
-        onClose={() => setDeleteTarget(null)}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={() => setDeleteTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger onClick={removeDraft}>{t('common.delete')}</Button>
-          </>
-        }
-      >
-        {t('dip.relation.deleteConfirm', { no: deleteTarget?.no })}
-      </Modal>
+      {confirmDialog}
     </div>
   );
 }

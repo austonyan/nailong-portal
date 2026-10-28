@@ -6,6 +6,7 @@ import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { NOTICE_LEVEL_COLORS, TextArea, fmtDateTime, toastResError } from '../shared.jsx';
+import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 
 const LEVELS = ['info', 'policy', 'event'];
@@ -25,7 +26,9 @@ export default function AdminResNotices() {
   const [tplTitleTw, setTplTitleTw] = useState('');
   const [tplBodyTw, setTplBodyTw] = useState('');
   const [busy, setBusy] = useState(false);
+  const [rowBusy, setRowBusy] = useState(false);
   const [msgQ, setMsgQ] = useState('');
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -58,6 +61,12 @@ export default function AdminResNotices() {
     setModalOpen(true);
   };
 
+  // 取消 / 关闭时清空表单(与 openCreate 一致),避免上一次的输入残留
+  const closeNoticeForm = () => {
+    setModalOpen(false);
+    setNoticeForm(EMPTY_NOTICE);
+  };
+
   const openEdit = (row) => {
     setNoticeForm({
       id: row.id,
@@ -76,9 +85,9 @@ export default function AdminResNotices() {
     try {
       if (noticeForm.id) await api.patch(`/resident/admin/notices/${noticeForm.id}`, noticeForm);
       else await api.post('/resident/admin/notices', noticeForm);
+      closeNoticeForm();
       toastSuccess(t('common.save'));
-      setModalOpen(false);
-      load();
+      await load();
     } catch (err) {
       toastResError(t, err);
     } finally {
@@ -86,22 +95,27 @@ export default function AdminResNotices() {
     }
   };
 
-  const removeNotice = async (row) => {
-    try {
-      await api.del(`/resident/admin/notices/${row.id}`);
-      toastSuccess(t('common.deleted'));
-      load();
-    } catch (err) {
-      toastResError(t, err);
-    }
-  };
+  const askRemove = (row) => confirm({
+    title: t('common.confirmDeleteTitle'),
+    tip: t('res.admin.notices.deleteConfirm', { title: row.title }),
+    confirmText: t('common.delete'),
+    action: () => api.del(`/resident/admin/notices/${row.id}`),
+    success: t('common.deleted'),
+    onDone: load,
+    onError: (err) => toastResError(t, err),
+  });
 
   const toggleNotice = async (row) => {
+    if (rowBusy) return;
+    setRowBusy(true);
     try {
       await api.patch(`/resident/admin/notices/${row.id}`, { enabled: !row.enabled });
-      load();
+      toastSuccess(row.enabled ? t('res.admin.notices.offlined') : t('res.admin.notices.published'));
+      await load();
     } catch (err) {
       toastResError(t, err);
+    } finally {
+      setRowBusy(false);
     }
   };
 
@@ -126,9 +140,9 @@ export default function AdminResNotices() {
         titleTemplateTw: tplTitleTw,
         bodyTemplateTw: tplBodyTw,
       });
-      toastSuccess(t('common.save'));
       setEditingTpl(null);
-      load();
+      toastSuccess(t('common.save'));
+      await load();
     } catch (err) {
       toastResError(t, err);
     } finally {
@@ -153,7 +167,7 @@ export default function AdminResNotices() {
       title: t('res.admin.notices.enabled'),
       dataIndex: 'enabled',
       width: 90,
-      render: (v, record) => <Switch checked={!!v} onChange={() => toggleNotice(record)} />,
+      render: (v, record) => <Switch checked={!!v} loading={rowBusy} disabled={rowBusy} onChange={() => toggleNotice(record)} />,
     },
     { title: t('res.field.createdAt'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
     {
@@ -165,7 +179,7 @@ export default function AdminResNotices() {
           <Button type="default" size="small" icon={<EditIcon />} onClick={() => openEdit(record)}>
             {t('common.edit')}
           </Button>
-          <Button type="text" size="small" danger onClick={() => removeNotice(record)}>
+          <Button type="text" size="small" danger onClick={() => askRemove(record)}>
             {t('common.delete')}
           </Button>
         </div>
@@ -260,13 +274,16 @@ export default function AdminResNotices() {
         maskClosable={false}
         open={modalOpen}
         title={noticeForm.id ? t('res.admin.notices.edit') : t('res.admin.notices.create')}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          if (busy) return;
+          closeNoticeForm();
+        }}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setModalOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!noticeForm.title.trim()} onClick={saveNotice}>
+            <Button onClick={closeNoticeForm} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !noticeForm.title.trim()} onClick={saveNotice}>
               {t('common.save')}
             </Button>
           </>
@@ -338,6 +355,7 @@ export default function AdminResNotices() {
           )}
         </div>
       </Modal>
+      {dialog}
     </div>
   );
 }
