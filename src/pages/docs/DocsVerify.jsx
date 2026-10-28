@@ -6,6 +6,7 @@ import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS, normalizeDocNo } from '../../api/docs.js';
 import { toastError, toastWarning } from '../../components/toast.js';
+import { fmtDate, fmtDateTime } from '../../lib/date.js';
 
 function ResultCard({ result }) {
   const { t } = useTranslation();
@@ -64,9 +65,9 @@ function ResultCard({ result }) {
           </Tag>
         </dd>
         <dt>{t('docs.cert.issuedAt')}</dt>
-        <dd>{String(result.issuedAt || '').slice(0, 10)}</dd>
+        <dd>{result.issuedAt ? fmtDate(result.issuedAt) : ''}</dd>
         <dt>{t('docs.cert.expiresAt')}</dt>
-        <dd>{String(result.expiresAt || '').slice(0, 10)}</dd>
+        <dd>{result.expiresAt ? fmtDate(result.expiresAt) : ''}</dd>
         <dt>{t('docs.verify.issuer')}</dt>
         <dd>{result.issuer}</dd>
       </dl>
@@ -136,7 +137,7 @@ export default function DocsVerify() {
         </Tag>
       ),
     },
-    { title: t('common.createdAt'), dataIndex: 'createdAt', render: (v) => String(v).slice(0, 16).replace('T', ' ') },
+    { title: t('common.createdAt'), dataIndex: 'createdAt', render: (v) => fmtDateTime(v) },
   ];
 
   return (
@@ -151,6 +152,7 @@ export default function DocsVerify() {
             value={no}
             onChange={(e) => setNo(e.target.value)}
             placeholder={t('docs.verify.placeholder')}
+            aria-label={t('docs.verify.title')}
             allowClear
             size="large"
             onKeyDown={(e) => e.key === 'Enter' && query(no)}

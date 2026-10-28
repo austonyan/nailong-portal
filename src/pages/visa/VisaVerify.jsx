@@ -80,6 +80,7 @@ export default function VisaVerify() {
             size="large"
             allowClear
             placeholder={t('visa.verify.placeholder')}
+            aria-label={t('visa.verify.placeholder')}
             value={no}
             onChange={(e) => setNo(e.target.value)}
             onKeyDown={(e) => {

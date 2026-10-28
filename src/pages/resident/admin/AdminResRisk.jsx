@@ -65,7 +65,7 @@ export default function AdminResRisk() {
   };
 
   const dupColumns = [
-    { title: 'User ID', dataIndex: 'user_id', width: 90 },
+    { title: t('common.userId'), dataIndex: 'user_id', width: 90 },
     { title: t('res.field.applicant'), dataIndex: 'username', width: 140 },
     {
       title: t('res.admin.risk.applications'),
@@ -80,7 +80,7 @@ export default function AdminResRisk() {
   ];
 
   const blacklistColumns = [
-    { title: 'User ID', dataIndex: 'userId', width: 90 },
+    { title: t('common.userId'), dataIndex: 'userId', width: 90 },
     { title: t('res.field.applicant'), dataIndex: 'username', width: 140 },
     { title: t('res.admin.risk.reason'), dataIndex: 'reason' },
     { title: t('res.field.createdAt'), dataIndex: 'createdAt', width: 160, render: fmtDateTime },
@@ -155,7 +155,7 @@ export default function AdminResRisk() {
       >
         <div className="res-type-form">
           <label>
-            <span>User ID *</span>
+            <span>{t('common.userId')} *</span>
             <Input size="large" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="123" />
           </label>
           <label>

@@ -272,7 +272,7 @@ export default function AppealAdminManage() {
 
       <Card>
         <Tabs
-          activeKey="notices"
+          defaultActiveKey="notices"
           items={[
             {
               key: 'notices',

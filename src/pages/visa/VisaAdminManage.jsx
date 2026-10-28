@@ -393,8 +393,9 @@ function ConfigTab() {
           <div className="visa-config-form">
             {items.map((row) => (
               <div key={row.key} className="visa-config-row">
-                <label>{LABELS[row.key] || row.key}</label>
+                <label htmlFor={`visa-config-${row.key}`}>{LABELS[row.key] || row.key}</label>
                 <Input
+                  id={`visa-config-${row.key}`}
                   size="middle"
                   value={values[row.key] ?? ''}
                   onChange={(e) => setValues((prev) => ({ ...prev, [row.key]: e.target.value }))}
@@ -478,12 +479,12 @@ function BlacklistTab() {
     <div>
       <Card className="visa-blacklist-form">
         <div className="visa-config-row">
-          <label>{t('visa.admin.userId')}</label>
-          <Input size="middle" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="3" />
+          <label htmlFor="visa-blacklist-user">{t('visa.admin.userId')}</label>
+          <Input id="visa-blacklist-user" size="middle" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="3" />
         </div>
         <div className="visa-config-row">
-          <label>{t('visa.admin.blacklistReason')}</label>
-          <Input size="middle" value={reason} onChange={(e) => setReason(e.target.value)} />
+          <label htmlFor="visa-blacklist-reason">{t('visa.admin.blacklistReason')}</label>
+          <Input id="visa-blacklist-reason" size="middle" value={reason} onChange={(e) => setReason(e.target.value)} />
         </div>
         <Button type="primary" icon={<BanIcon />} loading={busy} onClick={add} disabled={busy}>
           {t('visa.admin.blacklistAdd')}
