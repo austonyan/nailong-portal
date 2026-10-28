@@ -26,7 +26,10 @@ export default function PostalPostcards() {
   const load = useCallback(async () => {
     try {
       const params = new URLSearchParams({ box, page: String(page), pageSize: String(PAGE_SIZE) });
-      setData(await api.get(`/postal/postcards?${params.toString()}`));
+      const data = await api.get(`/postal/postcards?${params.toString()}`);
+      setData(data);
+      // 签收/收藏/删除后总数可能变小:把页码夹回合法范围,避免停在空列表。
+      if ((data.items ?? []).length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastPostError(t, err);
       setData(EMPTY);
@@ -175,7 +178,7 @@ export default function PostalPostcards() {
         </div>
       )}
 
-      {(data?.total ?? 0) > PAGE_SIZE && (
+      {(data?.total ?? 0) > 0 && (
         <Pagination total={data.total} current={page} pageSize={PAGE_SIZE} onChange={setPage} showTotal />
       )}
     </>

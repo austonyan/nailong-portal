@@ -31,6 +31,7 @@ export default function AdminResReview() {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [types, setTypes] = useState([]);
   const [typeFilter, setTypeFilter] = useState('');
   const [detail, setDetail] = useState(null);
@@ -45,15 +46,18 @@ export default function AdminResReview() {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
       if (typeFilter) params.set('type', typeFilter);
-      if (q.trim()) params.set('q', q.trim());
+      if (query) params.set('q', query);
       const data = await api.get(`/resident/admin/queue?${params.toString()}`);
-      setItems(data.items);
+      const rows = data.items ?? [];
+      setItems(rows);
       setTotal(data.total);
+      // total 缩小后分页器虽然不渲染,page 仍可能 >1:夹回合法页码,别把人困在空表。
+      if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastResError(t, err);
       setItems([]);
     }
-  }, [page, status, typeFilter, q, t]);
+  }, [page, status, typeFilter, query, t]);
 
   useEffect(() => {
     load();
@@ -171,7 +175,28 @@ export default function AdminResReview() {
             placeholder={t('res.admin.searchPlaceholder')}
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setQuery(q.trim());
+                setPage(1);
+              }
+            }}
+            onClear={() => {
+              setQ('');
+              setQuery('');
+              setPage(1);
+            }}
           />
+          <Button
+            size="middle"
+            icon={<SearchIcon />}
+            onClick={() => {
+              setQuery(q.trim());
+              setPage(1);
+            }}
+          >
+            {t('common.search')}
+          </Button>
         </div>
       </div>
 
@@ -184,7 +209,7 @@ export default function AdminResReview() {
           pagination={false}
           emptyText={t('res.admin.queueEmpty')}
         />
-        {total > 10 && (
+        {total > 0 && (
           <div className="res-pagination">
             <Pagination total={total} current={page} pageSize={10} onChange={setPage} showTotal />
           </div>

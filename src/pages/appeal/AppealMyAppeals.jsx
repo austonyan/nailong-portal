@@ -34,6 +34,13 @@ export default function AppealMyAppeals() {
     load();
   }, [load]);
 
+  // 列表是客户端切片:total 变小时把 page 夹回合法范围,避免停留在空表。
+  useEffect(() => {
+    if (!items) return;
+    const lastPage = Math.max(1, Math.ceil(items.length / pageSize));
+    if (page > lastPage) setPage(lastPage);
+  }, [items, page, pageSize]);
+
   const doDelete = async () => {
     if (!delTarget) return;
     setBusy(true);
@@ -118,7 +125,7 @@ export default function AppealMyAppeals() {
         </Card>
       ))}
 
-      {total > pageSize && (
+      {total > 0 && (
         <div className="appeal-pagination">
           <Pagination total={total} current={page} pageSize={pageSize} onChange={setPage} showTotal />
         </div>
