@@ -2,6 +2,10 @@
   "app": {
     "name": "奶龙统一门户"
   },
+  "language": {
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文"
+  },
   "nav": {
     "portal": "门户",
     "visa": "签注申请署",
@@ -41,7 +45,12 @@
     "unread": "未读",
     "empty": "暂无站内信",
     "markAll": "全部标为已读",
+    "markAllOffice": "把「{{office}}」全部标为已读",
     "markedAll": "已全部标为已读",
+    "nothingToMark": "没有需要标记的未读消息",
+    "markedCount": "已将 {{count}} 条标为已读",
+    "filterStatus": "按读取状态筛选",
+    "filterOffice": "按署别筛选",
     "loadFailed": "站内信加载失败",
     "viewInbox": "前往信箱",
     "total": "共 {{count}} 条",
@@ -80,7 +89,13 @@
     "lastLogin": "最后登录",
     "system": "系统",
     "required": "必填",
-    "refresh": "刷新"
+    "refresh": "刷新",
+    "userId": "账号 ID",
+    "retry": "重试",
+    "recentOnly": "仅显示最近 {{count}} 条",
+    "loadFailed": "加载失败,请稍后重试",
+    "readState": "已读",
+    "unreadState": "未读"
   },
   "autoApprove": {
     "title": "自动审批",
@@ -124,7 +139,11 @@
     "toLogin": "已有账号?去登录",
     "welcomeBack": "欢迎回来,{{name}}!",
     "loginSuccess": "登录成功",
-    "registerSuccess": "注册成功,欢迎上岛!"
+    "registerSuccess": "注册成功,欢迎上岛!",
+    "usernameRule": "用户名为 3-32 位字母、数字、_ 或 -",
+    "passwordRule": "密码为 8-72 位字符",
+    "emailRule": "请填写有效的邮箱地址",
+    "confirmRule": "两次输入的密码不一致"
   },
   "setup": {
     "checking": "正在检查首次启动状态…",
@@ -456,10 +475,17 @@
     "tagline": "这里是奶龙统一门户,所有服务从这里出发",
     "services": "服务入口",
     "servicesEmpty": "还没有可用的服务,请联系管理员",
+    "servicesLoadFailed": "服务列表加载失败,请检查网络后重试",
     "open": "打开",
     "myRoles": "我的角色",
     "serviceCount": "可用服务",
-    "permissionCount": "我的权限"
+    "permissionCount": "我的权限",
+    "sso": {
+      "title": "单点登录身份确认",
+      "confirm": "确认并进入",
+      "service": "即将以当前门户身份进入「{{name}}」。",
+      "tip": "确认进入后,该服务会读取你的门户账号身份用于办理业务与投递站内通知;你可以随时在个人资料页退出登录。"
+    }
   },
   "profile": {
     "title": "个人资料",
@@ -952,7 +978,26 @@
         "auditAction": "操作",
         "auditActor": "操作人",
         "auditTarget": "对象",
-        "auditDetail": "详情"
+        "auditDetail": "详情",
+        "action": {
+          "submit_application": "提交申请",
+          "withdraw_application": "撤回申请",
+          "approve_application": "审核通过",
+          "reject_application": "审核驳回",
+          "require_supplement": "要求补件",
+          "issue_permit": "签发签注",
+          "mark_permit_used": "核销签注",
+          "void_permit": "作废签注",
+          "create_visa_type": "新增签注类型",
+          "update_visa_type": "更新签注类型",
+          "create_notice": "新增公告",
+          "update_notice": "更新公告",
+          "delete_notice": "删除公告",
+          "update_config": "更新配置",
+          "blacklist_user": "加入黑名单",
+          "unblacklist_user": "移出黑名单",
+          "privacy_erase": "清除个人数据"
+        }
       }
     }
   },
@@ -1167,7 +1212,8 @@
       "seal1": "皇家文书与",
       "seal2": "认证署",
       "seal3": "认证专用章",
-      "ariaLabel": "认证文书 {{no}}"
+      "ariaLabel": "认证文书 {{no}}",
+      "titleEn": "认证证书"
     },
     "certList": {
       "title": "我的认证文书",
@@ -1547,6 +1593,7 @@
       "mapPlaza": "奶龙雕像广场",
       "mapGarden": "出站花园",
       "channelClosed": "暂未开放",
+      "channelsEmpty": "该口岸暂未配置通道",
       "startDeclare": "在此口岸申报入境",
       "declareBlocked": "口岸未开放申报",
       "eventHints": "近期活动提示",
@@ -1879,7 +1926,54 @@
         "targetType": "对象类型",
         "targetId": "对象标识",
         "detail": "详情",
-        "allActions": "全部操作"
+        "allActions": "全部操作",
+        "targetKind": {
+          "port": "口岸",
+          "announcement": "公告",
+          "declaration": "申报单",
+          "pass_code": "通关码",
+          "entry_record": "出入境记录",
+          "user": "用户",
+          "template": "消息模板",
+          "visa": "签注",
+          "attachment": "附件"
+        },
+        "actionName": {
+          "port": "口岸",
+          "declaration": "申报",
+          "pass": "通关码",
+          "record": "出入境记录",
+          "visa": "签注",
+          "blacklist": "黑名单",
+          "template": "消息模板",
+          "settings": "配置",
+          "file": "文件",
+          "data": "数据",
+          "port_create": "新增口岸",
+          "port_update": "更新口岸",
+          "port_status": "变更口岸状态",
+          "announcement_publish": "发布公告",
+          "announcement_update": "更新公告",
+          "announcement_offline": "下架公告",
+          "data_delete_announcement": "删除公告",
+          "data_delete_draft": "删除草稿",
+          "declaration_submit": "提交申报",
+          "declaration_withdraw": "撤回申报",
+          "declaration_approve": "审核通过",
+          "declaration_reject": "审核驳回",
+          "declaration_supplement": "要求补件",
+          "pass_verify": "核验通关码",
+          "pass_void": "作废通关码",
+          "record_correct": "更正出入境记录",
+          "record_mark": "标记记录无效",
+          "record_exit_register": "登记出境",
+          "blacklist_add": "加入黑名单",
+          "blacklist_lift": "移出黑名单",
+          "template_update": "更新消息模板",
+          "draft_create": "保存草稿",
+          "file_access": "下载附件",
+          "visa_mark_used": "签注核销"
+        }
       },
       "blacklist": {
         "add": "添加名单",
@@ -2321,7 +2415,11 @@
         "remindTip": "对该天数内到期的有效居民卡各发送一次到期提醒。",
         "remindSent": "已提醒 {{count}} 位居民",
         "reasonRequired": "原因(必填,会记录审计)",
-        "voidWarning": "注销后居民身份同步失效,持卡人需重新登记才能再次获得居民卡。"
+        "voidWarning": "注销后居民身份同步失效,持卡人需重新登记才能再次获得居民卡。",
+        "freezeDone": "居民卡已冻结",
+        "unfreezeDone": "居民卡已解冻",
+        "voidDone": "居民卡已注销",
+        "reissueDone": "居民卡已补发"
       },
       "residents": {
         "title": "居民信息管理",
@@ -2634,6 +2732,7 @@
       "titlePlaceholder": "例如:驻奶龙国非常驻使节",
       "termStart": "任期开始",
       "termEnd": "任期结束",
+      "termOrderError": "任期结束日期不能早于开始日期",
       "term": "任期",
       "termRange": "{start} ~ {end}",
       "inactiveReason": "失效原因",
@@ -2906,7 +3005,17 @@
       "query": "查询内容",
       "kind": "类型",
       "result": "结果",
-      "at": "时间"
+      "at": "时间",
+      "result_valid": "验真通过",
+      "result_not_found": "未查询到",
+      "result_status_established": "已建交",
+      "result_status_suspended": "已中止",
+      "result_status_severed": "已断交",
+      "result_status_active": "有效",
+      "result_status_frozen": "已冻结",
+      "result_status_expired": "已过期",
+      "result_status_revoked": "已撤销",
+      "result_status_terminated": "已终止"
     },
     "blacklist": {
       "add": "添加名单",
@@ -2988,6 +3097,10 @@
     "officeName": "奶龙国皇家礼宾与活动署",
     "officeSub": "活动 · 邀请函 · 活动凭证 · 礼宾服务",
     "scamTitle": "防诈骗提示",
+    "checkinSource": {
+      "manual": "人工",
+      "scan": "扫码"
+    },
     "scamBody": "本署活动报名与认证完全免费。任何“收费报名”“内部名额”“承诺现实入场或礼遇”的说法都是诈骗,请勿相信。",
     "nav": {
       "home": "首页",
@@ -3132,6 +3245,14 @@
       "invitation": "邀请函",
       "pass": "活动凭证",
       "host": "接待方认证"
+    },
+    "verifyResult": {
+      "valid": "验真通过",
+      "not_found": "未查询到",
+      "status_used": "已使用",
+      "status_expired": "已过期",
+      "status_voided": "已作废",
+      "status_revoked": "已撤销"
     },
     "history": {
       "registration_draft": "保存草稿",
@@ -3584,6 +3705,8 @@
       "searchVerify": "搜索验真编号",
       "searchCheckin": "搜索凭证编号 / 持票人",
       "searchAudit": "搜索操作人或对象编号",
+      "dateOrderError": "结束日期不能早于开始日期",
+      "deadlineOrderError": "报名截止日期不能晚于开始日期",
       "filterAction": "按操作筛选",
       "queueEmpty": "当前队列为空",
       "checkinEmpty": "暂无签到记录",
@@ -4540,6 +4663,57 @@
         "sampling": "抽查",
         "inspect_report": "监察报告",
         "ticket": "工单"
+      },
+      "kind": {
+        "decision": "决定书",
+        "review": "复核",
+        "appeal": "申诉"
+      },
+      "action": {
+        "issue_decision_doc": "签发决定书",
+        "accept_appeal": "受理申诉",
+        "refuse_appeal": "不予受理",
+        "dispatch_appeal": "分派承办",
+        "require_supplement": "要求补件",
+        "decide_appeal": "作出申诉决定",
+        "close_appeal": "关闭申诉",
+        "merge_appeals": "合并申诉",
+        "accept_complaint": "受理投诉建议",
+        "reply_complaint": "回复投诉建议",
+        "close_complaint": "关闭投诉建议",
+        "escalate_complaint_to_appeal": "投诉升级为申诉",
+        "reply_ticket": "回复工单",
+        "ticket_processing": "工单转处理中",
+        "ticket_closed": "关闭工单",
+        "ticket_escalated": "工单升级",
+        "accept_review": "受理复核",
+        "expire_decision_doc": "决定书失效",
+        "decide_review": "作出复核决定",
+        "create_inspect_report": "新增监察报告",
+        "inspect_sampling": "抽查业务",
+        "create_appeal_notice": "新增公告",
+        "update_appeal_notice": "更新公告",
+        "delete_appeal_notice": "删除公告",
+        "create_publicity": "新增公示",
+        "update_publicity": "更新公示",
+        "delete_publicity": "删除公示",
+        "update_msg_template": "更新站内信模板",
+        "blacklist_user": "加入黑名单",
+        "unblacklist_user": "移出黑名单",
+        "update_appeal_config": "更新署务配置",
+        "export_appeals_csv": "导出申诉 CSV"
+      },
+      "result": {
+        "valid": "有效",
+        "voided": "已撤销",
+        "expired": "已失效",
+        "completed": "已完成",
+        "pending": "待受理",
+        "reviewing": "复核中",
+        "resolved": "已处理",
+        "rejected": "已驳回",
+        "not_found": "未查询到",
+        "rate_limited": "触发限流"
       }
     }
   },
@@ -4840,7 +5014,18 @@
         "action": "操作",
         "targetType": "对象类型",
         "targetId": "对象编号",
-        "detail": "明细"
+        "detail": "明细",
+        "actionLabel": {
+          "export.user": "本人导出",
+          "export.admin": "管理端导出",
+          "admin.query": "管理端查询",
+          "rule.update": "规则变更",
+          "request.create": "创建申请",
+          "request.accept": "受理申请",
+          "request.approve": "批准申请",
+          "request.execute": "执行申请",
+          "request.reject": "驳回申请"
+        }
       }
     }
   },
@@ -5291,7 +5476,22 @@
         "target": "对象",
         "detail": "详情",
         "searchPlaceholder": "按动作关键字筛选,如 badge",
-        "empty": "没有符合条件的审计记录"
+        "empty": "没有符合条件的审计记录",
+        "actionName": {
+          "attraction_create": "新增景点",
+          "attraction_update": "编辑景点",
+          "attraction_delete": "删除景点",
+          "article_create": "新增文章",
+          "article_update": "编辑文章",
+          "article_delete": "删除文章",
+          "config_update": "更新规则",
+          "badge_create": "新增徽章",
+          "badge_update": "编辑徽章",
+          "badge_delete": "删除徽章",
+          "badge_award": "发放徽章",
+          "badge_revoke": "回收徽章",
+          "checkin": "景点打卡"
+        }
       }
     },
     "type": {
@@ -5575,6 +5775,11 @@
         "metric_delete": "删除口径",
         "export": "导出数据",
         "report_generate": "生成年度报告"
+      },
+      "targetType": {
+        "metric": "口径",
+        "metrics": "口径",
+        "report": "年度报告"
       },
       "dashboard": {
         "title": "平台总看板",
@@ -5899,7 +6104,28 @@
         "action": "操作",
         "target": "对象",
         "detail": "详情",
-        "allActions": "全部操作"
+        "allActions": "全部操作",
+        "actionLabel": {
+          "create_entry": "新增词条",
+          "update_entry": "编辑词条",
+          "submit_entry": "提交词条审核",
+          "publish_entry": "发布词条",
+          "offline_entry": "下架词条",
+          "delete_entry": "删除词条",
+          "create_article": "新增文章",
+          "update_article": "编辑文章",
+          "submit_article": "提交文章审核",
+          "publish_article": "发布文章",
+          "offline_article": "下架文章",
+          "delete_article": "删除文章",
+          "create_task": "新增任务",
+          "update_task": "编辑任务",
+          "task_status": "变更任务状态",
+          "delete_task": "删除任务",
+          "grant_badge": "发放徽章",
+          "approve_content": "审核通过",
+          "reject_content": "审核驳回"
+        }
       }
     }
   },
