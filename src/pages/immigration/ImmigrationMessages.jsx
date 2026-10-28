@@ -12,9 +12,11 @@ export default function ImmigrationMessages() {
   const { t } = useTranslation();
   const [filter, setFilter] = useState('all');
   const [data, setData] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [pendingId, setPendingId] = useState(null); // 正在处理的那一行('all' 或消息 id)
 
   const load = useCallback(() => {
-    api
+    return api
       .get(`/immigration/messages?filter=${filter}&pageSize=50`)
       .then(setData)
       .catch((err) => {
@@ -25,12 +27,20 @@ export default function ImmigrationMessages() {
 
   useEffect(load, [load]);
 
-  const act = async (path) => {
+  // 标记已读/归档都是写操作:没有 busy 的话连点会重复请求,
+  // 而且前一次的 load() 回来后列表会闪回旧状态。
+  const act = async (path, id) => {
+    if (busy) return;
+    setBusy(true);
+    setPendingId(id);
     try {
       await api.post(path);
-      load();
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setBusy(false);
+      setPendingId(null);
     }
   };
 
@@ -41,7 +51,13 @@ export default function ImmigrationMessages() {
         <Title size="middle" color="app-teal">
           {t('imm.msg.title')}
         </Title>
-        <Button type="text" size="small" onClick={() => act('/immigration/messages/read-all')} disabled={!data?.unreadCount}>
+        <Button
+          type="text"
+          size="small"
+          onClick={() => act('/immigration/messages/read-all', 'all')}
+          loading={busy && pendingId === 'all'}
+          disabled={busy || !data?.unreadCount}
+        >
           {t('imm.msg.readAll')}
         </Button>
       </div>
@@ -58,6 +74,11 @@ export default function ImmigrationMessages() {
       </div>
 
       <div className="im-msg-list">
+        {data === null && (
+          <Card type="dashed">
+            <p className="muted-text">{t('common.loading')}</p>
+          </Card>
+        )}
         {(data?.items ?? []).map((m) => (
           <Card key={m.id} className={`im-msg-item${m.read ? '' : ' im-msg-unread'}`}>
             <div className="im-msg-head">
@@ -69,16 +90,36 @@ export default function ImmigrationMessages() {
             <p className="im-ann-body">{m.body}</p>
             <div className="im-msg-actions">
               {!m.read && (
-                <Button type="text" size="small" icon={<MailIcon />} onClick={() => act(`/immigration/messages/${m.id}/read`)}>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<MailIcon />}
+                  onClick={() => act(`/immigration/messages/${m.id}/read`, m.id)}
+                  loading={busy && pendingId === m.id}
+                  disabled={busy}
+                >
                   {t('imm.msg.markRead')}
                 </Button>
               )}
               {filter === 'archived' ? (
-                <Button type="text" size="small" icon={<InboxIcon />} onClick={() => act(`/immigration/messages/${m.id}/unarchive`)}>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<InboxIcon />}
+                  onClick={() => act(`/immigration/messages/${m.id}/unarchive`, m.id)}
+                  loading={busy && pendingId === m.id}
+                  disabled={busy}
+                >
                   {t('imm.msg.unarchive')}
                 </Button>
               ) : (
-                <Button type="text" size="small" onClick={() => act(`/immigration/messages/${m.id}/archive`)}>
+                <Button
+                  type="text"
+                  size="small"
+                  onClick={() => act(`/immigration/messages/${m.id}/archive`, m.id)}
+                  loading={busy && pendingId === m.id}
+                  disabled={busy}
+                >
                   {t('imm.msg.archive')}
                 </Button>
               )}

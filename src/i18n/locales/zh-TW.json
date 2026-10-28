@@ -269,6 +269,7 @@
     "VISA_RATE_LIMITED": "操作太頻繁,請稍等一分鐘再試",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在審核中的申請",
     "VISA_AVATAR_REQUIRED": "需要至少上傳一張頭像",
+    "VISA_DRAFT_NOT_READY": "草稿還沒建好,請稍候再上傳材料",
     "VISA_INVALID_TRANSITION": "目前狀態無法執行該操作",
     "VISA_SUPPLEMENT_EXPIRED": "補件期限已過",
     "VISA_SUPPLEMENT_EMPTY": "請先上傳補件材料或填寫說明",
@@ -530,6 +531,13 @@
       "color": "顏色",
       "requiredPermission": "所需權限",
       "requiredPermissionTip": "留空表示所有登入使用者可見",
+      "entryMode": "進入方式",
+      "entryModeTip": "決定門戶卡片如何開啟該服務:外鏈在新分頁開啟,站內直接進入,單點登入先確認身份",
+      "entryModeType": {
+        "external": "外鏈新開",
+        "internal": "站內直接進入",
+        "internal_sso": "站內單點登入"
+      },
       "deleteConfirm": "確定要刪除服務 {{name}} 嗎?"
     }
   },
@@ -681,6 +689,8 @@
       "companionsPlaceholder": "例如:奶龍寶寶 ×2(選填)",
       "materialsTitle": "材料上傳",
       "materialsTip": "頭像必傳;其餘材料可選。支援圖片與 PDF,單個不超過 5MB。",
+      "avatarRequired": "請先上傳頭像材料,再提交申請",
+      "draftPreparing": "草稿準備中,稍候即可上傳材料…",
       "materialAvatar": "頭像",
       "materialOther": "其他材料(邀請函、活動憑證等)",
       "uploadAvatar": "上傳頭像",
@@ -1690,6 +1700,8 @@
       "correct": "更正",
       "markInvalid": "標記失效",
       "correctTitle": "更正入境紀錄 {{no}}",
+      "markInvalidTitle": "確認標記為無效",
+      "markInvalidConfirm": "將入境記錄 {{no}} 標記為無效後,該記錄的法律效力終止,且無法撤銷,確定嗎?",
       "correctTip": "僅更正入境日期與備註,操作會記入審計日誌。"
     },
     "msg": {
@@ -1733,6 +1745,9 @@
       "title": "通關碼驗真",
       "noToken": "連結裡沒有驗真權杖",
       "invalid": "未查到該通關碼",
+      "failed": "驗真請求失敗",
+      "failedTip": "通關碼驗真暫時不可用,請稍後重試",
+      "retry": "重新驗真",
       "toLogin": "去登入"
     },
     "status": {
@@ -1784,6 +1799,10 @@
       "mapDesc": "地圖/示意圖描述(虛構)",
       "level": "級別",
       "annBody": "公告正文",
+      "offlineTitle": "確認下線公告",
+      "offlineConfirm": "下線「{{title}}」後不再對旅客展示,且無法重新發布,確定嗎?",
+      "offlineDone": "公告已下線",
+      "annDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
       "annPort": "關聯口岸",
       "globalAnn": "署級公告(全口岸)",
       "createAnn": "發布公告",
@@ -5953,6 +5972,7 @@
     "validUntil": "有效期至 {{date}}",
     "fill": "使用居民證資訊",
     "skip": "暫不使用",
+    "nothing": "居民證沒有可直接預填的欄位,請手動填寫",
     "filled": "已從居民證預填"
   },
   "recognizeAdmin": {

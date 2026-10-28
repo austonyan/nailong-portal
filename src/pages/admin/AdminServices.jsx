@@ -9,6 +9,10 @@ import { toastSuccess, toastError } from '../../components/toast.js';
 
 const ICON_OPTIONS = Object.keys(SERVICE_ICONS).map((name) => ({ key: name, label: name.replace(/Icon$/, '') }));
 const COLOR_OPTIONS = SERVICE_COLORS.map((c) => ({ key: c, label: c }));
+// 与服务端同一条枚举(server/routes/services.js validateServiceBody 的 entryMode)。
+// 门户卡片怎么打开这个服务完全由它决定(src/pages/Portal.jsx openService)。
+const ENTRY_MODES = ['external', 'internal', 'internal_sso'];
+const DEFAULT_ENTRY_MODE = 'external';
 
 export default function AdminServices() {
   const { t } = useTranslation();
@@ -34,7 +38,7 @@ export default function AdminServices() {
   const openCreate = () => {
     setEditing({});
     form.resetFields();
-    form.setFieldsValue({ icon: 'RocketIcon', color: 'app-teal', enabled: true });
+    form.setFieldsValue({ icon: 'RocketIcon', color: 'app-teal', enabled: true, entryMode: DEFAULT_ENTRY_MODE });
   };
 
   const openEdit = (service) => {
@@ -45,6 +49,7 @@ export default function AdminServices() {
       name: service.nameCn ?? service.name,
       description: service.descriptionCn ?? service.description,
       requiredPermission: service.requiredPermission ?? '',
+      entryMode: service.entryMode || DEFAULT_ENTRY_MODE,
       enabled: service.enabled,
     });
   };
@@ -66,12 +71,21 @@ export default function AdminServices() {
         icon: values.icon,
         color: values.color,
         requiredPermission: values.requiredPermission || null,
+        entryMode: values.entryMode || DEFAULT_ENTRY_MODE,
         enabled: !!values.enabled,
       };
       if (editing?.id) {
         await api.patch(`/services/${editing.id}`, payload);
       } else {
-        await api.post('/services', { ...payload, key: values.key?.trim() });
+        const created = await api.post('/services', { ...payload, key: values.key?.trim() });
+        // server/routes/services.js 的 INSERT 语句里没有 entry_mode 列,创建时这个值会被
+        // 服务端丢掉(序列化回来仍是默认 external)。补一次 PATCH 让管理员选的入口方式真的
+        // 生效;服务端把列补进 INSERT 后即可删除这段。
+        // 补写失败只让入口方式退回 external(表格重载后会显示真实值),不能让整次创建
+        // 看起来失败 —— 否则管理员再点一次保存就会重复注册同一个服务。
+        if (created?.service && created.service.entryMode !== payload.entryMode) {
+          await api.patch(`/services/${created.service.id}`, { entryMode: payload.entryMode }).catch(() => {});
+        }
       }
       toastSuccess(t('common.save'));
       closeModal();
@@ -136,6 +150,16 @@ export default function AdminServices() {
       dataIndex: 'requiredPermission',
       width: 150,
       render: (value) => (value ? <Tag color="purple" variant="soft">{value}</Tag> : <span className="muted-text">-</span>),
+    },
+    {
+      title: t('admin.services.entryMode'),
+      dataIndex: 'entryMode',
+      width: 130,
+      render: (value) => (
+        <Tag color="app-blue" variant="soft">
+          {t(`admin.services.entryModeType.${value || DEFAULT_ENTRY_MODE}`)}
+        </Tag>
+      ),
     },
     {
       title: t('common.status'),
@@ -218,6 +242,14 @@ export default function AdminServices() {
               options={[{ key: '', label: '-' }, ...permissions.map((p) => ({ key: p.key, label: p.name }))]}
               allowClear
             />
+          </FormItem>
+          <FormItem
+            name="entryMode"
+            label={t('admin.services.entryMode')}
+            help={t('admin.services.entryModeTip')}
+            rules={[{ required: true, message: t('admin.services.entryMode') }]}
+          >
+            <Select options={ENTRY_MODES.map((m) => ({ key: m, label: t(`admin.services.entryModeType.${m}`) }))} />
           </FormItem>
           <FormItem name="enabled" label={t('common.status')} valuePropName="checked">
             <Switch checkedChildren={t('common.enabled')} unCheckedChildren={t('common.disabled')} />
