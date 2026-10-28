@@ -6,6 +6,7 @@ import { BanIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { TextArea, fmtDateTime, toastResError } from '../shared.jsx';
+import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
 export default function AdminResRisk() {
@@ -16,6 +17,7 @@ export default function AdminResRisk() {
   const [userId, setUserId] = useState('');
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -54,15 +56,15 @@ export default function AdminResRisk() {
     }
   };
 
-  const removeBlacklist = async (row) => {
-    try {
-      await api.del(`/resident/admin/blacklist/${row.userId}`);
-      toastSuccess(t('common.deleted'));
-      load();
-    } catch (err) {
-      toastResError(t, err);
-    }
-  };
+  const askRemove = (row) => confirm({
+    title: t('res.admin.risk.removeTitle'),
+    tip: t('res.admin.risk.removeConfirm', { username: row.username, userId: row.userId }),
+    confirmText: t('res.admin.risk.remove'),
+    action: () => api.del(`/resident/admin/blacklist/${row.userId}`),
+    success: t('common.deleted'),
+    onDone: load,
+    onError: (err) => toastResError(t, err),
+  });
 
   const dupColumns = [
     { title: 'User ID', dataIndex: 'user_id', width: 90 },
@@ -89,7 +91,7 @@ export default function AdminResRisk() {
       dataIndex: 'actions',
       width: 100,
       render: (_, record) => (
-        <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => removeBlacklist(record)}>
+        <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => askRemove(record)}>
           {t('res.admin.risk.remove')}
         </Button>
       ),
@@ -147,7 +149,7 @@ export default function AdminResRisk() {
         footer={
           <>
             <Button onClick={() => { setAddOpen(false); setUserId(''); setReason(''); }} disabled={busy}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!Number(userId)} onClick={addBlacklist}>
+            <Button type="primary" loading={busy} disabled={busy || !Number(userId)} onClick={addBlacklist}>
               {t('common.confirm')}
             </Button>
           </>
@@ -164,6 +166,7 @@ export default function AdminResRisk() {
           </label>
         </div>
       </Modal>
+      {dialog}
     </div>
   );
 }

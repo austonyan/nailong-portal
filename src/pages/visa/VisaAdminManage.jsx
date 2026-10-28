@@ -8,6 +8,7 @@ import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
 import { TextArea, toastVisaError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
 function TypesTab() {
   const { t } = useTranslation();
@@ -201,6 +202,7 @@ function NoticesTab() {
   const [bodyTw, setBodyTw] = useState('');
   const [level, setLevel] = useState('info');
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -256,14 +258,16 @@ function NoticesTab() {
     }
   };
 
-  const remove = async (notice) => {
-    try {
-      await api.del(`/visa/admin/notices/${notice.id}`);
-      toastSuccess(t('common.deleted'));
-      await load();
-    } catch (err) {
-      toastVisaError(t, err);
-    }
+  const askRemove = (notice) => {
+    confirm({
+      title: t('common.confirmDeleteTitle'),
+      tip: t('visa.admin.noticeDeleteConfirm', { title: notice.title }),
+      confirmText: t('common.delete'),
+      action: () => api.del(`/visa/admin/notices/${notice.id}`),
+      success: t('common.deleted'),
+      onDone: load,
+      onError: (err) => toastVisaError(t, err),
+    });
   };
 
   const columns = [
@@ -289,7 +293,7 @@ function NoticesTab() {
           <Button type="default" size="small" icon={<EditIcon />} onClick={() => openEdit(record)}>
             {t('common.edit')}
           </Button>
-          <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => remove(record)}>
+          <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => askRemove(record)}>
             {t('common.delete')}
           </Button>
         </div>
@@ -342,6 +346,8 @@ function NoticesTab() {
           <TextArea value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} rows={4} />
         </div>
       </Modal>
+
+      {confirmDialog}
     </div>
   );
 }
@@ -417,6 +423,7 @@ function BlacklistTab() {
   const [userId, setUserId] = useState('');
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -448,14 +455,16 @@ function BlacklistTab() {
     }
   };
 
-  const remove = async (row) => {
-    try {
-      await api.del(`/visa/admin/blacklist/${row.userId}`);
-      toastSuccess(t('common.deleted'));
-      await load();
-    } catch (err) {
-      toastVisaError(t, err);
-    }
+  const askRemove = (row) => {
+    confirm({
+      title: t('visa.admin.blacklistRemove'),
+      tip: t('visa.admin.blacklistRemoveConfirm', { user: `${row.username} (#${row.userId})` }),
+      confirmText: t('visa.admin.blacklistRemove'),
+      action: () => api.del(`/visa/admin/blacklist/${row.userId}`),
+      success: t('visa.admin.blacklistRemoved'),
+      onDone: load,
+      onError: (err) => toastVisaError(t, err),
+    });
   };
 
   const columns = [
@@ -467,7 +476,7 @@ function BlacklistTab() {
       dataIndex: 'actions',
       width: 120,
       render: (_, record) => (
-        <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => remove(record)}>
+        <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => askRemove(record)}>
           {t('common.delete')}
         </Button>
       ),
@@ -492,6 +501,7 @@ function BlacklistTab() {
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
       </Card>
+      {confirmDialog}
     </div>
   );
 }

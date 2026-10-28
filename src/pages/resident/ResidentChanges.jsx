@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, Title, useForm } from 'animal-island-ui';
 import { SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { CHANGE_TYPES, StatusTag, TextArea, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
 
 const CHANGE_STATUS_COLORS = {
@@ -25,6 +26,7 @@ export default function ResidentChanges() {
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [cardMissing, setCardMissing] = useState(false);
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -86,10 +88,10 @@ export default function ResidentChanges() {
         body.note = values.note || '';
       }
       await api.post('/resident/changes', body);
-      toastResSuccess(t('res.changes.submitted'));
       setConfirmOpen(false);
       form.resetFields();
-      load();
+      toastResSuccess(t('res.changes.submitted'));
+      await load();
     } catch (err) {
       toastResError(t, err);
     } finally {
@@ -97,15 +99,15 @@ export default function ResidentChanges() {
     }
   };
 
-  const cancel = async (row) => {
-    try {
-      await api.post(`/resident/changes/${row.id}/cancel`);
-      toastResSuccess(t('res.changes.cancelled'));
-      load();
-    } catch (err) {
-      toastResError(t, err);
-    }
-  };
+  const askCancel = (row) => confirm({
+    title: t('res.changes.cancelTitle'),
+    tip: t('res.changes.cancelConfirm', { no: row.no }),
+    confirmText: t('res.changes.cancel'),
+    action: () => api.post(`/resident/changes/${row.id}/cancel`),
+    success: t('res.changes.cancelled'),
+    onDone: load,
+    onError: (err) => toastResError(t, err),
+  });
 
   return (
     <div className="res-changes-page">
@@ -189,7 +191,7 @@ export default function ResidentChanges() {
                   <StatusTag value={row.status} map={CHANGE_STATUS_COLORS} i18nPrefix="res.changeStatus" />
                   <span className="muted-text">{fmtDateTime(row.createdAt)}</span>
                   {row.status === 'pending_review' && (
-                    <Button type="text" size="small" danger onClick={() => cancel(row)}>
+                    <Button type="text" size="small" danger onClick={() => askCancel(row)}>
                       {t('res.changes.cancel')}
                     </Button>
                   )}
@@ -211,11 +213,14 @@ export default function ResidentChanges() {
         maskClosable={false}
         open={confirmOpen}
         title={t('res.changes.confirmTitle')}
-        onClose={() => setConfirmOpen(false)}
+        onClose={() => {
+          if (busy) return;
+          setConfirmOpen(false);
+        }}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setConfirmOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
             <Button type="primary" loading={busy} onClick={submit} disabled={busy}>
               {t('res.changes.submit')}
             </Button>
@@ -225,6 +230,7 @@ export default function ResidentChanges() {
         <p>{t(`res.changes.${changeType}Confirm`)}</p>
         <p className="muted-text">{t('res.changes.confirmAudit')}</p>
       </Modal>
+      {dialog}
     </div>
   );
 }

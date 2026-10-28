@@ -6,6 +6,8 @@ import { Button, Card, Modal, Tag, Title, Upload } from 'animal-island-ui';
 import { AlertTriangleIcon, PaperclipIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
+import { toastError } from '../../components/toast.js';
 import {
   APPLICATION_STATUS_COLORS,
   StatusTag,
@@ -29,7 +31,9 @@ export default function ResidentApplicationDetail() {
   const [supplementOpen, setSupplementOpen] = useState(false);
   const [supplementNote, setSupplementNote] = useState('');
   const [supplementMaterials, setSupplementMaterials] = useState([]);
-  const [busy, setBusy] = useState(false);
+  // 撤回与补充材料各自一份 busy:共用一个状态会让点「撤回」时「提交补充材料」按钮也在转圈
+  const [supplementBusy, setSupplementBusy] = useState(false);
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -57,18 +61,15 @@ export default function ResidentApplicationDetail() {
   const canSupplement = app.status === 'supplement_required';
   const canReapply = ['rejected', 'closed', 'withdrawn'].includes(app.status);
 
-  const withdraw = async () => {
-    setBusy(true);
-    try {
-      await api.post(`/resident/applications/${app.id}/withdraw`);
-      toastResSuccess(t('res.detail.withdrawn'));
-      load();
-    } catch (err) {
-      toastResError(t, err);
-    } finally {
-      setBusy(false);
-    }
-  };
+  const askWithdraw = () => confirm({
+    title: t('res.detail.withdrawTitle'),
+    tip: t('res.detail.withdrawConfirm', { no: app.appNo }),
+    confirmText: t('res.detail.withdraw'),
+    action: () => api.post(`/resident/applications/${app.id}/withdraw`),
+    success: t('res.detail.withdrawn'),
+    onDone: load,
+    onError: (err) => toastResError(t, err),
+  });
 
   const uploadSupplement = ({ file, onProgress, onSuccess, onError }) => {
     uploadResidentMaterial({ applicationId: app.id, kind: 'other', file, onProgress })
@@ -82,30 +83,40 @@ export default function ResidentApplicationDetail() {
       });
   };
 
+  const closeSupplement = () => {
+    setSupplementOpen(false);
+    // 取消 / 重开时清空,避免上次的留言与材料残留
+    setSupplementNote('');
+    setSupplementMaterials([]);
+  };
+
   const submitSupplement = async () => {
-    setBusy(true);
+    if (!supplementMaterials.length && !supplementNote.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
+    setSupplementBusy(true);
     try {
       await api.post(`/resident/applications/${app.id}/supplement`, { note: supplementNote });
-      setSupplementOpen(false);
-      setSupplementNote('');
-      setSupplementMaterials([]);
+      closeSupplement();
       toastResSuccess(t('res.detail.supplementSent'));
-      load();
+      await load();
     } catch (err) {
       toastResError(t, err);
     } finally {
-      setBusy(false);
+      setSupplementBusy(false);
     }
   };
 
-  const removeSupplement = async (material) => {
-    try {
-      await api.del(`/resident/materials/${material.id}`);
-      setSupplementMaterials((prev) => prev.filter((m) => m.id !== material.id));
-    } catch (err) {
-      toastResError(t, err);
-    }
-  };
+  const askRemoveSupplement = (material) => confirm({
+    title: t('common.confirmDeleteTitle'),
+    tip: t('res.detail.supplementMaterialConfirm', { name: material.filename }),
+    confirmText: t('common.delete'),
+    action: () => api.del(`/resident/materials/${material.id}`),
+    success: t('common.deleted'),
+    onDone: () => setSupplementMaterials((prev) => prev.filter((m) => m.id !== material.id)),
+    onError: (err) => toastResError(t, err),
+  });
 
   return (
     <div className="res-app-detail">
@@ -227,7 +238,7 @@ export default function ResidentApplicationDetail() {
       <div className="res-guide-actions">
         <Button onClick={() => navigate('/resident/applications')}>{t('res.back')}</Button>
         {canWithdraw && (
-          <Button danger loading={busy} onClick={withdraw} disabled={busy}>
+          <Button danger onClick={askWithdraw}>
             {t('res.detail.withdraw')}
           </Button>
         )}
@@ -242,16 +253,19 @@ export default function ResidentApplicationDetail() {
         maskClosable={false}
         open={supplementOpen}
         title={t('res.detail.supplementModalTitle')}
-        onClose={() => setSupplementOpen(false)}
+        onClose={() => {
+          if (supplementBusy) return;
+          closeSupplement();
+        }}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setSupplementOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={closeSupplement} disabled={supplementBusy}>{t('common.cancel')}</Button>
             <Button
               type="primary"
-              loading={busy}
-              disabled={supplementMaterials.length === 0 && !supplementNote.trim()}
+              loading={supplementBusy}
+              disabled={supplementBusy || (supplementMaterials.length === 0 && !supplementNote.trim())}
               onClick={submitSupplement}
             >
               {t('res.detail.supplementSubmit')}
@@ -270,7 +284,7 @@ export default function ResidentApplicationDetail() {
                 {t('res.materialOrigin.supplement')}
               </Tag>
               <span className="res-material-name">{m.filename}</span>
-              <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeSupplement(m)}>
+              <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => askRemoveSupplement(m)}>
                 {t('common.delete')}
               </Button>
             </div>
@@ -278,6 +292,7 @@ export default function ResidentApplicationDetail() {
           <TextArea rows={3} maxLength={500} placeholder={t('res.detail.supplementNotePlaceholder')} value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} />
         </div>
       </Modal>
+      {dialog}
     </div>
   );
 }

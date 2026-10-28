@@ -80,7 +80,9 @@
     "lastLogin": "最后登录",
     "system": "系统",
     "required": "必填",
-    "refresh": "刷新"
+    "refresh": "刷新",
+    "confirmActionTitle": "确认操作",
+    "irreversibleTip": "该操作不可撤销,请确认后继续。"
   },
   "autoApprove": {
     "title": "自动审批",
@@ -963,7 +965,11 @@
         "auditActor": "操作人",
         "auditTarget": "对象",
         "auditDetail": "详情"
-      }
+      },
+      "noticeDeleteConfirm": "确定删除公告「{{title}}」吗?",
+      "blacklistRemove": "移出限制名单",
+      "blacklistRemoveConfirm": "确定将 {{user}} 移出限制名单吗?",
+      "blacklistRemoved": "已移出限制名单"
     }
   },
   "errors": {
@@ -2117,7 +2123,10 @@
       "noRecords": "暂无审核记录",
       "withdraw": "撤销申请",
       "withdrawn": "申请已撤销",
-      "reapply": "重新申请"
+      "reapply": "重新申请",
+      "withdrawTitle": "撤回申请",
+      "withdrawConfirm": "撤回后本次申请作废,如需办理需重新提交。确定撤回 {{no}} 吗?",
+      "supplementMaterialConfirm": "确定删除补件材料「{{name}}」吗?删除后需重新上传。"
     },
     "reviewAction": {
       "approve": "通过",
@@ -2228,7 +2237,9 @@
       "infoConfirm": "确认提交信息变更申请?",
       "upgradeConfirm": "确认提交类型升级申请?",
       "renewalConfirm": "确认提交续期申请?",
-      "confirmAudit": "变更申请会记录在审计日志中。"
+      "confirmAudit": "变更申请会记录在审计日志中。",
+      "cancelTitle": "取消变更申请",
+      "cancelConfirm": "取消后本次变更申请作废,如需变更需重新提交。确定取消 {{no}} 吗?"
     },
     "benefits": {
       "title": "居民权益",
@@ -2400,7 +2411,10 @@
           "title": "标题",
           "template": "模板",
           "read": "已读"
-        }
+        },
+        "deleteConfirm": "确定删除公告「{{title}}」吗?",
+        "published": "公告已上线",
+        "offlined": "公告已下线"
       },
       "risk": {
         "title": "风控与黑名单",
@@ -2413,7 +2427,9 @@
         "blacklistTitle": "黑名单",
         "reason": "原因",
         "remove": "移出",
-        "applications": "申请次数"
+        "applications": "申请次数",
+        "removeTitle": "移出黑名单",
+        "removeConfirm": "确定将 {{username}}（#{{userId}}）移出黑名单吗?移出后该用户可重新申请居民服务。"
       },
       "stats": {
         "title": "统计与报表",
@@ -2613,7 +2629,7 @@
       "no": "建交编号",
       "detailTitle": "建交详情",
       "view": "查看",
-      "deleteConfirm": "确定删除草稿 {no} 吗?",
+      "deleteConfirm": "确定删除草稿 {{no}} 吗?",
       "submittedAt": "提交时间",
       "establishedAt": "建交时间",
       "rejected": "建交申请未通过",
@@ -2631,7 +2647,12 @@
       "severReasonFirst": "请先填写断交原因",
       "severReasonPlaceholder": "断交原因(将进入复核)",
       "reapply": "重新申请",
-      "timeline": "审核记录与进度"
+      "timeline": "审核记录与进度",
+      "submitConfirmBody": "提交后建交申请将进入审核队列,审核期间不可修改。",
+      "withdrawConfirmTitle": "撤回建交申请",
+      "withdrawConfirmBody": "撤回后本次申请作废,如需建交需重新提交。确定撤回 {{no}} 吗?",
+      "severConfirmTitle": "申请断交",
+      "severConfirmBody": "断交申请提交后进入复核,复核期间关系暂停。确定对 {{no}} 申请断交吗?原因:{{reason}}"
     },
     "identity": {
       "pageTitle": "外交身份",
@@ -2670,7 +2691,10 @@
       "visaChannelTip": "外交身份用户可申请虚拟外交签注:申请与提交时会校验外交身份有效性;身份失效后已签发的外交签注将同步注销。",
       "goVisa": "前往签注申请署",
       "carryNo": "将自动带出 {no}",
-      "visaNeedActive": "需持有有效外交身份后开放"
+      "visaNeedActive": "需持有有效外交身份后开放",
+      "submitConfirmBody": "提交后外交身份申请将进入审核队列,审核期间不可修改。",
+      "withdrawConfirmTitle": "撤回外交身份申请",
+      "withdrawConfirmBody": "撤回后本次申请作废,如需登记需重新提交。确定撤回 {{no}} 吗?"
     },
     "inactiveReason": {
       "term_ended": "任期届满",
@@ -2910,7 +2934,16 @@
       "risk_repeat_reject": "多次被拒",
       "risk_blacklisted": "黑名单",
       "risk_watched": "观察名单",
-      "submitted": "提交时间"
+      "submitted": "提交时间",
+      "establishConfirm": "确定通过与 {{no}} 的建交申请吗?通过后关系立即生效。",
+      "suspendConfirm": "确定暂停与 {{no}} 的建交关系吗?暂停期间该关系下的外交身份将失效。",
+      "resumeConfirm": "确定恢复与 {{no}} 的建交关系吗?",
+      "confirmSeverConfirm": "确定与 {{no}} 断交吗?断交后关系终止且不可恢复。",
+      "dismissSeverConfirm": "确定驳回 {{no}} 的断交申请吗?关系将保持正常。",
+      "approveIdentityConfirm": "确定通过 {{no}} 的外交身份申请吗?通过后身份立即生效。",
+      "freezeConfirm": "确定冻结 {{no}} 吗?冻结期间该身份不可用于外交签注。",
+      "unfreezeConfirm": "确定解冻 {{no}} 吗?解冻后身份恢复有效。",
+      "revokeConfirm": "确定注销 {{no}} 吗?注销后不可恢复,已签发的外交签注将同步注销。"
     },
     "verifyAdmin": {
       "title": "验真与风控",
@@ -3745,7 +3778,14 @@
       "hostAction_revoke": "撤销接待方认证",
       "scheduleTime": "时间(如 第1天 10:00)",
       "scheduleTitle": "环节标题",
-      "addSchedule": "添加日程环节"
+      "addSchedule": "添加日程环节",
+      "limitRange": "限流值需为 1–1000 的整数",
+      "saveLimitConfirm": "确定将每 5 分钟验真上限调整为 {{value}} 次吗?",
+      "limitSaved": "限流上限已更新为 {{value}}",
+      "blacklistAdded": "已加入黑名单",
+      "liftConfirm": "确定将 {{user}} 移出黑名单吗?移出后该账号可继续验真。",
+      "lifted": "已移出黑名单",
+      "ticketClosed": "工单已回复并关闭"
     }
   },
   "appeal": {
@@ -4050,7 +4090,9 @@
       "viewReview": "查看复核",
       "applyReview": "申请复核",
       "reviewWindow": "复核窗口至 {{date}}",
-      "mergedInto": "已合并至"
+      "mergedInto": "已合并至",
+      "withdrawTitle": "撤回申诉",
+      "withdrawConfirm": "撤回后将停止受理,且不可恢复。确定撤回这条申诉吗?"
     },
     "review": {
       "title": "我的复核",
@@ -4128,7 +4170,8 @@
           "q": "如何联系人工客服?",
           "a": "在本页提交工单即可,客服会在工作时间内回复。"
         }
-      }
+      },
+      "closeConfirm": "关闭后不能再继续回复,如有未解决的问题请先补充说明。确定关闭工单吗?"
     },
     "decision": {
       "title": "我的决定书",
@@ -4465,7 +4508,21 @@
         "undo": "撤销原决定,由业务署按联动规则重新处理该业务。",
         "change": "变更原决定,以本次决定书为准。",
         "transfer": "转交其他署办理,处理结果由承接署反馈。"
-      }
+      },
+      "acceptDone": "已受理",
+      "replyDone": "回复已发送",
+      "closeDone": "已关闭",
+      "escalateDone": "已升级",
+      "startProcessDone": "已开始处理",
+      "noticeDeleteConfirm": "确定删除公告「{{title}}」吗?",
+      "unblacklistConfirm": "确定将 {{user}} 移出黑名单吗?移出后该用户可再次提交申诉。",
+      "unblacklisted": "已移出黑名单",
+      "publishConfirm": "确定发布「{{title}}」吗?发布后将在门户公开可见。",
+      "published": "已发布",
+      "offlineConfirm": "确定下线「{{title}}」吗?下线后门户不再展示该内容。",
+      "offlined": "已下线",
+      "backToDraftConfirm": "确定将「{{title}}」退回草稿吗?",
+      "backToDraftDone": "已退回草稿"
     },
     "inspect": {
       "title": "监察与审核质量",

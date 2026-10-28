@@ -80,7 +80,9 @@
     "lastLogin": "最後登入",
     "system": "系統",
     "required": "必填",
-    "refresh": "重新整理"
+    "refresh": "重新整理",
+    "confirmActionTitle": "確認操作",
+    "irreversibleTip": "該操作不可撤銷,請確認後繼續。"
   },
   "autoApprove": {
     "title": "自動審批",
@@ -963,7 +965,11 @@
         "auditActor": "操作人",
         "auditTarget": "對象",
         "auditDetail": "詳情"
-      }
+      },
+      "noticeDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
+      "blacklistRemove": "移出限制名單",
+      "blacklistRemoveConfirm": "確定將 {{user}} 移出限制名單嗎?",
+      "blacklistRemoved": "已移出限制名單"
     }
   },
   "errors": {
@@ -2117,7 +2123,10 @@
       "noRecords": "暫無審核紀錄",
       "withdraw": "撤銷申請",
       "withdrawn": "申請已撤銷",
-      "reapply": "重新申請"
+      "reapply": "重新申請",
+      "withdrawTitle": "撤回申請",
+      "withdrawConfirm": "撤回後本次申請作廢,如需辦理需重新提交。確定撤回 {{no}} 嗎?",
+      "supplementMaterialConfirm": "確定刪除補件材料「{{name}}」嗎?刪除後需重新上傳。"
     },
     "reviewAction": {
       "approve": "通過",
@@ -2228,7 +2237,9 @@
       "infoConfirm": "確認提交資訊變更申請?",
       "upgradeConfirm": "確認提交類型升級申請?",
       "renewalConfirm": "確認提交續期申請?",
-      "confirmAudit": "變更申請會記錄在稽核日誌中。"
+      "confirmAudit": "變更申請會記錄在稽核日誌中。",
+      "cancelTitle": "取消變更申請",
+      "cancelConfirm": "取消後本次變更申請作廢,如需變更需重新提交。確定取消 {{no}} 嗎?"
     },
     "benefits": {
       "title": "居民權益",
@@ -2400,7 +2411,10 @@
           "title": "標題",
           "template": "範本",
           "read": "已讀"
-        }
+        },
+        "deleteConfirm": "確定刪除公告「{{title}}」嗎?",
+        "published": "公告已上線",
+        "offlined": "公告已下線"
       },
       "risk": {
         "title": "風控與黑名單",
@@ -2413,7 +2427,9 @@
         "blacklistTitle": "黑名單",
         "reason": "原因",
         "remove": "移出",
-        "applications": "申請次數"
+        "applications": "申請次數",
+        "removeTitle": "移出黑名單",
+        "removeConfirm": "確定將 {{username}}（#{{userId}}）移出黑名單嗎?移出後該使用者可重新申請居民服務。"
       },
       "stats": {
         "title": "統計與報表",
@@ -2613,7 +2629,7 @@
       "no": "建交編號",
       "detailTitle": "建交詳情",
       "view": "查看",
-      "deleteConfirm": "確定刪除草稿 {no} 嗎?",
+      "deleteConfirm": "確定刪除草稿 {{no}} 嗎?",
       "submittedAt": "提交時間",
       "establishedAt": "建交時間",
       "rejected": "建交申請未通過",
@@ -2631,7 +2647,12 @@
       "severReasonFirst": "請先填寫斷交原因",
       "severReasonPlaceholder": "斷交原因(將進入複核)",
       "reapply": "重新申請",
-      "timeline": "審核紀錄與進度"
+      "timeline": "審核紀錄與進度",
+      "submitConfirmBody": "提交後建交申請將進入審核佇列,審核期間不可修改。",
+      "withdrawConfirmTitle": "撤回建交申請",
+      "withdrawConfirmBody": "撤回後本次申請作廢,如需建交需重新提交。確定撤回 {{no}} 嗎?",
+      "severConfirmTitle": "申請斷交",
+      "severConfirmBody": "斷交申請提交後進入複核,複核期間關係暫停。確定對 {{no}} 申請斷交嗎?原因:{{reason}}"
     },
     "identity": {
       "pageTitle": "外交身分",
@@ -2670,7 +2691,10 @@
       "visaChannelTip": "外交身分用戶可申請虛擬外交簽注:申請與提交時會校驗外交身分有效性;身分失效後已簽發的外交簽注將同步註銷。",
       "goVisa": "前往簽注申請署",
       "carryNo": "將自動帶出 {no}",
-      "visaNeedActive": "需持有有效外交身分後開放"
+      "visaNeedActive": "需持有有效外交身分後開放",
+      "submitConfirmBody": "提交後外交身分申請將進入審核佇列,審核期間不可修改。",
+      "withdrawConfirmTitle": "撤回外交身分申請",
+      "withdrawConfirmBody": "撤回後本次申請作廢,如需登記需重新提交。確定撤回 {{no}} 嗎?"
     },
     "inactiveReason": {
       "term_ended": "任期屆滿",
@@ -2910,7 +2934,16 @@
       "risk_repeat_reject": "多次被拒",
       "risk_blacklisted": "黑名單",
       "risk_watched": "觀察名單",
-      "submitted": "提交時間"
+      "submitted": "提交時間",
+      "establishConfirm": "確定通過與 {{no}} 的建交申請嗎?通過後關係立即生效。",
+      "suspendConfirm": "確定暫停與 {{no}} 的建交關係嗎?暫停期間該關係下的外交身分將失效。",
+      "resumeConfirm": "確定恢復與 {{no}} 的建交關係嗎?",
+      "confirmSeverConfirm": "確定與 {{no}} 斷交嗎?斷交後關係終止且不可恢復。",
+      "dismissSeverConfirm": "確定駁回 {{no}} 的斷交申請嗎?關係將保持正常。",
+      "approveIdentityConfirm": "確定通過 {{no}} 的外交身分申請嗎?通過後身分立即生效。",
+      "freezeConfirm": "確定凍結 {{no}} 嗎?凍結期間該身分不可用於外交簽註。",
+      "unfreezeConfirm": "確定解凍 {{no}} 嗎?解凍後身分恢復有效。",
+      "revokeConfirm": "確定註銷 {{no}} 嗎?註銷後不可恢復,已簽發的外交簽註將同步註銷。"
     },
     "verifyAdmin": {
       "title": "驗真與風控",
@@ -3745,7 +3778,14 @@
       "hostAction_revoke": "撤銷接待方認證",
       "scheduleTime": "時間(如 第1天 10:00)",
       "scheduleTitle": "環節標題",
-      "addSchedule": "新增日程環節"
+      "addSchedule": "新增日程環節",
+      "limitRange": "限流值需為 1–1000 的整數",
+      "saveLimitConfirm": "確定將每 5 分鐘驗真上限調整為 {{value}} 次嗎?",
+      "limitSaved": "限流上限已更新為 {{value}}",
+      "blacklistAdded": "已加入黑名單",
+      "liftConfirm": "確定將 {{user}} 移出黑名單嗎?移出後該帳號可繼續驗真。",
+      "lifted": "已移出黑名單",
+      "ticketClosed": "工單已回覆並關閉"
     }
   },
   "appeal": {
@@ -4050,7 +4090,9 @@
       "viewReview": "檢視複核",
       "applyReview": "申請複核",
       "reviewWindow": "複核視窗至 {{date}}",
-      "mergedInto": "已合併至"
+      "mergedInto": "已合併至",
+      "withdrawTitle": "撤回申訴",
+      "withdrawConfirm": "撤回後將停止受理,且不可恢復。確定撤回這條申訴嗎?"
     },
     "review": {
       "title": "我的複核",
@@ -4128,7 +4170,8 @@
           "q": "如何聯絡人工客服?",
           "a": "在本頁提交工單即可,客服會在上班時間內回覆。"
         }
-      }
+      },
+      "closeConfirm": "關閉後不能再繼續回覆,如有未解決的問題請先補充說明。確定關閉工單嗎?"
     },
     "decision": {
       "title": "我的決定書",
@@ -4465,7 +4508,21 @@
         "undo": "撤銷原決定,由業務署按聯動規則重新處理該業務。",
         "change": "變更原決定,以本次決定書為準。",
         "transfer": "轉交其他署辦理,處理結果由承接署回饋。"
-      }
+      },
+      "acceptDone": "已受理",
+      "replyDone": "回覆已送出",
+      "closeDone": "已關閉",
+      "escalateDone": "已升級",
+      "startProcessDone": "已開始處理",
+      "noticeDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
+      "unblacklistConfirm": "確定將 {{user}} 移出黑名單嗎?移出後該使用者可再次提交申訴。",
+      "unblacklisted": "已移出黑名單",
+      "publishConfirm": "確定發布「{{title}}」嗎?發布後將在入口網站公開可見。",
+      "published": "已發布",
+      "offlineConfirm": "確定下線「{{title}}」嗎?下線後入口網站不再顯示該內容。",
+      "offlined": "已下線",
+      "backToDraftConfirm": "確定將「{{title}}」退回草稿嗎?",
+      "backToDraftDone": "已退回草稿"
     },
     "inspect": {
       "title": "監察與審核品質",
