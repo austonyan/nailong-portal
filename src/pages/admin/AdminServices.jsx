@@ -77,15 +77,7 @@ export default function AdminServices() {
       if (editing?.id) {
         await api.patch(`/services/${editing.id}`, payload);
       } else {
-        const created = await api.post('/services', { ...payload, key: values.key?.trim() });
-        // server/routes/services.js 的 INSERT 语句里没有 entry_mode 列,创建时这个值会被
-        // 服务端丢掉(序列化回来仍是默认 external)。补一次 PATCH 让管理员选的入口方式真的
-        // 生效;服务端把列补进 INSERT 后即可删除这段。
-        // 补写失败只让入口方式退回 external(表格重载后会显示真实值),不能让整次创建
-        // 看起来失败 —— 否则管理员再点一次保存就会重复注册同一个服务。
-        if (created?.service && created.service.entryMode !== payload.entryMode) {
-          await api.patch(`/services/${created.service.id}`, { entryMode: payload.entryMode }).catch(() => {});
-        }
+        await api.post('/services', { ...payload, key: values.key?.trim() });
       }
       toastSuccess(t('common.save'));
       closeModal();

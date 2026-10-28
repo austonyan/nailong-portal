@@ -833,7 +833,7 @@ export function loadUserAccess(userId) {
   if (!user) return null;
   const roles = db
     .prepare(
-      `SELECT r.id, r.key, r.name FROM roles r
+      `SELECT r.id, r.key, r.name, r.name_tw FROM roles r
        JOIN user_roles ur ON ur.role_id = r.id
        WHERE ur.user_id = ? ORDER BY r.id`
     )
