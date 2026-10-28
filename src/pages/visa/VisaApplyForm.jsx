@@ -250,7 +250,7 @@ function VisaApplyScreen() {
       )}
 
       <Card className="visa-form-card">
-        <ResidentPrefill onFill={fillFromResident} />
+        <ResidentPrefill onFill={fillFromResident} fields={['virtualId']} />
         <Form form={form} layout="vertical" requiredMark>
           <div className="visa-form-grid">
             <FormItem name="nickname" label={t('visa.form.nickname')} rules={[{ required: true, message: t('visa.form.nickname') }]}>
