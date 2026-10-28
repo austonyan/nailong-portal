@@ -6,18 +6,46 @@ import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
 
+// 验真记录里的 result 形如 `decision:valid` / `appeal:resolved` / `not_found`。
+// 不能再用 includes('valid')(会把 invalid 也染成绿色),按枚举直查。
+const VERIFY_RESULT_COLORS = {
+  valid: 'app-green',
+  completed: 'app-green',
+  resolved: 'app-green',
+  not_found: 'app-red',
+  rate_limited: 'app-red',
+  expired: 'app-red',
+  voided: 'app-red',
+  rejected: 'app-red',
+};
+
+function VerifyResultTag({ value }) {
+  const { t } = useTranslation();
+  const raw = String(value ?? '');
+  const [kind, status] = raw.includes(':') ? raw.split(':') : [null, raw];
+  const label = kind
+    ? `${t(`appeal.audit.kind.${kind}`, { defaultValue: kind })} · ${t(`appeal.audit.result.${status}`, { defaultValue: status })}`
+    : t(`appeal.audit.result.${raw}`, { defaultValue: raw });
+  return (
+    <Tag variant="soft" color={VERIFY_RESULT_COLORS[status] || 'default'}>
+      {label}
+    </Tag>
+  );
+}
+
 export default function AppealAdminAudit() {
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [verifyLogs, setVerifyLogs] = useState([]);
   const [action, setAction] = useState('');
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const [a, v] = await Promise.all([
-        api.get(`/appeal/admin/audit${action.trim() ? `?action=${encodeURIComponent(action.trim())}` : ''}`),
+        api.get(`/appeal/admin/audit${query ? `?action=${encodeURIComponent(query)}` : ''}`),
         api.get('/appeal/admin/verify-logs'),
       ]);
       setItems(a.items);
@@ -27,7 +55,7 @@ export default function AppealAdminAudit() {
     } finally {
       setLoading(false);
     }
-  }, [action, t]);
+  }, [query, t]);
 
   useEffect(() => {
     load();
@@ -35,7 +63,7 @@ export default function AppealAdminAudit() {
 
   const auditColumns = [
     { title: t('appeal.audit.colActor'), dataIndex: 'actor_name', width: 130 },
-    { title: t('appeal.audit.colAction'), dataIndex: 'action', width: 200 },
+    { title: t('appeal.audit.colAction'), dataIndex: 'action', width: 200, render: (v) => t(`appeal.audit.action.${v}`, { defaultValue: v }) },
     { title: t('appeal.audit.colTarget'), width: 180, render: (_v, r) => `${t(`appeal.audit.target.${r.target_type}`, { defaultValue: r.target_type })} ${r.target_id}` },
     { title: t('appeal.audit.colDetail'), dataIndex: 'detail', render: (v) => <span className="muted-text">{v}</span> },
     { title: t('appeal.audit.colTime'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
@@ -48,11 +76,7 @@ export default function AppealAdminAudit() {
       title: t('appeal.audit.colResult'),
       dataIndex: 'result',
       width: 160,
-      render: (v) => (
-        <Tag variant="soft" color={v === 'rate_limited' ? 'app-red' : v.includes('valid') || v.includes('valid') ? 'app-green' : 'default'}>
-          {v}
-        </Tag>
-      ),
+      render: (v) => <VerifyResultTag value={v} />,
     },
     { title: t('appeal.audit.colTime'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
   ];
@@ -65,7 +89,7 @@ export default function AppealAdminAudit() {
 
       <Card>
         <Tabs
-          activeKey="audit"
+          defaultActiveKey="audit"
           items={[
             {
               key: 'audit',
@@ -80,7 +104,20 @@ export default function AppealAdminAudit() {
                       placeholder={t('appeal.audit.searchPlaceholder')}
                       value={action}
                       onChange={(e) => setAction(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') setQuery(action.trim());
+                      }}
+                      onClear={() => {
+                        setAction('');
+                        setQuery('');
+                      }}
                     />
+                    <Button
+                      icon={<SearchIcon />}
+                      onClick={() => setQuery(action.trim())}
+                    >
+                      {t('common.search')}
+                    </Button>
                     <Button onClick={load}>{t('appeal.audit.refresh')}</Button>
                   </div>
                   <Table className="table-fit" columns={auditColumns} dataSource={items} loading={loading} rowKey="id" pagination={false} emptyText={t('common.empty')} />

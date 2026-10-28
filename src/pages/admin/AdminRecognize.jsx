@@ -55,7 +55,14 @@ export default function AdminRecognize() {
 
   const openEdit = (row) => {
     setEditing(row);
-    setForm({ ...row });
+    // row 里的 benefit 已被 localeMiddleware 按当前界面语言改写(繁中模式下是
+    // 繁体),直接 {...row} 会把繁体存进简体字段。简体绑 benefitCn ?? benefit,
+    // 繁体绑 benefitTw,提交时两者都带上。
+    setForm({
+      ...row,
+      benefit: row.benefitCn ?? row.benefit ?? '',
+      benefitTw: row.benefitTw ?? '',
+    });
   };
 
   const closeModal = () => {

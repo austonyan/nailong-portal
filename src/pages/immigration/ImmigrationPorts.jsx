@@ -37,6 +37,11 @@ export default function ImmigrationPorts() {
       </div>
       <p className="muted-text">{t('imm.ports.subtitle')}</p>
       <div className="im-ports-grid">
+        {ports === null && (
+          <Card type="dashed">
+            <p className="muted-text">{t('common.loading')}</p>
+          </Card>
+        )}
         {(ports ?? []).map((port) => (
           <Link key={port.code} to={`/immigration/ports/${port.code}`} className="im-port-link">
             <Card hoverable className="im-port-card">

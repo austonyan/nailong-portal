@@ -5,7 +5,8 @@ import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-is
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
-import { toastSuccess } from '../../../components/toast.js';
+import { toastSuccess, toastError } from '../../../components/toast.js';
+import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
 function BlacklistModal({ onClose, onSaved }) {
   const { t } = useTranslation();
@@ -62,26 +63,31 @@ export default function AdminDipVerify() {
   const [kind, setKind] = useState('');
   const [result, setResult] = useState('');
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [blacklist, setBlacklist] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [limit, setLimit] = useState('');
+  const { confirm, dialog } = useConfirmAction();
 
   const loadLogs = useCallback(() => {
     const params = new URLSearchParams({ page: String(page), pageSize: '20' });
     if (kind) params.set('kind', kind);
     if (result) params.set('result', result);
-    if (q.trim()) params.set('q', q.trim());
+    if (query) params.set('q', query);
     api
       .get(`/dip/admin/verify-logs?${params.toString()}`)
       .then((data) => {
-        setLogs(data.items);
+        const rows = data.items ?? [];
+        setLogs(rows);
         setLogsTotal(data.total);
+        // total 变小时把页码夹回合法范围,避免停在空表。
+        if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
       })
       .catch((err) => {
         toastDipError(t, err);
         setLogs([]);
       });
-  }, [page, kind, result, q, t]);
+  }, [page, kind, result, query, t]);
 
   const loadBlacklist = useCallback(() => {
     api
@@ -98,29 +104,42 @@ export default function AdminDipVerify() {
     else loadBlacklist();
   }, [tab, loadLogs, loadBlacklist]);
 
-  const lift = async (row) => {
-    try {
-      await api.post(`/dip/admin/blacklist/${row.id}/lift`);
-      loadBlacklist();
-    } catch (err) {
-      toastDipError(t, err);
-    }
-  };
+  const lift = (row) =>
+    confirm({
+      title: t('dip.blacklist.lift'),
+      tip: t('dip.blacklist.liftConfirm', { user: `${row.display_name || row.username} (#${row.user_id})` }),
+      confirmText: t('dip.blacklist.lift'),
+      action: () => api.post(`/dip/admin/blacklist/${row.id}/lift`),
+      success: t('dip.blacklist.lifted'),
+      onDone: loadBlacklist,
+      onError: (err) => toastDipError(t, err),
+    });
 
-  const saveLimit = async () => {
-    try {
-      await api.put('/dip/admin/config/settings', { items: [{ key: 'verify_limit_per_5min', value: limit }] });
-      toastSuccess(t('common.save'));
-    } catch (err) {
-      toastDipError(t, err);
+  const saveLimit = () => {
+    // 1–1000 的整数:空值 / 0 / 1e9 都直接拒绝,不再悄悄写进配置。
+    const value = String(limit).trim();
+    if (!/^\d+$/.test(value) || Number(value) < 1 || Number(value) > 1000) {
+      toastError(t('protocol.admin.limitRange'));
+      return;
     }
+    confirm({
+      danger: false,
+      title: t('dip.verifyAdmin.limitTitle'),
+      tip: t('dip.verifyAdmin.limitConfirm', { count: value }),
+      confirmText: t('common.save'),
+      action: () => api.put('/dip/admin/config/settings', { items: [{ key: 'verify_limit_per_5min', value }] }),
+      success: t('dip.verifyAdmin.limitSaved', { count: value }),
+      onError: (err) => toastDipError(t, err),
+    });
   };
 
   const logColumns = [
     { title: t('dip.verifyLog.query'), dataIndex: 'query', width: 200 },
-    { title: t('dip.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`) : '-') },
-    { title: t('dip.verifyLog.result'), dataIndex: 'result', width: 120, render: (v) => (
-      <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'default' : 'app-orange'} variant="soft">{v}</Tag>
+    { title: t('dip.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`, { defaultValue: v }) : '-') },
+    { title: t('dip.verifyLog.result'), dataIndex: 'result', width: 140, render: (v) => (
+      <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'default' : 'app-orange'} variant="soft">
+        {t(`dip.verifyLog.result_${v}`, { defaultValue: v })}
+      </Tag>
     ) },
     { title: 'IP', dataIndex: 'ip', width: 130, render: (v) => v || '-' },
     { title: t('dip.verifyLog.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
@@ -152,9 +171,29 @@ export default function AdminDipVerify() {
           <Card>
             <div className="dip-admin-filter">
               <Select value={kind} onChange={(v) => { setKind(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allKinds') }, { key: 'relation', label: t('dip.verify.kindRelation') }, { key: 'identity', label: t('dip.verify.kindIdentity') }, { key: 'agreement', label: t('dip.verify.kindAgreement') }]} />
-              <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allResults') }, { key: 'valid', label: 'valid' }, { key: 'not_found', label: 'not_found' }]} />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('dip.verifyLog.query')} allowClear maxLength={40} />
-              <Button onClick={loadLogs}>{t('common.search')}</Button>
+              <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allResults') }, { key: 'valid', label: t('dip.verifyLog.result_valid') }, { key: 'not_found', label: t('dip.verifyLog.result_not_found') }]} />
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                onClear={() => { setQ(''); setQuery(''); setPage(1); }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setQuery(q.trim());
+                    setPage(1);
+                  }
+                }}
+                placeholder={t('dip.verifyLog.query')}
+                allowClear
+                maxLength={40}
+              />
+              <Button
+                onClick={() => {
+                  setQuery(q.trim());
+                  setPage(1);
+                }}
+              >
+                {t('common.search')}
+              </Button>
             </div>
             <Table className="table-fit"
               columns={logColumns}
@@ -186,6 +225,7 @@ export default function AdminDipVerify() {
       )}
 
       {addOpen && <BlacklistModal onClose={() => setAddOpen(false)} onSaved={loadBlacklist} />}
+      {dialog}
     </div>
   );
 }

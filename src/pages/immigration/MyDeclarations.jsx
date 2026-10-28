@@ -8,6 +8,7 @@ import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav, StatusTag } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 import { toastSuccess } from '../../components/toast.js';
+import { fmtDateTime } from '../../lib/date.js';
 
 function InfoRow({ label, children }) {
   return (
@@ -141,7 +142,7 @@ function DeclarationDetail({ id, onClose, onChanged }) {
           {(d.events ?? []).map((e, idx) => (
             <li key={idx}>
               <span className="im-timeline-action">{t(`imm.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {e.created_at?.slice(0, 16).replace('T', ' ')}</span>
+              <span className="muted-text">{e.actor ?? 'system'} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="im-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -213,7 +214,7 @@ export default function MyDeclarations() {
     { title: t('imm.mydecl.no'), dataIndex: 'no', width: 190 },
     { title: t('imm.declare.port'), dataIndex: 'portName', width: 130 },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
-    { title: t('imm.mydecl.submittedAt'), dataIndex: 'submittedAt', width: 160, render: (v) => v?.slice(0, 16).replace('T', ' ') || '-' },
+    { title: t('imm.mydecl.submittedAt'), dataIndex: 'submittedAt', width: 160, render: (v) => fmtDateTime(v) },
     {
       title: t('common.actions'),
       dataIndex: 'actions',

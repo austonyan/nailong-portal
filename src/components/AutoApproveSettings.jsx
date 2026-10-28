@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Input, Select, Title } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { toastSuccess, toastError } from './toast.js';
+import { fmtDateTime } from '../lib/date.js';
 
 const MODES = ['off', 'immediate', 'delayed'];
 
@@ -81,7 +82,7 @@ export default function AutoApproveSettings({ service }) {
       <p className="muted-text">{t(`autoApprove.hint_${mode}`)}</p>
       {settings?.updatedAt && (
         <p className="muted-text">
-          {t('autoApprove.updated', { time: String(settings.updatedAt).slice(0, 16).replace('T', ' ') })}
+          {t('autoApprove.updated', { time: fmtDateTime(settings.updatedAt) })}
           {settings.updatedBy ? ` · ${settings.updatedBy}` : ''}
         </p>
       )}

@@ -2,6 +2,10 @@
   "app": {
     "name": "奶龍統一門戶"
   },
+  "language": {
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文"
+  },
   "nav": {
     "portal": "門戶",
     "visa": "簽註申請署",
@@ -41,7 +45,12 @@
     "unread": "未讀",
     "empty": "暫無站內信",
     "markAll": "全部標為已讀",
+    "markAllOffice": "把「{{office}}」全部標為已讀",
     "markedAll": "已全部標為已讀",
+    "nothingToMark": "沒有需要標記的未讀訊息",
+    "markedCount": "已將 {{count}} 則標為已讀",
+    "filterStatus": "依讀取狀態篩選",
+    "filterOffice": "依署別篩選",
     "loadFailed": "站內信載入失敗",
     "viewInbox": "前往信箱",
     "total": "共 {{count}} 條",
@@ -80,7 +89,15 @@
     "lastLogin": "最後登入",
     "system": "系統",
     "required": "必填",
-    "refresh": "重新整理"
+    "refresh": "重新整理",
+    "confirmActionTitle": "確認操作",
+    "irreversibleTip": "該操作不可撤銷,請確認後繼續。",
+    "userId": "帳號 ID",
+    "retry": "重試",
+    "recentOnly": "僅顯示最近 {{count}} 則",
+    "loadFailed": "載入失敗,請稍後重試",
+    "readState": "已讀",
+    "unreadState": "未讀"
   },
   "autoApprove": {
     "title": "自動審批",
@@ -124,7 +141,11 @@
     "toLogin": "已有帳號?去登入",
     "welcomeBack": "歡迎回來,{{name}}!",
     "loginSuccess": "登入成功",
-    "registerSuccess": "註冊成功,歡迎上島!"
+    "registerSuccess": "註冊成功,歡迎上島!",
+    "usernameRule": "使用者名稱為 3-32 位字母、數字、_ 或 -",
+    "passwordRule": "密碼為 8-72 位字元",
+    "emailRule": "請填寫有效的電子郵件地址",
+    "confirmRule": "兩次輸入的密碼不一致"
   },
   "setup": {
     "checking": "正在檢查首次啟動狀態…",
@@ -269,6 +290,7 @@
     "VISA_RATE_LIMITED": "操作太頻繁,請稍等一分鐘再試",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在審核中的申請",
     "VISA_AVATAR_REQUIRED": "需要至少上傳一張頭像",
+    "VISA_DRAFT_NOT_READY": "草稿還沒建好,請稍候再上傳材料",
     "VISA_INVALID_TRANSITION": "目前狀態無法執行該操作",
     "VISA_SUPPLEMENT_EXPIRED": "補件期限已過",
     "VISA_SUPPLEMENT_EMPTY": "請先上傳補件材料或填寫說明",
@@ -456,10 +478,17 @@
     "tagline": "這裡是奶龍統一門戶,所有服務從這裡出發",
     "services": "服務入口",
     "servicesEmpty": "還沒有可用的服務,請聯絡管理員",
+    "servicesLoadFailed": "服務載入失敗,請檢查網路後重試",
     "open": "開啟",
     "myRoles": "我的角色",
     "serviceCount": "可用服務",
-    "permissionCount": "我的權限"
+    "permissionCount": "我的權限",
+    "sso": {
+      "title": "單一登入身分確認",
+      "confirm": "確認並進入",
+      "service": "即將以目前門戶身分進入「{{name}}」。",
+      "tip": "確認進入後,該服務會讀取你的門戶帳號身分用於辦理業務與投递站內通知;你可以隨時在個人資料頁登出。"
+    }
   },
   "profile": {
     "title": "個人資料",
@@ -530,6 +559,13 @@
       "color": "顏色",
       "requiredPermission": "所需權限",
       "requiredPermissionTip": "留空表示所有登入使用者可見",
+      "entryMode": "進入方式",
+      "entryModeTip": "決定門戶卡片如何開啟該服務:外鏈在新分頁開啟,站內直接進入,單點登入先確認身份",
+      "entryModeType": {
+        "external": "外鏈新開",
+        "internal": "站內直接進入",
+        "internal_sso": "站內單點登入"
+      },
       "deleteConfirm": "確定要刪除服務 {{name}} 嗎?"
     }
   },
@@ -681,6 +717,8 @@
       "companionsPlaceholder": "例如:奶龍寶寶 ×2(選填)",
       "materialsTitle": "材料上傳",
       "materialsTip": "頭像必傳;其餘材料可選。支援圖片與 PDF,單個不超過 5MB。",
+      "avatarRequired": "請先上傳頭像材料,再提交申請",
+      "draftPreparing": "草稿準備中,稍候即可上傳材料…",
       "materialAvatar": "頭像",
       "materialOther": "其他材料(邀請函、活動憑證等)",
       "uploadAvatar": "上傳頭像",
@@ -952,8 +990,31 @@
         "auditAction": "操作",
         "auditActor": "操作人",
         "auditTarget": "對象",
-        "auditDetail": "詳情"
-      }
+        "auditDetail": "詳情",
+        "action": {
+          "submit_application": "提交申請",
+          "withdraw_application": "撤回申請",
+          "approve_application": "審核通過",
+          "reject_application": "審核駁回",
+          "require_supplement": "要求補件",
+          "issue_permit": "簽發簽註",
+          "mark_permit_used": "核銷簽註",
+          "void_permit": "作廢簽註",
+          "create_visa_type": "新增簽註類型",
+          "update_visa_type": "更新簽註類型",
+          "create_notice": "新增公告",
+          "update_notice": "更新公告",
+          "delete_notice": "刪除公告",
+          "update_config": "更新設定",
+          "blacklist_user": "加入黑名單",
+          "unblacklist_user": "移出黑名單",
+          "privacy_erase": "清除個人資料"
+        }
+      },
+      "noticeDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
+      "blacklistRemove": "移出限制名單",
+      "blacklistRemoveConfirm": "確定將 {{user}} 移出限制名單嗎?",
+      "blacklistRemoved": "已移出限制名單"
     }
   },
   "errors": {
@@ -1167,7 +1228,8 @@
       "seal1": "皇家文書與",
       "seal2": "認證署",
       "seal3": "認證專用章",
-      "ariaLabel": "認證文書 {{no}}"
+      "ariaLabel": "認證文書 {{no}}",
+      "titleEn": "認證證書"
     },
     "certList": {
       "title": "我的認證文書",
@@ -1547,6 +1609,7 @@
       "mapPlaza": "奶龍雕像廣場",
       "mapGarden": "出站花園",
       "channelClosed": "暫未開放",
+      "channelsEmpty": "該口岸暫未設定通道",
       "startDeclare": "在此口岸申報入境",
       "declareBlocked": "口岸未開放申報",
       "eventHints": "近期活動提示",
@@ -1690,6 +1753,8 @@
       "correct": "更正",
       "markInvalid": "標記失效",
       "correctTitle": "更正入境紀錄 {{no}}",
+      "markInvalidTitle": "確認標記為無效",
+      "markInvalidConfirm": "將入境記錄 {{no}} 標記為無效後,該記錄的法律效力終止,且無法撤銷,確定嗎?",
       "correctTip": "僅更正入境日期與備註,操作會記入審計日誌。"
     },
     "msg": {
@@ -1733,6 +1798,9 @@
       "title": "通關碼驗真",
       "noToken": "連結裡沒有驗真權杖",
       "invalid": "未查到該通關碼",
+      "failed": "驗真請求失敗",
+      "failedTip": "通關碼驗真暫時不可用,請稍後重試",
+      "retry": "重新驗真",
       "toLogin": "去登入"
     },
     "status": {
@@ -1781,9 +1849,14 @@
       "editPort": "編輯口岸",
       "portCodeTip": "3-20 位大寫字母、數字或底線",
       "portStatus": "口岸狀態",
+      "portStatusUpdated": "口岸狀態已改為「{{status}}」",
       "mapDesc": "地圖/示意圖描述(虛構)",
       "level": "級別",
       "annBody": "公告正文",
+      "offlineTitle": "確認下線公告",
+      "offlineConfirm": "下線「{{title}}」後不再對旅客展示,且無法重新發布,確定嗎?",
+      "offlineDone": "公告已下線",
+      "annDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
       "annPort": "關聯口岸",
       "globalAnn": "署級公告(全口岸)",
       "createAnn": "發布公告",
@@ -1879,7 +1952,54 @@
         "targetType": "物件類型",
         "targetId": "物件標識",
         "detail": "詳情",
-        "allActions": "全部操作"
+        "allActions": "全部操作",
+        "targetKind": {
+          "port": "口岸",
+          "announcement": "公告",
+          "declaration": "申報單",
+          "pass_code": "通關碼",
+          "entry_record": "出入境紀錄",
+          "user": "使用者",
+          "template": "訊息範本",
+          "visa": "簽註",
+          "attachment": "附件"
+        },
+        "actionName": {
+          "port": "口岸",
+          "declaration": "申報",
+          "pass": "通關碼",
+          "record": "出入境紀錄",
+          "visa": "簽註",
+          "blacklist": "黑名單",
+          "template": "訊息範本",
+          "settings": "設定",
+          "file": "檔案",
+          "data": "資料",
+          "port_create": "新增口岸",
+          "port_update": "更新口岸",
+          "port_status": "變更口岸狀態",
+          "announcement_publish": "發布公告",
+          "announcement_update": "更新公告",
+          "announcement_offline": "下架公告",
+          "data_delete_announcement": "刪除公告",
+          "data_delete_draft": "刪除草稿",
+          "declaration_submit": "提交申報",
+          "declaration_withdraw": "撤回申報",
+          "declaration_approve": "審核通過",
+          "declaration_reject": "審核駁回",
+          "declaration_supplement": "要求補件",
+          "pass_verify": "核驗通關碼",
+          "pass_void": "作廢通關碼",
+          "record_correct": "更正出入境紀錄",
+          "record_mark": "標記紀錄無效",
+          "record_exit_register": "登記出境",
+          "blacklist_add": "加入黑名單",
+          "blacklist_lift": "移出黑名單",
+          "template_update": "更新訊息範本",
+          "draft_create": "儲存草稿",
+          "file_access": "下載附件",
+          "visa_mark_used": "簽註核銷"
+        }
       },
       "blacklist": {
         "add": "加入名單",
@@ -2098,7 +2218,10 @@
       "noRecords": "暫無審核紀錄",
       "withdraw": "撤銷申請",
       "withdrawn": "申請已撤銷",
-      "reapply": "重新申請"
+      "reapply": "重新申請",
+      "withdrawTitle": "撤回申請",
+      "withdrawConfirm": "撤回後本次申請作廢,如需辦理需重新提交。確定撤回 {{no}} 嗎?",
+      "supplementMaterialConfirm": "確定刪除補件材料「{{name}}」嗎?刪除後需重新上傳。"
     },
     "reviewAction": {
       "approve": "通過",
@@ -2209,7 +2332,9 @@
       "infoConfirm": "確認提交資訊變更申請?",
       "upgradeConfirm": "確認提交類型升級申請?",
       "renewalConfirm": "確認提交續期申請?",
-      "confirmAudit": "變更申請會記錄在稽核日誌中。"
+      "confirmAudit": "變更申請會記錄在稽核日誌中。",
+      "cancelTitle": "取消變更申請",
+      "cancelConfirm": "取消後本次變更申請作廢,如需變更需重新提交。確定取消 {{no}} 嗎?"
     },
     "benefits": {
       "title": "居民權益",
@@ -2321,7 +2446,11 @@
         "remindTip": "對該天數內到期的有效居民卡各發送一次到期提醒。",
         "remindSent": "已提醒 {{count}} 位居民",
         "reasonRequired": "原因(必填,會記錄稽核)",
-        "voidWarning": "註銷後居民身分同步失效,持卡人需重新登記才能再次獲得居民卡。"
+        "voidWarning": "註銷後居民身分同步失效,持卡人需重新登記才能再次獲得居民卡。",
+        "freezeDone": "居民卡已凍結",
+        "unfreezeDone": "居民卡已解凍",
+        "voidDone": "居民卡已註銷",
+        "reissueDone": "居民卡已補發"
       },
       "residents": {
         "title": "居民資訊管理",
@@ -2381,7 +2510,10 @@
           "title": "標題",
           "template": "範本",
           "read": "已讀"
-        }
+        },
+        "deleteConfirm": "確定刪除公告「{{title}}」嗎?",
+        "published": "公告已上線",
+        "offlined": "公告已下線"
       },
       "risk": {
         "title": "風控與黑名單",
@@ -2394,7 +2526,9 @@
         "blacklistTitle": "黑名單",
         "reason": "原因",
         "remove": "移出",
-        "applications": "申請次數"
+        "applications": "申請次數",
+        "removeTitle": "移出黑名單",
+        "removeConfirm": "確定將 {{username}}（#{{userId}}）移出黑名單嗎?移出後該使用者可重新申請居民服務。"
       },
       "stats": {
         "title": "統計與報表",
@@ -2424,7 +2558,42 @@
         "actor": "操作人",
         "action": "動作",
         "target": "對象",
-        "detail": "詳情"
+        "detail": "詳情",
+        "actionName": {
+          "approve_application": "審核通過",
+          "approve_change": "批准變更",
+          "auto_close_supplement_timeout": "補件逾時自動關閉",
+          "auto_expire_card": "居留證到期自動失效",
+          "batch_expiry_remind": "批次到期提醒",
+          "blacklist_user": "加入黑名單",
+          "cancel_change": "撤銷變更",
+          "create_application": "建立申請",
+          "create_change": "建立變更申請",
+          "create_notice": "新增公告",
+          "create_resident_type": "新增居留類型",
+          "delete_notice": "刪除公告",
+          "export_residents_csv": "匯出居民名冊",
+          "freeze_card": "凍結證件",
+          "inter_check": "跨署核驗",
+          "inter_check_miss": "跨署核驗未通過",
+          "privacy_erase": "清除個人資料",
+          "reissue_card": "補發證件",
+          "reject_application": "審核駁回",
+          "reject_change": "駁回變更",
+          "require_supplement": "要求補件",
+          "self_reissue_card": "自助補發證件",
+          "submit_application": "提交申請",
+          "supplement_application": "提交補件",
+          "unblacklist_user": "移出黑名單",
+          "unfreeze_card": "解凍證件",
+          "update_config": "更新設定",
+          "update_message_template": "更新訊息範本",
+          "update_notice": "更新公告",
+          "update_resident_type": "更新居留類型",
+          "view_resident": "檢視居民資料",
+          "void_card": "註銷證件",
+          "withdraw_application": "撤回申請"
+        }
       },
       "settings": {
         "title": "署內設定",
@@ -2594,7 +2763,7 @@
       "no": "建交編號",
       "detailTitle": "建交詳情",
       "view": "查看",
-      "deleteConfirm": "確定刪除草稿 {no} 嗎?",
+      "deleteConfirm": "確定刪除草稿 {{no}} 嗎?",
       "submittedAt": "提交時間",
       "establishedAt": "建交時間",
       "rejected": "建交申請未通過",
@@ -2612,7 +2781,12 @@
       "severReasonFirst": "請先填寫斷交原因",
       "severReasonPlaceholder": "斷交原因(將進入複核)",
       "reapply": "重新申請",
-      "timeline": "審核紀錄與進度"
+      "timeline": "審核紀錄與進度",
+      "submitConfirmBody": "提交後建交申請將進入審核佇列,審核期間不可修改。",
+      "withdrawConfirmTitle": "撤回建交申請",
+      "withdrawConfirmBody": "撤回後本次申請作廢,如需建交需重新提交。確定撤回 {{no}} 嗎?",
+      "severConfirmTitle": "申請斷交",
+      "severConfirmBody": "斷交申請提交後進入複核,複核期間關係暫停。確定對 {{no}} 申請斷交嗎?原因:{{reason}}"
     },
     "identity": {
       "pageTitle": "外交身分",
@@ -2634,6 +2808,7 @@
       "titlePlaceholder": "例如:駐奶龍國非常駐使節",
       "termStart": "任期開始",
       "termEnd": "任期結束",
+      "termOrderError": "任期結束日期不能早於開始日期",
       "term": "任期",
       "termRange": "{start} ~ {end}",
       "inactiveReason": "失效原因",
@@ -2651,7 +2826,10 @@
       "visaChannelTip": "外交身分用戶可申請虛擬外交簽注:申請與提交時會校驗外交身分有效性;身分失效後已簽發的外交簽注將同步註銷。",
       "goVisa": "前往簽注申請署",
       "carryNo": "將自動帶出 {no}",
-      "visaNeedActive": "需持有有效外交身分後開放"
+      "visaNeedActive": "需持有有效外交身分後開放",
+      "submitConfirmBody": "提交後外交身分申請將進入審核佇列,審核期間不可修改。",
+      "withdrawConfirmTitle": "撤回外交身分申請",
+      "withdrawConfirmBody": "撤回後本次申請作廢,如需登記需重新提交。確定撤回 {{no}} 嗎?"
     },
     "inactiveReason": {
       "term_ended": "任期屆滿",
@@ -2891,7 +3069,16 @@
       "risk_repeat_reject": "多次被拒",
       "risk_blacklisted": "黑名單",
       "risk_watched": "觀察名單",
-      "submitted": "提交時間"
+      "submitted": "提交時間",
+      "establishConfirm": "確定通過與 {{no}} 的建交申請嗎?通過後關係立即生效。",
+      "suspendConfirm": "確定暫停與 {{no}} 的建交關係嗎?暫停期間該關係下的外交身分將失效。",
+      "resumeConfirm": "確定恢復與 {{no}} 的建交關係嗎?",
+      "confirmSeverConfirm": "確定與 {{no}} 斷交嗎?斷交後關係終止且不可恢復。",
+      "dismissSeverConfirm": "確定駁回 {{no}} 的斷交申請嗎?關係將保持正常。",
+      "approveIdentityConfirm": "確定通過 {{no}} 的外交身分申請嗎?通過後身分立即生效。",
+      "freezeConfirm": "確定凍結 {{no}} 嗎?凍結期間該身分不可用於外交簽註。",
+      "unfreezeConfirm": "確定解凍 {{no}} 嗎?解凍後身分恢復有效。",
+      "revokeConfirm": "確定註銷 {{no}} 嗎?註銷後不可恢復,已簽發的外交簽註將同步註銷。"
     },
     "verifyAdmin": {
       "title": "驗真與風控",
@@ -2900,13 +3087,25 @@
       "allKinds": "全部類型",
       "allResults": "全部結果",
       "limitTitle": "驗真限流配置",
-      "limitTip": "每 IP 每 5 分鐘驗真次數上限(防列舉);儲存後立即生效。"
+      "limitTip": "每 IP 每 5 分鐘驗真次數上限(防列舉);儲存後立即生效。",
+      "limitConfirm": "確定把驗真限流改為每 5 分鐘 {{count}} 次嗎?",
+      "limitSaved": "驗真限流已更新為每 5 分鐘 {{count}} 次"
     },
     "verifyLog": {
       "query": "查詢內容",
       "kind": "類型",
       "result": "結果",
-      "at": "時間"
+      "at": "時間",
+      "result_valid": "驗真通過",
+      "result_not_found": "未查詢到",
+      "result_status_established": "已建交",
+      "result_status_suspended": "已中止",
+      "result_status_severed": "已斷交",
+      "result_status_active": "有效",
+      "result_status_frozen": "已凍結",
+      "result_status_expired": "已過期",
+      "result_status_revoked": "已撤銷",
+      "result_status_terminated": "已終止"
     },
     "blacklist": {
       "add": "加入名單",
@@ -2916,6 +3115,8 @@
       "block": "限制",
       "reason": "原因",
       "lift": "移出名單",
+      "liftConfirm": "確定將 {{user}} 移出限制名單嗎?",
+      "lifted": "已移出限制名單",
       "user": "使用者",
       "since": "加入時間"
     },
@@ -2988,6 +3189,10 @@
     "officeName": "奶龍國皇家禮賓與活動署",
     "officeSub": "活動 · 邀請函 · 活動憑證 · 禮賓服務",
     "scamTitle": "防詐騙提示",
+    "checkinSource": {
+      "manual": "人工",
+      "scan": "掃碼"
+    },
     "scamBody": "本署活動報名與認證完全免費。任何“收費報名”“內部名額”“承諾現實入場或禮遇”的說法都是詐騙,請勿相信。",
     "nav": {
       "home": "首頁",
@@ -3132,6 +3337,14 @@
       "invitation": "邀請函",
       "pass": "活動憑證",
       "host": "接待方認證"
+    },
+    "verifyResult": {
+      "valid": "驗真通過",
+      "not_found": "未查詢到",
+      "status_used": "已使用",
+      "status_expired": "已過期",
+      "status_voided": "已作廢",
+      "status_revoked": "已撤銷"
     },
     "history": {
       "registration_draft": "儲存草稿",
@@ -3584,6 +3797,8 @@
       "searchVerify": "搜尋驗真編號",
       "searchCheckin": "搜尋憑證編號 / 持票人",
       "searchAudit": "搜尋操作人或物件編號",
+      "dateOrderError": "結束日期不能早於開始日期",
+      "deadlineOrderError": "報名截止日期不能晚於開始日期",
       "filterAction": "按操作篩選",
       "queueEmpty": "當前佇列為空",
       "checkinEmpty": "暫無簽到記錄",
@@ -3726,7 +3941,14 @@
       "hostAction_revoke": "撤銷接待方認證",
       "scheduleTime": "時間(如 第1天 10:00)",
       "scheduleTitle": "環節標題",
-      "addSchedule": "新增日程環節"
+      "addSchedule": "新增日程環節",
+      "limitRange": "限流值需為 1–1000 的整數",
+      "saveLimitConfirm": "確定將每 5 分鐘驗真上限調整為 {{value}} 次嗎?",
+      "limitSaved": "限流上限已更新為 {{value}}",
+      "blacklistAdded": "已加入黑名單",
+      "liftConfirm": "確定將 {{user}} 移出黑名單嗎?移出後該帳號可繼續驗真。",
+      "lifted": "已移出黑名單",
+      "ticketClosed": "工單已回覆並關閉"
     }
   },
   "appeal": {
@@ -4031,7 +4253,9 @@
       "viewReview": "檢視複核",
       "applyReview": "申請複核",
       "reviewWindow": "複核視窗至 {{date}}",
-      "mergedInto": "已合併至"
+      "mergedInto": "已合併至",
+      "withdrawTitle": "撤回申訴",
+      "withdrawConfirm": "撤回後將停止受理,且不可恢復。確定撤回這條申訴嗎?"
     },
     "review": {
       "title": "我的複核",
@@ -4109,7 +4333,8 @@
           "q": "如何聯絡人工客服?",
           "a": "在本頁提交工單即可,客服會在上班時間內回覆。"
         }
-      }
+      },
+      "closeConfirm": "關閉後不能再繼續回覆,如有未解決的問題請先補充說明。確定關閉工單嗎?"
     },
     "decision": {
       "title": "我的決定書",
@@ -4446,7 +4671,21 @@
         "undo": "撤銷原決定,由業務署按聯動規則重新處理該業務。",
         "change": "變更原決定,以本次決定書為準。",
         "transfer": "轉交其他署辦理,處理結果由承接署回饋。"
-      }
+      },
+      "acceptDone": "已受理",
+      "replyDone": "回覆已送出",
+      "closeDone": "已關閉",
+      "escalateDone": "已升級",
+      "startProcessDone": "已開始處理",
+      "noticeDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
+      "unblacklistConfirm": "確定將 {{user}} 移出黑名單嗎?移出後該使用者可再次提交申訴。",
+      "unblacklisted": "已移出黑名單",
+      "publishConfirm": "確定發布「{{title}}」嗎?發布後將在入口網站公開可見。",
+      "published": "已發布",
+      "offlineConfirm": "確定下線「{{title}}」嗎?下線後入口網站不再顯示該內容。",
+      "offlined": "已下線",
+      "backToDraftConfirm": "確定將「{{title}}」退回草稿嗎?",
+      "backToDraftDone": "已退回草稿"
     },
     "inspect": {
       "title": "監察與審核品質",
@@ -4540,6 +4779,57 @@
         "sampling": "抽查",
         "inspect_report": "監察報告",
         "ticket": "工單"
+      },
+      "kind": {
+        "decision": "決定書",
+        "review": "複核",
+        "appeal": "申訴"
+      },
+      "action": {
+        "issue_decision_doc": "簽發決定書",
+        "accept_appeal": "受理申訴",
+        "refuse_appeal": "不予受理",
+        "dispatch_appeal": "分派承辦",
+        "require_supplement": "要求補件",
+        "decide_appeal": "作出申訴決定",
+        "close_appeal": "關閉申訴",
+        "merge_appeals": "合併申訴",
+        "accept_complaint": "受理投訴建議",
+        "reply_complaint": "回覆投訴建議",
+        "close_complaint": "關閉投訴建議",
+        "escalate_complaint_to_appeal": "投訴升級為申訴",
+        "reply_ticket": "回覆工單",
+        "ticket_processing": "工單轉處理中",
+        "ticket_closed": "關閉工單",
+        "ticket_escalated": "工單升級",
+        "accept_review": "受理複核",
+        "expire_decision_doc": "決定書失效",
+        "decide_review": "作出複核決定",
+        "create_inspect_report": "新增監察報告",
+        "inspect_sampling": "抽查業務",
+        "create_appeal_notice": "新增公告",
+        "update_appeal_notice": "更新公告",
+        "delete_appeal_notice": "刪除公告",
+        "create_publicity": "新增公示",
+        "update_publicity": "更新公示",
+        "delete_publicity": "刪除公示",
+        "update_msg_template": "更新站內信範本",
+        "blacklist_user": "加入黑名單",
+        "unblacklist_user": "移出黑名單",
+        "update_appeal_config": "更新署務設定",
+        "export_appeals_csv": "匯出申訴 CSV"
+      },
+      "result": {
+        "valid": "有效",
+        "voided": "已撤銷",
+        "expired": "已失效",
+        "completed": "已完成",
+        "pending": "待受理",
+        "reviewing": "複核中",
+        "resolved": "已處理",
+        "rejected": "已駁回",
+        "not_found": "未查詢到",
+        "rate_limited": "觸發限流"
       }
     }
   },
@@ -4840,7 +5130,18 @@
         "action": "操作",
         "targetType": "物件類型",
         "targetId": "物件編號",
-        "detail": "明細"
+        "detail": "明細",
+        "actionLabel": {
+          "export.user": "本人匯出",
+          "export.admin": "管理端匯出",
+          "admin.query": "管理端查詢",
+          "rule.update": "規則變更",
+          "request.create": "建立申請",
+          "request.accept": "受理申請",
+          "request.approve": "批准申請",
+          "request.execute": "執行申請",
+          "request.reject": "駁回申請"
+        }
       }
     }
   },
@@ -5291,7 +5592,22 @@
         "target": "對象",
         "detail": "詳情",
         "searchPlaceholder": "依動作關鍵字篩選,如 badge",
-        "empty": "沒有符合條件的稽核紀錄"
+        "empty": "沒有符合條件的稽核紀錄",
+        "actionName": {
+          "attraction_create": "新增景點",
+          "attraction_update": "編輯景點",
+          "attraction_delete": "刪除景點",
+          "article_create": "新增文章",
+          "article_update": "編輯文章",
+          "article_delete": "刪除文章",
+          "config_update": "更新規則",
+          "badge_create": "新增徽章",
+          "badge_update": "編輯徽章",
+          "badge_delete": "刪除徽章",
+          "badge_award": "發放徽章",
+          "badge_revoke": "回收徽章",
+          "checkin": "景點打卡"
+        }
       }
     },
     "type": {
@@ -5575,6 +5891,11 @@
         "metric_delete": "刪除口徑",
         "export": "匯出資料",
         "report_generate": "產生年度報告"
+      },
+      "targetType": {
+        "metric": "口徑",
+        "metrics": "口徑",
+        "report": "年度報告"
       },
       "dashboard": {
         "title": "平台總看板",
@@ -5899,7 +6220,28 @@
         "action": "操作",
         "target": "對象",
         "detail": "詳情",
-        "allActions": "全部操作"
+        "allActions": "全部操作",
+        "actionLabel": {
+          "create_entry": "新增詞條",
+          "update_entry": "編輯詞條",
+          "submit_entry": "提交詞條審核",
+          "publish_entry": "發布詞條",
+          "offline_entry": "下架詞條",
+          "delete_entry": "刪除詞條",
+          "create_article": "新增文章",
+          "update_article": "編輯文章",
+          "submit_article": "提交文章審核",
+          "publish_article": "發布文章",
+          "offline_article": "下架文章",
+          "delete_article": "刪除文章",
+          "create_task": "新增任務",
+          "update_task": "編輯任務",
+          "task_status": "變更任務狀態",
+          "delete_task": "刪除任務",
+          "grant_badge": "發放徽章",
+          "approve_content": "審核通過",
+          "reject_content": "審核駁回"
+        }
       }
     }
   },
@@ -5953,6 +6295,7 @@
     "validUntil": "有效期至 {{date}}",
     "fill": "使用居民證資訊",
     "skip": "暫不使用",
+    "nothing": "居民證沒有可直接預填的欄位,請手動填寫",
     "filled": "已從居民證預填"
   },
   "recognizeAdmin": {

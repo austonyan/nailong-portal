@@ -7,11 +7,17 @@ import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
 import { TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
-import { toastSuccess } from '../../components/toast.js';
+import { toastSuccess, toastError } from '../../components/toast.js';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
 const NOTICE_LEVELS = ['info', 'policy', 'event'];
 const PUBLICITY_KINDS = ['stats', 'case', 'report'];
 const BLACKLIST_SCOPES = ['all', 'appeal', 'complaint'];
+const PUB_STATUS_CONFIRM = {
+  published: { tip: 'appeal.admin.publishConfirm', success: 'appeal.admin.published', danger: false },
+  offline: { tip: 'appeal.admin.offlineConfirm', success: 'appeal.admin.offlined', danger: true },
+  draft: { tip: 'appeal.admin.backToDraftConfirm', success: 'appeal.admin.backToDraftDone', danger: false },
+};
 
 export default function AppealAdminManage() {
   const { t } = useTranslation();
@@ -38,6 +44,7 @@ export default function AppealAdminManage() {
   const [pBodyTw, setPBodyTw] = useState('');
   const [pKind, setPKind] = useState('case');
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -65,15 +72,19 @@ export default function AppealAdminManage() {
   }, [load]);
 
   const createNotice = async () => {
+    if (!nTitle.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.post('/appeal/admin/notices', { title: nTitle, titleTw: nTitleTw, body: nBody, bodyTw: nBodyTw, level: nLevel });
-      toastSuccess(t('common.saved'));
       setNoticeOpen(false);
       setNTitle('');
       setNTitleTw('');
       setNBody('');
       setNBodyTw('');
+      toastSuccess(t('common.saved'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -91,26 +102,32 @@ export default function AppealAdminManage() {
     }
   };
 
-  const deleteNotice = async (n) => {
-    try {
-      await api.del(`/appeal/admin/notices/${n.id}`);
-      toastSuccess(t('common.deleted'));
-      await load();
-    } catch (err) {
-      toastAppealError(t, err);
-    }
+  const askDeleteNotice = (n) => {
+    confirm({
+      title: t('common.confirmDeleteTitle'),
+      tip: t('appeal.admin.noticeDeleteConfirm', { title: n.title }),
+      confirmText: t('common.delete'),
+      action: () => api.del(`/appeal/admin/notices/${n.id}`),
+      success: t('common.deleted'),
+      onDone: load,
+      onError: (err) => toastAppealError(t, err),
+    });
   };
 
   const createPublicity = async () => {
+    if (!pTitle.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.post('/appeal/admin/publicity', { title: pTitle, titleTw: pTitleTw, body: pBody, bodyTw: pBodyTw, kind: pKind });
-      toastSuccess(t('common.saved'));
       setPubOpen(false);
       setPTitle('');
       setPTitleTw('');
       setPBody('');
       setPBodyTw('');
+      toastSuccess(t('common.saved'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -119,14 +136,18 @@ export default function AppealAdminManage() {
     }
   };
 
-  const setPubStatus = async (p, status) => {
-    try {
-      await api.patch(`/appeal/admin/publicity/${p.id}`, { status });
-      toastSuccess(t('common.saved'));
-      await load();
-    } catch (err) {
-      toastAppealError(t, err);
-    }
+  const askPubStatus = (p, status) => {
+    const meta = PUB_STATUS_CONFIRM[status] ?? PUB_STATUS_CONFIRM.draft;
+    confirm({
+      title: t(`appeal.publicityStatus.${status}`),
+      tip: t(meta.tip, { title: p.title }),
+      confirmText: t(`appeal.admin.${status === 'published' ? 'publish' : status === 'offline' ? 'offline' : 'backToDraft'}`),
+      danger: meta.danger,
+      action: () => api.patch(`/appeal/admin/publicity/${p.id}`, { status }),
+      success: t(meta.success),
+      onDone: load,
+      onError: (err) => toastAppealError(t, err),
+    });
   };
 
   const toggleTemplate = async (tp) => {
@@ -139,13 +160,17 @@ export default function AppealAdminManage() {
   };
 
   const addBlacklist = async () => {
+    if (!blUser.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.post('/appeal/admin/blacklist', { userId: Number(blUser), scope: blScope, reason: blReason });
-      toastSuccess(t('common.saved'));
       setBlOpen(false);
       setBlUser('');
       setBlReason('');
+      toastSuccess(t('common.saved'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
@@ -154,14 +179,16 @@ export default function AppealAdminManage() {
     }
   };
 
-  const removeBlacklist = async (row) => {
-    try {
-      await api.del(`/appeal/admin/blacklist/${row.userId}`);
-      toastSuccess(t('common.deleted'));
-      await load();
-    } catch (err) {
-      toastAppealError(t, err);
-    }
+  const askRemoveBlacklist = (row) => {
+    confirm({
+      title: t('appeal.admin.unblacklist'),
+      tip: t('appeal.admin.unblacklistConfirm', { user: row.username }),
+      confirmText: t('appeal.admin.unblacklist'),
+      action: () => api.del(`/appeal/admin/blacklist/${row.userId}`),
+      success: t('appeal.admin.unblacklisted'),
+      onDone: load,
+      onError: (err) => toastAppealError(t, err),
+    });
   };
 
   const saveConfig = async (key, value) => {
@@ -190,7 +217,7 @@ export default function AppealAdminManage() {
       render: (_v, row) => (
         <>
           <Button type="text" size="small" onClick={() => toggleNotice(row)}>{row.enabled ? t('appeal.admin.disable') : t('appeal.admin.enable')}</Button>
-          <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => deleteNotice(row)}>{t('common.delete')}</Button>
+          <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => askDeleteNotice(row)}>{t('common.delete')}</Button>
         </>
       ),
     },
@@ -215,9 +242,9 @@ export default function AppealAdminManage() {
       width: 220,
       render: (_v, row) => (
         <>
-          {row.status !== 'published' && <Button type="text" size="small" onClick={() => setPubStatus(row, 'published')}>{t('appeal.admin.publish')}</Button>}
-          {row.status === 'published' && <Button type="text" size="small" danger onClick={() => setPubStatus(row, 'offline')}>{t('appeal.admin.offline')}</Button>}
-          {row.status === 'offline' && <Button type="text" size="small" onClick={() => setPubStatus(row, 'draft')}>{t('appeal.admin.backToDraft')}</Button>}
+          {row.status !== 'published' && <Button type="text" size="small" onClick={() => askPubStatus(row, 'published')}>{t('appeal.admin.publish')}</Button>}
+          {row.status === 'published' && <Button type="text" size="small" danger onClick={() => askPubStatus(row, 'offline')}>{t('appeal.admin.offline')}</Button>}
+          {row.status === 'offline' && <Button type="text" size="small" onClick={() => askPubStatus(row, 'draft')}>{t('appeal.admin.backToDraft')}</Button>}
         </>
       ),
     },
@@ -251,7 +278,7 @@ export default function AppealAdminManage() {
       title: t('common.actions'),
       width: 100,
       render: (_v, row) => (
-        <Button type="text" size="small" danger onClick={() => removeBlacklist(row)}>{t('appeal.admin.unblacklist')}</Button>
+        <Button type="text" size="small" danger onClick={() => askRemoveBlacklist(row)}>{t('appeal.admin.unblacklist')}</Button>
       ),
     },
   ];
@@ -272,7 +299,7 @@ export default function AppealAdminManage() {
 
       <Card>
         <Tabs
-          activeKey="notices"
+          defaultActiveKey="notices"
           items={[
             {
               key: 'notices',
@@ -354,13 +381,16 @@ export default function AppealAdminManage() {
         maskClosable={false}
         open={noticeOpen}
         title={t('appeal.admin.createNotice')}
-        onClose={() => setNoticeOpen(false)}
+        onClose={() => {
+          if (busy) return;
+          setNoticeOpen(false);
+        }}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setNoticeOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!nTitle.trim()} onClick={createNotice}>{t('common.confirm')}</Button>
+            <Button onClick={() => setNoticeOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !nTitle.trim()} onClick={createNotice}>{t('common.confirm')}</Button>
           </>
         }
       >
@@ -382,13 +412,16 @@ export default function AppealAdminManage() {
         maskClosable={false}
         open={pubOpen}
         title={t('appeal.admin.createPublicity')}
-        onClose={() => setPubOpen(false)}
+        onClose={() => {
+          if (busy) return;
+          setPubOpen(false);
+        }}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setPubOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!pTitle.trim()} onClick={createPublicity}>{t('common.confirm')}</Button>
+            <Button onClick={() => setPubOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !pTitle.trim()} onClick={createPublicity}>{t('common.confirm')}</Button>
           </>
         }
       >
@@ -410,13 +443,16 @@ export default function AppealAdminManage() {
         maskClosable={false}
         open={blOpen}
         title={t('appeal.admin.addBlacklist')}
-        onClose={() => setBlOpen(false)}
+        onClose={() => {
+          if (busy) return;
+          setBlOpen(false);
+        }}
         typewriter={false}
         width={520}
         footer={
           <>
-            <Button onClick={() => setBlOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!blUser.trim()} onClick={addBlacklist}>{t('common.confirm')}</Button>
+            <Button onClick={() => setBlOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !blUser.trim()} onClick={addBlacklist}>{t('common.confirm')}</Button>
           </>
         }
       >
@@ -429,6 +465,8 @@ export default function AppealAdminManage() {
           <TextArea rows={3} maxLength={200} value={blReason} onChange={(e) => setBlReason(e.target.value)} />
         </div>
       </Modal>
+
+      {confirmDialog}
     </div>
   );
 }

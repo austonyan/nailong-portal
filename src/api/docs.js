@@ -1,5 +1,8 @@
 // 文书认证署前端辅助: 材料下载/预览、字节格式化、状态元数据。
 import { requestBlob, getAccessToken } from './client.js';
+import { fmtDate } from '../lib/date.js';
+
+export { fmtDate, fmtDateTime } from '../lib/date.js';
 
 export function formatBytes(size) {
   const n = Number(size) || 0;
@@ -114,8 +117,8 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
     [labels.type || '文书类型', typeName],
     [labels.holder || '持有人', cert.holderName],
     [bizNoLabel || labels.bizNo || '关联业务编号', cert.bizNo || '—'],
-    [labels.issuedAt || '认证日期', String(cert.issuedAt || '').slice(0, 10)],
-    [labels.expiresAt || '有效期至', String(cert.expiresAt || '').slice(0, 10)],
+    [labels.issuedAt || '认证日期', cert.issuedAt ? fmtDate(cert.issuedAt) : ''],
+    [labels.expiresAt || '有效期至', cert.expiresAt ? fmtDate(cert.expiresAt) : ''],
   ];
   ctx.textAlign = 'left';
   let y = 190;

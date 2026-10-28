@@ -44,7 +44,9 @@ export function publicUser(user) {
     displayName: user.display_name,
     email: user.email,
     status: user.status,
-    roles: user.roles?.map((r) => ({ key: r.key, name: r.name })) ?? [],
+    // nameTw 必须一起下发:localeMiddleware 靠成对的 *Tw 字段才能把 name 换成繁体,
+    // 只给 name 时繁中界面里的角色名会一直是简体。
+    roles: user.roles?.map((r) => ({ key: r.key, name: r.name, nameTw: r.name_tw ?? null })) ?? [],
     permissions: user.permissions ?? [],
     createdAt: user.created_at,
     lastLoginAt: user.last_login_at,

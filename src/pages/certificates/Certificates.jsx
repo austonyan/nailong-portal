@@ -77,7 +77,12 @@ export default function Certificates() {
   };
 
   const columns = [
-    { title: t('certificates.column.office'), dataIndex: 'office', width: 150 },
+    {
+      title: t('certificates.column.office'),
+      dataIndex: 'source',
+      width: 150,
+      render: (v) => t(`linkage.office.${v}`, { defaultValue: v }),
+    },
     {
       title: t('certificates.column.type'),
       dataIndex: 'kind',

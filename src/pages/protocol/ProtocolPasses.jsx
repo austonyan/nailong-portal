@@ -42,6 +42,11 @@ export default function ProtocolPasses() {
       </div>
 
       <div className="protocol-pass-grid">
+        {items === null && (
+          <Card type="dashed" className="protocol-empty-card">
+            <p className="muted-text">{t('common.loading')}</p>
+          </Card>
+        )}
         {(items ?? []).map((pass) => (
           <div key={pass.id} className="protocol-pass-card" data-status={pass.status}>
             <div className="protocol-pass-head">

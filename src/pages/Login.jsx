@@ -38,14 +38,14 @@ export default function Login() {
           <FormItem
             name="username"
             label={t('auth.username')}
-            rules={[{ required: true, message: t('auth.usernamePlaceholder') }]}
+            rules={[{ required: true, message: t('common.required') }]}
           >
             <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear />
           </FormItem>
           <FormItem
             name="password"
             label={t('auth.password')}
-            rules={[{ required: true, message: t('auth.passwordPlaceholder') }]}
+            rules={[{ required: true, message: t('common.required') }]}
           >
             <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} />
           </FormItem>

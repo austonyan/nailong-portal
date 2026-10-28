@@ -43,7 +43,7 @@ export default function VisaAdminAudit() {
       width: 220,
       render: (v) => (
         <Tag variant="soft" color={AUDIT_ACTION_COLORS[v] || 'default'}>
-          {v}
+          {t(`visa.admin.audit.action.${v}`, { defaultValue: v })}
         </Tag>
       ),
     },

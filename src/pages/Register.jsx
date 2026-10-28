@@ -47,8 +47,8 @@ export default function Register() {
             name="username"
             label={t('auth.username')}
             rules={[
-              { required: true, message: t('auth.usernamePlaceholder') },
-              { pattern: USERNAME_RE, message: t('auth.usernamePlaceholder') },
+              { required: true, message: t('common.required') },
+              { pattern: USERNAME_RE, message: t('auth.usernameRule') },
             ]}
           >
             <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear />
@@ -63,8 +63,8 @@ export default function Register() {
             name="password"
             label={t('auth.password')}
             rules={[
-              { required: true, message: t('auth.passwordPlaceholder') },
-              { min: 8, message: t('auth.passwordPlaceholder') },
+              { required: true, message: t('common.required') },
+              { min: 8, message: t('auth.passwordRule') },
             ]}
           >
             <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} />
@@ -74,10 +74,10 @@ export default function Register() {
             label={t('auth.confirmPassword')}
             dependencies={['password']}
             rules={[
-              { required: true, message: t('auth.confirmPassword') },
+              { required: true, message: t('common.required') },
               {
                 validator: (_rule, value) =>
-                  value === form.getFieldValue('password') ? undefined : Promise.reject(new Error(t('auth.confirmPassword'))),
+                  value === form.getFieldValue('password') ? undefined : Promise.reject(new Error(t('auth.confirmRule'))),
               },
             ]}
           >

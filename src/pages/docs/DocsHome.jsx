@@ -12,6 +12,7 @@ import {
 } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastError } from '../../components/toast.js';
+import { fmtDate } from '../../lib/date.js';
 
 const NOTICE_LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
 
@@ -112,7 +113,7 @@ export default function DocsHome() {
                   </Tag>
                   <strong>{n.title}</strong>
                   <span className="muted-text docs-notice-date">
-                    <CalendarIcon size={14} /> {String(n.createdAt).slice(0, 10)}
+                    <CalendarIcon size={14} /> {fmtDate(n.createdAt)}
                   </span>
                 </div>
                 <p className="docs-notice-body">{n.body}</p>

@@ -7,6 +7,7 @@ import { PlusIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TextArea, TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
 const FAQ_KEYS = ['reset', 'unbind', 'slow', 'display', 'contact'];
 
@@ -18,10 +19,12 @@ export default function AppealTickets() {
   const [priority, setPriority] = useState('normal');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [busy, setBusy] = useState(false);
+  const [createBusy, setCreateBusy] = useState(false);
   const [detail, setDetail] = useState(null);
   const [reply, setReply] = useState('');
+  const [replyBusy, setReplyBusy] = useState(false);
   const [faqQuery, setFaqQuery] = useState('');
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -38,18 +41,18 @@ export default function AppealTickets() {
   }, [load]);
 
   const doCreate = async () => {
-    setBusy(true);
+    setCreateBusy(true);
     try {
       const data = await api.post('/appeal/tickets', { category, priority, title, content });
-      toastSuccess(t('appeal.ticket.submitDone', { no: data.ticket.code }));
       setCreateOpen(false);
       setTitle('');
       setContent('');
+      toastSuccess(t('appeal.ticket.submitDone', { no: data.ticket.code }));
       await load();
     } catch (err) {
       toastAppealError(t, err);
     } finally {
-      setBusy(false);
+      setCreateBusy(false);
     }
   };
 
@@ -64,7 +67,8 @@ export default function AppealTickets() {
   };
 
   const doReply = async () => {
-    setBusy(true);
+    if (!reply.trim()) return;
+    setReplyBusy(true);
     try {
       await api.post(`/appeal/tickets/${detail.id}/reply`, { content: reply });
       toastSuccess(t('appeal.ticket.replyDone'));
@@ -74,23 +78,24 @@ export default function AppealTickets() {
     } catch (err) {
       toastAppealError(t, err);
     } finally {
-      setBusy(false);
+      setReplyBusy(false);
     }
   };
 
-  const doClose = async () => {
-    setBusy(true);
-    try {
-      await api.post(`/appeal/tickets/${detail.id}/close`, {});
-      toastSuccess(t('appeal.ticket.closeDone'));
-      const data = await api.get(`/appeal/tickets/${detail.id}`);
-      setDetail(data.ticket);
-      await load();
-    } catch (err) {
-      toastAppealError(t, err);
-    } finally {
-      setBusy(false);
-    }
+  const askClose = () => {
+    confirm({
+      title: t('appeal.ticket.close'),
+      tip: t('appeal.ticket.closeConfirm'),
+      confirmText: t('appeal.ticket.close'),
+      action: () => api.post(`/appeal/tickets/${detail.id}/close`, {}),
+      success: t('appeal.ticket.closeDone'),
+      onDone: async () => {
+        const data = await api.get(`/appeal/tickets/${detail.id}`);
+        setDetail(data.ticket);
+        await load();
+      },
+      onError: (err) => toastAppealError(t, err),
+    });
   };
 
   const faqKeys = FAQ_KEYS.filter((k) => {
@@ -159,13 +164,18 @@ export default function AppealTickets() {
         maskClosable={false}
         open={createOpen}
         title={t('appeal.ticket.createTitle')}
-        onClose={() => setCreateOpen(false)}
+        onClose={() => {
+          if (createBusy) return;
+          setCreateOpen(false);
+        }}
         typewriter={false}
         width={560}
         footer={
           <>
-            <Button onClick={() => setCreateOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!title.trim() || content.trim().length < 5} onClick={doCreate}>
+            <Button onClick={() => setCreateOpen(false)} disabled={createBusy}>
+              {t('common.cancel')}
+            </Button>
+            <Button type="primary" loading={createBusy} disabled={createBusy || !title.trim() || content.trim().length < 5} onClick={doCreate}>
               {t('appeal.ticket.submit')}
             </Button>
           </>
@@ -226,10 +236,10 @@ export default function AppealTickets() {
               <div className="appeal-ticket-reply-box">
                 <TextArea rows={3} maxLength={2000} value={reply} onChange={(e) => setReply(e.target.value)} placeholder={t('appeal.ticket.replyPlaceholder')} />
                 <div className="table-actions">
-                  <Button danger onClick={doClose} loading={busy} disabled={busy}>
+                  <Button danger onClick={askClose}>
                     {t('appeal.ticket.close')}
                   </Button>
-                  <Button type="primary" loading={busy} disabled={busy || (!reply.trim())} onClick={doReply}>
+                  <Button type="primary" loading={replyBusy} disabled={replyBusy || (!reply.trim())} onClick={doReply}>
                     {t('appeal.ticket.sendReply')}
                   </Button>
                 </div>
@@ -238,6 +248,8 @@ export default function AppealTickets() {
           </div>
         )}
       </Drawer>
+
+      {confirmDialog}
     </div>
   );
 }

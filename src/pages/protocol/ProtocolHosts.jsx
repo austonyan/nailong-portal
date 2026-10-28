@@ -171,6 +171,11 @@ export default function ProtocolHosts() {
       </Card>
 
       <div className="protocol-host-grid">
+        {items === null && (
+          <Card type="dashed" className="protocol-empty-card">
+            <p className="muted-text">{t('common.loading')}</p>
+          </Card>
+        )}
         {(items ?? []).map((host) => (
           <Card key={host.id} className="protocol-host-card" hoverable onClick={() => openEdit(host)}>
             <div className="protocol-host-head">
@@ -246,6 +251,7 @@ export default function ProtocolHosts() {
             <label className="protocol-field">
               <span>{t('protocol.field.hostType')}</span>
               <Select
+                aria-label={t('protocol.field.hostType')}
                 value={form.type}
                 onChange={(v) => setForm((p) => ({ ...p, type: v }))}
                 options={HOST_TYPES.map((code) => ({ key: code, label: t(`protocol.hostType.${code}`) }))}

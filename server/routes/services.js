@@ -113,8 +113,8 @@ router.post('/', authenticate, requirePermission('services:write'), (req, res) =
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO services (key, name, name_tw, description, description_tw, url, icon, color, required_permission, enabled, sort_order, created_at, updated_at)
-       VALUES (@key, @name, @name_tw, @description, @description_tw, @url, @icon, @color, @required_permission, @enabled, @sort_order, @ts, @ts)`
+      `INSERT INTO services (key, name, name_tw, description, description_tw, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
+       VALUES (@key, @name, @name_tw, @description, @description_tw, @url, @icon, @color, @required_permission, @entry_mode, @enabled, @sort_order, @ts, @ts)`
     )
     .run({
       description: '',
@@ -123,6 +123,7 @@ router.post('/', authenticate, requirePermission('services:write'), (req, res) =
       icon: 'RocketIcon',
       color: 'app-teal',
       required_permission: null,
+      entry_mode: 'external',
       enabled: 1,
       sort_order: 0,
       ...data,

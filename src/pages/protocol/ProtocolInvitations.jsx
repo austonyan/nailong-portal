@@ -65,6 +65,11 @@ export default function ProtocolInvitations() {
       </Card>
 
       <div className="protocol-invitation-grid">
+        {items === null && (
+          <Card type="dashed" className="protocol-empty-card">
+            <p className="muted-text">{t('common.loading')}</p>
+          </Card>
+        )}
         {(items ?? []).map((inv) => (
           <Card key={inv.id} className={`protocol-invitation-card ${inv.status}`}>
             <div className="protocol-invitation-head">

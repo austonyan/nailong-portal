@@ -35,12 +35,14 @@ export default function ResidentVerify() {
     }
   };
 
-  // 验真链接(二维码扫码预留):带 token 直接查询
+  // 验真链接(二维码扫码预留):带 token 直接查询。
+  // 依赖写成 token 字符串本身 —— 用 searchParams 对象会让每次重渲染都重新验真,
+  // 把公开接口的限流额度耗光,用户看到的是「查询过于频繁」。
+  const tokenParam = searchParams.get('token');
   useEffect(() => {
-    const token = searchParams.get('token');
-    if (token) verify({ token });
+    if (tokenParam) verify({ token: tokenParam });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [tokenParam]);
 
   return (
     <div className="res-verify-page">
