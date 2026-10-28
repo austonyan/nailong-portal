@@ -17,6 +17,7 @@ import {
   toastAppealError,
 } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
+import { useDebouncedValue } from '../../lib/useDebouncedValue.js';
 
 const QUEUE_STATUS = ['', 'pending_accept', 'accepted', 'processing', 'supplement_required', 'resolved', 'rejected', 'withdrawn', 'closed'];
 const DECIDE_TYPES = ['maintain', 'undo', 'change', 'transfer'];
@@ -29,6 +30,8 @@ export default function AppealAdminWorkbench() {
   const [status, setStatus] = useState('');
   const [bizType, setBizType] = useState('');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
   const [action, setAction] = useState(null); // 'accept' | 'refuse' | 'dispatch' | 'supplement' | 'decide' | 'close' | 'merge'
   const [comment, setComment] = useState('');
@@ -46,7 +49,7 @@ export default function AppealAdminWorkbench() {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
       if (bizType) params.set('bizType', bizType);
-      if (q.trim()) params.set('q', q.trim());
+      if (dq.trim()) params.set('q', dq.trim());
       const data = await api.get(`/appeal/admin/appeals/queue?${params.toString()}`);
       setItems(data.items);
       setTotal(data.total);
@@ -55,11 +58,16 @@ export default function AppealAdminWorkbench() {
       toastAppealError(t, err);
       setItems([]);
     }
-  }, [page, status, bizType, q, t]);
+  }, [page, status, bizType, dq, t]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // 检索词变化时回到第一页,避免停在越界页看到空表。
+  useEffect(() => {
+    setPage(1);
+  }, [dq]);
 
   useEffect(() => {
     api

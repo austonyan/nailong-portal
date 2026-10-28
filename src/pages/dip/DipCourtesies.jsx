@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 
 export default function DipCourtesies() {
   const { t } = useTranslation();
@@ -88,7 +88,7 @@ export default function DipCourtesies() {
             <p>
               <Tag color="app-green" variant="soft">{t('dip.courtesy.eligible')}</Tag>
               {t('dip.agreement.entity')}: <b>{checkResult.entityName}</b> ·{' '}
-              {t('dip.identity.termEnd')}: {checkResult.termEnd?.slice(0, 10)}
+              {t('dip.identity.termEnd')}: {checkResult.termEnd ? fmtDate(checkResult.termEnd) : '-'}
             </p>
             <div className="dip-courtesy-grid">
               {checkResult.types.map((c) => (

@@ -5,6 +5,7 @@ import { BanIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
+import { fmtDate } from '../../../lib/date.js';
 
 export default function DocsSettings() {
   const { t } = useTranslation();
@@ -144,7 +145,7 @@ export default function DocsSettings() {
             { title: t('docs.admin.settings.blacklistUser'), dataIndex: 'username', width: 140 },
             { title: t('docs.admin.settings.blacklistReason'), dataIndex: 'reason' },
             { title: t('docs.admin.settings.blacklistBy'), dataIndex: 'createdBy', width: 130 },
-            { title: t('common.createdAt'), dataIndex: 'createdAt', width: 110, render: (v) => String(v).slice(0, 10) },
+            { title: t('common.createdAt'), dataIndex: 'createdAt', width: 110, render: (v) => fmtDate(v) },
             {
               title: t('common.actions'),
               width: 90,

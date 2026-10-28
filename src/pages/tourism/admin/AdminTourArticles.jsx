@@ -13,6 +13,7 @@ import {
   toastTourError,
 } from '../shared.jsx';
 import { TourAdminNav } from '../TourismShell.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const EMPTY_FORM = {
   id: null,
@@ -41,6 +42,8 @@ export default function AdminTourArticles() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [statusFilter, setStatusFilter] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -51,7 +54,7 @@ export default function AdminTourArticles() {
   const load = useCallback(async () => {
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
-    if (q.trim()) params.set('q', q.trim());
+    if (dq.trim()) params.set('q', dq.trim());
     try {
       const data = await api.get(`/tourism/admin/articles?${params.toString()}`);
       setItems(data.items);
@@ -59,7 +62,7 @@ export default function AdminTourArticles() {
       toastTourError(t, err);
       setItems([]);
     }
-  }, [q, statusFilter, t]);
+  }, [dq, statusFilter, t]);
 
   useEffect(() => {
     load();

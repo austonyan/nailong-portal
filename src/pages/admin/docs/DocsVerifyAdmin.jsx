@@ -4,6 +4,7 @@ import { Button, Card, Input, Pagination, Progress, Select, Table, Tag, Title } 
 import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const RESULT_OPTIONS = ['all', 'found', 'found_self', 'not_found'];
 
@@ -13,13 +14,15 @@ export default function DocsVerifyAdmin() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [result, setResult] = useState('all');
   const [summary, setSummary] = useState(null);
   const pageSize = 12;
 
   const load = useCallback(async () => {
     try {
-      const params = new URLSearchParams({ page, pageSize, q, result });
+      const params = new URLSearchParams({ page, pageSize, q: dq, result });
       const d = await api.get(`/docs/admin/verify-logs?${params.toString()}`);
       setItems(d.items);
       setTotal(d.total);
@@ -27,7 +30,7 @@ export default function DocsVerifyAdmin() {
       toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
-  }, [page, q, result, t]);
+  }, [page, dq, result, t]);
 
   const loadSummary = useCallback(() => {
     api

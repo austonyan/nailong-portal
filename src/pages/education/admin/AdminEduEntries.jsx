@@ -7,6 +7,7 @@ import { EditIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ConfirmModal, StatusTag, TextArea, fmtDateTime, toastEduError } from '../shared.jsx';
 import { toastError, toastSuccess } from '../../../components/toast.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const EMPTY_FORM = {
   id: null,
@@ -29,6 +30,8 @@ export default function AdminEduEntries() {
   const [categories, setCategories] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
@@ -40,7 +43,7 @@ export default function AdminEduEntries() {
   const load = useCallback(async () => {
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
-    if (q.trim()) params.set('q', q.trim());
+    if (dq.trim()) params.set('q', dq.trim());
     try {
       const data = await api.get(`/education/admin/entries?${params.toString()}`);
       setItems(data.items ?? []);
@@ -48,7 +51,7 @@ export default function AdminEduEntries() {
       toastEduError(t, err);
       setItems([]);
     }
-  }, [q, statusFilter, t]);
+  }, [dq, statusFilter, t]);
 
   useEffect(() => {
     load();

@@ -6,6 +6,7 @@ import { EyeIcon, PencilIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS } from '../../api/docs.js';
 import { toastSuccess, toastError } from '../../components/toast.js';
+import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'draft', 'pending', 'supplementing', 'approved', 'rejected', 'withdrawn'];
 
@@ -59,8 +60,8 @@ export default function DocsApplications() {
         </Tag>
       ),
     },
-    { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => v?.slice(0, 10) || '—' },
-    { title: t('common.createdAt'), dataIndex: 'updatedAt', width: 110, render: (v) => String(v).slice(0, 10) },
+    { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => fmtDate(v) },
+    { title: t('common.createdAt'), dataIndex: 'updatedAt', width: 110, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 150,

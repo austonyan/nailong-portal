@@ -5,6 +5,8 @@ import { RefreshIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../../api/docs.js';
 import { toastSuccess, toastError } from '../../../components/toast.js';
+import { fmtDate } from '../../../lib/date.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
@@ -16,6 +18,8 @@ export default function DocsCertsAdmin() {
   const [status, setStatus] = useState('all');
   const [typeCode, setTypeCode] = useState('all');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [types, setTypes] = useState([]);
   const [revokeTarget, setRevokeTarget] = useState(null);
   const [revokeReason, setRevokeReason] = useState('');
@@ -25,7 +29,7 @@ export default function DocsCertsAdmin() {
 
   const load = useCallback(async () => {
     try {
-      const params = new URLSearchParams({ page: page, pageSize: pageSize, status: status, typeCode: typeCode, q: q });
+      const params = new URLSearchParams({ page: page, pageSize: pageSize, status: status, typeCode: typeCode, q: dq });
       const d = await api.get(`/docs/admin/certificates?${params.toString()}`);
       setItems(d.items);
       setTotal(d.total);
@@ -33,7 +37,7 @@ export default function DocsCertsAdmin() {
       toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
-  }, [page, status, typeCode, q, t]);
+  }, [page, status, typeCode, dq, t]);
 
   useEffect(() => {
     api.get('/docs/admin/types').then((d) => setTypes(d.items)).catch(() => setTypes([]));
@@ -102,8 +106,8 @@ export default function DocsCertsAdmin() {
         </Tag>
       ),
     },
-    { title: t('docs.cert.issuedAt'), dataIndex: 'issuedAt', width: 105, render: (v) => String(v).slice(0, 10) },
-    { title: t('docs.cert.expiresAt'), dataIndex: 'expiresAt', width: 105, render: (v) => String(v).slice(0, 10) },
+    { title: t('docs.cert.issuedAt'), dataIndex: 'issuedAt', width: 105, render: (v) => fmtDate(v) },
+    { title: t('docs.cert.expiresAt'), dataIndex: 'expiresAt', width: 105, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 200,

@@ -15,6 +15,7 @@ export default function AdminResCards() {
   const [items, setItems] = useState(null);
   const [status, setStatus] = useState('');
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [action, setAction] = useState(null); // { kind, card }
   const [reason, setReason] = useState('');
   const [remindOpen, setRemindOpen] = useState(false);
@@ -25,14 +26,14 @@ export default function AdminResCards() {
     try {
       const params = new URLSearchParams();
       if (status) params.set('status', status);
-      if (q.trim()) params.set('q', q.trim());
+      if (query) params.set('q', query);
       const data = await api.get(`/resident/admin/cards?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
       setItems([]);
     }
-  }, [status, q, t]);
+  }, [status, query, t]);
 
   useEffect(() => {
     load();
@@ -51,7 +52,11 @@ export default function AdminResCards() {
       else if (action.kind === 'unfreeze') await api.post(`/resident/admin/cards/${action.card.cardNo}/unfreeze`, { reason });
       else if (action.kind === 'void') await api.post(`/resident/admin/cards/${action.card.cardNo}/void`, { reason });
       else if (action.kind === 'reissue') await api.post(`/resident/admin/cards/${action.card.cardNo}/reissue`, { comment: reason });
-      toastSuccess(t('common.save'));
+      toastSuccess(
+        t(`res.admin.cards.${action.kind}Done`, {
+          defaultValue: t('common.saved'),
+        })
+      );
       setAction(null);
       load();
     } catch (err) {
@@ -142,7 +147,22 @@ export default function AdminResCards() {
             onChange={setStatus}
             options={[{ key: '', label: t('res.admin.allStatus') }, ...CARD_STATUS_OPTIONS.map((s) => ({ key: s, label: t(`res.cardStatus.${s}`) }))]}
           />
-          <Input size="middle" allowClear placeholder={t('res.admin.searchPlaceholder')} value={q} onChange={(e) => setQ(e.target.value)} />
+          <Input
+            size="middle"
+            allowClear
+            placeholder={t('res.admin.searchPlaceholder')}
+            aria-label={t('res.admin.searchPlaceholder')}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onClear={() => {
+              setQ('');
+              setQuery('');
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') setQuery(q.trim());
+            }}
+          />
+          <Button size="middle" onClick={() => setQuery(q.trim())}>{t('common.search')}</Button>
           <Button type="primary" icon={<BellIcon />} onClick={() => setRemindOpen(true)}>
             {t('res.admin.cards.batchRemind')}
           </Button>
