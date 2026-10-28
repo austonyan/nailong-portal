@@ -7,6 +7,7 @@ import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, exportCsv } from '../../../components/immigration/shared.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
+import { fmtDate, fmtDateTime } from '../../../lib/date.js';
 
 function AuditTab() {
   const { t } = useTranslation();
@@ -22,8 +23,11 @@ function AuditTab() {
     api
       .get(`/immigration/admin/audit?${params}`)
       .then((data) => {
-        setItems(data.items);
+        const rows = data.items ?? [];
+        setItems(rows);
         setTotal(data.total);
+        // total 变小时把页码夹回合法范围,避免停在空表。
+        if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
       })
       .catch((err) => {
         toastApiError(err);
@@ -32,6 +36,14 @@ function AuditTab() {
   }, [page, actionFilter]);
 
   useEffect(load, [load]);
+
+  // 动作码形如 `im:port.create`:去掉命名空间前缀并压平分隔符,再查词条。
+  const actionLabel = (code) => {
+    const key = String(code ?? '').replace(/^im:/, '').replace(/[.:]/g, '_');
+    return t(`imm.admin.audit.actionName.${key}`, { defaultValue: code });
+  };
+
+  const actionFilters = ['port', 'declaration', 'pass', 'record', 'visa', 'blacklist', 'template', 'settings', 'file', 'data'];
 
   const exportAll = () => {
     exportCsv(
@@ -51,12 +63,25 @@ function AuditTab() {
 
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
-    { title: t('imm.admin.verify.officer'), dataIndex: 'actor', width: 110, render: (v) => v ?? 'system' },
-    { title: t('imm.admin.audit.action'), dataIndex: 'action', width: 220, render: (v) => <Tag size="small" color="app-blue" variant="soft">{v}</Tag> },
-    { title: t('imm.admin.audit.targetType'), dataIndex: 'target_type', width: 110 },
+    { title: t('imm.admin.verify.officer'), dataIndex: 'actor', width: 110, render: (v) => v ?? t('common.system') },
+    {
+      title: t('imm.admin.audit.action'),
+      dataIndex: 'action',
+      width: 220,
+      render: (v) => <Tag size="small" color="app-blue" variant="soft">{actionLabel(v)}</Tag>,
+    },
+    { title: t('imm.admin.audit.targetType'), dataIndex: 'target_type', width: 110, render: (v) => t(`imm.admin.audit.targetKind.${v}`, { defaultValue: v }) },
     { title: t('imm.admin.audit.targetId'), dataIndex: 'target_id', width: 170 },
-    { title: t('imm.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="im-audit-detail">{JSON.stringify(v)}</span> },
-    { title: t('common.createdAt'), dataIndex: 'created_at', width: 160, render: (v) => v?.slice(0, 19).replace('T', ' ') },
+    {
+      title: t('imm.admin.audit.detail'),
+      dataIndex: 'detail',
+      render: (v) => {
+        if (!v || (typeof v === 'object' && Object.keys(v).length === 0)) return '-';
+        const text = typeof v === 'object' ? JSON.stringify(v) : String(v);
+        return <span className="im-audit-detail">{text}</span>;
+      },
+    },
+    { title: t('common.createdAt'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
   ];
 
   return (
@@ -67,7 +92,7 @@ function AuditTab() {
           onChange={(v) => { setActionFilter(v); setPage(1); }}
           options={[
             { key: '', label: t('imm.admin.audit.allActions') },
-            ...['im:port', 'im:declaration', 'im:pass', 'im:record', 'im:visa', 'im:blacklist', 'im:template', 'im:settings', 'im:file', 'im:data'].map((a) => ({ key: a, label: a })),
+            ...actionFilters.map((a) => ({ key: `im:${a}`, label: actionLabel(`im:${a}`) })),
           ]}
         />
         <Button type="text" size="small" icon={<DownloadIcon />} onClick={exportAll} disabled={!items?.length}>
@@ -136,7 +161,7 @@ function BlacklistTab() {
     { title: t('admin.users.displayName'), dataIndex: 'display_name', width: 120 },
     { title: t('imm.admin.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`imm.admin.blacklist.${v}`)}</Tag> },
     { title: t('imm.admin.blacklist.reason'), dataIndex: 'reason' },
-    { title: t('common.createdAt'), dataIndex: 'created_at', width: 150, render: (v) => v?.slice(0, 10) },
+    { title: t('common.createdAt'), dataIndex: 'created_at', width: 150, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 100,
@@ -169,12 +194,16 @@ function BlacklistTab() {
           </>
         }
       >
-        <p className="im-field-label">User ID</p>
-        <Input size="large" type="number" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="3" />
-        <p className="im-field-label">{t('imm.admin.blacklist.level')}</p>
-        <Select value={level} onChange={setLevel} options={[{ key: 'warn', label: t('imm.admin.blacklist.warn') }, { key: 'block', label: t('imm.admin.blacklist.block') }]} />
-        <p className="im-field-label">{t('imm.admin.blacklist.reason')}</p>
-        <Input size="large" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={200} />
+        <p className="im-field-label"><label htmlFor="im-blacklist-user-id">{t('common.userId')}</label></p>
+        <Input id="im-blacklist-user-id" size="large" type="number" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="3" />
+        <Select
+          aria-label={t('imm.admin.blacklist.level')}
+          value={level}
+          onChange={setLevel}
+          options={[{ key: 'warn', label: t('imm.admin.blacklist.warn') }, { key: 'block', label: t('imm.admin.blacklist.block') }]}
+        />
+        <p className="im-field-label"><label htmlFor="im-blacklist-reason">{t('imm.admin.blacklist.reason')}</label></p>
+        <Input id="im-blacklist-reason" size="large" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={200} />
       </Modal>
     </>
   );
@@ -226,7 +255,7 @@ function TemplatesTab() {
     { title: t('imm.admin.templates.title'), dataIndex: 'title', width: 240 },
     { title: t('imm.admin.templates.variables'), dataIndex: 'variables', width: 140, render: (v) => v || '-' },
     { title: t('common.status'), dataIndex: 'enabled', width: 90, render: (v) => (v ? <Tag color="app-green" variant="soft">{t('common.enabled')}</Tag> : <Tag>{t('common.disabled')}</Tag>) },
-    { title: t('imm.admin.templates.updatedAt'), dataIndex: 'updatedAt', width: 140, render: (v) => v?.slice(0, 10) },
+    { title: t('imm.admin.templates.updatedAt'), dataIndex: 'updatedAt', width: 140, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 90,
@@ -269,16 +298,20 @@ function TemplatesTab() {
         typewriter={false}
       >
         <p className="muted-text">{t('imm.admin.templates.varTip')}</p>
-        <p className="im-field-label">{t('imm.admin.templates.title')}</p>
-        <Input size="large" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} />
-        <p className="im-field-label">{t('imm.admin.templates.title')} · {t('common.traditional')}</p>
-        <Input size="large" value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} maxLength={120} />
-        <p className="im-field-label">{t('imm.admin.templates.body')}</p>
-        <textarea className="docs-textarea" value={body} onChange={(e) => setBody(e.target.value)} maxLength={600} />
-        <p className="im-field-label">{t('imm.admin.templates.body')} · {t('common.traditional')}</p>
-        <textarea className="docs-textarea" value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} maxLength={600} />
-        <p className="im-field-label">{t('common.status')}</p>
-        <Select value={enabled ? 'on' : 'off'} onChange={(v) => setEnabled(v === 'on')} options={[{ key: 'on', label: t('common.enabled') }, { key: 'off', label: t('common.disabled') }]} />
+        <p className="im-field-label"><label htmlFor="im-tpl-title">{t('imm.admin.templates.title')}</label></p>
+        <Input id="im-tpl-title" size="large" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} />
+        <p className="im-field-label"><label htmlFor="im-tpl-title-tw">{t('imm.admin.templates.title')} · {t('common.traditional')}</label></p>
+        <Input id="im-tpl-title-tw" size="large" value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} maxLength={120} />
+        <p className="im-field-label"><label htmlFor="im-tpl-body">{t('imm.admin.templates.body')}</label></p>
+        <textarea id="im-tpl-body" className="docs-textarea" value={body} onChange={(e) => setBody(e.target.value)} maxLength={600} />
+        <p className="im-field-label"><label htmlFor="im-tpl-body-tw">{t('imm.admin.templates.body')} · {t('common.traditional')}</label></p>
+        <textarea id="im-tpl-body-tw" className="docs-textarea" value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} maxLength={600} />
+        <Select
+          aria-label={t('common.status')}
+          value={enabled ? 'on' : 'off'}
+          onChange={(v) => setEnabled(v === 'on')}
+          options={[{ key: 'on', label: t('common.enabled') }, { key: 'off', label: t('common.disabled') }]}
+        />
       </Modal>
     </>
   );
@@ -310,7 +343,7 @@ function SendLogTab() {
     { title: t('imm.admin.templates.code'), dataIndex: 'template_code', width: 170 },
     { title: t('imm.admin.templates.title'), dataIndex: 'title' },
     { title: t('common.status'), dataIndex: 'read', width: 90, render: (v) => (v ? t('imm.msg.read') : t('imm.msg.unread')) },
-    { title: t('common.createdAt'), dataIndex: 'created_at', width: 160, render: (v) => v?.slice(0, 16).replace('T', ' ') },
+    { title: t('common.createdAt'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
   ];
 
   return (
