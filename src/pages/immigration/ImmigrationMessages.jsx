@@ -5,6 +5,7 @@ import { InboxIcon, MailIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav } from '../../components/immigration/shared.jsx';
+import { fmtDateTime } from '../../lib/date.js';
 
 const FILTERS = ['all', 'unread', 'archived'];
 
@@ -84,7 +85,7 @@ export default function ImmigrationMessages() {
             <div className="im-msg-head">
               {!m.read && <Badge dot color="app-red" />}
               <b>{m.title}</b>
-              <span className="muted-text">{m.created_at?.slice(0, 16).replace('T', ' ')}</span>
+              <span className="muted-text">{fmtDateTime(m.created_at)}</span>
               <Tag size="small">{t(`imm.msg.template.${m.templateCode}`, { defaultValue: m.templateCode })}</Tag>
             </div>
             <p className="im-ann-body">{m.body}</p>

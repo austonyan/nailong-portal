@@ -5,6 +5,7 @@ import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
+import { fmtDateTime } from '../../../lib/date.js';
 
 const RESULT_OPTIONS = ['all', 'found', 'found_self', 'not_found'];
 
@@ -61,7 +62,7 @@ export default function DocsVerifyAdmin() {
         </Tag>
       ),
     },
-    { title: t('common.createdAt'), dataIndex: 'createdAt', render: (v) => String(v).slice(0, 19).replace('T', ' ') },
+    { title: t('common.createdAt'), dataIndex: 'createdAt', render: (v) => fmtDateTime(v) },
   ];
 
   return (

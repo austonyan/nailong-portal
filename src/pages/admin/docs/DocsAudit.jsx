@@ -5,6 +5,7 @@ import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
+import { fmtDateTime } from '../../../lib/date.js';
 
 const ACTION_COLORS = {
   certify_approve: 'app-green',
@@ -48,7 +49,7 @@ export default function DocsAudit() {
   }, [load]);
 
   const columns = [
-    { title: t('docs.admin.audit.time'), dataIndex: 'createdAt', width: 170, render: (v) => String(v).slice(0, 19).replace('T', ' ') },
+    { title: t('docs.admin.audit.time'), dataIndex: 'createdAt', width: 170, render: (v) => fmtDateTime(v) },
     { title: t('docs.admin.audit.actor'), dataIndex: 'actorName', width: 120 },
     {
       title: t('docs.admin.audit.action'),
