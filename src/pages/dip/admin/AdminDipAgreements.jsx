@@ -5,7 +5,7 @@ import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Select, Table, Ta
 import { PlusIcon } from 'naive-icons';
 import dayjs from 'dayjs';
 import { api } from '../../../api/client.js';
-import { DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { DipAdminNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
 const TYPES = ['entry_courtesy', 'visa_waiver', 'event_pass'];
@@ -27,8 +27,8 @@ function AgreementModal({ initial, onClose, onSaved }) {
         courtesiesTw: initial.courtesiesTw ?? '',
         coveredScope: initial.coveredScopeCn ?? initial.coveredScope,
         coveredScopeTw: initial.coveredScopeTw ?? '',
-        effectiveFrom: (initial.effectiveFrom ?? '').slice(0, 10),
-        effectiveTo: (initial.effectiveTo ?? '').slice(0, 10),
+        effectiveFrom: initial.effectiveFrom ? fmtDate(initial.effectiveFrom) : '',
+        effectiveTo: initial.effectiveTo ? fmtDate(initial.effectiveTo) : '',
         note: initial.noteCn ?? initial.note,
         noteTw: initial.noteTw ?? '',
       });
@@ -162,7 +162,7 @@ export default function AdminDipAgreements() {
     {
       title: t('dip.agreement.validRange'),
       width: 190,
-      render: (_, r) => `${(r.effectiveFrom ?? '').slice(0, 10)} ~ ${(r.effectiveTo ?? '').slice(0, 10)}`,
+      render: (_, r) => `${fmtDate(r.effectiveFrom)} ~ ${fmtDate(r.effectiveTo)}`,
     },
     {
       title: t('dip.agreement.published'),

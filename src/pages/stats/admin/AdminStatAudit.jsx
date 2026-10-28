@@ -43,11 +43,11 @@ export default function AdminStatAudit() {
       width: 170,
       render: (v) => (
         <Tag variant="soft" color="app-blue">
-          {v}
+          {t(`stat.admin.actions.${v}`, { defaultValue: v })}
         </Tag>
       ),
     },
-    { title: t('stat.admin.audit.targetType'), dataIndex: 'target_type', width: 110 },
+    { title: t('stat.admin.audit.targetType'), dataIndex: 'target_type', width: 110, render: (v) => t(`stat.admin.targetType.${v}`, { defaultValue: v }) },
     { title: t('stat.admin.audit.targetId'), dataIndex: 'target_id', width: 200 },
     {
       title: t('stat.admin.audit.detail'),

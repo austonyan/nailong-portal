@@ -62,6 +62,7 @@ export default function AdminDipVerify() {
   const [kind, setKind] = useState('');
   const [result, setResult] = useState('');
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [blacklist, setBlacklist] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [limit, setLimit] = useState('');
@@ -70,18 +71,21 @@ export default function AdminDipVerify() {
     const params = new URLSearchParams({ page: String(page), pageSize: '20' });
     if (kind) params.set('kind', kind);
     if (result) params.set('result', result);
-    if (q.trim()) params.set('q', q.trim());
+    if (query) params.set('q', query);
     api
       .get(`/dip/admin/verify-logs?${params.toString()}`)
       .then((data) => {
-        setLogs(data.items);
+        const rows = data.items ?? [];
+        setLogs(rows);
         setLogsTotal(data.total);
+        // total 变小时把页码夹回合法范围,避免停在空表。
+        if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
       })
       .catch((err) => {
         toastDipError(t, err);
         setLogs([]);
       });
-  }, [page, kind, result, q, t]);
+  }, [page, kind, result, query, t]);
 
   const loadBlacklist = useCallback(() => {
     api
@@ -118,9 +122,11 @@ export default function AdminDipVerify() {
 
   const logColumns = [
     { title: t('dip.verifyLog.query'), dataIndex: 'query', width: 200 },
-    { title: t('dip.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`) : '-') },
-    { title: t('dip.verifyLog.result'), dataIndex: 'result', width: 120, render: (v) => (
-      <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'default' : 'app-orange'} variant="soft">{v}</Tag>
+    { title: t('dip.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`, { defaultValue: v }) : '-') },
+    { title: t('dip.verifyLog.result'), dataIndex: 'result', width: 140, render: (v) => (
+      <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'default' : 'app-orange'} variant="soft">
+        {t(`dip.verifyLog.result_${v}`, { defaultValue: v })}
+      </Tag>
     ) },
     { title: 'IP', dataIndex: 'ip', width: 130, render: (v) => v || '-' },
     { title: t('dip.verifyLog.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
@@ -152,9 +158,29 @@ export default function AdminDipVerify() {
           <Card>
             <div className="dip-admin-filter">
               <Select value={kind} onChange={(v) => { setKind(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allKinds') }, { key: 'relation', label: t('dip.verify.kindRelation') }, { key: 'identity', label: t('dip.verify.kindIdentity') }, { key: 'agreement', label: t('dip.verify.kindAgreement') }]} />
-              <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allResults') }, { key: 'valid', label: 'valid' }, { key: 'not_found', label: 'not_found' }]} />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('dip.verifyLog.query')} allowClear maxLength={40} />
-              <Button onClick={loadLogs}>{t('common.search')}</Button>
+              <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allResults') }, { key: 'valid', label: t('dip.verifyLog.result_valid') }, { key: 'not_found', label: t('dip.verifyLog.result_not_found') }]} />
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                onClear={() => { setQ(''); setQuery(''); setPage(1); }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setQuery(q.trim());
+                    setPage(1);
+                  }
+                }}
+                placeholder={t('dip.verifyLog.query')}
+                allowClear
+                maxLength={40}
+              />
+              <Button
+                onClick={() => {
+                  setQuery(q.trim());
+                  setPage(1);
+                }}
+              >
+                {t('common.search')}
+              </Button>
             </div>
             <Table className="table-fit"
               columns={logColumns}

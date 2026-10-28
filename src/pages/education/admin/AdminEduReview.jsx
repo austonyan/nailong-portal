@@ -7,6 +7,7 @@ import { EyeIcon, ThumbsUpIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { CONTENT_TARGETS, StatusTag, TargetTypeTag, TextArea, fmtDateTime, toastEduError } from '../shared.jsx';
 import { toastError, toastSuccess } from '../../../components/toast.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const TYPE_FILTERS = ['', ...CONTENT_TARGETS];
 
@@ -16,6 +17,8 @@ export default function AdminEduReview() {
   const [stats, setStats] = useState({ entry: 0, article: 0 });
   const [typeFilter, setTypeFilter] = useState('');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
   const [action, setAction] = useState(null); // 'approve' | 'reject'
   const [note, setNote] = useState('');
@@ -26,7 +29,7 @@ export default function AdminEduReview() {
   const load = useCallback(async () => {
     const params = new URLSearchParams();
     if (typeFilter) params.set('targetType', typeFilter);
-    if (q.trim()) params.set('q', q.trim());
+    if (dq.trim()) params.set('q', dq.trim());
     try {
       const data = await api.get(`/education/admin/review/queue?${params.toString()}`);
       setItems(data.items ?? []);
@@ -35,7 +38,7 @@ export default function AdminEduReview() {
       toastEduError(t, err);
       setItems([]);
     }
-  }, [q, typeFilter, t]);
+  }, [dq, typeFilter, t]);
 
   useEffect(() => {
     load();

@@ -6,6 +6,7 @@ import { Button, Card, Input, Tag, Title } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { appealErrMsg } from './shared.jsx';
+import { fmtDateTime } from '../../lib/date.js';
 
 const KIND_COLORS = { appeal: 'app-blue', review: 'app-teal', decision: 'app-green' };
 
@@ -112,7 +113,7 @@ export default function AppealVerify() {
                 {(result.resolvedAt || result.decidedAt || result.effectiveAt) && (
                   <div>
                     <dt>{t('appeal.verify.handledAt')}</dt>
-                    <dd>{result.effectiveAt || result.resolvedAt || result.decidedAt}</dd>
+                    <dd>{fmtDateTime(result.effectiveAt || result.resolvedAt || result.decidedAt)}</dd>
                   </div>
                 )}
                 <div>

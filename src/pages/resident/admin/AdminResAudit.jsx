@@ -7,21 +7,24 @@ import { api } from '../../../api/client.js';
 import { downloadResidentFile } from '../../../api/resident.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { fmtDateTime, toastResError } from '../shared.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminResAudit() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
+  // 动作检索 300ms 防抖:避免逐键打接口。
+  const actionDebounced = useDebouncedValue(action, 300);
 
   const load = useCallback(async () => {
     try {
-      const data = await api.get(`/resident/admin/audit${action.trim() ? `?action=${encodeURIComponent(action.trim())}` : ''}`);
+      const data = await api.get(`/resident/admin/audit${actionDebounced.trim() ? `?action=${encodeURIComponent(actionDebounced.trim())}` : ''}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
       setItems([]);
     }
-  }, [action, t]);
+  }, [actionDebounced, t]);
 
   useEffect(() => {
     load();

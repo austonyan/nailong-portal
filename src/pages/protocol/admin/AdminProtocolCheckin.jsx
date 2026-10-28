@@ -26,19 +26,22 @@ export default function AdminProtocolCheckin() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
 
   const load = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(page) });
-      if (q.trim()) params.set('q', q.trim());
+      if (query) params.set('q', query);
       const data = await api.get(`/protocol/admin/checkins?${params.toString()}`);
-      setItems(data.items);
+      const rows = data.items ?? [];
+      setItems(rows);
       setTotal(data.total);
+      if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setItems([]);
     }
-  }, [page, q, t]);
+  }, [page, query, t]);
 
   useEffect(() => {
     load();
@@ -76,7 +79,12 @@ export default function AdminProtocolCheckin() {
       ),
     },
     { title: t('protocol.field.actor'), dataIndex: 'actor_name', width: 110 },
-    { title: t('protocol.field.source'), dataIndex: 'source', width: 90 },
+    {
+      title: t('protocol.field.source'),
+      dataIndex: 'source',
+      width: 100,
+      render: (v) => t(`protocol.checkinSource.${v}`, { defaultValue: v }),
+    },
   ];
 
   return (
@@ -124,12 +132,34 @@ export default function AdminProtocolCheckin() {
       </Card>
 
       <div className="protocol-filter-bar">
-        <Input allowClear prefix={<SearchIcon size={14} />} value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('protocol.admin.searchCheckin')} />
+        <Input
+          allowClear
+          prefix={<SearchIcon size={14} />}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onClear={() => { setQ(''); setQuery(''); setPage(1); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setQuery(q.trim());
+              setPage(1);
+            }
+          }}
+          placeholder={t('protocol.admin.searchCheckin')}
+        />
+        <Button
+          icon={<SearchIcon />}
+          onClick={() => {
+            setQuery(q.trim());
+            setPage(1);
+          }}
+        >
+          {t('common.search')}
+        </Button>
       </div>
 
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.checkinEmpty')} />
-        {total > 20 && (
+        {total > 0 && (
           <div className="protocol-pagination">
             <Pagination total={total} current={page} pageSize={20} onChange={setPage} showTotal />
           </div>

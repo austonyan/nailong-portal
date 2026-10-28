@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Select } from 'animal-island-ui';
 import { REQUIRED_LOCALES, setLanguage } from '../i18n/index.js';
 
-const LOCALE_LABELS = { 'zh-CN': '简体中文', 'zh-TW': '繁體中文' };
-
+// 语种名走 i18n(而不是写死中文),这样切到繁体界面时语言名称也是繁体;
+// aria-label 必须挂在 Select 控件本身,读屏才能读到名称(挂外层 div 读不到)。
 export default function LanguageSelect() {
   const { i18n, t } = useTranslation();
   const change = (lng) => {
@@ -14,11 +14,12 @@ export default function LanguageSelect() {
     window.location.reload();
   };
   return (
-    <div className="language-select" role="group" aria-label={t('nav.language')}>
+    <div className="language-select">
       <Select
+        aria-label={t('nav.language')}
         value={REQUIRED_LOCALES.includes(i18n.language) ? i18n.language : 'zh-CN'}
         onChange={change}
-        options={REQUIRED_LOCALES.map((lng) => ({ key: lng, label: LOCALE_LABELS[lng] ?? lng }))}
+        options={REQUIRED_LOCALES.map((lng) => ({ key: lng, label: t(`language.${lng}`) }))}
       />
     </div>
   );

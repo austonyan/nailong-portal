@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Drawer, Input, Table, Tag, Title } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
@@ -105,7 +105,7 @@ function RelationDetail({ id, onClose, onChanged }) {
         <Card color="app-orange">
           <b>{t('dip.relation.supplementRequired')}</b>
           <p>{r.supplementNote}</p>
-          {r.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: r.supplementDeadline.slice(0, 10) })}</p>}
+          {r.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: fmtDate(r.supplementDeadline) })}</p>}
           {r.supplementContent && <p className="muted-text">{t('dip.relation.supplementSubmitted')}: {r.supplementContent}</p>}
           <TextArea
             rows={3}

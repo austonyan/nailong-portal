@@ -11,26 +11,31 @@ export default function AdminTourAudit() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
+  const [query, setQuery] = useState('');
 
   const load = useCallback(async () => {
     try {
-      const params = action.trim() ? `?action=${encodeURIComponent(action.trim())}` : '';
+      const params = query ? `?action=${encodeURIComponent(query)}` : '';
       const data = await api.get(`/tourism/admin/audit${params}`);
       setItems(data.items);
     } catch (err) {
       toastTourError(t, err);
       setItems([]);
     }
-  }, [action, t]);
+  }, [query, t]);
 
   useEffect(() => {
     load();
   }, [load]);
 
+  // 服务端动作码形如 `tour:attraction_create`,前缀里的冒号不能直接进 i18n key。
+  const actionLabel = (value) =>
+    t(`tour.admin.audit.actionName.${String(value ?? '').replace(/^tour:/, '')}`, { defaultValue: value });
+
   const columns = [
     { title: t('tour.admin.audit.time'), dataIndex: 'createdAt', width: 160, render: fmtDateTime },
     { title: t('tour.admin.audit.actor'), dataIndex: 'actorName', width: 130, render: (v) => v || '-' },
-    { title: t('tour.admin.audit.action'), dataIndex: 'action', width: 200 },
+    { title: t('tour.admin.audit.action'), dataIndex: 'action', width: 200, render: actionLabel },
     { title: t('tour.admin.audit.target'), dataIndex: 'targetId', render: (v, row) => v || row.targetType || '-' },
     {
       title: t('tour.admin.audit.detail'),
@@ -58,9 +63,15 @@ export default function AdminTourAudit() {
             placeholder={t('tour.admin.audit.searchPlaceholder')}
             value={action}
             onChange={(e) => setAction(e.target.value)}
-            onClear={() => setAction('')}
+            onClear={() => {
+              setAction('');
+              setQuery('');
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') setQuery(action.trim());
+            }}
           />
-          <Button onClick={load}>{t('common.search')}</Button>
+          <Button onClick={() => setQuery(action.trim())}>{t('common.search')}</Button>
         </div>
         <Table
           className="table-fit"

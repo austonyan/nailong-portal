@@ -111,7 +111,9 @@ export default function AdminPostStats() {
             {stats.byType.map((row) => (
               <div key={row.type} className="postal-recipient-item">
                 <div>
-                  <div className="postal-recipient-name">{row.type}</div>
+                  <div className="postal-recipient-name">
+                    {t(`post.msg.${row.type}.title`, { defaultValue: row.type })}
+                  </div>
                 </div>
                 <Tag color="app-blue" variant="soft">
                   {row.total}

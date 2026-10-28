@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StarIcon } from 'naive-icons';
 import { CERT_STATUS_COLORS } from '../../api/docs.js';
 import { Tag } from 'animal-island-ui';
+import { fmtDate } from '../../lib/date.js';
 
 // 电子文书: 印章为装饰。
 export default function CertificateView({ cert, typeName, bizNoLabel, issuer, sealEnabled }) {
@@ -12,7 +13,7 @@ export default function CertificateView({ cert, typeName, bizNoLabel, issuer, se
     <div className="doc-cert" role="figure" aria-label={t('docs.cert.ariaLabel', { no: cert.certNo })}>
       <header className="doc-cert-head">
         <h2 className="doc-cert-issuer">{issuer}</h2>
-        <p className="doc-cert-en">CERTIFICATE OF AUTHENTICATION</p>
+        <p className="doc-cert-en">{t('docs.cert.titleEn')}</p>
       </header>
       <dl className="doc-cert-body">
         <div>
@@ -33,11 +34,11 @@ export default function CertificateView({ cert, typeName, bizNoLabel, issuer, se
         </div>
         <div>
           <dt>{t('docs.cert.issuedAt')}</dt>
-          <dd>{String(cert.issuedAt || '').slice(0, 10)}</dd>
+          <dd>{cert.issuedAt ? fmtDate(cert.issuedAt) : ''}</dd>
         </div>
         <div>
           <dt>{t('docs.cert.expiresAt')}</dt>
-          <dd>{String(cert.expiresAt || '').slice(0, 10)}</dd>
+          <dd>{cert.expiresAt ? fmtDate(cert.expiresAt) : ''}</dd>
         </div>
       </dl>
       {sealEnabled && (

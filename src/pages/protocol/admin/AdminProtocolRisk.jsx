@@ -21,6 +21,8 @@ import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
 const RESULTS = ['valid', 'not_found', 'status_used', 'status_expired', 'status_voided', 'status_revoked'];
 const KINDS = ['invitation', 'pass', 'host'];
+// 服务端 /admin/tickets 只返回最近 100 条,不做客户端假分页。
+const TICKET_LIMIT = 100;
 
 export default function AdminProtocolRisk() {
   const { t } = useTranslation();
@@ -28,6 +30,7 @@ export default function AdminProtocolRisk() {
   const [logTotal, setLogTotal] = useState(0);
   const [logPage, setLogPage] = useState(1);
   const [logQ, setLogQ] = useState('');
+  const [logQuery, setLogQuery] = useState('');
   const [logResult, setLogResult] = useState('');
   const [limit, setLimit] = useState('30');
   const [blacklist, setBlacklist] = useState([]);
@@ -42,16 +45,19 @@ export default function AdminProtocolRisk() {
   const loadLogs = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(logPage) });
-      if (logQ.trim()) params.set('q', logQ.trim());
+      if (logQuery) params.set('q', logQuery);
       if (logResult) params.set('result', logResult);
       const data = await api.get(`/protocol/admin/verify-logs?${params.toString()}`);
-      setLogs(data.items);
+      const rows = data.items ?? [];
+      setLogs(rows);
       setLogTotal(data.total);
+      // 总数变小时把页码夹回合法范围,否则停在空表且分页器消失。
+      if (rows.length === 0 && logPage > 1) setLogPage(Math.max(1, logPage - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setLogs([]);
     }
-  }, [logPage, logQ, logResult, t]);
+  }, [logPage, logQuery, logResult, t]);
 
   const loadRest = useCallback(async () => {
     try {
@@ -154,10 +160,10 @@ export default function AdminProtocolRisk() {
     {
       title: t('protocol.admin.verifyResult'),
       dataIndex: 'result',
-      width: 130,
+      width: 150,
       render: (v) => (
         <Tag color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'app-red' : 'app-yellow'} variant="soft" size="small">
-          {v}
+          {t(`protocol.verifyResult.${v}`, { defaultValue: v })}
         </Tag>
       ),
     },
@@ -213,13 +219,35 @@ export default function AdminProtocolRisk() {
           <Select
             value={logResult}
             onChange={(v) => { setLogResult(v); setLogPage(1); }}
-            options={[{ key: '', label: t('protocol.common.allStatus') }, ...RESULTS.map((r) => ({ key: r, label: r }))]}
+            options={[{ key: '', label: t('protocol.common.allStatus') }, ...RESULTS.map((r) => ({ key: r, label: t(`protocol.verifyResult.${r}`, { defaultValue: r }) }))]}
           />
-          <Input allowClear prefix={<SearchIcon size={14} />} value={logQ} onChange={(e) => setLogQ(e.target.value)} placeholder={t('protocol.admin.searchVerify')} />
+          <Input
+            allowClear
+            prefix={<SearchIcon size={14} />}
+            value={logQ}
+            onChange={(e) => setLogQ(e.target.value)}
+            onClear={() => { setLogQ(''); setLogQuery(''); setLogPage(1); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setLogQuery(logQ.trim());
+                setLogPage(1);
+              }
+            }}
+            placeholder={t('protocol.admin.searchVerify')}
+          />
+          <Button
+            icon={<SearchIcon />}
+            onClick={() => {
+              setLogQuery(logQ.trim());
+              setLogPage(1);
+            }}
+          >
+            {t('common.search')}
+          </Button>
         </div>
         <Card>
           <Table className="table-fit" columns={logColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
-          {logTotal > 20 && (
+          {logTotal > 0 && (
             <div className="protocol-pagination">
               <Pagination total={logTotal} current={logPage} pageSize={20} onChange={setLogPage} showTotal />
             </div>
@@ -243,7 +271,8 @@ export default function AdminProtocolRisk() {
       <div className="protocol-section">
         <Title size="small" color="app-orange">{t('protocol.admin.tickets')}</Title>
         <Card>
-          <Table className="table-fit" columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={{ pageSize: 10 }} emptyText={t('protocol.common.noData')} />
+          <p className="muted-text">{t('common.recentOnly', { count: TICKET_LIMIT })}</p>
+          <Table className="table-fit" columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
       </div>
 

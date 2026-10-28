@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Checkbox, Input, Pagination, Progress, Select, Tag, Title } from 'animal-island-ui';
 import { CalendarIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { fmtDateTime, toastProtocolError } from './shared.jsx';
+import { fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 const PUBLIC_STATUSES = ['registration', 'registration_closed', 'ongoing', 'ended'];
 
@@ -19,7 +19,10 @@ export default function ProtocolEvents() {
   const [types, setTypes] = useState([]);
   const [type, setType] = useState(searchParams.get('type') || '');
   const [status, setStatus] = useState(searchParams.get('status') || '');
+  // 输入中 / 已提交两个状态:逐键改 q 不请求,回车或点搜索才提交,
+  // 否则每次按键都会打一次接口。
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [flags, setFlags] = useState(searchParams.get('open') === '1' ? ['open'] : []);
 
   useEffect(() => {
@@ -34,26 +37,30 @@ export default function ProtocolEvents() {
       const params = new URLSearchParams({ page: String(page), pageSize: '12' });
       if (type) params.set('type', type);
       if (status) params.set('status', status);
-      if (q.trim()) params.set('q', q.trim());
+      if (query) params.set('q', query);
       if (flags.includes('open')) params.set('open', '1');
       if (flags.includes('resident')) params.set('resident', '1');
       if (flags.includes('diplomatic')) params.set('diplomatic', '1');
       const data = await api.get(`/protocol/events?${params.toString()}`);
-      setItems(data.items);
+      const rows = data.items ?? [];
+      setItems(rows);
       setTotal(data.total);
+      // total 变小(筛选/删除)时分页器还在但页码越界,夹回最后一页,
+      // 避免用户停在空表且无法返回。
+      if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setItems([]);
     }
-  }, [page, type, status, q, flags, t]);
+  }, [page, type, status, query, flags, t]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   const applyFilters = () => {
+    setQuery(q.trim());
     setPage(1);
-    load();
   };
 
   return (
@@ -101,6 +108,11 @@ export default function ProtocolEvents() {
       </Card>
 
       <div className="protocol-event-grid protocol-event-grid-lg">
+        {items === null && (
+          <Card type="dashed" className="protocol-empty-card">
+            <p className="muted-text">{t('common.loading')}</p>
+          </Card>
+        )}
         {(items ?? []).map((ev) => (
           <Card key={ev.id} hoverable className="protocol-event-card" onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}>
             <div className="protocol-event-card-top">
@@ -126,7 +138,7 @@ export default function ProtocolEvents() {
               {ev.diplomaticOnly && <Tag color="purple" variant="outlined" size="small">{t('protocol.eventDetail.diplomaticOnly')}</Tag>}
               {ev.status === 'registration' && (
                 <Tag color="app-yellow" variant="outlined" size="small">
-                  {t('protocol.home.deadline', { date: fmtDateTime(ev.registrationDeadline).slice(0, 10) })}
+                  {t('protocol.home.deadline', { date: fmtDate(ev.registrationDeadline) })}
                 </Tag>
               )}
             </div>
@@ -144,7 +156,7 @@ export default function ProtocolEvents() {
         )}
       </div>
 
-      {total > 12 && (
+      {total > 0 && (
         <div className="protocol-pagination">
           <Pagination total={total} current={page} pageSize={12} onChange={setPage} showTotal />
         </div>

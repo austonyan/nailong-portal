@@ -7,6 +7,8 @@ import { APPLICATION_STATUS_COLORS, REJECT_REASON_KEYS } from '../../../api/docs
 import MaterialList from '../../docs/MaterialList.jsx';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
+import { fmtDate, fmtDateTime } from '../../../lib/date.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 // 认证审核工作台: 队列隔离,认证员只处理文书认证队列。
 export default function DocsReview() {
@@ -17,6 +19,8 @@ export default function DocsReview() {
   const [status, setStatus] = useState('pending,supplementing');
   const [typeCode, setTypeCode] = useState('all');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [types, setTypes] = useState([]);
   const [detail, setDetail] = useState(null); // full application for the drawer
   const [acting, setActing] = useState(false);
@@ -38,7 +42,7 @@ export default function DocsReview() {
 
   const load = useCallback(async () => {
     try {
-      const params = new URLSearchParams({ page, pageSize, status, typeCode, q });
+      const params = new URLSearchParams({ page, pageSize, status, typeCode, q: dq });
       const d = await api.get(`/docs/admin/queue?${params.toString()}`);
       setItems(d.items);
       setTotal(d.total);
@@ -46,7 +50,7 @@ export default function DocsReview() {
       toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
-  }, [page, status, typeCode, q, t]);
+  }, [page, status, typeCode, dq, t]);
 
   useEffect(() => {
     loadTypes();
@@ -103,7 +107,7 @@ export default function DocsReview() {
       ),
     },
     { title: t('docs.admin.review.materials'), dataIndex: 'materialCount', width: 80, align: 'center' },
-    { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => String(v || '').slice(0, 10) },
+    { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 90,
@@ -204,7 +208,7 @@ export default function DocsReview() {
                     <strong>{t(`docs.record.${r.action}`, { defaultValue: r.action })}</strong>
                     {r.comment && <p className="muted-text">{r.comment}</p>}
                     <p className="muted-text">
-                      {String(r.createdAt).slice(0, 16).replace('T', ' ')} · {r.actorName}
+                      {fmtDateTime(r.createdAt)} · {r.actorName}
                     </p>
                   </div>
                 </li>

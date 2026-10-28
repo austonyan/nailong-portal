@@ -15,6 +15,7 @@ export default function VisaAdminStats() {
   const { t } = useTranslation();
   const [stats, setStats] = useState(null);
   const [verifyLogs, setVerifyLogs] = useState(null);
+  const [typeNames, setTypeNames] = useState({});
 
   useEffect(() => {
     api
@@ -25,6 +26,15 @@ export default function VisaAdminStats() {
       .get('/visa/admin/verify-logs')
       .then((data) => setVerifyLogs(data.items))
       .catch((err) => toastVisaError(t, err));
+    // 统计接口只回 type_code,和别处的类型表统一:按 code 取本地化 typeName。
+    api
+      .get('/visa/types')
+      .then((data) => {
+        const map = {};
+        for (const item of data.items ?? []) map[item.code] = item.name;
+        setTypeNames(map);
+      })
+      .catch(() => setTypeNames({}));
   }, [t]);
 
   const exportCsv = async () => {
@@ -105,7 +115,7 @@ export default function VisaAdminStats() {
               <div className="visa-tag-cloud">
                 {stats.typeDistribution.map((row) => (
                   <Tag key={row.type_code} color="app-teal" variant="soft">
-                    {row.type_code} · {row.n}
+                    {typeNames[row.type_code] ?? row.type_code} · {row.n}
                   </Tag>
                 ))}
               </div>

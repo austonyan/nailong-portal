@@ -62,7 +62,7 @@ export default function AdminArchAudit() {
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
     { title: t('arch.admin.audit.actor'), dataIndex: 'actorName', width: 130, render: (v, record) => (record.username ? `${v || record.username}` : 'system') },
-    { title: t('arch.admin.audit.action'), dataIndex: 'action', width: 180, render: (v) => <Tag color="app-blue" variant="soft" size="small">{v}</Tag> },
+    { title: t('arch.admin.audit.action'), dataIndex: 'action', width: 180, render: (v) => <Tag color="app-blue" variant="soft" size="small">{t(`arch.admin.audit.actionLabel.${v}`, { defaultValue: v })}</Tag> },
     { title: t('arch.admin.audit.targetType'), dataIndex: 'targetType', width: 130, render: (v) => v || <span className="muted-text">-</span> },
     { title: t('arch.admin.audit.targetId'), dataIndex: 'targetId', width: 170, render: (v) => v || <span className="muted-text">-</span> },
     { title: t('arch.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="arch-note">{JSON.stringify(v)}</span> },
@@ -86,7 +86,7 @@ export default function AdminArchAudit() {
           <Select
             value={action}
             onChange={(v) => { setAction(v); setPage(1); }}
-            options={[{ key: '', label: t('arch.admin.audit.allActions') }, ...ACTION_KEYS.map((a) => ({ key: a, label: a }))]}
+            options={[{ key: '', label: t('arch.admin.audit.allActions') }, ...ACTION_KEYS.map((a) => ({ key: a, label: t(`arch.admin.audit.actionLabel.${a}`, { defaultValue: a }) }))]}
           />
         </div>
         <Table

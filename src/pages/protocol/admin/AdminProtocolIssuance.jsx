@@ -33,13 +33,16 @@ export default function AdminProtocolIssuance() {
   const [invPage, setInvPage] = useState(1);
   const [invStatus, setInvStatus] = useState('');
   const [invType, setInvType] = useState('');
+  // invQ = 输入中,invQuery = 已提交:回车或点搜索才请求,避免逐键打接口。
   const [invQ, setInvQ] = useState('');
+  const [invQuery, setInvQuery] = useState('');
 
   const [passItems, setPassItems] = useState(null);
   const [passTotal, setPassTotal] = useState(0);
   const [passPage, setPassPage] = useState(1);
   const [passStatus, setPassStatus] = useState('');
   const [passQ, setPassQ] = useState('');
+  const [passQuery, setPassQuery] = useState('');
 
   const [issueOpen, setIssueOpen] = useState(false);
   const [issueForm, setIssueForm] = useState({ eventId: '', inviteeUsername: '', type: 'event', validUntil: '', note: '' });
@@ -64,29 +67,34 @@ export default function AdminProtocolIssuance() {
       const params = new URLSearchParams({ page: String(invPage) });
       if (invStatus) params.set('status', invStatus);
       if (invType) params.set('type', invType);
-      if (invQ.trim()) params.set('q', invQ.trim());
+      if (invQuery) params.set('q', invQuery);
       const data = await api.get(`/protocol/admin/invitations?${params.toString()}`);
-      setInvItems(data.items);
+      const rows = data.items ?? [];
+      setInvItems(rows);
       setInvTotal(data.total);
+      // total 变小时把页码夹回合法范围,否则停在空表且没有分页器可回去。
+      if (rows.length === 0 && invPage > 1) setInvPage(Math.max(1, invPage - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setInvItems([]);
     }
-  }, [invPage, invStatus, invType, invQ, t]);
+  }, [invPage, invStatus, invType, invQuery, t]);
 
   const loadPasses = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(passPage) });
       if (passStatus) params.set('status', passStatus);
-      if (passQ.trim()) params.set('q', passQ.trim());
+      if (passQuery) params.set('q', passQuery);
       const data = await api.get(`/protocol/admin/passes?${params.toString()}`);
-      setPassItems(data.items);
+      const rows = data.items ?? [];
+      setPassItems(rows);
       setPassTotal(data.total);
+      if (rows.length === 0 && passPage > 1) setPassPage(Math.max(1, passPage - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setPassItems([]);
     }
-  }, [passPage, passStatus, passQ, t]);
+  }, [passPage, passStatus, passQuery, t]);
 
   useEffect(() => {
     loadInvitations();
@@ -208,14 +216,36 @@ export default function AdminProtocolIssuance() {
           onChange={(v) => { setInvType(v); setInvPage(1); }}
           options={[{ key: '', label: t('protocol.common.allTypes') }, ...INV_TYPES.map((s) => ({ key: s, label: t(`protocol.invType.${s}`) }))]}
         />
-        <Input allowClear prefix={<SearchIcon size={14} />} value={invQ} onChange={(e) => setInvQ(e.target.value)} placeholder={t('protocol.admin.searchInvitation')} />
+        <Input
+          allowClear
+          prefix={<SearchIcon size={14} />}
+          value={invQ}
+          onChange={(e) => setInvQ(e.target.value)}
+          onClear={() => { setInvQ(''); setInvQuery(''); setInvPage(1); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setInvQuery(invQ.trim());
+              setInvPage(1);
+            }
+          }}
+          placeholder={t('protocol.admin.searchInvitation')}
+        />
+        <Button
+          icon={<SearchIcon />}
+          onClick={() => {
+            setInvQuery(invQ.trim());
+            setInvPage(1);
+          }}
+        >
+          {t('common.search')}
+        </Button>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setIssueOpen(true)}>
           {t('protocol.admin.issueInvitation')}
         </Button>
       </div>
       <Card>
         <Table className="table-fit" columns={invColumns} dataSource={invItems ?? []} loading={invItems === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
-        {invTotal > 20 && (
+        {invTotal > 0 && (
           <div className="protocol-pagination">
             <Pagination total={invTotal} current={invPage} pageSize={20} onChange={setInvPage} showTotal />
           </div>
@@ -232,11 +262,33 @@ export default function AdminProtocolIssuance() {
           onChange={(v) => { setPassStatus(v); setPassPage(1); }}
           options={[{ key: '', label: t('protocol.common.allStatus') }, ...PASS_STATUSES.map((s) => ({ key: s, label: t(`protocol.status.${s}`) }))]}
         />
-        <Input allowClear prefix={<SearchIcon size={14} />} value={passQ} onChange={(e) => setPassQ(e.target.value)} placeholder={t('protocol.admin.searchPass')} />
+        <Input
+          allowClear
+          prefix={<SearchIcon size={14} />}
+          value={passQ}
+          onChange={(e) => setPassQ(e.target.value)}
+          onClear={() => { setPassQ(''); setPassQuery(''); setPassPage(1); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setPassQuery(passQ.trim());
+              setPassPage(1);
+            }
+          }}
+          placeholder={t('protocol.admin.searchPass')}
+        />
+        <Button
+          icon={<SearchIcon />}
+          onClick={() => {
+            setPassQuery(passQ.trim());
+            setPassPage(1);
+          }}
+        >
+          {t('common.search')}
+        </Button>
       </div>
       <Card>
         <Table className="table-fit" columns={passColumns} dataSource={passItems ?? []} loading={passItems === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
-        {passTotal > 20 && (
+        {passTotal > 0 && (
           <div className="protocol-pagination">
             <Pagination total={passTotal} current={passPage} pageSize={20} onChange={setPassPage} showTotal />
           </div>

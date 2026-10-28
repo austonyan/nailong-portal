@@ -157,7 +157,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
         <Card color="app-orange">
           <b>{t('dip.relation.supplementRequired')}</b>
           <p>{d.supplementNote}</p>
-          {d.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: d.supplementDeadline.slice(0, 10) })}</p>}
+          {d.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: fmtDate(d.supplementDeadline) })}</p>}
           <TextArea
             rows={3}
             value={supplementText}
@@ -343,10 +343,24 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
             <Input size="large" placeholder={t('dip.identity.titlePlaceholder')} maxLength={60} />
           </FormItem>
           <div className="dip-form-row">
-            <FormItem name="termStart" label={t('dip.identity.termStart')} rules={[{ required: true, message: t('dip.apply.required') }]}>
+            <FormItem name="termStart" label={t('dip.identity.termStart')} rules={[{ required: true, message: t('common.required') }]}>
               <Input size="large" type="date" />
             </FormItem>
-            <FormItem name="termEnd" label={t('dip.identity.termEnd')} rules={[{ required: true, message: t('dip.apply.required') }]}>
+            <FormItem
+              name="termEnd"
+              label={t('dip.identity.termEnd')}
+              dependencies={['termStart']}
+              rules={[
+                { required: true, message: t('common.required') },
+                (form) => ({
+                  validator: (_rule, value) => {
+                    const start = form.getFieldValue('termStart');
+                    if (!value || !start || String(value) >= String(start)) return Promise.resolve();
+                    return Promise.reject(new Error(t('dip.identity.termOrderError')));
+                  },
+                }),
+              ]}
+            >
               <Input size="large" type="date" />
             </FormItem>
           </div>

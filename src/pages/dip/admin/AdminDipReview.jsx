@@ -6,9 +6,10 @@ import { Button, Card, Drawer, Input, Modal, Select, Table, Tag, Title } from 'a
 import { api, getAccessToken } from '../../../api/client.js';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import {
-  DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError,
+  DipAdminNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
 } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastWarning } from '../../../components/toast.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const REJECT_REASONS = ['info_missing', 'info_false', 'duplicate', 'type_mismatch', 'other'];
 const RELATION_QUEUE_STATUSES = ['pending_review', 'supplement_required', 'sever_requested', 'established', 'rejected', 'suspended', 'withdrawn', 'draft'];
@@ -366,7 +367,7 @@ function IdentityDrawer({ id, onChanged }) {
         <InfoRow label={t('dip.identity.holder')}>{d.nickname}</InfoRow>
         <InfoRow label={t('dip.identity.contact')}>{d.contact}</InfoRow>
         <InfoRow label={t('dip.identity.title')}>{d.title || '-'}</InfoRow>
-        <InfoRow label={t('dip.identity.term')}>{(d.termStart ?? '').slice(0, 10)} ~ {(d.termEnd ?? '').slice(0, 10)}</InfoRow>
+        <InfoRow label={t('dip.identity.term')}>{fmtDate(d.termStart)} ~ {fmtDate(d.termEnd)}</InfoRow>
         {d.inactiveReason && <InfoRow label={t('dip.identity.inactiveReason')}>{d.inactiveReason}</InfoRow>}
       </Card>
 
@@ -516,6 +517,8 @@ export default function AdminDipReview() {
   const [kind, setKind] = useState('relation'); // relation | identity
   const [status, setStatus] = useState('pending_review');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [data, setData] = useState(null);
   const [openId, setOpenId] = useState(null);
 
@@ -523,7 +526,7 @@ export default function AdminDipReview() {
     const path = kind === 'relation' ? '/dip/admin/relations' : '/dip/admin/identities';
     const params = new URLSearchParams({ pageSize: '20' });
     if (status) params.set('status', status);
-    if (q.trim()) params.set('q', q.trim());
+    if (dq.trim()) params.set('q', dq.trim());
     api
       .get(`${path}?${params.toString()}`)
       .then(setData)
@@ -531,7 +534,7 @@ export default function AdminDipReview() {
         toastDipError(t, err);
         setData({ items: [], counts: {}, total: 0 });
       });
-  }, [kind, status, q, t]);
+  }, [kind, status, dq, t]);
 
   useEffect(load, [load]);
 
