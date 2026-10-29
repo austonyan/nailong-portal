@@ -57,7 +57,8 @@ runner. Frontend consumes the published `animal-island-ui` npm package.
   API server (also serves `dist/` if present)
 - `npm run check:i18n` — verify every referenced i18n key has zh-CN + zh-TW entries
 - `npm run check:ui` — enforce the frontend interaction conventions below
-  (no Notification, every table has `table-fit`, Switch uses `checked`, no invalid Table props)
+  (no Notification, every table has `table-fit`, Switch uses `checked`, no invalid Table props,
+  controlled `Tabs` needs `onChange`)
 - `npm run lint` — **oxlint** (config in `.oxlintrc.json`; not ESLint)
 - No test, typecheck, or format scripts exist here.
 
@@ -163,6 +164,9 @@ constraints (e.g. dayjs is the only sanctioned date layer for the date/time comp
   `onClose` 在 busy 时直接返回。成功后先关窗/重置表单，再 toast，再 `await load()`；
   失败保持弹窗并 toast 错误。取消/重开时清空表单。
 - `Switch` 用 `checked`，不要用 `value`（库不支持，会让显示与服务器状态相反）。
+- `<Tabs>` 传了 `activeKey` 就必须同时传 `onChange`：受控状态下库内部 state 不再生效，
+  漏了 `onChange` 页签会一直停在初始页（表现为「点不动」）。只想定初始页签就用
+  `defaultActiveKey`。
 - `<Select>` 的选项面板由 `src/components/selectFloat.js`（CSS 在 `selectFloat.css`，在
   `main.jsx` 里安装一次）全局接管：库默认把面板画在触发器**右侧**且只按视口判断，弹窗、
   抽屉、卡片里会被 `overflow` 裁掉。接管后统一在触发器下方展开、空间不足时上翻，宽高收进
