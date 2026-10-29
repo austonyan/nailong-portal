@@ -5,9 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Checkbox, Input, Pagination, Progress, Select, Tag, Title } from 'animal-island-ui';
 import { CalendarIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
+import { StatusTag, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 const PUBLIC_STATUSES = ['registration', 'registration_closed', 'ongoing', 'ended'];
+
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
 
 export default function ProtocolEvents() {
   const { t } = useTranslation();
@@ -66,7 +76,9 @@ export default function ProtocolEvents() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.events.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.events.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.events.subtitle')}</p>
       </div>
 
@@ -114,16 +126,22 @@ export default function ProtocolEvents() {
           </Card>
         )}
         {(items ?? []).map((ev) => (
-          <Card key={ev.id} hoverable className="protocol-event-card" onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}>
+          <Card
+            key={ev.id}
+            hoverable
+            className="protocol-event-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}
+            onKeyDown={cardKeyDown(() => navigate(`/protocol/events/${ev.eventNo}`))}
+          >
             <div className="protocol-event-card-top">
               <Tag color="app-teal" variant="soft">
                 {ev.typeName}
               </Tag>
-              <Tag color={ev.status === 'registration' ? 'app-green' : ev.status === 'ongoing' ? 'app-teal' : 'app-yellow'} variant="soft">
-                {t(`protocol.status.${ev.status}`)}
-              </Tag>
+              <StatusTag status={ev.status} />
             </div>
-            <h3>{ev.title}</h3>
+            <h2>{ev.title}</h2>
             <p className="muted-text">{ev.subtitle || ev.description}</p>
             <div className="protocol-event-meta">
               <span>
@@ -137,7 +155,7 @@ export default function ProtocolEvents() {
               {ev.residentOnly && <Tag color="app-green" variant="outlined" size="small">{t('protocol.eventDetail.residentOnly')}</Tag>}
               {ev.diplomaticOnly && <Tag color="purple" variant="outlined" size="small">{t('protocol.eventDetail.diplomaticOnly')}</Tag>}
               {ev.status === 'registration' && (
-                <Tag color="app-yellow" variant="outlined" size="small">
+                <Tag color="warm-peach-pink" variant="soft" size="small">
                   {t('protocol.home.deadline', { date: fmtDate(ev.registrationDeadline) })}
                 </Tag>
               )}

@@ -35,14 +35,18 @@ export default function ResidentGuide() {
   return (
     <div className="res-guide">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('res.guide.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('res.guide.title')}
+          </Title>
+        </h1>
         <p className="muted-text">{t('res.guide.subtitle')}</p>
       </div>
 
       <section>
-        <Title size="middle">{t('res.guide.types')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('res.guide.types')}</Title>
+        </h2>
         <div className="res-type-grid">
           {(types ?? []).map((type) => (
             <TypeCard key={type.code} type={type} />
@@ -62,7 +66,9 @@ export default function ResidentGuide() {
       <Divider type="wave-yellow" />
 
       <section>
-        <Title size="middle">{t('res.guide.checklist')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('res.guide.checklist')}</Title>
+        </h2>
         <Card className="res-checklist">
           <ul>
             {INFO_KEYS.map((key) => (
@@ -76,7 +82,9 @@ export default function ResidentGuide() {
       </section>
 
       <section>
-        <Title size="middle">{t('res.guide.faq')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('res.guide.faq')}</Title>
+        </h2>
         <div className="res-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`res.faq.${key}.q`)} answer={t(`res.faq.${key}.a`)} />
@@ -118,8 +126,10 @@ function TypeDetail({ type }) {
   return (
     <Card className="res-type-detail">
       <div className="res-type-detail-head">
-        <Title size="middle">{type.name}</Title>
-        <Tag color="app-yellow" variant="soft">
+        <h2 className="section-title">
+          <Title size="middle">{type.name}</Title>
+        </h2>
+        <Tag color="app-blue" variant="soft">
           {t('res.type.sampleCard')}
         </Tag>
       </div>
@@ -153,7 +163,7 @@ function SampleCard({ type }) {
           <div className="res-card-issuer">{t('res.officeName')}</div>
           <div className="res-card-kind">{t('res.card.electronic')}</div>
         </div>
-        <Tag color="app-green" variant="solid" size="large">
+        <Tag color="app-green" variant="soft" size="large">
           {t('res.cardStatus.valid')}
         </Tag>
       </div>

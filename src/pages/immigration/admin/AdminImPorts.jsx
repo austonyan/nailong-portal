@@ -7,6 +7,7 @@ import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
+import { fmtDate } from '../../../lib/date.js';
 
 const PORT_TYPES = ['land', 'air', 'sea'];
 const PORT_STATUSES = ['open', 'closed', 'maintenance'];
@@ -124,7 +125,7 @@ function PortsTab() {
       dataIndex: 'channels',
       render: (_, record) =>
         (record.channels ?? []).map((c) => (
-          <Tag key={c.id} size="small" color={c.enabled ? 'app-teal' : 'default'} variant="soft">
+          <Tag key={c.id} size="small" color={c.enabled ? 'app-green' : 'brown'} variant="soft">
             {c.name}
           </Tag>
         )),
@@ -365,10 +366,10 @@ function AnnouncementsTab() {
 
   const columns = [
     { title: t('common.name'), dataIndex: 'title', width: 220 },
-    { title: t('imm.admin.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'critical' ? 'app-red' : v === 'warning' ? 'app-yellow' : 'app-blue'} variant="soft">{t(`imm.level.${v}`)}</Tag> },
+    { title: t('imm.admin.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'critical' ? 'app-red' : v === 'warning' ? 'warm-peach-pink' : 'app-blue'} variant="soft">{t(`imm.level.${v}`)}</Tag> },
     { title: t('imm.declare.port'), dataIndex: 'portName', width: 110, render: (v) => v ?? t('imm.admin.globalAnn') },
-    { title: t('common.status'), dataIndex: 'status', width: 90, render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('imm.admin.published')}</Tag> : <Tag>{t('imm.admin.offline')}</Tag>) },
-    { title: t('common.createdAt'), dataIndex: 'publishedAt', width: 120, render: (v) => v?.slice(0, 10) },
+    { title: t('common.status'), dataIndex: 'status', width: 90, render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('imm.admin.published')}</Tag> : <Tag color="brown" variant="soft">{t('imm.admin.offline')}</Tag>) },
+    { title: t('common.createdAt'), dataIndex: 'publishedAt', width: 120, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 220,
@@ -493,9 +494,11 @@ export default function AdminImPorts() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('imm.admin.portsTitle')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('imm.admin.portsTitle')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <Tabs

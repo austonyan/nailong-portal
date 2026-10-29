@@ -32,7 +32,9 @@ export default function Login() {
   return (
     <AuthLayout>
       <Card>
-        <Title size="middle">{t('auth.loginTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('auth.loginTitle')}</Title>
+        </h1>
         <p className="muted-text auth-subtitle">{t('auth.loginSubtitle')}</p>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <FormItem
@@ -40,14 +42,14 @@ export default function Login() {
             label={t('auth.username')}
             rules={[{ required: true, message: t('common.required') }]}
           >
-            <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear />
+            <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear autoComplete="username" />
           </FormItem>
           <FormItem
             name="password"
             label={t('auth.password')}
             rules={[{ required: true, message: t('common.required') }]}
           >
-            <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} />
+            <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} autoComplete="current-password" />
           </FormItem>
           <FormItem>
             <Button type="primary" htmlType="submit" block size="large" loading={busy} disabled={busy}>

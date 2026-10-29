@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Drawer, Modal, Select, Tag, Title } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { REVIEW_STATUS_COLORS, DECISION_TYPE_COLORS, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
+import { REVIEW_STATUS_COLORS, DECISION_TYPE_COLORS, TextArea, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 export default function AppealReviews() {
@@ -76,7 +76,9 @@ export default function AppealReviews() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.review.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.review.title')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}
@@ -94,7 +96,7 @@ export default function AppealReviews() {
         </div>
       </div>
 
-      <Card color="app-yellow" variant="soft" className="appeal-review-tip">
+      <Card pattern="app-yellow" className="appeal-review-tip">
         <p className="muted-text">{t('appeal.review.finalTip')}</p>
       </Card>
 
@@ -110,14 +112,22 @@ export default function AppealReviews() {
       )}
 
       {filtered.map((r) => (
-        <Card key={r.id} hoverable className="appeal-item-card" onClick={() => openDetail(r)}>
+        <Card
+          key={r.id}
+          hoverable
+          className="appeal-item-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => openDetail(r)}
+          onKeyDown={(e) => activateByKey(e, () => openDetail(r))}
+        >
           <div className="appeal-item-head">
             <strong>{r.code}</strong>
-            <Tag color={REVIEW_STATUS_COLORS[r.status] || 'default'} variant="soft">
+            <Tag color={REVIEW_STATUS_COLORS[r.status] || 'brown'} variant="soft">
               {t(`appeal.reviewStatus.${r.status}`)}
             </Tag>
             {r.decisionType && (
-              <Tag color={DECISION_TYPE_COLORS[r.decisionType] || 'default'} variant="outlined">
+              <Tag color={DECISION_TYPE_COLORS[r.decisionType] || 'brown'} variant="outlined">
                 {t(`appeal.decisionType.${r.decisionType}`)}
               </Tag>
             )}
@@ -166,7 +176,7 @@ export default function AppealReviews() {
               <div>
                 <dt>{t('common.status')}</dt>
                 <dd>
-                  <Tag color={REVIEW_STATUS_COLORS[detail.status] || 'default'} variant="soft">
+                  <Tag color={REVIEW_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                     {t(`appeal.reviewStatus.${detail.status}`)}
                   </Tag>
                 </dd>
@@ -184,7 +194,7 @@ export default function AppealReviews() {
                   <div>
                     <dt>{t('appeal.review.decision')}</dt>
                     <dd>
-                      <Tag color={DECISION_TYPE_COLORS[detail.decisionType] || 'default'} variant="soft">
+                      <Tag color={DECISION_TYPE_COLORS[detail.decisionType] || 'brown'} variant="soft">
                         {t(`appeal.decisionType.${detail.decisionType}`)}
                       </Tag>
                     </dd>

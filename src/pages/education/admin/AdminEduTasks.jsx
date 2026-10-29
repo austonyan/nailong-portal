@@ -164,7 +164,7 @@ export default function AdminEduTasks() {
       dataIndex: 'completionRate',
       width: 110,
       render: (v, row) => (
-        <Tag size="small" color={pct(row.completed, row.participants) >= 100 ? 'app-teal' : 'app-yellow'} variant="soft">
+        <Tag size="small" color={pct(row.completed, row.participants) >= 100 ? 'app-green' : 'app-blue'} variant="soft">
           {v}%
         </Tag>
       ),
@@ -219,9 +219,11 @@ export default function AdminEduTasks() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-yellow">
-          {t('edu.admin.tasks.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('edu.admin.tasks.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

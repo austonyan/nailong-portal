@@ -96,8 +96,8 @@ function EntryTab({ onReload }) {
   return (
     <div>
       {expiring.length > 0 && (
-        <Card color="app-orange" className="im-expiring-banner">
-          <Tag color="app-orange" variant="solid">{t('imm.records.expiring')}</Tag>
+        <Card pattern="app-orange" className="im-expiring-banner">
+          <Tag color="warm-peach-pink" variant="soft">{t('imm.records.expiring')}</Tag>
           {t('imm.records.expiringTip', { count: expiring.length })}
         </Card>
       )}
@@ -163,9 +163,11 @@ export default function ImmigrationRecords() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('imm.records.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('imm.records.title')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <Tabs

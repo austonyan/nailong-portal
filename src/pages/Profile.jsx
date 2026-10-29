@@ -49,12 +49,14 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <Title size="middle">{t('profile.title')}</Title>
+      <h1 className="page-title">
+        <Title size="middle">{t('profile.title')}</Title>
+      </h1>
 
       <Card className="profile-header">
         <Avatar size={64}>{(user.displayName || user.username || '?').slice(0, 1)}</Avatar>
         <div className="profile-meta">
-          <h3>{user.displayName || user.username}</h3>
+          <h2>{user.displayName || user.username}</h2>
           <p className="muted-text">@{user.username}</p>
           <div className="profile-tags">
             {user.roles.map((r) => (

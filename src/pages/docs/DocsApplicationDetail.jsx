@@ -9,6 +9,14 @@ import MaterialList from './MaterialList.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import { fmtDateTime } from '../../lib/date.js';
 
+// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿中性棕(共享表仍是旧色)。
+const STATUS_COLORS = {
+  ...APPLICATION_STATUS_COLORS,
+  draft: 'brown',
+  pending: 'warm-peach-pink',
+  supplementing: 'warm-peach-pink',
+};
+
 export default function DocsApplicationDetail() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -87,16 +95,18 @@ export default function DocsApplicationDetail() {
   return (
     <div className="docs-detail">
       <div className="page-header">
-        <Title size="middle">
-          {t('docs.detail.title', { no: item.appNo })}
-        </Title>
-        <Tag color={APPLICATION_STATUS_COLORS[item.status]} variant="soft">
+        <h1 className="page-title">
+          <Title size="middle">
+            {t('docs.detail.title', { no: item.appNo })}
+          </Title>
+        </h1>
+        <Tag color={STATUS_COLORS[item.status] || 'brown'} variant="soft">
           {t(`docs.status.${item.status}`)}
         </Tag>
       </div>
 
       {cert && (
-        <Card color="app-teal" className="docs-cert-banner">
+        <Card pattern="app-teal" className="docs-cert-banner">
           <div className="docs-cert-banner-inner">
             <div>
               <strong>{t('docs.detail.certReady', { no: cert.certNo })}</strong>
@@ -110,7 +120,7 @@ export default function DocsApplicationDetail() {
       )}
 
       {item.status === 'rejected' && (
-        <Card color="app-red" className="docs-band-card">
+        <Card pattern="app-red" className="docs-band-card">
           <strong>{t('docs.detail.rejectedTitle')}</strong>
           <p>
             {t('docs.reason.' + (item.rejectCode || 'other'))}
@@ -121,7 +131,7 @@ export default function DocsApplicationDetail() {
       )}
 
       {isSupplementing && (
-        <Card color="app-orange" className="docs-band-card">
+        <Card pattern="app-orange" className="docs-band-card">
           <strong>{t('docs.detail.supplementTitle')}</strong>
           <p>{item.supplementNote}</p>
           {deadline && (
@@ -153,7 +163,7 @@ export default function DocsApplicationDetail() {
 
       <div className="docs-detail-grid">
         <Card className="docs-block">
-          <h3 className="docs-block-title">{t('docs.detail.infoTitle')}</h3>
+          <h2 className="docs-block-title">{t('docs.detail.infoTitle')}</h2>
           <dl className="docs-kv">
             <dt>{t('docs.appList.type')}</dt>
             <dd>{type?.name || item.typeCode}</dd>
@@ -172,22 +182,22 @@ export default function DocsApplicationDetail() {
                     </Tag>
                   )}
                   {item.bizCheck?.checked && item.bizCheck.found && !item.bizCheck.owned && (
-                    <Tag size="small" color="app-orange" variant="soft">
+                    <Tag size="small" color="warm-peach-pink" variant="soft">
                       {t('docs.detail.bizNotOwned')}
                     </Tag>
                   )}
                   {item.bizCheck?.checked && !item.bizCheck.found && (
-                    <Tag size="small" color="app-orange" variant="soft">
+                    <Tag size="small" color="warm-peach-pink" variant="soft">
                       {t('docs.detail.bizNotFound')}
                     </Tag>
                   )}
                   {item.bizCheck?.unavailable && (
-                    <Tag size="small" variant="soft">
+                    <Tag size="small" color="brown" variant="soft">
                       {t('docs.detail.bizUnavailable')}
                     </Tag>
                   )}
                   {item.bizCheck?.reserved && (
-                    <Tag size="small" variant="soft">
+                    <Tag size="small" color="brown" variant="soft">
                       {t('docs.detail.bizReserved')}
                     </Tag>
                   )}

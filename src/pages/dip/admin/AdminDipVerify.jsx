@@ -137,7 +137,7 @@ export default function AdminDipVerify() {
     { title: t('dip.verifyLog.query'), dataIndex: 'query', width: 200 },
     { title: t('dip.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`, { defaultValue: v }) : '-') },
     { title: t('dip.verifyLog.result'), dataIndex: 'result', width: 140, render: (v) => (
-      <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'default' : 'app-orange'} variant="soft">
+      <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'brown' : 'app-red'} variant="soft">
         {t(`dip.verifyLog.result_${v}`, { defaultValue: v })}
       </Tag>
     ) },
@@ -148,7 +148,7 @@ export default function AdminDipVerify() {
   const blColumns = [
     { title: t('dip.blacklist.user'), width: 140, render: (_, r) => `${r.display_name || r.username} (#${r.user_id})` },
     { title: t('dip.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => (
-      <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`dip.blacklist.${v}`)}</Tag>
+      <Tag color={v === 'block' ? 'app-red' : 'warm-peach-pink'} variant="soft">{t(`dip.blacklist.${v}`)}</Tag>
     ) },
     { title: t('dip.blacklist.reason'), dataIndex: 'reason' },
     { title: t('dip.blacklist.since'), dataIndex: 'created_at', width: 150, render: (v) => fmtDateTime(v) },
@@ -159,7 +159,9 @@ export default function AdminDipVerify() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.verifyAdmin.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.verifyAdmin.title')}</Title>
+        </h1>
         <div className="dip-msg-filter">
           <Button type={tab === 'logs' ? 'primary' : 'default'} size="small" onClick={() => setTab('logs')}>{t('dip.verifyAdmin.tabLogs')}</Button>
           <Button type={tab === 'risk' ? 'primary' : 'default'} size="small" onClick={() => setTab('risk')}>{t('dip.verifyAdmin.tabRisk')}</Button>

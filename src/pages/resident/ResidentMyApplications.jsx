@@ -6,6 +6,16 @@ import { Button, Card, Title } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, StatusTag, fmtDateTime, toastResError } from './shared.jsx';
 
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
+
 export default function ResidentMyApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -36,9 +46,11 @@ export default function ResidentMyApplications() {
   return (
     <div className="res-my-apps">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('res.myApps.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('res.myApps.title')}
+          </Title>
+        </h1>
         <Button type="primary" onClick={() => navigate('/resident/apply')}>
           {t('res.myApps.new')}
         </Button>
@@ -51,7 +63,15 @@ export default function ResidentMyApplications() {
       ) : (
         <div className="res-app-list">
           {items.map((app) => (
-            <Card key={app.id} className="res-app-item" hoverable onClick={() => navigate(`/resident/applications/${app.id}`)}>
+            <Card
+              key={app.id}
+              className="res-app-item"
+              hoverable
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/resident/applications/${app.id}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/resident/applications/${app.id}`))}
+            >
               <div className="res-app-item-main">
                 <b className="res-app-no">{app.appNo}</b>
                 <span className="muted-text">{app.typeName}</span>

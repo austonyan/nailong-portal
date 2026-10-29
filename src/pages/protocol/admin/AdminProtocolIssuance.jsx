@@ -172,7 +172,7 @@ export default function AdminProtocolIssuance() {
             {t('protocol.action.revoke')}
           </Button>
         ) : (
-          <Tag variant="outlined" size="small">{t(`protocol.invitations.response_${row.response}`)}</Tag>
+          <Tag variant="soft" size="small" color={row.response === 'accepted' ? 'app-green' : row.response === 'declined' ? 'app-red' : 'warm-peach-pink'}>{t(`protocol.invitations.response_${row.response}`)}</Tag>
         ),
     },
   ];
@@ -300,7 +300,9 @@ export default function AdminProtocolIssuance() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.issuanceTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.issuanceTitle')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.admin.issuanceSubtitle')}</p>
       </div>
 

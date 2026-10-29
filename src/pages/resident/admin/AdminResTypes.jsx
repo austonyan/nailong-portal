@@ -126,7 +126,7 @@ export default function AdminResTypes() {
       dataIndex: 'enabled',
       width: 90,
       render: (v) => (
-        <Tag color={v ? 'app-green' : 'default'} variant="soft">
+        <Tag color={v ? 'app-green' : 'brown'} variant="soft">
           {v ? t('res.type.open') : t('res.type.closed')}
         </Tag>
       ),
@@ -147,7 +147,9 @@ export default function AdminResTypes() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.types.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.types.title')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('res.admin.types.create')}
         </Button>

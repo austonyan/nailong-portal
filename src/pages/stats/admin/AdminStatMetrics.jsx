@@ -192,7 +192,7 @@ export default function AdminStatMetrics() {
       dataIndex: 'enabled',
       width: 90,
       render: (v) => (
-        <Tag variant="soft" color={v ? 'app-green' : 'default'}>
+        <Tag variant="soft" color={v ? 'app-green' : 'brown'}>
           {v ? t('common.enabled') : t('common.disabled')}
         </Tag>
       ),
@@ -223,9 +223,11 @@ export default function AdminStatMetrics() {
     <div className="stat-admin-page">
       <StatsAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('stat.admin.metrics.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('stat.admin.metrics.title')}
+          </Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('stat.admin.metrics.create')}
         </Button>

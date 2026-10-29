@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Tag, Title } from 'animal-island-ui';
 import { BellIcon, InboxIcon, MailIcon, RssIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { NOTICE_LEVEL_COLORS, fmtDate, fmtDateTime, toastPostError } from './shared.jsx';
+import { NOTICE_LEVEL_COLORS, POSTCARD_STATUS_COLORS, fmtDate, fmtDateTime, toastPostError } from './shared.jsx';
 
 const EMPTY = {
   notices: [],
@@ -44,10 +44,12 @@ export default function PostalHome() {
 
   return (
     <div className="postal-home">
-      <Card color="app-blue" className="postal-hero">
-        <Title size="large" color="app-yellow">
-          {t('post.officeName')}
-        </Title>
+      <Card pattern="app-blue" className="postal-hero">
+        <h1 className="page-title">
+          <Title size="large" color="app-yellow">
+            {t('post.officeName')}
+          </Title>
+        </h1>
         <p className="postal-hero-sub">{t('post.home.tagline')}</p>
         <div className="postal-hero-actions">
           <Button type="primary" icon={<SendIcon />} onClick={() => navigate('/postal/postcards/new')}>
@@ -89,9 +91,11 @@ export default function PostalHome() {
 
       <div className="postal-section">
         <div className="postal-section-head">
-          <Title size="middle" color="app-teal">
-            {t('post.home.latestNotices')}
-          </Title>
+          <h2 className="section-title">
+            <Title size="middle" color="app-teal">
+              {t('post.home.latestNotices')}
+            </Title>
+          </h2>
           <Button type="text" size="small" onClick={() => navigate('/postal/notices')}>
             {t('post.home.viewAll')}
           </Button>
@@ -114,10 +118,18 @@ export default function PostalHome() {
                 key={notice.id}
                 hoverable
                 className="postal-notice-item"
+                role="button"
+                tabIndex={0}
                 onClick={() => navigate(`/postal/notices/${notice.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/postal/notices/${notice.id}`);
+                  }
+                }}
               >
                 <div className="postal-notice-head">
-                  <Tag color={NOTICE_LEVEL_COLORS[notice.level] || 'default'} variant="soft">
+                  <Tag color={NOTICE_LEVEL_COLORS[notice.level] || 'brown'} variant="soft">
                     {t(`post.level.${notice.level}`)}
                   </Tag>
                   <b>{notice.title}</b>
@@ -136,9 +148,11 @@ export default function PostalHome() {
       {home.recentPostcards.length > 0 && (
         <div className="postal-section">
           <div className="postal-section-head">
-            <Title size="middle" color="app-pink">
-              {t('post.home.recentCards')}
-            </Title>
+            <h2 className="section-title">
+              <Title size="middle" color="app-pink">
+                {t('post.home.recentCards')}
+              </Title>
+            </h2>
             <Button type="text" size="small" onClick={() => navigate('/postal/postcards')}>
               {t('post.home.viewAll')}
             </Button>
@@ -149,7 +163,11 @@ export default function PostalHome() {
                 <div className="postal-postcard">
                   <div className="postal-postcard-head">
                     <b>{card.templateName}</b>
-                    <Tag color="app-yellow" variant="soft" size="small">
+                    <Tag
+                      color={POSTCARD_STATUS_COLORS[card.status] || 'brown'}
+                      variant="soft"
+                      size="small"
+                    >
                       {t(`post.postcardStatus.${card.status}`)}
                     </Tag>
                   </div>
@@ -169,12 +187,14 @@ export default function PostalHome() {
       )}
 
       <div className="postal-section">
-        <Title size="middle" color="app-yellow">
-          {t('post.home.cardHall')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-yellow">
+            {t('post.home.cardHall')}
+          </Title>
+        </h2>
         <div className="postal-card-grid">
           {home.templates.map((tpl) => (
-            <Card key={tpl.id} color={tpl.color} className="postal-card-tile" hoverable>
+            <Card key={tpl.id} pattern={tpl.color} className="postal-card-tile" hoverable>
               <div className="postal-card-preview">
                 <span className="postal-card-name">{tpl.name}</span>
                 <span className="postal-card-desc">{tpl.description}</span>

@@ -203,9 +203,11 @@ export default function DeclarationEdit() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {decl?.id ? t('imm.declare.editTitle') : t('imm.declare.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {decl?.id ? t('imm.declare.editTitle') : t('imm.declare.title')}
+          </Title>
+        </h1>
         {decl?.no && <Tag color="app-blue" variant="soft">{decl.no}</Tag>}
       </div>
 
@@ -267,7 +269,7 @@ export default function DeclarationEdit() {
           {visaState && (
             <div className="im-visa-result">
               {visaState.result === 'valid' ? (
-                <Tag color="app-green" variant="solid">
+                <Tag color="app-green" variant="soft">
                   {t('imm.visaResult.valid')} · {visaState.detail?.type} · {t('imm.visaResult.validUntil', { date: visaState.detail?.validUntil })}
                 </Tag>
               ) : (

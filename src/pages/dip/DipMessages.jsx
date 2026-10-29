@@ -57,8 +57,10 @@ export default function DipMessages() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.messages.title')}</Title>
-        {data?.unreadCount > 0 && <Tag color="app-red" variant="soft">{t('dip.messages.unreadCount', { count: data.unreadCount })}</Tag>}
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.messages.title')}</Title>
+        </h1>
+        {data?.unreadCount > 0 && <Tag color="warm-peach-pink" variant="soft">{t('dip.messages.unreadCount', { count: data.unreadCount })}</Tag>}
         <Button type="default" size="small" icon={<CheckIcon />} onClick={markAll}>{t('dip.messages.readAll')}</Button>
       </div>
 
@@ -74,7 +76,7 @@ export default function DipMessages() {
         {(data?.items ?? []).map((m) => (
           <Card key={m.id} className={`dip-msg-item${m.read ? '' : ' dip-msg-unread'}`}>
             <div className="dip-msg-head">
-              {!m.read && <Tag size="small" color="app-red" variant="soft">{t('dip.messages.unread')}</Tag>}
+              {!m.read && <Tag size="small" color="warm-peach-pink" variant="soft">{t('dip.messages.unread')}</Tag>}
               <b>{m.title}</b>
               <span className="muted-text">{fmtDateTime(m.createdAt)}</span>
             </div>

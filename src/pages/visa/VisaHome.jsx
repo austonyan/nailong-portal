@@ -73,10 +73,21 @@ export default function VisaHome() {
 
   const touristType = home.types.find((tp) => tp.code === 'TOURIST');
 
+  // 类型卡/推荐卡是 div 上的 role="button":Enter/Space 与点击同一路径,
+  // Space 必须 preventDefault,否则页面会跟着滚动。
+  const openByKey = (event, action) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      action();
+    }
+  };
+
   return (
     <div className="visa-home">
       <Background type="sprinkles" className="visa-hero">
-        <Title size="large">{t('visa.home.heroTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="large">{t('visa.home.heroTitle')}</Title>
+        </h1>
         <Typewriter speed={30}>
           <p className="visa-hero-sub">{t('visa.home.heroSub')}</p>
         </Typewriter>
@@ -93,7 +104,7 @@ export default function VisaHome() {
         </div>
       </Background>
 
-      <Card color="app-yellow" className="visa-scam-banner">
+      <Card pattern="app-yellow" className="visa-scam-banner">
         <div className="visa-scam-inner">
           <AlertTriangleIcon size={22} />
           <div>
@@ -104,9 +115,11 @@ export default function VisaHome() {
       </Card>
 
       <section className="visa-section">
-        <Title size="middle" color="app-teal">
-          {t('visa.home.notices')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('visa.home.notices')}
+          </Title>
+        </h2>
         <div className="visa-notice-list">
           {home.notices.length === 0 && (
             <Card type="dashed">
@@ -116,7 +129,7 @@ export default function VisaHome() {
           {home.notices.map((n) => (
             <Card key={n.id} className="visa-notice-card">
               <div className="visa-notice-head">
-                <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'default'} variant="soft">
+                <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'brown'} variant="soft">
                   {t(`visa.noticeLevel.${n.level}`)}
                 </Tag>
                 <strong>{n.title}</strong>
@@ -129,15 +142,25 @@ export default function VisaHome() {
       </section>
 
       <section className="visa-section">
-        <Title size="middle" color="app-orange">
-          {t('visa.home.types')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">
+            {t('visa.home.types')}
+          </Title>
+        </h2>
         <div className="visa-type-grid">
           {home.types.map((tp) => (
-            <Card key={tp.code} hoverable className="visa-type-card" onClick={() => navigate(`/visa/apply/${tp.code}`)}>
+            <Card
+              key={tp.code}
+              hoverable
+              className="visa-type-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/visa/apply/${tp.code}`)}
+              onKeyDown={(e) => openByKey(e, () => navigate(`/visa/apply/${tp.code}`))}
+            >
               <div className="visa-type-top">
                 <AirplaneIcon size={30} />
-                <Tag color={tp.code === 'TOURIST' ? 'app-teal' : 'default'} variant="soft">
+                <Tag color={tp.enabled ? 'app-green' : 'warm-peach-pink'} variant="soft">
                   {t(`visa.typeAvail.${tp.enabled ? 'open' : 'soon'}`)}
                 </Tag>
               </div>
@@ -160,9 +183,11 @@ export default function VisaHome() {
       {!!recs?.length && (
         <section className="visa-section">
           <div className="visa-notice-head">
-            <Title size="middle" color="app-green">
-              {t('visa.home.tourismTitle')}
-            </Title>
+            <h2 className="section-title">
+              <Title size="middle" color="app-green">
+                {t('visa.home.tourismTitle')}
+              </Title>
+            </h2>
             <Link to="/tourism" className="visa-link">
               {t('visa.home.tourismAll')}
             </Link>
@@ -170,7 +195,15 @@ export default function VisaHome() {
           <p className="muted-text">{t('visa.home.tourismSub')}</p>
           <div className="visa-type-grid">
             {recs.map((spot) => (
-              <Card key={spot.id} hoverable className="visa-type-card" onClick={() => navigate('/tourism')}>
+              <Card
+                key={spot.id}
+                hoverable
+                className="visa-type-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate('/tourism')}
+                onKeyDown={(e) => openByKey(e, () => navigate('/tourism'))}
+              >
                 <div className="visa-type-top">
                   <MapIcon size={30} />
                   <Tag color="app-green" variant="soft">
@@ -186,25 +219,27 @@ export default function VisaHome() {
       )}
 
       <section className="visa-section">
-        <Title size="middle" color="app-blue">
-          {t('visa.home.guide')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-blue">
+            {t('visa.home.guide')}
+          </Title>
+        </h2>
         <div className="visa-guide-grid">
           <Card className="visa-guide-card">
-            <h4>{t('visa.home.guideCondition')}</h4>
+            <h3>{t('visa.home.guideCondition')}</h3>
             <p>{t('visa.home.guideConditionBody')}</p>
           </Card>
           <Card className="visa-guide-card">
-            <h4>{t('visa.home.guideMaterials')}</h4>
+            <h3>{t('visa.home.guideMaterials')}</h3>
             <p>{t('visa.home.guideMaterialsBody')}</p>
           </Card>
           <Card className="visa-guide-card">
-            <h4>{t('visa.home.guideDuration', { hours: home.reviewHoursHint })}</h4>
+            <h3>{t('visa.home.guideDuration', { hours: home.reviewHoursHint })}</h3>
             <p>{t('visa.home.guideDurationBody', { hours: home.reviewHoursHint })}</p>
           </Card>
           {touristType && (
             <Card className="visa-guide-card">
-              <h4>{t('visa.home.guideValidity', { days: touristType.validDays })}</h4>
+              <h3>{t('visa.home.guideValidity', { days: touristType.validDays })}</h3>
               <p>{t('visa.home.guideValidityBody', { days: touristType.validDays, stay: touristType.stayDays })}</p>
             </Card>
           )}
@@ -214,9 +249,11 @@ export default function VisaHome() {
       <Divider type="wave-yellow" />
 
       <section className="visa-section">
-        <Title size="middle" color="purple">
-          {t('visa.home.faq')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="purple">
+            {t('visa.home.faq')}
+          </Title>
+        </h2>
         <div className="visa-faq">
           {['reject', 'fee', 'real', 'duration', 'port'].map((key) => (
             <Collapse key={key} question={t(`visa.faq.${key}.q`)} answer={t(`visa.faq.${key}.a`)} />

@@ -189,9 +189,11 @@ export default function AdminEduArticles() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('edu.admin.articles.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('edu.admin.articles.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

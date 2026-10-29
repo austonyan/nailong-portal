@@ -5,27 +5,38 @@ import { toastError } from '../../components/toast.js';
 
 
 export const APPLICATION_STATUS_COLORS = {
-  draft: 'default',
-  pending_review: 'app-yellow',
-  supplement_required: 'app-orange',
+  draft: 'brown',
+  pending_review: 'warm-peach-pink',
+  supplement_required: 'warm-peach-pink',
   approved: 'app-green',
   issued: 'app-teal',
   rejected: 'app-red',
   withdrawn: 'brown',
-  closed: 'default',
+  closed: 'brown',
 };
 
 export const PERMIT_STATUS_COLORS = {
   valid: 'app-green',
-  used: 'app-blue',
+  used: 'app-green',
   expired: 'brown',
   voided: 'app-red',
 };
 
 export const NOTICE_LEVEL_COLORS = {
   info: 'app-blue',
-  policy: 'app-yellow',
+  policy: 'warm-peach-pink',
   event: 'app-pink',
+};
+
+// 审核轨迹的 action 与申请状态同色:通过=绿、驳回=红、补件=暖粉、签发=青、
+// 作废=红、已使用=绿。两个页面(用户详情 / 审核工作台)共用,避免各写一套导致漂色。
+export const REVIEW_ACTION_COLORS = {
+  approve: 'app-green',
+  reject: 'app-red',
+  require_supplement: 'warm-peach-pink',
+  issue: 'app-teal',
+  void: 'app-red',
+  mark_used: 'app-green',
 };
 
 export function fmtDateTime(iso) {

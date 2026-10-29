@@ -85,7 +85,7 @@ function DeclarationDetail({ id, onClose, onChanged }) {
       </Card>
 
       {d.status === 'rejected' && (
-        <Card color="app-red" className="im-reject-card">
+        <Card pattern="app-red" className="im-reject-card">
           <b>{t('imm.mydecl.rejected')}</b>
           <p>{t(`imm.rejectReason.${d.rejectReason ?? 'other'}`)}</p>
           {d.rejectNote && <p className="muted-text">{d.rejectNote}</p>}
@@ -93,7 +93,7 @@ function DeclarationDetail({ id, onClose, onChanged }) {
       )}
 
       {d.status === 'supplement' && (
-        <Card color="app-orange">
+        <Card pattern="app-orange">
           <b>{t('imm.mydecl.supplementRequired')}</b>
           <p>{d.supplementRequest}</p>
           {d.supplementContent && (
@@ -248,9 +248,11 @@ export default function MyDeclarations() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('imm.mydecl.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.mydecl.title')}
+          </Title>
+        </h1>
         <Link to="/immigration/declare">
           <Button type="primary" icon={<PlusIcon />}>{t('imm.nav.declare')}</Button>
         </Link>

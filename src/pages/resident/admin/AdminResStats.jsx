@@ -36,9 +36,11 @@ export default function AdminResStats() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('res.admin.stats.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('res.admin.stats.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="portal-stats">

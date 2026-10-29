@@ -128,7 +128,7 @@ export default function AppealAdminDesk() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag color={COMPLAINT_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={COMPLAINT_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`appeal.complaintStatus.${v}`)}
         </Tag>
       ),
@@ -160,7 +160,7 @@ export default function AppealAdminDesk() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag color={TICKET_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={TICKET_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`appeal.ticketStatus.${v}`)}
         </Tag>
       ),
@@ -185,7 +185,9 @@ export default function AppealAdminDesk() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.admin.deskTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.admin.deskTitle')}</Title>
+        </h1>
       </div>
 
       <Card>
@@ -227,7 +229,7 @@ export default function AppealAdminDesk() {
             {detail.type === 'complaint' ? (
               <>
                 <div className="appeal-detail-head">
-                  <Tag color={COMPLAINT_STATUS_COLORS[detail.data.status] || 'default'} variant="solid">
+                  <Tag color={COMPLAINT_STATUS_COLORS[detail.data.status] || 'brown'} variant="soft">
                     {t(`appeal.complaintStatus.${detail.data.status}`)}
                   </Tag>
                   <span className="muted-text">
@@ -286,7 +288,7 @@ export default function AppealAdminDesk() {
             ) : (
               <>
                 <div className="appeal-detail-head">
-                  <Tag color={TICKET_STATUS_COLORS[detail.data.status] || 'default'} variant="solid">
+                  <Tag color={TICKET_STATUS_COLORS[detail.data.status] || 'brown'} variant="soft">
                     {t(`appeal.ticketStatus.${detail.data.status}`)}
                   </Tag>
                   <span className="muted-text">{detail.data.displayName} (@{detail.data.username})</span>
@@ -301,7 +303,7 @@ export default function AppealAdminDesk() {
                     <dd>{detail.data.content}</dd>
                   </div>
                 </dl>
-                <h4>{t('appeal.ticket.threadTitle')}</h4>
+                <h2 className="block-heading">{t('appeal.ticket.threadTitle')}</h2>
                 <ul className="appeal-ticket-thread">
                   {(detail.data.replies ?? []).map((r) => (
                     <li key={r.id} className={r.isStaff ? 'staff' : 'user'}>

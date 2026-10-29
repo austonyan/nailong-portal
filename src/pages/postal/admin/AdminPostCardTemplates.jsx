@@ -133,7 +133,7 @@ export default function AdminPostCardTemplates() {
       dataIndex: 'code',
       width: 150,
       render: (value) => (
-        <Tag color="default" variant="outlined">
+        <Tag color="brown" variant="outlined">
           {value}
         </Tag>
       ),
@@ -178,9 +178,11 @@ export default function AdminPostCardTemplates() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-orange">
-          {t('post.admin.cardTemplates.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('post.admin.cardTemplates.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

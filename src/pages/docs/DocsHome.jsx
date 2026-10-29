@@ -14,7 +14,17 @@ import { api } from '../../api/client.js';
 import { toastError } from '../../components/toast.js';
 import { fmtDate } from '../../lib/date.js';
 
-const NOTICE_LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
+const NOTICE_LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-blue' };
+
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
 
 export default function DocsHome() {
   const { t } = useTranslation();
@@ -59,9 +69,11 @@ export default function DocsHome() {
   return (
     <div className="docs-home">
       <Background type="sprinkles" className="docs-home-hero">
-        <Title size="middle" color="app-yellow">
-          {t('docs.home.welcome')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('docs.home.welcome')}
+          </Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="docs-home-tagline">{t('docs.home.tagline')}</p>
         </Typewriter>
@@ -71,7 +83,16 @@ export default function DocsHome() {
         {quickEntries.map((e) => {
           const Icon = e.icon;
           return (
-            <Card key={e.key} color={e.color} hoverable className="docs-quick-card" onClick={() => navigate(e.to)}>
+            <Card
+              key={e.key}
+              pattern={e.color}
+              hoverable
+              className="docs-quick-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(e.to)}
+              onKeyDown={cardKeyDown(() => navigate(e.to))}
+            >
               <Icon size={30} />
               <span>{t(`docs.home.quick.${e.key}`)}</span>
             </Card>
@@ -80,7 +101,7 @@ export default function DocsHome() {
       </div>
 
       <div className="docs-notice-band">
-        <Card color="app-red" pattern="app-red" className="docs-band-card">
+        <Card pattern="app-red" className="docs-band-card">
           <div className="docs-band-head">
             <AlertTriangleIcon size={20} />
             <strong>{t('docs.home.antifraudTitle')}</strong>
@@ -92,9 +113,11 @@ export default function DocsHome() {
       <Divider type="wave-yellow" />
 
       <section className="docs-section">
-        <Title size="middle" color="app-teal">
-          {t('docs.home.notices')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('docs.home.notices')}
+          </Title>
+        </h2>
         {notices === null ? (
           <Card type="dashed">
             <p className="muted-text">{t('common.loading')}</p>
@@ -108,7 +131,7 @@ export default function DocsHome() {
             {notices.map((n) => (
               <Card key={n.id} className="docs-notice-item">
                 <div className="docs-notice-head">
-                  <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'default'} size="small" variant="soft">
+                  <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'brown'} size="small" variant="soft">
                     {t(`docs.noticeLevel.${n.level}`)}
                   </Tag>
                   <strong>{n.title}</strong>
@@ -124,9 +147,11 @@ export default function DocsHome() {
       </section>
 
       <section className="docs-section">
-        <Title size="middle" color="app-blue">
-          {t('docs.home.catalog')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-blue">
+            {t('docs.home.catalog')}
+          </Title>
+        </h2>
         {types === null ? (
           <Card type="dashed">
             <p className="muted-text">{t('common.loading')}</p>
@@ -134,9 +159,17 @@ export default function DocsHome() {
         ) : (
           <div className="portal-grid">
             {types.map((tp) => (
-              <Card key={tp.code} hoverable className="docs-type-card" onClick={() => navigate(`/docs/types?focus=${tp.code}`)}>
+              <Card
+                key={tp.code}
+                hoverable
+                className="docs-type-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(`/docs/types?focus=${tp.code}`)}
+                onKeyDown={cardKeyDown(() => navigate(`/docs/types?focus=${tp.code}`))}
+              >
                 <h3 className="docs-type-name">{tp.name}</h3>
-                <Tag size="small" variant="outlined">
+                <Tag size="small" color="brown" variant="outlined">
                   {tp.code}
                 </Tag>
                 <p className="docs-type-desc">{tp.description}</p>
@@ -148,9 +181,11 @@ export default function DocsHome() {
       </section>
 
       <section className="docs-section" id="faq">
-        <Title size="middle" color="purple">
-          {t('docs.home.guide')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="purple">
+            {t('docs.home.guide')}
+          </Title>
+        </h2>
         <Card className="docs-guide-card">
           {guides.map((g) => (
             <Collapse key={g.q} question={g.q} answer={g.a} />

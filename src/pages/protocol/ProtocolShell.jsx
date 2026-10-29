@@ -119,7 +119,7 @@ export default function ProtocolShell({ permission, variant = 'user', children }
         }
       >
         <div className="protocol-sso-body">
-          <Card color="app-teal">
+          <Card pattern="app-teal">
             <div className="protocol-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

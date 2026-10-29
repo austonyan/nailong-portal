@@ -6,15 +6,19 @@ import {
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial } from '../../api/visa.js';
+import { fmtDate } from '../../lib/date.js';
 import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
   REJECT_REASONS,
+  REVIEW_ACTION_COLORS,
   TextArea,
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
+
+const PAGE_SIZE = 10;
 
 const QUEUE_STATUS_OPTIONS = [
   { key: '', label: 'all' },
@@ -132,7 +136,7 @@ export default function VisaAdminWorkbench() {
       dataIndex: 'status',
       width: 120,
       render: (v) => (
-        <Tag color={APPLICATION_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={APPLICATION_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`visa.status.${v}`)}
         </Tag>
       ),
@@ -162,7 +166,9 @@ export default function VisaAdminWorkbench() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('visa.admin.workbench.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.admin.workbench.title')}</Title>
+        </h1>
         <div className="table-actions visa-filter-bar">
           <Select
             value={status}
@@ -200,9 +206,9 @@ export default function VisaAdminWorkbench() {
           pagination={false}
           emptyText={t('visa.admin.queueEmpty')}
         />
-        {total > 10 && (
+        {total > PAGE_SIZE && (
           <div className="visa-pagination">
-            <Pagination total={total} current={page} pageSize={10} onChange={setPage} showTotal />
+            <Pagination total={total} current={page} pageSize={PAGE_SIZE} onChange={setPage} showTotal />
           </div>
         )}
       </Card>
@@ -211,7 +217,7 @@ export default function VisaAdminWorkbench() {
         {detail && (
           <div className="visa-admin-detail">
             <div className="visa-admin-detail-head">
-              <Tag color={APPLICATION_STATUS_COLORS[detail.status]} variant="solid">
+              <Tag color={APPLICATION_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                 {t(`visa.status.${detail.status}`)}
               </Tag>
               <span className="muted-text">
@@ -225,7 +231,7 @@ export default function VisaAdminWorkbench() {
                 [t('visa.form.contact'), detail.contact],
                 [t('visa.form.virtualId'), detail.virtualId || '-'],
                 [t('visa.form.purpose'), detail.purpose],
-                [t('visa.field.trip'), `${fmtDateTime(detail.planArrive).slice(0, 10)} ~ ${fmtDateTime(detail.planLeave).slice(0, 10)}`],
+                [t('visa.field.trip'), `${fmtDate(detail.planArrive)} ~ ${fmtDate(detail.planLeave)}`],
                 [t('visa.form.itinerary'), detail.itinerary],
                 [t('visa.form.inviterName'), detail.inviterName || '-'],
                 [t('visa.form.companions'), detail.companions || '-'],
@@ -238,11 +244,11 @@ export default function VisaAdminWorkbench() {
               ))}
             </dl>
 
-            <h4>{t('visa.detail.materials')}</h4>
+            <h2>{t('visa.detail.materials')}</h2>
             <ul className="visa-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
-                  <Tag size="small" variant="soft" color={m.origin === 'supplement' ? 'app-orange' : 'app-blue'}>
+                  <Tag size="small" variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'}>
                     {t(`visa.materialKind.${m.kind}`)}
                   </Tag>
                   <span>{m.filename}</span>
@@ -253,12 +259,12 @@ export default function VisaAdminWorkbench() {
               ))}
             </ul>
 
-            <h4>{t('visa.detail.reviews')}</h4>
+            <h2>{t('visa.detail.reviews')}</h2>
             <ul className="visa-review-timeline">
               {detail.reviews.map((r) => (
                 <li key={r.id}>
                   <div className="visa-review-head">
-                    <Tag variant="soft" color={r.action === 'reject' ? 'app-red' : r.action === 'approve' ? 'app-green' : 'app-yellow'}>
+                    <Tag variant="soft" color={REVIEW_ACTION_COLORS[r.action] || 'brown'}>
                       {t(`visa.reviewAction.${r.action}`)}
                     </Tag>
                     <span>{r.reviewerName}</span>
@@ -271,9 +277,9 @@ export default function VisaAdminWorkbench() {
 
             {detail.permit && (
               <div className="visa-admin-permit">
-                <h4>{t('visa.permit.title')}</h4>
+                <h2>{t('visa.permit.title')}</h2>
                 <p>
-                  <Tag color={PERMIT_STATUS_COLORS[detail.permit.status]} variant="solid">
+                  <Tag color={PERMIT_STATUS_COLORS[detail.permit.status] || 'brown'} variant="soft">
                     {t(`visa.permitStatus.${detail.permit.status}`)}
                   </Tag>
                   {detail.permit.visaNo}

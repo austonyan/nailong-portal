@@ -80,10 +80,12 @@ export default function PostalNotices() {
         ) : (
           <Card>
             <div className="postal-notice-head">
-              <Tag color={NOTICE_LEVEL_COLORS[detail.level] || 'default'} variant="soft">
+              <Tag color={NOTICE_LEVEL_COLORS[detail.level] || 'brown'} variant="soft">
                 {t(`post.level.${detail.level}`)}
               </Tag>
-              <Title size="middle">{detail.title}</Title>
+              <h1 className="page-title">
+                <Title size="middle">{detail.title}</Title>
+              </h1>
             </div>
             <div className="postal-notice-meta">
               <span>{detail.no}</span>
@@ -99,9 +101,11 @@ export default function PostalNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-teal">
-          {t('post.notices.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('post.notices.title')}
+          </Title>
+        </h1>
         <div className="postal-filter-bar">
           <Input
             size="middle"
@@ -156,10 +160,18 @@ export default function PostalNotices() {
               key={notice.id}
               hoverable
               className="postal-notice-item"
+              role="button"
+              tabIndex={0}
               onClick={() => navigate(`/postal/notices/${notice.id}`)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(`/postal/notices/${notice.id}`);
+                }
+              }}
             >
               <div className="postal-notice-head">
-                <Tag color={NOTICE_LEVEL_COLORS[notice.level] || 'default'} variant="soft">
+                <Tag color={NOTICE_LEVEL_COLORS[notice.level] || 'brown'} variant="soft">
                   {t(`post.level.${notice.level}`)}
                 </Tag>
                 <b>{notice.title}</b>

@@ -31,9 +31,11 @@ export default function ImmigrationPorts() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('imm.ports.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('imm.ports.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('imm.ports.subtitle')}</p>
       <div className="im-ports-grid">
@@ -49,7 +51,7 @@ export default function ImmigrationPorts() {
                 <MapIcon size={30} />
                 <ArrowUpRightIcon size={18} className="service-card-arrow" />
               </div>
-              <h3 className="service-card-name">{port.name}</h3>
+              <h2 className="service-card-name">{port.name}</h2>
               <p className="muted-text">
                 {port.code} · {t(`imm.portType.${port.type}`)}
               </p>

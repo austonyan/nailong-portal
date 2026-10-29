@@ -102,8 +102,11 @@
 组件库没有页面布局变量，项目自定义样式需要一组**只含尺寸、不含颜色**的常量。
 新增 `--nl-*` 必须满足：只描述布局、不能替代 `--animal-*` 的颜色/圆角/阴影、必须在本文登记。
 
-> 下表的 `--nl-*` 多数是**规范保留名**，落地时在 `:root` 定义；当前代码里只有
-> `--nl-select-*`（`selectFloat.css` 的定位变量）已经存在，其余暂以常量/类名形式使用。
+> 下表的 `--nl-*` 多数是**规范保留名**，落地时在 `:root` 定义。当前
+> `--nl-focus-ring` / `--nl-focus-offset` / `--nl-focus-scroll-margin` **已在 `src/index.css` 的
+> `:root` 定义**（`2px` / `2px` / `64px`，块位于 `src/index.css:43-47`、声明在 44-46 行），并由全局焦点规则与
+> `scroll-margin-top` / `scroll-padding-top` 使用；`--nl-select-*` 由 `selectFloat.css` /
+> `selectFloat.js` 在运行时写入（带回退值），其余暂以常量/类名形式使用。
 > 这不影响规则的执行：新代码需要时按此命名，不要再造 `--app-*` / `--ui-*`。
 
 | Token / 常量 | 值 | 用途 |
@@ -126,9 +129,9 @@
 | `--nl-grid-stat` | `220px` | 统计卡最小列宽 |
 | `--nl-grid-form` | `220px` | 表单两列最小列宽 |
 | `--nl-field-label` | `110px` | 详情字段标签列 |
-| `--nl-focus-ring` | `2px` | 焦点环宽 |
-| `--nl-focus-offset` | `2px` | 焦点环偏移 |
-| `--nl-focus-scroll-margin` | `64px` | 焦点不被 sticky 顶栏遮挡的滚动留白 |
+| `--nl-focus-ring` | `2px` | 焦点环宽（已在 `src/index.css` `:root` 定义） |
+| `--nl-focus-offset` | `2px` | 焦点环偏移（同上） |
+| `--nl-focus-scroll-margin` | `64px` | 焦点不被 sticky 顶栏遮挡的滚动留白（同上） |
 
 **断点是常量，不是 CSS 变量**（CSS 变量不能用于媒体查询）：
 

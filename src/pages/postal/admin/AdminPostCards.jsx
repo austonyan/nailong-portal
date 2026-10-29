@@ -81,7 +81,7 @@ export default function AdminPostCards() {
       dataIndex: 'status',
       width: 100,
       render: (value) => (
-        <Tag color={POSTCARD_STATUS_COLORS[value] || 'default'} variant="soft" size="small">
+        <Tag color={POSTCARD_STATUS_COLORS[value] || 'brown'} variant="soft" size="small">
           {t(`post.postcardStatus.${value}`)}
         </Tag>
       ),
@@ -109,9 +109,11 @@ export default function AdminPostCards() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-red">
-          {t('post.admin.postcards.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-red">
+            {t('post.admin.postcards.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

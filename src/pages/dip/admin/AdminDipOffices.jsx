@@ -279,7 +279,7 @@ export default function AdminDipOffices() {
       title: t('common.status'),
       dataIndex: 'status',
       width: 90,
-      render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('dip.notice.published')}</Tag> : <Tag>{t('dip.notice.offline')}</Tag>),
+      render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('dip.notice.published')}</Tag> : <Tag color="brown" variant="soft">{t('dip.notice.offline')}</Tag>),
     },
     { title: t('dip.notice.publishedAt'), dataIndex: 'publishedAt', width: 150, render: (v) => fmtDateTime(v) },
     {
@@ -299,7 +299,9 @@ export default function AdminDipOffices() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.office.adminTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.office.adminTitle')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setOfficeModal({})}>{t('dip.office.create')}</Button>
       </div>
 
@@ -308,7 +310,9 @@ export default function AdminDipOffices() {
       </Card>
 
       <div className="page-header">
-        <Title size="middle">{t('dip.notice.adminTitle')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('dip.notice.adminTitle')}</Title>
+        </h2>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeModal({})}>{t('dip.notice.publish')}</Button>
       </div>
       <Card>

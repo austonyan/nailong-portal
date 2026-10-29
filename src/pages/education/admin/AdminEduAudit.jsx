@@ -74,9 +74,11 @@ export default function AdminEduAudit() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('edu.admin.audit.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('edu.admin.audit.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

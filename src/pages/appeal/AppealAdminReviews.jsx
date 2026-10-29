@@ -87,7 +87,7 @@ export default function AppealAdminReviews() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag color={REVIEW_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={REVIEW_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`appeal.reviewStatus.${v}`)}
         </Tag>
       ),
@@ -96,7 +96,7 @@ export default function AppealAdminReviews() {
       title: t('appeal.review.decision'),
       dataIndex: 'decisionType',
       width: 110,
-      render: (v) => (v ? <Tag color={DECISION_TYPE_COLORS[v] || 'default'} variant="outlined">{t(`appeal.decisionType.${v}`)}</Tag> : '-'),
+      render: (v) => (v ? <Tag color={DECISION_TYPE_COLORS[v] || 'brown'} variant="outlined">{t(`appeal.decisionType.${v}`)}</Tag> : '-'),
     },
     { title: t('appeal.my.submittedAtLabel'), dataIndex: 'submittedAt', width: 150, render: fmtDateTime },
     {
@@ -113,7 +113,9 @@ export default function AppealAdminReviews() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.admin.reviewTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.admin.reviewTitle')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}
@@ -147,7 +149,7 @@ export default function AppealAdminReviews() {
         {detail && (
           <div className="appeal-detail-body">
             <div className="appeal-detail-head">
-              <Tag color={REVIEW_STATUS_COLORS[detail.status] || 'default'} variant="solid">
+              <Tag color={REVIEW_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                 {t(`appeal.reviewStatus.${detail.status}`)}
               </Tag>
               <span className="muted-text">
@@ -188,7 +190,7 @@ export default function AppealAdminReviews() {
                 <div>
                   <dt>{t('appeal.review.decision')}</dt>
                   <dd>
-                    <Tag color={DECISION_TYPE_COLORS[detail.decisionType] || 'default'} variant="soft">
+                    <Tag color={DECISION_TYPE_COLORS[detail.decisionType] || 'brown'} variant="soft">
                       {t(`appeal.decisionType.${detail.decisionType}`)}
                     </Tag>
                     {detail.decisionReason}
@@ -197,7 +199,7 @@ export default function AppealAdminReviews() {
               )}
             </dl>
 
-            <h4>{t('appeal.detail.materials')}</h4>
+            <h2 className="block-heading">{t('appeal.detail.materials')}</h2>
             <ul className="appeal-material-list">
               {(detail.materials ?? []).map((m) => (
                 <li key={m.id}>
@@ -213,7 +215,7 @@ export default function AppealAdminReviews() {
               {(detail.materials ?? []).length === 0 && <li className="muted-text">{t('common.empty')}</li>}
             </ul>
 
-            <h4>{t('appeal.detail.records')}</h4>
+            <h2 className="block-heading">{t('appeal.detail.records')}</h2>
             <ul className="appeal-record-timeline">
               {(detail.records ?? []).map((r) => (
                 <li key={r.id}>

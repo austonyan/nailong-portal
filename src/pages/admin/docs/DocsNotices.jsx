@@ -7,7 +7,7 @@ import DocsTextarea from '../../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 import { fmtDate } from '../../../lib/date.js';
 
-const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
+const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-blue' };
 
 export default function DocsNotices() {
   const { t } = useTranslation();
@@ -99,7 +99,7 @@ export default function DocsNotices() {
       dataIndex: 'level',
       width: 100,
       render: (v) => (
-        <Tag color={LEVEL_COLORS[v] || 'default'} variant="soft">
+        <Tag color={LEVEL_COLORS[v] || 'brown'} variant="soft">
           {t(`docs.noticeLevel.${v}`)}
         </Tag>
       ),
@@ -128,7 +128,9 @@ export default function DocsNotices() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.notices.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.notices.title')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('docs.admin.notices.create')}
         </Button>

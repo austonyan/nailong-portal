@@ -157,7 +157,7 @@ export default function AdminResNotices() {
       dataIndex: 'level',
       width: 100,
       render: (v) => (
-        <Tag color={NOTICE_LEVEL_COLORS[v] || 'default'} variant="soft">
+        <Tag color={NOTICE_LEVEL_COLORS[v] || 'brown'} variant="soft">
           {t(`res.noticeLevel.${v}`)}
         </Tag>
       ),
@@ -196,7 +196,7 @@ export default function AdminResNotices() {
       dataIndex: 'read',
       width: 90,
       render: (v) => (
-        <Tag variant="soft" color={v ? 'default' : 'app-yellow'}>
+        <Tag variant="soft" color={v ? 'brown' : 'warm-peach-pink'}>
           {v ? t('res.messages.readTag') : t('res.messages.unreadTag')}
         </Tag>
       ),
@@ -208,7 +208,9 @@ export default function AdminResNotices() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.notices.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.notices.title')}</Title>
+        </h1>
       </div>
 
       <Tabs

@@ -235,9 +235,11 @@ export default function AdminEduEntries() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('edu.admin.entries.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('edu.admin.entries.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

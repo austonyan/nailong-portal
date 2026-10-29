@@ -10,6 +10,14 @@ import { toastSuccess, toastError } from '../../../components/toast.js';
 import { fmtDate, fmtDateTime } from '../../../lib/date.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
+// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿中性棕(共享表仍是旧色)。
+const STATUS_COLORS = {
+  ...APPLICATION_STATUS_COLORS,
+  draft: 'brown',
+  pending: 'warm-peach-pink',
+  supplementing: 'warm-peach-pink',
+};
+
 // 认证审核工作台: 队列隔离,认证员只处理文书认证队列。
 export default function DocsReview() {
   const { t } = useTranslation();
@@ -101,7 +109,7 @@ export default function DocsReview() {
       dataIndex: 'status',
       width: 100,
       render: (v) => (
-        <Tag color={APPLICATION_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`docs.status.${v}`)}
         </Tag>
       ),
@@ -122,7 +130,9 @@ export default function DocsReview() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.review.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.review.title')}</Title>
+        </h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">
@@ -196,10 +206,10 @@ export default function DocsReview() {
                 ])}
             </dl>
 
-            <h4>{t('docs.detail.materialsTitle')}</h4>
+            <h2>{t('docs.detail.materialsTitle')}</h2>
             <MaterialList materials={detail.materials} type={detail.type} />
 
-            <h4>{t('docs.detail.recordsTitle')}</h4>
+            <h2>{t('docs.detail.recordsTitle')}</h2>
             <ul className="docs-timeline">
               {(detail.records || []).map((r) => (
                 <li key={r.id}>

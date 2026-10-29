@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Tag, Title } from 'animal-island-ui';
 import { CalendarIcon, CreditCardIcon, DownloadIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ProtocolQr, StatusTag, downloadProtocolFile, fmtDateTime, toastProtocolError } from './shared.jsx';
+import { PASS_STATUS_COLORS, ProtocolQr, StatusTag, downloadProtocolFile, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 export default function ProtocolPasses() {
   const { t } = useTranslation();
@@ -37,7 +37,9 @@ export default function ProtocolPasses() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.passes.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.passes.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.passes.subtitle')}</p>
       </div>
 
@@ -58,14 +60,14 @@ export default function ProtocolPasses() {
             </div>
             <div className="protocol-pass-body">
               <div className="protocol-pass-info">
-                <h3>{pass.eventTitle}</h3>
+                <h2>{pass.eventTitle}</h2>
                 <p className="protocol-pass-no">{pass.passNo}</p>
                 <div className="protocol-pass-meta">
                   <span><CalendarIcon size={14} /> {fmtDateTime(pass.eventStartsAt)}</span>
                   <span><HomeIcon size={14} /> {pass.venueName}</span>
                   <span><CreditCardIcon size={14} /> {t('protocol.passes.holder')}: {pass.holderName}</span>
                 </div>
-                <Tag color={pass.status === 'pending' ? 'app-green' : pass.status === 'used' ? 'app-blue' : 'default'} variant="soft">
+                <Tag color={PASS_STATUS_COLORS[pass.status] ?? 'brown'} variant="soft">
                   {t(`protocol.passes.statusNote_${pass.status}`, { defaultValue: t(`protocol.status.${pass.status}`) })}
                 </Tag>
               </div>

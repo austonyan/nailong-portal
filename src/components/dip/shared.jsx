@@ -9,32 +9,35 @@ import QRCode from 'qrcode';
 import { Tag } from 'animal-island-ui';
 import { toastError } from '../toast.js';
 
+// 状态标签配色(Foundations §1.4):待处理/补件/暂停 → warm-peach-pink,
+// 进行中 → app-blue,已生效/开放 → app-green,签发/在册 → app-teal,
+// 驳回/终止/失效 → app-red,草稿/关闭/撤销/过期 → brown。标签统一 soft。
 const STATUS_TAG = {
-  draft: { color: 'default', variant: 'outlined' },
-  pending_review: { color: 'app-yellow', variant: 'soft' },
-  supplement_required: { color: 'app-orange', variant: 'soft' },
-  established: { color: 'app-teal', variant: 'solid' },
+  draft: { color: 'brown', variant: 'soft' },
+  pending_review: { color: 'warm-peach-pink', variant: 'soft' },
+  supplement_required: { color: 'warm-peach-pink', variant: 'soft' },
+  established: { color: 'app-teal', variant: 'soft' },
   rejected: { color: 'app-red', variant: 'soft' },
-  suspended: { color: 'app-orange', variant: 'dashed' },
-  severed: { color: 'app-red', variant: 'solid' },
-  withdrawn: { color: 'default', variant: 'soft' },
+  suspended: { color: 'warm-peach-pink', variant: 'soft' },
+  severed: { color: 'app-red', variant: 'soft' },
+  withdrawn: { color: 'brown', variant: 'soft' },
   sever_requested: { color: 'app-blue', variant: 'soft' },
-  active: { color: 'app-green', variant: 'solid' },
-  frozen: { color: 'app-orange', variant: 'soft' },
-  expired: { color: 'default', variant: 'soft' },
-  revoked: { color: 'app-red', variant: 'dashed' },
-  pending_effect: { color: 'app-yellow', variant: 'soft' },
+  active: { color: 'app-green', variant: 'soft' },
+  frozen: { color: 'warm-peach-pink', variant: 'soft' },
+  expired: { color: 'brown', variant: 'soft' },
+  revoked: { color: 'app-red', variant: 'soft' },
+  pending_effect: { color: 'warm-peach-pink', variant: 'soft' },
   terminated: { color: 'app-red', variant: 'soft' },
-  open: { color: 'app-green', variant: 'solid' },
-  closed: { color: 'app-red', variant: 'solid' },
-  maintenance: { color: 'app-yellow', variant: 'soft' },
+  open: { color: 'app-green', variant: 'soft' },
+  closed: { color: 'brown', variant: 'soft' },
+  maintenance: { color: 'warm-peach-pink', variant: 'soft' },
   valid: { color: 'app-green', variant: 'soft' },
   invalid: { color: 'app-red', variant: 'soft' },
 };
 
 export function StatusTag({ value, i18nPrefix = 'dip.status' }) {
   const { t } = useTranslation();
-  const style = STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
+  const style = STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
       {t(`${i18nPrefix}.${value}`, { defaultValue: value })}
@@ -44,8 +47,8 @@ export function StatusTag({ value, i18nPrefix = 'dip.status' }) {
 
 const LEVEL_TAG = {
   info: { color: 'app-blue', variant: 'soft' },
-  warning: { color: 'app-yellow', variant: 'soft' },
-  critical: { color: 'app-red', variant: 'solid' },
+  warning: { color: 'warm-peach-pink', variant: 'soft' },
+  critical: { color: 'app-red', variant: 'soft' },
 };
 
 export function DipLevelTag({ level }) {

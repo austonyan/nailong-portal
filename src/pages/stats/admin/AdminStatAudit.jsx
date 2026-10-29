@@ -60,9 +60,11 @@ export default function AdminStatAudit() {
     <div className="stat-admin-page">
       <StatsAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-yellow">
-          {t('stat.admin.audit.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('stat.admin.audit.title')}
+          </Title>
+        </h1>
         <div className="table-actions">
           <Select
             value={action}

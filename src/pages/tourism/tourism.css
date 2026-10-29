@@ -62,14 +62,15 @@
 }
 
 .tour-nav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
 .tour-nav-link.active {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
 }
 
 .tour-admin-nav {
@@ -239,7 +240,7 @@
 .tour-textarea {
   width: 100%;
   border: var(--animal-border-width) solid var(--animal-border-color);
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
   padding: 10px 16px;
@@ -248,11 +249,6 @@
   font-weight: 500;
   resize: vertical;
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.tour-textarea:focus {
-  outline: none;
-  border-color: var(--animal-focus-yellow);
 }
 
 .tour-textarea::placeholder {

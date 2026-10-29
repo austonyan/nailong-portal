@@ -135,9 +135,9 @@ export default function AppealApply() {
   if (submitted) {
     return (
       <div className="appeal-form-page">
-        <Card color="app-teal" className="appeal-submitted-card">
+        <Card pattern="app-teal" className="appeal-submitted-card">
           <CheckCircleIcon size={40} />
-          <h3>{t('appeal.apply.submittedTitle')}</h3>
+          <h1 className="page-title-card">{t('appeal.apply.submittedTitle')}</h1>
           <p className="appeal-submitted-no">{t('appeal.apply.submittedNo', { no: submitted.code })}</p>
           <p className="muted-text">{t('appeal.apply.submittedHint', { hours: hints.acceptSlaHours })}</p>
           <div className="appeal-guide-actions">
@@ -153,9 +153,11 @@ export default function AppealApply() {
 
   return (
     <div className="appeal-form-page">
-      <Title size="middle" color="app-teal">
-        {t('appeal.apply.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('appeal.apply.title')}
+        </Title>
+      </h1>
       {appeal && (
         <p className="muted-text">
           {t('appeal.apply.draftNo', { no: appeal.code })} · {t(`appeal.status.${appeal.status}`)}
@@ -163,7 +165,7 @@ export default function AppealApply() {
       )}
 
       <Card className="appeal-form-card">
-        <h4>{t('appeal.apply.bizTitle')}</h4>
+        <h2>{t('appeal.apply.bizTitle')}</h2>
         <p className="muted-text">{t('appeal.apply.bizTip')}</p>
         <div className="appeal-biz-row">
           <Select
@@ -195,7 +197,7 @@ export default function AppealApply() {
           )}
         </div>
         {appeal && appeal.bizStatus && (
-          <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'app-orange'} variant="soft">
+          <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'warm-peach-pink'} variant="soft">
             {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: appeal.bizStatus })}
           </Tag>
         )}
@@ -216,9 +218,9 @@ export default function AppealApply() {
       </Card>
 
       <Card className="appeal-form-card">
-        <h4>
+        <h2>
           <PaperclipIcon size={18} /> {t('appeal.apply.materialsTitle')}
-        </h4>
+        </h2>
         <p className="muted-text">{t('appeal.apply.materialsTip')}</p>
         <div className="appeal-materials-section">
           <Upload
@@ -243,7 +245,7 @@ export default function AppealApply() {
         </div>
         {materials.map((m) => (
           <div key={m.id} className="appeal-material-row">
-            <Tag color={m.origin === 'supplement' ? 'app-orange' : 'app-blue'} variant="soft">
+            <Tag color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'} variant="soft">
               {t(`appeal.materialKind.${m.kind}`)}
             </Tag>
             <span className="appeal-material-name">{m.filename}</span>

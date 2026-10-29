@@ -6,6 +6,16 @@ import { InboxIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastResError } from './shared.jsx';
 
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
+
 export default function ResidentMessages() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
@@ -49,10 +59,12 @@ export default function ResidentMessages() {
   return (
     <div className="res-messages-page">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('res.messages.title')}
-        </Title>
-        <Tag color="app-yellow" variant="soft">
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('res.messages.title')}
+          </Title>
+        </h1>
+        <Tag color="app-blue" variant="soft">
           {t('res.messages.unread', { count: unread })}
         </Tag>
       </div>
@@ -80,7 +92,14 @@ export default function ResidentMessages() {
       ) : (
         <div className="res-msg-list">
           {items.map((msg) => (
-            <Card key={msg.id} className={`res-msg-item${msg.read ? '' : ' unread'}`} onClick={() => markRead(msg)}>
+            <Card
+              key={msg.id}
+              className={`res-msg-item${msg.read ? '' : ' unread'}`}
+              role="button"
+              tabIndex={0}
+              onClick={() => markRead(msg)}
+              onKeyDown={cardKeyDown(() => markRead(msg))}
+            >
               <div className="res-msg-head">
                 <b>{msg.title}</b>
                 <span className="muted-text">{fmtDateTime(msg.createdAt)}</span>
@@ -88,7 +107,7 @@ export default function ResidentMessages() {
               <p className="res-msg-body">{msg.body}</p>
               <div className="res-msg-actions">
                 {!msg.read && (
-                  <Tag color="app-yellow" variant="soft" size="small">
+                  <Tag color="warm-peach-pink" variant="soft" size="small">
                     {t('res.messages.unreadTag')}
                   </Tag>
                 )}

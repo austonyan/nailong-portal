@@ -208,7 +208,7 @@ export default function AppealAdminManage() {
       title: t('common.status'),
       dataIndex: 'enabled',
       width: 90,
-      render: (v) => <Tag variant="soft" color={v ? 'app-green' : 'default'}>{v ? t('appeal.admin.enabled') : t('appeal.admin.disabled')}</Tag>,
+      render: (v) => <Tag variant="soft" color={v ? 'app-green' : 'brown'}>{v ? t('appeal.admin.enabled') : t('appeal.admin.disabled')}</Tag>,
     },
     { title: t('appeal.inspect.colTime'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
     {
@@ -231,7 +231,7 @@ export default function AppealAdminManage() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag variant="soft" color={v === 'published' ? 'app-green' : v === 'offline' ? 'app-red' : 'default'}>
+        <Tag variant="soft" color={v === 'published' ? 'app-green' : v === 'offline' ? 'app-red' : 'brown'}>
           {t(`appeal.publicityStatus.${v}`)}
         </Tag>
       ),
@@ -257,7 +257,7 @@ export default function AppealAdminManage() {
       title: t('common.status'),
       dataIndex: 'enabled',
       width: 100,
-      render: (v) => <Tag variant="soft" color={v ? 'app-green' : 'default'}>{v ? t('appeal.admin.enabled') : t('appeal.admin.disabled')}</Tag>,
+      render: (v) => <Tag variant="soft" color={v ? 'app-green' : 'brown'}>{v ? t('appeal.admin.enabled') : t('appeal.admin.disabled')}</Tag>,
     },
     { title: t('appeal.admin.colVars'), dataIndex: 'body', render: (v) => <span className="muted-text">{v}</span> },
     {
@@ -294,7 +294,9 @@ export default function AppealAdminManage() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.admin.manageTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.admin.manageTitle')}</Title>
+        </h1>
       </div>
 
       <Card>
@@ -344,9 +346,9 @@ export default function AppealAdminManage() {
                   <div className="table-actions appeal-filter-bar">
                     <Button type="primary" icon={<PlusIcon />} onClick={() => setBlOpen(true)}>{t('appeal.admin.addBlacklist')}</Button>
                   </div>
-                  <h4>{t('appeal.admin.tabBlacklist')}</h4>
+                  <h2 className="block-heading">{t('appeal.admin.tabBlacklist')}</h2>
                   <Table className="table-fit" columns={blColumns} dataSource={blacklist} rowKey="id" pagination={false} emptyText={t('common.empty')} />
-                  <h4>{t('appeal.admin.tabDuplicates')}</h4>
+                  <h2 className="block-heading">{t('appeal.admin.tabDuplicates')}</h2>
                   <p className="muted-text">{t('appeal.admin.dupTip')}</p>
                   <Table className="table-fit" columns={dupColumns} dataSource={duplicates} rowKey="codes" pagination={false} emptyText={t('common.empty')} />
                 </>

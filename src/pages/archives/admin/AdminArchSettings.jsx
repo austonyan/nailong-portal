@@ -10,9 +10,11 @@ export default function AdminArchSettings() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('autoApprove.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('autoApprove.title')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <AutoApproveSettings service="archives" />

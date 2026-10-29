@@ -12,12 +12,14 @@ export default function ImmigrationHelp() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('imm.help.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('imm.help.title')}
+          </Title>
+        </h1>
       </div>
 
-      <Card color="app-yellow" className="im-fraud-card">
+      <Card pattern="app-yellow" className="im-fraud-card">
         <div className="im-help-fraud-head">
           <ShieldIcon size={22} />
           <b>{t('imm.fraud.title')}</b>
@@ -28,7 +30,9 @@ export default function ImmigrationHelp() {
       <Divider type="hairline" />
 
       <section>
-        <Title size="middle">{t('imm.help.faqTitle')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('imm.help.faqTitle')}</Title>
+        </h2>
         <div className="im-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`imm.faq.${key}.q`)} answer={t(`imm.faq.${key}.a`)} />
@@ -37,9 +41,11 @@ export default function ImmigrationHelp() {
       </section>
 
       <section>
-        <Title size="middle" color="app-teal">
-          {t('imm.help.contactTitle')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.help.contactTitle')}
+          </Title>
+        </h2>
         <div className="im-help-cards">
           <Card hoverable className="im-help-card">
             <ChatIcon size={26} />

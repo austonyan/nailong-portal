@@ -96,7 +96,7 @@ export default function VisaShell({ permission, children }) {
         }
       >
         <div className="visa-sso-body">
-          <Card color="app-teal" className="visa-sso-card">
+          <Card pattern="app-teal" className="visa-sso-card">
             <div className="visa-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

@@ -47,9 +47,11 @@ export default function EduHome() {
   return (
     <div className="edu-section">
       <Background type="sprinkles" className="edu-hero">
-        <Title size="large" color="app-blue">
-          {t('edu.home.hero')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="large" color="app-blue">
+            {t('edu.home.hero')}
+          </Title>
+        </h1>
         <p className="edu-hero-sub">{t('edu.home.heroSub')}</p>
         <div className="edu-hero-actions">
           <Button type="primary" size="large" icon={<BookIcon />} onClick={() => navigate('/education/entries')}>
@@ -69,7 +71,7 @@ export default function EduHome() {
           <Tag color="app-teal" variant="soft">
             {t('edu.home.countArticles', { count: data.counts.articles ?? 0 })}
           </Tag>
-          <Tag color="app-yellow" variant="soft">
+          <Tag color="app-blue" variant="soft">
             {t('edu.home.countReads', { count: data.counts.reads ?? 0 })}
           </Tag>
           <Tag color="purple" variant="soft">
@@ -80,7 +82,9 @@ export default function EduHome() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="middle">{t('edu.home.services')}</Title>
+          <h2 className="section-title">
+            <Title size="middle">{t('edu.home.services')}</Title>
+          </h2>
         </div>
         <div className="edu-service-grid">
           {SERVICE_CARDS.map(({ to, icon: Icon, key }) => (
@@ -97,7 +101,9 @@ export default function EduHome() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="middle">{t('edu.home.featuredEntries')}</Title>
+          <h2 className="section-title">
+            <Title size="middle">{t('edu.home.featuredEntries')}</Title>
+          </h2>
           <Link to="/education/entries" className="edu-link">
             {t('edu.home.viewAll')}
           </Link>
@@ -123,7 +129,9 @@ export default function EduHome() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="middle">{t('edu.home.featuredArticles')}</Title>
+          <h2 className="section-title">
+            <Title size="middle">{t('edu.home.featuredArticles')}</Title>
+          </h2>
           <Link to="/education/articles" className="edu-link">
             {t('edu.home.viewAll')}
           </Link>
@@ -146,7 +154,9 @@ export default function EduHome() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="middle">{t('edu.home.tasksTitle')}</Title>
+          <h2 className="section-title">
+            <Title size="middle">{t('edu.home.tasksTitle')}</Title>
+          </h2>
           <Link to="/education/tasks" className="edu-link">
             {t('edu.home.viewAll')}
           </Link>
@@ -157,7 +167,7 @@ export default function EduHome() {
               <div className="edu-task-head">
                 <BulbIcon size={18} />
                 <h3>{task.title}</h3>
-                <Tag size="small" color={task.completed ? 'app-teal' : 'app-yellow'} variant="soft">
+                <Tag size="small" color={task.completed ? 'app-green' : 'app-blue'} variant="soft">
                   {task.completed ? t('edu.recordStatus.completed') : t('edu.recordStatus.in_progress')}
                 </Tag>
                 <span className="edu-task-meta">
@@ -180,7 +190,9 @@ export default function EduHome() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="middle">{t('edu.home.myTitle')}</Title>
+          <h2 className="section-title">
+            <Title size="middle">{t('edu.home.myTitle')}</Title>
+          </h2>
           <Link to="/education/my" className="edu-link">
             {t('edu.home.viewAll')}
           </Link>

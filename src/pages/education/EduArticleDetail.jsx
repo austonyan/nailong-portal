@@ -84,7 +84,7 @@ export default function EduArticleDetail() {
       </div>
 
       <Card>
-        <h2 className="edu-detail-title">{article.title}</h2>
+        <h1 className="page-title edu-detail-title">{article.title}</h1>
         <p className="edu-detail-sub">{article.summary}</p>
         <div className="edu-meta">
           <span>{article.no}</span>
@@ -117,9 +117,9 @@ export default function EduArticleDetail() {
           <div className="edu-related-list">
             {article.more.map((item) => (
               <Card key={item.id} className="edu-card" hoverable>
-                <h3 className="edu-card-title">
+                <h2 className="edu-card-title">
                   <Link to={`/education/articles/${item.id}`}>{item.title}</Link>
-                </h3>
+                </h2>
                 <p className="edu-card-summary">{item.summary}</p>
               </Card>
             ))}

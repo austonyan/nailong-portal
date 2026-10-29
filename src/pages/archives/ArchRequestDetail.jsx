@@ -30,9 +30,11 @@ export default function ArchRequestDetail() {
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.request.detailTitle')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.request.detailTitle')}
+          </Title>
+        </h1>
         <div className="table-actions">
           <Button type="text" icon={<ArrowLeftIcon />} onClick={() => navigate('/archives/requests')}>
             {t('arch.detail.back')}
@@ -50,7 +52,7 @@ export default function ArchRequestDetail() {
         <>
           <Card>
             <div className="arch-type-head">
-              <h3>{request.no}</h3>
+              <h2>{request.no}</h2>
               <RequestStatusTag value={request.status} />
             </div>
             <div className="arch-summary arch-detail-summary">
@@ -110,7 +112,7 @@ export default function ArchRequestDetail() {
           </Card>
 
           {request.status === 'rejected' && (
-            <Card color="app-orange" className="arch-tag-row">
+            <Card pattern="app-orange" className="arch-tag-row">
               <ShieldIcon size={18} />
               <span>{t('arch.request.appealHint')}</span>
               <Link to="/appeal">

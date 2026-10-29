@@ -60,7 +60,9 @@ export default function AdminResSettings() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.settings.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.settings.title')}</Title>
+        </h1>
       </div>
 
       <Card className="res-info-card">
@@ -68,7 +70,7 @@ export default function AdminResSettings() {
       </Card>
 
       <Card className="res-info-card">
-        <h4>{t('res.admin.settings.numberingTitle')}</h4>
+        <h2>{t('res.admin.settings.numberingTitle')}</h2>
         <p className="muted-text">{t('res.admin.settings.numberingTip')}</p>
         <div className="res-config-grid">
           {CONFIG_FIELDS.map((field) => (

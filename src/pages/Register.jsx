@@ -38,9 +38,11 @@ export default function Register() {
   return (
     <AuthLayout width={440}>
       <Card>
-        <Title size="middle" color="app-teal">
-          {t('auth.registerTitle')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('auth.registerTitle')}
+          </Title>
+        </h1>
         <p className="muted-text auth-subtitle">{t('auth.registerSubtitle')}</p>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <FormItem
@@ -51,7 +53,7 @@ export default function Register() {
               { pattern: USERNAME_RE, message: t('auth.usernameRule') },
             ]}
           >
-            <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear />
+            <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear autoComplete="username" />
           </FormItem>
           <FormItem name="displayName" label={`${t('auth.displayName')}(${t('common.optional')})`}>
             <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
@@ -67,7 +69,7 @@ export default function Register() {
               { min: 8, message: t('auth.passwordRule') },
             ]}
           >
-            <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} />
+            <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} autoComplete="new-password" />
           </FormItem>
           <FormItem
             name="confirmPassword"

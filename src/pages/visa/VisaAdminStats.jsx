@@ -11,6 +11,16 @@ function pct(v) {
   return `${Math.round(v * 1000) / 10}%`;
 }
 
+// 验真结果与签注状态同色:有效=青、已使用/过期=棕、注销/未命中=红、限流=提醒暖粉。
+const VERIFY_RESULT_COLORS = {
+  valid: 'app-teal',
+  used: 'brown',
+  expired: 'brown',
+  voided: 'app-red',
+  not_found: 'app-red',
+  rate_limited: 'warm-peach-pink',
+};
+
 export default function VisaAdminStats() {
   const { t } = useTranslation();
   const [stats, setStats] = useState(null);
@@ -53,7 +63,7 @@ export default function VisaAdminStats() {
       dataIndex: 'result',
       width: 140,
       render: (v) => (
-        <Tag variant="soft" color={v === 'valid' ? 'app-green' : v === 'not_found' || v === 'rate_limited' ? 'app-red' : 'app-blue'}>
+        <Tag variant="soft" color={VERIFY_RESULT_COLORS[v] || 'brown'}>
           {t(`visa.admin.verifyResult_${v}`)}
         </Tag>
       ),
@@ -64,7 +74,9 @@ export default function VisaAdminStats() {
   return (
     <div className="visa-stats-page">
       <div className="page-header">
-        <Title size="middle">{t('visa.admin.stats.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.admin.stats.title')}</Title>
+        </h1>
         <Button icon={<DownloadIcon />} onClick={exportCsv}>
           {t('visa.admin.stats.export')}
         </Button>
@@ -101,17 +113,17 @@ export default function VisaAdminStats() {
 
           <div className="visa-stats-grid">
             <Card>
-              <h4>{t('visa.admin.stats.byStatus')}</h4>
+              <h2>{t('visa.admin.stats.byStatus')}</h2>
               <div className="visa-tag-cloud">
                 {Object.entries(stats.statusCounts).map(([status, count]) => (
-                  <Tag key={status} color={APPLICATION_STATUS_COLORS[status] || 'default'} variant="soft">
+                  <Tag key={status} color={APPLICATION_STATUS_COLORS[status] || 'brown'} variant="soft">
                     {t(`visa.status.${status}`)} · {count}
                   </Tag>
                 ))}
               </div>
             </Card>
             <Card>
-              <h4>{t('visa.admin.stats.byType')}</h4>
+              <h2>{t('visa.admin.stats.byType')}</h2>
               <div className="visa-tag-cloud">
                 {stats.typeDistribution.map((row) => (
                   <Tag key={row.type_code} color="app-teal" variant="soft">
@@ -121,7 +133,7 @@ export default function VisaAdminStats() {
               </div>
             </Card>
             <Card>
-              <h4>{t('visa.admin.stats.rejectReasons')}</h4>
+              <h2>{t('visa.admin.stats.rejectReasons')}</h2>
               <div className="visa-tag-cloud">
                 {stats.rejectReasons.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
                 {stats.rejectReasons.map((row) => (
@@ -132,11 +144,11 @@ export default function VisaAdminStats() {
               </div>
             </Card>
             <Card>
-              <h4>{t('visa.admin.stats.permits')}</h4>
+              <h2>{t('visa.admin.stats.permits')}</h2>
               <div className="visa-tag-cloud">
                 {Object.keys(stats.permitStatusCounts).length === 0 && <p className="muted-text">{t('common.empty')}</p>}
                 {Object.entries(stats.permitStatusCounts).map(([status, count]) => (
-                  <Tag key={status} color={PERMIT_STATUS_COLORS[status] || 'default'} variant="soft">
+                  <Tag key={status} color={PERMIT_STATUS_COLORS[status] || 'brown'} variant="soft">
                     {t(`visa.permitStatus.${status}`)} · {count}
                   </Tag>
                 ))}
@@ -150,7 +162,7 @@ export default function VisaAdminStats() {
       )}
 
       <Card>
-        <h4>{t('visa.admin.stats.verifyLogs')}</h4>
+        <h2 className="block-heading">{t('visa.admin.stats.verifyLogs')}</h2>
         <Table className="table-fit" columns={logColumns} dataSource={verifyLogs ?? []} loading={verifyLogs === null} rowKey="id" pagination={{ pageSize: 10 }} />
       </Card>
     </div>

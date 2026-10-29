@@ -17,6 +17,103 @@ h3 {
   color: var(--animal-text-color);
 }
 
+/* 标题样式契约:页面同事用这两个类包住库的 Title,统一抹掉库自带的
+   字号/行高/外边距,标题层级与间距由页面自己决定。必须排在 h2/h3 之后。 */
+.page-title,
+.section-title {
+  margin: 0;
+  font: inherit;
+  line-height: inherit;
+}
+
+/* 提交成功等整屏状态页:语义上仍需要 h1,视觉沿用卡片内标题 */
+.page-title-card {
+  margin: 0;
+  font-size: var(--animal-font-size-lg);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* 标题层级修正后,原本用 h4 视觉的卡片区块标题提升为 h2 时保持原字号/间距 */
+.block-heading {
+  font-size: 1em;
+  font-weight: 700;
+  margin: 1.33em 0;
+}
+
+/* 同上,原 h5 视觉的小区块标题提升为 h3 时保持原字号/间距 */
+.block-heading-sm {
+  font-size: 0.83em;
+  font-weight: 700;
+  margin: 1.67em 0;
+}
+
+:root {
+  --nl-focus-ring: 2px;
+  --nl-focus-offset: 2px;
+  --nl-focus-scroll-margin: 64px;
+}
+
+/* 统一焦点可见:棕色文字色 #794f27 压在奶油底 #f8f8f0 上 6.65:1,
+   远高于非文本 ≥3:1 的要求,且不是冷蓝色焦点环。 */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: var(--nl-focus-ring) solid var(--animal-text-color);
+  outline-offset: var(--nl-focus-offset);
+}
+
+/* D-06:库里 Button/Switch/Checkbox 自带的 :focus-visible 规则特异性更高,
+   实际焦点环是薄荷(1.97:1)和暖黄(1.42/1.55:1)。这里按组件类名前缀把焦点环
+   覆盖回棕色文字色(6.65:1),保留 outline 本身,不动组件其它样式。 */
+button[class*="animal-btn-"]:focus-visible,
+button[class*="animal-switch-"]:focus-visible,
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible,
+/* DatePicker 日历日格:库用 --animal-calendar-accent(#19c8b9,1.97:1) */
+[class*="animal-cell-"]:focus-visible {
+  outline: var(--nl-focus-ring) solid var(--animal-text-color) !important;
+  outline-offset: var(--nl-focus-offset) !important;
+}
+
+/* Rate:真正可见的焦点环画在隐藏 radio 的兄弟星标上(库用 --animal-warning-color,1.55:1) */
+[class*="animal-input-"]:focus-visible ~ [class*="animal-star-"] {
+  outline: var(--nl-focus-ring) solid var(--animal-text-color) !important;
+  outline-offset: var(--nl-focus-offset) !important;
+}
+
+/* 焦点元素自动滚入时避开 sticky 顶栏 */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  scroll-margin-top: var(--nl-focus-scroll-margin);
+}
+
+html {
+  scroll-padding-top: var(--nl-focus-scroll-margin);
+}
+
+/* 跳转主内容链接:默认移出视口,键盘聚焦时落回左上角 */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 5000;
+  background: var(--animal-bg-color);
+  color: var(--animal-text-color);
+  border: 2px solid var(--animal-text-color);
+  border-radius: var(--animal-border-radius-sm);
+  padding: 8px 16px;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
 /* ---------- shell ---------- */
 
 .app-shell {
@@ -131,7 +228,7 @@ h3 {
 
 .sider-section {
   margin: 12px 10px 4px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--animal-text-color-secondary);
@@ -161,14 +258,15 @@ h3 {
 
 .sider-link:hover,
 .sider-sublink:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
 .sider-link.active {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 0 var(--animal-primary-color);
 }
 
 .sider-sublink {
@@ -178,9 +276,10 @@ h3 {
 }
 
 .sider-sublink.active {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 0 var(--animal-primary-color);
 }
 
 /* 侧栏只在 >=1025px 常驻,窄屏收进抽屉,由这个按钮唤出 */
@@ -496,10 +595,10 @@ h3 {
 }
 
 .auth-links a {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
   font-size: 14px;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .auth-links a:hover {
@@ -686,7 +785,8 @@ h3 {
 .stat-number {
   font-size: 28px;
   font-weight: 800;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-value {
@@ -746,7 +846,7 @@ h3 {
   align-items: center;
 }
 
-.profile-meta h3 {
+.profile-meta :is(h2, h3) {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
@@ -773,8 +873,8 @@ h3 {
 }
 
 .service-url {
-  color: var(--animal-primary-color);
-  text-decoration: none;
+  color: var(--animal-text-color);
+  text-decoration: underline;
   word-break: break-all;
 }
 
@@ -841,14 +941,15 @@ h3 {
 }
 
 .visa-nav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
 .visa-nav-link.active {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .visa-hero {
@@ -953,7 +1054,7 @@ h3 {
   margin-top: 14px;
 }
 
-.visa-guide-card h4 {
+.visa-guide-card :is(h3, h4) {
   margin: 0 0 8px;
   font-size: 15px;
 }
@@ -979,8 +1080,9 @@ h3 {
 }
 
 .visa-link {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
+  text-decoration: underline;
 }
 
 .visa-verify-page {
@@ -1064,7 +1166,7 @@ h3 {
   gap: 16px;
 }
 
-.visa-guide-type-card h3 {
+.visa-guide-type-card :is(h2, h3) {
   margin: 0 0 8px;
 }
 
@@ -1112,7 +1214,7 @@ h3 {
   flex-wrap: wrap;
 }
 
-.visa-form-card h4 {
+.visa-form-card :is(h2, h4) {
   margin: 0 0 6px;
   display: flex;
   align-items: center;
@@ -1142,8 +1244,7 @@ h3 {
 }
 
 .visa-textarea:focus {
-  outline: none;
-  border-color: var(--animal-focus-yellow);
+  border-color: var(--animal-text-color);
 }
 
 .visa-textarea::placeholder {
@@ -1165,7 +1266,7 @@ h3 {
   gap: 10px;
 }
 
-.visa-materials-block h5 {
+.visa-materials-block :is(h3, h5) {
   margin: 0;
   font-size: 14px;
 }
@@ -1212,6 +1313,9 @@ h3 {
   word-break: break-all;
 }
 
+/* 提交成功卡已改用 pattern="app-teal",库给花纹卡的深青字 #2a6b5a 压在
+   浅青底 #e8faf5 上约 5.8:1;此处不要再覆盖文字色(--animal-primary-color-active
+   #50b9ab 只有约 2.2:1),文字颜色跟随 Card 即可。 */
 .visa-submitted-card {
   display: flex;
   flex-direction: column;
@@ -1219,7 +1323,6 @@ h3 {
   gap: 10px;
   padding: 40px 24px;
   text-align: center;
-  color: var(--animal-primary-color-active);
 }
 
 .visa-submitted-no {
@@ -1267,7 +1370,7 @@ h3 {
   flex-wrap: wrap;
 }
 
-.visa-supplement-card h4 {
+.visa-supplement-card :is(h2, h4) {
   margin: 0 0 8px;
 }
 
@@ -1368,7 +1471,7 @@ h3 {
 .evisa-footer {
   border-top: var(--animal-border-width) dashed var(--animal-border-color);
   padding-top: 10px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-muted);
 }
 
@@ -1431,7 +1534,7 @@ h3 {
   gap: 10px;
 }
 
-.visa-admin-detail h4 {
+.visa-admin-detail :is(h2, h4) {
   margin: 6px 0 0;
 }
 
@@ -1504,7 +1607,7 @@ h3 {
   margin-bottom: 16px;
 }
 
-.visa-stats-grid h4 {
+.visa-stats-grid :is(h2, h4) {
   margin: 0 0 10px;
 }
 
@@ -1613,13 +1716,15 @@ h3 {
 }
 
 .docs-tab:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
 .docs-tab.active {
-  color: #fff;
-  background: var(--animal-primary-color);
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .docs-tab-badge {
@@ -1773,7 +1878,7 @@ h3 {
   list-style: disc;
 }
 
-.docs-type-detail h4 {
+.docs-type-detail :is(h2, h4) {
   margin: 14px 0 4px;
   font-size: 14px;
   color: var(--animal-primary-color);
@@ -1829,6 +1934,9 @@ h3 {
 .docs-type-option.active {
   border-color: var(--animal-primary-color);
   background: var(--animal-primary-color-bg);
+  color: var(--animal-text-color);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 0 var(--animal-primary-color);
 }
 
 .docs-form-grid {
@@ -2284,8 +2392,11 @@ h3 {
   color: var(--animal-primary-color);
 }
 
+/* 消息行主体是 <Link> 时去掉浏览器默认的链接蓝与下划线,颜色跟随卡片 */
 .docs-msg-body {
   flex: 1;
+  color: inherit;
+  text-decoration: none;
 }
 
 .docs-msg-body strong {
@@ -2367,7 +2478,7 @@ h3 {
   color: var(--animal-text-color-muted);
 }
 
-.docs-review-detail h4 {
+.docs-review-detail :is(h2, h4) {
   margin: 16px 0 6px;
   font-size: 14px;
   color: var(--animal-primary-color);
@@ -2390,7 +2501,7 @@ h3 {
 
 /* type editor */
 
-.docs-type-editor h4 {
+.docs-type-editor :is(h2, h4) {
   margin: 18px 0 8px;
   font-size: 14px;
   color: var(--animal-primary-color);
@@ -2458,8 +2569,8 @@ h3 {
 }
 
 .docs-textarea:focus {
-  outline: 2px solid var(--animal-focus-yellow);
-  outline-offset: -1px;
+  outline: var(--nl-focus-ring) solid var(--animal-text-color);
+  outline-offset: var(--nl-focus-offset);
 }
 
 .docs-textarea::placeholder {
@@ -2496,14 +2607,15 @@ h3 {
 }
 
 .im-subnav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-bg-color);
 }
 
 .im-subnav-link.active {
-  color: #fff;
-  background: var(--animal-primary-color);
-  font-weight: 600;
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .im-hero {
@@ -2715,7 +2827,7 @@ h3 {
 }
 
 .im-map-gate {
-  background: var(--animal-warning-color-bg, rgba(245, 195, 28, 0.16));
+  background: color-mix(in srgb, var(--animal-warning-color) 16%, var(--animal-bg-color));
 }
 
 .im-map-hall {
@@ -2735,7 +2847,7 @@ h3 {
 }
 
 .im-map-garden {
-  background: var(--animal-success-color-bg, rgba(138, 198, 138, 0.2));
+  background: color-mix(in srgb, var(--animal-success-color) 18%, var(--animal-bg-color));
 }
 
 /* declaration form */
@@ -2978,9 +3090,9 @@ h3 {
 
 .im-stamp-star {
   border-radius: 50%;
-  border-color: var(--animal-warning-color, #f5c31c);
+  border-color: var(--animal-warning-color);
   color: var(--animal-text-color);
-  background: rgba(245, 195, 28, 0.14);
+  background: color-mix(in srgb, var(--animal-warning-color) 14%, var(--animal-bg-color));
 }
 
 .im-stamp-claw {
@@ -2998,7 +3110,7 @@ h3 {
 }
 
 .im-stamp-line {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -3023,7 +3135,7 @@ h3 {
 }
 
 .im-msg-unread {
-  border-left: 4px solid var(--animal-warning-color, #f5c31c);
+  border-left: 4px solid var(--animal-warning-color);
 }
 
 .im-msg-actions {
@@ -3258,14 +3370,15 @@ h3 {
 }
 
 .dip-subnav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-bg-color);
 }
 
 .dip-subnav-link.active {
-  color: #fff;
-  background: var(--animal-primary-color);
-  font-weight: 600;
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .dip-banner {
@@ -3385,7 +3498,7 @@ h3 {
   gap: 12px;
 }
 
-.dip-guide-card h4 {
+.dip-guide-card :is(h3, h4) {
   margin: 0 0 6px;
   font-size: 14px;
 }
@@ -3429,7 +3542,6 @@ h3 {
 }
 
 .dip-textarea:focus {
-  outline: none;
   border-color: var(--animal-primary-color);
 }
 
@@ -3942,7 +4054,7 @@ h3 {
 }
 
 .dip-id-card-scan {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-secondary);
 }
 
@@ -4015,7 +4127,7 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--animal-success-color-bg, var(--animal-primary-color-bg));
+  background: color-mix(in srgb, var(--animal-success-color) 18%, var(--animal-bg-color));
   color: var(--animal-success-color, var(--animal-primary-color));
 }
 
@@ -4050,14 +4162,15 @@ h3 {
 }
 
 .res-nav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
 .res-nav-link.active {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .res-admin-nav {
@@ -4284,13 +4397,13 @@ h3 {
 }
 
 .res-field-required {
-  color: var(--animal-danger-color, #d9534f);
+  color: var(--animal-error-color);
 }
 
 .res-textarea {
   width: 100%;
   border: var(--animal-border-width) solid var(--animal-border-color);
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
   padding: 10px 16px;
@@ -4302,9 +4415,7 @@ h3 {
 }
 
 .res-textarea:focus {
-  outline: none;
-  border-color: #ffcc00;
-  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.25);
+  border-color: var(--animal-text-color);
 }
 
 .res-textarea::placeholder {
@@ -4327,7 +4438,7 @@ h3 {
   margin-top: 10px;
 }
 
-.res-materials-block h5 {
+.res-materials-block :is(h3, h5) {
   margin: 0 0 8px;
   display: flex;
   align-items: center;
@@ -4458,7 +4569,7 @@ h3 {
   margin-top: 14px;
 }
 
-.res-info-card h4 {
+.res-info-card :is(h2, h4) {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -4621,7 +4732,7 @@ h3 {
 .res-card-footer {
   border-top: var(--animal-border-width) dashed var(--animal-border-color);
   padding-top: 10px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-muted);
 }
 
@@ -4697,7 +4808,7 @@ h3 {
 
 .res-change-reject {
   font-size: 13px;
-  color: var(--animal-danger-color, #d9534f);
+  color: var(--animal-error-color);
 }
 
 /* 居民权益 */
@@ -4968,7 +5079,7 @@ h3 {
 }
 
 .res-action-warning {
-  color: var(--animal-danger-color, #d9534f);
+  color: var(--animal-error-color);
   font-size: 13px;
 }
 
@@ -5036,7 +5147,7 @@ h3 {
 
 .res-tpl-item {
   border: var(--animal-border-width) dashed var(--animal-border-color);
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -5187,14 +5298,16 @@ h3 {
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.appeal-nav-link:hover,
-.appeal-nav-link.active {
-  color: var(--animal-primary-color);
+.appeal-nav-link:hover {
+  color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
 .appeal-nav-link.active {
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
   font-weight: 700;
+  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .appeal-hero {
@@ -5247,7 +5360,7 @@ h3 {
   margin-top: 12px;
 }
 
-.appeal-service-card h4 {
+.appeal-service-card :is(h3, h4) {
   margin: 10px 0 4px;
   font-size: 15px;
 }
@@ -5299,7 +5412,7 @@ h3 {
   margin-top: 12px;
 }
 
-.appeal-guide-card h4 {
+.appeal-guide-card :is(h3, h4) {
   margin: 0 0 6px;
   font-size: 15px;
 }
@@ -5351,7 +5464,7 @@ h3 {
   margin-bottom: 14px;
 }
 
-.appeal-guide-block h4 {
+.appeal-guide-block :is(h2, h4) {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -5399,7 +5512,7 @@ h3 {
   width: 100%;
   min-height: 96px;
   padding: 10px 16px;
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   border: var(--animal-border-width) solid var(--animal-border-color);
   background: var(--animal-bg-color);
   color: var(--animal-text-color);
@@ -5413,9 +5526,7 @@ h3 {
 }
 
 .appeal-textarea:focus {
-  outline: none;
-  border-color: var(--animal-primary-color);
-  box-shadow: 0 0 0 2px var(--animal-focus-yellow);
+  border-color: var(--animal-text-color);
 }
 
 .appeal-textarea::placeholder {
@@ -5431,7 +5542,7 @@ h3 {
   margin-bottom: 14px;
 }
 
-.appeal-form-card h4 {
+.appeal-form-card :is(h2, h4) {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -5502,6 +5613,20 @@ h3 {
   margin-bottom: 10px;
 }
 
+/* 列表整卡可点:链接沿用卡片文字色,不出现链接蓝/下划线(含已访问态) */
+.appeal-item-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.appeal-item-link:visited,
+.appeal-item-link:hover,
+.appeal-item-link:focus-visible {
+  color: inherit;
+  text-decoration: none;
+}
+
 .appeal-item-head {
   display: flex;
   align-items: center;
@@ -5558,7 +5683,7 @@ h3 {
   align-items: center;
 }
 
-.appeal-decision-banner h4 {
+.appeal-decision-banner :is(h2, h4) {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -5654,7 +5779,7 @@ h3 {
 
 .appeal-ticket-thread li {
   padding: 10px 14px;
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
 }
 
@@ -5721,7 +5846,7 @@ h3 {
   display: grid;
   gap: 2px;
   padding: 12px 14px;
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
 }
 
@@ -5810,6 +5935,13 @@ h3 {
   margin-bottom: 18px;
 }
 
+/* 文书标题是 h1.page-title,.page-title 的 font: inherit 会把它压成正文大小,
+   按文书排版补回字号字重 */
+.appeal-doc-head .page-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
 .appeal-doc-no {
   text-align: right;
   font-size: 13px;
@@ -5827,7 +5959,7 @@ h3 {
 .appeal-doc-qr {
   width: 120px;
   height: 120px;
-  border-radius: var(--animal-border-radius-md);
+  border-radius: var(--animal-border-radius-base);
   border: var(--animal-border-width) solid var(--animal-border-color-light);
   background: #ffffff;
   padding: 4px;
@@ -5926,4 +6058,10 @@ h3 {
   justify-content: flex-end;
   gap: 12px;
   width: 100%;
+}
+
+/* 打印:统一 A4 + 16mm 页边距(各署的 @media print 只调显隐,纸张规格集中在这里) */
+@page {
+  size: A4;
+  margin: 16mm;
 }

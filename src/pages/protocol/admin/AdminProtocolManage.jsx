@@ -183,7 +183,7 @@ export default function AdminProtocolManage() {
     { title: t('protocol.field.name'), dataIndex: 'name', width: 130 },
     { title: t('protocol.field.description'), dataIndex: 'description' },
     { title: t('protocol.field.maxCompanions'), dataIndex: 'maxCompanions', width: 100 },
-    { title: t('common.enabled'), dataIndex: 'enabled', width: 90, render: (v) => <Tag color={v ? 'app-green' : 'default'} variant="soft">{v ? t('common.enabled') : t('common.disabled')}</Tag> },
+    { title: t('common.enabled'), dataIndex: 'enabled', width: 90, render: (v) => <Tag color={v ? 'app-green' : 'brown'} variant="soft">{v ? t('common.enabled') : t('common.disabled')}</Tag> },
     {
       title: t('common.actions'),
       width: 90,
@@ -220,7 +220,7 @@ export default function AdminProtocolManage() {
 
   const noticeColumns = [
     { title: t('protocol.field.title'), dataIndex: 'title', width: 220 },
-    { title: t('protocol.field.level'), dataIndex: 'level', width: 90, render: (v) => <Tag variant="soft" size="small">{t(`protocol.level.${v}`)}</Tag> },
+    { title: t('protocol.field.level'), dataIndex: 'level', width: 90, render: (v) => <Tag variant="soft" size="small" color={v === 'policy' ? 'warm-peach-pink' : v === 'event' ? 'app-pink' : 'app-blue'}>{t(`protocol.level.${v}`)}</Tag> },
     { title: t('common.enabled'), dataIndex: 'enabled', width: 80, render: (v) => (v ? t('common.enabled') : t('common.disabled')) },
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
     {
@@ -320,7 +320,9 @@ export default function AdminProtocolManage() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.manageTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.manageTitle')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.admin.manageSubtitle')}</p>
       </div>
 
@@ -393,13 +395,13 @@ export default function AdminProtocolManage() {
               <Input type="number" value={String(typeForm.sortOrder)} onChange={(e) => setTypeForm((p) => ({ ...p, sortOrder: e.target.value }))} />
             </label>
           </div>
-          <h4>{t('protocol.admin.requiredFields')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.requiredFields')}</h2>
           <Checkbox
             options={FIELD_OPTIONS.map((f) => ({ label: t(`protocol.field.${f}`), value: f }))}
             value={typeForm.requiredFields}
             onChange={(v) => setTypeForm((p) => ({ ...p, requiredFields: v.map(String) }))}
           />
-          <h4>{t('protocol.admin.materialsConfig')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.materialsConfig')}</h2>
           <Checkbox
             options={MATERIAL_KINDS.map((m) => ({ label: t(`protocol.materialKind.${m}`), value: m }))}
             value={typeForm.materials}

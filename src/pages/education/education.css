@@ -61,12 +61,14 @@
 }
 
 .edu-nav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .edu-nav-link.active {
-  background: var(--animal-primary-color);
-  color: var(--animal-bg-color);
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
 }
 
 .edu-sso-body {
@@ -306,11 +308,6 @@
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.edu-textarea:focus {
-  outline: none;
-  border-color: var(--animal-focus-yellow);
-}
-
 .edu-textarea::placeholder {
   color: var(--animal-text-color-muted);
 }
@@ -329,7 +326,7 @@
   flex-wrap: wrap;
 }
 
-.edu-task-head h3 {
+.edu-task-head :is(h2, h3) {
   margin: 0;
   font-size: 16px;
 }

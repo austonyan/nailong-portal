@@ -57,9 +57,11 @@ export default function AdminPostStats() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-blue">
-          {t('post.admin.stats.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('post.admin.stats.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="postal-stat-grid">
@@ -87,9 +89,11 @@ export default function AdminPostStats() {
       </div>
 
       <div className="postal-section">
-        <Title size="middle" color="app-teal">
-          {t('post.admin.stats.bySource')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('post.admin.stats.bySource')}
+          </Title>
+        </h2>
         <Card>
           <Table
             className="table-fit"
@@ -103,9 +107,11 @@ export default function AdminPostStats() {
       </div>
 
       <div className="postal-section">
-        <Title size="middle" color="app-yellow">
-          {t('post.admin.stats.byType')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-yellow">
+            {t('post.admin.stats.byType')}
+          </Title>
+        </h2>
         <Card>
           <div className="postal-notice-list">
             {stats.byType.map((row) => (

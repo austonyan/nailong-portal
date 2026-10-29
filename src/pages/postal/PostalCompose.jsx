@@ -94,14 +94,16 @@ export default function PostalCompose() {
         <Button type="text" size="small" icon={<ArrowLeftIcon />} onClick={() => navigate('/postal/postcards')}>
           {t('post.compose.back')}
         </Button>
-        <Tag color="app-yellow" variant="soft">
+        <Tag color="app-blue" variant="soft">
           {t('post.postcards.quota', { used: quota.usedToday, limit: quota.dailyLimit })}
         </Tag>
       </div>
 
-      <Title size="middle" color="app-orange">
-        {t('post.compose.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-orange">
+          {t('post.compose.title')}
+        </Title>
+      </h1>
 
       <Card>
         <b>{t('post.compose.pickTemplate')}</b>
@@ -117,7 +119,7 @@ export default function PostalCompose() {
                 if (e.key === 'Enter' || e.key === ' ') setTemplateCode(tpl.code);
               }}
             >
-              <Card color={tpl.color}>
+              <Card pattern={tpl.color}>
                 <div className="postal-card-preview">
                   <span className="postal-card-name">{tpl.name}</span>
                   <span className="postal-card-desc">{tpl.description}</span>

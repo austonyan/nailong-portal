@@ -36,9 +36,11 @@ export default function EduTasks() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-yellow">
-          {t('edu.tasks.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('edu.tasks.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('edu.tasks.tip')}</p>
 
@@ -47,8 +49,8 @@ export default function EduTasks() {
           <Card key={task.id} className="edu-task-card">
             <div className="edu-task-head">
               <BulbIcon size={18} />
-              <h3>{task.title}</h3>
-              <Tag size="small" color={task.completed ? 'app-teal' : 'app-yellow'} variant="soft">
+              <h2>{task.title}</h2>
+              <Tag size="small" color={task.completed ? 'app-green' : 'app-blue'} variant="soft">
                 {task.completed ? t('edu.recordStatus.completed') : t('edu.recordStatus.in_progress')}
               </Tag>
               <span className="edu-task-meta">

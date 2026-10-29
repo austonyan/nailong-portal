@@ -232,12 +232,14 @@ export default function DocsApply() {
 
   return (
     <div className="docs-apply">
-      <Title size="middle" color="app-teal">
-        {t('docs.apply.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('docs.apply.title')}
+        </Title>
+      </h1>
 
       <Card className="docs-block">
-        <h3 className="docs-block-title">{t('docs.apply.step1')}</h3>
+        <h2 className="docs-block-title">{t('docs.apply.step1')}</h2>
         <div className="docs-type-picker">
           {types.map((tp) => (
             <button
@@ -324,7 +326,7 @@ export default function DocsApply() {
                       {t('docs.apply.required')}
                     </Tag>
                   ) : (
-                    <Tag size="small" variant="soft">
+                    <Tag size="small" color="brown" variant="soft">
                       {t('common.optional')}
                     </Tag>
                   )}
@@ -368,7 +370,7 @@ export default function DocsApply() {
                       </button>
                       <span className="muted-text">{formatBytes(mat.size)}</span>
                       {mat.origin === 'supplement' && (
-                        <Tag size="small" color="app-orange" variant="soft">
+                        <Tag size="small" color="warm-peach-pink" variant="soft">
                           {t('docs.apply.supplementOrigin')}
                         </Tag>
                       )}

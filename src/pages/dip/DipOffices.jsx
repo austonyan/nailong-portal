@@ -37,12 +37,27 @@ export default function DipOffices() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.office.pageTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.office.pageTitle')}</Title>
+        </h1>
       </div>
 
       <div className="dip-office-grid">
         {(items ?? []).map((o) => (
-          <Card key={o.code} hoverable className="dip-office-card" onClick={() => setOpenCode(o.code)}>
+          <Card
+            key={o.code}
+            hoverable
+            className="dip-office-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => setOpenCode(o.code)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setOpenCode(o.code);
+              }
+            }}
+          >
             <div className="dip-office-head">
               <HomeIcon size={22} />
               <b>{o.name}</b>
@@ -95,9 +110,9 @@ export default function DipOffices() {
 
 function StatusInline({ status }) {
   const { t } = useTranslation();
-  const colors = { open: 'app-green', closed: 'app-red', maintenance: 'app-yellow' };
+  const colors = { open: 'app-green', closed: 'brown', maintenance: 'warm-peach-pink' };
   return (
-    <Tag size="small" color={colors[status] ?? 'default'} variant="soft">
+    <Tag size="small" color={colors[status] ?? 'brown'} variant="soft">
       {t(`dip.status.${status}`)}
     </Tag>
   );

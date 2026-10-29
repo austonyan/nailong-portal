@@ -90,7 +90,9 @@ export default function AdminProtocolCheckin() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.checkinTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.checkinTitle')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.admin.checkinSubtitle')}</p>
       </div>
 
@@ -118,7 +120,7 @@ export default function AdminProtocolCheckin() {
         </div>
         <p className="muted-text">{t('protocol.admin.checkinTip')}</p>
         {last && (
-          <Card color="app-teal">
+          <Card pattern="app-teal">
             <div className="protocol-inline-between">
               <div>
                 <strong>{last.passNo}</strong>

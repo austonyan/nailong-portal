@@ -1,6 +1,6 @@
 // 我的申诉列表:状态筛选、草稿编辑/删除入口、状态追踪与处理结果摘要。
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Modal, Pagination, Select, Tag, Title } from 'animal-island-ui';
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
@@ -62,7 +62,9 @@ export default function AppealMyAppeals() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.my.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.my.title')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}
@@ -91,23 +93,25 @@ export default function AppealMyAppeals() {
       )}
 
       {pageItems.map((a) => (
-        <Card key={a.id} hoverable className="appeal-item-card" onClick={() => navigate(`/appeal/appeals/${a.id}`)}>
-          <div className="appeal-item-head">
-            <strong>{a.code}</strong>
-            <Tag color={APPEAL_STATUS_COLORS[a.status] || 'default'} variant="soft">
-              {t(`appeal.status.${a.status}`)}
-            </Tag>
-            {a.decisionType && (
-              <Tag color={DECISION_TYPE_COLORS[a.decisionType] || 'default'} variant="outlined">
-                {t(`appeal.decisionType.${a.decisionType}`)}
+        <Card key={a.id} hoverable className="appeal-item-card">
+          <Link to={`/appeal/appeals/${a.id}`} className="appeal-item-link">
+            <div className="appeal-item-head">
+              <strong>{a.code}</strong>
+              <Tag color={APPEAL_STATUS_COLORS[a.status] || 'brown'} variant="soft">
+                {t(`appeal.status.${a.status}`)}
               </Tag>
-            )}
-          </div>
-          <p className="muted-text">
-            {t(`appeal.bizType.${a.bizType}`)} · {a.bizCode} · {t('appeal.my.submittedAt', { time: fmtDateTime(a.submittedAt || a.createdAt) })}
-          </p>
-          <p className="appeal-item-reason">{a.reason}</p>
-          <div className="appeal-item-actions" onClick={(e) => e.stopPropagation()}>
+              {a.decisionType && (
+                <Tag color={DECISION_TYPE_COLORS[a.decisionType] || 'brown'} variant="outlined">
+                  {t(`appeal.decisionType.${a.decisionType}`)}
+                </Tag>
+              )}
+            </div>
+            <p className="muted-text">
+              {t(`appeal.bizType.${a.bizType}`)} · {a.bizCode} · {t('appeal.my.submittedAt', { time: fmtDateTime(a.submittedAt || a.createdAt) })}
+            </p>
+            <p className="appeal-item-reason">{a.reason}</p>
+          </Link>
+          <div className="appeal-item-actions">
             <Button type="text" size="small" icon={<EyeIcon />} onClick={() => navigate(`/appeal/appeals/${a.id}`)}>
               {t('appeal.my.view')}
             </Button>

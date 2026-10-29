@@ -1,10 +1,10 @@
 // 统计与报表:活动/报名/邀请函/接待方/礼遇/验真/签到指标与导出。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Progress, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Progress, Table, Title } from 'animal-island-ui';
 import { DownloadIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { exportProtocolCsv, toastProtocolError } from '../shared.jsx';
+import { StatusTag, exportProtocolCsv, toastProtocolError } from '../shared.jsx';
 
 function Metric({ label, value, hint }) {
   return (
@@ -47,14 +47,16 @@ export default function AdminProtocolStats() {
   const eventStatusRows = Object.entries(stats.events.byStatus || {}).map(([status, count]) => ({ status, count }));
 
   const statusColumns = [
-    { title: t('common.status'), dataIndex: 'status', render: (v) => <Tag variant="soft" size="small">{t(`protocol.status.${v}`, { defaultValue: v })}</Tag> },
+    { title: t('common.status'), dataIndex: 'status', render: (v) => <StatusTag status={v} size="small" /> },
     { title: t('protocol.admin.count'), dataIndex: 'count', width: 100 },
   ];
 
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.statsTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.statsTitle')}</Title>
+        </h1>
         <div className="protocol-inline-gap">
           <Button type="dashed" icon={<DownloadIcon />} onClick={() => exportFile('events', 'protocol-events.csv')}>{t('protocol.admin.exportEvents')}</Button>
           <Button type="dashed" icon={<DownloadIcon />} onClick={() => exportFile('registrations', 'protocol-registrations.csv')}>{t('protocol.admin.exportRegistrations')}</Button>
@@ -73,7 +75,7 @@ export default function AdminProtocolStats() {
 
       <div className="protocol-stat-columns">
         <Card>
-          <h4>{t('protocol.admin.rates')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.rates')}</h2>
           <div className="protocol-rate-row">
             <span>{t('protocol.admin.approvalRate')}</span>
             <Progress percent={stats.registrations.approvalRate} infoFormat={(p) => `${p}%`} />
@@ -96,7 +98,7 @@ export default function AdminProtocolStats() {
           </div>
         </Card>
         <Card>
-          <h4>{t('protocol.admin.eventByType')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.eventByType')}</h2>
           <Table className="table-fit"
             columns={[
               { title: t('protocol.field.type'), dataIndex: 'name' },
@@ -112,15 +114,15 @@ export default function AdminProtocolStats() {
 
       <div className="protocol-stat-columns">
         <Card>
-          <h4>{t('protocol.admin.registrationByStatus')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.registrationByStatus')}</h2>
           <Table className="table-fit" columns={statusColumns} dataSource={statusRows} rowKey="status" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
         <Card>
-          <h4>{t('protocol.admin.eventByStatus')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.eventByStatus')}</h2>
           <Table className="table-fit" columns={statusColumns} dataSource={eventStatusRows} rowKey="status" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
         <Card>
-          <h4>{t('protocol.admin.rejectReasons')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.rejectReasons')}</h2>
           <Table className="table-fit"
             columns={[
               { title: t('protocol.field.reason'), dataIndex: 'code', render: (v) => t(`protocol.rejectReason.${v}`, { defaultValue: v }) },
@@ -133,7 +135,7 @@ export default function AdminProtocolStats() {
           />
         </Card>
         <Card>
-          <h4>{t('protocol.admin.courtesyByType')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.courtesyByType')}</h2>
           <Table className="table-fit"
             columns={[
               { title: t('protocol.field.type'), dataIndex: 'name' },

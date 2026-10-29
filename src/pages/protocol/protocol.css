@@ -68,12 +68,14 @@
 }
 
 .protocol-nav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .protocol-nav-link.active {
-  background: var(--animal-primary-color);
-  color: var(--animal-bg-color);
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
 }
 
 .protocol-sso-body {
@@ -255,7 +257,7 @@
   color: var(--animal-text-color);
 }
 
-.protocol-event-card h3 {
+.protocol-event-card :is(h2, h3) {
   margin: 0;
   font-size: 17px;
 }
@@ -317,7 +319,7 @@
 }
 
 .protocol-upcoming-date span {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .protocol-upcoming-main {
@@ -374,7 +376,18 @@
   gap: 8px;
 }
 
-.protocol-guide-card h4 {
+/* 卡片内已有按钮,整卡跳转由外层 Link 承载(此时不能再给 Card 加 role="button")。 */
+.protocol-guide-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.protocol-guide-link > .protocol-guide-card {
+  height: 100%;
+}
+
+.protocol-guide-card :is(h3, h4) {
   margin: 0;
   font-size: 15px;
 }
@@ -562,7 +575,7 @@
 
 .protocol-venue-map em {
   position: relative;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-muted);
   font-style: normal;
 }
@@ -637,11 +650,11 @@
   gap: 12px;
 }
 
-.protocol-form-card h4 {
+.protocol-form-card :is(h2, h3, h4) {
   margin: 8px 0 0;
 }
 
-.protocol-form-card h4:first-child {
+.protocol-form-card :is(h2, h3, h4):first-child {
   margin-top: 0;
 }
 
@@ -862,7 +875,7 @@
   flex-wrap: wrap;
 }
 
-.protocol-invitation-card h3 {
+.protocol-invitation-card :is(h2, h3) {
   margin: 0;
   font-size: 17px;
 }
@@ -926,7 +939,7 @@
 }
 
 .protocol-pass-kind {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-muted);
 }
 
@@ -944,7 +957,7 @@
   min-width: 0;
 }
 
-.protocol-pass-info h3 {
+.protocol-pass-info :is(h2, h3) {
   margin: 0;
   font-size: 18px;
 }
@@ -1002,7 +1015,7 @@
 
 .protocol-pass-foot p {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-muted);
   line-height: 1.6;
 }
@@ -1033,7 +1046,7 @@
   flex-wrap: wrap;
 }
 
-.protocol-host-card h3 {
+.protocol-host-card :is(h2, h3) {
   margin: 0;
   font-size: 17px;
 }
@@ -1300,13 +1313,7 @@
   font-size: 14px;
   line-height: 1.6;
   resize: vertical;
-  outline: none;
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.protocol-textarea:focus {
-  border-color: var(--animal-primary-color);
-  box-shadow: 0 0 0 3px var(--animal-primary-color-bg);
 }
 
 .protocol-metric-grid {
@@ -1330,7 +1337,7 @@
 }
 
 .protocol-metric-card small {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .protocol-stat-columns {
@@ -1371,7 +1378,7 @@
 }
 
 .protocol-config-label code {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--animal-text-color-muted);
   font-family: inherit;
 }
@@ -1535,14 +1542,14 @@
   align-items: flex-start;
 }
 
-.protocol-privacy-card h4 {
+.protocol-privacy-card :is(h3, h4) {
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 0;
 }
 
-.protocol-pass-info h3 {
+.protocol-pass-info :is(h2, h3) {
   font-size: 16px;
   line-height: 1.4;
 }

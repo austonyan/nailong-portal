@@ -22,7 +22,7 @@ export default function DocsAdminLayout() {
   return (
     <div className="docs-page">
       <div className="docs-hero docs-hero-admin">
-        <h2 className="docs-admin-title">{t('docs.admin.title')}</h2>
+        <div className="docs-admin-title">{t('docs.admin.title')}</div>
       </div>
       <nav className="docs-subnav" aria-label={t('docs.admin.title')}>
         {visible.map((item) => (

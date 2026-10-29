@@ -14,8 +14,8 @@ const VERIFY_RESULT_COLORS = {
   resolved: 'app-green',
   not_found: 'app-red',
   rate_limited: 'app-red',
-  expired: 'app-red',
-  voided: 'app-red',
+  expired: 'brown',
+  voided: 'brown',
   rejected: 'app-red',
 };
 
@@ -27,7 +27,7 @@ function VerifyResultTag({ value }) {
     ? `${t(`appeal.audit.kind.${kind}`, { defaultValue: kind })} · ${t(`appeal.audit.result.${status}`, { defaultValue: status })}`
     : t(`appeal.audit.result.${raw}`, { defaultValue: raw });
   return (
-    <Tag variant="soft" color={VERIFY_RESULT_COLORS[status] || 'default'}>
+    <Tag variant="soft" color={VERIFY_RESULT_COLORS[status] || 'brown'}>
       {label}
     </Tag>
   );
@@ -84,7 +84,9 @@ export default function AppealAdminAudit() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.audit.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.audit.title')}</Title>
+        </h1>
       </div>
 
       <Card>

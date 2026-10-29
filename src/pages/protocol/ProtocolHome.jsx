@@ -21,10 +21,20 @@ import {
   UsersIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
+import { StatusTag, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 const TYPE_ICONS = [CalendarIcon, GiftIcon, ImageIcon, UsersIcon, StarIcon, HomeIcon];
 const SERVICE_ICONS = [SendIcon, MailIcon, CreditCardIcon, UserPlusIcon, StarIcon, SearchIcon];
+
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
 
 export default function ProtocolHome() {
   const { t } = useTranslation();
@@ -73,7 +83,9 @@ export default function ProtocolHome() {
   return (
     <div className="protocol-home">
       <Background type="sprinkles" className="protocol-hero">
-        <Title size="large">{t('protocol.home.heroTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="large">{t('protocol.home.heroTitle')}</Title>
+        </h1>
         <Typewriter speed={30}>
           <p className="protocol-hero-sub">{t('protocol.home.heroSub')}</p>
         </Typewriter>
@@ -92,7 +104,7 @@ export default function ProtocolHome() {
           <Tag color="app-teal" variant="solid">
             {t('protocol.home.statOpen', { count: home.openCount })}
           </Tag>
-          <Tag color="app-orange" variant="soft">
+          <Tag color="app-blue" variant="soft">
             {t('protocol.home.statTypes', { count: home.types.length })}
           </Tag>
           <Tag color="app-blue" variant="soft">
@@ -101,7 +113,7 @@ export default function ProtocolHome() {
         </div>
       </Background>
 
-      <Card color="app-yellow" className="protocol-scam-banner">
+      <Card pattern="app-yellow" className="protocol-scam-banner">
         <div className="protocol-scam-inner">
           <AlertTriangleIcon size={22} />
           <div>
@@ -112,9 +124,11 @@ export default function ProtocolHome() {
       </Card>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-teal">
-          {t('protocol.home.notices')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('protocol.home.notices')}
+          </Title>
+        </h2>
         <div className="protocol-notice-list">
           {home.notices.length === 0 && (
             <Card type="dashed">
@@ -124,7 +138,7 @@ export default function ProtocolHome() {
           {home.notices.map((n) => (
             <Card key={n.id} className="protocol-notice-card">
               <div className="protocol-notice-head">
-                <Tag color={n.level === 'policy' ? 'app-yellow' : n.level === 'event' ? 'app-pink' : 'app-blue'} variant="soft">
+                <Tag color={n.level === 'policy' ? 'warm-peach-pink' : n.level === 'event' ? 'app-pink' : 'app-blue'} variant="soft">
                   {t(`protocol.level.${n.level}`, { defaultValue: n.level })}
                 </Tag>
                 <strong>{n.title}</strong>
@@ -137,15 +151,25 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-orange">
-          {t('protocol.home.categories')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">
+            {t('protocol.home.categories')}
+          </Title>
+        </h2>
         <p className="muted-text protocol-section-sub">{t('protocol.home.categoriesSub')}</p>
         <div className="protocol-type-grid">
           {home.types.map((tp, i) => {
             const Icon = TYPE_ICONS[i % TYPE_ICONS.length];
             return (
-              <Card key={tp.code} hoverable className="protocol-type-card" onClick={() => navigate(`/protocol/events?type=${tp.code}`)}>
+              <Card
+                key={tp.code}
+                hoverable
+                className="protocol-type-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(`/protocol/events?type=${tp.code}`)}
+                onKeyDown={cardKeyDown(() => navigate(`/protocol/events?type=${tp.code}`))}
+              >
                 <Icon size={30} />
                 <h3>{tp.name}</h3>
                 <p>{tp.description}</p>
@@ -160,23 +184,31 @@ export default function ProtocolHome() {
 
       <section className="protocol-section">
         <div className="protocol-section-head">
-          <Title size="middle" color="app-pink">
-            {t('protocol.home.hot')}
-          </Title>
+          <h2 className="section-title">
+            <Title size="middle" color="app-pink">
+              {t('protocol.home.hot')}
+            </Title>
+          </h2>
           <Link to="/protocol/events?open=1" className="protocol-link">
             {t('protocol.home.viewAll')}
           </Link>
         </div>
         <div className="protocol-event-grid">
           {home.hot.map((ev) => (
-            <Card key={ev.id} hoverable className="protocol-event-card" onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}>
+            <Card
+              key={ev.id}
+              hoverable
+              className="protocol-event-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/protocol/events/${ev.eventNo}`))}
+            >
               <div className="protocol-event-card-top">
                 <Tag color="app-teal" variant="soft">
                   {ev.typeName}
                 </Tag>
-                <Tag color={ev.status === 'registration' ? 'app-green' : 'app-yellow'} variant="soft">
-                  {t(`protocol.status.${ev.status}`)}
-                </Tag>
+                <StatusTag status={ev.status} />
               </div>
               <h3>{ev.title}</h3>
               <p className="muted-text">{ev.subtitle}</p>
@@ -204,12 +236,22 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-blue">
-          {t('protocol.home.upcoming')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-blue">
+            {t('protocol.home.upcoming')}
+          </Title>
+        </h2>
         <div className="protocol-upcoming-list">
           {home.upcoming.map((ev) => (
-            <Card key={ev.id} hoverable className="protocol-upcoming-row" onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}>
+            <Card
+              key={ev.id}
+              hoverable
+              className="protocol-upcoming-row"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/protocol/events/${ev.eventNo}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/protocol/events/${ev.eventNo}`))}
+            >
               <div className="protocol-upcoming-date">
                 <strong>{fmtDateTime(ev.startsAt).slice(5, 10)}</strong>
                 <span>{fmtDateTime(ev.startsAt).slice(11, 16)}</span>
@@ -221,7 +263,7 @@ export default function ProtocolHome() {
                 </span>
               </div>
               <div className="protocol-upcoming-side">
-                <Tag color={ev.seatsLeft > 0 ? 'app-green' : 'app-orange'} variant="soft">
+                <Tag color={ev.seatsLeft > 0 ? 'app-green' : 'brown'} variant="soft">
                   {ev.seatsLeft > 0 ? t('protocol.home.seatsLeft', { count: ev.seatsLeft }) : t('protocol.home.full')}
                 </Tag>
                 <Tag variant="outlined" size="small">
@@ -239,14 +281,24 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <Title size="middle" color="purple">
-          {t('protocol.home.services')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="purple">
+            {t('protocol.home.services')}
+          </Title>
+        </h2>
         <div className="protocol-service-grid">
           {services.map((svc, i) => {
             const Icon = SERVICE_ICONS[i];
             return (
-              <Card key={svc.key} hoverable className="protocol-service-card" onClick={() => navigate(svc.to)}>
+              <Card
+                key={svc.key}
+                hoverable
+                className="protocol-service-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(svc.to)}
+                onKeyDown={cardKeyDown(() => navigate(svc.to))}
+              >
                 <span className="protocol-service-icon">
                   <Icon size={24} />
                 </span>
@@ -261,19 +313,29 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-green">
-          {t('protocol.home.guide')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-green">
+            {t('protocol.home.guide')}
+          </Title>
+        </h2>
         <div className="protocol-guide-grid">
           {guides.map((g) => (
-            <Card key={g.key} className="protocol-guide-card" hoverable onClick={() => navigate(g.to)}>
-              <h4>{t(`protocol.home.guide_${g.key}`)}</h4>
+            <Card
+              key={g.key}
+              className="protocol-guide-card"
+              hoverable
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(g.to)}
+              onKeyDown={cardKeyDown(() => navigate(g.to))}
+            >
+              <h3>{t(`protocol.home.guide_${g.key}`)}</h3>
               <p>{t(`protocol.home.guide_${g.key}_body`)}</p>
               <span className="protocol-link">{t('protocol.home.learnMore')}</span>
             </Card>
           ))}
           <Card className="protocol-guide-card">
-            <h4>{t('protocol.home.guide_rules')}</h4>
+            <h3>{t('protocol.home.guide_rules')}</h3>
             <p>{t('protocol.home.guide_rules_body')}</p>
           </Card>
         </div>
@@ -282,9 +344,11 @@ export default function ProtocolHome() {
       <Divider type="wave-yellow" />
 
       <section className="protocol-section">
-        <Title size="middle" color="brown">
-          {t('protocol.home.faq')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="brown">
+            {t('protocol.home.faq')}
+          </Title>
+        </h2>
         <div className="protocol-faq">
           {faqs.map((key) => (
             <Collapse key={key} question={t(`protocol.faq.${key}.q`)} answer={t(`protocol.faq.${key}.a`)} />

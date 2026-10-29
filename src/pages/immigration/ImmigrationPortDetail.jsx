@@ -72,9 +72,11 @@ export default function ImmigrationPortDetail() {
       {port ? (
         <>
           <div className="page-header">
-            <Title size="middle" color="app-orange">
-              {port.name}
-            </Title>
+            <h1 className="page-title">
+              <Title size="middle" color="app-orange">
+                {port.name}
+              </Title>
+            </h1>
             <StatusTag value={port.status} i18nPrefix="imm.portStatus" />
           </div>
           <p className="muted-text">
@@ -93,7 +95,7 @@ export default function ImmigrationPortDetail() {
                       <p>{port.notice}</p>
                     </Card>
                     {eventHints.length > 0 && (
-                      <Card color="app-teal">
+                      <Card pattern="app-teal">
                         <b>{t('imm.ports.eventHints')}</b>
                         <p className="muted-text">{t('imm.ports.eventHintsTip')}</p>
                         <ul className="im-ann-list">
@@ -107,7 +109,7 @@ export default function ImmigrationPortDetail() {
                       </Card>
                     )}
                     {courtesies?.eligible && (
-                      <Card color="purple">
+                      <Card pattern="purple">
                         <b>{t('imm.ports.courtesyTitle')}</b>
                         <p className="muted-text">{t('imm.ports.courtesyTip', { no: courtesies.identityNo })}</p>
                         <div className="table-actions">
@@ -135,7 +137,7 @@ export default function ImmigrationPortDetail() {
                             {t(`imm.channelType.${c.type}`)}
                           </Tag>
                           <b>{c.name}</b>
-                          {!c.enabled && <Tag size="small">{t('imm.ports.channelClosed')}</Tag>}
+                          {!c.enabled && <Tag size="small" color="brown" variant="soft">{t('imm.ports.channelClosed')}</Tag>}
                         </div>
                         <p className="im-ann-body">{c.description}</p>
                       </Card>

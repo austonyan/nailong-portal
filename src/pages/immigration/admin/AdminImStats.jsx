@@ -35,9 +35,11 @@ export default function AdminImStats() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('imm.admin.stats.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.admin.stats.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="portal-stats">

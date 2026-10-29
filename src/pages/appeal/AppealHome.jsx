@@ -15,7 +15,7 @@ import {
   ShieldIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { NOTICE_LEVEL_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { NOTICE_LEVEL_COLORS, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
 
 export default function AppealHome() {
   const { t } = useTranslation();
@@ -58,7 +58,9 @@ export default function AppealHome() {
   return (
     <div className="appeal-home">
       <Background type="sprinkles" className="appeal-hero">
-        <Title size="large">{t('appeal.home.heroTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="large">{t('appeal.home.heroTitle')}</Title>
+        </h1>
         <Typewriter speed={30}>
           <p className="appeal-hero-sub">{t('appeal.home.heroSub')}</p>
         </Typewriter>
@@ -80,7 +82,7 @@ export default function AppealHome() {
         </p>
       </Background>
 
-      <Card color="app-yellow" className="appeal-scam-banner">
+      <Card pattern="app-yellow" className="appeal-scam-banner">
         <div className="appeal-scam-inner">
           <AlertTriangleIcon size={22} />
           <div>
@@ -91,16 +93,26 @@ export default function AppealHome() {
       </Card>
 
       <section className="appeal-section">
-        <Title size="middle" color="app-teal">
-          {t('appeal.home.services')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('appeal.home.services')}
+          </Title>
+        </h2>
         <div className="appeal-service-grid">
           {services.map((s) => (
-            <Card key={s.key} hoverable className="appeal-service-card" onClick={s.onClick}>
+            <Card
+              key={s.key}
+              hoverable
+              className="appeal-service-card"
+              role="button"
+              tabIndex={0}
+              onClick={s.onClick}
+              onKeyDown={(e) => activateByKey(e, s.onClick)}
+            >
               <span className={`appeal-service-icon ${s.color}`}>
                 {s.icon}
               </span>
-              <h4>{t(`appeal.home.service.${s.key}`)}</h4>
+              <h3>{t(`appeal.home.service.${s.key}`)}</h3>
               <p className="muted-text">{t(`appeal.home.serviceDesc.${s.key}`)}</p>
             </Card>
           ))}
@@ -108,9 +120,11 @@ export default function AppealHome() {
       </section>
 
       <section className="appeal-section">
-        <Title size="middle" color="app-orange">
-          {t('appeal.home.notices')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">
+            {t('appeal.home.notices')}
+          </Title>
+        </h2>
         <div className="appeal-notice-list">
           {home.notices.length === 0 && (
             <Card type="dashed">
@@ -120,7 +134,7 @@ export default function AppealHome() {
           {home.notices.map((n) => (
             <Card key={n.id} className="appeal-notice-card">
               <div className="appeal-notice-head">
-                <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'default'} variant="soft">
+                <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'brown'} variant="soft">
                   {t(`appeal.noticeLevel.${n.level}`)}
                 </Tag>
                 <strong>{n.title}</strong>
@@ -133,24 +147,26 @@ export default function AppealHome() {
       </section>
 
       <section className="appeal-section">
-        <Title size="middle" color="app-blue">
-          {t('appeal.home.guide')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-blue">
+            {t('appeal.home.guide')}
+          </Title>
+        </h2>
         <div className="appeal-guide-grid">
           <Card className="appeal-guide-card">
-            <h4>{t('appeal.home.guideScope')}</h4>
+            <h3>{t('appeal.home.guideScope')}</h3>
             <p>{t('appeal.home.guideScopeBody')}</p>
           </Card>
           <Card className="appeal-guide-card">
-            <h4>{t('appeal.home.guideMaterials')}</h4>
+            <h3>{t('appeal.home.guideMaterials')}</h3>
             <p>{t('appeal.home.guideMaterialsBody')}</p>
           </Card>
           <Card className="appeal-guide-card">
-            <h4>{t('appeal.home.guideSla', { accept: home.hints.acceptSlaHours, resolve: home.hints.resolveSlaHours })}</h4>
+            <h3>{t('appeal.home.guideSla', { accept: home.hints.acceptSlaHours, resolve: home.hints.resolveSlaHours })}</h3>
             <p>{t('appeal.home.guideSlaBody', { accept: home.hints.acceptSlaHours, resolve: home.hints.resolveSlaHours })}</p>
           </Card>
           <Card className="appeal-guide-card">
-            <h4>{t('appeal.home.guideReview', { days: home.hints.reviewDays })}</h4>
+            <h3>{t('appeal.home.guideReview', { days: home.hints.reviewDays })}</h3>
             <p>{t('appeal.home.guideReviewBody', { days: home.hints.reviewDays })}</p>
           </Card>
         </div>
@@ -162,9 +178,11 @@ export default function AppealHome() {
       <Divider type="wave-yellow" />
 
       <section className="appeal-section">
-        <Title size="middle" color="purple">
-          {t('appeal.home.faq')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="purple">
+            {t('appeal.home.faq')}
+          </Title>
+        </h2>
         <div className="appeal-faq">
           {['duration', 'effect', 'fee', 'review', 'anonymous'].map((key) => (
             <Collapse key={key} question={t(`appeal.faq.${key}.q`)} answer={t(`appeal.faq.${key}.a`)} />

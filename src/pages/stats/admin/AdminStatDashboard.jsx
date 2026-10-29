@@ -31,9 +31,11 @@ export default function AdminStatDashboard() {
     <div className="stat-admin-page">
       <StatsAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('stat.admin.dashboard.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('stat.admin.dashboard.title')}
+          </Title>
+        </h1>
         <div className="table-actions">
           {data?.asOf && (
             <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(data.asOf) })}</span>
@@ -54,7 +56,7 @@ export default function AdminStatDashboard() {
           >
             <div className="stat-board-head">
               <strong>{t(`stat.office.${office.key}`)}</strong>
-              <Tag variant="soft" color={office.available ? 'app-green' : 'default'}>
+              <Tag variant="soft" color={office.available ? 'app-green' : 'brown'}>
                 {office.available ? t('stat.admin.dashboard.live') : t('stat.admin.dashboard.unavailable')}
               </Tag>
             </div>

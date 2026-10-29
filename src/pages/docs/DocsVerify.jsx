@@ -4,16 +4,25 @@ import { useSearchParams } from 'react-router-dom';
 import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { CERT_STATUS_COLORS, normalizeDocNo } from '../../api/docs.js';
+import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS, normalizeDocNo } from '../../api/docs.js';
 import { toastError, toastWarning } from '../../components/toast.js';
 import { fmtDate, fmtDateTime } from '../../lib/date.js';
+
+// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿与已过期中性棕(共享表仍是旧色)。
+const APP_TAG_COLORS = {
+  ...APPLICATION_STATUS_COLORS,
+  draft: 'brown',
+  pending: 'warm-peach-pink',
+  supplementing: 'warm-peach-pink',
+};
+const CERT_TAG_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
 
 function ResultCard({ result }) {
   const { t } = useTranslation();
   if (!result) return null;
   if (!result.found) {
     return (
-      <Card color="default" className="docs-verify-result">
+      <Card className="docs-verify-result">
         <strong>{t('docs.verify.notFoundTitle')}</strong>
         <p className="muted-text">{t('docs.verify.notFoundBody')}</p>
       </Card>
@@ -21,10 +30,10 @@ function ResultCard({ result }) {
   }
   if (result.self) {
     return (
-      <Card color="app-blue" className="docs-verify-result">
+      <Card pattern="app-blue" className="docs-verify-result">
         <div className="docs-verify-head">
           <strong>{t('docs.verify.selfTitle', { no: result.appNo })}</strong>
-          <Tag color="app-blue" variant="soft">
+          <Tag color={APP_TAG_COLORS[result.status] || 'brown'} variant="soft">
             {t(`docs.status.${result.status}`)}
           </Tag>
         </div>
@@ -34,7 +43,7 @@ function ResultCard({ result }) {
             <dd>{result.certificate.certNo}</dd>
             <dt>{t('docs.certDetail.certStatus')}</dt>
             <dd>
-              <Tag color={CERT_STATUS_COLORS[result.certificate.status]} variant="soft">
+              <Tag color={CERT_TAG_COLORS[result.certificate.status] || 'brown'} variant="soft">
                 {t(`docs.certStatus.${result.certificate.status}`)}
               </Tag>
             </dd>
@@ -46,7 +55,7 @@ function ResultCard({ result }) {
     );
   }
   return (
-    <Card color={result.valid ? 'app-green' : 'default'} className="docs-verify-result">
+    <Card pattern={result.valid ? 'app-green' : 'none'} className="docs-verify-result">
       <div className="docs-verify-head">
         <strong>{t('docs.verify.foundTitle')}</strong>
         <Tag color={result.valid ? 'app-green' : 'app-red'} variant="soft">
@@ -60,7 +69,7 @@ function ResultCard({ result }) {
         <dd>{result.typeName}</dd>
         <dt>{t('docs.certDetail.certStatus')}</dt>
         <dd>
-          <Tag color={CERT_STATUS_COLORS[result.status]} variant="soft">
+          <Tag color={CERT_TAG_COLORS[result.status] || 'brown'} variant="soft">
             {t(`docs.certStatus.${result.status}`)}
           </Tag>
         </dd>
@@ -142,9 +151,11 @@ export default function DocsVerify() {
 
   return (
     <div className="docs-verify">
-      <Title size="middle" color="app-blue">
-        {t('docs.verify.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-blue">
+          {t('docs.verify.title')}
+        </Title>
+      </h1>
       <Card className="docs-block">
         <p className="muted-text">{t('docs.verify.tip')}</p>
         <div className="docs-verify-bar">
@@ -169,7 +180,7 @@ export default function DocsVerify() {
       <ResultCard result={result} />
 
       <Card className="docs-block">
-        <h3 className="docs-block-title">{t('docs.verify.historyTitle')}</h3>
+        <h2 className="docs-block-title">{t('docs.verify.historyTitle')}</h2>
         <Table className="table-fit"
           columns={resultColumns}
           dataSource={history?.items || []}

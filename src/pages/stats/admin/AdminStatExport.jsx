@@ -74,9 +74,11 @@ export default function AdminStatExport() {
     <div className="stat-admin-page">
       <StatsAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('stat.admin.export.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('stat.admin.export.title')}
+          </Title>
+        </h1>
         <Button icon={<RefreshIcon />} loading={loading} disabled={loading} onClick={load}>
           {t('stat.admin.export.refresh')}
         </Button>
@@ -108,9 +110,11 @@ export default function AdminStatExport() {
         </div>
       </Card>
 
-      <Title size="middle" color="app-blue">
-        {t('stat.admin.export.logsTitle')}
-      </Title>
+      <h2 className="section-title">
+        <Title size="middle" color="app-blue">
+          {t('stat.admin.export.logsTitle')}
+        </Title>
+      </h2>
       <Card>
         <Table
           className="table-fit"

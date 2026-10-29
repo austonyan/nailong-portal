@@ -82,7 +82,7 @@ export default function TourismAttractionDetail() {
         <Button size="small" icon={<ArrowLeftIcon />} onClick={() => navigate('/tourism/attractions')}>
           {t('tour.attractions.backToList')}
         </Button>
-        <Tag size="small" color={OPEN_STATE_COLORS[attraction.openState] || 'default'} variant="soft">
+        <Tag size="small" color={OPEN_STATE_COLORS[attraction.openState] || 'brown'} variant="soft">
           {t(`tour.openState.${attraction.openState}`)}
         </Tag>
       </div>
@@ -93,9 +93,9 @@ export default function TourismAttractionDetail() {
             <AttractionIcon type={attraction.type} size={30} />
           </span>
           <div>
-            <h2 className="tour-detail-title">{attraction.name}</h2>
+            <h1 className="page-title tour-detail-title">{attraction.name}</h1>
             <div className="tour-card-meta">
-              <Tag size="small" color={ATTRACTION_TYPE_COLORS[attraction.type] || 'default'} variant="soft">
+              <Tag size="small" color={ATTRACTION_TYPE_COLORS[attraction.type] || 'brown'} variant="soft">
                 {t(`tour.type.${attraction.type}`)}
               </Tag>
               <Tag size="small" variant="soft">

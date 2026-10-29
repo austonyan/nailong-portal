@@ -76,7 +76,9 @@ export default function AppealAdminInspect() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.inspect.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.inspect.title')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Button onClick={() => setCreateOpen(true)}>{t('appeal.inspect.createReport')}</Button>
         </div>
@@ -91,7 +93,7 @@ export default function AppealAdminInspect() {
       {summary && (
         <>
           <Card className="appeal-inspect-card">
-            <h4>{t('appeal.inspect.slaTitle')}</h4>
+            <h2 className="block-heading">{t('appeal.inspect.slaTitle')}</h2>
             <div className="appeal-stat-grid">
               <div className="appeal-stat-item">
                 <strong>{summary.avgAcceptHours}h</strong>
@@ -118,14 +120,14 @@ export default function AppealAdminInspect() {
           </Card>
 
           <Card className="appeal-inspect-card">
-            <h4>{t('appeal.inspect.anomalyTitle')}</h4>
+            <h2 className="block-heading">{t('appeal.inspect.anomalyTitle')}</h2>
             {summary.anomalies.highFrequency.length === 0 ? (
               <p className="muted-text">{t('appeal.inspect.noHighFrequency')}</p>
             ) : (
               <ul className="appeal-list">
                 {summary.anomalies.highFrequency.map((h) => (
                   <li key={h.actor_name}>
-                    <Tag color="app-orange" variant="soft">{h.actor_name}</Tag>
+                    <Tag color="app-red" variant="soft">{h.actor_name}</Tag>
                     {t('appeal.inspect.highFrequency', { count: h.n })}
                   </li>
                 ))}
@@ -135,7 +137,7 @@ export default function AppealAdminInspect() {
           </Card>
 
           <Card className="appeal-inspect-card">
-            <h4>{t('appeal.inspect.consistencyTitle')}</h4>
+            <h2 className="block-heading">{t('appeal.inspect.consistencyTitle')}</h2>
             <div className="appeal-dist-row">
               {summary.decisionDistribution.map((d) => (
                 <Tag key={d.type} variant="soft" color="app-blue">
@@ -145,7 +147,7 @@ export default function AppealAdminInspect() {
             </div>
             <div className="appeal-dist-row">
               {summary.bizDistribution.map((d) => (
-                <Tag key={d.type} variant="outlined">
+                <Tag key={d.type} variant="outlined" color="brown">
                   {t(`appeal.bizType.${d.type}`)}: {d.n}
                 </Tag>
               ))}
@@ -153,11 +155,11 @@ export default function AppealAdminInspect() {
           </Card>
 
           <Card className="appeal-inspect-card">
-            <h4>{t('appeal.inspect.integrationTitle')}</h4>
+            <h2 className="block-heading">{t('appeal.inspect.integrationTitle')}</h2>
             <p className="muted-text">{t('appeal.inspect.integrationLive')}</p>
             <div className="appeal-dist-row">
               {summary.integration.map((i) => (
-                <Tag key={i.bizType} variant="soft" color={i.integrated ? 'app-green' : 'default'}>
+                <Tag key={i.bizType} variant="soft" color={i.integrated ? 'app-green' : 'brown'}>
                   {t(`appeal.bizType.${i.bizType}`)} · {i.integrated ? t('appeal.inspect.integrated') : t('appeal.inspect.reserved')}
                 </Tag>
               ))}
@@ -177,7 +179,7 @@ export default function AppealAdminInspect() {
                 </p>
                 <div className="appeal-dist-row">
                   {sampleResult.byStatus.map((s) => (
-                    <Tag key={s.status} variant="outlined" size="small">
+                    <Tag key={s.status} variant="outlined" size="small" color="brown">
                       {s.status}: {s.n}
                     </Tag>
                   ))}
@@ -195,7 +197,7 @@ export default function AppealAdminInspect() {
           </Card>
 
           <Card className="appeal-inspect-card">
-            <h4>{t('appeal.inspect.reportsTitle')}</h4>
+            <h2 className="block-heading">{t('appeal.inspect.reportsTitle')}</h2>
             {reports.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
             <ul className="appeal-list">
               {reports.map((r) => (
@@ -214,7 +216,7 @@ export default function AppealAdminInspect() {
       )}
 
       <Card>
-        <h4>{t('appeal.inspect.recordsTitle')}</h4>
+        <h2 className="block-heading">{t('appeal.inspect.recordsTitle')}</h2>
         <Table className="table-fit" columns={recordColumns} dataSource={records} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 

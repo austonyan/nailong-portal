@@ -9,25 +9,25 @@ import { Tag } from 'animal-island-ui';
 import { toast } from '../../components/toast.js';
 
 export const APPLICATION_STATUS_COLORS = {
-  draft: 'default',
-  pending_review: 'app-yellow',
-  supplement_required: 'app-orange',
+  draft: 'brown',
+  pending_review: 'warm-peach-pink',
+  supplement_required: 'warm-peach-pink',
   approved: 'app-green',
   rejected: 'app-red',
   withdrawn: 'brown',
-  closed: 'default',
+  closed: 'brown',
 };
 
 export const CARD_STATUS_COLORS = {
   valid: 'app-green',
-  frozen: 'app-yellow',
+  frozen: 'warm-peach-pink',
   expired: 'brown',
   voided: 'app-red',
 };
 
 export const NOTICE_LEVEL_COLORS = {
   info: 'app-blue',
-  policy: 'app-yellow',
+  policy: 'warm-peach-pink',
   event: 'app-pink',
 };
 
@@ -86,9 +86,10 @@ export function ResQr({ value, size = 200 }) {
 
 export function StatusTag({ value, map, i18nPrefix }) {
   const { t } = useTranslation();
-  const style = (map && map[value]) || { color: 'default', variant: 'soft' };
+  // 映射表只存颜色名;状态标签统一 soft(实色/默认色对比度不足)
+  const color = (map && map[value]) || 'brown';
   return (
-    <Tag color={style.color} variant={style.variant}>
+    <Tag color={color} variant="soft">
       {t(`${i18nPrefix}.${value}`, { defaultValue: value })}
     </Tag>
   );

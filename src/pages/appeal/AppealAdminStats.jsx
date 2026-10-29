@@ -56,7 +56,9 @@ export default function AppealAdminStats() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.stats.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.stats.title')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Button loading={busy} onClick={doExport} disabled={busy}>
             {t('appeal.stats.export')}
@@ -65,7 +67,7 @@ export default function AppealAdminStats() {
       </div>
 
       <Card className="appeal-stats-card">
-        <h4>{t('appeal.stats.appealTitle')}</h4>
+        <h2 className="block-heading">{t('appeal.stats.appealTitle')}</h2>
         <div className="appeal-stat-grid">
           <StatCard label={t('appeal.stats.submitted')} value={stats.submitted} />
           <StatCard label={t('appeal.stats.acceptRate')} value={PCT(stats.acceptRate)} />
@@ -79,7 +81,7 @@ export default function AppealAdminStats() {
       </Card>
 
       <Card className="appeal-stats-card">
-        <h4>{t('appeal.stats.distTitle')}</h4>
+        <h2 className="block-heading">{t('appeal.stats.distTitle')}</h2>
         <div className="appeal-dist-row">
           {(stats.decisionDistribution ?? []).map((d) => (
             <Tag key={d.type} variant="soft" color="app-blue">
@@ -89,7 +91,7 @@ export default function AppealAdminStats() {
         </div>
         <div className="appeal-dist-row">
           {(stats.bizDistribution ?? []).map((d) => (
-            <Tag key={d.type} variant="outlined">
+            <Tag key={d.type} variant="outlined" color="brown">
               {t(`appeal.bizType.${d.type}`, { defaultValue: d.type })}: {d.n}
             </Tag>
           ))}
@@ -111,7 +113,7 @@ export default function AppealAdminStats() {
       </Card>
 
       <Card className="appeal-stats-card">
-        <h4>{t('appeal.stats.otherTitle')}</h4>
+        <h2 className="block-heading">{t('appeal.stats.otherTitle')}</h2>
         <div className="appeal-stat-grid">
           <StatCard label={t('appeal.stats.complaintSatisfaction')} value={stats.complaintSatisfaction ?? '-'} />
           <StatCard label={t('appeal.stats.verifyTotal')} value={stats.verifyTotal} />
@@ -130,7 +132,7 @@ export default function AppealAdminStats() {
             { title: t('appeal.stats.ticketStatus'), rows: ticketRows, prefix: 'appeal.ticketStatus' },
           ].map((block) => (
             <div key={block.prefix} className="appeal-stats-table">
-              <h4>{block.title}</h4>
+              <h2 className="block-heading">{block.title}</h2>
               <ul className="appeal-list">
                 {block.rows.map((r) => (
                   <li key={r.key}>

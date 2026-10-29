@@ -26,7 +26,7 @@ const STATUS_COLOR = {
   exited: 'app-green',
   established: 'app-green',
   active: 'app-green',
-  pending: 'app-yellow',
+  pending: 'warm-peach-pink',
   used: 'app-blue',
   expired: 'brown',
   voided: 'app-red',
@@ -97,7 +97,7 @@ export default function Certificates() {
       dataIndex: 'status',
       width: 110,
       render: (_, record) => (
-        <Tag color={STATUS_COLOR[record.status] || 'default'} variant="soft">
+        <Tag color={STATUS_COLOR[record.status] || 'brown'} variant="soft">
           {t(`certificates.status.${record.status}`, { defaultValue: record.status })}
         </Tag>
       ),
@@ -119,11 +119,13 @@ export default function Certificates() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('certificates.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('certificates.title')}</Title>
+        </h1>
         <p className="muted-text">{t('certificates.subtitle')}</p>
         {expiringCount > 0 && (
           <Card type="dashed" className="certificates-expiring">
-            <Tag color="app-orange" variant="soft">{expiringCount}</Tag>
+            <Tag color="warm-peach-pink" variant="soft">{expiringCount}</Tag>
             <span>{t('certificates.expiringSoon')}</span>
           </Card>
         )}

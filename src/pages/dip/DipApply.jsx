@@ -143,9 +143,11 @@ export default function DipApply() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <Title size="middle" color="purple">
-          {decl?.id ? t('dip.apply.editTitle') : t('dip.apply.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">
+            {decl?.id ? t('dip.apply.editTitle') : t('dip.apply.title')}
+          </Title>
+        </h1>
         {decl?.no && <Tag color="app-blue" variant="soft">{decl.no}</Tag>}
       </div>
 

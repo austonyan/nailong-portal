@@ -54,9 +54,11 @@ export default function TourismMy() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-pink">
-          {t('tour.my.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-pink">
+            {t('tour.my.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">
         {t('tour.my.todayLine', { today: data?.todayCheckins ?? 0, limit: data?.rules?.dailyLimit ?? 10 })}

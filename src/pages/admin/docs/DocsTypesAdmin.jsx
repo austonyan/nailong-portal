@@ -112,7 +112,7 @@ export default function DocsTypesAdmin() {
       dataIndex: 'enabled',
       width: 90,
       render: (v) => (
-        <Tag color={v ? 'app-green' : 'default'} variant="soft">
+        <Tag color={v ? 'app-green' : 'brown'} variant="soft">
           {v ? t('common.enabled') : t('common.disabled')}
         </Tag>
       ),
@@ -131,7 +131,9 @@ export default function DocsTypesAdmin() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.types.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.types.title')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('docs.admin.types.create')}
         </Button>
@@ -217,7 +219,7 @@ export default function DocsTypesAdmin() {
               </label>
             </div>
 
-            <h4>{t('docs.admin.types.materialsCol')}</h4>
+            <h2>{t('docs.admin.types.materialsCol')}</h2>
             <ListEditor
               labelKey={t('docs.admin.types.addMaterial')}
               rows={materials}
@@ -239,7 +241,7 @@ export default function DocsTypesAdmin() {
               )}
             />
 
-            <h4>{t('docs.admin.types.fields')}</h4>
+            <h2>{t('docs.admin.types.fields')}</h2>
             <ListEditor
               labelKey={t('docs.admin.types.addField')}
               rows={fields}

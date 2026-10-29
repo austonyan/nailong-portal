@@ -159,7 +159,7 @@ function BlacklistTab() {
   const columns = [
     { title: t('admin.users.username'), dataIndex: 'username', width: 130 },
     { title: t('admin.users.displayName'), dataIndex: 'display_name', width: 120 },
-    { title: t('imm.admin.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`imm.admin.blacklist.${v}`)}</Tag> },
+    { title: t('imm.admin.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'block' ? 'app-red' : 'warm-peach-pink'} variant="soft">{t(`imm.admin.blacklist.${v}`)}</Tag> },
     { title: t('imm.admin.blacklist.reason'), dataIndex: 'reason' },
     { title: t('common.createdAt'), dataIndex: 'created_at', width: 150, render: (v) => fmtDate(v) },
     {
@@ -254,7 +254,7 @@ function TemplatesTab() {
     { title: t('common.key'), dataIndex: 'code', width: 170 },
     { title: t('imm.admin.templates.title'), dataIndex: 'title', width: 240 },
     { title: t('imm.admin.templates.variables'), dataIndex: 'variables', width: 140, render: (v) => v || '-' },
-    { title: t('common.status'), dataIndex: 'enabled', width: 90, render: (v) => (v ? <Tag color="app-green" variant="soft">{t('common.enabled')}</Tag> : <Tag>{t('common.disabled')}</Tag>) },
+    { title: t('common.status'), dataIndex: 'enabled', width: 90, render: (v) => (v ? <Tag color="app-green" variant="soft">{t('common.enabled')}</Tag> : <Tag color="brown" variant="soft">{t('common.disabled')}</Tag>) },
     { title: t('imm.admin.templates.updatedAt'), dataIndex: 'updatedAt', width: 140, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
@@ -363,9 +363,11 @@ export default function AdminImAudit() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('imm.admin.audit.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.admin.audit.title')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <Tabs

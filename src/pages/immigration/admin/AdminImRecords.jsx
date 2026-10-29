@@ -224,9 +224,11 @@ export default function AdminImRecords() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('imm.records.adminTitle')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('imm.records.adminTitle')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <Tabs

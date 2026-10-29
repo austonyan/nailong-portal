@@ -88,9 +88,11 @@ export default function StatsReports() {
   return (
     <div className="stat-page">
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('stat.reports.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('stat.reports.title')}
+          </Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openGenerate}>
           {t('stat.reports.generate')}
         </Button>

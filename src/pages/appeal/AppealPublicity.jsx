@@ -31,14 +31,16 @@ export default function AppealPublicity() {
 
   return (
     <div className="appeal-publicity-page">
-      <Title size="middle" color="app-teal">
-        {t('appeal.publicity.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('appeal.publicity.title')}
+        </Title>
+      </h1>
       <p className="muted-text">{t('appeal.publicity.maskTip')}</p>
 
       {stats && (
         <Card className="appeal-stats-card">
-          <h4>{t('appeal.publicity.statsTitle')}</h4>
+          <h2 className="block-heading">{t('appeal.publicity.statsTitle')}</h2>
           <div className="appeal-stat-grid">
             <div className="appeal-stat-item">
               <strong>{stats.submitted}</strong>

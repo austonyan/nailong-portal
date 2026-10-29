@@ -127,7 +127,7 @@ export default function AdminServices() {
         );
       },
     },
-    { title: t('common.key'), dataIndex: 'key', width: 120, render: (v) => <Tag color="default" variant="outlined">{v}</Tag> },
+    { title: t('common.key'), dataIndex: 'key', width: 120, render: (v) => <Tag color="brown" variant="outlined">{v}</Tag> },
     {
       title: t('admin.services.url'),
       dataIndex: 'url',
@@ -182,7 +182,9 @@ export default function AdminServices() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('admin.services.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('admin.services.title')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('admin.services.create')}
         </Button>

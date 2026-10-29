@@ -8,17 +8,17 @@ import { fmtDateTime, toastVisaError } from './shared.jsx';
 
 const MESSAGE_COLORS = {
   submitted: 'app-blue',
-  supplement_required: 'app-orange',
+  supplement_required: 'warm-peach-pink',
   approved: 'app-green',
   rejected: 'app-red',
   issued: 'app-teal',
-  used: 'app-blue',
+  used: 'brown',
   voided: 'app-red',
   expired: 'brown',
-  closed: 'default',
+  closed: 'brown',
   withdrawn: 'brown',
-  expiry_reminder: 'app-yellow',
-  system: 'default',
+  expiry_reminder: 'warm-peach-pink',
+  system: 'brown',
 };
 
 export default function VisaMessages() {
@@ -61,6 +61,15 @@ export default function VisaMessages() {
     }
   };
 
+  // 消息卡是 div 上的 role="button":Enter/Space 与点击同一路径(标记已读),
+  // Space 必须 preventDefault,否则页面会跟着滚动。
+  const openByKey = (event, msg) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      markRead(msg);
+    }
+  };
+
   const formatParams = (msg) => {
     const p = { ...msg.params };
     if (p.deadline) p.deadline = fmtDateTime(p.deadline);
@@ -71,7 +80,9 @@ export default function VisaMessages() {
   return (
     <div className="visa-messages-page">
       <div className="page-header">
-        <Title size="middle">{t('visa.msgs.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.msgs.title')}</Title>
+        </h1>
         <div className="table-actions">
           <Button type={archivedView ? 'default' : 'primary'} icon={<InboxIcon />} onClick={() => setArchivedView(false)}>
             {t('visa.msgs.inbox')}
@@ -101,10 +112,13 @@ export default function VisaMessages() {
               key={msg.id}
               className={`visa-msg-card ${msg.read ? '' : 'unread'}`}
               hoverable
+              role="button"
+              tabIndex={0}
               onClick={() => markRead(msg)}
+              onKeyDown={(e) => openByKey(e, msg)}
             >
               <div className="visa-msg-head">
-                <Tag color={MESSAGE_COLORS[msg.type] || 'default'} variant="soft">
+                <Tag color={MESSAGE_COLORS[msg.type] || 'brown'} variant="soft">
                   {t(`visa.msgType.${msg.type}`)}
                 </Tag>
                 <strong>{t(`visa.msg.${msg.type}.title`, formatParams(msg))}</strong>

@@ -7,6 +7,7 @@ import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { AnnouncementLevelTag, CrowdMeter, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { fmtDate } from '../../lib/date.js';
 
 const QUICK_ENTRIES = [
   { to: '/immigration/declare', key: 'declare', icon: FileIcon, color: 'app-teal' },
@@ -47,9 +48,11 @@ export default function ImmigrationHome() {
     <div className="im-page">
       <ImNav />
       <Background type="sprinkles" className="im-hero">
-        <Title size="large" color="app-orange">
-          {t('imm.home.hero')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="large" color="app-orange">
+            {t('imm.home.hero')}
+          </Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="im-hero-sub">{t('imm.home.tagline')}</p>
         </Typewriter>
@@ -57,14 +60,14 @@ export default function ImmigrationHome() {
       </Background>
 
       <section className="im-home-status">
-        <Card className="im-status-card" color={port?.status === 'open' ? 'app-teal' : 'app-orange'}>
+        <Card className="im-status-card" pattern={port?.status === 'open' ? 'app-teal' : 'app-orange'}>
           <div className="im-status-head">
             <CompassIcon size={22} />
             <span>{t('imm.home.portStatus')}</span>
           </div>
           {port ? (
             <>
-              <h3 className="im-status-name">{port.name}</h3>
+              <h2 className="im-status-name">{port.name}</h2>
               <p className="muted-text">{port.code}</p>
               <div className="im-status-tags">
                 <StatusTag value={port.status} i18nPrefix="imm.portStatus" />
@@ -98,7 +101,7 @@ export default function ImmigrationHome() {
               {t('imm.home.unread')}: <b>{overview?.my?.unreadMessages ?? '…'}</b>
             </span>
             {overview?.my?.expiringEntries > 0 && (
-              <Tag color="app-orange" variant="soft" size="small">
+              <Tag color="warm-peach-pink" variant="soft" size="small">
                 {t('imm.home.expiring', { count: overview.my.expiringEntries })}
               </Tag>
             )}
@@ -107,14 +110,29 @@ export default function ImmigrationHome() {
       </section>
 
       <section>
-        <Title size="middle" color="app-orange">
-          {t('imm.home.quickEntries')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">
+            {t('imm.home.quickEntries')}
+          </Title>
+        </h2>
         <div className="im-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
             return (
-              <Card key={entry.key} color={entry.color} hoverable className="im-quick-card" onClick={() => navigate(entry.to)}>
+              <Card
+                key={entry.key}
+                pattern={entry.color}
+                hoverable
+                className="im-quick-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(entry.to)}
+                onKeyDown={(e) => {
+                  if (e.key !== 'Enter' && e.key !== ' ') return;
+                  if (e.key === ' ') e.preventDefault();
+                  navigate(entry.to);
+                }}
+              >
                 <Icon size={30} />
                 <h3>{t(`imm.nav.${entry.key}`)}</h3>
               </Card>
@@ -126,16 +144,18 @@ export default function ImmigrationHome() {
       <Divider type="wave-yellow" />
 
       <section>
-        <Title size="middle" color="app-teal">
-          {t('imm.home.announcements')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.home.announcements')}
+          </Title>
+        </h2>
         <div className="im-ann-list">
           {(overview?.announcements ?? []).map((a) => (
             <Card key={a.id} className="im-ann-item">
               <div className="im-ann-head">
                 <AnnouncementLevelTag level={a.level} />
                 <b>{a.title}</b>
-                <span className="muted-text">{a.publishedAt?.slice(0, 10)}</span>
+                <span className="muted-text">{fmtDate(a.publishedAt)}</span>
               </div>
               <p className="im-ann-body">{a.body}</p>
             </Card>
@@ -149,7 +169,9 @@ export default function ImmigrationHome() {
       </section>
 
       <section>
-        <Title size="middle">{t('imm.home.faq')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('imm.home.faq')}</Title>
+        </h2>
         <div className="im-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`imm.faq.${key}.q`)} answer={t(`imm.faq.${key}.a`)} />
@@ -157,7 +179,7 @@ export default function ImmigrationHome() {
         </div>
       </section>
 
-      <Card color="app-yellow" className="im-fraud-card">
+      <Card pattern="app-yellow" className="im-fraud-card">
         <b>{t('imm.fraud.title')}</b>
         <p>{t('imm.fraud.body')}</p>
         <Link to="/immigration/help" className="im-link">

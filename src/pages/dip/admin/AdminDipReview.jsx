@@ -566,7 +566,9 @@ export default function AdminDipReview() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.admin.reviewTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.admin.reviewTitle')}</Title>
+        </h1>
         <div className="dip-msg-filter">
           <Button type={kind === 'relation' ? 'primary' : 'default'} size="small" onClick={() => { setKind('relation'); setStatus('pending_review'); }}>
             {t('dip.admin.tabRelations')}

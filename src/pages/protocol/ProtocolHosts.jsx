@@ -28,6 +28,16 @@ import { toastSuccess } from './shared.jsx';
 const HOST_TYPES = ['organizer', 'community', 'diplomatic', 'resident_group'];
 const EMPTY = { type: 'organizer', name: '', contactNickname: '', contact: '', intro: '' };
 
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
+
 export default function ProtocolHosts() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
@@ -158,11 +168,13 @@ export default function ProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.hosts.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.hosts.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.hosts.subtitle')}</p>
       </div>
 
-      <Card color="app-blue" className="protocol-info-card">
+      <Card pattern="app-blue" className="protocol-info-card">
         <UserPlusIcon size={20} />
         <p>{t('protocol.hosts.intro')}</p>
         <Button type="primary" size="small" icon={<PlusIcon />} onClick={openNew}>
@@ -177,12 +189,20 @@ export default function ProtocolHosts() {
           </Card>
         )}
         {(items ?? []).map((host) => (
-          <Card key={host.id} className="protocol-host-card" hoverable onClick={() => openEdit(host)}>
+          <Card
+            key={host.id}
+            className="protocol-host-card"
+            hoverable
+            role="button"
+            tabIndex={0}
+            onClick={() => openEdit(host)}
+            onKeyDown={cardKeyDown(() => openEdit(host))}
+          >
             <div className="protocol-host-head">
               <Tag color="app-teal" variant="solid">{t(`protocol.hostType.${host.type}`)}</Tag>
               <StatusTag status={host.status} />
             </div>
-            <h3>{host.name || t('protocol.hosts.unnamed')}</h3>
+            <h2>{host.name || t('protocol.hosts.unnamed')}</h2>
             <p className="protocol-host-no">{host.hostNo}</p>
             <div className="protocol-host-meta">
               <span>{t('protocol.field.contactNickname')}: {host.contactNickname || '-'}</span>
@@ -325,7 +345,7 @@ export default function ProtocolHosts() {
             </ul>
 
             {editing !== 'new' && editing.rejectComment && (
-              <Card color="app-red">
+              <Card pattern="app-red">
                 <strong>{t('protocol.field.rejectReason')}</strong>
                 <p>{editing.rejectComment}</p>
               </Card>

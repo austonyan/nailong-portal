@@ -117,9 +117,11 @@ export default function AdminArchRules() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          <SlidersIcon size={18} /> {t('arch.admin.rules.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            <SlidersIcon size={18} /> {t('arch.admin.rules.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

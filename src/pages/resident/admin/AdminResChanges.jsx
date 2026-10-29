@@ -9,10 +9,10 @@ import { CHANGE_TYPES, TextArea, fmtDateTime, toastResError } from '../shared.js
 import { toastSuccess } from '../../../components/toast.js';
 
 const CHANGE_STATUS_COLORS = {
-  pending_review: 'app-yellow',
+  pending_review: 'warm-peach-pink',
   approved: 'app-green',
   rejected: 'app-red',
-  cancelled: 'default',
+  cancelled: 'brown',
 };
 
 export default function AdminResChanges() {
@@ -98,7 +98,7 @@ export default function AdminResChanges() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag color={CHANGE_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={CHANGE_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`res.changeStatus.${v}`)}
         </Tag>
       ),
@@ -126,7 +126,9 @@ export default function AdminResChanges() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.changes.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.changes.title')}</Title>
+        </h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}

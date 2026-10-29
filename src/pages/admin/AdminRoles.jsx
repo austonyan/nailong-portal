@@ -103,7 +103,7 @@ export default function AdminRoles() {
       title: t('admin.roles.permissions'),
       dataIndex: 'permissions',
       render: (perms) => perms.map((p) => (
-        <Tag key={p} color="app-yellow" variant="soft" size="small">
+        <Tag key={p} color="app-blue" variant="soft" size="small">
           {p}
         </Tag>
       )),
@@ -114,7 +114,7 @@ export default function AdminRoles() {
       dataIndex: 'isSystem',
       width: 80,
       align: 'center',
-      render: (v) => (v ? <Tag color="purple" variant="solid">{t('common.yes')}</Tag> : '-'),
+      render: (v) => (v ? <Tag color="purple" variant="soft">{t('common.yes')}</Tag> : '-'),
     },
     {
       title: t('common.actions'),
@@ -143,7 +143,9 @@ export default function AdminRoles() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('admin.roles.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('admin.roles.title')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('admin.roles.create')}
         </Button>

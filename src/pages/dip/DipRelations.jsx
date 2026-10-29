@@ -87,7 +87,7 @@ function RelationDetail({ id, onClose, onChanged }) {
       </Card>
 
       {r.status === 'rejected' && (
-        <Card color="app-red" className="dip-reject-card">
+        <Card pattern="app-red" className="dip-reject-card">
           <b>{t('dip.relation.rejected')}</b>
           <p>{t(`dip.rejectReason.${r.rejectCode ?? 'other'}`)}</p>
           {r.rejectComment && <p className="muted-text">{r.rejectComment}</p>}
@@ -95,14 +95,14 @@ function RelationDetail({ id, onClose, onChanged }) {
       )}
 
       {r.status === 'suspended' && (
-        <Card color="app-orange">
+        <Card pattern="app-orange">
           <b>{t('dip.relation.suspendedTitle')}</b>
           <p>{r.suspendReason}</p>
         </Card>
       )}
 
       {r.status === 'supplement_required' && (
-        <Card color="app-orange">
+        <Card pattern="app-orange">
           <b>{t('dip.relation.supplementRequired')}</b>
           <p>{r.supplementNote}</p>
           {r.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: fmtDate(r.supplementDeadline) })}</p>}
@@ -294,9 +294,11 @@ export default function DipRelations() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <Title size="middle" color="purple">
-          {t('dip.relation.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">
+            {t('dip.relation.title')}
+          </Title>
+        </h1>
         <Link to="/dip/apply">
           <Button type="primary" icon={<PlusIcon />}>{t('dip.nav.apply')}</Button>
         </Link>

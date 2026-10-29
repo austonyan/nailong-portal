@@ -9,34 +9,37 @@ import { Tag } from 'animal-island-ui';
 import { getAccessToken } from '../../api/client.js';
 import { toast } from '../../components/toast.js';
 
+// 状态语义 → 标签配色:成功/通过/有效/已使用=app-green,驳回/拒绝/作废/撤销/冻结=app-red,
+// 待处理/审核中/候补/补件/待使用=warm-peach-pink,进行中/报名中=app-blue,
+// 草稿/结束/截止/过期=brown。状态标签一律 variant="soft"。
 const STATUS_STYLE = {
-  draft: { color: 'default', variant: 'outlined' },
-  pending_publish: { color: 'app-yellow', variant: 'soft' },
-  registration: { color: 'app-green', variant: 'solid' },
-  registration_closed: { color: 'app-yellow', variant: 'soft' },
-  ongoing: { color: 'app-teal', variant: 'solid' },
-  ended: { color: 'default', variant: 'soft' },
+  draft: { color: 'brown', variant: 'soft' },
+  pending_publish: { color: 'warm-peach-pink', variant: 'soft' },
+  registration: { color: 'app-blue', variant: 'soft' },
+  registration_closed: { color: 'brown', variant: 'soft' },
+  ongoing: { color: 'app-blue', variant: 'soft' },
+  ended: { color: 'brown', variant: 'soft' },
   cancelled: { color: 'app-red', variant: 'soft' },
-  pending_review: { color: 'app-yellow', variant: 'soft' },
-  approved: { color: 'app-green', variant: 'solid' },
-  waitlisted: { color: 'app-orange', variant: 'soft' },
+  pending_review: { color: 'warm-peach-pink', variant: 'soft' },
+  approved: { color: 'app-green', variant: 'soft' },
+  waitlisted: { color: 'warm-peach-pink', variant: 'soft' },
   rejected: { color: 'app-red', variant: 'soft' },
-  checked_in: { color: 'app-teal', variant: 'solid' },
+  checked_in: { color: 'app-green', variant: 'soft' },
   finished: { color: 'brown', variant: 'soft' },
-  valid: { color: 'app-green', variant: 'solid' },
-  used: { color: 'app-blue', variant: 'soft' },
-  expired: { color: 'default', variant: 'soft' },
-  revoked: { color: 'app-red', variant: 'dashed' },
-  certified: { color: 'app-green', variant: 'solid' },
-  frozen: { color: 'app-orange', variant: 'soft' },
-  supplement_required: { color: 'app-orange', variant: 'soft' },
-  pending: { color: 'app-yellow', variant: 'soft' },
-  voided: { color: 'app-red', variant: 'dashed' },
+  valid: { color: 'app-green', variant: 'soft' },
+  used: { color: 'app-green', variant: 'soft' },
+  expired: { color: 'brown', variant: 'soft' },
+  revoked: { color: 'app-red', variant: 'soft' },
+  certified: { color: 'app-green', variant: 'soft' },
+  frozen: { color: 'warm-peach-pink', variant: 'soft' },
+  supplement_required: { color: 'warm-peach-pink', variant: 'soft' },
+  pending: { color: 'warm-peach-pink', variant: 'soft' },
+  voided: { color: 'app-red', variant: 'soft' },
 };
 
 export function StatusTag({ status, size }) {
   const { t } = useTranslation();
-  const style = STATUS_STYLE[status] ?? { color: 'default', variant: 'soft' };
+  const style = STATUS_STYLE[status] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size={size}>
       {t(`protocol.status.${status}`, { defaultValue: status })}
@@ -45,57 +48,57 @@ export function StatusTag({ status, size }) {
 }
 
 export const EVENT_STATUS_COLORS = {
-  draft: 'default',
-  pending_publish: 'app-yellow',
-  registration: 'app-green',
-  registration_closed: 'app-yellow',
-  ongoing: 'app-teal',
+  draft: 'brown',
+  pending_publish: 'warm-peach-pink',
+  registration: 'app-blue',
+  registration_closed: 'brown',
+  ongoing: 'app-blue',
   ended: 'brown',
   cancelled: 'app-red',
 };
 
 export const REG_STATUS_COLORS = {
-  draft: 'default',
-  pending_review: 'app-yellow',
+  draft: 'brown',
+  pending_review: 'warm-peach-pink',
   approved: 'app-green',
-  waitlisted: 'app-orange',
+  waitlisted: 'warm-peach-pink',
   rejected: 'app-red',
-  cancelled: 'default',
-  checked_in: 'app-teal',
+  cancelled: 'app-red',
+  checked_in: 'app-green',
   finished: 'brown',
 };
 
 export const INV_STATUS_COLORS = {
   valid: 'app-green',
-  used: 'app-blue',
-  expired: 'default',
+  used: 'app-green',
+  expired: 'brown',
   revoked: 'app-red',
 };
 
 export const PASS_STATUS_COLORS = {
-  pending: 'app-yellow',
-  used: 'app-blue',
-  expired: 'default',
+  pending: 'warm-peach-pink',
+  used: 'app-green',
+  expired: 'brown',
   voided: 'app-red',
 };
 
 export const HOST_STATUS_COLORS = {
-  draft: 'default',
-  pending_review: 'app-yellow',
-  supplement_required: 'app-orange',
+  draft: 'brown',
+  pending_review: 'warm-peach-pink',
+  supplement_required: 'warm-peach-pink',
   certified: 'app-green',
-  frozen: 'app-orange',
+  frozen: 'warm-peach-pink',
   rejected: 'app-red',
   revoked: 'app-red',
 };
 
 export const COURTESY_STATUS_COLORS = {
-  pending_review: 'app-yellow',
+  pending_review: 'warm-peach-pink',
   approved: 'app-green',
   rejected: 'app-red',
-  used: 'app-blue',
-  cancelled: 'default',
-  expired: 'default',
+  used: 'app-green',
+  cancelled: 'app-red',
+  expired: 'brown',
 };
 
 export function fmtDate(iso) {

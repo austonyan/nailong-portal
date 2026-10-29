@@ -60,9 +60,11 @@ export default function AdminTourRules() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-yellow">
-          {t('tour.admin.rules.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('tour.admin.rules.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card className="tour-config-card">

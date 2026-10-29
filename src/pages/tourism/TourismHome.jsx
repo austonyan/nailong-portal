@@ -50,12 +50,21 @@ export default function TourismHome() {
   const stats = home?.stats ?? {};
   const rules = home?.rules ?? {};
 
+  const cardKeyDown = (action) => (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+  };
+
   return (
     <div className="tour-page">
       <Background type="sprinkles" className="tour-hero">
-        <Title size="large" color="app-pink">
-          {t('tour.home.hero')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="large" color="app-pink">
+            {t('tour.home.hero')}
+          </Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="tour-hero-sub">{t('tour.home.tagline')}</p>
         </Typewriter>
@@ -82,16 +91,26 @@ export default function TourismHome() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <Title size="middle" color="app-orange">
-            {t('tour.home.recommendations')}
-          </Title>
+          <h2 className="section-title">
+            <Title size="middle" color="app-orange">
+              {t('tour.home.recommendations')}
+            </Title>
+          </h2>
           <Button size="small" onClick={() => navigate('/tourism/attractions')}>
             {t('tour.home.viewAll')}
           </Button>
         </div>
         <div className="tour-card-grid">
           {(home?.recommendations ?? []).map((item) => (
-            <Card key={item.id} hoverable className="tour-attraction-card" onClick={() => navigate(`/tourism/attractions/${item.id}`)}>
+            <Card
+              key={item.id}
+              hoverable
+              role="button"
+              tabIndex={0}
+              className="tour-attraction-card"
+              onClick={() => navigate(`/tourism/attractions/${item.id}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/tourism/attractions/${item.id}`))}
+            >
               <div className="tour-card-head">
                 <span className="tour-card-icon">
                   <AttractionIcon type={item.type} />
@@ -99,10 +118,10 @@ export default function TourismHome() {
                 <div>
                   <h3 className="tour-card-title">{item.name}</h3>
                   <div className="tour-card-meta">
-                    <Tag size="small" color={ATTRACTION_TYPE_COLORS[item.type] || 'default'} variant="soft">
+                    <Tag size="small" color={ATTRACTION_TYPE_COLORS[item.type] || 'brown'} variant="soft">
                       {t(`tour.type.${item.type}`)}
                     </Tag>
-                    <Tag size="small" color={OPEN_STATE_COLORS[item.openState] || 'default'} variant="soft">
+                    <Tag size="small" color={OPEN_STATE_COLORS[item.openState] || 'brown'} variant="soft">
                       {t(`tour.openState.${item.openState}`)}
                     </Tag>
                   </div>
@@ -122,15 +141,26 @@ export default function TourismHome() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <Title size="middle" color="app-teal">
-            {t('tour.home.quickEntries')}
-          </Title>
+          <h2 className="section-title">
+            <Title size="middle" color="app-teal">
+              {t('tour.home.quickEntries')}
+            </Title>
+          </h2>
         </div>
         <div className="tour-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
             return (
-              <Card key={entry.key} color={entry.color} hoverable className="tour-quick-card" onClick={() => navigate(entry.to)}>
+              <Card
+                key={entry.key}
+                pattern={entry.color}
+                hoverable
+                role="button"
+                tabIndex={0}
+                className="tour-quick-card"
+                onClick={() => navigate(entry.to)}
+                onKeyDown={cardKeyDown(() => navigate(entry.to))}
+              >
                 <Icon size={30} />
                 <h3>{t(`tour.nav.${entry.key}`)}</h3>
               </Card>
@@ -143,9 +173,11 @@ export default function TourismHome() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <Title size="middle" color="app-yellow">
-            {t('tour.home.festivals')}
-          </Title>
+          <h2 className="section-title">
+            <Title size="middle" color="app-yellow">
+              {t('tour.home.festivals')}
+            </Title>
+          </h2>
           <Button size="small" onClick={() => navigate('/tourism/articles')}>
             {t('tour.home.viewAllArticles')}
           </Button>
@@ -155,11 +187,14 @@ export default function TourismHome() {
             <Card
               key={article.id}
               hoverable
+              role="button"
+              tabIndex={0}
               className="tour-article-card"
               onClick={() => navigate(`/tourism/articles/${article.id}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/tourism/articles/${article.id}`))}
             >
               <div className="tour-ann-head">
-                <Tag size="small" color={ARTICLE_TYPE_COLORS[article.type] || 'default'} variant="soft">
+                <Tag size="small" color={ARTICLE_TYPE_COLORS[article.type] || 'brown'} variant="soft">
                   {t(`tour.articleType.${article.type}`)}
                 </Tag>
                 <b>{article.title}</b>

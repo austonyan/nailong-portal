@@ -97,7 +97,8 @@
     "recentOnly": "僅顯示最近 {{count}} 則",
     "loadFailed": "載入失敗,請稍後重試",
     "readState": "已讀",
-    "unreadState": "未讀"
+    "unreadState": "未讀",
+    "skipToContent": "跳至主內容"
   },
   "autoApprove": {
     "title": "自動審批",

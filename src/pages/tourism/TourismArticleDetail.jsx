@@ -55,12 +55,12 @@ export default function TourismArticleDetail() {
         <Button size="small" icon={<ArrowLeftIcon />} onClick={() => navigate('/tourism/articles')}>
           {t('tour.articles.backToList')}
         </Button>
-        <Tag size="small" color={ARTICLE_TYPE_COLORS[article.type] || 'default'} variant="soft">
+        <Tag size="small" color={ARTICLE_TYPE_COLORS[article.type] || 'brown'} variant="soft">
           {t(`tour.articleType.${article.type}`)}
         </Tag>
       </div>
       <Card>
-        <h2 className="tour-detail-title">{article.title}</h2>
+        <h1 className="page-title tour-detail-title">{article.title}</h1>
         <p className="tour-meta-line">
           {article.no} · {fmtDate(article.publishedAt)}
         </p>

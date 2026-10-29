@@ -74,7 +74,7 @@ export default function AdminResRisk() {
       dataIndex: 'applications',
       width: 120,
       render: (v) => (
-        <Tag color={v >= 3 ? 'app-red' : 'app-yellow'} variant="soft">
+        <Tag color={v >= 3 ? 'app-red' : 'warm-peach-pink'} variant="soft">
           {v}
         </Tag>
       ),
@@ -102,7 +102,9 @@ export default function AdminResRisk() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.risk.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.risk.title')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => { setUserId(''); setReason(''); setAddOpen(true); }}>
           {t('res.admin.risk.add')}
         </Button>
@@ -124,13 +126,13 @@ export default function AdminResRisk() {
       </div>
 
       <Card>
-        <h4>{t('res.admin.risk.duplicateTitle')}</h4>
+        <h2 className="block-heading">{t('res.admin.risk.duplicateTitle')}</h2>
         <p className="muted-text">{t('res.admin.risk.duplicateTip')}</p>
         <Table className="table-fit" columns={dupColumns} dataSource={risk?.duplicates ?? []} loading={risk === null} rowKey="user_id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Card>
-        <h4>{t('res.admin.risk.blacklistTitle')}</h4>
+        <h2 className="block-heading">{t('res.admin.risk.blacklistTitle')}</h2>
         <Table className="table-fit" columns={blacklistColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 

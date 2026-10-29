@@ -8,32 +8,35 @@ import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import { Progress, Tag } from 'animal-island-ui';
 
+// 状态标签配色(Foundations §1.4):待处理/补件/维护 → warm-peach-pink,
+// 已通过/有效/开放 → app-green,已入境 → app-teal,已出境/已使用 → app-blue,
+// 驳回/作废/失效/拦截 → app-red,草稿/关闭/撤销/过期/未知 → brown。统一 soft。
 const STATUS_TAG = {
-  draft: { color: 'default', variant: 'outlined' },
-  pending: { color: 'app-yellow', variant: 'soft' },
-  supplement: { color: 'app-orange', variant: 'soft' },
+  draft: { color: 'brown', variant: 'soft' },
+  pending: { color: 'warm-peach-pink', variant: 'soft' },
+  supplement: { color: 'warm-peach-pink', variant: 'soft' },
   approved: { color: 'app-green', variant: 'soft' },
   rejected: { color: 'app-red', variant: 'soft' },
-  entered: { color: 'app-teal', variant: 'solid' },
+  entered: { color: 'app-teal', variant: 'soft' },
   exited: { color: 'app-blue', variant: 'soft' },
-  withdrawn: { color: 'default', variant: 'soft' },
+  withdrawn: { color: 'brown', variant: 'soft' },
   unused: { color: 'app-green', variant: 'soft' },
-  used: { color: 'app-blue', variant: 'soft' },
-  expired: { color: 'default', variant: 'soft' },
+  used: { color: 'app-green', variant: 'soft' },
+  expired: { color: 'brown', variant: 'soft' },
   voided: { color: 'app-red', variant: 'soft' },
-  invalid: { color: 'app-red', variant: 'dashed' },
-  open: { color: 'app-green', variant: 'solid' },
-  closed: { color: 'app-red', variant: 'solid' },
-  maintenance: { color: 'app-yellow', variant: 'soft' },
+  invalid: { color: 'app-red', variant: 'soft' },
+  open: { color: 'app-green', variant: 'soft' },
+  closed: { color: 'brown', variant: 'soft' },
+  maintenance: { color: 'warm-peach-pink', variant: 'soft' },
   accepted: { color: 'app-green', variant: 'soft' },
-  unknown: { color: 'default', variant: 'outlined' },
-  port_closed: { color: 'app-orange', variant: 'soft' },
+  unknown: { color: 'brown', variant: 'soft' },
+  port_closed: { color: 'warm-peach-pink', variant: 'soft' },
   visa_blocked: { color: 'app-red', variant: 'soft' },
 };
 
 export function StatusTag({ value, i18nPrefix = 'imm.status' }) {
   const { t } = useTranslation();
-  const style = STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
+  const style = STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
       {t(`${i18nPrefix}.${value}`, { defaultValue: value })}
@@ -43,8 +46,8 @@ export function StatusTag({ value, i18nPrefix = 'imm.status' }) {
 
 const LEVEL_TAG = {
   info: { color: 'app-blue', variant: 'soft' },
-  warning: { color: 'app-yellow', variant: 'soft' },
-  critical: { color: 'app-red', variant: 'solid' },
+  warning: { color: 'warm-peach-pink', variant: 'soft' },
+  critical: { color: 'app-red', variant: 'soft' },
 };
 
 export function AnnouncementLevelTag({ level }) {

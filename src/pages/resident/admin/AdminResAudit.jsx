@@ -42,7 +42,9 @@ export default function AdminResAudit() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.audit.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.audit.title')}</Title>
+        </h1>
         <div className="table-actions res-filter-bar">
           <Input size="middle" allowClear prefix={<SearchIcon size={14} />} placeholder={t('res.admin.audit.actionPlaceholder')} value={action} onChange={(e) => setAction(e.target.value)} />
           <Button icon={<DownloadIcon />} onClick={() => downloadResidentFile('/resident/admin/audit.csv', 'resident-audit.csv').catch((err) => toastResError(t, err))}>

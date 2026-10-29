@@ -69,7 +69,7 @@ export default function DipShell({ permission, children }) {
         }
       >
         <div className="dip-sso-body">
-          <Card color="purple" className="dip-sso-card">
+          <Card pattern="purple" className="dip-sso-card">
             <div className="dip-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

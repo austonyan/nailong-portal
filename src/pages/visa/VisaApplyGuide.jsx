@@ -51,12 +51,14 @@ export default function VisaApplyGuide() {
 
   return (
     <div className="visa-guide-page">
-      <Title size="middle" color="app-teal">
-        {t('visa.applyGuide.title', { name: type.name })}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('visa.applyGuide.title', { name: type.name })}
+        </Title>
+      </h1>
 
       <Card className="visa-guide-type-card">
-        <h3>{type.name}</h3>
+        <h2>{type.name}</h2>
         <p>{type.description || type.guide}</p>
         <div className="visa-type-meta">
           <Tag variant="outlined">{t('visa.typeMeta.stay', { days: type.stayDays })}</Tag>
@@ -66,9 +68,9 @@ export default function VisaApplyGuide() {
       </Card>
 
       <Card className="visa-guide-materials">
-        <h4>
+        <h2 className="block-heading">
           <FileIcon size={18} /> {t('visa.applyGuide.materialsTitle')}
-        </h4>
+        </h2>
         <ul className="visa-material-list">
           <li>{t('visa.applyGuide.materialAvatar')}</li>
           <li>{t('visa.applyGuide.materialItinerary')}</li>
@@ -78,9 +80,9 @@ export default function VisaApplyGuide() {
       </Card>
 
       <Card className="visa-guide-quiz">
-        <h4>
+        <h2 className="block-heading">
           <HelpCircleIcon size={18} /> {t('visa.applyGuide.quizTitle')}
-        </h4>
+        </h2>
         <p className="muted-text">{t('visa.applyGuide.quizHint')}</p>
         {QUIZ.map((key) => (
           <div key={key} className="visa-quiz-item">
@@ -104,7 +106,7 @@ export default function VisaApplyGuide() {
       </Card>
 
       <Card className="visa-guide-agreement">
-        <h4>{t('visa.applyGuide.agreementTitle')}</h4>
+        <h2 className="block-heading">{t('visa.applyGuide.agreementTitle')}</h2>
         <Checkbox
           options={agreementOptions}
           value={agreed}

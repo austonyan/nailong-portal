@@ -48,9 +48,11 @@ export default function AdminTourAudit() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-red">
-          {t('tour.admin.audit.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-red">
+            {t('tour.admin.audit.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

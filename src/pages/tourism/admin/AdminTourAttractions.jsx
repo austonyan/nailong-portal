@@ -177,7 +177,7 @@ export default function AdminTourAttractions() {
       dataIndex: 'type',
       width: 90,
       render: (v) => (
-        <Tag size="small" color={ATTRACTION_TYPE_COLORS[v] || 'default'} variant="soft">
+        <Tag size="small" color={ATTRACTION_TYPE_COLORS[v] || 'brown'} variant="soft">
           {t(`tour.type.${v}`)}
         </Tag>
       ),
@@ -187,7 +187,7 @@ export default function AdminTourAttractions() {
       dataIndex: 'openState',
       width: 90,
       render: (v) => (
-        <Tag size="small" color={OPEN_STATE_COLORS[v] || 'default'} variant="soft">
+        <Tag size="small" color={OPEN_STATE_COLORS[v] || 'brown'} variant="soft">
           {t(`tour.openState.${v}`)}
         </Tag>
       ),
@@ -197,7 +197,7 @@ export default function AdminTourAttractions() {
       dataIndex: 'status',
       width: 80,
       render: (v) => (
-        <Tag size="small" color={v === 'online' ? 'app-green' : 'default'} variant="soft">
+        <Tag size="small" color={v === 'online' ? 'app-green' : 'brown'} variant="soft">
           {t(v === 'online' ? 'tour.admin.status.online' : 'tour.admin.status.offline')}
         </Tag>
       ),
@@ -228,9 +228,11 @@ export default function AdminTourAttractions() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('tour.admin.attractions.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('tour.admin.attractions.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

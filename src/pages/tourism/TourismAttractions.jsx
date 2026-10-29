@@ -44,12 +44,21 @@ export default function TourismAttractions() {
     ...ATTRACTION_TYPES.map((value) => ({ key: value, label: t(`tour.type.${value}`) })),
   ];
 
+  const cardKeyDown = (action) => (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+  };
+
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('tour.attractions.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('tour.attractions.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('tour.attractions.tip')}</p>
 
@@ -69,18 +78,26 @@ export default function TourismAttractions() {
 
       <div className="tour-card-grid">
         {(items ?? []).map((item) => (
-          <Card key={item.id} hoverable className="tour-attraction-card" onClick={() => navigate(`/tourism/attractions/${item.id}`)}>
+          <Card
+            key={item.id}
+            hoverable
+            role="button"
+            tabIndex={0}
+            className="tour-attraction-card"
+            onClick={() => navigate(`/tourism/attractions/${item.id}`)}
+            onKeyDown={cardKeyDown(() => navigate(`/tourism/attractions/${item.id}`))}
+          >
             <div className="tour-card-head">
               <span className="tour-card-icon">
                 <AttractionIcon type={item.type} />
               </span>
               <div>
-                <h3 className="tour-card-title">{item.name}</h3>
+                <h2 className="tour-card-title">{item.name}</h2>
                 <div className="tour-card-meta">
-                  <Tag size="small" color={ATTRACTION_TYPE_COLORS[item.type] || 'default'} variant="soft">
+                  <Tag size="small" color={ATTRACTION_TYPE_COLORS[item.type] || 'brown'} variant="soft">
                     {t(`tour.type.${item.type}`)}
                   </Tag>
-                  <Tag size="small" color={OPEN_STATE_COLORS[item.openState] || 'default'} variant="soft">
+                  <Tag size="small" color={OPEN_STATE_COLORS[item.openState] || 'brown'} variant="soft">
                     {t(`tour.openState.${item.openState}`)}
                   </Tag>
                 </div>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Badge, Button, Card, Pagination, Select, Tag, Title } from 'animal-island-ui';
 import {
   AlertCircleIcon,
@@ -32,7 +32,6 @@ const MSG_ICONS = {
 
 export default function DocsMessages() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [box, setBox] = useState('inbox');
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
@@ -90,7 +89,9 @@ export default function DocsMessages() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.msg.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.msg.title')}</Title>
+        </h1>
         <div className="table-actions">
           <Select
             value={box}
@@ -130,33 +131,34 @@ export default function DocsMessages() {
         <div className="docs-msg-list">
           {items.map((m) => {
             const Icon = MSG_ICONS[m.type] || BellIcon;
+            const body = (
+              <>
+                <strong>{t(`docMsg.${m.type}.title`, { ...m.params, defaultValue: t('docMsg.system.title') })}</strong>
+                <p className="muted-text">
+                  {t(`docMsg.${m.type}.body`, {
+                    ...m.params,
+                    // 驳回/撤销的参数里是原因码,渲染前先翻译
+                    reason: m.params?.reasonCode ? t(`docs.reason.${m.params.reasonCode}`, { defaultValue: m.params.reasonCode }) : m.params?.reason,
+                    defaultValue: '',
+                  })}
+                </p>
+                <span className="docs-msg-time muted-text">{fmtDateTime(m.createdAt)}</span>
+              </>
+            );
             return (
-              <Card
-                key={m.id}
-                className={m.read ? 'docs-msg-item' : 'docs-msg-item unread'}
-                hoverable
-                onClick={() => {
-                  markRead(m);
-                  if (m.applicationId) navigate(`/docs/applications/${m.applicationId}`);
-                }}
-              >
+              <Card key={m.id} className={m.read ? 'docs-msg-item' : 'docs-msg-item unread'} hoverable>
                 <span className="docs-msg-icon">
                   <Badge dot={!m.read} color="app-red">
                     <Icon size={22} />
                   </Badge>
                 </span>
-                <div className="docs-msg-body">
-                  <strong>{t(`docMsg.${m.type}.title`, { ...m.params, defaultValue: t('docMsg.system.title') })}</strong>
-                  <p className="muted-text">
-                    {t(`docMsg.${m.type}.body`, {
-                      ...m.params,
-                      // 驳回/撤销的参数里是原因码,渲染前先翻译
-                      reason: m.params?.reasonCode ? t(`docs.reason.${m.params.reasonCode}`, { defaultValue: m.params.reasonCode }) : m.params?.reason,
-                      defaultValue: '',
-                    })}
-                  </p>
-                  <span className="docs-msg-time muted-text">{fmtDateTime(m.createdAt)}</span>
-                </div>
+                {m.applicationId ? (
+                  <Link to={`/docs/applications/${m.applicationId}`} className="docs-msg-body" onClick={() => markRead(m)}>
+                    {body}
+                  </Link>
+                ) : (
+                  <div className="docs-msg-body">{body}</div>
+                )}
                 <Button
                   size="small"
                   type="text"
@@ -178,7 +180,7 @@ export default function DocsMessages() {
         </div>
       )}
       <p className="muted-text docs-msg-foot">
-        <Tag size="small" variant="soft">
+        <Tag size="small" color="app-blue" variant="soft">
           {t('docs.msg.tipTag')}
         </Tag>
         {t('docs.msg.tip')}

@@ -139,7 +139,7 @@ export default function AppealShell({ permission, children }) {
         }
       >
         <div className="appeal-sso-body">
-          <Card color="app-teal" className="appeal-sso-card">
+          <Card pattern="app-teal" className="appeal-sso-card">
             <div className="appeal-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

@@ -21,6 +21,15 @@ import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
 const RESULTS = ['valid', 'not_found', 'status_used', 'status_expired', 'status_voided', 'status_revoked'];
 const KINDS = ['invitation', 'pass', 'host'];
+// 验真结果 → 标签配色,与 shared.jsx 的状态语义保持一致(已使用=绿、过期=棕、作废/撤销=红)。
+const RESULT_COLORS = {
+  valid: 'app-green',
+  not_found: 'app-red',
+  status_used: 'app-green',
+  status_expired: 'brown',
+  status_voided: 'app-red',
+  status_revoked: 'app-red',
+};
 // 服务端 /admin/tickets 只返回最近 100 条,不做客户端假分页。
 const TICKET_LIMIT = 100;
 
@@ -162,7 +171,7 @@ export default function AdminProtocolRisk() {
       dataIndex: 'result',
       width: 150,
       render: (v) => (
-        <Tag color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'app-red' : 'app-yellow'} variant="soft" size="small">
+        <Tag color={RESULT_COLORS[v] ?? 'brown'} variant="soft" size="small">
           {t(`protocol.verifyResult.${v}`, { defaultValue: v })}
         </Tag>
       ),
@@ -177,7 +186,7 @@ export default function AdminProtocolRisk() {
       title: t('protocol.field.level'),
       dataIndex: 'level',
       width: 90,
-      render: (v) => <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft" size="small">{t(`protocol.admin.blacklist_${v}`)}</Tag>,
+      render: (v) => <Tag color={v === 'block' ? 'app-red' : 'warm-peach-pink'} variant="soft" size="small">{t(`protocol.admin.blacklist_${v}`)}</Tag>,
     },
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },
     { title: t('common.actions'), width: 90, render: (_, r) => <Button type="text" size="small" onClick={() => askLift(r)}>{t('protocol.admin.lift')}</Button> },
@@ -191,7 +200,7 @@ export default function AdminProtocolRisk() {
       title: t('common.status'),
       dataIndex: 'status',
       width: 90,
-      render: (v) => <Tag color={v === 'closed' ? 'app-green' : 'app-yellow'} variant="soft" size="small">{t(`protocol.messages.ticket_${v}`)}</Tag>,
+      render: (v) => <Tag color={v === 'closed' ? 'app-green' : 'app-blue'} variant="soft" size="small">{t(`protocol.messages.ticket_${v}`)}</Tag>,
     },
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
     {

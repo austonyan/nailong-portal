@@ -8,6 +8,14 @@ import { ResAdminNav } from '../ResidentShell.jsx';
 import { CARD_STATUS_COLORS, fmtDate, toastResError } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
+// 与 ResidentChanges / AdminResChanges 保持一致(同一语义同色)
+const CHANGE_STATUS_COLORS = {
+  pending_review: 'warm-peach-pink',
+  approved: 'app-green',
+  rejected: 'app-red',
+  cancelled: 'brown',
+};
+
 export default function AdminResResidents() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
@@ -53,7 +61,7 @@ export default function AdminResResidents() {
       width: 110,
       render: (v) =>
         v ? (
-          <Tag color={CARD_STATUS_COLORS[v] || 'default'} variant="soft">
+          <Tag color={CARD_STATUS_COLORS[v] || 'brown'} variant="soft">
             {t(`res.cardStatus.${v}`)}
           </Tag>
         ) : (
@@ -76,7 +84,9 @@ export default function AdminResResidents() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.residents.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.residents.title')}</Title>
+        </h1>
         <div className="table-actions res-filter-bar">
           <Input size="middle" allowClear prefix={<SearchIcon size={14} />} placeholder={t('res.admin.searchPlaceholder')} value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
@@ -114,11 +124,11 @@ export default function AdminResResidents() {
               ))}
             </dl>
 
-            <h4>{t('res.card.title')}</h4>
+            <h2 className="block-heading">{t('res.card.title')}</h2>
             <ul className="res-material-list">
               {detail.cards.map((c) => (
                 <li key={c.id}>
-                  <Tag color={CARD_STATUS_COLORS[c.status] || 'default'} variant="soft">
+                  <Tag color={CARD_STATUS_COLORS[c.status] || 'brown'} variant="soft">
                     {c.cardNo} · {t(`res.cardStatus.${c.status}`)}
                   </Tag>
                   <span className="muted-text">
@@ -128,7 +138,7 @@ export default function AdminResResidents() {
               ))}
             </ul>
 
-            <h4>{t('res.admin.residents.changes')}</h4>
+            <h2 className="block-heading">{t('res.admin.residents.changes')}</h2>
             <ul className="res-review-timeline">
               {detail.changes.map((c) => (
                 <li key={c.id}>
@@ -136,7 +146,7 @@ export default function AdminResResidents() {
                     <Tag variant="soft" color="app-teal" size="small">
                       {t(`res.changeType.${c.type}`)}
                     </Tag>
-                    <Tag variant="soft" size="small">
+                    <Tag variant="soft" color={CHANGE_STATUS_COLORS[c.status] || 'brown'} size="small">
                       {t(`res.changeStatus.${c.status}`)}
                     </Tag>
                     <span className="muted-text">{fmtDate(c.createdAt)}</span>
@@ -146,7 +156,7 @@ export default function AdminResResidents() {
               {detail.changes.length === 0 && <li className="muted-text">{t('common.empty')}</li>}
             </ul>
 
-            <h4>{t('res.admin.residents.related')}</h4>
+            <h2 className="block-heading">{t('res.admin.residents.related')}</h2>
             <p className="muted-text">{t('res.admin.residents.relatedSummary', { visa: detail.related.visaApplications, immigration: detail.related.immigrationDeclarations })}</p>
           </div>
         )}

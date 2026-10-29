@@ -52,7 +52,9 @@ export default function DipCourtesies() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.courtesy.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.courtesy.title')}</Title>
+        </h1>
       </div>
 
       <Card>

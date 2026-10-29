@@ -253,9 +253,11 @@ export default function AdminTourBadges() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('tour.admin.badges.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('tour.admin.badges.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

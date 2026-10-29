@@ -38,9 +38,11 @@ export default function EduMy() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('edu.my.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('edu.my.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="edu-stat-grid">
@@ -78,7 +80,7 @@ export default function EduMy() {
                 ) : (
                   <span className="muted-text">{item.title}</span>
                 )}
-                <Tag size="small" color={item.available ? 'app-green' : 'default'} variant="soft">
+                <Tag size="small" color={item.available ? 'app-green' : 'brown'} variant="soft">
                   {item.available ? t('edu.my.readable') : t('edu.my.unavailable')}
                 </Tag>
                 <span className="edu-task-meta">{fmtDateTime(item.readAt)}</span>
