@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, Title, useForm } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { toastSuccess, toastError } from '../components/toast.js';
+import { toastSuccess, toastApiError } from '../components/toast.js';
 import { fmtDate } from '../lib/date.js';
 
 export default function Profile() {
@@ -27,7 +27,7 @@ export default function Profile() {
       await reload();
       toastSuccess(t('profile.updateSuccess'));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setProfileBusy(false);
     }
@@ -41,7 +41,7 @@ export default function Profile() {
       passwordForm.resetFields();
       toastSuccess(t('profile.passwordChanged'));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setPasswordBusy(false);
     }
@@ -78,7 +78,7 @@ export default function Profile() {
             <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
           </FormItem>
           <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('auth.emailRule') }]}>
-            <Input size="large" type="email" placeholder="you@example.com" allowClear />
+            <Input size="large" type="email" placeholder={t('auth.emailPlaceholder')} allowClear />
           </FormItem>
           <FormItem>
             <Button type="primary" htmlType="submit" loading={profileBusy} disabled={profileBusy}>

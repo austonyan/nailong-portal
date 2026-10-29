@@ -17,7 +17,7 @@ export default function DocsStats() {
     api
       .get('/docs/admin/stats')
       .then(setStats)
-      .catch((err) => toastError(t(`api.${err.code}`, { defaultValue: err.message })));
+      .catch((err) => toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') })));
   }, [t]);
 
   if (!stats) {
@@ -127,7 +127,7 @@ export default function DocsStats() {
               {
                 title: t('docs.admin.review.rejectReason'),
                 dataIndex: 'code',
-                render: (v) => t(`docs.reason.${v}`),
+                render: (v) => t(`docs.reason.${v}`, { defaultValue: t('common.unknown') }),
               },
               { title: t('docs.admin.stats.count'), dataIndex: 'n', width: 90, align: 'right' },
             ]}

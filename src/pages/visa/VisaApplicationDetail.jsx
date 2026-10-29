@@ -11,6 +11,7 @@ import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
   TextArea,
+  fmtDate,
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
@@ -87,7 +88,7 @@ export default function VisaApplicationDetail() {
         onSuccess(material);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         onError(err);
       });
   };
@@ -101,7 +102,7 @@ export default function VisaApplicationDetail() {
     [t('visa.form.purpose'), app.purpose],
     [
       t('visa.field.trip'),
-      `${fmtDateTime(app.planArrive).slice(0, 10)} ~ ${fmtDateTime(app.planLeave).slice(0, 10)}`,
+      `${fmtDate(app.planArrive)} ~ ${fmtDate(app.planLeave)}`,
     ],
     [t('visa.form.itinerary'), app.itinerary],
     [t('visa.form.inviterName'), app.inviterName || '-'],

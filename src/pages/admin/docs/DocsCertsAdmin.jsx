@@ -34,7 +34,7 @@ export default function DocsCertsAdmin() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [page, status, typeCode, dq, t]);
@@ -60,7 +60,7 @@ export default function DocsCertsAdmin() {
       setRevokeReason('');
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -72,7 +72,7 @@ export default function DocsCertsAdmin() {
       toastSuccess(t('common.saved'));
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -85,7 +85,7 @@ export default function DocsCertsAdmin() {
       setRegenTarget(null);
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }

@@ -7,6 +7,7 @@ import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { AnnouncementLevelTag, CrowdMeter, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { fmtDate } from '../../lib/date.js';
 
 const QUICK_ENTRIES = [
   { to: '/immigration/declare', key: 'declare', icon: FileIcon, color: 'app-teal' },
@@ -135,7 +136,7 @@ export default function ImmigrationHome() {
               <div className="im-ann-head">
                 <AnnouncementLevelTag level={a.level} />
                 <b>{a.title}</b>
-                <span className="muted-text">{a.publishedAt?.slice(0, 10)}</span>
+                <span className="muted-text">{fmtDate(a.publishedAt)}</span>
               </div>
               <p className="im-ann-body">{a.body}</p>
             </Card>

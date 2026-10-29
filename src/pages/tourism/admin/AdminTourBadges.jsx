@@ -21,12 +21,18 @@ const EMPTY_FORM = {
   sortOrder: '0',
 };
 
-function iconOptions() {
-  return BADGE_ICON_OPTIONS.map((value) => ({ key: value, label: value }));
+function iconOptions(t) {
+  return BADGE_ICON_OPTIONS.map((value) => ({
+    key: value,
+    label: t(`tour.admin.badges.icon.${value}`, { defaultValue: t('common.unknown') }),
+  }));
 }
 
 export default function AdminTourBadges() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isTw = String(i18n.language || '').startsWith('zh-TW');
+  // 第二列永远显示「另一种语言」:繁中界面显示简体源(nameCn),简中界面显示繁体(nameTw)。
+  const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
   const [items, setItems] = useState(null);
   const [awards, setAwards] = useState(null);
   const [awardBadge, setAwardBadge] = useState('');
@@ -167,7 +173,7 @@ export default function AdminTourBadges() {
 
   const columns = [
     {
-      title: t('tour.field.icon'),
+      title: t('tour.admin.field.icon'),
       dataIndex: 'icon',
       width: 60,
       render: (v) => <BadgeIcon name={v} size={22} />,
@@ -175,9 +181,9 @@ export default function AdminTourBadges() {
     { title: t('tour.admin.badges.code'), dataIndex: 'code', width: 140 },
     { title: t('common.name'), dataIndex: 'name' },
     {
-      title: t('common.name') + ' · ' + t('common.traditional'),
-      dataIndex: 'nameTw',
-      render: (v) => v || '-',
+      title: t('common.name') + ' · ' + otherLangLabel,
+      dataIndex: 'name',
+      render: (v, row) => (isTw ? (row.nameCn ?? row.nameTw ?? row.name) : row.nameTw) || '-',
     },
     { title: t('tour.admin.badges.threshold'), dataIndex: 'threshold', width: 110 },
     { title: t('tour.admin.badges.awardCount'), dataIndex: 'awards', width: 90 },
@@ -210,7 +216,7 @@ export default function AdminTourBadges() {
       dataIndex: 'badgeName',
       render: (v, row) => (
         <span>
-          {row.badgeNameTw || v} <span className="tour-audit-detail">({row.badgeNo})</span>
+          {v} <span className="tour-audit-detail">({row.badgeNo})</span>
         </span>
       ),
     },
@@ -338,7 +344,7 @@ export default function AdminTourBadges() {
                 value={form.code}
                 maxLength={32}
                 disabled={!!form.id}
-                placeholder="checkin_20"
+                placeholder={t('tour.admin.badges.codePlaceholder')}
                 onChange={(e) => setForm({ ...form, code: e.target.value })}
               />
             </label>
@@ -370,11 +376,11 @@ export default function AdminTourBadges() {
               />
             </label>
             <label>
-              {t('tour.field.icon')}
-              <Select value={form.icon} onChange={(key) => setForm({ ...form, icon: key })} options={iconOptions()} />
+              {t('tour.admin.field.icon')}
+              <Select value={form.icon} onChange={(key) => setForm({ ...form, icon: key })} options={iconOptions(t)} />
             </label>
             <label>
-              {t('tour.field.sortOrder')}
+              {t('tour.admin.field.sortOrder')}
               <Input
                 size="large"
                 value={form.sortOrder}

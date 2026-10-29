@@ -40,7 +40,7 @@ export function fmtDate(iso) {
 }
 
 export function resErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
 }
 
 // 统一走全站 toast(库的通知 API 在 React 19 下会抛异常,不能用于关键流程)
@@ -89,7 +89,7 @@ export function StatusTag({ value, map, i18nPrefix }) {
   const style = (map && map[value]) || { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
-      {t(`${i18nPrefix}.${value}`, { defaultValue: value })}
+      {t(`${i18nPrefix}.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }

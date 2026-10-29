@@ -26,6 +26,7 @@ import {
   pageParams,
   sweepAll,
 } from './util.js';
+import { reqLocale, pickText } from '../locale.js';
 
 ensureDipSchema();
 
@@ -141,7 +142,7 @@ function serializeRelation(row, { detail = false } = {}) {
   if (!detail) return base;
   base.events = db
     .prepare(
-      `SELECT e.action, e.note, e.created_at, u.display_name AS actor
+      `SELECT e.action, e.note, e.note_tw, e.created_at, u.display_name AS actor
        FROM dip_events e LEFT JOIN users u ON u.id = e.actor_id
        WHERE e.owner_type = 'relation' AND e.owner_id = ? ORDER BY e.id`
     )
@@ -187,7 +188,7 @@ function serializeIdentity(row, { detail = false } = {}) {
   if (!detail) return base;
   base.events = db
     .prepare(
-      `SELECT e.action, e.note, e.created_at, u.display_name AS actor
+      `SELECT e.action, e.note, e.note_tw, e.created_at, u.display_name AS actor
        FROM dip_events e LEFT JOIN users u ON u.id = e.actor_id
        WHERE e.owner_type = 'identity' AND e.owner_id = ? ORDER BY e.id`
     )
@@ -237,7 +238,7 @@ router.get('/overview', ...portalOnly, (req, res) => {
   const objectTypes = db.prepare('SELECT * FROM dip_object_types WHERE enabled = 1 ORDER BY sort_order, id').all().map(serializeType);
   const relationTypes = db.prepare('SELECT * FROM dip_relation_types WHERE enabled = 1 ORDER BY sort_order, id').all().map(serializeType);
   const courtesyTypes = db
-    .prepare('SELECT code, name, description FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id')
+    .prepare('SELECT code, name, name_tw, description, description_tw FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id')
     .all();
   const counts = db
     .prepare(
@@ -353,7 +354,7 @@ router.post('/relations', ...portalOnly, (req, res) => {
       purpose: fields.purpose ?? 'display',
       ts,
     });
-  logEvent('relation', info.lastInsertRowid, 'create', req.user.id, `创建草稿 ${no}`);
+  logEvent('relation', info.lastInsertRowid, 'create', req.user.id, `创建草稿 ${no}`, `建立草稿 ${no}`);
   audit(req.user.id, 'dip:draft.create', 'relation', no, {});
   res.status(201).json({ relation: serializeRelation(relationRow(info.lastInsertRowid), { detail: true }) });
 });
@@ -479,12 +480,13 @@ router.get('/identities/:id', ...portalOnly, (req, res) => {
 // 外交身份卡(含验真 token 的二维码路径)
 router.get('/identities/:id/card', ...portalOnly, (req, res) => {
   const row = ownIdentity(req, req.params.id);
-  const typeName = db.prepare('SELECT name FROM dip_identity_types WHERE code = ?').get(row.identity_type)?.name || row.identity_type;
+  const typeRow = db.prepare('SELECT name, name_tw FROM dip_identity_types WHERE code = ?').get(row.identity_type);
   res.json({
     card: {
       no: row.no,
       identityType: row.identity_type,
-      identityTypeName: typeName,
+      identityTypeName: typeRow?.name || row.identity_type,
+      identityTypeNameTw: typeRow?.name_tw ?? null,
       entityName: row.entity_name,
       title: row.title,
       holder: row.nickname,
@@ -561,7 +563,7 @@ router.post('/identities', ...portalOnly, (req, res) => {
       termEnd: fields.term_end ?? null,
       ts,
     });
-  logEvent('identity', info.lastInsertRowid, 'create', req.user.id, `创建草稿 ${no}`);
+  logEvent('identity', info.lastInsertRowid, 'create', req.user.id, `创建草稿 ${no}`, `建立草稿 ${no}`);
   audit(req.user.id, 'dip:draft.create', 'identity', no, {});
   res.status(201).json({ identity: serializeIdentity(identityRow(info.lastInsertRowid), { detail: true }) });
 });
@@ -733,11 +735,14 @@ router.get('/agreements', ...portalOnly, (_req, res) => {
       partyB: r.party_b,
       type: r.type,
       courtesies: r.courtesies,
+      courtesiesTw: r.courtesies_tw ?? null,
       coveredScope: r.covered_scope,
+      coveredScopeTw: r.covered_scope_tw ?? null,
       effectiveFrom: r.effective_from,
       effectiveTo: r.effective_to,
       status: r.status,
       note: r.note,
+      noteTw: r.note_tw ?? null,
     })),
   });
 });
@@ -753,11 +758,14 @@ router.get('/agreements/:no', ...portalOnly, (req, res) => {
       partyB: row.party_b,
       type: row.type,
       courtesies: row.courtesies,
+      courtesiesTw: row.courtesies_tw ?? null,
       coveredScope: row.covered_scope,
+      coveredScopeTw: row.covered_scope_tw ?? null,
       effectiveFrom: row.effective_from,
       effectiveTo: row.effective_to,
       status: row.status,
       note: row.note,
+      noteTw: row.note_tw ?? null,
     },
   });
 });
@@ -797,7 +805,9 @@ router.post('/agreements/eligibility', ...portalOnly, (req, res) => {
       partyB: r.party_b,
       type: r.type,
       courtesies: r.courtesies,
+      courtesiesTw: r.courtesies_tw ?? null,
       coveredScope: r.covered_scope,
+      coveredScopeTw: r.covered_scope_tw ?? null,
       effectiveFrom: r.effective_from,
       effectiveTo: r.effective_to,
     })),
@@ -861,15 +871,31 @@ router.get('/offices/:code', ...portalOnly, (req, res) => {
 // ---------------------------------------------------------------------------
 
 router.get('/courtesies', ...portalOnly, (req, res) => {
-  const types = db.prepare('SELECT code, name, description FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id').all();
+  const locale = reqLocale(req);
+  const types = db
+    .prepare('SELECT code, name, name_tw, description, description_tw FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id')
+    .all()
+    .map((t) => ({
+      code: t.code,
+      name: t.name,
+      nameTw: t.name_tw ?? null,
+      description: t.description,
+      descriptionTw: t.description_tw ?? null,
+    }));
   const records = db
     .prepare(
-      `SELECT c.id, c.identity_no, c.courtesy_code, c.source, c.note, c.created_at, t.name AS courtesy_name
+      `SELECT c.id, c.identity_no, c.courtesy_code, c.source, c.note, c.created_at, t.name AS courtesy_name, t.name_tw AS courtesy_name_tw
        FROM dip_courtesy_records c
        LEFT JOIN dip_courtesy_types t ON t.code = c.courtesy_code
        WHERE c.user_id = ? ORDER BY c.id DESC LIMIT 100`
     )
-    .all(req.user.id);
+    .all(req.user.id)
+    .map((r) => ({
+      ...r,
+      courtesy_name: pickText(r.courtesy_name, r.courtesy_name_tw, locale),
+      courtesyName: r.courtesy_name,
+      courtesyNameTw: r.courtesy_name_tw ?? null,
+    }));
   res.json({ types, items: records });
 });
 
@@ -881,7 +907,16 @@ router.post('/courtesies/check', ...portalOnly, (req, res) => {
   const row = db.prepare('SELECT * FROM dip_identities WHERE no = ? AND deleted_at IS NULL').get(code);
   if (!row || row.user_id !== req.user.id) throw notFound('Unknown identity number');
   if (row.status !== 'active') throw badRequest('DIP_NOT_ELIGIBLE', 'The diplomatic identity is not currently active');
-  const types = db.prepare('SELECT code, name, description FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id').all();
+  const types = db
+    .prepare('SELECT code, name, name_tw, description, description_tw FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id')
+    .all()
+    .map((t) => ({
+      code: t.code,
+      name: t.name,
+      nameTw: t.name_tw ?? null,
+      description: t.description,
+      descriptionTw: t.description_tw ?? null,
+    }));
   const records = db
     .prepare('SELECT courtesy_code, source, note, created_at FROM dip_courtesy_records WHERE identity_id = ? ORDER BY id DESC')
     .all(row.id);

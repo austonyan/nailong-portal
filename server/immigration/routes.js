@@ -24,6 +24,7 @@ import {
 } from './util.js';
 import { checkVisa, VISA_ERROR_CODE } from './visa.js';
 import { diplomaticCourtesyFor, upcomingProtocolEvents } from '../linkage.js';
+import { reqLocale, pickText } from '../locale.js';
 
 ensureImmigrationSchema();
 
@@ -219,8 +220,17 @@ router.get('/ports/:code', ...portalOnly, (req, res) => {
   const port = getPortByCode(req.params.code);
   if (!port) throw notFound('Port not found');
   const channels = db
-    .prepare('SELECT id, name, type, description, enabled FROM im_channels WHERE port_id = ? ORDER BY id')
-    .all(port.id);
+    .prepare('SELECT id, name, name_tw, type, description, description_tw, enabled FROM im_channels WHERE port_id = ? ORDER BY id')
+    .all(port.id)
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      nameTw: c.name_tw ?? null,
+      type: c.type,
+      description: c.description,
+      descriptionTw: c.description_tw ?? null,
+      enabled: c.enabled,
+    }));
   const announcements = db
     .prepare(
       `SELECT * FROM im_announcements
@@ -506,7 +516,7 @@ router.get('/pass-codes', ...portalOnly, (req, res) => {
   const rows = db
     .prepare(
       `SELECT pc.id, pc.code_no, pc.status, pc.valid_until, pc.created_at,
-              d.no AS declaration_no, p.name AS port_name
+              d.no AS declaration_no, p.name AS port_name, p.name_tw AS port_name_tw
        FROM im_pass_codes pc
        JOIN im_declarations d ON d.id = pc.declaration_id
        JOIN im_ports p ON p.id = pc.port_id
@@ -523,6 +533,7 @@ router.get('/pass-codes', ...portalOnly, (req, res) => {
       createdAt: r.created_at,
       declarationNo: r.declaration_no,
       portName: r.port_name,
+      portNameTw: r.port_name_tw ?? null,
     })),
   });
 });
@@ -530,7 +541,7 @@ router.get('/pass-codes', ...portalOnly, (req, res) => {
 router.get('/pass-codes/:id', ...portalOnly, (req, res) => {
   const row = db
     .prepare(
-      `SELECT pc.*, d.no AS declaration_no, d.nickname, d.stay_days, p.name AS port_name, p.code AS port_code
+      `SELECT pc.*, d.no AS declaration_no, d.nickname, d.stay_days, p.name AS port_name, p.name_tw AS port_name_tw, p.code AS port_code
        FROM im_pass_codes pc
        JOIN im_declarations d ON d.id = pc.declaration_id
        JOIN im_ports p ON p.id = pc.port_id
@@ -552,6 +563,7 @@ router.get('/pass-codes/:id', ...portalOnly, (req, res) => {
       nickname: row.nickname,
       stayDays: row.stay_days,
       portName: row.port_name,
+      portNameTw: row.port_name_tw ?? null,
       portCode: row.port_code,
       verifyPath: `/immigration/verify?token=${row.token}`,
     },
@@ -563,27 +575,43 @@ router.get('/pass-codes/:id', ...portalOnly, (req, res) => {
 // ---------------------------------------------------------------------------
 
 router.get('/records/entry', ...portalOnly, (req, res) => {
+  const locale = reqLocale(req);
   const rows = db
     .prepare(
-      `SELECT er.*, p.name AS port_name, p.code AS port_code
+      `SELECT er.*, p.name AS port_name, p.name_tw AS port_name_tw, p.code AS port_code
        FROM im_entry_records er JOIN im_ports p ON p.id = er.port_id
        WHERE er.user_id = ? AND er.deleted_at IS NULL ORDER BY er.entry_date DESC, er.id DESC`
     )
     .all(req.user.id);
-  res.json({ items: rows });
+  res.json({
+    items: rows.map((r) => ({
+      ...r,
+      port_name: pickText(r.port_name, r.port_name_tw, locale),
+      portName: r.port_name,
+      portNameTw: r.port_name_tw ?? null,
+    })),
+  });
 });
 
 router.get('/records/exit', ...portalOnly, (req, res) => {
+  const locale = reqLocale(req);
   const rows = db
     .prepare(
-      `SELECT xr.id, xr.no, xr.exit_date, xr.created_at, er.no AS entry_no, p.name AS port_name
+      `SELECT xr.id, xr.no, xr.exit_date, xr.created_at, er.no AS entry_no, p.name AS port_name, p.name_tw AS port_name_tw
        FROM im_exit_records xr
        JOIN im_entry_records er ON er.id = xr.entry_record_id
        JOIN im_ports p ON p.id = xr.port_id
        WHERE xr.user_id = ? AND xr.deleted_at IS NULL ORDER BY xr.exit_date DESC, xr.id DESC`
     )
     .all(req.user.id);
-  res.json({ items: rows });
+  res.json({
+    items: rows.map((r) => ({
+      ...r,
+      port_name: pickText(r.port_name, r.port_name_tw, locale),
+      portName: r.port_name,
+      portNameTw: r.port_name_tw ?? null,
+    })),
+  });
 });
 
 // Fun exit registration: only while the entry record is still `entered`.
@@ -682,13 +710,19 @@ router.get('/verify', (req, res) => {
   if (!/^[0-9a-f]{32}$/.test(token)) throw notFound('Unknown pass token');
   const row = db
     .prepare(
-      `SELECT pc.code_no, pc.status, pc.valid_until, pc.used_at, pc.void_reason, p.name AS port_name
+      `SELECT pc.code_no, pc.status, pc.valid_until, pc.used_at, pc.void_reason, p.name AS port_name, p.name_tw AS port_name_tw
        FROM im_pass_codes pc JOIN im_ports p ON p.id = pc.port_id WHERE pc.token = ?`
     )
     .get(token);
   if (!row) throw notFound('Unknown pass token');
   const effective = row.status === 'unused' && row.valid_until < now() ? 'expired' : row.status;
-  res.json({ codeNo: row.code_no, status: effective, portName: row.port_name, validUntil: row.valid_until });
+  res.json({
+    codeNo: row.code_no,
+    status: effective,
+    portName: row.port_name,
+    portNameTw: row.port_name_tw ?? null,
+    validUntil: row.valid_until,
+  });
 });
 
 export default router;

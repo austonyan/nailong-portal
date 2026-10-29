@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ensureAppealBizTypes, ensureTwColumns } from './migrate.js';
+import { ensureAppealBizTypes, ensureColumn, ensureTwColumns } from './migrate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, 'data');
@@ -347,6 +347,7 @@ CREATE TABLE IF NOT EXISTS appeal_complaints (
   kind          TEXT NOT NULL CHECK (kind IN ('complaint','suggestion')),
   category      TEXT NOT NULL CHECK (category IN ('attitude','process','notice','staff','system','other','feature','experience','content')),
   anonymous     INTEGER NOT NULL DEFAULT 0,
+  erased        INTEGER NOT NULL DEFAULT 0,
   content       TEXT NOT NULL DEFAULT '',
   contact       TEXT NOT NULL DEFAULT '',
   status        TEXT NOT NULL DEFAULT 'pending_accept' CHECK (status IN ('pending_accept','processing','replied','closed')),
@@ -369,6 +370,7 @@ CREATE TABLE IF NOT EXISTS appeal_tickets (
   user_id     INTEGER NOT NULL REFERENCES users(id),
   category    TEXT NOT NULL CHECK (category IN ('consult','account','bug')),
   priority    TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low','normal','high')),
+  erased      INTEGER NOT NULL DEFAULT 0,
   title       TEXT NOT NULL DEFAULT '',
   content     TEXT NOT NULL DEFAULT '',
   status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','processing','replied','closed','escalated')),
@@ -496,10 +498,12 @@ CREATE TABLE IF NOT EXISTS appeal_publicity (
 );
 
 CREATE TABLE IF NOT EXISTS appeal_msg_templates (
-  type    TEXT PRIMARY KEY,
-  title   TEXT NOT NULL,
-  body    TEXT NOT NULL DEFAULT '',
-  enabled INTEGER NOT NULL DEFAULT 1
+  type     TEXT PRIMARY KEY,
+  title    TEXT NOT NULL,
+  title_tw TEXT,
+  body     TEXT NOT NULL DEFAULT '',
+  body_tw  TEXT,
+  enabled  INTEGER NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS appeal_inspect_reports (
@@ -507,6 +511,7 @@ CREATE TABLE IF NOT EXISTS appeal_inspect_reports (
   title      TEXT NOT NULL,
   kind       TEXT NOT NULL DEFAULT 'quality' CHECK (kind IN ('quality','anomaly','consistency')),
   content    TEXT NOT NULL DEFAULT '',
+  payload    TEXT NOT NULL DEFAULT '{}',
   created_by TEXT NOT NULL DEFAULT '',
   created_at TEXT NOT NULL
 );
@@ -546,6 +551,15 @@ function migrate() {
   ensureTwColumns(db, 'visa_notices', ['title', 'body']);
   ensureTwColumns(db, 'appeal_notices', ['title', 'body']);
   ensureTwColumns(db, 'appeal_publicity', ['title', 'body']);
+  ensureTwColumns(db, 'appeal_msg_templates', ['title', 'body']);
+  // 监察报告的结构化载荷(业务类型/总数/抽样数/状态分布/说明),旧库补列。
+  ensureColumn(db, 'appeal_inspect_reports', 'payload', "TEXT NOT NULL DEFAULT '{}'");
+  // 数据抹除标记:抹除后 title/content 置空,由前端按 common.erased 渲染。
+  ensureColumn(db, 'appeal_complaints', 'erased', 'INTEGER NOT NULL DEFAULT 0');
+  ensureColumn(db, 'appeal_tickets', 'erased', 'INTEGER NOT NULL DEFAULT 0');
+  // 旧版抹除写入的是英文占位符:一次性清空并改标记位,界面按 common.erased 渲染。
+  db.prepare("UPDATE appeal_complaints SET erased = 1, content = '' WHERE content = '(erased)'").run();
+  db.prepare("UPDATE appeal_tickets SET erased = 1, title = '', content = '' WHERE title = '(erased)' OR content = '(erased)'").run();
   // 申诉目标随联动扩展:旧库的 biz_type CHECK 需要一次性表重建才能放行新署。
   ensureAppealBizTypes(db, ['archives', 'protocol']);
 }
@@ -620,6 +634,31 @@ const ROLES = [
   { key: 'appeal_admin', name: '申诉署管理员', description: '申诉署全部权限:处理、复核、监察与管理', is_system: 1, permissions: ['portal:access', 'appeal:apply', 'appeal:process', 'appeal:review', 'appeal:inspect', 'appeal:manage'] },
 ];
 
+// 站内信模板:标题/正文简繁成对,前端按 type 渲染 i18n 文案,管理端模板页直接展示。
+const APPEAL_MSG_TEMPLATE_SEEDS = [
+  ['appeal_submitted', '申诉 {{code}} 已提交', '你的申诉已进入待受理队列,请耐心等待受理通知。', '申訴 {{code}} 已提交', '你的申訴已進入待受理隊列,請耐心等待受理通知。'],
+  ['appeal_accepted', '申诉 {{code}} 已受理', '你的申诉已被受理,将按处理时限推进,处理结果将以决定书形式通知。', '申訴 {{code}} 已受理', '你的申訴已被受理,將按處理時限推進,處理結果將以決定書形式通知。'],
+  ['appeal_accept_rejected', '申诉 {{code}} 不予受理', '受理说明:{{reason}}。可在复核时效内对处理结果申请复核。', '申訴 {{code}} 不予受理', '受理說明:{{reason}}。可在複核時效內對處理結果申請複核。'],
+  ['appeal_supplement_required', '申诉 {{code}} 需要补件', '补件说明:{{comment}}。请在 {{deadline}} 前在线补交,逾期申诉将自动关闭。', '申訴 {{code}} 需要補件', '補件說明:{{comment}}。請在 {{deadline}} 前線上補交,逾期申訴將自動關閉。'],
+  ['appeal_supplemented', '申诉 {{code}} 补件已提交', '你补交的材料已随申诉重新进入处理流程。', '申訴 {{code}} 補件已提交', '你補交的材料已隨申訴重新進入處理流程。'],
+  ['appeal_resolved', '申诉 {{code}} 已有处理决定', '处理决定已生成决定书,可到"我的决定书"查看、下载或验真。', '申訴 {{code}} 已有處理決定', '處理決定已產生決定書,可到「我的決定書」查看、下載或驗真。'],
+  ['appeal_withdrawn', '申诉 {{code}} 已撤回', '你已撤回该申诉。', '申訴 {{code}} 已撤回', '你已撤回該申訴。'],
+  ['appeal_closed', '申诉 {{code}} 已关闭', '补件期限已过,申诉自动关闭。', '申訴 {{code}} 已關閉', '補件期限已過,申訴自動關閉。'],
+  ['appeal_merged', '申诉 {{code}} 已合并', '该申诉与 {{targetCode}} 属重复申诉,已合并处理,请以目标申诉为准。', '申訴 {{code}} 已合併', '該申訴與 {{targetCode}} 屬重複申訴,已合併處理,請以目標申訴為準。'],
+  ['appeal_reopened', '申诉 {{code}} 经复核重新处理', '复核 {{reviewCode}} 撤销了原不予受理决定,申诉已重新进入处理流程。', '申訴 {{code}} 經複核重新處理', '複核 {{reviewCode}} 撤銷了原不予受理決定,申訴已重新進入處理流程。'],
+  ['review_submitted', '复核 {{code}} 已提交', '对申诉 {{appealCode}} 的复核申请已提交,复核为一次终局。', '複核 {{code}} 已提交', '對申訴 {{appealCode}} 的複核申請已提交,複核為一次終局。'],
+  ['review_accepted', '复核 {{code}} 已受理', '复核进入复核中,复核决定将生成新的决定书。', '複核 {{code}} 已受理', '複核進入複核中,複核決定將產生新的決定書。'],
+  ['review_completed', '复核 {{code}} 已完成', '复核决定已生成,可到"我的决定书"查看。复核为一次终局。', '複核 {{code}} 已完成', '複核決定已產生,可到「我的決定書」查看。複核為一次終局。'],
+  ['decision_issued', '处理决定书 {{code}} 已生成', '关联申诉 {{appealCode}}。可在"我的决定书"查看、下载或验真。', '處理決定書 {{code}} 已產生', '關聯申訴 {{appealCode}}。可在「我的決定書」查看、下載或驗真。'],
+  ['complaint_submitted', '投诉建议 {{code}} 已提交', '你的投诉或建议已提交,处理完成后将回复通知。', '投訴建議 {{code}} 已提交', '你的投訴或建議已提交,處理完成後將回覆通知。'],
+  ['complaint_replied', '投诉建议 {{code}} 已回复', '处理人员已回复,请到详情页查看回复内容并评价。', '投訴建議 {{code}} 已回覆', '處理人員已回覆,請到詳情頁查看回覆內容並評價。'],
+  ['complaint_closed', '投诉建议 {{code}} 已关闭', '该投诉建议已办结归档。', '投訴建議 {{code}} 已關閉', '該投訴建議已辦結封存。'],
+  ['complaint_escalated', '投诉建议 {{code}} 转申诉指引', '该事项适合走结果申诉流程,请准备关联业务编号后到"我要申诉"提交。', '投訴建議 {{code}} 轉申訴指引', '該事項適合走結果申訴流程,請準備關聯業務編號後到「我要申訴」提交。'],
+  ['ticket_replied', '工单 {{code}} 有新回复', '客服已回复你的工单,请到工单详情查看。', '工單 {{code}} 有新回覆', '客服已回覆你的工單,請到工單詳情查看。'],
+  ['ticket_escalated', '工单 {{code}} 已升级', '你的工单已升级处理,请留意后续回复。', '工單 {{code}} 已升級', '你的工單已升級處理,請留意後續回覆。'],
+  ['ticket_closed', '工单 {{code}} 已关闭', '工单已办结。如仍有问题可重新提交。', '工單 {{code}} 已關閉', '工單已辦結。如仍有問題可重新提交。'],
+];
+
 function seed() {
   const insertPermission = db.prepare(
     'INSERT OR IGNORE INTO permissions (key, name, description, grp) VALUES (@key, @name, @description, @grp)'
@@ -677,8 +716,12 @@ function seed() {
     // even on databases that already carry the demo services above.
     db.prepare(
       `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
-       VALUES ('visa', '奶龍國簽註申請署', '办理奶龙国旅游签注:申请、审核、签发与验真', '/visa', 'AirplaneIcon', 'app-teal', 'visa:apply', 'internal_sso', 1, -1, @now, @now)`
+       VALUES ('visa', '奶龙国签注申请署', '办理奶龙国旅游签注:申请、审核、签发与验真', '/visa', 'AirplaneIcon', 'app-teal', 'visa:apply', 'internal_sso', 1, -1, @now, @now)`
     ).run({ now: now() });
+
+    // 旧库把繁体写进了基列:按原文一次性纠正为简体源(管理员改过的不动)。
+    db.prepare("UPDATE services SET name = ? WHERE key = 'visa' AND name = ?").run('奶龙国签注申请署', '奶龍國簽註申請署');
+    db.prepare("UPDATE services SET name = ? WHERE key = 'appeal' AND name = ?").run('奶龙国皇家申诉与监察署', '奶龍國皇家申訴與監察署');
 
     if (db.prepare('SELECT COUNT(*) AS n FROM visa_types').get().n === 0) {
       const insertType = db.prepare(
@@ -721,7 +764,7 @@ function seed() {
       );
       insertNotice.run({
         title: '旅游签注开放申请',
-        body: '奶龍國簽註申請署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。',
+        body: '奶龙国签注申请署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。',
         level: 'policy',
         now: now(),
       });
@@ -732,6 +775,11 @@ function seed() {
         now: now(),
       });
     }
+    // 旧库正文以繁体署名开头:按原文一次性纠正为简体源。
+    db.prepare('UPDATE visa_notices SET body = ? WHERE body = ?').run(
+      '奶龙国签注申请署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。',
+      '奶龍國簽註申請署现已开放旅游签注(TOURIST)在线申请,审核预计 72 小时内完成。'
+    );
 
     const defaults = {
       'visa.app_no_prefix': 'NLA',
@@ -746,7 +794,7 @@ function seed() {
     // The appeal service is part of this codebase: make sure it always exists.
     db.prepare(
       `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
-       VALUES ('appeal', '奶龍國皇家申訴與監察署', '结果申诉、复核申请、投诉建议、工单客服与决定书验真', '/appeal', 'ShieldIcon', 'app-yellow', 'appeal:apply', 'internal_sso', 1, -2, @now, @now)`
+       VALUES ('appeal', '奶龙国皇家申诉与监察署', '结果申诉、复核申请、投诉建议、工单客服与决定书验真', '/appeal', 'ShieldIcon', 'app-yellow', 'appeal:apply', 'internal_sso', 1, -2, @now, @now)`
     ).run({ now: now() });
 
     if (db.prepare('SELECT COUNT(*) AS n FROM appeal_notices').get().n === 0) {
@@ -769,31 +817,20 @@ function seed() {
     }
 
     if (db.prepare('SELECT COUNT(*) AS n FROM appeal_msg_templates').get().n === 0) {
-      const insertTpl = db.prepare('INSERT INTO appeal_msg_templates (type, title, body) VALUES (?, ?, ?)');
-      [
-        ['appeal_submitted', '申诉 {{code}} 已提交', '你的申诉已进入待受理队列,请耐心等待受理通知。'],
-        ['appeal_accepted', '申诉 {{code}} 已受理', '你的申诉已被受理,将按处理时限推进,处理结果将以决定书形式通知。'],
-        ['appeal_accept_rejected', '申诉 {{code}} 不予受理', '受理说明:{{reason}}。可在复核时效内对处理结果申请复核。'],
-        ['appeal_supplement_required', '申诉 {{code}} 需要补件', '补件说明:{{comment}}。请在 {{deadline}} 前在线补交,逾期申诉将自动关闭。'],
-        ['appeal_supplemented', '申诉 {{code}} 补件已提交', '你补交的材料已随申诉重新进入处理流程。'],
-        ['appeal_resolved', '申诉 {{code}} 已有处理决定', '处理决定已生成决定书,可到"我的决定书"查看、下载或验真。'],
-        ['appeal_withdrawn', '申诉 {{code}} 已撤回', '你已撤回该申诉。'],
-        ['appeal_closed', '申诉 {{code}} 已关闭', '补件期限已过,申诉自动关闭。'],
-        ['appeal_merged', '申诉 {{code}} 已合并', '该申诉与 {{targetCode}} 属重复申诉,已合并处理,请以目标申诉为准。'],
-        ['appeal_reopened', '申诉 {{code}} 经复核重新处理', '复核 {{reviewCode}} 撤销了原不予受理决定,申诉已重新进入处理流程。'],
-        ['review_submitted', '复核 {{code}} 已提交', '对申诉 {{appealCode}} 的复核申请已提交,复核为一次终局。'],
-        ['review_accepted', '复核 {{code}} 已受理', '复核进入复核中,复核决定将生成新的决定书。'],
-        ['review_completed', '复核 {{code}} 已完成', '复核决定已生成,可到"我的决定书"查看。复核为一次终局。'],
-        ['decision_issued', '处理决定书 {{code}} 已生成', '关联申诉 {{appealCode}}。可在"我的决定书"查看、下载或验真。'],
-        ['complaint_submitted', '投诉建议 {{code}} 已提交', '你的投诉或建议已提交,处理完成后将回复通知。'],
-        ['complaint_replied', '投诉建议 {{code}} 已回复', '处理人员已回复,请到详情页查看回复内容并评价。'],
-        ['complaint_closed', '投诉建议 {{code}} 已关闭', '该投诉建议已办结归档。'],
-        ['complaint_escalated', '投诉建议 {{code}} 转申诉指引', '该事项适合走结果申诉流程,请准备关联业务编号后到"我要申诉"提交。'],
-        ['ticket_replied', '工单 {{code}} 有新回复', '客服已回复你的工单,请到工单详情查看。'],
-        ['ticket_escalated', '工单 {{code}} 已升级', '你的工单已升级处理,请留意后续回复。'],
-        ['ticket_closed', '工单 {{code}} 已关闭', '工单已办结。如仍有问题可重新提交。'],
-      ].forEach(([type, title, body]) => insertTpl.run(type, title, body));
+      const insertTpl = db.prepare(
+        'INSERT INTO appeal_msg_templates (type, title, body, title_tw, body_tw) VALUES (?, ?, ?, ?, ?)'
+      );
+      for (const [type, title, body, titleTw, bodyTw] of APPEAL_MSG_TEMPLATE_SEEDS) {
+        insertTpl.run(type, title, body, titleTw, bodyTw);
+      }
     }
+    // 旧库补繁体(只填空值,不覆盖管理员改过的模板文案)。
+    const fillTplTw = db.prepare(
+      `UPDATE appeal_msg_templates
+       SET title_tw = COALESCE(NULLIF(title_tw, ''), ?), body_tw = COALESCE(NULLIF(body_tw, ''), ?)
+       WHERE type = ?`
+    );
+    for (const [type, , , titleTw, bodyTw] of APPEAL_MSG_TEMPLATE_SEEDS) fillTplTw.run(titleTw, bodyTw, type);
 
     const appealDefaults = {
       'appeal.appeal_prefix': 'NAA',

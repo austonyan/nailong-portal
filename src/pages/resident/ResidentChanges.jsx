@@ -6,7 +6,7 @@ import { Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, Title, u
 import { SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
-import { CHANGE_TYPES, StatusTag, TextArea, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
+import { CHANGE_TYPES, StatusTag, TextArea, fmtDate, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
 
 const CHANGE_STATUS_COLORS = {
   pending_review: 'app-yellow',
@@ -160,7 +160,7 @@ export default function ResidentChanges() {
                 )}
                 {type === 'renewal' && (
                   <p className="muted-text">
-                    {t('res.changes.renewalExplain', { until: card ? fmtDateTime(card.validUntil).slice(0, 10) : '-' })}
+                    {t('res.changes.renewalExplain', { until: card ? fmtDate(card.validUntil) : '-' })}
                   </p>
                 )}
               </div>

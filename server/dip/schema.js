@@ -229,6 +229,7 @@ export function ensureDipSchema() {
     action      TEXT NOT NULL,
     actor_id    INTEGER REFERENCES users(id),
     note        TEXT NOT NULL DEFAULT '',
+    note_tw     TEXT,
     created_at  TEXT NOT NULL
   );
   CREATE INDEX IF NOT EXISTS idx_dip_event_owner ON dip_events (owner_type, owner_id);
@@ -328,6 +329,24 @@ export function ensureDipSchema() {
   ensureTwColumns(db, 'dip_courtesy_types', ['name', 'description']);
   ensureTwColumns(db, 'dip_offices', ['name', 'location', 'open_hours', 'intro', 'contact', 'services']);
   ensureTwColumns(db, 'dip_notices', ['title', 'body']);
+  ensureTwColumns(db, 'dip_events', ['note']);
+  // 旧库的 dip_events 只有简体 note:系统生成的两类文案在启动时补繁体。
+  const legacyNotePairs = [
+    [/^创建草稿 (.+)$/, '建立草稿 $1'],
+    [/^建交关系 (.+) 断交,身份同步失效$/, '建交關係 $1 斷交,身分同步失效'],
+  ];
+  const legacyNotes = db
+    .prepare("SELECT id, note FROM dip_events WHERE note <> '' AND (note_tw IS NULL OR note_tw = '')")
+    .all();
+  const setNoteTw = db.prepare('UPDATE dip_events SET note_tw = ? WHERE id = ?');
+  for (const row of legacyNotes) {
+    for (const [pattern, replacement] of legacyNotePairs) {
+      if (pattern.test(row.note)) {
+        setNoteTw.run(row.note.replace(pattern, replacement), row.id);
+        break;
+      }
+    }
+  }
   ensureTwColumns(db, 'dip_agreements', ['courtesies', 'covered_scope', 'note']);
   seedDiplomacy();
 }

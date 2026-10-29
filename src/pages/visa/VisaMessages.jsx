@@ -65,6 +65,11 @@ export default function VisaMessages() {
     const p = { ...msg.params };
     if (p.deadline) p.deadline = fmtDateTime(p.deadline);
     if (p.validUntil) p.validUntil = fmtDateTime(p.validUntil);
+    // 驳回通知同时带 reasonCode 和自由文本 reason:模板里插值的是 {{reason}},
+    // 先把原因码翻成当前语言,未知码回退到通用文案,不要漏出原始码。
+    if (p.reasonCode) {
+      p.reason = t(`visa.rejectReason.${p.reasonCode}`, { defaultValue: t('common.unknown') });
+    }
     return p;
   };
 
@@ -105,12 +110,12 @@ export default function VisaMessages() {
             >
               <div className="visa-msg-head">
                 <Tag color={MESSAGE_COLORS[msg.type] || 'default'} variant="soft">
-                  {t(`visa.msgType.${msg.type}`)}
+                  {t(`visa.msgType.${msg.type}`, { defaultValue: t('common.unknown') })}
                 </Tag>
-                <strong>{t(`visa.msg.${msg.type}.title`, formatParams(msg))}</strong>
+                <strong>{t(`visa.msg.${msg.type}.title`, { ...formatParams(msg), defaultValue: t('visa.msg.system.title') })}</strong>
                 <span className="muted-text">{fmtDateTime(msg.createdAt)}</span>
               </div>
-              <p className="visa-msg-body">{t(`visa.msg.${msg.type}.body`, formatParams(msg))}</p>
+              <p className="visa-msg-body">{t(`visa.msg.${msg.type}.body`, { ...formatParams(msg), defaultValue: t('visa.msg.system.body') })}</p>
               {!archivedView && (
                 <Button
                   type="text"

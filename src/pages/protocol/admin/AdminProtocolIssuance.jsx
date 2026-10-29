@@ -214,7 +214,7 @@ export default function AdminProtocolIssuance() {
         <Select
           value={invType}
           onChange={(v) => { setInvType(v); setInvPage(1); }}
-          options={[{ key: '', label: t('protocol.common.allTypes') }, ...INV_TYPES.map((s) => ({ key: s, label: t(`protocol.invType.${s}`) }))]}
+          options={[{ key: '', label: t('protocol.common.allTypes') }, ...INV_TYPES.map((s) => ({ key: s, label: t(`protocol.admin.invType.${s}`) }))]}
         />
         <Input
           allowClear
@@ -345,7 +345,7 @@ export default function AdminProtocolIssuance() {
           <p className="muted-text">{t('protocol.admin.inviteeTip')}</p>
           <label className="protocol-field">
             <span>{t('protocol.field.invType')}</span>
-            <Select value={issueForm.type} onChange={(v) => setIssueForm((p) => ({ ...p, type: v }))} options={INV_TYPES.map((s) => ({ key: s, label: t(`protocol.invType.${s}`) }))} />
+            <Select value={issueForm.type} onChange={(v) => setIssueForm((p) => ({ ...p, type: v }))} options={INV_TYPES.map((s) => ({ key: s, label: t(`protocol.admin.invType.${s}`) }))} />
           </label>
           <label className="protocol-field">
             <span>{t('protocol.field.validUntil')}</span>

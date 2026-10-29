@@ -107,7 +107,15 @@ function eventNotices(eventId) {
   return db
     .prepare('SELECT * FROM pro_event_notices WHERE event_id = ? ORDER BY id DESC')
     .all(eventId)
-    .map((n) => ({ id: n.id, title: n.title, body: n.body, level: n.level, createdAt: n.created_at }));
+    .map((n) => ({
+      id: n.id,
+      title: n.title,
+      body: n.body,
+      titleTw: n.title_tw,
+      bodyTw: n.body_tw,
+      level: n.level,
+      createdAt: n.created_at,
+    }));
 }
 
 function registrationHistory(regNo) {
@@ -362,8 +370,8 @@ router.get('/registrations', (req, res) => {
   sweepAll();
   const rows = db
     .prepare(
-      `SELECT r.*, e.title AS event_title, e.event_no AS event_no, e.starts_at AS event_starts_at,
-              e.ends_at AS event_ends_at, e.venue_name AS event_venue, e.status AS event_status, e.capacity AS event_capacity
+      `SELECT r.*, e.title AS event_title, e.title_tw AS event_title_tw, e.event_no AS event_no, e.starts_at AS event_starts_at,
+              e.ends_at AS event_ends_at, e.venue_name AS event_venue, e.venue_name_tw AS event_venue_tw, e.status AS event_status, e.capacity AS event_capacity
        FROM pro_registrations r JOIN pro_events e ON e.id = r.event_id
        WHERE r.user_id = ? ORDER BY r.id DESC`
     )
@@ -372,10 +380,12 @@ router.get('/registrations', (req, res) => {
     items: rows.map((r) => ({
       ...serializeRegistration(r),
       eventTitle: r.event_title,
+      eventTitleTw: r.event_title_tw ?? null,
       eventNo: r.event_no,
       eventStartsAt: r.event_starts_at,
       eventEndsAt: r.event_ends_at,
       venueName: r.event_venue,
+      venueNameTw: r.event_venue_tw ?? null,
       eventStatus: r.event_status,
     })),
   });

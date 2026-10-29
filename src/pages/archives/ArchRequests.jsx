@@ -88,8 +88,11 @@ export default function ArchRequests() {
     }
   };
 
-  const scopeLabel = (request) =>
-    (request.scopeTypes ?? []).map((type) => type.name).join('、') || request.scope.join(', ');
+  const scopeLabel = (request) => {
+    const separator = t('common.listSeparator');
+    const names = (request.scopeTypes ?? []).map((type) => type.name);
+    return (names.length ? names : (request.scope ?? [])).join(separator);
+  };
 
   const columns = [
     { title: t('arch.request.no'), dataIndex: 'no', width: 190 },
@@ -204,7 +207,7 @@ export default function ArchRequests() {
             <p>{t('arch.request.confirmBody')}</p>
             <div className="arch-summary-row">
               <span>{t('arch.request.scope')}</span>
-              <span>{selectedNames.join('、')}</span>
+              <span>{selectedNames.join(t('common.listSeparator'))}</span>
             </div>
             <div className="arch-summary-row">
               <span>{t('arch.request.impact')}</span>

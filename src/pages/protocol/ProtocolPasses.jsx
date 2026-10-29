@@ -66,7 +66,7 @@ export default function ProtocolPasses() {
                   <span><CreditCardIcon size={14} /> {t('protocol.passes.holder')}: {pass.holderName}</span>
                 </div>
                 <Tag color={pass.status === 'pending' ? 'app-green' : pass.status === 'used' ? 'app-blue' : 'default'} variant="soft">
-                  {t(`protocol.passes.statusNote_${pass.status}`, { defaultValue: t(`protocol.status.${pass.status}`) })}
+                  {t(`protocol.passes.statusNote_${pass.status}`, { defaultValue: t(`protocol.status.${pass.status}`, { defaultValue: t('common.unknown') }) })}
                 </Tag>
               </div>
               <div className="protocol-pass-qr">

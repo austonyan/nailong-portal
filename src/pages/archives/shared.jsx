@@ -11,8 +11,11 @@ import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastError } from '../../components/toast.js';
 
 // Toast helper usable outside React components.
+// 服务端 message 是英文:未知错误码只回退到通用文案,不把 message 摊到界面上。
 export function toastArchError(err) {
-  toastError(i18n.t(`api.${err?.code}`, { defaultValue: err?.message || i18n.t('api.INTERNAL_ERROR') }));
+  const key = `api.${err?.code}`;
+  const text = err?.code ? i18n.t(key) : '';
+  toastError(text && text !== key ? text : i18n.t('api.INTERNAL_ERROR'));
 }
 
 // 时间统一转浏览器本地时区(dayjs),与签注署等其他署页面一致;
@@ -59,7 +62,7 @@ export function RequestStatusTag({ value }) {
   const style = REQUEST_STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
-      {t(`arch.status.${value}`, { defaultValue: value })}
+      {t(`arch.status.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -89,7 +92,7 @@ export function RecordStatusTag({ value }) {
   const style = RECORD_STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size="small">
-      {t(`arch.recStatus.${value}`, { defaultValue: value })}
+      {t(`arch.recStatus.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -104,7 +107,7 @@ export function OfficeTag({ office }) {
   const style = OFFICE_TAG[office] ?? { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size="small">
-      {t(`arch.office.${office}`, { defaultValue: office })}
+      {t(`arch.office.${office}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }

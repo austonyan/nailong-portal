@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 import { Card, CountUp, Progress, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
@@ -58,7 +59,7 @@ export default function AdminImStats() {
         </Card>
         <Card className="stat-card">
           <span className="stat-label">{t('imm.admin.stats.avgReview')}</span>
-          <span className="stat-number">{stats.avgReviewHours ?? '-'}{stats.avgReviewHours != null ? 'h' : ''}</span>
+          <span className="stat-number">{stats.avgReviewHours != null ? t('common.unitHours', { hours: stats.avgReviewHours }) : '-'}</span>
           <span className="stat-label">{t('imm.admin.stats.passChecks')}</span>
           <span className="stat-number">{stats.passChecks}</span>
           <span className="stat-label">{t('imm.admin.stats.activePassCodes')}</span>
@@ -81,7 +82,7 @@ export default function AdminImStats() {
             {stats.trend.map((d) => (
               <div key={d.day} className="im-trend-col">
                 <div className="im-trend-bar" style={{ height: `${(d.submissions / maxTrend) * 90 + 4}px` }} title={`${d.day}: ${d.submissions}`} />
-                <span className="muted-text">{d.day.slice(5)}</span>
+                <span className="muted-text">{d.day ? dayjs(d.day).format('MM-DD') : '-'}</span>
                 <span className="im-trend-n">{d.submissions}</span>
               </div>
             ))}
@@ -101,7 +102,7 @@ export default function AdminImStats() {
           {stats.rejectReasons.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
           {stats.rejectReasons.map((r) => (
             <p key={r.reason} className="im-info-row">
-              <span>{t(`imm.rejectReason.${r.reason}`)}</span>
+              <span>{t(`imm.rejectReason.${r.reason}`, { defaultValue: t('common.unknown') })}</span>
               <b>{r.n}</b>
             </p>
           ))}

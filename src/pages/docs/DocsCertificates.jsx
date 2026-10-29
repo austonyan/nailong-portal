@@ -25,7 +25,7 @@ export default function DocsCertificates() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [page, status, t]);

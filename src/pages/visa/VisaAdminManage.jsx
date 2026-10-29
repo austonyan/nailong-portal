@@ -125,7 +125,7 @@ function TypesTab() {
         </Button>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal
@@ -139,7 +139,7 @@ function TypesTab() {
       >
         <Form form={form} layout="vertical" onFinish={submit}>
           <FormItem name="code" label={t('common.key')} rules={[{ required: true, message: t('common.key') }]}>
-            <Input size="large" disabled={!!editing?.id} placeholder="TOURIST" />
+            <Input size="large" disabled={!!editing?.id} placeholder={t('visa.admin.typesCodePh')} />
           </FormItem>
           <FormItem name="name" label={t('common.name')} rules={[{ required: true, message: t('common.name') }]}>
             <Input size="large" />
@@ -310,7 +310,7 @@ function NoticesTab() {
         </Button>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal
@@ -399,7 +399,7 @@ function ConfigTab() {
           <div className="visa-config-form">
             {items.map((row) => (
               <div key={row.key} className="visa-config-row">
-                <label htmlFor={`visa-config-${row.key}`}>{LABELS[row.key] || row.key}</label>
+                <label htmlFor={`visa-config-${row.key}`}>{LABELS[row.key] || t('common.unknown')}</label>
                 <Input
                   id={`visa-config-${row.key}`}
                   size="middle"
@@ -500,7 +500,7 @@ function BlacklistTab() {
         </Button>
       </Card>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
       {confirmDialog}
     </div>

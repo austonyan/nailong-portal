@@ -218,7 +218,7 @@ export default function AppealAdminReviews() {
               {(detail.records ?? []).map((r) => (
                 <li key={r.id}>
                   <Tag variant="soft" color="app-teal" size="small">
-                    {t(`appeal.recordAction.${r.action}`, { defaultValue: r.action })}
+                    {t(`appeal.recordAction.${r.action}`, { defaultValue: t('common.unknown') })}
                   </Tag>
                   <span>{r.actorName}</span>
                   <span className="muted-text">{fmtDateTime(r.createdAt)}</span>

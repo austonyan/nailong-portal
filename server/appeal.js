@@ -4,6 +4,8 @@
 import crypto from 'node:crypto';
 import { db, now } from './db.js';
 import {
+  LINKED_OFFICES,
+  LINKED_OFFICES_TW,
   businessSnapshot,
   classifyBizStatus,
   integrationStatus,
@@ -88,13 +90,13 @@ export function sendMsg(userId, targetType, targetId, type, params = {}) {
 // 约定接口:{ validate(code, userId), link(code), writeback(appeal, ctx) }
 // ---------------------------------------------------------------------------
 export const BIZ_TYPES = [
-  { key: 'visa', office: '签注申请署' },
-  { key: 'immigration', office: '入境署' },
-  { key: 'resident', office: '居民登记署' },
-  { key: 'diplomatic', office: '外交事务署' },
-  { key: 'document', office: '文书与认证署' },
-  { key: 'archives', office: '档案与记录署' },
-  { key: 'protocol', office: '礼宾与活动署' },
+  { key: 'visa', office: '签注申请署', officeTw: '簽註申請署' },
+  { key: 'immigration', office: '入境署', officeTw: '入境署' },
+  { key: 'resident', office: '居民登记署', officeTw: '居民登記署' },
+  { key: 'diplomatic', office: '外交事务署', officeTw: '外交事務署' },
+  { key: 'document', office: '文书与认证署', officeTw: '文書與認證署' },
+  { key: 'archives', office: '档案与记录署', officeTw: '檔案與紀錄署' },
+  { key: 'protocol', office: '礼宾与活动署', officeTw: '禮賓與活動署' },
 ];
 
 const BIZ_HANDLERS = Object.fromEntries(
@@ -109,6 +111,51 @@ const BIZ_HANDLERS = Object.fromEntries(
   ])
 );
 
+// 旧版监察报告只有单语 content(抽查范围/抽样/状态分布/说明),启动时把可解析的
+// 行补成结构化 payload,前端才能按当前语言渲染。解析失败的行保持原样。
+const LEGACY_INSPECT =
+  /^抽查范围:(.+?)\(库内 (\d+) 条\);抽样 (\d+) 条,状态分布:(.*?)(?:;抽查说明:([\s\S]*))?$/;
+const OFFICE_TO_BIZ = Object.fromEntries(
+  [...Object.entries(LINKED_OFFICES), ...Object.entries(LINKED_OFFICES_TW)].map(([key, name]) => [name, key])
+);
+
+export function backfillInspectPayloads() {
+  const rows = db
+    .prepare(
+      "SELECT id, content FROM appeal_inspect_reports WHERE payload IS NULL OR payload = '' OR payload = '{}'"
+    )
+    .all();
+  let changed = 0;
+  for (const row of rows) {
+    const match = LEGACY_INSPECT.exec(String(row.content || ''));
+    if (!match) continue;
+    const [, office, total, sampled, dist, note] = match;
+    const bizType = OFFICE_TO_BIZ[office.trim()];
+    if (!bizType) continue;
+    const statusCounts = {};
+    if (dist.trim() !== '暂无记录') {
+      for (const part of dist.split('/')) {
+        const [status, n] = part.trim().split(':');
+        if (status && n) statusCounts[status] = Number(n) || 0;
+      }
+    }
+    db.prepare('UPDATE appeal_inspect_reports SET payload = ? WHERE id = ?').run(
+      JSON.stringify({
+        bizType,
+        total: Number(total) || 0,
+        sampled: Number(sampled) || 0,
+        statusCounts,
+        note: note || '',
+      }),
+      row.id
+    );
+    changed += 1;
+  }
+  return changed;
+}
+
+backfillInspectPayloads();
+
 export function resolveBizHandler(bizType) {
   return BIZ_HANDLERS[bizType] || null;
 }
@@ -121,7 +168,7 @@ export function writebackDecision(appeal, { decisionType, decisionCode }) {
   const handler = resolveBizHandler(appeal.biz_type);
   const result = handler?.writeback
     ? handler.writeback(appeal, { decisionType, decisionCode })
-    : { integrated: false, applied: false, reason: 'not_integrated', office: '' };
+    : { integrated: false, applied: false, reason: 'not_integrated', office: '', officeTw: null };
   audit({ name: 'system' }, 'appeal_decision_writeback', 'appeal', appeal.code, {
     bizType: appeal.biz_type,
     decisionType,
@@ -252,6 +299,7 @@ export function serializeComplaint(row) {
     kind: row.kind,
     category: row.category,
     anonymous: !!row.anonymous,
+    erased: !!row.erased,
     content: row.content,
     contact: row.anonymous ? '' : row.contact,
     status: row.status,
@@ -274,6 +322,7 @@ export function serializeTicket(row) {
     userId: row.user_id,
     category: row.category,
     priority: row.priority,
+    erased: !!row.erased,
     title: row.title,
     content: row.content,
     status: row.status,

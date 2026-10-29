@@ -23,7 +23,7 @@ export default function DocsNotices() {
       const d = await api.get('/docs/admin/notices');
       setItems(d.items);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [t]);
@@ -62,7 +62,7 @@ export default function DocsNotices() {
       setEditing(null);
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -73,7 +73,7 @@ export default function DocsNotices() {
       await api.patch(`/docs/admin/notices/${n.id}`, { enabled: !n.enabled });
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -85,7 +85,7 @@ export default function DocsNotices() {
       setDeleteTarget(null);
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 

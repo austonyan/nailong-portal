@@ -160,7 +160,7 @@ export default function AdminStatMetrics() {
       render: (v, row) => (
         <div>
           <div>{v}</div>
-          <div className="muted-text">{row.nameTw || '-'}</div>
+          <div className="muted-text">{row.nameCn ?? row.nameTw ?? '-'}</div>
         </div>
       ),
     },
@@ -270,7 +270,7 @@ export default function AdminStatMetrics() {
             <Input
               size="large"
               value={form.code}
-              placeholder="visa_issued"
+              placeholder={t('stat.admin.metrics.codePlaceholder')}
               onChange={(e) => setForm({ ...form, code: e.target.value.toLowerCase() })}
             />
           </label>
@@ -315,7 +315,7 @@ export default function AdminStatMetrics() {
             <Input
               size="large"
               value={form.statusValue}
-              placeholder="active"
+              placeholder={t('stat.admin.metrics.statusValuePlaceholder')}
               onChange={(e) => setForm({ ...form, statusValue: e.target.value.toLowerCase() })}
             />
           </label>

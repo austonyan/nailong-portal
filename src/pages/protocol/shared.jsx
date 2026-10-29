@@ -39,7 +39,7 @@ export function StatusTag({ status, size }) {
   const style = STATUS_STYLE[status] ?? { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size={size}>
-      {t(`protocol.status.${status}`, { defaultValue: status })}
+      {t(`protocol.status.${status}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -110,8 +110,12 @@ export function fmtTime(iso) {
   return iso ? dayjs(iso).format('HH:mm') : '';
 }
 
+export function fmtMonthDay(iso) {
+  return iso ? dayjs(iso).format('MM-DD') : '-';
+}
+
 export function protocolErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
 }
 
 export function protocolToast(kind, message) {

@@ -45,7 +45,7 @@ export default function DocsMessages() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [box, page, t]);
@@ -63,7 +63,7 @@ export default function DocsMessages() {
       ping();
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -73,7 +73,7 @@ export default function DocsMessages() {
       ping();
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -83,7 +83,7 @@ export default function DocsMessages() {
       ping();
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -151,8 +151,8 @@ export default function DocsMessages() {
                     {t(`docMsg.${m.type}.body`, {
                       ...m.params,
                       // 驳回/撤销的参数里是原因码,渲染前先翻译
-                      reason: m.params?.reasonCode ? t(`docs.reason.${m.params.reasonCode}`, { defaultValue: m.params.reasonCode }) : m.params?.reason,
-                      defaultValue: '',
+                      reason: m.params?.reasonCode ? t(`docs.reason.${m.params.reasonCode}`, { defaultValue: t('common.unknown') }) : m.params?.reason,
+                      defaultValue: t('docMsg.system.body'),
                     })}
                   </p>
                   <span className="docs-msg-time muted-text">{fmtDateTime(m.createdAt)}</span>

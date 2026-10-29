@@ -126,7 +126,7 @@ export default function AdminPostCardTemplates() {
       title: t('post.admin.cardTemplates.name'),
       dataIndex: 'name',
       width: 160,
-      render: (value, row) => (row.nameTw ? `${value} / ${row.nameTw}` : value),
+      render: (value, row) => ((row.nameCn ?? row.nameTw) ? `${value} / ${row.nameCn ?? row.nameTw}` : value),
     },
     {
       title: t('post.admin.cardTemplates.code'),
@@ -142,13 +142,17 @@ export default function AdminPostCardTemplates() {
       title: t('post.admin.cardTemplates.scene'),
       dataIndex: 'scene',
       width: 90,
-      render: (value) => t(`post.admin.cardTemplates.scene_${value}`, { defaultValue: value }),
+      render: (value) => t(`post.admin.cardTemplates.scene_${value}`, { defaultValue: t('common.unknown') }),
     },
     {
       title: t('post.admin.cardTemplates.color'),
       dataIndex: 'color',
       width: 140,
-      render: (value) => <span className="muted-text">{value}</span>,
+      render: (value) => (
+        <Tag color={value} variant="solid" size="small">
+          {t(`post.admin.cardTemplates.color_${value}`, { defaultValue: t('common.unknown') })}
+        </Tag>
+      ),
     },
     { title: t('post.admin.cardTemplates.description'), dataIndex: 'description' },
     { title: t('post.admin.cardTemplates.sortOrder'), dataIndex: 'sortOrder', width: 80 },
@@ -234,7 +238,7 @@ export default function AdminPostCardTemplates() {
               size="large"
               value={form.code}
               maxLength={40}
-              placeholder="LANERN_NIGHT"
+              placeholder={t('post.admin.cardTemplates.codePlaceholder')}
               onChange={(e) => setForm({ ...form, code: e.target.value })}
             />
           </label>
@@ -275,7 +279,7 @@ export default function AdminPostCardTemplates() {
               onChange={(key) => setForm({ ...form, scene: key })}
               options={CARD_SCENES.map((value) => ({
                 key: value,
-                label: t(`post.admin.cardTemplates.scene_${value}`, { defaultValue: value }),
+                label: t(`post.admin.cardTemplates.scene_${value}`, { defaultValue: t('common.unknown') }),
               }))}
             />
           </label>
@@ -284,7 +288,10 @@ export default function AdminPostCardTemplates() {
             <Select
               value={form.color}
               onChange={(key) => setForm({ ...form, color: key })}
-              options={CARD_COLORS.map((value) => ({ key: value, label: value }))}
+              options={CARD_COLORS.map((value) => ({
+                key: value,
+                label: t(`post.admin.cardTemplates.color_${value}`, { defaultValue: t('common.unknown') }),
+              }))}
             />
           </label>
           <label className="postal-field postal-field-wide">

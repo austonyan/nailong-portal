@@ -24,7 +24,7 @@ export default function ResidentVerify() {
       const res = await fetch(`/api/resident/verify?${qs}`);
       const data = await res.json();
       if (!res.ok) {
-        resToast('error', t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        resToast('error', t(`api.${data.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         return;
       }
       setResult({ ...data, query: value || '' });
@@ -95,7 +95,7 @@ export default function ResidentVerify() {
               </div>
               <div className="res-verify-row">
                 <span className="res-card-label">{t('res.card.type')}</span>
-                <span>{result.typeName}</span>
+                <span>{result.typeName || t('common.unknown')}</span>
               </div>
               <div className="res-verify-row">
                 <span className="res-card-label">{t('res.card.issuedAt')}</span>

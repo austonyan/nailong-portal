@@ -43,6 +43,10 @@ export default function AdminArchAudit() {
 
   useEffect(load, [load]);
 
+  // CSV 与表格共用同一套翻译,导出的文件里不会出现 action 码或 `system`。
+  const actionLabel = (v) => t(`arch.admin.audit.actionLabel.${v}`, { defaultValue: t('common.unknown') });
+  const targetTypeLabel = (v) => (v ? t(`arch.admin.audit.targetLabel.${v}`, { defaultValue: t('common.unknown') }) : '-');
+
   const exportAll = () => {
     exportCsv(
       'arch-audit-logs.csv',
@@ -55,15 +59,22 @@ export default function AdminArchAudit() {
         { key: 'detail', label: t('arch.admin.audit.detail') },
         { key: 'createdAt', label: t('common.createdAt') },
       ],
-      (items ?? []).map((r) => ({ ...r, detail: JSON.stringify(r.detail), actor: r.actorName || 'system' }))
+      (items ?? []).map((r) => ({
+        ...r,
+        detail: JSON.stringify(r.detail),
+        actor: r.actorName || t('common.system'),
+        action: actionLabel(r.action),
+        targetType: targetTypeLabel(r.targetType),
+        createdAt: fmtDateTime(r.createdAt),
+      }))
     );
   };
 
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
-    { title: t('arch.admin.audit.actor'), dataIndex: 'actorName', width: 130, render: (v, record) => (record.username ? `${v || record.username}` : 'system') },
-    { title: t('arch.admin.audit.action'), dataIndex: 'action', width: 180, render: (v) => <Tag color="app-blue" variant="soft" size="small">{t(`arch.admin.audit.actionLabel.${v}`, { defaultValue: v })}</Tag> },
-    { title: t('arch.admin.audit.targetType'), dataIndex: 'targetType', width: 130, render: (v) => v || <span className="muted-text">-</span> },
+    { title: t('arch.admin.audit.actor'), dataIndex: 'actorName', width: 130, render: (v, record) => (record.username ? `${v || record.username}` : t('common.system')) },
+    { title: t('arch.admin.audit.action'), dataIndex: 'action', width: 180, render: (v) => <Tag color="app-blue" variant="soft" size="small">{actionLabel(v)}</Tag> },
+    { title: t('arch.admin.audit.targetType'), dataIndex: 'targetType', width: 130, render: (v) => (v ? targetTypeLabel(v) : <span className="muted-text">-</span>) },
     { title: t('arch.admin.audit.targetId'), dataIndex: 'targetId', width: 170, render: (v) => v || <span className="muted-text">-</span> },
     { title: t('arch.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="arch-note">{JSON.stringify(v)}</span> },
     { title: t('common.createdAt'), dataIndex: 'createdAt', width: 150, render: (v) => fmtDateTime(v) },
@@ -86,7 +97,7 @@ export default function AdminArchAudit() {
           <Select
             value={action}
             onChange={(v) => { setAction(v); setPage(1); }}
-            options={[{ key: '', label: t('arch.admin.audit.allActions') }, ...ACTION_KEYS.map((a) => ({ key: a, label: t(`arch.admin.audit.actionLabel.${a}`, { defaultValue: a }) }))]}
+            options={[{ key: '', label: t('arch.admin.audit.allActions') }, ...ACTION_KEYS.map((a) => ({ key: a, label: actionLabel(a) }))]}
           />
         </div>
         <Table

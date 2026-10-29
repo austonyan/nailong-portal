@@ -36,7 +36,7 @@ export function StatusTag({ value, i18nPrefix = 'imm.status' }) {
   const style = STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
-      {t(`${i18nPrefix}.${value}`, { defaultValue: value })}
+      {t(`${i18nPrefix}.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -52,7 +52,7 @@ export function AnnouncementLevelTag({ level }) {
   const style = LEVEL_TAG[level] ?? LEVEL_TAG.info;
   return (
     <Tag color={style.color} variant={style.variant} size="small">
-      {t(`imm.level.${level}`, { defaultValue: level })}
+      {t(`imm.level.${level}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -116,6 +116,15 @@ export function exportCsv(filename, columns, rows) {
   const url = URL.createObjectURL(blob);
   downloadDataUrl(url, filename);
   URL.revokeObjectURL(url);
+}
+
+// 服务端已按 X-Nailong-Locale 把 base 字段本地化成当前语言(繁体时还会给出 *Cn 源文)。
+// 前端只在繁体界面才优先取 *Tw 版本;简体界面必须用 base,否则会把繁体内容显示在简体页。
+export function pickLocalized(item, baseKey, language) {
+  if (!item) return '';
+  const tw = item[`${baseKey}Tw`];
+  if (String(language || '').startsWith('zh-TW') && tw) return tw;
+  return item[baseKey] ?? tw ?? '';
 }
 
 const USER_TABS = [

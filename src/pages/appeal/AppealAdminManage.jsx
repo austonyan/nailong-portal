@@ -251,7 +251,7 @@ export default function AppealAdminManage() {
   ];
 
   const tplColumns = [
-    { title: t('appeal.admin.colType'), dataIndex: 'type', width: 220 },
+    { title: t('appeal.admin.colType'), dataIndex: 'type', width: 220, render: (v) => t(`appeal.msg.${v}.title`, { defaultValue: t('common.unknown') }) },
     { title: t('appeal.admin.colTitle'), dataIndex: 'title' },
     {
       title: t('common.status'),
@@ -361,7 +361,11 @@ export default function AppealAdminManage() {
                   <div className="appeal-config-list">
                     {config.map((c) => (
                       <div key={c.key} className="appeal-config-row">
-                        <span>{c.key}</span>
+                        <span>
+                          {t(`appeal.admin.config.${c.key.replace(/^appeal\./, '')}`, { defaultValue: t('common.unknown') })}
+                          {' '}
+                          <code>{c.key}</code>
+                        </span>
                         <Input
                           size="small"
                           defaultValue={c.value}

@@ -209,7 +209,7 @@ async function fullFlow(adminToken, userToken) {
   const auditLog = await api('/resident/admin/audit?action=approve', { token: adminToken });
   check('审计日志', auditLog.data.items.some((a) => a.action === 'approve_application'));
   const csv = await fetch(`${base}/api/resident/admin/export.csv`, { headers: { Authorization: `Bearer ${adminToken}` } });
-  check('导出 CSV', csv.status === 200 && (await csv.text()).includes('app_no'));
+  check('导出 CSV', csv.status === 200 && (await csv.text()).includes('申请编号'));
   const newType = await api('/resident/admin/types', {
     method: 'POST', token: adminToken,
     body: { code: 'SMOKE', name: '冒烟居民', description: '自动化测试用', validYears: 1, enabled: false },

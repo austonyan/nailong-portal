@@ -5,6 +5,7 @@ import { Router } from 'express';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { ApiError, badRequest, conflict, readString } from '../http.js';
+import { pickText, reqLocale } from '../locale.js';
 import { ensureStatsSchema } from './schema.js';
 import {
   assertIdentifier,
@@ -416,7 +417,33 @@ function csvEscape(value) {
   return `"${String(value ?? '').replace(/"/g, '""')}"`;
 }
 
+// CSV/打印不经过 JSON 中间件,不能用 localizeDeep,必须按请求头自己选语言。
+// 来源署在库里只存代码,导出前映射为本地化名称(未知代码保留原代码)。
+const STATS_OFFICE_LABELS = {
+  portal: ['统一门户', '統一入口網站'],
+  visa: ['签注申请署', '簽註申請署'],
+  immigration: ['口岸入境署', '口岸入境署'],
+  resident: ['居民登记署', '居民登記署'],
+  diplomatic: ['外交关系署', '外交關係署'],
+  dip: ['外交关系署', '外交關係署'],
+  document: ['文书认证署', '文書認證署'],
+  docs: ['文书认证署', '文書認證署'],
+  protocol: ['礼宾活动署', '禮賓活動署'],
+  appeal: ['申诉监察署', '申訴監察署'],
+  archives: ['档案记录署', '檔案紀錄署'],
+  tourism: ['文化旅游署', '文化旅遊署'],
+  education: ['教育科学署', '教育科學署'],
+  postal: ['邮政通信署', '郵政通信署'],
+  stats: ['皇家统计署', '皇家統計署'],
+};
+
+function officeLabel(code, locale) {
+  const pair = STATS_OFFICE_LABELS[code];
+  return pair ? pickText(pair[0], pair[1], locale) : String(code ?? '');
+}
+
 router.get('/export.csv', ...adminOnly, (req, res) => {
+  const locale = reqLocale(req);
   const codes = String(req.query.metrics || '')
     .split(',')
     .map((code) => code.trim())
@@ -432,17 +459,24 @@ router.get('/export.csv', ...adminOnly, (req, res) => {
   if (!rows.length) throw badRequest('STAT_EXPORT_EMPTY', 'No metrics selected');
 
   const asOf = now();
-  const lines = [
-    ['指标代码', '指标名称', '繁体名称', '来源署', '来源表', '指标值', '数据时间'].map(csvEscape).join(','),
+  const headers = [
+    pickText('指标代码', '指標代碼', locale),
+    pickText('指标名称', '指標名稱', locale),
+    pickText('繁体名称', '繁體名稱', locale),
+    pickText('来源署', '來源署', locale),
+    pickText('来源表', '來源表', locale),
+    pickText('指标值', '指標值', locale),
+    pickText('数据时间', '資料時間', locale),
   ];
+  const lines = [headers.map(csvEscape).join(',')];
   for (const row of rows) {
     const counted = countRows(row.table_name, { status: row.status_value });
     lines.push(
       [
         row.code,
-        row.name,
+        pickText(row.name, row.name_tw, locale),
         row.name_tw ?? '',
-        row.source_office,
+        officeLabel(row.source_office, locale),
         row.table_name,
         counted.available ? counted.value : '',
         asOf,

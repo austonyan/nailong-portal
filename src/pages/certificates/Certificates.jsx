@@ -56,7 +56,7 @@ export default function Certificates() {
       setAlerts(alertData.alerts ?? []);
       setBenefits(recs.flatMap((r) => r.items ?? []).filter((i) => i.eligible));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
       setAlerts([]);
       setBenefits([]);
@@ -81,14 +81,14 @@ export default function Certificates() {
       title: t('certificates.column.office'),
       dataIndex: 'source',
       width: 150,
-      render: (v) => t(`linkage.office.${v}`, { defaultValue: v }),
+      render: (v) => t(`linkage.office.${v}`, { defaultValue: t('common.unknown') }),
     },
     {
       title: t('certificates.column.type'),
       dataIndex: 'kind',
       width: 110,
       render: (_, record) => (
-        <span>{t(`linkage.kind.${record.kind}`, { defaultValue: record.kind })}</span>
+        <span>{t(`linkage.kind.${record.kind}`, { defaultValue: t('common.unknown') })}</span>
       ),
     },
     { title: t('certificates.column.number'), dataIndex: 'code', width: 170 },
@@ -98,7 +98,7 @@ export default function Certificates() {
       width: 110,
       render: (_, record) => (
         <Tag color={STATUS_COLOR[record.status] || 'default'} variant="soft">
-          {t(`certificates.status.${record.status}`, { defaultValue: record.status })}
+          {t(`certificates.status.${record.status}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
@@ -109,7 +109,7 @@ export default function Certificates() {
       render: (_, record) => (
         <div className="table-actions">
           <Button type="default" size="small" icon={<LinkIcon />} onClick={() => goOffice(record.source)}>
-            {t('certificates.goTo', { office: t(`linkage.office.${record.source}`, { defaultValue: record.source }) })}
+            {t('certificates.goTo', { office: t(`linkage.office.${record.source}`, { defaultValue: t('common.unknown') }) })}
           </Button>
         </div>
       ),
@@ -137,7 +137,10 @@ export default function Certificates() {
             {alerts.map((a) => (
               <li key={a.type}>
                 {a.type === 'resident_card_invalid'
-                  ? t('certificates.alert.residentCardInvalid', { status: a.cardStatus, count: a.affectedCount })
+                  ? t('certificates.alert.residentCardInvalid', {
+                      status: t(`res.cardStatus.${a.cardStatus}`, { defaultValue: t('common.unknown') }),
+                      count: a.affectedCount,
+                    })
                   : t('certificates.alert.diplomaticOrphaned', { count: a.affectedCount })}
               </li>
             ))}
@@ -152,7 +155,7 @@ export default function Certificates() {
             {benefits.map((b) => (
               <li key={`${b.serviceKey}-${b.id}`}>
                 <Tag size="small" color="app-teal" variant="soft">
-                  {t(`recognizeAdmin.serviceKey.${b.serviceKey}`, { defaultValue: b.serviceKey })}
+                  {t(`admin.recognize.serviceKey.${b.serviceKey}`, { defaultValue: t('common.unknown') })}
                 </Tag>
                 <span>{b.benefit}</span>
               </li>

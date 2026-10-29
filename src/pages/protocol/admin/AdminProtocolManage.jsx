@@ -286,7 +286,7 @@ export default function AdminProtocolManage() {
         {CONFIG_KEYS.map((key) => (
           <div key={key} className="protocol-config-row">
             <div className="protocol-config-label">
-              <strong>{t(`protocol.config.${key}`, { defaultValue: key })}</strong>
+              <strong>{t(`protocol.admin.config.${key}`, { defaultValue: t('common.unknown') })}</strong>
               <code>{key}</code>
             </div>
             <Input value={config[key] ?? ''} onChange={(e) => setConfig((p) => ({ ...p, [key]: e.target.value }))} />
@@ -479,7 +479,7 @@ export default function AdminProtocolManage() {
       <Modal
         maskClosable={false}
         open={templateEdit !== null}
-        title={templateEdit?.code}
+        title={templateEdit ? t('protocol.admin.templateEditTitle', { code: templateEdit.code }) : ''}
         onClose={() => setTemplateEdit(null)}
         typewriter={false}
         width={620}

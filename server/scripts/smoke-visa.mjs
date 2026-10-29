@@ -163,7 +163,7 @@ async function fullFlow(adminToken, userToken) {
   const auditLog = await api('/visa/admin/audit', { token: adminToken });
   check('审计日志', auditLog.data.items.some((a) => a.action === 'issue_permit'));
   const csv = await fetch(`${base}/api/visa/admin/export.csv`, { headers: { Authorization: `Bearer ${adminToken}` } });
-  check('导出 CSV', csv.status === 200 && (await csv.text()).includes('app_no'));
+  check('导出 CSV', csv.status === 200 && (await csv.text()).includes('申请编号'));
 }
 
 const adminToken = await login('admin');

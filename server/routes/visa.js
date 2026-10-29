@@ -136,6 +136,7 @@ function applicationWithMeta(row) {
   return {
     ...serializeApplication(row, { withPermit: true }),
     typeName: typeRow?.name ?? row.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     validDays: typeRow?.valid_days ?? null,
     stayDays: typeRow?.stay_days ?? null,
     materials,
@@ -233,9 +234,14 @@ router.get('/applications', (req, res) => {
     .all(req.user.id);
   res.json({
     items: rows.map((row) => {
-      const typeRow = db.prepare('SELECT name FROM visa_types WHERE code = ?').get(row.type_code);
+      const typeRow = db.prepare('SELECT name, name_tw FROM visa_types WHERE code = ?').get(row.type_code);
       const permit = db.prepare('SELECT * FROM visa_permits WHERE application_id = ?').get(row.id);
-      return { ...serializeApplication(row), typeName: typeRow?.name ?? row.type_code, permit: serializePermit(permit) };
+      return {
+        ...serializeApplication(row),
+        typeName: typeRow?.name ?? row.type_code,
+        typeNameTw: typeRow?.name_tw ?? null,
+        permit: serializePermit(permit),
+      };
     }),
   });
 });
@@ -452,8 +458,13 @@ router.get('/permits', (req, res) => {
   res.json({
     items: rows.map((p) => {
       const app = db.prepare('SELECT app_no FROM visa_applications WHERE id = ?').get(p.application_id);
-      const typeRow = db.prepare('SELECT name FROM visa_types WHERE code = ?').get(p.type_code);
-      return { ...serializePermit(p), appNo: app?.app_no, typeName: typeRow?.name ?? p.type_code };
+      const typeRow = db.prepare('SELECT name, name_tw FROM visa_types WHERE code = ?').get(p.type_code);
+      return {
+        ...serializePermit(p),
+        appNo: app?.app_no,
+        typeName: typeRow?.name ?? p.type_code,
+        typeNameTw: typeRow?.name_tw ?? null,
+      };
     }),
   });
 });
@@ -464,7 +475,14 @@ router.get('/permits/:visaNo', (req, res) => {
   if (!permit || permit.user_id !== req.user.id) throw notFound('Permit not found');
   const app = db.prepare('SELECT * FROM visa_applications WHERE id = ?').get(permit.application_id);
   const typeRow = db.prepare('SELECT * FROM visa_types WHERE code = ?').get(permit.type_code);
-  res.json({ permit: { ...serializePermit(permit), appNo: app?.app_no, typeName: typeRow?.name ?? permit.type_code } });
+  res.json({
+    permit: {
+      ...serializePermit(permit),
+      appNo: app?.app_no,
+      typeName: typeRow?.name ?? permit.type_code,
+      typeNameTw: typeRow?.name_tw ?? null,
+    },
+  });
 });
 
 // ---------------------------------------------------------------------------

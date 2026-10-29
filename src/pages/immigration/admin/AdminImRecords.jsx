@@ -134,6 +134,7 @@ function EntryRecordsTab() {
         loading={items === null}
         rowKey="id"
         pagination={{ current: page, pageSize, total, onChange: (p) => setPage(p), showTotal: true }}
+        emptyText={t('common.empty')}
       />
       <Modal
         maskClosable={false}
@@ -214,6 +215,7 @@ function ExitRecordsTab() {
       loading={items === null}
       rowKey="id"
       pagination={{ current: page, pageSize, total, onChange: (p) => setPage(p), showTotal: true }}
+      emptyText={t('common.empty')}
     />
   );
 }

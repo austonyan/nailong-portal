@@ -197,7 +197,7 @@ async function main() {
   const cDetail = await api(`/appeal/admin/complaints/${complaintId}`, { token: adminToken });
   check('实名投诉处理员可见账号', cDetail.data.complaint.username && cDetail.data.complaint.username !== '(anonymous)');
   const anonDetail = await api(`/appeal/admin/complaints/${anon.data.complaint.id}`, { token: adminToken });
-  check('匿名投诉隐藏账号', anonDetail.data.complaint.username === '(anonymous)');
+  check('匿名投诉隐藏账号', anonDetail.data.complaint.username === '' && anonDetail.data.complaint.anonymous === true);
 
   await api(`/appeal/admin/complaints/${complaintId}/accept`, { method: 'POST', token: adminToken, body: {} });
   const cReply = await api(`/appeal/admin/complaints/${complaintId}/reply`, { method: 'POST', token: adminToken, body: { content: '已记录流程优化建议,补件提醒将增加站内信双通知。' } });
@@ -291,7 +291,7 @@ async function main() {
   const auditLog = await api('/appeal/admin/audit?action=decide', { token: adminToken });
   check('审计日志', auditLog.data.items.some((a) => a.action === 'decide_appeal'));
   const csv = await fetch(`${base}/api/appeal/admin/export.csv`, { headers: { Authorization: `Bearer ${adminToken}` } });
-  check('导出 CSV(留痕)', csv.status === 200 && (await csv.text()).includes('biz_code'));
+  check('导出 CSV(留痕)', csv.status === 200 && (await csv.text()).includes('业务编号'));
   const vLogs = await api('/appeal/admin/verify-logs', { token: adminToken });
   check('验真记录', vLogs.data.items.length >= 3);
 

@@ -4,7 +4,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Tag, Upload } from 'animal-island-ui';
 import { PaperclipIcon, TrashIcon } from 'naive-icons';
-import { api, getAccessToken } from '../../api/client.js';
+import { api, getAccessToken, getLocaleHeader } from '../../api/client.js';
 import { toastApiError } from './apiError.js';
 
 function fmtSize(bytes) {
@@ -32,6 +32,7 @@ export default function Attachments({ declarationId, attachments = [], canUpload
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/api/immigration/declarations/${declarationId}/attachments`);
     xhr.setRequestHeader('Authorization', `Bearer ${getAccessToken()}`);
+    xhr.setRequestHeader('X-Nailong-Locale', getLocaleHeader()['X-Nailong-Locale']);
     xhr.onload = () => {
       if (xhr.status < 400) onSuccess(JSON.parse(xhr.responseText || '{}'));
       else onError(JSON.parse(xhr.responseText || '{}'));
@@ -62,7 +63,7 @@ export default function Attachments({ declarationId, attachments = [], canUpload
   const download = async (att) => {
     try {
       const res = await fetch(`/api/attachments/${att.id}/download`, {
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
+        headers: { Authorization: `Bearer ${getAccessToken()}`, ...getLocaleHeader() },
       });
       if (!res.ok) throw new Error(res.status);
       const blob = await res.blob();

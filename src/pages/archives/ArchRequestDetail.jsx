@@ -130,7 +130,7 @@ export default function ArchRequestDetail() {
                 <div key={event.id} className="arch-timeline-item">
                   <div className="arch-timeline-head">
                     <Tag color="app-blue" variant="soft" size="small">
-                      {t(`arch.event.${event.action}`, { defaultValue: event.action })}
+                      {t(`arch.event.${event.action}`, { defaultValue: t('common.unknown') })}
                     </Tag>
                     <span className="arch-timeline-time">{fmtDateTime(event.createdAt)}</span>
                     {event.actorName && <span className="muted-text">{event.actorName}</span>}

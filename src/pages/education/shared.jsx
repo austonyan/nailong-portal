@@ -33,7 +33,7 @@ export function StatusTag({ value, prefix = 'edu.status' }) {
   const style = STATUS_STYLE[value] ?? { color: 'default', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size="small">
-      {t(`${prefix}.${value}`, { defaultValue: value })}
+      {t(`${prefix}.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -42,7 +42,7 @@ export function TargetTypeTag({ value }) {
   const { t } = useTranslation();
   return (
     <Tag color="app-blue" variant="soft" size="small">
-      {t(`edu.targetType.${value}`, { defaultValue: value })}
+      {t(`edu.targetType.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -97,7 +97,9 @@ export function fmtDateTime(iso) {
 }
 
 export function eduErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  const key = `api.${err?.code}`;
+  const text = err?.code ? t(key) : '';
+  return text && text !== key ? text : t('api.INTERNAL_ERROR');
 }
 
 export function toastEduError(t, err) {

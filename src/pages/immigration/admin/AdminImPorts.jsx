@@ -7,6 +7,7 @@ import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
+import { fmtDate } from '../../../lib/date.js';
 
 const PORT_TYPES = ['land', 'air', 'sea'];
 const PORT_STATUSES = ['open', 'closed', 'maintenance'];
@@ -159,7 +160,7 @@ function PortsTab() {
           {t('imm.admin.createPort')}
         </Button>
       </div>
-      <Table className="table-fit" columns={columns} dataSource={ports ?? []} loading={ports === null} rowKey="id" pagination={false} />
+      <Table className="table-fit" columns={columns} dataSource={ports ?? []} loading={ports === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
 
       <Modal
         maskClosable={false}
@@ -176,13 +177,13 @@ function PortsTab() {
               <Input size="large" placeholder="ROYAL_PORT" disabled={!!editing?.id} />
             </FormItem>
           )}
-          <FormItem name="name" label={t('common.name')} rules={[{ required: true }]}>
+          <FormItem name="name" label={t('common.name')} rules={[{ required: true, message: t('common.required') }]}>
             <Input size="large" />
           </FormItem>
           <FormItem name="nameTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
             <Input size="large" placeholder={t('common.twOptional')} />
           </FormItem>
-          <FormItem name="type" label={t('imm.admin.portTypeLabel')} rules={[{ required: true }]}>
+          <FormItem name="type" label={t('imm.admin.portTypeLabel')} rules={[{ required: true, message: t('common.required') }]}>
             <Select options={PORT_TYPES.map((p) => ({ key: p, label: t(`imm.portType.${p}`) }))} />
           </FormItem>
           <FormItem name="openHours" label={t('imm.admin.openHours')}>
@@ -226,13 +227,13 @@ function PortsTab() {
         typewriter={false}
       >
         <Form form={channelForm} layout="vertical" onFinish={addChannel} initialValues={{ type: 'normal' }}>
-          <FormItem name="name" label={t('common.name')} rules={[{ required: true }]}>
+          <FormItem name="name" label={t('common.name')} rules={[{ required: true, message: t('common.required') }]}>
             <Input size="large" />
           </FormItem>
           <FormItem name="nameTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
             <Input size="large" placeholder={t('common.twOptional')} />
           </FormItem>
-          <FormItem name="type" label={t('imm.admin.channelType')} rules={[{ required: true }]}>
+          <FormItem name="type" label={t('imm.admin.channelType')} rules={[{ required: true, message: t('common.required') }]}>
             <Select options={CHANNEL_TYPES.map((c) => ({ key: c, label: t(`imm.channelType.${c}`) }))} />
           </FormItem>
           <FormItem name="description" label={t('common.description')}>
@@ -368,7 +369,7 @@ function AnnouncementsTab() {
     { title: t('imm.admin.level'), dataIndex: 'level', width: 90, render: (v) => <Tag color={v === 'critical' ? 'app-red' : v === 'warning' ? 'app-yellow' : 'app-blue'} variant="soft">{t(`imm.level.${v}`)}</Tag> },
     { title: t('imm.declare.port'), dataIndex: 'portName', width: 110, render: (v) => v ?? t('imm.admin.globalAnn') },
     { title: t('common.status'), dataIndex: 'status', width: 90, render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('imm.admin.published')}</Tag> : <Tag>{t('imm.admin.offline')}</Tag>) },
-    { title: t('common.createdAt'), dataIndex: 'publishedAt', width: 120, render: (v) => v?.slice(0, 10) },
+    { title: t('common.createdAt'), dataIndex: 'publishedAt', width: 120, render: (v) => (v ? fmtDate(v) : '-') },
     {
       title: t('common.actions'),
       width: 220,
@@ -393,7 +394,7 @@ function AnnouncementsTab() {
           {t('imm.admin.createAnn')}
         </Button>
       </div>
-      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
 
       <Modal
         maskClosable={false}
@@ -405,19 +406,19 @@ function AnnouncementsTab() {
         typewriter={false}
       >
         <Form form={form} layout="vertical" onFinish={save}>
-          <FormItem name="title" label={t('common.name')} rules={[{ required: true }]}>
+          <FormItem name="title" label={t('common.name')} rules={[{ required: true, message: t('common.required') }]}>
             <Input size="large" maxLength={80} />
           </FormItem>
           <FormItem name="titleTw" label={`${t('common.name')} · ${t('common.traditional')}`}>
             <Input size="large" maxLength={80} placeholder={t('common.twOptional')} />
           </FormItem>
-          <FormItem name="body" label={t('imm.admin.annBody')} rules={[{ required: true }]}>
+          <FormItem name="body" label={t('imm.admin.annBody')} rules={[{ required: true, message: t('common.required') }]}>
             <Input size="large" maxLength={1000} />
           </FormItem>
           <FormItem name="bodyTw" label={`${t('imm.admin.annBody')} · ${t('common.traditional')}`}>
             <Input size="large" maxLength={1000} placeholder={t('common.twOptional')} />
           </FormItem>
-          <FormItem name="level" label={t('imm.admin.level')} rules={[{ required: true }]}>
+          <FormItem name="level" label={t('imm.admin.level')} rules={[{ required: true, message: t('common.required') }]}>
             <Select options={LEVELS.map((l) => ({ key: l, label: t(`imm.level.${l}`) }))} />
           </FormItem>
           <FormItem name="portId" label={t('imm.admin.annPort')}>

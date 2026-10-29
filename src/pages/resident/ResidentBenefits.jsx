@@ -52,7 +52,7 @@ export default function ResidentBenefits() {
       {data.card ? (
         <>
           <Card className="res-info-card">
-            <h4>{t('res.benefits.myBenefits', { type: data.typeName || '' })}</h4>
+            <h4>{t('res.benefits.myBenefits', { type: data.typeName || t('common.unknown') })}</h4>
             <p>{data.benefits || t('res.type.benefitsPlaceholder')}</p>
           </Card>
           <Card className="res-info-card">

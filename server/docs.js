@@ -268,7 +268,7 @@ function seedDocs() {
 
     db.prepare(
       `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
-       VALUES ('docs', '奶龍國皇家文書與認證署', '认证邀请函、签注证明、居民卡等文书:申请、审核、签发、验真', '/docs', 'BadgeCheckIcon', 'app-yellow', 'docs:apply', 'internal_sso', 1, -2, @now, @now)`
+       VALUES ('docs', '奶龙国皇家文书与认证署', '认证邀请函、签注证明、居民卡等文书:申请、审核、签发、验真', '/docs', 'BadgeCheckIcon', 'app-yellow', 'docs:apply', 'internal_sso', 1, -2, @now, @now)`
     ).run({ now: now() });
 
     if (db.prepare('SELECT COUNT(*) AS n FROM doc_types').get().n === 0) {
@@ -792,6 +792,7 @@ export function maskCertificate(cert, typeRow) {
     certNo: cert.cert_no,
     typeCode: cert.type_code,
     typeName: typeRow?.name ?? cert.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     status: cert.status,
     valid: cert.status === 'valid',
     issuedAt: cert.issued_at,

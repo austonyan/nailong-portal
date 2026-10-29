@@ -40,7 +40,7 @@ export default function DocsTypesAdmin() {
       const d = await api.get('/docs/admin/types');
       setItems(d.items);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [t]);
@@ -92,7 +92,7 @@ export default function DocsTypesAdmin() {
       setEditing(null);
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -161,7 +161,7 @@ export default function DocsTypesAdmin() {
             <div className="docs-editor-grid">
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.admin.types.code')}</span>
-                <Input value={form.code} onChange={(e) => setF('code', e.target.value)} disabled={!!editing?.id} placeholder="INVITE" maxLength={30} />
+                <Input value={form.code} onChange={(e) => setF('code', e.target.value)} disabled={!!editing?.id} placeholder={t('docs.admin.types.codePh')} maxLength={30} />
               </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('common.name')}</span>
@@ -197,7 +197,7 @@ export default function DocsTypesAdmin() {
               </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.admin.types.bizSource')}</span>
-                <Input value={form.biz_source} onChange={(e) => setF('biz_source', e.target.value)} maxLength={30} placeholder="visa / entry / protocol" />
+                <Input value={form.biz_source} onChange={(e) => setF('biz_source', e.target.value)} maxLength={30} placeholder={t('docs.admin.types.bizSourcePh')} />
               </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.admin.types.bizRequired')}</span>
@@ -225,14 +225,14 @@ export default function DocsTypesAdmin() {
               makeEmpty={() => ({ ...emptyMaterial })}
               columns={(row, set) => (
                 <>
-                  <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder="key" className="docs-editor-key" />
+                  <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder={t('docs.admin.types.materialKeyPh')} className="docs-editor-key" />
                   <Input value={row.label} onChange={(e) => set({ label: e.target.value })} placeholder={t('docs.admin.types.materialLabel')} />
                   <Input value={row.labelTw ?? ''} onChange={(e) => set({ labelTw: e.target.value })} placeholder={t('common.twOptional')} />
                   <label className="docs-editor-check">
                     <Switch size="small" checked={!!row.required} onChange={(v) => set({ required: v })} />
                     <span>{t('docs.apply.required')}</span>
                   </label>
-                  <Input value={row.accept} onChange={(e) => set({ accept: e.target.value })} placeholder="accept" className="docs-editor-accept" />
+                  <Input value={row.accept} onChange={(e) => set({ accept: e.target.value })} placeholder={t('docs.admin.types.acceptPh')} className="docs-editor-accept" />
                   <Input type="number" value={row.max_mb} onChange={(e) => set({ max_mb: Number(e.target.value) })} className="docs-editor-num" />
                   <Input type="number" value={row.max_count} onChange={(e) => set({ max_count: Number(e.target.value) })} className="docs-editor-num" />
                 </>
@@ -247,14 +247,14 @@ export default function DocsTypesAdmin() {
               makeEmpty={() => ({ ...emptyField })}
               columns={(row, set) => (
                 <>
-                  <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder="key" className="docs-editor-key" />
+                  <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder={t('docs.admin.types.fieldKeyPh')} className="docs-editor-key" />
                   <Input value={row.label} onChange={(e) => set({ label: e.target.value })} placeholder={t('docs.admin.types.fieldLabel')} />
                   <Input value={row.labelTw ?? ''} onChange={(e) => set({ labelTw: e.target.value })} placeholder={t('common.twOptional')} />
                   <label className="docs-editor-check">
                     <Switch size="small" checked={!!row.required} onChange={(v) => set({ required: v })} />
                     <span>{t('docs.apply.required')}</span>
                   </label>
-                  <Input value={row.placeholder} onChange={(e) => set({ placeholder: e.target.value })} placeholder="placeholder" className="docs-editor-accept" />
+                  <Input value={row.placeholder} onChange={(e) => set({ placeholder: e.target.value })} placeholder={t('docs.admin.types.placeholderPh')} className="docs-editor-accept" />
                   <Input value={row.placeholderTw ?? ''} onChange={(e) => set({ placeholderTw: e.target.value })} placeholder={t('common.twOptional')} className="docs-editor-accept" />
                 </>
               )}

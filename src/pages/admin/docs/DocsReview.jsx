@@ -47,7 +47,7 @@ export default function DocsReview() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [page, status, typeCode, dq, t]);
@@ -64,7 +64,7 @@ export default function DocsReview() {
       const d = await api.get(`/docs/applications/${row.id}`);
       setDetail(d.item);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -83,7 +83,7 @@ export default function DocsReview() {
       setApproveComment('');
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setActing(false);
     }
@@ -191,7 +191,7 @@ export default function DocsReview() {
               {Object.entries(detail.formData || {})
                 .filter(([, v]) => v)
                 .flatMap(([k, v]) => [
-                  <dt key={k}>{detail.type?.formFields?.find((f) => f.key === k)?.label || k}</dt>,
+                  <dt key={k}>{detail.type?.formFields?.find((f) => f.key === k)?.label || t('common.unknown')}</dt>,
                   <dd key={`${k}-v`}>{v}</dd>,
                 ])}
             </dl>
@@ -205,7 +205,7 @@ export default function DocsReview() {
                 <li key={r.id}>
                   <span className="docs-timeline-dot" />
                   <div>
-                    <strong>{t(`docs.record.${r.action}`, { defaultValue: r.action })}</strong>
+                    <strong>{t(`docs.record.${r.action}`, { defaultValue: t('common.unknown') })}</strong>
                     {r.comment && <p className="muted-text">{r.comment}</p>}
                     <p className="muted-text">
                       {fmtDateTime(r.createdAt)} · {r.actorName}

@@ -59,7 +59,7 @@ export default function AdminEduAudit() {
 
   const columns = [
     { title: t('edu.admin.audit.actor'), dataIndex: 'actorName', width: 130 },
-    { title: t('edu.admin.audit.action'), dataIndex: 'action', width: 150, render: (v) => t(`edu.admin.audit.actionLabel.${v}`, { defaultValue: v }) },
+    { title: t('edu.admin.audit.action'), dataIndex: 'action', width: 150, render: (v) => t(`edu.admin.audit.actionLabel.${v}`, { defaultValue: t('common.unknown') }) },
     {
       title: t('edu.field.type'),
       dataIndex: 'targetType',
@@ -87,7 +87,7 @@ export default function AdminEduAudit() {
               setAction(key);
               setPage(1);
             }}
-            options={AUDIT_ACTIONS.map((v) => ({ key: v, label: v === '' ? t('edu.admin.audit.allActions') : t(`edu.admin.audit.actionLabel.${v}`, { defaultValue: v }) }))}
+            options={AUDIT_ACTIONS.map((v) => ({ key: v, label: v === '' ? t('edu.admin.audit.allActions') : t(`edu.admin.audit.actionLabel.${v}`, { defaultValue: t('common.unknown') }) }))}
             aria-label={t('edu.admin.audit.action')}
           />
           <Select
