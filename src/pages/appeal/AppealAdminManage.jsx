@@ -21,6 +21,7 @@ export default function AppealAdminManage() {
   const [blacklist, setBlacklist] = useState([]);
   const [duplicates, setDuplicates] = useState([]);
   const [config, setConfig] = useState([]);
+  const [tab, setTab] = useState('notices');
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [pubOpen, setPubOpen] = useState(false);
   const [blOpen, setBlOpen] = useState(false);
@@ -272,7 +273,8 @@ export default function AppealAdminManage() {
 
       <Card>
         <Tabs
-          activeKey="notices"
+          activeKey={tab}
+          onChange={setTab}
           items={[
             {
               key: 'notices',

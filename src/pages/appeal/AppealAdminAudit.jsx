@@ -11,6 +11,7 @@ export default function AppealAdminAudit() {
   const [items, setItems] = useState([]);
   const [verifyLogs, setVerifyLogs] = useState([]);
   const [action, setAction] = useState('');
+  const [tab, setTab] = useState('audit');
   const [loading, setLoading] = useState(false);
 
   const load = useCallback(async () => {
@@ -65,7 +66,8 @@ export default function AppealAdminAudit() {
 
       <Card>
         <Tabs
-          activeKey="audit"
+          activeKey={tab}
+          onChange={setTab}
           items={[
             {
               key: 'audit',
