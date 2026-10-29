@@ -1,18 +1,24 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, Title, useForm } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { toastSuccess, toastError } from '../components/toast.js';
+import { fmtDate } from '../lib/date.js';
 
 export default function Profile() {
   const { t } = useTranslation();
   const { user, reload } = useAuth();
   const [profileForm] = useForm();
   const [passwordForm] = useForm();
+  const [profileBusy, setProfileBusy] = useState(false);
+  const [passwordBusy, setPasswordBusy] = useState(false);
 
   if (!user) return null;
 
   const saveProfile = async (values) => {
+    if (profileBusy) return;
+    setProfileBusy(true);
     try {
       await api.patch('/auth/profile', {
         displayName: values.displayName?.trim(),
@@ -22,16 +28,22 @@ export default function Profile() {
       toastSuccess(t('profile.updateSuccess'));
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+    } finally {
+      setProfileBusy(false);
     }
   };
 
   const changePassword = async (values) => {
+    if (passwordBusy) return;
+    setPasswordBusy(true);
     try {
       await api.post('/auth/change-password', { oldPassword: values.oldPassword, newPassword: values.newPassword });
       passwordForm.resetFields();
       toastSuccess(t('profile.passwordChanged'));
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+    } finally {
+      setPasswordBusy(false);
     }
   };
 
@@ -52,7 +64,7 @@ export default function Profile() {
             ))}
           </div>
           <p className="muted-text profile-since">
-            {t('profile.memberSince')} {new Date(user.createdAt).toLocaleDateString()}
+            {t('profile.memberSince')} {fmtDate(user.createdAt)}
           </p>
         </div>
       </Card>
@@ -62,14 +74,14 @@ export default function Profile() {
           {t('profile.basic')}
         </Title>
         <Form form={profileForm} layout="vertical" onFinish={saveProfile} initialValues={{ displayName: user.displayName, email: user.email ?? '' }}>
-          <FormItem name="displayName" label={t('auth.displayName')} rules={[{ required: true, message: t('auth.displayNamePlaceholder') }]}>
+          <FormItem name="displayName" label={t('auth.displayName')} rules={[{ required: true, message: t('common.required') }]}>
             <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
           </FormItem>
-          <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('api.VALIDATION_ERROR') }]}>
+          <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('auth.emailRule') }]}>
             <Input size="large" type="email" placeholder="you@example.com" allowClear />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={profileBusy} disabled={profileBusy}>
               {t('common.save')}
             </Button>
           </FormItem>
@@ -86,7 +98,7 @@ export default function Profile() {
           <FormItem
             name="oldPassword"
             label={t('profile.oldPassword')}
-            rules={[{ required: true, message: t('profile.oldPassword') }]}
+            rules={[{ required: true, message: t('common.required') }]}
           >
             <Input size="large" type="password" />
           </FormItem>
@@ -94,8 +106,8 @@ export default function Profile() {
             name="newPassword"
             label={t('profile.newPassword')}
             rules={[
-              { required: true, message: t('auth.passwordPlaceholder') },
-              { min: 8, message: t('auth.passwordPlaceholder') },
+              { required: true, message: t('common.required') },
+              { min: 8, message: t('auth.passwordRule') },
             ]}
           >
             <Input size="large" type="password" placeholder={t('auth.passwordPlaceholder')} />
@@ -105,19 +117,19 @@ export default function Profile() {
             label={t('profile.confirmNewPassword')}
             dependencies={['newPassword']}
             rules={[
-              { required: true, message: t('profile.confirmNewPassword') },
+              { required: true, message: t('common.required') },
               {
                 validator: (_rule, value) =>
                   value === passwordForm.getFieldValue('newPassword')
                     ? undefined
-                    : Promise.reject(new Error(t('profile.confirmNewPassword'))),
+                    : Promise.reject(new Error(t('auth.confirmRule'))),
               },
             ]}
           >
             <Input size="large" type="password" placeholder={t('profile.confirmNewPassword')} />
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={passwordBusy} disabled={passwordBusy}>
               {t('profile.changePassword')}
             </Button>
           </FormItem>

@@ -29,14 +29,16 @@ export default function DocsTypes() {
   }, [t]);
 
   // /docs/types?focus=CODE deep link from the home catalog
+  // 依赖用 focus 字符串本身:searchParams 对象每次渲染都是新引用,会让这个 effect
+  // 反复执行(并反复 setSearchParams)。
+  const focusParam = searchParams.get('focus');
   useEffect(() => {
-    const code = searchParams.get('focus');
-    if (code && types?.length) {
-      const hit = types.find((tp) => tp.code === code);
+    if (focusParam && types?.length) {
+      const hit = types.find((tp) => tp.code === focusParam);
       if (hit) setFocus(hit);
       setSearchParams({}, { replace: true });
     }
-  }, [searchParams, types, setSearchParams]);
+  }, [focusParam, types, setSearchParams]);
 
   if (types === null) {
     return (

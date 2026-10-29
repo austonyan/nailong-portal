@@ -6,6 +6,7 @@ import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
+import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 import { DOC_BIZ_SOURCE } from '../../components/linkage/shared.js';
 import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
@@ -56,9 +57,11 @@ export default function DocsApply() {
 
   const type = useMemo(() => types?.find((tp) => tp.code === typeCode) || null, [types, typeCode]);
 
-  // 载入草稿
+  // 载入草稿。依赖用 draft 参数本身:searchParams 是每次渲染都新建的对象,
+  // 放进依赖数组会让这个草稿请求随任何一次重渲染重跑(包括用户正在填表时)。
+  const draftParam = searchParams.get('draft');
   useEffect(() => {
-    const draftId = searchParams.get('draft');
+    const draftId = draftParam;
     if (!draftId) return;
     let cancelled = false;
     api
@@ -86,7 +89,7 @@ export default function DocsApply() {
     return () => {
       cancelled = true;
     };
-  }, [searchParams, navigate, t]);
+  }, [draftParam, navigate, t]);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
   const setFormField = (key, value) => setForm((f) => ({ ...f, formData: { ...f.formData, [key]: value } }));
@@ -196,6 +199,20 @@ export default function DocsApply() {
     }
   };
 
+  const fillFromResident = (data) => {
+    if (!data) return;
+    // 身份接口只提供证件号,本表单没有对应字段:只写确实带回的值,不要清空用户已填内容。
+    const patch = {};
+    if (data.nickname) patch.nickname = data.nickname;
+    if (data.contact) patch.contact = data.contact;
+    if (!Object.keys(patch).length) {
+      toastError(t('residentPrefill.nothing'));
+      return;
+    }
+    setForm((f) => ({ ...f, ...patch }));
+    toastSuccess(t('residentPrefill.filled'));
+  };
+
   const pickType = (code) => {
     if (appId) {
       toastWarning(t('docs.apply.typeLocked'));
@@ -239,6 +256,7 @@ export default function DocsApply() {
       {type && (
         <>
           <Card className="docs-block">
+            <ResidentPrefill onFill={fillFromResident} fields={['nickname', 'contact']} />
             <h3 className="docs-block-title">{t('docs.apply.step2')}</h3>
             <div className="docs-form-grid">
               <label className="docs-field">

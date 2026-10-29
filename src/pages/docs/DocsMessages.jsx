@@ -12,6 +12,7 @@ import {
   XCircleIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { fmtDateTime } from '../../lib/date.js';
 import { DOCS_MSG_REFRESH } from './DocsLayout.jsx';
 import { toastError } from '../../components/toast.js';
 
@@ -154,7 +155,7 @@ export default function DocsMessages() {
                       defaultValue: '',
                     })}
                   </p>
-                  <span className="docs-msg-time muted-text">{String(m.createdAt).slice(0, 16).replace('T', ' ')}</span>
+                  <span className="docs-msg-time muted-text">{fmtDateTime(m.createdAt)}</span>
                 </div>
                 <Button
                   size="small"

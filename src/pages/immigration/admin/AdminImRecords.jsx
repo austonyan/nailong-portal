@@ -13,12 +13,14 @@ function EntryRecordsTab() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState(null);
+  const [invalidTarget, setInvalidTarget] = useState(null);
   const [entryDate, setEntryDate] = useState('');
   const [note, setNote] = useState('');
+  const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
   const load = useCallback(() => {
-    api
+    return api
       .get(`/immigration/admin/records?type=entry&page=${page}&pageSize=${pageSize}`)
       .then((data) => {
         setItems(data.items);
@@ -32,24 +34,39 @@ function EntryRecordsTab() {
 
   useEffect(load, [load]);
 
+  const closeEdit = () => {
+    if (busy) return;
+    setEditing(null);
+  };
+
   const saveEdit = async () => {
+    if (busy) return; // 双击会写两次更正并留两条审计
+    setBusy(true);
     try {
       await api.patch(`/immigration/admin/records/entry/${editing.id}`, { entryDate, note });
-      toastSuccess(t('common.save'));
       setEditing(null);
-      load();
+      toastSuccess(t('common.save'));
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setBusy(false);
     }
   };
 
-  const markInvalid = async (row) => {
+  // 把法律状态改成无效不可撤销:先确认,再执行,执行期间禁用按钮。
+  const confirmInvalid = async () => {
+    if (!invalidTarget || busy) return;
+    setBusy(true);
     try {
-      await api.post(`/immigration/admin/records/entry/${row.id}/mark`, { status: 'invalid' });
+      await api.post(`/immigration/admin/records/entry/${invalidTarget.id}/mark`, { status: 'invalid' });
+      setInvalidTarget(null);
       toastSuccess(t('common.saved'));
-      load();
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -95,7 +112,7 @@ function EntryRecordsTab() {
             {t('imm.records.correct')}
           </Button>
           {record.status !== 'invalid' && (
-            <Button type="default" size="small" danger icon={<AlertTriangleIcon />} onClick={() => markInvalid(record)}>
+            <Button type="default" size="small" danger icon={<AlertTriangleIcon />} onClick={() => setInvalidTarget(record)}>
               {t('imm.records.markInvalid')}
             </Button>
           )}
@@ -122,12 +139,12 @@ function EntryRecordsTab() {
         maskClosable={false}
         open={editing !== null}
         title={t('imm.records.correctTitle', { no: editing?.no })}
-        onClose={() => setEditing(null)}
+        onClose={closeEdit}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" onClick={saveEdit}>{t('common.save')}</Button>
+            <Button onClick={closeEdit} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy} onClick={saveEdit}>{t('common.save')}</Button>
           </>
         }
       >
@@ -136,6 +153,27 @@ function EntryRecordsTab() {
         <Input size="large" value={entryDate} onChange={(e) => setEntryDate(e.target.value)} placeholder="YYYY-MM-DD" />
         <p className="im-field-label">{t('imm.admin.review.opinion')}</p>
         <Input size="large" value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} />
+      </Modal>
+
+      <Modal
+        maskClosable={false}
+        open={invalidTarget !== null}
+        title={t('imm.records.markInvalidTitle')}
+        onClose={() => {
+          if (busy) return;
+          setInvalidTarget(null);
+        }}
+        typewriter={false}
+        footer={
+          <>
+            <Button onClick={() => setInvalidTarget(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" danger loading={busy} disabled={busy} onClick={confirmInvalid}>
+              {t('imm.records.markInvalid')}
+            </Button>
+          </>
+        }
+      >
+        {invalidTarget ? t('imm.records.markInvalidConfirm', { no: invalidTarget.no }) : ''}
       </Modal>
     </>
   );

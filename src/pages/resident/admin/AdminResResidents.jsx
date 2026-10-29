@@ -6,24 +6,27 @@ import { EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { CARD_STATUS_COLORS, fmtDate, toastResError } from '../shared.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminResResidents() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:避免每敲一个字都打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
 
   const load = useCallback(async () => {
     try {
       const params = new URLSearchParams();
-      if (q.trim()) params.set('q', q.trim());
+      if (dq.trim()) params.set('q', dq.trim());
       const data = await api.get(`/resident/admin/residents?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
       setItems([]);
     }
-  }, [q, t]);
+  }, [dq, t]);
 
   useEffect(() => {
     load();

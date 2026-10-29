@@ -32,7 +32,7 @@ export const BIZ_SOURCE_TO_TYPE = {
   archives: 'archives',
 };
 
-const APPEAL_BIZ_TYPES = ['visa', 'immigration', 'resident', 'diplomatic', 'document', 'archives'];
+const APPEAL_BIZ_TYPES = ['visa', 'immigration', 'resident', 'diplomatic', 'document', 'archives', 'protocol'];
 
 const VISA_PERMIT_APPEALABLE = new Set(['voided', 'expired']);
 const VISA_APP_APPEALABLE = new Set(['rejected', 'closed', 'approved', 'issued']);
@@ -45,6 +45,9 @@ const DIP_IDENTITY_APPEALABLE = new Set(['rejected', 'frozen', 'revoked', 'expir
 const DOC_APP_APPEALABLE = new Set(['rejected', 'approved']);
 const DOC_CERT_APPEALABLE = new Set(['voided', 'expired']);
 const ARCH_REQ_APPEALABLE = new Set(['rejected']);
+const PROTOCOL_INVITATION_APPEALABLE = new Set(['revoked', 'expired']);
+const PROTOCOL_PASS_APPEALABLE = new Set(['voided', 'expired']);
+const PROTOCOL_HOST_APPEALABLE = new Set(['rejected', 'revoked']);
 
 function normalizeCode(code) {
   return String(code || '').trim().toUpperCase();
@@ -378,7 +381,7 @@ function protocolTarget(code) {
       ownerId: invitation.invitee_user_id,
       valid,
       certifiable: true,
-      appealable: false,
+      appealable: PROTOCOL_INVITATION_APPEALABLE.has(invitation.status),
       detail: { eventTitle: invitation.event_title || '', validUntil: invitation.valid_until },
     };
   }
@@ -398,7 +401,7 @@ function protocolTarget(code) {
       ownerId: pass.user_id,
       valid: pass.status === 'pending' && !isPast(pass.valid_until),
       certifiable: true,
-      appealable: false,
+      appealable: PROTOCOL_PASS_APPEALABLE.has(pass.status),
       detail: { eventTitle: pass.event_title || '', validUntil: pass.valid_until },
     };
   }
@@ -430,7 +433,7 @@ function protocolTarget(code) {
     ownerId: host.user_id,
     valid: host.status === 'certified',
     certifiable: true,
-    appealable: false,
+    appealable: PROTOCOL_HOST_APPEALABLE.has(host.status),
     detail: { name: host.name, certNo: host.cert_no },
   };
 }
@@ -519,6 +522,16 @@ export function verifyBusinessRecord(bizType, code, userId) {
   // 无主记录(礼宾活动、外交互免协议)不是任何人的个人证件,不能认领。
   const personal = target.ownerId != null;
   const owned = personal && target.ownerId === userId;
+  // 引用占用:该编号已被多少份有效文书证书引用,供前端提示"已被引用"。
+  // doc_certificates 表在独立 smoke 脚本中可能尚未创建,按 0 处理。
+  let refCount = 0;
+  try {
+    refCount = db
+      .prepare("SELECT COUNT(*) AS n FROM doc_certificates WHERE biz_no = ? AND status = 'valid'")
+      .get(target.code).n;
+  } catch {
+    refCount = 0;
+  }
   return {
     integrated: true,
     found: true,
@@ -535,6 +548,8 @@ export function verifyBusinessRecord(bizType, code, userId) {
     title: owned ? target.title : '',
     office: LINKED_OFFICES[bizType] || '',
     detail: owned ? target.detail || {} : {},
+    refCount,
+    referenced: refCount > 0,
     checkedAt: now(),
   };
 }
@@ -1019,6 +1034,272 @@ export function listOwnedRecords(bizType, userId, { kind = '', limit = 50 } = {}
     .map(({ _order, ...item }) => item);
 }
 
+// ---------------------------------------------------------------------------
+// 按账户聚合各署本人有效证件 — 统一"证件库"视图
+// 只返回当前账户自己的记录,已按各署已有状态机做惰性过期判定,
+// 便于前端统一展示证件、状态、有效期与即将到期提醒。
+// ---------------------------------------------------------------------------
+
+const CERT_EXPIRING_SOON_DAYS = 30;
+
+function isExpiringSoon(validUntil) {
+  if (!validUntil) return false;
+  const end = new Date(String(validUntil).slice(0, 10));
+  const from = new Date(now().slice(0, 10));
+  const diffDays = (end - from) / (1000 * 60 * 60 * 24);
+  return diffDays >= 0 && diffDays <= CERT_EXPIRING_SOON_DAYS;
+}
+
+function certItem({ source, kind, code, status, typeName, typeNameTw, holder, issuedAt, validUntil, valid, certifiable, appealable }) {
+  return {
+    source,
+    kind,
+    code,
+    status,
+    typeName,
+    typeNameTw,
+    holder,
+    issuedAt,
+    validUntil,
+    valid,
+    certifiable,
+    appealable,
+    expiringSoon: valid && isExpiringSoon(validUntil),
+  };
+}
+
+export function listUserCertificates(userId) {
+  const items = [];
+
+  // ---- visa: valid permits + approved/issued applications ----
+  const visaPermits = db
+    .prepare(`SELECT p.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM visa_permits p LEFT JOIN visa_types t ON t.code = p.type_code
+              WHERE p.user_id = ? AND p.status = 'valid'`)
+    .all(userId);
+  for (const p of visaPermits) {
+    const status = p.status === 'valid' && isPast(p.valid_until) ? 'expired' : p.status;
+    items.push(certItem({
+      source: 'visa', kind: 'permit', code: p.visa_no, status,
+      typeName: p.type_name || p.type_code, typeNameTw: p.type_name_tw || null,
+      holder: maskName(p.holder_name), issuedAt: p.issued_at, validUntil: p.valid_until,
+      valid: status === 'valid',
+      certifiable: true,
+      appealable: VISA_PERMIT_APPEALABLE.has(status),
+    }));
+  }
+  const visaApps = db
+    .prepare(`SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM visa_applications a LEFT JOIN visa_types t ON t.code = a.type_code
+              WHERE a.user_id = ? AND a.status IN ('approved','issued')`)
+    .all(userId);
+  for (const a of visaApps) {
+    items.push(certItem({
+      source: 'visa', kind: 'application', code: a.app_no, status: a.status,
+      typeName: a.type_name || a.type_code, typeNameTw: a.type_name_tw || null,
+      holder: maskName(a.nickname), issuedAt: a.issued_at || a.submitted_at, validUntil: '',
+      valid: a.status === 'issued',
+      certifiable: a.status !== 'draft',
+      appealable: VISA_APP_APPEALABLE.has(a.status),
+    }));
+  }
+
+  // ---- immigration: approved/entered/exited declarations + entry records ----
+  const imDecls = db
+    .prepare(`SELECT d.*, p.name AS port_name, p.name_tw AS port_name_tw
+              FROM im_declarations d LEFT JOIN im_ports p ON p.id = d.port_id
+              WHERE d.user_id = ? AND d.deleted_at IS NULL AND d.status IN ('approved','entered','exited')`)
+    .all(userId);
+  for (const d of imDecls) {
+    items.push(certItem({
+      source: 'immigration', kind: 'declaration', code: d.no, status: d.status,
+      typeName: d.port_name || '', typeNameTw: d.port_name_tw || null,
+      holder: maskName(d.nickname), issuedAt: d.submitted_at, validUntil: '',
+      valid: ['approved','entered','exited'].includes(d.status),
+      certifiable: d.status !== 'draft',
+      appealable: IMM_DECL_APPEALABLE.has(d.status),
+    }));
+  }
+  const imEntries = db.prepare('SELECT * FROM im_entry_records WHERE user_id = ? AND deleted_at IS NULL').all(userId);
+  for (const e of imEntries) {
+    items.push(certItem({
+      source: 'immigration', kind: 'entry', code: e.no, status: e.status,
+      typeName: '入境记录', typeNameTw: null,
+      holder: '', issuedAt: e.entry_date, validUntil: '',
+      valid: true, certifiable: true, appealable: false,
+    }));
+  }
+
+  // ---- resident: valid cards ----
+  const resCards = db
+    .prepare(`SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM res_cards c LEFT JOIN res_types t ON t.code = c.type_code
+              WHERE c.user_id = ? AND c.status = 'valid'`)
+    .all(userId);
+  for (const c of resCards) {
+    const status = c.status === 'valid' && isPast(c.valid_until) ? 'expired' : c.status;
+    items.push(certItem({
+      source: 'resident', kind: 'card', code: c.card_no, status,
+      typeName: c.type_name || c.type_code, typeNameTw: c.type_name_tw || null,
+      holder: maskName(c.nickname), issuedAt: c.issued_at, validUntil: c.valid_until,
+      valid: status === 'valid',
+      certifiable: true,
+      appealable: RES_CARD_APPEALABLE.has(status),
+    }));
+  }
+
+  // ---- diplomatic: active identities + established relations ----
+  const dipIds = db
+    .prepare(`SELECT i.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM dip_identities i LEFT JOIN dip_identity_types t ON t.code = i.identity_type
+              WHERE i.user_id = ? AND i.deleted_at IS NULL AND i.status = 'active'`)
+    .all(userId);
+  for (const i of dipIds) {
+    const status = i.status === 'active' && i.term_end && i.term_end < now().slice(0, 10) ? 'expired' : i.status;
+    items.push(certItem({
+      source: 'diplomatic', kind: 'identity', code: i.no, status,
+      typeName: i.type_name || i.identity_type, typeNameTw: i.type_name_tw || null,
+      holder: maskName(i.nickname), issuedAt: i.term_start, validUntil: i.term_end,
+      valid: status === 'active',
+      certifiable: true,
+      appealable: DIP_IDENTITY_APPEALABLE.has(status),
+    }));
+  }
+  const dipRels = db
+    .prepare(`SELECT r.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM dip_relations r LEFT JOIN dip_relation_types t ON t.code = r.relation_type
+              WHERE r.user_id = ? AND r.deleted_at IS NULL AND r.status = 'established'`)
+    .all(userId);
+  for (const r of dipRels) {
+    items.push(certItem({
+      source: 'diplomatic', kind: 'relation', code: r.no, status: r.status,
+      typeName: r.type_name || r.relation_type, typeNameTw: r.type_name_tw || null,
+      holder: maskName(r.rep_nickname), issuedAt: r.established_at, validUntil: '',
+      valid: r.status === 'established',
+      certifiable: true,
+      appealable: DIP_RELATION_APPEALABLE.has(r.status),
+    }));
+  }
+
+  // ---- document: valid certificates ----
+  const docCerts = db
+    .prepare(`SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM doc_certificates c LEFT JOIN doc_types t ON t.code = c.type_code
+              WHERE c.user_id = ? AND c.status = 'valid'`)
+    .all(userId);
+  for (const c of docCerts) {
+    const status = c.status === 'valid' && isPast(c.expires_at) ? 'expired' : c.status;
+    items.push(certItem({
+      source: 'document', kind: 'certificate', code: c.cert_no, status,
+      typeName: c.type_name || c.type_code, typeNameTw: c.type_name_tw || null,
+      holder: maskName(c.holder_name), issuedAt: c.issued_at, validUntil: c.expires_at,
+      valid: status === 'valid',
+      certifiable: true,
+      appealable: DOC_CERT_APPEALABLE.has(c.status),
+    }));
+  }
+
+  // ---- protocol: valid invitations + pending passes ----
+  const proInvs = db
+    .prepare(`SELECT i.*, e.title AS event_title, e.title_tw AS event_title_tw
+              FROM pro_invitations i LEFT JOIN pro_events e ON e.id = i.event_id
+              WHERE i.invitee_user_id = ? AND i.status = 'valid'`)
+    .all(userId);
+  for (const i of proInvs) {
+    const valid = i.status === 'valid' && !isPast(i.valid_until);
+    items.push(certItem({
+      source: 'protocol', kind: 'invitation', code: i.invite_no, status: i.status,
+      typeName: i.event_title || '活动邀请函', typeNameTw: i.event_title_tw || null,
+      holder: maskName(i.invitee_name), issuedAt: i.valid_from, validUntil: i.valid_until,
+      valid,
+      certifiable: true,
+      appealable: false,
+    }));
+  }
+  const proPasses = db
+    .prepare(`SELECT p.*, e.title AS event_title, e.title_tw AS event_title_tw
+              FROM pro_passes p LEFT JOIN pro_events e ON e.id = p.event_id
+              WHERE p.user_id = ? AND p.status = 'pending'`)
+    .all(userId);
+  for (const p of proPasses) {
+    const valid = p.status === 'pending' && !isPast(p.valid_until);
+    items.push(certItem({
+      source: 'protocol', kind: 'pass', code: p.pass_no, status: p.status,
+      typeName: p.event_title || '活动凭证', typeNameTw: p.event_title_tw || null,
+      holder: maskName(p.holder_name), issuedAt: p.issued_at, validUntil: p.valid_until,
+      valid,
+      certifiable: true,
+      appealable: false,
+    }));
+  }
+
+  items.sort((a, b) => {
+    if (a.valid !== b.valid) return b.valid ? -1 : 1;
+    const da = a.validUntil ? new Date(a.validUntil).getTime() : Infinity;
+    const db_ = b.validUntil ? new Date(b.validUntil).getTime() : Infinity;
+    return da - db_;
+  });
+  return items;
+}
+
+// ---------------------------------------------------------------------------
+// 跨署状态级联提示 — 居民证到期/作废、外交身份失效时,提示持有者有哪些
+// 关联的有效证件可能受影响;只提示、不改业务状态,避免越权变更已生效结果。
+// ---------------------------------------------------------------------------
+
+export function crossOfficeAlerts(userId) {
+  const alerts = [];
+  const today = now().slice(0, 10);
+
+  // 1. 居民证到期/作废/冻结 → 关联有效签注与文书证书
+  const card = db
+    .prepare(`SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw
+              FROM res_cards c LEFT JOIN res_types t ON t.code = c.type_code
+              WHERE c.user_id = ?
+              ORDER BY CASE WHEN c.status = 'valid' THEN 0 ELSE 1 END, c.id DESC LIMIT 1`)
+    .get(userId);
+  if (card) {
+    const status = card.status === 'valid' && isPast(card.valid_until) ? 'expired' : card.status;
+    if (status !== 'valid') {
+      const permits = db.prepare("SELECT visa_no FROM visa_permits WHERE user_id = ? AND status = 'valid'").all(userId);
+      const certs = db.prepare("SELECT cert_no FROM doc_certificates WHERE user_id = ? AND status = 'valid'").all(userId);
+      alerts.push({
+        type: 'resident_card_invalid',
+        source: 'resident',
+        cardNo: card.card_no,
+        cardStatus: status,
+        typeName: card.type_name || card.type_code,
+        typeNameTw: card.type_name_tw || null,
+        affectedCount: permits.length + certs.length,
+        affected: [
+          ...permits.map((p) => ({ source: 'visa', kind: 'permit', code: p.visa_no })),
+          ...certs.map((c) => ({ source: 'document', kind: 'certificate', code: c.cert_no })),
+        ],
+      });
+    }
+  }
+
+  // 2. 外交身份失效 → 仍有有效外交签注时提示(注销已由 syncDiplomaticVisa 处理)
+  const activeIdentity = db
+    .prepare("SELECT 1 FROM dip_identities WHERE user_id = ? AND status = 'active' AND deleted_at IS NULL AND (term_end IS NULL OR term_end >= ?) LIMIT 1")
+    .get(userId, today);
+  if (!activeIdentity) {
+    const dipPermits = db
+      .prepare("SELECT visa_no FROM visa_permits WHERE user_id = ? AND type_code = 'DIPLOMATIC' AND status = 'valid'")
+      .all(userId);
+    if (dipPermits.length) {
+      alerts.push({
+        type: 'diplomatic_visa_orphaned',
+        source: 'diplomatic',
+        affectedCount: dipPermits.length,
+        affected: dipPermits.map((p) => ({ source: 'visa', kind: 'permit', code: p.visa_no })),
+      });
+    }
+  }
+
+  return alerts;
+}
+
 // 授权弹窗展示的身份凭证:有居民证用居民证号,未办证回落到 SSO 账户。
 export function linkageIdentity(userId) {
   const user = db.prepare('SELECT id, username, display_name FROM users WHERE id = ?').get(userId);
@@ -1183,6 +1464,10 @@ function auditBusiness(bizType, target, detail) {
     db.prepare(
       'INSERT INTO arch_audit_logs (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
     ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+  } else if (bizType === 'protocol') {
+    db.prepare(
+      'INSERT INTO pro_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
   }
 }
 
@@ -1221,6 +1506,17 @@ function notifyBusiness(bizType, target, vars) {
     } catch {
       // 邮政转发失败不回滚本署邮箱,业务侧无需感知。
     }
+    return;
+  }
+  if (bizType === 'protocol') {
+    const tpl = db.prepare("SELECT * FROM pro_message_templates WHERE code = 'appeal_reopened' AND enabled = 1").get();
+    const title = renderTemplate(tpl?.title_template ?? '', { ...vars, no: target.code }) || '申诉复核重开';
+    const body = renderTemplate(tpl?.body_template ?? '', { ...vars, no: target.code }) || `您的礼宾业务件 ${target.code} 已重新进入处理流程。`;
+    const titleTw = renderTemplate(tpl?.title_template_tw ?? '', { ...vars, no: target.code }) || null;
+    const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', { ...vars, no: target.code }) || null;
+    db.prepare(
+      `INSERT INTO pro_messages (user_id, template_code, title, body, title_tw, body_tw, related, read, archived, created_at) VALUES (?, 'appeal_reopened', ?, ?, ?, ?, ?, 0, 0, ?)`
+    ).run(target.ownerId, title, body, titleTw, bodyTw, JSON.stringify({ ...vars, no: target.code }), ts);
     return;
   }
   const table = bizType === 'immigration' ? 'im' : bizType === 'resident' ? 'res' : 'dip';
@@ -1292,6 +1588,24 @@ function reopen(bizType, target) {
     ).run(target.rowId, 'appeal_reopened', 'pending', '皇家申訴與監察署', '申诉复核撤销原驳回决定,申请重新进入待处理队列', ts);
     return 'pending';
   }
+  if (bizType === 'protocol' && target.kind === 'host' && target.status === 'rejected') {
+    db.prepare(
+      `UPDATE pro_hosts SET status = 'pending_review', reject_code = NULL, reject_comment = '',
+       decided_by = NULL, decided_at = NULL, updated_at = ? WHERE id = ?`
+    ).run(ts, target.rowId);
+    return 'pending_review';
+  }
+  if (bizType === 'protocol' && target.kind === 'invitation' && target.status === 'revoked') {
+    db.prepare("UPDATE pro_invitations SET status = 'valid', revoked_reason = '', updated_at = ? WHERE id = ?").run(
+      ts,
+      target.rowId
+    );
+    return 'valid';
+  }
+  if (bizType === 'protocol' && target.kind === 'pass' && target.status === 'voided') {
+    db.prepare("UPDATE pro_passes SET status = 'pending', void_reason = '', updated_at = ? WHERE id = ?").run(ts, target.rowId);
+    return 'pending';
+  }
   return null;
 }
 
@@ -1309,9 +1623,17 @@ export function writebackBusiness(bizType, code, ctx = {}) {
     reason: '',
   };
   let nextStatus = null;
-  if (!['undo', 'change'].includes(decisionType)) {
-    detail.reason = decisionType === 'transfer' ? 'transferred' : 'maintained';
+  if (decisionType === 'maintain') {
+    detail.reason = 'maintained';
+  } else if (decisionType === 'transfer') {
+    // 转交:尝试把业务件重开进入待处理队列,由业务署重新指派处理。
+    nextStatus = reopen(bizType, target);
+    detail.reason = nextStatus ? 'transferred_reopened' : 'transferred';
+    detail.applied = !!nextStatus;
+    detail.fromStatus = target.status;
+    detail.toStatus = nextStatus;
   } else {
+    // undo / change:撤销或变更原决定,重开业务件。
     nextStatus = reopen(bizType, target);
     detail.reason = nextStatus ? 'reopened' : 'not_reopenable';
     detail.applied = !!nextStatus;
@@ -1389,6 +1711,14 @@ const SAMPLE_QUERIES = {
           WHERE r.deleted_at IS NULL ORDER BY r.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM arch_deletion_requests WHERE deleted_at IS NULL',
     dist: 'SELECT status, COUNT(*) AS n FROM arch_deletion_requests WHERE deleted_at IS NULL GROUP BY status ORDER BY n DESC',
+  },
+  protocol: {
+    table: 'pro_invitations',
+    sql: `SELECT i.invite_no AS code, i.status, e.title AS title, i.updated_at
+          FROM pro_invitations i LEFT JOIN pro_events e ON e.id = i.event_id
+          ORDER BY i.id DESC LIMIT ?`,
+    count: 'SELECT COUNT(*) AS n FROM pro_invitations',
+    dist: 'SELECT status, COUNT(*) AS n FROM pro_invitations GROUP BY status ORDER BY n DESC',
   },
 };
 

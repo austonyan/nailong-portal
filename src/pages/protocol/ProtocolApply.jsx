@@ -286,9 +286,27 @@ export default function ProtocolApply() {
             <p className="muted-text">{t('protocol.apply.companionsHint', { max: maxCompanions })}</p>
             {form.companions.map((c, i) => (
               <div key={i} className="protocol-companion-row">
-                <Input value={c.nickname} onChange={(e) => updateCompanion(i, { nickname: e.target.value })} placeholder={t('protocol.field.companionName')} disabled={readOnly} />
-                <Input value={c.relation} onChange={(e) => updateCompanion(i, { relation: e.target.value })} placeholder={t('protocol.field.relation')} disabled={readOnly} />
-                <Input value={c.contact} onChange={(e) => updateCompanion(i, { contact: e.target.value })} placeholder={t('protocol.field.contact')} disabled={readOnly} />
+                <Input
+                  value={c.nickname}
+                  onChange={(e) => updateCompanion(i, { nickname: e.target.value })}
+                  placeholder={t('protocol.field.companionName')}
+                  aria-label={t('protocol.field.companionName')}
+                  disabled={readOnly}
+                />
+                <Input
+                  value={c.relation}
+                  onChange={(e) => updateCompanion(i, { relation: e.target.value })}
+                  placeholder={t('protocol.field.relation')}
+                  aria-label={t('protocol.field.relation')}
+                  disabled={readOnly}
+                />
+                <Input
+                  value={c.contact}
+                  onChange={(e) => updateCompanion(i, { contact: e.target.value })}
+                  placeholder={t('protocol.field.contact')}
+                  aria-label={t('protocol.field.contact')}
+                  disabled={readOnly}
+                />
                 {!readOnly && (
                   <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeCompanion(i)}>
                     {t('protocol.action.delete')}

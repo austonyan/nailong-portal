@@ -7,21 +7,24 @@ import { api } from '../../../api/client.js';
 import { downloadResidentFile } from '../../../api/resident.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { fmtDateTime, toastResError } from '../shared.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminResAudit() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
+  // 动作检索 300ms 防抖:避免逐键打接口。
+  const actionDebounced = useDebouncedValue(action, 300);
 
   const load = useCallback(async () => {
     try {
-      const data = await api.get(`/resident/admin/audit${action.trim() ? `?action=${encodeURIComponent(action.trim())}` : ''}`);
+      const data = await api.get(`/resident/admin/audit${actionDebounced.trim() ? `?action=${encodeURIComponent(actionDebounced.trim())}` : ''}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
       setItems([]);
     }
-  }, [action, t]);
+  }, [actionDebounced, t]);
 
   useEffect(() => {
     load();
@@ -29,7 +32,7 @@ export default function AdminResAudit() {
 
   const columns = [
     { title: t('res.admin.audit.actor'), dataIndex: 'actor_name', width: 120 },
-    { title: t('res.admin.audit.action'), dataIndex: 'action', width: 220, render: (v) => <b>{v}</b> },
+    { title: t('res.admin.audit.action'), dataIndex: 'action', width: 220, render: (v) => <b>{t(`res.admin.audit.actionName.${v}`, { defaultValue: v })}</b> },
     { title: t('res.admin.audit.target'), dataIndex: 'target_id', width: 180 },
     { title: t('res.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="res-audit-detail">{v}</span> },
     { title: t('res.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },

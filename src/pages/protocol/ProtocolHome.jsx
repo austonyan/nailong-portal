@@ -21,7 +21,7 @@ import {
   UsersIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { fmtDateTime, toastProtocolError } from './shared.jsx';
+import { fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 const TYPE_ICONS = [CalendarIcon, GiftIcon, ImageIcon, UsersIcon, StarIcon, HomeIcon];
 const SERVICE_ICONS = [SendIcon, MailIcon, CreditCardIcon, UserPlusIcon, StarIcon, SearchIcon];
@@ -225,7 +225,7 @@ export default function ProtocolHome() {
                   {ev.seatsLeft > 0 ? t('protocol.home.seatsLeft', { count: ev.seatsLeft }) : t('protocol.home.full')}
                 </Tag>
                 <Tag variant="outlined" size="small">
-                  {t('protocol.home.deadline', { date: fmtDateTime(ev.registrationDeadline).slice(0, 10) })}
+                  {t('protocol.home.deadline', { date: fmtDate(ev.registrationDeadline) })}
                 </Tag>
               </div>
             </Card>

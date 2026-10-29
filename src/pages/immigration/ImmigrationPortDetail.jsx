@@ -5,6 +5,7 @@ import { Button, Card, Divider, Tabs, Tag, Title } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
+import { fmtDate, fmtDateTime } from '../../lib/date.js';
 import { AnnouncementLevelTag, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
 
 // 虚构口岸平面示意 — 用装饰性色块拼出通关动线,不涉及真实地图。
@@ -28,24 +29,41 @@ export default function ImmigrationPortDetail() {
   const { t } = useTranslation();
   const { code } = useParams();
   const [data, setData] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     api
       .get(`/immigration/ports/${code}`)
       .then((d) => {
-        if (!cancelled) setData(d);
+        if (cancelled) return;
+        setData(d);
+        setFailed(false);
       })
       .catch((err) => {
         toastApiError(err);
-        if (!cancelled) setData({ port: null, channels: [], announcements: [] });
+        if (!cancelled) {
+          setData(null);
+          setFailed(true);
+        }
       });
     return () => {
       cancelled = true;
     };
   }, [code]);
 
-  if (!data) return null;
+  // 加载期间给出加载卡片,而不是 return null 的空白页。
+  if (!data) {
+    return (
+      <div className="im-page">
+        <ImNav />
+        <Card type="dashed">
+          <p className="muted-text">{failed ? t('common.loadFailed') : t('common.loading')}</p>
+        </Card>
+      </div>
+    );
+  }
+
   const { port, channels, announcements, eventHints = [], courtesies } = data;
 
   return (
@@ -81,7 +99,7 @@ export default function ImmigrationPortDetail() {
                         <ul className="im-ann-list">
                           {eventHints.map((ev) => (
                             <li key={ev.eventNo} className="muted-text">
-                              {ev.startsAt?.slice(0, 16).replace('T', ' ')} · {ev.title}
+                              {fmtDateTime(ev.startsAt)} · {ev.title}
                               {ev.venueName ? ` · ${ev.venueName}` : ''}
                             </li>
                           ))}
@@ -122,6 +140,11 @@ export default function ImmigrationPortDetail() {
                         <p className="im-ann-body">{c.description}</p>
                       </Card>
                     ))}
+                    {channels.length === 0 && (
+                      <Card type="dashed">
+                        <p className="muted-text">{t('imm.ports.channelsEmpty')}</p>
+                      </Card>
+                    )}
                   </div>
                 ),
               },
@@ -135,7 +158,7 @@ export default function ImmigrationPortDetail() {
                         <div className="im-ann-head">
                           <AnnouncementLevelTag level={a.level} />
                           <b>{a.title}</b>
-                          <span className="muted-text">{a.publishedAt?.slice(0, 10)}</span>
+                          <span className="muted-text">{fmtDate(a.publishedAt)}</span>
                         </div>
                         <p className="im-ann-body">{a.body}</p>
                       </Card>

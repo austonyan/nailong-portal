@@ -16,6 +16,7 @@ import {
   toastAppealError,
 } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
 const WITHDRAWABLE = ['pending_accept', 'accepted', 'processing'];
 
@@ -28,7 +29,9 @@ export default function AppealAppealDetail() {
   const [evalOpen, setEvalOpen] = useState(false);
   const [evalRating, setEvalRating] = useState(0);
   const [evalComment, setEvalComment] = useState('');
-  const [busy, setBusy] = useState(false);
+  const [supplementBusy, setSupplementBusy] = useState(false);
+  const [evalBusy, setEvalBusy] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(async () => {
     try {
@@ -44,30 +47,33 @@ export default function AppealAppealDetail() {
     load();
   }, [load]);
 
-  const withdraw = async () => {
-    setBusy(true);
-    try {
-      await api.post(`/appeal/appeals/${appeal.id}/withdraw`, {});
-      toastSuccess(t('appeal.detail.withdrawDone'));
-      await load();
-    } catch (err) {
-      toastAppealError(t, err);
-    } finally {
-      setBusy(false);
-    }
+  const askWithdraw = () => {
+    confirm({
+      title: t('appeal.detail.withdrawTitle'),
+      tip: t('appeal.detail.withdrawConfirm'),
+      confirmText: t('appeal.detail.withdraw'),
+      action: () => api.post(`/appeal/appeals/${appeal.id}/withdraw`, {}),
+      success: t('appeal.detail.withdrawDone'),
+      onDone: load,
+      onError: (err) => toastAppealError(t, err),
+    });
   };
 
   const submitSupplement = async () => {
-    setBusy(true);
+    if (!supplementNote.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
+    setSupplementBusy(true);
     try {
       await api.post(`/appeal/appeals/${appeal.id}/supplement`, { note: supplementNote });
-      toastSuccess(t('appeal.detail.supplementDone'));
       setSupplementNote('');
+      toastSuccess(t('appeal.detail.supplementDone'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
     } finally {
-      setBusy(false);
+      setSupplementBusy(false);
     }
   };
 
@@ -90,16 +96,16 @@ export default function AppealAppealDetail() {
   };
 
   const doEvaluate = async () => {
-    setBusy(true);
+    setEvalBusy(true);
     try {
       await api.post(`/appeal/appeals/${appeal.id}/evaluate`, { rating: evalRating, comment: evalComment });
-      toastSuccess(t('appeal.detail.evalDone'));
       setEvalOpen(false);
+      toastSuccess(t('appeal.detail.evalDone'));
       await load();
     } catch (err) {
       toastAppealError(t, err);
     } finally {
-      setBusy(false);
+      setEvalBusy(false);
     }
   };
 
@@ -169,7 +175,7 @@ export default function AppealAppealDetail() {
         </dl>
         <div className="table-actions appeal-detail-actions">
           {WITHDRAWABLE.includes(appeal.status) && (
-            <Button danger loading={busy} onClick={withdraw} disabled={busy}>
+            <Button danger onClick={askWithdraw}>
               {t('appeal.detail.withdraw')}
             </Button>
           )}
@@ -222,7 +228,7 @@ export default function AppealAppealDetail() {
               {t('appeal.detail.uploadSupplement')}
             </Upload>
           </div>
-          <Button type="primary" icon={<SendIcon />} loading={busy} disabled={busy || (!supplementNote.trim())} onClick={submitSupplement}>
+          <Button type="primary" icon={<SendIcon />} loading={supplementBusy} disabled={supplementBusy || (!supplementNote.trim())} onClick={submitSupplement}>
             {t('appeal.detail.submitSupplement')}
           </Button>
         </Card>
@@ -268,12 +274,17 @@ export default function AppealAppealDetail() {
         maskClosable={false}
         open={evalOpen}
         title={t('appeal.detail.evaluateTitle')}
-        onClose={() => setEvalOpen(false)}
+        onClose={() => {
+          if (evalBusy) return;
+          setEvalOpen(false);
+        }}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setEvalOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!evalRating} onClick={doEvaluate}>
+            <Button onClick={() => setEvalOpen(false)} disabled={evalBusy}>
+              {t('common.cancel')}
+            </Button>
+            <Button type="primary" loading={evalBusy} disabled={evalBusy || !evalRating} onClick={doEvaluate}>
               {t('common.confirm')}
             </Button>
           </>
@@ -284,6 +295,8 @@ export default function AppealAppealDetail() {
           <TextArea rows={3} maxLength={300} value={evalComment} onChange={(e) => setEvalComment(e.target.value)} placeholder={t('appeal.detail.evalPlaceholder')} />
         </div>
       </Modal>
+
+      {confirmDialog}
     </div>
   );
 }

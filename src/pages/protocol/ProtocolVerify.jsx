@@ -37,11 +37,16 @@ export default function ProtocolVerify() {
     }
   };
 
+  // 依赖写成字符串:把 searchParams 对象放进依赖数组会让每次重渲染都重新验真,
+  // 把公开接口的限流额度白白耗光(同一个二维码扫两次就报「限流」)。
+  const tokenParam = searchParams.get('token');
+  const noParam = searchParams.get('no');
+
   useEffect(() => {
-    if (searchParams.get('token')) run(undefined, true);
-    else if (searchParams.get('no')) run(searchParams.get('no'), false);
+    if (tokenParam) run(undefined, true);
+    else if (noParam) run(noParam, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [tokenParam, noParam]);
 
   const item = result?.item;
 

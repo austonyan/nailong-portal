@@ -5,6 +5,7 @@ import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
+import { fmtDate } from '../../../lib/date.js';
 
 const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-yellow' };
 
@@ -109,7 +110,7 @@ export default function DocsNotices() {
       width: 90,
       render: (v, row) => <Switch size="small" checked={!!v} onChange={() => toggle(row)} />,
     },
-    { title: t('common.createdAt'), dataIndex: 'created_at', width: 110, render: (v) => (v ? String(v).slice(0, 10) : '-') },
+    { title: t('common.createdAt'), dataIndex: 'created_at', width: 110, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 120,

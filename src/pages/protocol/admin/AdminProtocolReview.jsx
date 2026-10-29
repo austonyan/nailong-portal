@@ -26,6 +26,7 @@ import {
   toastProtocolError,
 } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const STATUS_OPTIONS = ['pending_review', 'waitlisted', 'approved', 'rejected', 'checked_in', 'finished', 'cancelled', 'draft'];
 const REASONS = ['info_missing', 'identity_mismatch', 'duplicate', 'full', 'rule_violation', 'other'];
@@ -40,6 +41,8 @@ export default function AdminProtocolReview() {
   const [status, setStatus] = useState('pending_review');
   const [identity, setIdentity] = useState('');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
   const [action, setAction] = useState(null);
   const [comment, setComment] = useState('');
@@ -51,7 +54,7 @@ export default function AdminProtocolReview() {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
       if (identity) params.set('identityType', identity);
-      if (q.trim()) params.set('q', q.trim());
+      if (dq.trim()) params.set('q', dq.trim());
       const data = await api.get(`/protocol/admin/registrations?${params.toString()}`);
       setItems(data.items);
       setTotal(data.total);
@@ -59,11 +62,16 @@ export default function AdminProtocolReview() {
       toastProtocolError(t, err);
       setItems([]);
     }
-  }, [page, status, identity, q, t]);
+  }, [page, status, identity, dq, t]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // 检索词变化时回到第一页,避免停在越界页看到空表。
+  useEffect(() => {
+    setPage(1);
+  }, [dq]);
 
   const openDetail = async (row) => {
     try {

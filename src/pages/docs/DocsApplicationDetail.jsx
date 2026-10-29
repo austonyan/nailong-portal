@@ -7,6 +7,7 @@ import { api, requestForm } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../api/docs.js';
 import MaterialList from './MaterialList.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
+import { fmtDateTime } from '../../lib/date.js';
 
 export default function DocsApplicationDetail() {
   const { t } = useTranslation();
@@ -202,7 +203,7 @@ export default function DocsApplicationDetail() {
                 <dd key={`${k}-v`}>{v}</dd>,
               ])}
             <dt>{t('docs.appList.submittedAt')}</dt>
-            <dd>{item.submittedAt ? String(item.submittedAt).slice(0, 16).replace('T', ' ') : '—'}</dd>
+            <dd>{fmtDateTime(item.submittedAt)}</dd>
           </dl>
         </Card>
 
@@ -217,7 +218,7 @@ export default function DocsApplicationDetail() {
                   {r.reasonCode && <Tag size="small" color="app-red" variant="soft">{t(`docs.reason.${r.reasonCode}`)}</Tag>}
                   {r.comment && <p className="muted-text">{r.comment}</p>}
                   <p className="muted-text">
-                    {String(r.createdAt).slice(0, 16).replace('T', ' ')} · {r.actorName || '—'}
+                    {fmtDateTime(r.createdAt)} · {r.actorName || '—'}
                   </p>
                 </div>
               </li>

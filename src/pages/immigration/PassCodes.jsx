@@ -5,6 +5,7 @@ import { ClockIcon, DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav, PassQr, StatusTag, downloadDataUrl } from '../../components/immigration/shared.jsx';
+import { fmtDateTime } from '../../lib/date.js';
 
 function PassCodeModal({ passCode, onClose }) {
   const { t } = useTranslation();
@@ -57,7 +58,7 @@ function PassCodeModal({ passCode, onClose }) {
           <p>{t('imm.mydecl.no')}: {passCode.declarationNo}</p>
           <p>{t('imm.declare.port')}: {passCode.portName} ({passCode.portCode})</p>
           <p>
-            <ClockIcon size={14} /> {t('imm.pass.validUntil')}: {passCode.validUntil?.slice(0, 16).replace('T', ' ')}
+            <ClockIcon size={14} /> {t('imm.pass.validUntil')}: {fmtDateTime(passCode.validUntil)}
           </p>
           <p>{t('imm.pass.status')}: <StatusTag value={passCode.status} /></p>
         </div>
@@ -96,7 +97,7 @@ export default function PassCodes() {
     { title: t('imm.mydecl.no'), dataIndex: 'declarationNo', width: 190 },
     { title: t('imm.declare.port'), dataIndex: 'portName', width: 130 },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
-    { title: t('imm.pass.validUntil'), dataIndex: 'validUntil', width: 160, render: (v) => v?.slice(0, 16).replace('T', ' ') },
+    { title: t('imm.pass.validUntil'), dataIndex: 'validUntil', width: 160, render: (v) => fmtDateTime(v) },
     {
       title: t('common.actions'),
       dataIndex: 'actions',

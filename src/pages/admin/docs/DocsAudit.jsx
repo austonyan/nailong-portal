@@ -4,6 +4,8 @@ import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-islan
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
+import { fmtDateTime } from '../../../lib/date.js';
 
 const ACTION_COLORS = {
   certify_approve: 'app-green',
@@ -26,11 +28,13 @@ export default function DocsAudit() {
   const [page, setPage] = useState(1);
   const [action, setAction] = useState('');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const pageSize = 15;
 
   const load = useCallback(async () => {
     try {
-      const params = new URLSearchParams({ page, pageSize, action, q });
+      const params = new URLSearchParams({ page, pageSize, action, q: dq });
       const d = await api.get(`/docs/admin/audit?${params.toString()}`);
       setItems(d.items);
       setTotal(d.total);
@@ -38,14 +42,14 @@ export default function DocsAudit() {
       toastError(t(`api.${err.code}`, { defaultValue: err.message }));
       setItems([]);
     }
-  }, [page, action, q, t]);
+  }, [page, action, dq, t]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   const columns = [
-    { title: t('docs.admin.audit.time'), dataIndex: 'createdAt', width: 170, render: (v) => String(v).slice(0, 19).replace('T', ' ') },
+    { title: t('docs.admin.audit.time'), dataIndex: 'createdAt', width: 170, render: (v) => fmtDateTime(v) },
     { title: t('docs.admin.audit.actor'), dataIndex: 'actorName', width: 120 },
     {
       title: t('docs.admin.audit.action'),

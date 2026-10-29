@@ -6,6 +6,7 @@ import { BellIcon, EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../api/docs.js';
 import { toastError } from '../../components/toast.js';
+import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
@@ -60,8 +61,8 @@ export default function DocsCertificates() {
         </span>
       ),
     },
-    { title: t('docs.cert.issuedAt'), dataIndex: 'issuedAt', width: 110, render: (v) => String(v).slice(0, 10) },
-    { title: t('docs.cert.expiresAt'), dataIndex: 'expiresAt', width: 110, render: (v) => String(v).slice(0, 10) },
+    { title: t('docs.cert.issuedAt'), dataIndex: 'issuedAt', width: 110, render: (v) => fmtDate(v) },
+    { title: t('docs.cert.expiresAt'), dataIndex: 'expiresAt', width: 110, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 90,

@@ -16,11 +16,12 @@ import {
   Tag,
   Title,
 } from 'animal-island-ui';
-import { EditIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
+import { EditIcon, PlusIcon, SearchIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import {
   StatusTag,
   TextArea,
+  fmtDate,
   fmtDateTime,
   toastProtocolError,
 } from '../shared.jsx';
@@ -75,9 +76,9 @@ function eventToForm(ev) {
     waitlistEnabled: ev.waitlistEnabled,
     residentOnly: ev.residentOnly,
     diplomaticOnly: ev.diplomaticOnly,
-    registrationDeadline: ev.registrationDeadline ? ev.registrationDeadline.slice(0, 10) : '',
-    startsDate: ev.startsAt ? ev.startsAt.slice(0, 10) : '',
-    endsDate: ev.endsAt ? ev.endsAt.slice(0, 10) : '',
+    registrationDeadline: ev.registrationDeadline ? fmtDate(ev.registrationDeadline) : '',
+    startsDate: ev.startsAt ? fmtDate(ev.startsAt) : '',
+    endsDate: ev.endsAt ? fmtDate(ev.endsAt) : '',
     conditions: ev.conditionsCn ?? ev.conditions,
     conditionsTw: ev.conditionsTw ?? '',
     notice: ev.noticeCn ?? ev.notice,
@@ -99,6 +100,7 @@ export default function AdminProtocolEvents() {
   const [status, setStatus] = useState('');
   const [typeCode, setTypeCode] = useState('');
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [types, setTypes] = useState([]);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -115,15 +117,18 @@ export default function AdminProtocolEvents() {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
       if (typeCode) params.set('type', typeCode);
-      if (q.trim()) params.set('q', q.trim());
+      if (query) params.set('q', query);
       const data = await api.get(`/protocol/admin/events?${params.toString()}`);
-      setItems(data.items);
+      const rows = data.items ?? [];
+      setItems(rows);
       setTotal(data.total);
+      // total 缩小后分页器消失但 page 仍 >1:夹回合法页码,避免空表卡死。
+      if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setItems([]);
     }
-  }, [page, status, typeCode, q, t]);
+  }, [page, status, typeCode, query, t]);
 
   useEffect(() => {
     load();
@@ -155,6 +160,15 @@ export default function AdminProtocolEvents() {
   const save = async () => {
     if (!form.title?.trim() || !form.typeCode) {
       toastError(t('common.required'));
+      return;
+    }
+    // 日期先后校验:结束 ≥ 开始,报名截止 ≤ 开始。
+    if (form.startsDate && form.endsDate && form.endsDate < form.startsDate) {
+      toastError(t('protocol.admin.dateOrderError'));
+      return;
+    }
+    if (form.startsDate && form.registrationDeadline && form.registrationDeadline > form.startsDate) {
+      toastError(t('protocol.admin.deadlineOrderError'));
       return;
     }
     setBusy(true);
@@ -322,7 +336,32 @@ export default function AdminProtocolEvents() {
           onChange={(v) => { setTypeCode(v); setPage(1); }}
           options={[{ key: '', label: t('protocol.common.allTypes') }, ...types.map((tp) => ({ key: tp.code, label: tp.name }))]}
         />
-        <Input allowClear value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('protocol.admin.searchEvent')} />
+        <Input
+          allowClear
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onClear={() => {
+            setQ('');
+            setQuery('');
+            setPage(1);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setQuery(q.trim());
+              setPage(1);
+            }
+          }}
+          placeholder={t('protocol.admin.searchEvent')}
+        />
+        <Button
+          icon={<SearchIcon />}
+          onClick={() => {
+            setQuery(q.trim());
+            setPage(1);
+          }}
+        >
+          {t('common.search')}
+        </Button>
       </div>
 
       <Card>
@@ -334,7 +373,7 @@ export default function AdminProtocolEvents() {
           pagination={false}
           emptyText={t('protocol.admin.eventsEmpty')}
         />
-        {total > 20 && (
+        {total > 0 && (
           <div className="protocol-pagination">
             <Pagination total={total} current={page} pageSize={20} onChange={setPage} showTotal />
           </div>

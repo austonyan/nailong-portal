@@ -26,6 +26,7 @@ import {
   toastProtocolError,
 } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const HOST_STATUSES = ['pending_review', 'supplement_required', 'certified', 'frozen', 'rejected', 'revoked', 'draft'];
 const REASONS = ['info_missing', 'material_invalid', 'qualification', 'duplicate', 'other'];
@@ -38,6 +39,8 @@ export default function AdminProtocolHosts() {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('pending_review');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
   const [action, setAction] = useState(null);
   const [reason, setReason] = useState('');
@@ -51,7 +54,7 @@ export default function AdminProtocolHosts() {
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
-      if (q.trim()) params.set('q', q.trim());
+      if (dq.trim()) params.set('q', dq.trim());
       const data = await api.get(`/protocol/admin/hosts?${params.toString()}`);
       setItems(data.items);
       setTotal(data.total);
@@ -59,11 +62,16 @@ export default function AdminProtocolHosts() {
       toastProtocolError(t, err);
       setItems([]);
     }
-  }, [page, status, q, t]);
+  }, [page, status, dq, t]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // 检索词变化时回到第一页,避免停在越界页看到空表。
+  useEffect(() => {
+    setPage(1);
+  }, [dq]);
 
   const openDetail = async (row) => {
     try {

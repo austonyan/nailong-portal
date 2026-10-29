@@ -180,6 +180,11 @@ export default function LinkageField({
                       {t('linkage.verify.notFound')}
                     </Tag>
                   )}
+                  {verifyState.referenced && (
+                    <Tag size="small" color="app-blue" variant="soft">
+                      {t('linkage.verify.referenced', { count: verifyState.refCount })}
+                    </Tag>
+                  )}
                 </div>
               )}
             </div>

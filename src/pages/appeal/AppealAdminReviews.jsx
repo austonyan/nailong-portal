@@ -27,7 +27,7 @@ export default function AppealAdminReviews() {
   const load = useCallback(async () => {
     try {
       const data = await api.get(`/appeal/admin/reviews/queue${status ? `?status=${status}` : ''}`);
-      setItems(data.items);
+      setItems(data.items ?? []);
     } catch (err) {
       toastAppealError(t, err);
       setItems([]);
@@ -37,6 +37,14 @@ export default function AppealAdminReviews() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // 队列是一次性返回的,翻页只在客户端切片:列表变短后把 page 夹回合法范围,
+  // 避免 total 缩小时用户停在空表且分页器消失。
+  useEffect(() => {
+    if (!items) return;
+    const lastPage = Math.max(1, Math.ceil(items.length / pageSize));
+    if (page > lastPage) setPage(lastPage);
+  }, [items, page, pageSize]);
 
   const openDetail = async (r) => {
     try {
@@ -128,7 +136,7 @@ export default function AppealAdminReviews() {
           pagination={false}
           emptyText={t('appeal.admin.queueEmpty')}
         />
-        {total > pageSize && (
+        {total > 0 && (
           <div className="appeal-pagination">
             <Pagination total={total} current={page} pageSize={pageSize} onChange={setPage} showTotal />
           </div>

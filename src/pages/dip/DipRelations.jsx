@@ -2,11 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Table, Tag, Title } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { DipNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
+import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 function InfoRow({ label, children }) {
@@ -24,6 +25,7 @@ function RelationDetail({ id, onClose, onChanged }) {
   const [supplementText, setSupplementText] = useState('');
   const [severText, setSeverText] = useState('');
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(() => {
     api
@@ -47,6 +49,18 @@ function RelationDetail({ id, onClose, onChanged }) {
       setBusy(false);
     }
   };
+
+  // 送审 / 撤销 / 申请断交都是不可逆流转:先确认,busy 由确认弹窗托管。
+  const decide = (options, path, body, okMsg) => confirm({
+    ...options,
+    action: () => api.post(path, body),
+    success: okMsg,
+    onDone: async () => {
+      onChanged();
+      load();
+    },
+    onError: (err) => toastDipError(t, err),
+  });
 
   if (!rel) return <p className="muted-text">{t('common.loading')}</p>;
   const r = rel;
@@ -91,7 +105,7 @@ function RelationDetail({ id, onClose, onChanged }) {
         <Card color="app-orange">
           <b>{t('dip.relation.supplementRequired')}</b>
           <p>{r.supplementNote}</p>
-          {r.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: r.supplementDeadline.slice(0, 10) })}</p>}
+          {r.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: fmtDate(r.supplementDeadline) })}</p>}
           {r.supplementContent && <p className="muted-text">{t('dip.relation.supplementSubmitted')}: {r.supplementContent}</p>}
           <TextArea
             rows={3}
@@ -144,15 +158,25 @@ function RelationDetail({ id, onClose, onChanged }) {
             </Link>
             <Button
               danger
-              loading={busy}
-              onClick={() => post(`/dip/relations/${r.id}/submit`, {}, t('dip.apply.submitted', { no: r.no }))} disabled={busy}
+              onClick={() => decide({
+                title: t('dip.apply.confirmTitle'),
+                tip: t('dip.relation.submitConfirmBody', { no: r.no }),
+                confirmText: t('dip.apply.submit'),
+              }, `/dip/relations/${r.id}/submit`, {}, t('dip.apply.submitted', { no: r.no }))}
             >
               {t('dip.apply.submit')}
             </Button>
           </>
         )}
         {r.status === 'pending_review' && (
-          <Button danger loading={busy} onClick={() => post(`/dip/relations/${r.id}/withdraw`, undefined, t('dip.relation.withdrawn'))} disabled={busy}>
+          <Button
+            danger
+            onClick={() => decide({
+              title: t('dip.relation.withdrawConfirmTitle'),
+              tip: t('dip.relation.withdrawConfirmBody', { no: r.no }),
+              confirmText: t('dip.relation.withdraw'),
+            }, `/dip/relations/${r.id}/withdraw`, undefined, t('dip.relation.withdrawn'))}
+          >
             {t('dip.relation.withdraw')}
           </Button>
         )}
@@ -160,14 +184,17 @@ function RelationDetail({ id, onClose, onChanged }) {
           <Button
             danger
             icon={<PlusIcon />}
-            loading={busy}
-            onClick={async () => {
+            onClick={() => {
               if (!severText.trim()) {
                 toastWarning(t('dip.relation.severReasonFirst'));
                 return;
               }
-              await post(`/dip/relations/${r.id}/sever`, { reason: severText.trim() }, t('dip.relation.severRequested'));
-            }} disabled={busy}
+              decide({
+                title: t('dip.relation.severConfirmTitle'),
+                tip: t('dip.relation.severConfirmBody', { no: r.no, reason: severText.trim() }),
+                confirmText: t('dip.relation.severRequest'),
+              }, `/dip/relations/${r.id}/sever`, { reason: severText.trim() }, t('dip.relation.severRequested'));
+            }}
           >
             {t('dip.relation.severRequest')}
           </Button>
@@ -187,6 +214,7 @@ function RelationDetail({ id, onClose, onChanged }) {
           maxLength={300}
         />
       )}
+      {dialog}
     </div>
   );
 }
@@ -195,7 +223,7 @@ export default function DipRelations() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
   const [openId, setOpenId] = useState(null);
-  const [deleteTarget, setDeleteTarget] = useState(null);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const load = useCallback(() => {
     api
@@ -209,17 +237,18 @@ export default function DipRelations() {
 
   useEffect(load, [load]);
 
-  const removeDraft = async () => {
-    try {
-      await api.del(`/dip/relations/${deleteTarget.id}`);
-      toastSuccess(t('common.deleted'));
-      setDeleteTarget(null);
+  const askDelete = (record) => confirm({
+    title: t('common.confirmDeleteTitle'),
+    tip: t('dip.relation.deleteConfirm', { no: record.no }),
+    confirmText: t('common.delete'),
+    action: () => api.del(`/dip/relations/${record.id}`),
+    success: t('common.deleted'),
+    onDone: async () => {
       setOpenId(null);
       load();
-    } catch (err) {
-      toastDipError(t, err);
-    }
-  };
+    },
+    onError: (err) => toastDipError(t, err),
+  });
 
   const columns = [
     { title: t('dip.relation.no'), dataIndex: 'no', width: 200 },
@@ -246,7 +275,7 @@ export default function DipRelations() {
               <Link to={`/dip/apply/${record.id}`}>
                 <Button type="default" size="small" icon={<EditIcon />}>{t('common.edit')}</Button>
               </Link>
-              <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => setDeleteTarget(record)}>
+              <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => askDelete(record)}>
                 {t('common.delete')}
               </Button>
             </>
@@ -280,21 +309,7 @@ export default function DipRelations() {
         {openId !== null && <RelationDetail id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
       </Drawer>
 
-      <Modal
-        maskClosable={false}
-        open={deleteTarget !== null}
-        title={t('common.confirmDeleteTitle')}
-        onClose={() => setDeleteTarget(null)}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={() => setDeleteTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger onClick={removeDraft}>{t('common.delete')}</Button>
-          </>
-        }
-      >
-        {t('dip.relation.deleteConfirm', { no: deleteTarget?.no })}
-      </Modal>
+      {confirmDialog}
     </div>
   );
 }

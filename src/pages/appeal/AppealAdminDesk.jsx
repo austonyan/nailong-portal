@@ -66,18 +66,31 @@ export default function AppealAdminDesk() {
     setBusy(true);
     try {
       const { type, data } = detail;
+      let successKey;
       if (type === 'complaint') {
         if (action === 'accept') await api.post(`/appeal/admin/complaints/${data.id}/accept`, {});
         else if (action === 'reply') await api.post(`/appeal/admin/complaints/${data.id}/reply`, { content: reply });
         else if (action === 'close') await api.post(`/appeal/admin/complaints/${data.id}/close`, { comment: reply });
         else if (action === 'escalate') await api.post(`/appeal/admin/complaints/${data.id}/escalate-appeal`, { comment: reply });
+        successKey = {
+          accept: 'appeal.admin.acceptDone',
+          reply: 'appeal.admin.replyDone',
+          close: 'appeal.admin.closeDone',
+          escalate: 'appeal.admin.escalateDone',
+        }[action];
       } else {
         if (action === 'reply') await api.post(`/appeal/admin/tickets/${data.id}/reply`, { content: reply });
         else if (action === 'processing') await api.post(`/appeal/admin/tickets/${data.id}/status`, { status: 'processing' });
         else if (action === 'close') await api.post(`/appeal/admin/tickets/${data.id}/status`, { status: 'closed' });
         else if (action === 'escalated') await api.post(`/appeal/admin/tickets/${data.id}/status`, { status: 'escalated' });
+        successKey = {
+          reply: 'appeal.admin.replyDone',
+          processing: 'appeal.admin.startProcessDone',
+          close: 'appeal.admin.closeDone',
+          escalated: 'appeal.admin.escalateDone',
+        }[action];
       }
-      toastSuccess(t('common.saved'));
+      toastSuccess(t(successKey));
       setAction(null);
       setReply('');
       if (type === 'complaint') {
@@ -257,15 +270,15 @@ export default function AppealAdminDesk() {
                 </ul>
                 <div className="table-actions appeal-admin-actions">
                   {detail.data.status === 'pending_accept' && (
-                    <Button type="primary" onClick={() => openAction('accept')}>{t('appeal.admin.action.accept')}</Button>
+                    <Button type="primary" disabled={busy} onClick={() => openAction('accept')}>{t('appeal.admin.action.accept')}</Button>
                   )}
                   {['pending_accept', 'processing'].includes(detail.data.status) && (
-                    <Button type="primary" onClick={() => openAction('reply')}>{t('appeal.admin.action.reply')}</Button>
+                    <Button type="primary" disabled={busy} onClick={() => openAction('reply')}>{t('appeal.admin.action.reply')}</Button>
                   )}
                   {['processing', 'replied'].includes(detail.data.status) && (
                     <>
-                      <Button onClick={() => openAction('close')}>{t('appeal.admin.action.close')}</Button>
-                      <Button onClick={() => openAction('escalate')}>{t('appeal.admin.action.escalateAppeal')}</Button>
+                      <Button disabled={busy} onClick={() => openAction('close')}>{t('appeal.admin.action.close')}</Button>
+                      <Button disabled={busy} onClick={() => openAction('escalate')}>{t('appeal.admin.action.escalateAppeal')}</Button>
                     </>
                   )}
                 </div>
@@ -304,15 +317,15 @@ export default function AppealAdminDesk() {
                 </ul>
                 <div className="table-actions appeal-admin-actions">
                   {detail.data.status === 'pending' && (
-                    <Button onClick={() => openAction('processing')}>{t('appeal.admin.action.startProcess')}</Button>
+                    <Button disabled={busy} onClick={() => openAction('processing')}>{t('appeal.admin.action.startProcess')}</Button>
                   )}
                   {!['closed'].includes(detail.data.status) && (
-                    <Button type="primary" onClick={() => openAction('reply')}>{t('appeal.admin.action.reply')}</Button>
+                    <Button type="primary" disabled={busy} onClick={() => openAction('reply')}>{t('appeal.admin.action.reply')}</Button>
                   )}
                   {detail.data.status !== 'closed' && (
                     <>
-                      <Button onClick={() => openAction('escalated')}>{t('appeal.admin.action.escalate')}</Button>
-                      <Button danger onClick={() => openAction('close')}>{t('appeal.admin.action.close')}</Button>
+                      <Button disabled={busy} onClick={() => openAction('escalated')}>{t('appeal.admin.action.escalate')}</Button>
+                      <Button danger disabled={busy} onClick={() => openAction('close')}>{t('appeal.admin.action.close')}</Button>
                     </>
                   )}
                 </div>

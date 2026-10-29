@@ -18,11 +18,15 @@ function PortsTab() {
   const [ports, setPorts] = useState(null);
   const [editing, setEditing] = useState(null); // {} create | port edit
   const [channelTarget, setChannelTarget] = useState(null);
+  const [busy, setBusy] = useState(false); // 口岸弹窗提交中
+  const [channelBusy, setChannelBusy] = useState(false); // 通道弹窗提交中
+  const [togglingId, setTogglingId] = useState(null); // 正在切换的通道 id
+  const [statusBusyId, setStatusBusyId] = useState(null); // 正在改状态的口岸 id
   const [form] = useForm();
   const [channelForm] = useForm();
 
   const load = useCallback(() => {
-    api
+    return api
       .get('/immigration/admin/ports')
       .then((data) => setPorts(data.items))
       .catch((err) => {
@@ -34,48 +38,79 @@ function PortsTab() {
   useEffect(load, [load]);
 
   const savePort = async (values) => {
+    if (busy) return; // 双击会创建两个同码口岸
+    setBusy(true);
     try {
       if (editing?.id) {
         await api.patch(`/immigration/admin/ports/${editing.id}`, values);
       } else {
         await api.post('/immigration/admin/ports', values);
       }
-      toastSuccess(t('common.save'));
       setEditing(null);
-      load();
+      toastSuccess(t('common.save'));
+      await load();
     } catch (err) {
+      // 失败保持弹窗,让管理员能改完重提
       toastApiError(err);
+    } finally {
+      setBusy(false);
     }
   };
 
   const changeStatus = async (port, status) => {
+    // 状态下拉一次只飞一个请求:连点两个状态会并发提交,最后落库的是哪个不可预期。
+    if (statusBusyId !== null) return;
+    setStatusBusyId(port.id);
     try {
       await api.post(`/immigration/admin/ports/${port.id}/status`, { status });
-      toastSuccess(t('common.save'));
-      load();
+      toastSuccess(t('imm.admin.portStatusUpdated', { status: t(`imm.portStatus.${status}`) }));
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setStatusBusyId(null);
     }
   };
 
   const addChannel = async (values) => {
+    if (channelBusy) return;
+    setChannelBusy(true);
     try {
       await api.post(`/immigration/admin/ports/${channelTarget.id}/channels`, values);
-      toastSuccess(t('common.save'));
       setChannelTarget(null);
-      load();
+      toastSuccess(t('common.save'));
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setChannelBusy(false);
     }
   };
 
   const toggleChannel = async (channel, enabled) => {
+    if (togglingId !== null) return; // 一次只允许一个开关在飞
+    setTogglingId(channel.id);
     try {
       await api.patch(`/immigration/admin/channels/${channel.id}`, { enabled });
-      load();
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setTogglingId(null);
     }
+  };
+
+  // 弹窗只能显式关闭,且提交中不许关(maskClosable={false} + busy 时忽略取消)
+  const closePortModal = () => {
+    if (busy) return;
+    form.resetFields();
+    setEditing(null);
+  };
+
+  const closeChannelModal = () => {
+    if (channelBusy) return;
+    channelForm.resetFields();
+    setChannelTarget(null);
   };
 
   const columns = [
@@ -104,6 +139,7 @@ function PortsTab() {
             onChange={(status) => changeStatus(record, status)}
             options={PORT_STATUSES.map((s) => ({ key: s, label: t(`imm.portStatus.${s}`) }))}
             aria-label={t('imm.admin.portStatus')}
+            disabled={statusBusyId !== null}
           />
           <Button type="default" size="small" icon={<EditIcon />} onClick={() => { setEditing(record); form.resetFields(); form.setFieldsValue({ name: record.nameCn ?? record.name, nameTw: record.nameTw ?? '', type: record.type, openHours: record.openHoursCn ?? record.openHours, openHoursTw: record.openHoursTw ?? '', notice: record.noticeCn ?? record.notice, noticeTw: record.noticeTw ?? '', mapDesc: record.mapDescCn ?? record.mapDesc, mapDescTw: record.mapDescTw ?? '' }); }}>
             {t('common.edit')}
@@ -129,7 +165,7 @@ function PortsTab() {
         maskClosable={false}
         open={editing !== null}
         title={editing?.id ? t('imm.admin.editPort') : t('imm.admin.createPort')}
-        onClose={() => setEditing(null)}
+        onClose={closePortModal}
         footer={null}
         width={560}
         typewriter={false}
@@ -169,8 +205,12 @@ function PortsTab() {
           </FormItem>
           <FormItem>
             <div className="form-actions">
-              <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-              <Button type="primary" htmlType="submit">{t('common.save')}</Button>
+              <Button onClick={closePortModal} disabled={busy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={busy} disabled={busy}>
+                {t('common.save')}
+              </Button>
             </div>
           </FormItem>
         </Form>
@@ -180,7 +220,7 @@ function PortsTab() {
         maskClosable={false}
         open={channelTarget !== null}
         title={`${t('imm.admin.addChannel')} · ${channelTarget?.name ?? ''}`}
-        onClose={() => setChannelTarget(null)}
+        onClose={closeChannelModal}
         footer={null}
         width={480}
         typewriter={false}
@@ -203,8 +243,12 @@ function PortsTab() {
           </FormItem>
           <FormItem>
             <div className="form-actions">
-              <Button onClick={() => setChannelTarget(null)}>{t('common.cancel')}</Button>
-              <Button type="primary" htmlType="submit">{t('common.save')}</Button>
+              <Button onClick={closeChannelModal} disabled={channelBusy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={channelBusy} disabled={channelBusy}>
+                {t('common.save')}
+              </Button>
             </div>
           </FormItem>
         </Form>
@@ -219,7 +263,13 @@ function PortsTab() {
               {p.channels.map((c) => (
                 <span key={c.id} className="im-channel-switch">
                   <span>{c.name}</span>
-                  <Switch size="small" checked={!!c.enabled} onChange={(v) => toggleChannel(c, v)} />
+                  <Switch
+                    size="small"
+                    checked={!!c.enabled}
+                    loading={togglingId === c.id}
+                    disabled={togglingId === c.id}
+                    onChange={(v) => toggleChannel(c, v)}
+                  />
                 </span>
               ))}
             </div>
@@ -235,10 +285,14 @@ function AnnouncementsTab() {
   const [items, setItems] = useState(null);
   const [ports, setPorts] = useState([]);
   const [editing, setEditing] = useState(null);
+  const [offlineTarget, setOfflineTarget] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [busy, setBusy] = useState(false); // 公告弹窗提交中
+  const [rowBusy, setRowBusy] = useState(false); // 下线/删除确认弹窗执行中
   const [form] = useForm();
 
   const load = useCallback(() => {
-    api
+    return api
       .get('/immigration/admin/announcements')
       .then((data) => setItems(data.items))
       .catch((err) => {
@@ -252,7 +306,15 @@ function AnnouncementsTab() {
     api.get('/immigration/admin/ports').then((d) => setPorts(d.items)).catch(() => {});
   }, []);
 
+  const closeAnnModal = () => {
+    if (busy) return;
+    form.resetFields();
+    setEditing(null);
+  };
+
   const save = async (values) => {
+    if (busy) return;
+    setBusy(true);
     try {
       const portId = values.portId === 'none' ? null : Number(values.portId);
       if (editing?.id) {
@@ -260,30 +322,44 @@ function AnnouncementsTab() {
       } else {
         await api.post('/immigration/admin/announcements', { ...values, portId });
       }
-      toastSuccess(t('common.save'));
       setEditing(null);
-      load();
+      toastSuccess(t('common.save'));
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setBusy(false);
     }
   };
 
-  const offline = async (row) => {
+  // 下线不可逆:服务端 PATCH 不改 status,下线后无法再发布回去,所以要先确认。
+  const confirmOffline = async () => {
+    if (!offlineTarget || rowBusy) return;
+    setRowBusy(true);
     try {
-      await api.post(`/immigration/admin/announcements/${row.id}/offline`);
-      load();
+      await api.post(`/immigration/admin/announcements/${offlineTarget.id}/offline`);
+      setOfflineTarget(null);
+      toastSuccess(t('imm.admin.offlineDone'));
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setRowBusy(false);
     }
   };
 
-  const remove = async (row) => {
+  const confirmDelete = async () => {
+    if (!deleteTarget || rowBusy) return;
+    setRowBusy(true);
     try {
-      await api.del(`/immigration/admin/announcements/${row.id}`);
+      await api.del(`/immigration/admin/announcements/${deleteTarget.id}`);
+      setDeleteTarget(null);
       toastSuccess(t('common.deleted'));
-      load();
+      await load();
     } catch (err) {
       toastApiError(err);
+    } finally {
+      setRowBusy(false);
     }
   };
 
@@ -302,9 +378,9 @@ function AnnouncementsTab() {
             {t('common.edit')}
           </Button>
           {record.status === 'published' && (
-            <Button type="default" size="small" onClick={() => offline(record)}>{t('imm.admin.takeOffline')}</Button>
+            <Button type="default" size="small" onClick={() => setOfflineTarget(record)}>{t('imm.admin.takeOffline')}</Button>
           )}
-          <Button type="default" size="small" danger onClick={() => remove(record)}>{t('common.delete')}</Button>
+          <Button type="default" size="small" danger onClick={() => setDeleteTarget(record)}>{t('common.delete')}</Button>
         </div>
       ),
     },
@@ -323,7 +399,7 @@ function AnnouncementsTab() {
         maskClosable={false}
         open={editing !== null}
         title={editing?.id ? t('imm.admin.editAnn') : t('imm.admin.createAnn')}
-        onClose={() => setEditing(null)}
+        onClose={closeAnnModal}
         footer={null}
         width={560}
         typewriter={false}
@@ -351,11 +427,61 @@ function AnnouncementsTab() {
           </FormItem>
           <FormItem>
             <div className="form-actions">
-              <Button onClick={() => setEditing(null)}>{t('common.cancel')}</Button>
-              <Button type="primary" htmlType="submit">{t('common.save')}</Button>
+              <Button onClick={closeAnnModal} disabled={busy}>
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={busy} disabled={busy}>
+                {t('common.save')}
+              </Button>
             </div>
           </FormItem>
         </Form>
+      </Modal>
+
+      <Modal
+        maskClosable={false}
+        open={offlineTarget !== null}
+        title={t('imm.admin.offlineTitle')}
+        onClose={() => {
+          if (rowBusy) return;
+          setOfflineTarget(null);
+        }}
+        typewriter={false}
+        footer={
+          <>
+            <Button onClick={() => setOfflineTarget(null)} disabled={rowBusy}>
+              {t('common.cancel')}
+            </Button>
+            <Button type="primary" danger loading={rowBusy} disabled={rowBusy} onClick={confirmOffline}>
+              {t('imm.admin.takeOffline')}
+            </Button>
+          </>
+        }
+      >
+        {offlineTarget ? t('imm.admin.offlineConfirm', { title: offlineTarget.title }) : ''}
+      </Modal>
+
+      <Modal
+        maskClosable={false}
+        open={deleteTarget !== null}
+        title={t('common.confirmDeleteTitle')}
+        onClose={() => {
+          if (rowBusy) return;
+          setDeleteTarget(null);
+        }}
+        typewriter={false}
+        footer={
+          <>
+            <Button onClick={() => setDeleteTarget(null)} disabled={rowBusy}>
+              {t('common.cancel')}
+            </Button>
+            <Button type="primary" danger loading={rowBusy} disabled={rowBusy} onClick={confirmDelete}>
+              {t('common.delete')}
+            </Button>
+          </>
+        }
+      >
+        {deleteTarget ? t('imm.admin.annDeleteConfirm', { title: deleteTarget.title }) : ''}
       </Modal>
     </>
   );

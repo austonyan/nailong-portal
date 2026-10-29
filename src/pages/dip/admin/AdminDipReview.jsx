@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Drawer, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { api, getAccessToken } from '../../../api/client.js';
+import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import {
-  DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError,
+  DipAdminNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
 } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastWarning } from '../../../components/toast.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const REJECT_REASONS = ['info_missing', 'info_false', 'duplicate', 'type_mismatch', 'other'];
 const RELATION_QUEUE_STATUSES = ['pending_review', 'supplement_required', 'sever_requested', 'established', 'rejected', 'suspended', 'withdrawn', 'draft'];
@@ -37,7 +39,7 @@ function InfoRow({ label, children }) {
 
 function ActionButton({ danger, loading, onClick, children }) {
   return (
-    <Button type="default" size="small" danger={danger} loading={loading} disabled={loading || (!!loading)} onClick={onClick}>
+    <Button type="default" size="small" danger={danger} loading={loading} disabled={loading} onClick={onClick}>
       {children}
     </Button>
   );
@@ -86,6 +88,7 @@ function RelationDrawer({ id, onChanged }) {
   const [reason, setReason] = useState('info_missing');
   const [comment, setComment] = useState('');
   const [note, setNote] = useState('');
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(() => {
     api
@@ -110,6 +113,18 @@ function RelationDrawer({ id, onChanged }) {
       setBusy(false);
     }
   };
+
+  // 队列里的状态流转都不可逆:先确认再执行,busy 由确认弹窗托管
+  const ask = (options, path, body, okMsg) => confirm({
+    ...options,
+    action: () => api.post(path, body),
+    success: okMsg,
+    onDone: async () => {
+      onChanged();
+      load();
+    },
+    onError: (err) => toastDipError(t, err),
+  });
 
   if (!rel) return <p className="muted-text">{t('common.loading')}</p>;
   const r = rel;
@@ -157,7 +172,17 @@ function RelationDrawer({ id, onChanged }) {
       <div className="dip-detail-actions">
         {['pending_review', 'supplement_required'].includes(r.status) && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/approve`, { note }, t('dip.admin.established'))} disabled={busy}>
+            <Button
+              type="primary"
+              size="small"
+              loading={busy}
+              disabled={busy}
+              onClick={() => ask({
+                title: t('dip.admin.establish'),
+                tip: t('dip.admin.establishConfirm', { no: r.no }),
+                confirmText: t('dip.admin.establish'),
+              }, `/dip/admin/relations/${r.id}/approve`, { note }, t('dip.admin.established'))}
+            >
               {t('dip.admin.establish')}
             </Button>
             <ActionButton loading={busy} onClick={() => setRejectOpen(true)}>{t('dip.admin.reject')}</ActionButton>
@@ -186,24 +211,56 @@ function RelationDrawer({ id, onChanged }) {
                 toastWarning(t('dip.admin.reasonFirst'));
                 return;
               }
-              decide(`/dip/admin/relations/${r.id}/suspend`, { reason: note.trim() }, t('dip.admin.suspended'));
+              ask({
+                title: t('dip.admin.suspend'),
+                tip: t('dip.admin.suspendConfirm', { no: r.no }),
+                confirmText: t('dip.admin.suspend'),
+              }, `/dip/admin/relations/${r.id}/suspend`, { reason: note.trim() }, t('dip.admin.suspended'));
             }}
           >
             {t('dip.admin.suspend')}
           </ActionButton>
         )}
         {r.status === 'suspended' && (
-          <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/resume`, { note }, t('dip.admin.resumed'))} disabled={busy}>
+          <Button
+            type="primary"
+            size="small"
+            loading={busy}
+            disabled={busy}
+            onClick={() => ask({
+              title: t('dip.admin.resume'),
+              tip: t('dip.admin.resumeConfirm', { no: r.no }),
+              confirmText: t('dip.admin.resume'),
+            }, `/dip/admin/relations/${r.id}/resume`, { note }, t('dip.admin.resumed'))}
+          >
             {t('dip.admin.resume')}
           </Button>
         )}
         {['sever_requested', 'established'].includes(r.status) && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/sever`, { approve: true }, t('dip.admin.severed'))} disabled={busy}>
+            <Button
+              type="primary"
+              size="small"
+              loading={busy}
+              disabled={busy}
+              onClick={() => ask({
+                title: t('dip.admin.confirmSever'),
+                tip: t('dip.admin.confirmSeverConfirm', { no: r.no }),
+                confirmText: t('dip.admin.confirmSever'),
+              }, `/dip/admin/relations/${r.id}/sever`, { approve: true }, t('dip.admin.severed'))}
+            >
               {t('dip.admin.confirmSever')}
             </Button>
             {r.status === 'sever_requested' && (
-              <ActionButton loading={busy} onClick={() => decide(`/dip/admin/relations/${r.id}/sever`, { approve: false, note }, t('dip.admin.severDismissed'))}>
+              <ActionButton
+                loading={busy}
+                onClick={() => ask({
+                  title: t('dip.admin.dismissSever'),
+                  tip: t('dip.admin.dismissSeverConfirm', { no: r.no }),
+                  confirmText: t('dip.admin.dismissSever'),
+                  danger: false,
+                }, `/dip/admin/relations/${r.id}/sever`, { approve: false, note }, t('dip.admin.severDismissed'))}
+              >
                 {t('dip.admin.dismissSever')}
               </ActionButton>
             )}
@@ -240,6 +297,7 @@ function RelationDrawer({ id, onChanged }) {
         </div>
         <TextArea rows={3} value={comment} onChange={(e) => setComment(e.target.value)} placeholder={t('dip.admin.commentPlaceholder')} maxLength={300} />
       </Modal>
+      {dialog}
     </div>
   );
 }
@@ -252,6 +310,7 @@ function IdentityDrawer({ id, onChanged }) {
   const [reason, setReason] = useState('info_missing');
   const [comment, setComment] = useState('');
   const [note, setNote] = useState('');
+  const { confirm, dialog } = useConfirmAction();
 
   const load = useCallback(() => {
     api
@@ -277,6 +336,18 @@ function IdentityDrawer({ id, onChanged }) {
     }
   };
 
+  // 身份卡生效 / 冻结 / 注销都不可逆:先确认再执行,busy 由确认弹窗托管
+  const ask = (options, path, body, okMsg) => confirm({
+    ...options,
+    action: () => api.post(path, body),
+    success: okMsg,
+    onDone: async () => {
+      onChanged();
+      load();
+    },
+    onError: (err) => toastDipError(t, err),
+  });
+
   if (!idt) return <p className="muted-text">{t('common.loading')}</p>;
   const d = idt;
 
@@ -296,7 +367,7 @@ function IdentityDrawer({ id, onChanged }) {
         <InfoRow label={t('dip.identity.holder')}>{d.nickname}</InfoRow>
         <InfoRow label={t('dip.identity.contact')}>{d.contact}</InfoRow>
         <InfoRow label={t('dip.identity.title')}>{d.title || '-'}</InfoRow>
-        <InfoRow label={t('dip.identity.term')}>{(d.termStart ?? '').slice(0, 10)} ~ {(d.termEnd ?? '').slice(0, 10)}</InfoRow>
+        <InfoRow label={t('dip.identity.term')}>{fmtDate(d.termStart)} ~ {fmtDate(d.termEnd)}</InfoRow>
         {d.inactiveReason && <InfoRow label={t('dip.identity.inactiveReason')}>{d.inactiveReason}</InfoRow>}
       </Card>
 
@@ -321,7 +392,17 @@ function IdentityDrawer({ id, onChanged }) {
       <div className="dip-detail-actions">
         {['pending_review', 'supplement_required'].includes(d.status) && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/identities/${d.id}/approve`, { note }, t('dip.admin.identityApproved'))} disabled={busy}>
+            <Button
+              type="primary"
+              size="small"
+              loading={busy}
+              disabled={busy}
+              onClick={() => ask({
+                title: t('dip.admin.approveIdentity'),
+                tip: t('dip.admin.approveIdentityConfirm', { no: d.no }),
+                confirmText: t('dip.admin.approveIdentity'),
+              }, `/dip/admin/identities/${d.id}/approve`, { note }, t('dip.admin.identityApproved'))}
+            >
               {t('dip.admin.approveIdentity')}
             </Button>
             <ActionButton loading={busy} onClick={() => setRejectOpen(true)}>{t('dip.admin.reject')}</ActionButton>
@@ -350,7 +431,11 @@ function IdentityDrawer({ id, onChanged }) {
                 toastWarning(t('dip.admin.reasonFirst'));
                 return;
               }
-              decide(`/dip/admin/identities/${d.id}/freeze`, { reason: note.trim() }, t('dip.admin.frozen'));
+              ask({
+                title: t('dip.admin.freeze'),
+                tip: t('dip.admin.freezeConfirm', { no: d.no }),
+                confirmText: t('dip.admin.freeze'),
+              }, `/dip/admin/identities/${d.id}/freeze`, { reason: note.trim() }, t('dip.admin.frozen'));
             }}
           >
             {t('dip.admin.freeze')}
@@ -358,7 +443,18 @@ function IdentityDrawer({ id, onChanged }) {
         )}
         {d.status === 'frozen' && (
           <>
-            <Button type="primary" size="small" loading={busy} onClick={() => decide(`/dip/admin/identities/${d.id}/unfreeze`, { note }, t('dip.admin.unfrozen'))} disabled={busy}>
+            <Button
+              type="primary"
+              size="small"
+              loading={busy}
+              disabled={busy}
+              onClick={() => ask({
+                title: t('dip.admin.unfreeze'),
+                tip: t('dip.admin.unfreezeConfirm', { no: d.no }),
+                confirmText: t('dip.admin.unfreeze'),
+                danger: false,
+              }, `/dip/admin/identities/${d.id}/unfreeze`, { note }, t('dip.admin.unfrozen'))}
+            >
               {t('dip.admin.unfreeze')}
             </Button>
             <ActionButton
@@ -369,7 +465,11 @@ function IdentityDrawer({ id, onChanged }) {
                   toastWarning(t('dip.admin.reasonFirst'));
                   return;
                 }
-                decide(`/dip/admin/identities/${d.id}/revoke`, { reason: note.trim() }, t('dip.admin.revoked'));
+                ask({
+                  title: t('dip.admin.revoke'),
+                  tip: t('dip.admin.revokeConfirm', { no: d.no }),
+                  confirmText: t('dip.admin.revoke'),
+                }, `/dip/admin/identities/${d.id}/revoke`, { reason: note.trim() }, t('dip.admin.revoked'));
               }}
             >
               {t('dip.admin.revoke')}
@@ -407,6 +507,7 @@ function IdentityDrawer({ id, onChanged }) {
         </div>
         <TextArea rows={3} value={comment} onChange={(e) => setComment(e.target.value)} placeholder={t('dip.admin.commentPlaceholder')} maxLength={300} />
       </Modal>
+      {dialog}
     </div>
   );
 }
@@ -416,6 +517,8 @@ export default function AdminDipReview() {
   const [kind, setKind] = useState('relation'); // relation | identity
   const [status, setStatus] = useState('pending_review');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
+  const dq = useDebouncedValue(q, 300);
   const [data, setData] = useState(null);
   const [openId, setOpenId] = useState(null);
 
@@ -423,7 +526,7 @@ export default function AdminDipReview() {
     const path = kind === 'relation' ? '/dip/admin/relations' : '/dip/admin/identities';
     const params = new URLSearchParams({ pageSize: '20' });
     if (status) params.set('status', status);
-    if (q.trim()) params.set('q', q.trim());
+    if (dq.trim()) params.set('q', dq.trim());
     api
       .get(`${path}?${params.toString()}`)
       .then(setData)
@@ -431,7 +534,7 @@ export default function AdminDipReview() {
         toastDipError(t, err);
         setData({ items: [], counts: {}, total: 0 });
       });
-  }, [kind, status, q, t]);
+  }, [kind, status, dq, t]);
 
   useEffect(load, [load]);
 

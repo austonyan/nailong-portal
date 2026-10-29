@@ -5,6 +5,7 @@ import { Button, Card, Input, Select, Table, Tag, Title } from 'animal-island-ui
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ArchAdminNav, fmtDateTime, toastArchError } from '../shared.jsx';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const ACTION_OPTIONS = [
   { key: '', labelKey: 'arch.admin.access.allActions' },
@@ -31,26 +32,31 @@ export default function AdminArchAccess() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [userId, setUserId] = useState('');
+  // 账号 ID 检索 300ms 防抖:避免逐键打接口。
+  const userIdDebounced = useDebouncedValue(userId, 300);
   const [action, setAction] = useState('');
   const [office, setOffice] = useState('');
   const pageSize = 15;
 
   const load = useCallback(() => {
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-    if (userId) params.set('userId', userId);
+    if (userIdDebounced) params.set('userId', userIdDebounced);
     if (action) params.set('action', action);
     if (office) params.set('office', office);
     api
       .get(`/archives/admin/access-logs?${params}`)
       .then((data) => {
-        setItems(data.items);
+        const rows = data.items ?? [];
+        setItems(rows);
         setTotal(data.total);
+        // 总条数变小时把页码夹回合法范围,避免停在空表。
+        if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
       })
       .catch((err) => {
         toastArchError(err);
         setItems([]);
       });
-  }, [page, userId, action, office]);
+  }, [page, userIdDebounced, action, office]);
 
   useEffect(load, [load]);
 

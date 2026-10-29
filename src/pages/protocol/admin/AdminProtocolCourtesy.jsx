@@ -26,6 +26,8 @@ import { toastSuccess } from '../shared.jsx';
 
 const STATUSES = ['pending_review', 'approved', 'rejected', 'used', 'cancelled', 'expired'];
 const REASONS = ['info_missing', 'identity_mismatch', 'duplicate', 'rule_violation', 'other'];
+// 服务端 /courtesy/records 只返回最近 50 条,不做客户端假分页,标注上限即可。
+const RECORDS_LIMIT = 50;
 
 export default function AdminProtocolCourtesy() {
   const { t } = useTranslation();
@@ -36,6 +38,7 @@ export default function AdminProtocolCourtesy() {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('pending_review');
   const [q, setQ] = useState('');
+  const [query, setQuery] = useState('');
   const [records, setRecords] = useState(null);
   const [typeEdit, setTypeEdit] = useState(null);
   const [typeForm, setTypeForm] = useState({ code: '', name: '', description: '', requirements: '', enabled: true, sortOrder: 99 });
@@ -58,19 +61,22 @@ export default function AdminProtocolCourtesy() {
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
-      if (q.trim()) params.set('q', q.trim());
+      if (query) params.set('q', query);
       const data = await api.get(`/protocol/admin/courtesy/applications?${params.toString()}`);
-      setApps(data.items);
+      const rows = data.items ?? [];
+      setApps(rows);
       setTotal(data.total);
+      // total 变小时把页码夹回合法范围,避免停在空表。
+      if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setApps([]);
     }
-  }, [page, status, q, t]);
+  }, [page, status, query, t]);
 
   const loadRecords = useCallback(async () => {
     try {
-      const data = await api.get('/protocol/admin/courtesy/records?pageSize=50');
+      const data = await api.get(`/protocol/admin/courtesy/records?pageSize=${RECORDS_LIMIT}`);
       setRecords(data.items);
     } catch (err) {
       toastProtocolError(t, err);
@@ -200,11 +206,33 @@ export default function AdminProtocolCourtesy() {
                     onChange={(v) => { setStatus(v); setPage(1); }}
                     options={[{ key: '', label: t('protocol.common.allStatus') }, ...STATUSES.map((s) => ({ key: s, label: t(`protocol.status.${s}`) }))]}
                   />
-                  <Input allowClear prefix={<SearchIcon size={14} />} value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('protocol.admin.searchCourtesy')} />
+                  <Input
+                    allowClear
+                    prefix={<SearchIcon size={14} />}
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    onClear={() => { setQ(''); setQuery(''); setPage(1); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setQuery(q.trim());
+                        setPage(1);
+                      }
+                    }}
+                    placeholder={t('protocol.admin.searchCourtesy')}
+                  />
+                  <Button
+                    icon={<SearchIcon />}
+                    onClick={() => {
+                      setQuery(q.trim());
+                      setPage(1);
+                    }}
+                  >
+                    {t('common.search')}
+                  </Button>
                 </div>
                 <Card>
                   <Table className="table-fit" columns={appColumns} dataSource={apps ?? []} loading={apps === null} rowKey="id" pagination={false} emptyText={t('protocol.admin.queueEmpty')} />
-                  {total > 20 && (
+                  {total > 0 && (
                     <div className="protocol-pagination">
                       <Pagination total={total} current={page} pageSize={20} onChange={setPage} showTotal />
                     </div>
@@ -241,7 +269,8 @@ export default function AdminProtocolCourtesy() {
             label: t('protocol.admin.recordsTab'),
             children: (
               <Card>
-                <Table className="table-fit" columns={recordColumns} dataSource={records ?? []} loading={records === null} rowKey="id" pagination={{ pageSize: 20 }} emptyText={t('protocol.common.noData')} />
+                <p className="muted-text">{t('common.recentOnly', { count: RECORDS_LIMIT })}</p>
+                <Table className="table-fit" columns={recordColumns} dataSource={records ?? []} loading={records === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
               </Card>
             ),
           },

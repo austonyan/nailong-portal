@@ -83,21 +83,21 @@ export default function AppealAdminStats() {
         <div className="appeal-dist-row">
           {(stats.decisionDistribution ?? []).map((d) => (
             <Tag key={d.type} variant="soft" color="app-blue">
-              {t(`appeal.decisionType.${d.type}`)}: {d.n}
+              {t(`appeal.decisionType.${d.type}`, { defaultValue: d.type })}: {d.n}
             </Tag>
           ))}
         </div>
         <div className="appeal-dist-row">
           {(stats.bizDistribution ?? []).map((d) => (
             <Tag key={d.type} variant="outlined">
-              {t(`appeal.bizType.${d.type}`)}: {d.n}
+              {t(`appeal.bizType.${d.type}`, { defaultValue: d.type })}: {d.n}
             </Tag>
           ))}
         </div>
         <div className="appeal-dist-row">
           {(stats.complaintCategoryDist ?? []).map((d) => (
             <Tag key={d.category} variant="soft" color="app-pink">
-              {t(`appeal.complaintCategory.${d.category}`)}: {d.n}
+              {t(`appeal.complaintCategory.${d.category}`, { defaultValue: d.category })}: {d.n}
             </Tag>
           ))}
         </div>
@@ -135,7 +135,7 @@ export default function AppealAdminStats() {
                 {block.rows.map((r) => (
                   <li key={r.key}>
                     <Tag variant="soft" color="app-teal">
-                      {t(`${block.prefix}.${r.status}`)}
+                      {t(`${block.prefix}.${r.status}`, { defaultValue: r.status })}
                     </Tag>
                     <span>{r.n}</span>
                   </li>

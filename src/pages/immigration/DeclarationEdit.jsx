@@ -9,7 +9,8 @@ import { toastApiError } from '../../components/immigration/apiError.js';
 import { ImNav } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
-import { toastSuccess, toastWarning } from '../../components/toast.js';
+import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
+import { toastSuccess, toastWarning, toastError } from '../../components/toast.js';
 
 const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
 const ITEM_KEYS = ['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card'];
@@ -20,6 +21,7 @@ export default function DeclarationEdit() {
   const { id } = useParams(); // draft id when editing
   const [searchParams] = useSearchParams();
   const fromId = searchParams.get('from');
+  const visaNoParam = searchParams.get('visaNo');
   const [form] = useForm();
 
   const [ports, setPorts] = useState([]);
@@ -82,8 +84,12 @@ export default function DeclarationEdit() {
           setDecl(null);
         })
         .catch(toastApiError);
+    } else if (visaNoParam) {
+      // 从签注页跳转:预填签证号并自动校验
+      form.setFieldValue('visaNo', visaNoParam);
+      checkVisa(visaNoParam);
     }
-  }, [id, fromId, applyDeclaration]);
+  }, [id, fromId, visaNoParam, applyDeclaration]);
 
   const checkVisa = async (codeArg) => {
     const visaNo = codeArg || form.getFieldValue('visaNo');
@@ -167,6 +173,20 @@ export default function DeclarationEdit() {
     }
   };
 
+  const fillFromResident = (data) => {
+    if (!data) return;
+    // 身份接口只提供证件号,本表单没有对应字段:只写确实带回的值,不要清空用户已填内容。
+    const patch = {};
+    if (data.nickname) patch.nickname = data.nickname;
+    if (data.contact) patch.contact = data.contact;
+    if (!Object.keys(patch).length) {
+      toastError(t('residentPrefill.nothing'));
+      return;
+    }
+    form.setFieldsValue(patch);
+    toastSuccess(t('residentPrefill.filled'));
+  };
+
   const openConfirm = async () => {
     if (itemKeys.length === 0) {
       setItemsError(true);
@@ -190,6 +210,7 @@ export default function DeclarationEdit() {
       </div>
 
       <Card>
+        <ResidentPrefill onFill={fillFromResident} fields={['nickname', 'contact']} />
         <Form form={form} layout="vertical" onFinish={openConfirm}>
           <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true }]}>
             <Select

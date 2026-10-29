@@ -79,6 +79,7 @@ export default function InboxDrawer() {
   const [status, setStatus] = useState('all');
   const [office, setOffice] = useState('');
   const [items, setItems] = useState([]);
+  const [offices, setOffices] = useState([]);
   const [unread, setUnread] = useState({ total: 0, byOffice: [] });
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -102,11 +103,16 @@ export default function InboxDrawer() {
   const loadList = useCallback(async () => {
     setLoading(true);
     setFailed(false);
+    // 重新拉取时先清空旧列表,否则「加载中…」下面还压着上一次的结果。
+    setItems([]);
     try {
       const query = new URLSearchParams({ status, limit: '50' });
       if (office) query.set('office', office);
       const data = await api.get(`/messages?${query.toString()}`);
       setItems(data.items || []);
+      // 署别筛选项来自服务端可访问信箱列表,不随当前筛选结果变化,
+      // 否则选中某个署之后整排筛选器会消失、回不到「全部署」。
+      if (Array.isArray(data.offices)) setOffices(data.offices);
       if (data.unread) setUnread({ total: data.unread.total || 0, byOffice: data.unread.byOffice || [] });
     } catch {
       setFailed(true);
@@ -134,11 +140,20 @@ export default function InboxDrawer() {
     navigate(OFFICE_INBOX[item.office] || '/');
   };
 
+  // read-all 是全局接口(当前页 50 条之外仍有未读也会被标已读),
+  // 因此按 unread.total 判断能否点,并按接口回报的实际条数提示。
+  const canMarkAll = (unread.total ?? 0) > 0;
+
   const markAll = async () => {
     setBusy(true);
     try {
-      await api.post('/messages/read-all', office ? { office } : {});
-      toastSuccess(t('inbox.markedAll'));
+      const data = await api.post('/messages/read-all', office ? { office } : {});
+      const updated = Number(data?.updated ?? 0);
+      toastSuccess(
+        updated > 0
+          ? t('inbox.markedCount', { count: updated })
+          : t('inbox.nothingToMark')
+      );
       await loadList();
       await loadUnread();
     } catch (err) {
@@ -148,14 +163,35 @@ export default function InboxDrawer() {
     }
   };
 
-  // 署筛选标签按当前列表里出现的署生成,避免出现空结果标签。
+  // 署筛选标签按服务端可访问署生成(「全部署」常驻),避免出现空结果标签。
   const officeChips = useMemo(() => {
-    const set = new Set(items.map((item) => item.office));
+    const set = new Set(offices);
     if (office) set.add(office);
     return [...set];
-  }, [items, office]);
+  }, [offices, office]);
 
-  const hasUnread = items.some((item) => !item.read);
+  // 筛选项用 Button(Tag 不透传 aria-pressed):原生 button 天然可键盘聚焦、
+  // 回车触发,aria-pressed 让读屏能报出当前选中的筛选项。
+  const filterChip = (label, selected, onSelect, key) => (
+    <Button
+      key={key}
+      size="small"
+      type={selected ? 'primary' : 'default'}
+      aria-pressed={selected}
+      onClick={onSelect}
+    >
+      {label}
+    </Button>
+  );
+
+  // Card 只是带 onClick 的 div,键盘不可达;补 role/tabIndex/Enter-Space
+  // 让它成为真正的按钮,未读状态同时用文字播报而不只是色点。
+  const openByKey = (event, item) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openMessage(item);
+    }
+  };
 
   return (
     <>
@@ -183,85 +219,76 @@ export default function InboxDrawer() {
             <Button
               type="primary"
               loading={busy}
-              disabled={busy || !hasUnread}
+              disabled={busy || !canMarkAll}
               onClick={markAll}
             >
-              {t('inbox.markAll')}
+              {office ? t('inbox.markAllOffice', { office: officeLabel(t, { office }) }) : t('inbox.markAll')}
             </Button>
           </div>
         }
       >
         <div className="inbox-toolbar">
-          <div className="inbox-filters">
-            <Tag
-              size="small"
-              variant={status === 'all' ? 'solid' : 'soft'}
-              color="app-teal"
-              onClick={() => setStatus('all')}
-            >
-              {t('inbox.all')}
-            </Tag>
-            <Tag
-              size="small"
-              variant={status === 'unread' ? 'solid' : 'soft'}
-              color="app-teal"
-              onClick={() => setStatus('unread')}
-            >
-              {t('inbox.unread')}
-              {unread.total > 0 ? ` ${unread.total}` : ''}
-            </Tag>
+          <div className="inbox-filters" role="group" aria-label={t('inbox.filterStatus')}>
+            {filterChip(t('inbox.all'), status === 'all', () => setStatus('all'))}
+            {filterChip(
+              `${t('inbox.unread')}${unread.total > 0 ? ` ${unread.total}` : ''}`,
+              status === 'unread',
+              () => setStatus('unread'),
+            )}
           </div>
-          {officeChips.length > 1 && (
-            <div className="inbox-filters">
-              <Tag
-                size="small"
-                variant={office ? 'outlined' : 'solid'}
-                onClick={() => setOffice('')}
-              >
-                {t('inbox.allOffices')}
-              </Tag>
-              {officeChips.map((key) => (
-                <Tag
-                  key={key}
-                  size="small"
-                  variant={office === key ? 'solid' : 'outlined'}
-                  onClick={() => setOffice(office === key ? '' : key)}
-                >
-                  {officeLabel(t, { office: key })}
-                </Tag>
-              ))}
-            </div>
-          )}
+          <div className="inbox-filters" role="group" aria-label={t('inbox.filterOffice')}>
+            {filterChip(t('inbox.allOffices'), !office, () => setOffice(''))}
+            {officeChips.map((key) =>
+              filterChip(
+                officeLabel(t, { office: key }),
+                office === key,
+                () => setOffice(office === key ? '' : key),
+                key,
+              ),
+            )}
+          </div>
         </div>
 
         {loading && <p className="muted-text inbox-hint">{t('common.loading')}</p>}
-        {!loading && failed && <p className="muted-text inbox-hint">{t('inbox.loadFailed')}</p>}
+        {!loading && failed && (
+          <p className="muted-text inbox-hint">
+            {t('inbox.loadFailed')}
+            <Button type="text" size="small" onClick={loadList}>{t('common.retry')}</Button>
+          </p>
+        )}
         {!loading && !failed && items.length === 0 && (
           <p className="muted-text inbox-hint">{t('inbox.empty')}</p>
         )}
 
-        <div className="inbox-list">
-          {items.map((item) => {
-            const text = messageText(t, item);
-            return (
-              <Card
-                key={`${item.office}:${item.id}`}
-                className={`inbox-item${item.read ? '' : ' unread'}`}
-                onClick={() => openMessage(item)}
-              >
-                <div className="inbox-item-head">
-                  <Tag size="small" variant="soft" color="app-teal">{officeLabel(t, item)}</Tag>
-                  {!item.read && <span className="inbox-dot" aria-hidden="true" />}
-                  <span className="muted-text inbox-time">
-                    {item.createdAt ? dayjs(item.createdAt).format('YYYY-MM-DD HH:mm') : ''}
-                  </span>
-                </div>
-                <div className="inbox-item-title">{text.title}</div>
-                {text.body && <p className="inbox-item-body">{text.body}</p>}
-              </Card>
-            );
-          })}
-        </div>
+        {!loading && !failed && items.length > 0 && (
+          <div className="inbox-list">
+            {items.map((item) => {
+              const text = messageText(t, item);
+              return (
+                <Card
+                  key={`${item.office}:${item.id}`}
+                  className={`inbox-item${item.read ? '' : ' unread'}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${officeLabel(t, item)} · ${text.title} · ${t(item.read ? 'common.readState' : 'common.unreadState')}`}
+                  onClick={() => openMessage(item)}
+                  onKeyDown={(e) => openByKey(e, item)}
+                >
+                  <div className="inbox-item-head">
+                    <Tag size="small" variant="soft" color="app-teal">{officeLabel(t, item)}</Tag>
+                    {!item.read && <span className="inbox-dot" aria-hidden="true" />}
+                    {!item.read && <span className="muted-text inbox-time">{t('common.unreadState')}</span>}
+                    <span className="muted-text inbox-time">
+                      {item.createdAt ? dayjs(item.createdAt).format('YYYY-MM-DD HH:mm') : ''}
+                    </span>
+                  </div>
+                  <div className="inbox-item-title">{text.title}</div>
+                  {text.body && <p className="inbox-item-body">{text.body}</p>}
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </Drawer>
     </>
   );

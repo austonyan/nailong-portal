@@ -16,9 +16,13 @@ import { BanIcon, DownloadIcon, MailIcon, PlusIcon, SearchIcon } from 'naive-ico
 import { api } from '../../../api/client.js';
 import { TextArea, exportProtocolCsv, fmtDateTime, toastProtocolError } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
+import { toastError } from '../../../components/toast.js';
+import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
 const RESULTS = ['valid', 'not_found', 'status_used', 'status_expired', 'status_voided', 'status_revoked'];
 const KINDS = ['invitation', 'pass', 'host'];
+// 服务端 /admin/tickets 只返回最近 100 条,不做客户端假分页。
+const TICKET_LIMIT = 100;
 
 export default function AdminProtocolRisk() {
   const { t } = useTranslation();
@@ -26,6 +30,7 @@ export default function AdminProtocolRisk() {
   const [logTotal, setLogTotal] = useState(0);
   const [logPage, setLogPage] = useState(1);
   const [logQ, setLogQ] = useState('');
+  const [logQuery, setLogQuery] = useState('');
   const [logResult, setLogResult] = useState('');
   const [limit, setLimit] = useState('30');
   const [blacklist, setBlacklist] = useState([]);
@@ -35,20 +40,24 @@ export default function AdminProtocolRisk() {
   const [ticketTarget, setTicketTarget] = useState(null);
   const [reply, setReply] = useState('');
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirmAction();
 
   const loadLogs = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(logPage) });
-      if (logQ.trim()) params.set('q', logQ.trim());
+      if (logQuery) params.set('q', logQuery);
       if (logResult) params.set('result', logResult);
       const data = await api.get(`/protocol/admin/verify-logs?${params.toString()}`);
-      setLogs(data.items);
+      const rows = data.items ?? [];
+      setLogs(rows);
       setLogTotal(data.total);
+      // 总数变小时把页码夹回合法范围,否则停在空表且分页器消失。
+      if (rows.length === 0 && logPage > 1) setLogPage(Math.max(1, logPage - 1));
     } catch (err) {
       toastProtocolError(t, err);
       setLogs([]);
     }
-  }, [logPage, logQ, logResult, t]);
+  }, [logPage, logQuery, logResult, t]);
 
   const loadRest = useCallback(async () => {
     try {
@@ -69,22 +78,35 @@ export default function AdminProtocolRisk() {
   useEffect(() => { loadLogs(); }, [loadLogs]);
   useEffect(() => { loadRest(); }, [loadRest]);
 
-  const saveLimit = async () => {
-    try {
-      await api.patch('/protocol/admin/config', { key: 'verify_limit_per_5min', value: limit });
-      toastSuccess(t('common.save'));
-    } catch (err) {
-      toastProtocolError(t, err);
+  const askSaveLimit = () => {
+    const value = Number(limit);
+    if (!Number.isInteger(value) || value < 1 || value > 1000) {
+      toastError(t('protocol.admin.limitRange'));
+      return;
     }
+    confirm({
+      title: t('protocol.admin.saveLimit'),
+      tip: t('protocol.admin.saveLimitConfirm', { value }),
+      confirmText: t('common.save'),
+      danger: false,
+      action: () => api.patch('/protocol/admin/config', { key: 'verify_limit_per_5min', value: String(value) }),
+      success: t('protocol.admin.limitSaved', { value }),
+      onDone: loadRest,
+      onError: (err) => toastProtocolError(t, err),
+    });
   };
 
   const addBlacklist = async () => {
+    if (!blackForm.username.trim() || !blackForm.reason.trim()) {
+      toastError(t('common.required'));
+      return;
+    }
     setBusy(true);
     try {
       await api.post('/protocol/admin/blacklist', blackForm);
-      toastSuccess(t('common.save'));
       setBlacklistOpen(false);
       setBlackForm({ username: '', reason: '', level: 'warn' });
+      toastSuccess(t('protocol.admin.blacklistAdded'));
       await loadRest();
     } catch (err) {
       toastProtocolError(t, err);
@@ -93,14 +115,18 @@ export default function AdminProtocolRisk() {
     }
   };
 
-  const lift = async (row) => {
-    try {
-      await api.del(`/protocol/admin/blacklist/${row.id}`);
-      toastSuccess(t('common.deleted'));
-      await loadRest();
-    } catch (err) {
-      toastProtocolError(t, err);
-    }
+  const askLift = (row) => {
+    confirm({
+      title: t('protocol.admin.lift'),
+      tip: t('protocol.admin.liftConfirm', {
+        user: row.display_name ? `${row.display_name} (@${row.username})` : `@${row.username}`,
+      }),
+      confirmText: t('protocol.admin.lift'),
+      action: () => api.del(`/protocol/admin/blacklist/${row.id}`),
+      success: t('protocol.admin.lifted'),
+      onDone: loadRest,
+      onError: (err) => toastProtocolError(t, err),
+    });
   };
 
   const closeTicket = async () => {
@@ -108,9 +134,9 @@ export default function AdminProtocolRisk() {
     setBusy(true);
     try {
       await api.post(`/protocol/admin/tickets/${ticketTarget.id}/close`, { reply });
-      toastSuccess(t('common.save'));
       setTicketTarget(null);
       setReply('');
+      toastSuccess(t('protocol.admin.ticketClosed'));
       await loadRest();
     } catch (err) {
       toastProtocolError(t, err);
@@ -134,10 +160,10 @@ export default function AdminProtocolRisk() {
     {
       title: t('protocol.admin.verifyResult'),
       dataIndex: 'result',
-      width: 130,
+      width: 150,
       render: (v) => (
         <Tag color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'app-red' : 'app-yellow'} variant="soft" size="small">
-          {v}
+          {t(`protocol.verifyResult.${v}`, { defaultValue: v })}
         </Tag>
       ),
     },
@@ -154,7 +180,7 @@ export default function AdminProtocolRisk() {
       render: (v) => <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft" size="small">{t(`protocol.admin.blacklist_${v}`)}</Tag>,
     },
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },
-    { title: t('common.actions'), width: 90, render: (_, r) => <Button type="text" size="small" onClick={() => lift(r)}>{t('protocol.admin.lift')}</Button> },
+    { title: t('common.actions'), width: 90, render: (_, r) => <Button type="text" size="small" onClick={() => askLift(r)}>{t('protocol.admin.lift')}</Button> },
   ];
 
   const ticketColumns = [
@@ -186,20 +212,42 @@ export default function AdminProtocolRisk() {
           <Title size="small" color="app-blue">{t('protocol.admin.verifyLogs')}</Title>
           <div className="protocol-inline-gap">
             <Input type="number" value={limit} onChange={(e) => setLimit(e.target.value)} style={{ width: 100 }} />
-            <Button type="dashed" size="small" onClick={saveLimit}>{t('protocol.admin.saveLimit')}</Button>
+            <Button type="dashed" size="small" onClick={askSaveLimit}>{t('protocol.admin.saveLimit')}</Button>
           </div>
         </div>
         <div className="protocol-filter-bar">
           <Select
             value={logResult}
             onChange={(v) => { setLogResult(v); setLogPage(1); }}
-            options={[{ key: '', label: t('protocol.common.allStatus') }, ...RESULTS.map((r) => ({ key: r, label: r }))]}
+            options={[{ key: '', label: t('protocol.common.allStatus') }, ...RESULTS.map((r) => ({ key: r, label: t(`protocol.verifyResult.${r}`, { defaultValue: r }) }))]}
           />
-          <Input allowClear prefix={<SearchIcon size={14} />} value={logQ} onChange={(e) => setLogQ(e.target.value)} placeholder={t('protocol.admin.searchVerify')} />
+          <Input
+            allowClear
+            prefix={<SearchIcon size={14} />}
+            value={logQ}
+            onChange={(e) => setLogQ(e.target.value)}
+            onClear={() => { setLogQ(''); setLogQuery(''); setLogPage(1); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setLogQuery(logQ.trim());
+                setLogPage(1);
+              }
+            }}
+            placeholder={t('protocol.admin.searchVerify')}
+          />
+          <Button
+            icon={<SearchIcon />}
+            onClick={() => {
+              setLogQuery(logQ.trim());
+              setLogPage(1);
+            }}
+          >
+            {t('common.search')}
+          </Button>
         </div>
         <Card>
           <Table className="table-fit" columns={logColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
-          {logTotal > 20 && (
+          {logTotal > 0 && (
             <div className="protocol-pagination">
               <Pagination total={logTotal} current={logPage} pageSize={20} onChange={setLogPage} showTotal />
             </div>
@@ -223,7 +271,8 @@ export default function AdminProtocolRisk() {
       <div className="protocol-section">
         <Title size="small" color="app-orange">{t('protocol.admin.tickets')}</Title>
         <Card>
-          <Table className="table-fit" columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={{ pageSize: 10 }} emptyText={t('protocol.common.noData')} />
+          <p className="muted-text">{t('common.recentOnly', { count: TICKET_LIMIT })}</p>
+          <Table className="table-fit" columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
         </Card>
       </div>
 
@@ -250,12 +299,15 @@ export default function AdminProtocolRisk() {
         maskClosable={false}
         open={blacklistOpen}
         title={t('protocol.admin.blacklistAdd')}
-        onClose={() => setBlacklistOpen(false)}
+        onClose={() => {
+          if (busy) return;
+          setBlacklistOpen(false);
+        }}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setBlacklistOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} disabled={!blackForm.username || !blackForm.reason} onClick={addBlacklist}>
+            <Button onClick={() => setBlacklistOpen(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy || !blackForm.username || !blackForm.reason} onClick={addBlacklist}>
               {t('common.save')}
             </Button>
           </>
@@ -288,12 +340,15 @@ export default function AdminProtocolRisk() {
         maskClosable={false}
         open={ticketTarget !== null}
         title={t('protocol.admin.replyTicket')}
-        onClose={() => setTicketTarget(null)}
+        onClose={() => {
+          if (busy) return;
+          setTicketTarget(null);
+        }}
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setTicketTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" loading={busy} onClick={closeTicket}>{t('protocol.admin.closeTicket')}</Button>
+            <Button onClick={() => setTicketTarget(null)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button type="primary" loading={busy} disabled={busy} onClick={closeTicket}>{t('protocol.admin.closeTicket')}</Button>
           </>
         }
       >
@@ -309,6 +364,8 @@ export default function AdminProtocolRisk() {
           </>
         )}
       </Modal>
+
+      {confirmDialog}
     </div>
   );
 }

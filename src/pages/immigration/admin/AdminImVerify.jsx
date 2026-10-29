@@ -6,6 +6,7 @@ import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 import { toastSuccess, toastWarning, toastInfo } from '../../../components/toast.js';
+import { fmtDateTime } from '../../../lib/date.js';
 
 const RESULT_COLORS = {
   accepted: 'app-green',
@@ -91,7 +92,7 @@ export default function AdminImVerify() {
     { title: t('imm.admin.verify.resultTitle'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'default'} variant="soft">{t(`imm.admin.verify.result.${v}`, { defaultValue: v })}</Tag> },
     { title: t('imm.admin.review.opinion'), dataIndex: 'note', render: (v) => v || '-' },
     { title: t('imm.admin.verify.officer'), dataIndex: 'officer', width: 110, render: (v) => v ?? '-' },
-    { title: t('common.createdAt'), dataIndex: 'createdAt', width: 160, render: (v) => v?.slice(0, 16).replace('T', ' ') },
+    { title: t('common.createdAt'), dataIndex: 'createdAt', width: 160, render: (v) => fmtDateTime(v) },
   ];
 
   return (
@@ -110,7 +111,9 @@ export default function AdminImVerify() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t('imm.admin.verify.queryPlaceholder')}
+            aria-label={t('imm.admin.verify.queryPlaceholder')}
             allowClear
+            onKeyDown={(e) => e.key === 'Enter' && search()}
           />
           <Button type="primary" icon={<SearchIcon />} onClick={search}>{t('imm.admin.verify.query')}</Button>
         </div>
@@ -127,7 +130,7 @@ export default function AdminImVerify() {
                   {t('imm.mydecl.no')}: {r.declaration_no} · {t('imm.declare.nickname')}: {r.nickname} · {r.port_name}
                 </p>
                 <p className="muted-text">
-                  {t('imm.pass.validUntil')}: {r.valid_until?.slice(0, 16).replace('T', ' ')}
+                  {t('imm.pass.validUntil')}: {r.valid_until ? fmtDateTime(r.valid_until) : '-'}
                   {r.void_reason ? ` · ${t('imm.admin.verify.voidReason')}: ${r.void_reason}` : ''}
                 </p>
                 <div className="table-actions">

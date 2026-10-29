@@ -7,6 +7,8 @@ import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
+import { fmtDateTime } from '../../../lib/date.js';
+import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const QUEUE_STATUSES = ['pending', 'supplement', 'approved', 'rejected', 'entered', 'exited', 'withdrawn'];
 const REJECT_REASONS = ['visa_invalid', 'incomplete', 'duplicate', 'port_closed', 'other'];
@@ -98,7 +100,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
         </InfoRow>
         {d.visaCached?.detail?.type && (
           <InfoRow label={t('imm.admin.review.visaDetail')}>
-            {d.visaCached.detail.type} · {t('imm.visaResult.validUntil', { date: d.visaCached.detail.validUntil?.slice(0, 16).replace('T', ' ') })}
+            {d.visaCached.detail.type} · {t('imm.visaResult.validUntil', { date: fmtDateTime(d.visaCached.detail.validUntil) })}
           </InfoRow>
         )}
         {d.supplementRequest && (
@@ -126,7 +128,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
           {(d.events ?? []).map((e, idx) => (
             <li key={idx}>
               <span className="im-timeline-action">{t(`imm.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {e.created_at?.slice(0, 16).replace('T', ' ')}</span>
+              <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="im-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -202,12 +204,14 @@ export default function AdminImReview() {
   const [counts, setCounts] = useState({});
   const [status, setStatus] = useState('pending');
   const [q, setQ] = useState('');
+  // 检索词 300ms 防抖:避免逐键打接口。
+  const dq = useDebouncedValue(q, 300);
   const [openId, setOpenId] = useState(null);
 
   const load = useCallback(() => {
     const params = new URLSearchParams({ pageSize: '50' });
     if (status) params.set('status', status);
-    if (q.trim()) params.set('q', q.trim());
+    if (dq.trim()) params.set('q', dq.trim());
     api
       .get(`/immigration/admin/declarations?${params}`)
       .then((data) => {
@@ -218,7 +222,7 @@ export default function AdminImReview() {
         toastApiError(err);
         setItems([]);
       });
-  }, [status, q]);
+  }, [status, dq]);
 
   useEffect(load, [load]);
 
@@ -228,7 +232,7 @@ export default function AdminImReview() {
     { title: t('imm.declare.nickname'), dataIndex: 'nickname', width: 110 },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
     { title: t('imm.declare.visaNo'), dataIndex: 'visaNo', width: 150, render: (v) => v ?? '-' },
-    { title: t('imm.mydecl.submittedAt'), dataIndex: 'submittedAt', width: 150, render: (v) => v?.slice(0, 16).replace('T', ' ') || '-' },
+    { title: t('imm.mydecl.submittedAt'), dataIndex: 'submittedAt', width: 150, render: (v) => fmtDateTime(v) },
     {
       title: t('imm.admin.review.risk'),
       dataIndex: 'risk',
@@ -274,6 +278,7 @@ export default function AdminImReview() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder={t('imm.admin.review.searchPlaceholder')}
+          aria-label={t('imm.admin.review.searchPlaceholder')}
           allowClear
         />
         <Button type="default" onClick={load}>{t('common.search')}</Button>

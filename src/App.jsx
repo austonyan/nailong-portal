@@ -10,6 +10,7 @@ import Register from './pages/Register.jsx';
 import Setup from './pages/Setup.jsx';
 import Portal from './pages/Portal.jsx';
 import Profile from './pages/Profile.jsx';
+import Certificates from './pages/certificates/Certificates.jsx';
 import VisaShell from './pages/visa/VisaShell.jsx';
 import VisaHome from './pages/visa/VisaHome.jsx';
 import VisaApplyGuide from './pages/visa/VisaApplyGuide.jsx';
@@ -26,6 +27,7 @@ import VisaAdminAudit from './pages/visa/VisaAdminAudit.jsx';
 import AdminUsers from './pages/admin/AdminUsers.jsx';
 import AdminRoles from './pages/admin/AdminRoles.jsx';
 import AdminServices from './pages/admin/AdminServices.jsx';
+import AdminRecognize from './pages/admin/AdminRecognize.jsx';
 import DocsLayout from './pages/docs/DocsLayout.jsx';
 import DocsHome from './pages/docs/DocsHome.jsx';
 import DocsTypes from './pages/docs/DocsTypes.jsx';
@@ -279,6 +281,8 @@ export default function App() {
       >
         <Route path="/" element={<Portal />} />
         <Route path="/profile" element={<Profile />} />
+        {/* 统一证件库:跨署查看本人有效证件与到期提醒 */} 
+        <Route path="/certificates" element={<Certificates />} />
         {/* 奶龍國簽註申請署 */}
         <Route
           path="/visa"
@@ -405,6 +409,14 @@ export default function App() {
           element={
             <RequirePermission permission="services:read">
               <AdminServices />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="/admin/recognize"
+          element={
+            <RequirePermission permission="services:read">
+              <AdminRecognize />
             </RequirePermission>
           }
         />
