@@ -141,7 +141,7 @@ for (const file of walk(src)) {
 
   // 异步确认弹窗必须有 busy:footer 里有 primary + onClick 就必须有 loading。
   // 打印按钮是同步动作,不存在重复提交问题(见 check:ui 的 window.print 豁免)。
-  for (const { text, line } of dialogTags(content, 'Modal')) {
+  for (const { text, line } of jsxTags(content, 'Modal')) {
     const footer = text.match(/footer=\{([\s\S]*?)\}\s*(?:width|title|onClose|open|>)/);
     const body = footer ? footer[1] : text;
     // window.print() / 纯导航类按钮是同步动作,没有重复提交窗口,不要求 busy。
