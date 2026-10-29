@@ -27,6 +27,13 @@ npm run dev:all   # 同时启动前端 (Vite, :5173) 和 API 服务器 (:3001)
 - **服务注册表** — `services` 表 + 管理界面,门户按用户权限过滤展示;
   `POST /api/auth/introspect` 供未来接入的服务校验门户令牌。
 
+## UI 规范
+
+本项目自己的 UI 规范在 [`docs/ui-spec/`](docs/ui-spec/README.md)：按 Foundations / Tokens /
+Components / Patterns / Layouts / QA 六层组织，含 DTCG 格式的
+[`tokens.json`](docs/ui-spec/tokens.json)、对比度实测与已知偏差登记。`docs/design-system/`
+是上游 animal-island-ui 的文档，不是本项目规范。
+
 ## 常用命令
 
 | 命令 | 说明 |

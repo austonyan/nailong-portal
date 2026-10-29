@@ -1,5 +1,8 @@
 # Design System
 
+> 本项目自己的 UI 规范在 [`../ui-spec/README.md`](../ui-spec/README.md)（六层结构、含验收与偏差登记）。
+> 本目录是**上游** animal-island-ui 的设计文档；两者冲突时，以运行时组件包与项目规范为准。
+
 本目录是 animal-island-ui 设计语言的唯一真源。组件库源码是它的实现，其余所有使用类文档都是对这里内容的派生摘要。
 
 ## 设计语言
