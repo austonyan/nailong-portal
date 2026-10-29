@@ -19,6 +19,7 @@ import {
 } from '../visa.js';
 import { diplomaticEligibility } from '../linkage.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
+import { reqLocale } from '../locale.js';
 
 const router = Router();
 const DECIDED = "('approved','rejected','issued')";
@@ -55,6 +56,7 @@ function applicationWithMeta(row) {
     ...serializeApplication(row, { withPermit: false }),
     permit: serializePermit(permit),
     typeName: typeRow?.name ?? row.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     validDays: typeRow?.valid_days ?? null,
     stayDays: typeRow?.stay_days ?? null,
     username: user?.username ?? '',
@@ -166,7 +168,7 @@ function decideApplication(req, res, { action }) {
     ).run(reasonCode, comment, req.user.id, now(), now(), app.id);
     recordReview(req.user, app, 'reject', reasonCode, comment);
     audit(req.user, 'reject_application', 'application', app.app_no, { reasonCode, comment });
-    sendMsg(app.user_id, app.id, 'rejected', { appNo: app.app_no, reason: reasonCode });
+    sendMsg(app.user_id, app.id, 'rejected', { appNo: app.app_no, reason: reasonCode, reasonCode });
   } else if (action === 'require_supplement') {
     if (app.status !== 'pending_review') throw badRequest('VISA_INVALID_TRANSITION', 'Only pending applications can request supplements');
     const days = Math.min(30, Math.max(1, Number(req.body?.supplementDays) || getConfigNumber('visa.supplement_days', 7)));
@@ -478,19 +480,55 @@ function csvEscape(v) {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-router.get('/export.csv', (_req, res) => {
+const CSV_STATUS_TEXT = {
+  draft: ['草稿', '草稿'],
+  pending_review: ['待审核', '待審核'],
+  supplement_required: ['补件中', '補件中'],
+  approved: ['审核通过', '審核通過'],
+  issued: ['已签发', '已簽發'],
+  rejected: ['已驳回', '已駁回'],
+  withdrawn: ['已撤销', '已撤銷'],
+  closed: ['已关闭', '已關閉'],
+};
+const CSV_REASON_TEXT = {
+  incomplete_materials: ['材料不全', '材料不全'],
+  false_info: ['信息不实', '資訊不實'],
+  type_mismatch: ['类型不符', '類型不符'],
+  duplicate: ['重复申请', '重複申請'],
+  other: ['其他原因', '其他原因'],
+};
+
+router.get('/export.csv', (req, res) => {
   sweepAll();
+  const tw = reqLocale(req) === 'zh-TW';
   const rows = db
     .prepare(
       `SELECT va.*, u.username FROM visa_applications va JOIN users u ON u.id = va.user_id
        WHERE va.status != 'draft' ORDER BY va.id`
     )
     .all();
-  const header = ['app_no', 'username', 'type_code', 'status', 'nickname', 'submitted_at', 'decided_at', 'issued_at', 'reject_code'];
+  const typeNames = new Map(
+    db.prepare('SELECT code, name, name_tw FROM visa_types').all().map((t) => [t.code, tw ? t.name_tw || t.name : t.name])
+  );
+  const header = tw
+    ? ['申請編號', '帳號', '簽註類型', '狀態', '暱稱', '提交時間', '審核時間', '簽發時間', '駁回原因']
+    : ['申请编号', '账号', '签注类型', '状态', '昵称', '提交时间', '审核时间', '签发时间', '驳回原因'];
   const lines = [header.join(',')];
   for (const r of rows) {
+    const status = CSV_STATUS_TEXT[r.status];
+    const reason = r.reject_code ? CSV_REASON_TEXT[r.reject_code] : null;
     lines.push(
-      [r.app_no, r.username, r.type_code, r.status, r.nickname, r.submitted_at, r.decided_at, r.issued_at, r.reject_code]
+      [
+        r.app_no,
+        r.username,
+        typeNames.get(r.type_code) ?? r.type_code,
+        status ? status[tw ? 1 : 0] : r.status,
+        r.nickname,
+        r.submitted_at,
+        r.decided_at,
+        r.issued_at,
+        reason ? reason[tw ? 1 : 0] : r.reject_code,
+      ]
         .map(csvEscape)
         .join(',')
     );

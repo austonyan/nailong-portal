@@ -37,7 +37,7 @@ function TemplateModal({ initial, onClose, onSaved }) {
     <Modal
       maskClosable={false}
       open
-      title={t('dip.templates.editTitle', { code: initial.code })}
+      title={t('dip.admin.templates.editTitle', { code: initial.code })}
       onClose={onClose}
       typewriter={false}
       width={540}
@@ -49,17 +49,17 @@ function TemplateModal({ initial, onClose, onSaved }) {
       }
     >
       <div className="dip-config-form">
-        <p className="dip-info-row"><span className="dip-info-label">{t('dip.templates.title')}</span><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} /></p>
-        <p className="dip-info-row"><span className="dip-info-label">{t('dip.templates.title')} · {t('common.traditional')}</span><Input value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} maxLength={120} /></p>
+        <p className="dip-info-row"><span className="dip-info-label">{t('dip.admin.templates.title')}</span><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} /></p>
+        <p className="dip-info-row"><span className="dip-info-label">{t('dip.admin.templates.title')} · {t('common.traditional')}</span><Input value={titleTw} placeholder={t('common.twOptional')} onChange={(e) => setTitleTw(e.target.value)} maxLength={120} /></p>
         <p className="dip-config-guide">
-          <span className="dip-info-label">{t('dip.templates.body')}</span>
+          <span className="dip-info-label">{t('dip.admin.templates.body')}</span>
           <TextArea rows={5} value={body} onChange={(e) => setBody(e.target.value)} maxLength={600} />
         </p>
         <p className="dip-config-guide">
-          <span className="dip-info-label">{t('dip.templates.body')} · {t('common.traditional')}</span>
+          <span className="dip-info-label">{t('dip.admin.templates.body')} · {t('common.traditional')}</span>
           <TextArea rows={5} value={bodyTw} placeholder={t('common.twOptional')} onChange={(e) => setBodyTw(e.target.value)} maxLength={600} />
         </p>
-        <p className="muted-text">{t('dip.templates.varTip')}</p>
+        <p className="muted-text">{t('dip.admin.templates.varTip')}</p>
         <p className="dip-info-row">
           <span className="dip-info-label">{t('common.status')}</span>
           <Switch checked={enabled} onChange={setEnabled} />
@@ -110,23 +110,31 @@ export default function AdminDipAudit() {
 
   useEffect(load, [load]);
 
+  // 审计动作码形如 `dip:relation.establish`,跨署核验则是无前缀的 `inter_relation_check`:
+  // 去掉命名空间前缀并压平分隔符,再查词条。
+  const codedLabel = (namespace, code) => {
+    if (!code) return '-';
+    const key = String(code).replace(/^dip:/, '').replace(/[.:]/g, '_');
+    return t(`${namespace}.${key}`, { defaultValue: t('common.unknown') });
+  };
+
   const auditColumns = [
-    { title: t('dip.audit.action'), dataIndex: 'action', width: 210 },
-    { title: t('dip.audit.actor'), dataIndex: 'actor', width: 110, render: (v, r) => v || r.actor_name || 'system' },
-    { title: t('dip.audit.targetType'), dataIndex: 'target_type', width: 100 },
-    { title: t('dip.audit.targetId'), dataIndex: 'target_id', width: 200 },
+    { title: t('dip.admin.audit.action'), dataIndex: 'action', width: 210, render: (v) => codedLabel('dip.admin.audit.actionName', v) },
+    { title: t('dip.admin.audit.actor'), dataIndex: 'actor', width: 110, render: (v, r) => v || r.actor_name || t('common.system') },
+    { title: t('dip.admin.audit.targetType'), dataIndex: 'target_type', width: 100, render: (v) => codedLabel('dip.admin.audit.targetKind', v) },
+    { title: t('dip.admin.audit.targetId'), dataIndex: 'target_id', width: 200 },
     {
-      title: t('dip.audit.detail'),
+      title: t('dip.admin.audit.detail'),
       dataIndex: 'detail',
       render: (v) => <code className="dip-audit-detail">{JSON.stringify(v)}</code>,
     },
-    { title: t('dip.audit.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
+    { title: t('dip.admin.audit.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
   ];
 
   const templateColumns = [
-    { title: t('dip.templates.code'), dataIndex: 'code', width: 220 },
-    { title: t('dip.templates.title'), dataIndex: 'title', style: { maxWidth: 320 } },
-    { title: t('dip.templates.variables'), dataIndex: 'variables', width: 160 },
+    { title: t('dip.admin.templates.code'), dataIndex: 'code', width: 220 },
+    { title: t('dip.admin.templates.title'), dataIndex: 'title', style: { maxWidth: 320 } },
+    { title: t('dip.admin.templates.variables'), dataIndex: 'variables', width: 160 },
     {
       title: t('common.status'),
       dataIndex: 'enabled',
@@ -138,44 +146,44 @@ export default function AdminDipAudit() {
 
   const sendColumns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
-    { title: t('dip.blacklist.user'), dataIndex: 'username', width: 120 },
-    { title: t('dip.templates.code'), dataIndex: 'template_code', width: 220 },
-    { title: t('dip.templates.title'), dataIndex: 'title', style: { maxWidth: 320 } },
+    { title: t('dip.admin.blacklist.user'), dataIndex: 'username', width: 120 },
+    { title: t('dip.admin.templates.code'), dataIndex: 'template_code', width: 220 },
+    { title: t('dip.admin.templates.title'), dataIndex: 'title', style: { maxWidth: 320 } },
     { title: t('dip.messages.unread'), dataIndex: 'read', width: 90, render: (v) => (v ? t('dip.messages.read') : t('dip.messages.unread')) },
-    { title: t('dip.audit.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
+    { title: t('dip.admin.audit.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
   ];
 
   return (
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.audit.title')}</Title>
+        <Title size="middle" color="purple">{t('dip.admin.audit.title')}</Title>
         <div className="dip-msg-filter">
-          <Button type={tab === 'log' ? 'primary' : 'default'} size="small" onClick={() => setTab('log')}>{t('dip.audit.tabLog')}</Button>
-          <Button type={tab === 'templates' ? 'primary' : 'default'} size="small" onClick={() => setTab('templates')}>{t('dip.audit.tabTemplates')}</Button>
-          <Button type={tab === 'sendlog' ? 'primary' : 'default'} size="small" onClick={() => setTab('sendlog')}>{t('dip.audit.tabSendLog')}</Button>
+          <Button type={tab === 'log' ? 'primary' : 'default'} size="small" onClick={() => setTab('log')}>{t('dip.admin.audit.tabLog')}</Button>
+          <Button type={tab === 'templates' ? 'primary' : 'default'} size="small" onClick={() => setTab('templates')}>{t('dip.admin.audit.tabTemplates')}</Button>
+          <Button type={tab === 'sendlog' ? 'primary' : 'default'} size="small" onClick={() => setTab('sendlog')}>{t('dip.admin.audit.tabSendLog')}</Button>
         </div>
       </div>
 
       {tab === 'log' && (
         <Card>
           <div className="dip-admin-filter">
-            <Input value={action} onChange={(e) => setAction(e.target.value)} placeholder={t('dip.audit.actionPrefix')} allowClear maxLength={40} />
+            <Input value={action} onChange={(e) => setAction(e.target.value)} placeholder={t('dip.admin.audit.actionPrefix')} allowClear maxLength={40} />
             <Button onClick={load}>{t('common.search')}</Button>
           </div>
-          <Table className="table-fit" columns={auditColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} />
+          <Table className="table-fit" columns={auditColumns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} emptyText={t('common.empty')} />
         </Card>
       )}
 
       {tab === 'templates' && (
         <Card>
-          <Table className="table-fit" columns={templateColumns} dataSource={templates ?? []} loading={templates === null} rowKey="id" pagination={false} />
+          <Table className="table-fit" columns={templateColumns} dataSource={templates ?? []} loading={templates === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
         </Card>
       )}
 
       {tab === 'sendlog' && (
         <Card>
-          <Table className="table-fit" columns={sendColumns} dataSource={sendLog ?? []} loading={sendLog === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} />
+          <Table className="table-fit" columns={sendColumns} dataSource={sendLog ?? []} loading={sendLog === null} rowKey="id" pagination={{ defaultPageSize: 20, showTotal: true }} emptyText={t('common.empty')} />
         </Card>
       )}
 

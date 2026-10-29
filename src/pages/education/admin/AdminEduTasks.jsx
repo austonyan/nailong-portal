@@ -173,7 +173,8 @@ export default function AdminEduTasks() {
       title: t('common.status'),
       dataIndex: 'status',
       width: 100,
-      render: (v) => <StatusTag value={v} />,
+      // 任务的 active/inactive 与内容状态是两套枚举,不能复用 edu.status。
+      render: (v) => <StatusTag value={v} prefix="edu.admin.taskStatus" />,
     },
     {
       title: t('common.actions'),

@@ -11,6 +11,7 @@ import {
   PERMIT_STATUS_COLORS,
   REJECT_REASONS,
   TextArea,
+  fmtDate,
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
@@ -225,7 +226,7 @@ export default function VisaAdminWorkbench() {
                 [t('visa.form.contact'), detail.contact],
                 [t('visa.form.virtualId'), detail.virtualId || '-'],
                 [t('visa.form.purpose'), detail.purpose],
-                [t('visa.field.trip'), `${fmtDateTime(detail.planArrive).slice(0, 10)} ~ ${fmtDateTime(detail.planLeave).slice(0, 10)}`],
+                [t('visa.field.trip'), `${fmtDate(detail.planArrive)} ~ ${fmtDate(detail.planLeave)}`],
                 [t('visa.form.itinerary'), detail.itinerary],
                 [t('visa.form.inviterName'), detail.inviterName || '-'],
                 [t('visa.form.companions'), detail.companions || '-'],

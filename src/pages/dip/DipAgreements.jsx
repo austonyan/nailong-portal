@@ -76,7 +76,7 @@ export default function DipAgreements() {
                 <div className="dip-agreement-head">
                   <b>{a.no}</b>
                   <Tag size="small" color="app-blue" variant="soft">
-                    {t(`dip.agreementType.${a.type}`, { defaultValue: a.type })}
+                    {t(`dip.agreementType.${a.type}`, { defaultValue: t('common.unknown') })}
                   </Tag>
                 </div>
                 <p>{a.partyA} × {a.partyB}</p>
@@ -100,7 +100,7 @@ export default function DipAgreements() {
               <div className="dip-agreement-head">
                 <b>{a.no}</b>
                 <Tag size="small" color="app-blue" variant="soft">
-                  {t(`dip.agreementType.${a.type}`, { defaultValue: a.type })}
+                  {t(`dip.agreementType.${a.type}`, { defaultValue: t('common.unknown') })}
                 </Tag>
                 <StatusTag value={a.status} />
               </div>

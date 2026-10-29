@@ -47,7 +47,7 @@ export default function AdminProtocolStats() {
   const eventStatusRows = Object.entries(stats.events.byStatus || {}).map(([status, count]) => ({ status, count }));
 
   const statusColumns = [
-    { title: t('common.status'), dataIndex: 'status', render: (v) => <Tag variant="soft" size="small">{t(`protocol.status.${v}`, { defaultValue: v })}</Tag> },
+    { title: t('common.status'), dataIndex: 'status', render: (v) => <Tag variant="soft" size="small">{t(`protocol.status.${v}`, { defaultValue: t('common.unknown') })}</Tag> },
     { title: t('protocol.admin.count'), dataIndex: 'count', width: 100 },
   ];
 
@@ -99,7 +99,7 @@ export default function AdminProtocolStats() {
           <h4>{t('protocol.admin.eventByType')}</h4>
           <Table className="table-fit"
             columns={[
-              { title: t('protocol.field.type'), dataIndex: 'name' },
+              { title: t('protocol.field.type'), dataIndex: 'name', render: (v) => v || t('common.unknown') },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
             ]}
             dataSource={stats.events.byType}
@@ -123,7 +123,7 @@ export default function AdminProtocolStats() {
           <h4>{t('protocol.admin.rejectReasons')}</h4>
           <Table className="table-fit"
             columns={[
-              { title: t('protocol.field.reason'), dataIndex: 'code', render: (v) => t(`protocol.rejectReason.${v}`, { defaultValue: v }) },
+              { title: t('protocol.field.reason'), dataIndex: 'code', render: (v) => t(`protocol.admin.rejectReason.${v}`, { defaultValue: t('common.unknown') }) },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
             ]}
             dataSource={stats.registrations.rejectReasons}
@@ -136,7 +136,7 @@ export default function AdminProtocolStats() {
           <h4>{t('protocol.admin.courtesyByType')}</h4>
           <Table className="table-fit"
             columns={[
-              { title: t('protocol.field.type'), dataIndex: 'name' },
+              { title: t('protocol.field.type'), dataIndex: 'name', render: (v) => v || t('common.unknown') },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
             ]}
             dataSource={stats.courtesy.byType}

@@ -11,6 +11,19 @@ import { db, now } from './db.js';
 import { sendPostalMessage as sendPlatformPostal } from './postal/notify.js';
 
 export const LINKED_OFFICES = {
+  visa: '奶龙国签注申请署',
+  immigration: '皇家口岸入境署',
+  resident: '皇家居民登记署',
+  diplomatic: '皇家外交事务署',
+  document: '皇家文书与认证署',
+  protocol: '皇家礼宾与活动署',
+  appeal: '皇家申诉与监察署',
+  archives: '奶龙国皇家档案与纪录署',
+};
+
+// 各署名称的繁体对照:基列是简体源,localeMiddleware 在同时看到
+// office/officeTw 时按请求语言替换,并把简体源放回 officeCn。
+export const LINKED_OFFICES_TW = {
   visa: '奶龍國簽註申請署',
   immigration: '皇家口岸入境署',
   resident: '皇家居民登記署',
@@ -20,6 +33,30 @@ export const LINKED_OFFICES = {
   appeal: '皇家申訴與監察署',
   archives: '奶龍國皇家檔案與紀錄署',
 };
+
+// 写进各署审计的经办方名称:基列统一简体源,避免在繁体界面里出现简体、
+// 在简体界面里出现繁体。繁体展示由各署审计页按需要另行本地化。
+const APPEAL_OFFICE_ACTOR = '皇家申诉与监察署';
+
+// 任何返回 `office` 的响应都要带上 `officeTw`,否则 zh-TW 会退回简体。
+export function linkedOffice(bizType) {
+  if (!LINKED_OFFICES[bizType]) return { office: '', officeTw: null };
+  return { office: LINKED_OFFICES[bizType], officeTw: LINKED_OFFICES_TW[bizType] || null };
+}
+
+// 证件状态是枚举,业务逻辑继续用 cardStatus 原值;展示用成对标签。
+const CARD_STATUS_LABELS = {
+  valid: ['有效', '有效'],
+  frozen: ['已冻结', '已凍結'],
+  expired: ['已过期', '已過期'],
+  voided: ['已注销', '已註銷'],
+  none: ['未办理', '未辦理'],
+};
+
+function cardStatusLabels(status) {
+  const pair = CARD_STATUS_LABELS[status];
+  return { cardStatusLabel: pair ? pair[0] : '', cardStatusLabelTw: pair ? pair[1] : null };
+}
 
 // 文书署 doc_types.biz_source → 联动业务类型
 export const BIZ_SOURCE_TO_TYPE = {
@@ -74,9 +111,10 @@ function notFoundResult(bizType, code) {
     appealable: false,
     bizType,
     code: normalizeCode(code),
-    office: LINKED_OFFICES[bizType] || '',
+    ...linkedOffice(bizType),
     status: 'not_found',
     title: '',
+    titleTw: null,
     detail: {},
     checkedAt: now(),
   };
@@ -85,7 +123,7 @@ function notFoundResult(bizType, code) {
 function visaTarget(code) {
   const permit = db
     .prepare(
-      'SELECT p.*, t.name AS type_name FROM visa_permits p LEFT JOIN visa_types t ON t.code = p.type_code WHERE p.visa_no = ?'
+      'SELECT p.*, t.name AS type_name, t.name_tw AS type_name_tw FROM visa_permits p LEFT JOIN visa_types t ON t.code = p.type_code WHERE p.visa_no = ?'
     )
     .get(code);
   if (permit) {
@@ -97,12 +135,14 @@ function visaTarget(code) {
       code: permit.visa_no,
       status,
       title: `${permit.type_name || permit.type_code} · ${permit.visa_no}`,
+      titleTw: `${permit.type_name_tw || permit.type_name || permit.type_code} · ${permit.visa_no}`,
       ownerId: permit.user_id,
       valid: status === 'valid',
       certifiable: true,
       appealable: VISA_PERMIT_APPEALABLE.has(status),
       detail: {
         typeName: permit.type_name || permit.type_code,
+        typeNameTw: permit.type_name_tw || null,
         issuedAt: permit.issued_at,
         validUntil: permit.valid_until,
         holder: maskName(permit.holder_name),
@@ -111,7 +151,7 @@ function visaTarget(code) {
   }
   const app = db
     .prepare(
-      'SELECT a.*, t.name AS type_name FROM visa_applications a LEFT JOIN visa_types t ON t.code = a.type_code WHERE a.app_no = ?'
+      'SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw FROM visa_applications a LEFT JOIN visa_types t ON t.code = a.type_code WHERE a.app_no = ?'
     )
     .get(code);
   if (!app) return null;
@@ -122,12 +162,14 @@ function visaTarget(code) {
     code: app.app_no,
     status: app.status,
     title: `${app.type_name || app.type_code} · ${app.app_no}`,
+    titleTw: `${app.type_name_tw || app.type_name || app.type_code} · ${app.app_no}`,
     ownerId: app.user_id,
     valid: ['approved', 'issued'].includes(app.status),
     certifiable: app.status !== 'draft',
     appealable: VISA_APP_APPEALABLE.has(app.status),
     detail: {
       typeName: app.type_name || app.type_code,
+      typeNameTw: app.type_name_tw || null,
       submittedAt: app.submitted_at,
       decidedAt: app.decided_at,
       issuedAt: app.issued_at,
@@ -138,7 +180,7 @@ function visaTarget(code) {
 function immigrationTarget(code) {
   const decl = db
     .prepare(
-      'SELECT d.*, p.name AS port_name FROM im_declarations d LEFT JOIN im_ports p ON p.id = d.port_id WHERE d.no = ? AND d.deleted_at IS NULL'
+      'SELECT d.*, p.name AS port_name, p.name_tw AS port_name_tw FROM im_declarations d LEFT JOIN im_ports p ON p.id = d.port_id WHERE d.no = ? AND d.deleted_at IS NULL'
     )
     .get(code);
   if (decl) {
@@ -149,12 +191,14 @@ function immigrationTarget(code) {
       code: decl.no,
       status: decl.status,
       title: `${decl.port_name || '皇家口岸'} · ${decl.no}`,
+      titleTw: `${decl.port_name_tw || decl.port_name || '皇家口岸'} · ${decl.no}`,
       ownerId: decl.user_id,
       valid: ['approved', 'entered', 'exited'].includes(decl.status),
       certifiable: decl.status !== 'draft',
       appealable: IMM_DECL_APPEALABLE.has(decl.status),
       detail: {
         portName: decl.port_name || '',
+        portNameTw: decl.port_name_tw || null,
         stayDays: decl.stay_days,
         submittedAt: decl.submitted_at,
         reviewedAt: decl.reviewed_at,
@@ -170,6 +214,7 @@ function immigrationTarget(code) {
     code: entry.no,
     status: entry.status,
     title: `入境记录 · ${entry.no}`,
+    titleTw: `入境紀錄 · ${entry.no}`,
     ownerId: entry.user_id,
     valid: true,
     certifiable: true,
@@ -181,7 +226,7 @@ function immigrationTarget(code) {
 function residentTarget(code) {
   const card = db
     .prepare(
-      'SELECT c.*, t.name AS type_name FROM res_cards c LEFT JOIN res_types t ON t.code = c.type_code WHERE c.card_no = ?'
+      'SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw FROM res_cards c LEFT JOIN res_types t ON t.code = c.type_code WHERE c.card_no = ?'
     )
     .get(code);
   if (card) {
@@ -193,12 +238,14 @@ function residentTarget(code) {
       code: card.card_no,
       status,
       title: `${card.type_name || card.type_code} · ${card.card_no}`,
+      titleTw: `${card.type_name_tw || card.type_name || card.type_code} · ${card.card_no}`,
       ownerId: card.user_id,
       valid: status === 'valid',
       certifiable: true,
       appealable: RES_CARD_APPEALABLE.has(status),
       detail: {
         typeName: card.type_name || card.type_code,
+        typeNameTw: card.type_name_tw || null,
         issuedAt: card.issued_at,
         validUntil: card.valid_until,
         holder: maskName(card.nickname),
@@ -207,7 +254,7 @@ function residentTarget(code) {
   }
   const app = db
     .prepare(
-      'SELECT a.*, t.name AS type_name FROM res_applications a LEFT JOIN res_types t ON t.code = a.type_code WHERE a.app_no = ?'
+      'SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw FROM res_applications a LEFT JOIN res_types t ON t.code = a.type_code WHERE a.app_no = ?'
     )
     .get(code);
   if (app) {
@@ -218,12 +265,14 @@ function residentTarget(code) {
       code: app.app_no,
       status: app.status,
       title: `${app.type_name || app.type_code} · ${app.app_no}`,
+      titleTw: `${app.type_name_tw || app.type_name || app.type_code} · ${app.app_no}`,
       ownerId: app.user_id,
       valid: app.status === 'approved',
       certifiable: app.status !== 'draft',
       appealable: RES_APP_APPEALABLE.has(app.status),
       detail: {
         typeName: app.type_name || app.type_code,
+        typeNameTw: app.type_name_tw || null,
         submittedAt: app.submitted_at,
         decidedAt: app.decided_at,
       },
@@ -238,6 +287,7 @@ function residentTarget(code) {
     code: change.no,
     status: change.status,
     title: `居民变更 · ${change.no}`,
+    titleTw: `居民變更 · ${change.no}`,
     ownerId: change.user_id,
     valid: change.status === 'approved',
     certifiable: true,
@@ -249,7 +299,7 @@ function residentTarget(code) {
 function diplomaticTarget(code) {
   const identity = db
     .prepare(
-      'SELECT i.*, t.name AS type_name FROM dip_identities i LEFT JOIN dip_identity_types t ON t.code = i.identity_type WHERE i.no = ? AND i.deleted_at IS NULL'
+      'SELECT i.*, t.name AS type_name, t.name_tw AS type_name_tw FROM dip_identities i LEFT JOIN dip_identity_types t ON t.code = i.identity_type WHERE i.no = ? AND i.deleted_at IS NULL'
     )
     .get(code);
   if (identity) {
@@ -262,6 +312,7 @@ function diplomaticTarget(code) {
       code: identity.no,
       status,
       title: `${identity.type_name || identity.identity_type} · ${identity.entity_name}`,
+      titleTw: `${identity.type_name_tw || identity.type_name || identity.identity_type} · ${identity.entity_name}`,
       ownerId: identity.user_id,
       valid: status === 'active',
       certifiable: true,
@@ -269,6 +320,7 @@ function diplomaticTarget(code) {
       detail: {
         entityName: identity.entity_name,
         identityType: identity.type_name || identity.identity_type,
+        identityTypeTw: identity.type_name_tw || null,
         termEnd: identity.term_end,
         holder: maskName(identity.nickname),
       },
@@ -276,7 +328,7 @@ function diplomaticTarget(code) {
   }
   const relation = db
     .prepare(
-      'SELECT r.*, t.name AS type_name FROM dip_relations r LEFT JOIN dip_relation_types t ON t.code = r.relation_type WHERE r.no = ? AND r.deleted_at IS NULL'
+      'SELECT r.*, t.name AS type_name, t.name_tw AS type_name_tw FROM dip_relations r LEFT JOIN dip_relation_types t ON t.code = r.relation_type WHERE r.no = ? AND r.deleted_at IS NULL'
     )
     .get(code);
   if (relation) {
@@ -287,11 +339,17 @@ function diplomaticTarget(code) {
       code: relation.no,
       status: relation.status,
       title: `${relation.type_name || relation.relation_type} · ${relation.entity_name}`,
+      titleTw: `${relation.type_name_tw || relation.type_name || relation.relation_type} · ${relation.entity_name}`,
       ownerId: relation.user_id,
       valid: relation.status === 'established',
       certifiable: true,
       appealable: DIP_RELATION_APPEALABLE.has(relation.status),
-      detail: { entityName: relation.entity_name, establishedAt: relation.established_at },
+      detail: {
+        entityName: relation.entity_name,
+        typeName: relation.type_name || relation.relation_type,
+        typeNameTw: relation.type_name_tw || null,
+        establishedAt: relation.established_at,
+      },
     };
   }
   const agreement = db.prepare('SELECT * FROM dip_agreements WHERE no = ?').get(code);
@@ -303,6 +361,7 @@ function diplomaticTarget(code) {
     code: agreement.no,
     status: agreement.status,
     title: `互免协议 · ${agreement.party_a} / ${agreement.party_b}`,
+    titleTw: `互免協議 · ${agreement.party_a} / ${agreement.party_b}`,
     ownerId: agreement.user_id ?? null,
     valid: agreement.status === 'active',
     certifiable: true,
@@ -314,7 +373,7 @@ function diplomaticTarget(code) {
 function documentTarget(code) {
   const cert = db
     .prepare(
-      'SELECT c.*, t.name AS type_name FROM doc_certificates c LEFT JOIN doc_types t ON t.code = c.type_code WHERE c.cert_no = ?'
+      'SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw FROM doc_certificates c LEFT JOIN doc_types t ON t.code = c.type_code WHERE c.cert_no = ?'
     )
     .get(code);
   if (cert) {
@@ -325,12 +384,14 @@ function documentTarget(code) {
       code: cert.cert_no,
       status: cert.status,
       title: `${cert.type_name || cert.type_code} · ${cert.cert_no}`,
+      titleTw: `${cert.type_name_tw || cert.type_name || cert.type_code} · ${cert.cert_no}`,
       ownerId: cert.user_id,
       valid: cert.status === 'valid' && !isPast(cert.expires_at),
       certifiable: true,
       appealable: DOC_CERT_APPEALABLE.has(cert.status),
       detail: {
         typeName: cert.type_name || cert.type_code,
+        typeNameTw: cert.type_name_tw || null,
         holder: maskName(cert.holder_name),
         issuedAt: cert.issued_at,
         expiresAt: cert.expires_at,
@@ -339,7 +400,7 @@ function documentTarget(code) {
   }
   const app = db
     .prepare(
-      'SELECT a.*, t.name AS type_name FROM doc_applications a LEFT JOIN doc_types t ON t.code = a.type_code WHERE a.app_no = ?'
+      'SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw FROM doc_applications a LEFT JOIN doc_types t ON t.code = a.type_code WHERE a.app_no = ?'
     )
     .get(code);
   if (!app) return null;
@@ -350,12 +411,14 @@ function documentTarget(code) {
     code: app.app_no,
     status: app.status,
     title: `${app.type_name || app.type_code} · ${app.app_no}`,
+    titleTw: `${app.type_name_tw || app.type_name || app.type_code} · ${app.app_no}`,
     ownerId: app.user_id,
     valid: app.status === 'approved',
     certifiable: app.status !== 'draft',
     appealable: DOC_APP_APPEALABLE.has(app.status),
     detail: {
       typeName: app.type_name || app.type_code,
+      typeNameTw: app.type_name_tw || null,
       bizNo: app.biz_no,
       submittedAt: app.submitted_at,
       decidedAt: app.decided_at,
@@ -366,7 +429,7 @@ function documentTarget(code) {
 function protocolTarget(code) {
   const invitation = db
     .prepare(
-      'SELECT i.*, e.title AS event_title FROM pro_invitations i LEFT JOIN pro_events e ON e.id = i.event_id WHERE i.invite_no = ?'
+      'SELECT i.*, e.title AS event_title, e.title_tw AS event_title_tw FROM pro_invitations i LEFT JOIN pro_events e ON e.id = i.event_id WHERE i.invite_no = ?'
     )
     .get(code);
   if (invitation) {
@@ -378,16 +441,21 @@ function protocolTarget(code) {
       code: invitation.invite_no,
       status: invitation.status,
       title: `${invitation.event_title || '活动邀请函'} · ${invitation.invite_no}`,
+      titleTw: `${invitation.event_title_tw || invitation.event_title || '活動邀請函'} · ${invitation.invite_no}`,
       ownerId: invitation.invitee_user_id,
       valid,
       certifiable: true,
       appealable: PROTOCOL_INVITATION_APPEALABLE.has(invitation.status),
-      detail: { eventTitle: invitation.event_title || '', validUntil: invitation.valid_until },
+      detail: {
+        eventTitle: invitation.event_title || '',
+        eventTitleTw: invitation.event_title_tw || null,
+        validUntil: invitation.valid_until,
+      },
     };
   }
   const pass = db
     .prepare(
-      'SELECT p.*, e.title AS event_title FROM pro_passes p LEFT JOIN pro_events e ON e.id = p.event_id WHERE p.pass_no = ?'
+      'SELECT p.*, e.title AS event_title, e.title_tw AS event_title_tw FROM pro_passes p LEFT JOIN pro_events e ON e.id = p.event_id WHERE p.pass_no = ?'
     )
     .get(code);
   if (pass) {
@@ -398,11 +466,16 @@ function protocolTarget(code) {
       code: pass.pass_no,
       status: pass.status,
       title: `${pass.event_title || '活动凭证'} · ${pass.pass_no}`,
+      titleTw: `${pass.event_title_tw || pass.event_title || '活動憑證'} · ${pass.pass_no}`,
       ownerId: pass.user_id,
       valid: pass.status === 'pending' && !isPast(pass.valid_until),
       certifiable: true,
       appealable: PROTOCOL_PASS_APPEALABLE.has(pass.status),
-      detail: { eventTitle: pass.event_title || '', validUntil: pass.valid_until },
+      detail: {
+        eventTitle: pass.event_title || '',
+        eventTitleTw: pass.event_title_tw || null,
+        validUntil: pass.valid_until,
+      },
     };
   }
   const event = db.prepare('SELECT * FROM pro_events WHERE event_no = ? AND deleted_at IS NULL').get(code);
@@ -414,11 +487,17 @@ function protocolTarget(code) {
       code: event.event_no,
       status: event.status,
       title: `${event.title} · ${event.event_no}`,
+      titleTw: `${event.title_tw || event.title} · ${event.event_no}`,
       ownerId: null,
       valid: ['registration', 'registration_closed', 'ongoing', 'ended'].includes(event.status),
       certifiable: true,
       appealable: false,
-      detail: { startsAt: event.starts_at, endsAt: event.ends_at, venueName: event.venue_name },
+      detail: {
+        startsAt: event.starts_at,
+        endsAt: event.ends_at,
+        venueName: event.venue_name,
+        venueNameTw: event.venue_name_tw || null,
+      },
     };
   }
   const host = db.prepare('SELECT * FROM pro_hosts WHERE host_no = ? AND deleted_at IS NULL').get(code);
@@ -430,6 +509,7 @@ function protocolTarget(code) {
     code: host.host_no,
     status: host.status,
     title: `接待方 · ${host.name}`,
+    titleTw: `接待方 · ${host.name}`,
     ownerId: host.user_id,
     valid: host.status === 'certified',
     certifiable: true,
@@ -450,6 +530,7 @@ function archivesTarget(code) {
     code: row.no,
     status: row.status,
     title: `数据删除申请 · ${row.no}`,
+    titleTw: `資料刪除申請 · ${row.no}`,
     ownerId: row.user_id,
     valid: row.status === 'completed',
     certifiable: true,
@@ -473,6 +554,7 @@ function appealTarget(code) {
     code: row.code,
     status: row.status,
     title: `决定书 · ${row.code}`,
+    titleTw: `決定書 · ${row.code}`,
     ownerId: row.user_id,
     valid: row.status === 'valid',
     certifiable: row.status === 'valid',
@@ -546,7 +628,8 @@ export function verifyBusinessRecord(bizType, code, userId) {
     status: target.status,
     // 非本人记录不返回类型名与明细(持有人等),避免用手动编号探测他人信息。
     title: owned ? target.title : '',
-    office: LINKED_OFFICES[bizType] || '',
+    titleTw: owned ? target.titleTw || null : null,
+    ...linkedOffice(bizType),
     detail: owned ? target.detail || {} : {},
     refCount,
     referenced: refCount > 0,
@@ -1124,7 +1207,7 @@ export function listUserCertificates(userId) {
   for (const e of imEntries) {
     items.push(certItem({
       source: 'immigration', kind: 'entry', code: e.no, status: e.status,
-      typeName: '入境记录', typeNameTw: null,
+      typeName: '入境记录', typeNameTw: '入境紀錄',
       holder: '', issuedAt: e.entry_date, validUntil: '',
       valid: true, certifiable: true, appealable: false,
     }));
@@ -1209,7 +1292,7 @@ export function listUserCertificates(userId) {
     const valid = i.status === 'valid' && !isPast(i.valid_until);
     items.push(certItem({
       source: 'protocol', kind: 'invitation', code: i.invite_no, status: i.status,
-      typeName: i.event_title || '活动邀请函', typeNameTw: i.event_title_tw || null,
+      typeName: i.event_title || '活动邀请函', typeNameTw: i.event_title_tw || (i.event_title ? null : '活動邀請函'),
       holder: maskName(i.invitee_name), issuedAt: i.valid_from, validUntil: i.valid_until,
       valid,
       certifiable: true,
@@ -1225,7 +1308,7 @@ export function listUserCertificates(userId) {
     const valid = p.status === 'pending' && !isPast(p.valid_until);
     items.push(certItem({
       source: 'protocol', kind: 'pass', code: p.pass_no, status: p.status,
-      typeName: p.event_title || '活动凭证', typeNameTw: p.event_title_tw || null,
+      typeName: p.event_title || '活动凭证', typeNameTw: p.event_title_tw || (p.event_title ? null : '活動憑證'),
       holder: maskName(p.holder_name), issuedAt: p.issued_at, validUntil: p.valid_until,
       valid,
       certifiable: true,
@@ -1268,6 +1351,7 @@ export function crossOfficeAlerts(userId) {
         source: 'resident',
         cardNo: card.card_no,
         cardStatus: status,
+        ...cardStatusLabels(status),
         typeName: card.type_name || card.type_code,
         typeNameTw: card.type_name_tw || null,
         affectedCount: permits.length + certs.length,
@@ -1308,6 +1392,7 @@ export function linkageIdentity(userId) {
     cardNo: '',
     holder: '',
     cardStatus: '',
+    ...cardStatusLabels(''),
     validUntil: '',
     typeName: '',
     typeNameTw: null,
@@ -1331,6 +1416,7 @@ export function linkageIdentity(userId) {
     cardNo: card.card_no,
     holder: maskName(card.nickname),
     cardStatus: status,
+    ...cardStatusLabels(status),
     validUntil: card.valid_until,
     typeName: card.type_name || card.type_code,
     typeNameTw: card.type_name_tw || null,
@@ -1414,7 +1500,7 @@ export function businessSnapshot(bizType, code) {
     return {
       integrated: !!LINKED_OFFICES[bizType],
       found: false,
-      office: LINKED_OFFICES[bizType] || '',
+      ...linkedOffice(bizType),
       code: normalizeCode(code),
       timeline: [],
     };
@@ -1422,11 +1508,12 @@ export function businessSnapshot(bizType, code) {
   return {
     integrated: true,
     found: true,
-    office: LINKED_OFFICES[bizType] || '',
+    ...linkedOffice(bizType),
     code: target.code,
     kind: target.kind,
     status: target.status,
     title: target.title,
+    titleTw: target.titleTw || null,
     detail: target.detail || {},
     timeline: timelineFor(bizType, target),
   };
@@ -1443,7 +1530,7 @@ function auditBusiness(bizType, target, detail) {
   if (bizType === 'visa') {
     db.prepare(
       'INSERT INTO visa_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+    ).run(null, APPEAL_OFFICE_ACTOR, 'appeal_writeback', target.targetType, target.code, payload, ts);
   } else if (bizType === 'immigration') {
     db.prepare(
       'INSERT INTO im_audit_logs (actor_id, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)'
@@ -1451,23 +1538,23 @@ function auditBusiness(bizType, target, detail) {
   } else if (bizType === 'resident') {
     db.prepare(
       'INSERT INTO res_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+    ).run(null, APPEAL_OFFICE_ACTOR, 'appeal_writeback', target.targetType, target.code, payload, ts);
   } else if (bizType === 'diplomatic') {
     db.prepare(
       'INSERT INTO dip_audit_logs (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+    ).run(null, APPEAL_OFFICE_ACTOR, 'appeal_writeback', target.targetType, target.code, payload, ts);
   } else if (bizType === 'document') {
     db.prepare(
       'INSERT INTO doc_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+    ).run(null, APPEAL_OFFICE_ACTOR, 'appeal_writeback', target.targetType, target.code, payload, ts);
   } else if (bizType === 'archives') {
     db.prepare(
       'INSERT INTO arch_audit_logs (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+    ).run(null, APPEAL_OFFICE_ACTOR, 'appeal_writeback', target.targetType, target.code, payload, ts);
   } else if (bizType === 'protocol') {
     db.prepare(
       'INSERT INTO pro_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家申訴與監察署', 'appeal_writeback', target.targetType, target.code, payload, ts);
+    ).run(null, APPEAL_OFFICE_ACTOR, 'appeal_writeback', target.targetType, target.code, payload, ts);
   }
 }
 
@@ -1512,8 +1599,8 @@ function notifyBusiness(bizType, target, vars) {
     const tpl = db.prepare("SELECT * FROM pro_message_templates WHERE code = 'appeal_reopened' AND enabled = 1").get();
     const title = renderTemplate(tpl?.title_template ?? '', { ...vars, no: target.code }) || '申诉复核重开';
     const body = renderTemplate(tpl?.body_template ?? '', { ...vars, no: target.code }) || `您的礼宾业务件 ${target.code} 已重新进入处理流程。`;
-    const titleTw = renderTemplate(tpl?.title_template_tw ?? '', { ...vars, no: target.code }) || null;
-    const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', { ...vars, no: target.code }) || null;
+    const titleTw = renderTemplate(tpl?.title_template_tw ?? '', { ...vars, no: target.code }) || '申訴複核重開';
+    const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', { ...vars, no: target.code }) || `您的禮賓業務件 ${target.code} 已重新進入處理流程。`;
     db.prepare(
       `INSERT INTO pro_messages (user_id, template_code, title, body, title_tw, body_tw, related, read, archived, created_at) VALUES (?, 'appeal_reopened', ?, ?, ?, ?, ?, 0, 0, ?)`
     ).run(target.ownerId, title, body, titleTw, bodyTw, JSON.stringify({ ...vars, no: target.code }), ts);
@@ -1521,10 +1608,11 @@ function notifyBusiness(bizType, target, vars) {
   }
   const table = bizType === 'immigration' ? 'im' : bizType === 'resident' ? 'res' : 'dip';
   const tpl = db.prepare(`SELECT * FROM ${table}_message_templates WHERE code = ? AND enabled = 1`).get('appeal_reopened');
-  const title = renderTemplate(tpl?.title_template ?? '', { ...vars, no: target.code });
-  const body = renderTemplate(tpl?.body_template ?? '', { ...vars, no: target.code });
-  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', { ...vars, no: target.code }) || null;
-  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', { ...vars, no: target.code }) || null;
+  // 模板被停用或缺失时不能留空/回落到英文 type:用简繁成对的中文兜底。
+  const title = renderTemplate(tpl?.title_template ?? '', { ...vars, no: target.code }) || '申诉复核重开';
+  const body = renderTemplate(tpl?.body_template ?? '', { ...vars, no: target.code }) || `您的业务件 ${target.code} 已重新进入处理流程。`;
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', { ...vars, no: target.code }) || '申訴複核重開';
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', { ...vars, no: target.code }) || `您的業務件 ${target.code} 已重新進入處理流程。`;
   db.prepare(
     `INSERT INTO ${table}_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(target.ownerId, 'appeal_reopened', title, body, titleTw, bodyTw, JSON.stringify({ ...vars, no: target.code }), ts);
@@ -1585,7 +1673,7 @@ function reopen(bizType, target) {
     ).run(ts, target.rowId);
     db.prepare(
       'INSERT INTO arch_request_events (request_id, action, status, actor_id, actor_name, note, created_at) VALUES (?, ?, ?, NULL, ?, ?, ?)'
-    ).run(target.rowId, 'appeal_reopened', 'pending', '皇家申訴與監察署', '申诉复核撤销原驳回决定,申请重新进入待处理队列', ts);
+    ).run(target.rowId, 'appeal_reopened', 'pending', APPEAL_OFFICE_ACTOR, '申诉复核撤销原驳回决定,申请重新进入待处理队列', ts);
     return 'pending';
   }
   if (bizType === 'protocol' && target.kind === 'host' && target.status === 'rejected') {
@@ -1612,7 +1700,7 @@ function reopen(bizType, target) {
 export function writebackBusiness(bizType, code, ctx = {}) {
   const target = resolveTarget(bizType, code);
   if (!target) {
-    return { integrated: !!LINKED_OFFICES[bizType], applied: false, reason: 'not_found', office: LINKED_OFFICES[bizType] || '' };
+    return { integrated: !!LINKED_OFFICES[bizType], applied: false, reason: 'not_found', ...linkedOffice(bizType) };
   }
   const decisionType = String(ctx.decisionType || '');
   const detail = {
@@ -1651,7 +1739,7 @@ export function writebackBusiness(bizType, code, ctx = {}) {
     integrated: true,
     applied: detail.applied,
     reason: detail.reason,
-    office: LINKED_OFFICES[bizType] || '',
+    ...linkedOffice(bizType),
     code: target.code,
     fromStatus: target.status,
     status: nextStatus || target.status,
@@ -1666,7 +1754,7 @@ export function writebackBusiness(bizType, code, ctx = {}) {
 const SAMPLE_QUERIES = {
   visa: {
     table: 'visa_applications',
-    sql: `SELECT a.app_no AS code, a.status, t.name AS title, a.updated_at
+    sql: `SELECT a.app_no AS code, a.status, t.name AS title, t.name_tw AS title_tw, a.updated_at
           FROM visa_applications a LEFT JOIN visa_types t ON t.code = a.type_code
           ORDER BY a.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM visa_applications',
@@ -1674,7 +1762,7 @@ const SAMPLE_QUERIES = {
   },
   immigration: {
     table: 'im_declarations',
-    sql: `SELECT d.no AS code, d.status, p.name AS title, d.updated_at
+    sql: `SELECT d.no AS code, d.status, p.name AS title, p.name_tw AS title_tw, d.updated_at
           FROM im_declarations d LEFT JOIN im_ports p ON p.id = d.port_id
           WHERE d.deleted_at IS NULL ORDER BY d.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM im_declarations WHERE deleted_at IS NULL',
@@ -1682,7 +1770,7 @@ const SAMPLE_QUERIES = {
   },
   resident: {
     table: 'res_applications',
-    sql: `SELECT a.app_no AS code, a.status, t.name AS title, a.updated_at
+    sql: `SELECT a.app_no AS code, a.status, t.name AS title, t.name_tw AS title_tw, a.updated_at
           FROM res_applications a LEFT JOIN res_types t ON t.code = a.type_code
           ORDER BY a.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM res_applications',
@@ -1690,7 +1778,7 @@ const SAMPLE_QUERIES = {
   },
   diplomatic: {
     table: 'dip_identities',
-    sql: `SELECT i.no AS code, i.status, t.name AS title, i.updated_at
+    sql: `SELECT i.no AS code, i.status, t.name AS title, t.name_tw AS title_tw, i.updated_at
           FROM dip_identities i LEFT JOIN dip_identity_types t ON t.code = i.identity_type
           WHERE i.deleted_at IS NULL ORDER BY i.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM dip_identities WHERE deleted_at IS NULL',
@@ -1698,7 +1786,7 @@ const SAMPLE_QUERIES = {
   },
   document: {
     table: 'doc_applications',
-    sql: `SELECT a.app_no AS code, a.status, t.name AS title, a.updated_at
+    sql: `SELECT a.app_no AS code, a.status, t.name AS title, t.name_tw AS title_tw, a.updated_at
           FROM doc_applications a LEFT JOIN doc_types t ON t.code = a.type_code
           ORDER BY a.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM doc_applications',
@@ -1706,6 +1794,7 @@ const SAMPLE_QUERIES = {
   },
   archives: {
     table: 'arch_deletion_requests',
+    // 申请人昵称是用户自由文本,没有繁体列,titleTw 留空由前端回退。
     sql: `SELECT r.no AS code, r.status, u.display_name AS title, r.updated_at
           FROM arch_deletion_requests r LEFT JOIN users u ON u.id = r.user_id
           WHERE r.deleted_at IS NULL ORDER BY r.id DESC LIMIT ?`,
@@ -1714,7 +1803,7 @@ const SAMPLE_QUERIES = {
   },
   protocol: {
     table: 'pro_invitations',
-    sql: `SELECT i.invite_no AS code, i.status, e.title AS title, i.updated_at
+    sql: `SELECT i.invite_no AS code, i.status, e.title AS title, e.title_tw AS title_tw, i.updated_at
           FROM pro_invitations i LEFT JOIN pro_events e ON e.id = i.event_id
           ORDER BY i.id DESC LIMIT ?`,
     count: 'SELECT COUNT(*) AS n FROM pro_invitations',
@@ -1724,18 +1813,24 @@ const SAMPLE_QUERIES = {
 
 export function sampleBusinessRecords(bizType, limit = 10) {
   const spec = SAMPLE_QUERIES[bizType];
-  if (!spec) return { integrated: false, bizType, office: '', total: 0, byStatus: [], items: [] };
+  if (!spec) return { integrated: false, bizType, office: '', officeTw: null, total: 0, byStatus: [], items: [] };
   const capped = Math.min(50, Math.max(1, Number(limit) || 10));
   return {
     integrated: true,
     bizType,
-    office: LINKED_OFFICES[bizType],
+    ...linkedOffice(bizType),
     total: db.prepare(spec.count).get().n,
     byStatus: db.prepare(spec.dist).all(),
     items: db
       .prepare(spec.sql)
       .all(capped)
-      .map((r) => ({ code: r.code, status: r.status, title: r.title || '', updatedAt: r.updated_at })),
+      .map((r) => ({
+        code: r.code,
+        status: r.status,
+        title: r.title || '',
+        titleTw: r.title_tw || null,
+        updatedAt: r.updated_at,
+      })),
   };
 }
 
@@ -1743,7 +1838,7 @@ export function integrationStatus() {
   return APPEAL_BIZ_TYPES.map((bizType) => ({
     bizType,
     integrated: true,
-    office: LINKED_OFFICES[bizType],
+    ...linkedOffice(bizType),
   }));
 }
 
@@ -1777,6 +1872,7 @@ export function residentChannels(userId) {
   const hasDocType = !!db.prepare("SELECT 1 FROM doc_types WHERE code = 'RESIDENT_CARD' AND enabled = 1").get();
   return {
     cardStatus,
+    ...cardStatusLabels(cardStatus),
     residentActive: active,
     channels: {
       visaFast: active && hasVisaType,
@@ -1800,19 +1896,22 @@ export function residentChannels(userId) {
 export function diplomaticEligibility(userId) {
   const row = db
     .prepare(
-      `SELECT i.*, t.name AS type_name FROM dip_identities i
+      `SELECT i.*, t.name AS type_name, t.name_tw AS type_name_tw FROM dip_identities i
        LEFT JOIN dip_identity_types t ON t.code = i.identity_type
        WHERE i.user_id = ? AND i.status = 'active' AND i.deleted_at IS NULL
          AND (i.term_end IS NULL OR i.term_end >= ?)
        ORDER BY i.id DESC LIMIT 1`
     )
     .get(userId, now().slice(0, 10));
-  if (!row) return { eligible: false, identityNo: '', entityName: '', identityType: '', termEnd: null };
+  if (!row) {
+    return { eligible: false, identityNo: '', entityName: '', identityType: '', identityTypeTw: null, termEnd: null };
+  }
   return {
     eligible: true,
     identityNo: row.no,
     entityName: row.entity_name,
     identityType: row.type_name || row.identity_type,
+    identityTypeTw: row.type_name_tw || null,
     termEnd: row.term_end,
   };
 }
@@ -1821,8 +1920,15 @@ export function diplomaticCourtesyFor(userId) {
   const identity = diplomaticEligibility(userId);
   if (!identity.eligible) return { ...identity, items: [] };
   const items = db
-    .prepare('SELECT code, name, description FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id')
-    .all();
+    .prepare('SELECT code, name, name_tw, description, description_tw FROM dip_courtesy_types WHERE enabled = 1 ORDER BY sort_order, id')
+    .all()
+    .map((r) => ({
+      code: r.code,
+      name: r.name,
+      nameTw: r.name_tw || null,
+      description: r.description,
+      descriptionTw: r.description_tw || null,
+    }));
   return { ...identity, items };
 }
 
@@ -1850,7 +1956,7 @@ export function syncDiplomaticVisa(userId) {
     ).run(userId, permit.application_id, 'diplomatic_voided', JSON.stringify({ visaNo: permit.visa_no, appNo: permit.app_no }), ts);
     db.prepare(
       'INSERT INTO visa_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(null, '皇家外交事務署', 'diplomatic_permit_voided', 'permit', permit.visa_no, JSON.stringify({ reason: 'identity_inactive' }), ts);
+    ).run(null, '皇家外交事务署', 'diplomatic_permit_voided', 'permit', permit.visa_no, JSON.stringify({ reason: 'identity_inactive' }), ts);
   }
   return { voided: rows.length };
 }
@@ -1868,7 +1974,7 @@ export function attachDecisionCertificate(decisionCode, certNo) {
     'INSERT INTO appeal_audit (actor_id, actor_name, action, target_type, target_id, detail, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
   ).run(
     null,
-    '皇家文書與認證署',
+    '皇家文书与认证署',
     'decision_certified',
     'decision',
     row.code,
@@ -1888,7 +1994,7 @@ export function upcomingProtocolEvents(days = 7) {
   const to = new Date(Date.now() + windowDays * 24 * 60 * 60 * 1000).toISOString();
   return db
     .prepare(
-      `SELECT event_no, title, type_code, starts_at, ends_at, venue_name
+      `SELECT event_no, title, title_tw, type_code, starts_at, ends_at, venue_name, venue_name_tw
        FROM pro_events
        WHERE deleted_at IS NULL AND status IN ('registration', 'registration_closed', 'ongoing')
          AND starts_at IS NOT NULL AND starts_at >= ? AND starts_at <= ?
@@ -1898,9 +2004,11 @@ export function upcomingProtocolEvents(days = 7) {
     .map((r) => ({
       eventNo: r.event_no,
       title: r.title,
+      titleTw: r.title_tw || null,
       typeCode: r.type_code,
       startsAt: r.starts_at,
       endsAt: r.ends_at,
       venueName: r.venue_name,
+      venueNameTw: r.venue_name_tw || null,
     }));
 }

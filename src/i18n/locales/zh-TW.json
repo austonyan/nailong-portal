@@ -10,20 +10,15 @@
     "portal": "門戶",
     "visa": "簽註申請署",
     "profile": "個人資料",
-    "admin": "管理",
     "users": "使用者管理",
     "roles": "角色與權限",
     "services": "服務管理",
     "logout": "登出",
     "language": "語言",
     "docs": "文書認證署",
-    "docsReview": "文書審核臺",
     "immigration": "皇家口岸",
-    "immigrationAdmin": "入境署管理",
     "diplomacy": "外交事務署",
-    "diplomacyAdmin": "外交署管理",
     "protocol": "禮賓與活動署",
-    "protocolAdmin": "禮賓管理",
     "resident": "居民登記署",
     "appeal": "申訴與監察署",
     "archives": "檔案與記錄署",
@@ -46,14 +41,11 @@
     "empty": "暫無站內信",
     "markAll": "全部標為已讀",
     "markAllOffice": "把「{{office}}」全部標為已讀",
-    "markedAll": "已全部標為已讀",
     "nothingToMark": "沒有需要標記的未讀訊息",
     "markedCount": "已將 {{count}} 則標為已讀",
     "filterStatus": "依讀取狀態篩選",
     "filterOffice": "依署別篩選",
     "loadFailed": "站內信載入失敗",
-    "viewInbox": "前往信箱",
-    "total": "共 {{count}} 條",
     "fallbackTitle": "你有一則新訊息",
     "fallbackBody": "請前往對應服務查看詳情。",
     "allOffices": "全部署"
@@ -64,7 +56,6 @@
     "saved": "已儲存",
     "cancel": "取消",
     "close": "關閉",
-    "create": "新增",
     "edit": "編輯",
     "delete": "刪除",
     "deleted": "已刪除",
@@ -97,7 +88,13 @@
     "recentOnly": "僅顯示最近 {{count}} 則",
     "loadFailed": "載入失敗,請稍後重試",
     "readState": "已讀",
-    "unreadState": "未讀"
+    "unreadState": "未讀",
+    "unknown": "未知",
+    "unitHours": "{{hours}} 小時",
+    "unitDays": "{{days}} 天",
+    "erased": "已抹除",
+    "simplified": "簡體",
+    "listSeparator": "、"
   },
   "autoApprove": {
     "title": "自動審批",
@@ -119,7 +116,9 @@
       "resident": "居民登記與變更續期",
       "protocol": "活動報名、接待方認證與禮遇申請",
       "docs": "文書認證申請",
-      "appeal": "申訴與投訴受理"
+      "appeal": "申訴與投訴受理",
+      "education": "詞條與文章的發布審核",
+      "archives": "資料刪除申請"
     }
   },
   "auth": {
@@ -140,12 +139,12 @@
     "toRegister": "還沒有帳號?去註冊",
     "toLogin": "已有帳號?去登入",
     "welcomeBack": "歡迎回來,{{name}}!",
-    "loginSuccess": "登入成功",
     "registerSuccess": "註冊成功,歡迎上島!",
     "usernameRule": "使用者名稱為 3-32 位字母、數字、_ 或 -",
     "passwordRule": "密碼為 8-72 位字元",
     "emailRule": "請填寫有效的電子郵件地址",
-    "confirmRule": "兩次輸入的密碼不一致"
+    "confirmRule": "兩次輸入的密碼不一致",
+    "emailPlaceholder": "請輸入電子郵件地址"
   },
   "setup": {
     "checking": "正在檢查首次啟動狀態…",
@@ -184,7 +183,8 @@
     "successSubtitle": "首位管理員已建立，引導入口已永久關閉。",
     "successBody": "門戶已準備就緒，現在可以使用管理員帳號登入並開始使用。",
     "successAccount": "管理員帳號：{{username}}",
-    "enterPortal": "進入門戶"
+    "enterPortal": "進入門戶",
+    "emailPlaceholder": "請輸入管理員電子郵件地址"
   },
   "linkage": {
     "office": {
@@ -472,14 +472,14 @@
     "EDU_RELATED_INVALID": "關聯的詞條不存在",
     "EDU_INCOMPLETE": "標題和正文填寫完整後才能提交審核",
     "EDU_REVIEW_NOTE_REQUIRED": "駁回時必須填寫審核意見",
-    "EDU_TASK_CODE_TAKEN": "任務代碼已被使用,請換一個"
+    "EDU_TASK_CODE_TAKEN": "任務代碼已被使用,請換一個",
+    "DOC_BIZ_ALREADY_CERTIFIED": "該關聯業務已出具有效文書,不能重複認證"
   },
   "portal": {
     "tagline": "這裡是奶龍統一門戶,所有服務從這裡出發",
     "services": "服務入口",
     "servicesEmpty": "還沒有可用的服務,請聯絡管理員",
     "servicesLoadFailed": "服務載入失敗,請檢查網路後重試",
-    "open": "開啟",
     "myRoles": "我的角色",
     "serviceCount": "可用服務",
     "permissionCount": "我的權限",
@@ -487,7 +487,7 @@
       "title": "單一登入身分確認",
       "confirm": "確認並進入",
       "service": "即將以目前門戶身分進入「{{name}}」。",
-      "tip": "確認進入後,該服務會讀取你的門戶帳號身分用於辦理業務與投递站內通知;你可以隨時在個人資料頁登出。"
+      "tip": "確認進入後,該服務會讀取你的門戶帳號身分用於辦理業務與投遞站內通知;你可以隨時在個人資料頁登出。"
     }
   },
   "profile": {
@@ -499,8 +499,7 @@
     "confirmNewPassword": "確認新密碼",
     "updateSuccess": "資料已更新",
     "passwordChanged": "密碼已修改",
-    "memberSince": "註冊於",
-    "roles": "角色"
+    "memberSince": "註冊於"
   },
   "admin": {
     "users": {
@@ -524,7 +523,6 @@
       "keyTip": "小寫字母、數字、_ 或 -",
       "name": "角色名稱",
       "permissions": "權限",
-      "systemTip": "系統角色受保護,不可刪除",
       "userCount": "使用者數",
       "deleteConfirm": "確定要刪除角色 {{name}} 嗎?",
       "adminLockedTip": "管理員角色始終擁有全部權限",
@@ -545,7 +543,8 @@
         "tourism": "文化旅遊",
         "stats": "統計署",
         "education": "教育與科學署"
-      }
+      },
+      "keyPlaceholder": "小寫字母、數字、_ 或 -"
     },
     "services": {
       "title": "服務管理",
@@ -566,12 +565,91 @@
         "internal": "站內直接進入",
         "internal_sso": "站內單點登入"
       },
-      "deleteConfirm": "確定要刪除服務 {{name}} 嗎?"
+      "deleteConfirm": "確定要刪除服務 {{name}} 嗎?",
+      "iconName": {
+        "RocketIcon": "火箭",
+        "BookIcon": "書本",
+        "GiftIcon": "禮物",
+        "CloudIcon": "雲朵",
+        "StarIcon": "星星",
+        "HeartIcon": "愛心",
+        "MusicIcon": "音樂",
+        "CoffeeIcon": "咖啡",
+        "CompassIcon": "指南針",
+        "FlagIcon": "旗幟",
+        "LeafIcon": "樹葉",
+        "CatIcon": "貓",
+        "FoxIcon": "狐狸",
+        "MailIcon": "郵件",
+        "CalendarIcon": "日曆",
+        "CameraIcon": "相機",
+        "HomeIcon": "家",
+        "UsersIcon": "使用者群",
+        "ShieldIcon": "盾牌",
+        "KeyIcon": "鑰匙",
+        "SettingsIcon": "設定",
+        "BellIcon": "鈴鐺",
+        "FishIcon": "魚",
+        "MapIcon": "地圖",
+        "BadgeCheckIcon": "認證徽章",
+        "AirplaneIcon": "飛機",
+        "BulbIcon": "燈泡"
+      },
+      "colorName": {
+        "app-teal": "藍綠",
+        "app-yellow": "明黃",
+        "app-orange": "橙色",
+        "app-pink": "粉色",
+        "app-blue": "藍色",
+        "app-green": "綠色",
+        "purple": "紫色",
+        "app-red": "紅色",
+        "lime-green": "青檸綠",
+        "yellow-green": "黃綠",
+        "brown": "棕色",
+        "warm-peach-pink": "暖桃粉"
+      },
+      "keyPlaceholder": "小寫字母、數字、_ 或 -"
+    },
+    "recognize": {
+      "title": "跨署互認規則",
+      "subtitle": "配置持有哪些證件可免辦、簡化或優先辦理哪些業務；規則啟停即時生效，業務申請時自動校驗。",
+      "create": "新增規則",
+      "edit": "編輯規則",
+      "delete": "刪除規則",
+      "deleteConfirm": "確定刪除互認規則「{{benefit}}」嗎？",
+      "service": "目標業務",
+      "holderSource": "持有證件署",
+      "holderKind": "證件種類",
+      "effect": "互認方式",
+      "benefit": "權益說明(簡體)",
+      "benefitTw": "權益說明(繁體)",
+      "empty": "暫無互認規則",
+      "created": "規則已建立",
+      "updated": "規則已更新",
+      "benefitRequired": "請填寫權益說明",
+      "serviceKey": {
+        "visa": "簽註申請署",
+        "immigration": "皇家口岸入境署",
+        "resident": "皇家居民登記署",
+        "dip": "皇家外交事務署",
+        "protocol": "皇家禮賓與活動署",
+        "docs": "皇家文書與認證署",
+        "appeal": "皇家申訴與監察署",
+        "archives": "皇家檔案與紀錄署"
+      },
+      "effects": {
+        "simplify": "簡化辦理",
+        "waive": "免於辦理",
+        "priority": "優先辦理"
+      },
+      "holderKindPlaceholder": "留空表示不限證件種類",
+      "holderKindTip": "常用值:card(居民證)、permit(簽註)、identity(外交身份)"
     }
   },
   "visa": {
     "officeName": "奶龍國簽註申請署",
-    "officeSub": "Nailong National Endorsement Office",
+    "officeSub": "虛擬簽註 · 電子簽註 · 線上驗真",
     "back": "返回",
     "backHome": "回首頁",
     "sso": {
@@ -595,7 +673,7 @@
     },
     "home": {
       "heroTitle": "歡迎來到簽註申請署",
-      "heroSub": "辦好虛擬簽註,奶龍島說走就走。目前開放:旅遊簽註 TOURIST",
+      "heroSub": "辦好虛擬簽註,奶龍島說走就走。目前開放:旅遊簽註",
       "applyEntry": "開始申請",
       "progressEntry": "我的申請",
       "verifyEntry": "驗真中心",
@@ -898,7 +976,7 @@
       },
       "system": {
         "title": "系統通知",
-        "body": ""
+        "body": "你有一則新的站內訊息,請登入入口網站查看。"
       },
       "appeal_reopened": {
         "title": "申訴複核:申請 {{appNo}} 重新審核",
@@ -1008,13 +1086,23 @@
           "update_config": "更新設定",
           "blacklist_user": "加入黑名單",
           "unblacklist_user": "移出黑名單",
-          "privacy_erase": "清除個人資料"
-        }
+          "privacy_erase": "清除個人資料",
+          "auto_expire_permit": "簽註自動過期",
+          "auto_close_supplement_timeout": "補件逾時自動關閉",
+          "inter_mark_used": "口岸核銷簽註"
+        },
+        "detailReason": "原因",
+        "detailComment": "備註",
+        "detailDeadline": "補件截止",
+        "detailAppNo": "申請編號",
+        "detailValidUntil": "有效期至",
+        "detailEnabled": "公告狀態"
       },
       "noticeDeleteConfirm": "確定刪除公告「{{title}}」嗎?",
       "blacklistRemove": "移出限制名單",
       "blacklistRemoveConfirm": "確定將 {{user}} 移出限制名單嗎?",
-      "blacklistRemoved": "已移出限制名單"
+      "blacklistRemoved": "已移出限制名單",
+      "typesCodePh": "類型編碼,如 TOURIST"
     }
   },
   "errors": {
@@ -1204,7 +1292,8 @@
       "bizVerified": "已與業務署校驗",
       "bizNotOwned": "編號非本人業務",
       "bizNotFound": "未查詢到該業務編號",
-      "bizUnavailable": "該業務署暫不支援線上校驗"
+      "bizUnavailable": "該業務署暫不支援線上校驗",
+      "countdownFormat": "DD 天 HH:mm:ss"
     },
     "materials": {
       "empty": "暫無材料",
@@ -1337,7 +1426,13 @@
         "addMaterial": "新增材料要求",
         "addField": "新增表單欄位",
         "materialLabel": "材料名稱",
-        "fieldLabel": "欄位名稱"
+        "fieldLabel": "欄位名稱",
+        "codePh": "類型編碼,如 INVITE",
+        "materialKeyPh": "材料標識,如 photo",
+        "fieldKeyPh": "欄位標識,如 full_name",
+        "acceptPh": "檔案類型,如 image/*,application/pdf",
+        "placeholderPh": "輸入框提示文案",
+        "bizSourcePh": "業務署,如 visa / resident / appeal"
       },
       "certs": {
         "title": "文書管理",
@@ -1422,6 +1517,16 @@
           "material_download": "下載材料",
           "auto_expire_certificate": "文書到期失效",
           "auto_close_supplement_timeout": "補件逾時關閉"
+        },
+        "targetTypes": {
+          "application": "申請",
+          "certificate": "文書",
+          "config": "署設定",
+          "user": "使用者",
+          "material": "材料",
+          "doc_type": "文書類型",
+          "notice": "公告",
+          "ip": "IP 位址"
         }
       },
       "settings": {
@@ -1662,7 +1767,8 @@
       "stickers": "貼紙",
       "pillow": "抱枕",
       "balloon": "氣球",
-      "photo_card": "小卡"
+      "photo_card": "小卡",
+      "unknown": "未知物品"
     },
     "visaResult": {
       "valid": "簽注有效",
@@ -2190,7 +2296,8 @@
       "uploadProof": "上傳地址證明",
       "uploadOther": "點擊或拖曳上傳其他材料",
       "confirmTitle": "提交前確認",
-      "materialsCount": "共 {{count}} 個材料"
+      "materialsCount": "共 {{count}} 個材料",
+      "purposesRequired": "請至少選擇一項登記用途。"
     },
     "myApps": {
       "title": "我的登記申請",
@@ -2387,16 +2494,6 @@
       "limitTip": "為防枚舉,驗真有頻率限制;結果僅顯示去識別化資訊。",
       "notFound": "未找到對應的居民卡,請檢查編號"
     },
-    "field": {
-      "appNo": "申請編號",
-      "applicant": "申請人",
-      "submittedAt": "提交時間",
-      "createdAt": "建立時間",
-      "changeNo": "變更編號",
-      "changeType": "變更類型",
-      "cardNo": "居民編號",
-      "summary": "內容摘要"
-    },
     "admin": {
       "navLabel": "居民署管理導覽",
       "tabs": {
@@ -2474,6 +2571,10 @@
           "expired": "已過期",
           "voided": "已註銷",
           "frozen": "已凍結"
+        },
+        "sourceValue": {
+          "web": "網頁",
+          "api": "介面"
         }
       },
       "types": {
@@ -2606,26 +2707,36 @@
         "reviewHours": "審核時長提示(小時)",
         "maxActive": "同時在審申請上限",
         "oneIdentity": "一號一身分(1 開啟 / 0 關閉)"
+      },
+      "msgTpl": {
+        "submitted": "提交成功",
+        "supplement_required": "補件通知",
+        "supplement_received": "補件已收到",
+        "approved": "登記通過",
+        "rejected": "登記駁回",
+        "withdrawn": "申請撤銷",
+        "closed": "補件逾時關閉",
+        "card_issued": "居民卡產生",
+        "card_frozen": "居民卡凍結",
+        "card_unfrozen": "居民卡解凍",
+        "card_voided": "居民卡註銷",
+        "card_reissued": "居民卡補發",
+        "card_expired": "居民卡過期",
+        "expiry_reminder": "到期提醒",
+        "change_approved": "變更通過",
+        "change_rejected": "變更駁回",
+        "appeal_reopened": "申訴複核重開"
+      },
+      "field": {
+        "appNo": "申請編號",
+        "applicant": "申請人",
+        "submittedAt": "提交時間",
+        "createdAt": "建立時間",
+        "changeNo": "變更編號",
+        "changeType": "變更類型",
+        "cardNo": "居民編號",
+        "summary": "內容摘要"
       }
-    },
-    "msgTpl": {
-      "submitted": "提交成功",
-      "supplement_required": "補件通知",
-      "supplement_received": "補件已收到",
-      "approved": "登記通過",
-      "rejected": "登記駁回",
-      "withdrawn": "申請撤銷",
-      "closed": "補件逾時關閉",
-      "card_issued": "居民卡產生",
-      "card_frozen": "居民卡凍結",
-      "card_unfrozen": "居民卡解凍",
-      "card_voided": "居民卡註銷",
-      "card_reissued": "居民卡補發",
-      "card_expired": "居民卡過期",
-      "expiry_reminder": "到期提醒",
-      "change_approved": "變更通過",
-      "change_rejected": "變更駁回",
-      "appeal_reopened": "申訴複核重開"
     }
   },
   "dip": {
@@ -2754,9 +2865,9 @@
       "nextConfirm": "下一步:確認提交",
       "confirmTitle": "提交前確認",
       "submit": "提交申請",
-      "submitted": "已提交,建交申請編號 {no}",
+      "submitted": "已提交,建交申請編號 {{no}}",
       "required": "必填",
-      "materialCount": "{count} 份"
+      "materialCount": "{{count}} 份"
     },
     "relation": {
       "title": "我的建交",
@@ -2769,7 +2880,7 @@
       "rejected": "建交申請未通過",
       "suspendedTitle": "關係已暫停",
       "supplementRequired": "需要補件",
-      "supplementDeadline": "請在 {date} 前補交",
+      "supplementDeadline": "請在 {{date}} 前補交",
       "supplementSubmitted": "已補交",
       "supplementPlaceholder": "填寫補充說明,並可上傳補件材料",
       "supplementSent": "補件已提交",
@@ -2798,7 +2909,6 @@
       "relation": "關聯建交關係",
       "relationPlaceholder": "選擇你的已建交關係",
       "relationNo": "關聯建交編號",
-      "linkedRelation": "已關聯",
       "entity": "所屬實體",
       "holder": "暱稱",
       "holderPlaceholder": "外交身分上的名字",
@@ -2810,10 +2920,10 @@
       "termEnd": "任期結束",
       "termOrderError": "任期結束日期不能早於開始日期",
       "term": "任期",
-      "termRange": "{start} ~ {end}",
+      "termRange": "{{start}} ~ {{end}}",
       "inactiveReason": "失效原因",
       "rejected": "外交身分申請未通過",
-      "submitted": "已提交,外交身分申請編號 {no}",
+      "submitted": "已提交,外交身分申請編號 {{no}}",
       "detailTitle": "外交身分詳情",
       "viewCard": "查看外交身分卡",
       "cardTitle": "外交身分卡",
@@ -2825,7 +2935,7 @@
       "visaChannelTitle": "外交簽注通道",
       "visaChannelTip": "外交身分用戶可申請虛擬外交簽注:申請與提交時會校驗外交身分有效性;身分失效後已簽發的外交簽注將同步註銷。",
       "goVisa": "前往簽注申請署",
-      "carryNo": "將自動帶出 {no}",
+      "carryNo": "將自動帶出 {{no}}",
       "visaNeedActive": "需持有有效外交身分後開放",
       "submitConfirmBody": "提交後外交身分申請將進入審核佇列,審核期間不可修改。",
       "withdrawConfirmTitle": "撤回外交身分申請",
@@ -2871,7 +2981,7 @@
       "checkTip": "輸入建交編號或外交身分編號,查詢命中的生效互免協議。",
       "check": "查詢",
       "codeFirst": "請先輸入編號",
-      "hit": "命中 {count} 筆互免協議",
+      "hit": "命中 {{count}} 筆互免協議",
       "noHit": "暫無命中的互免協議",
       "sourceIdentity": "外交身分",
       "sourceRelation": "建交關係",
@@ -2888,7 +2998,7 @@
       "scopeTip": "例如:持有效外交身分的使團成員",
       "create": "新建協議",
       "createTitle": "建立互免協議",
-      "editTitle": "編輯互免協議 {no}",
+      "editTitle": "編輯互免協議 {{no}}",
       "adminTitle": "互免協議管理",
       "effect": "生效",
       "terminate": "終止",
@@ -2930,7 +3040,7 @@
     },
     "messages": {
       "title": "站內信",
-      "unreadCount": "{count} 則未讀",
+      "unreadCount": "{{count}} 則未讀",
       "readAll": "全部已讀",
       "filter_all": "全部",
       "filter_unread": "未讀",
@@ -2954,7 +3064,7 @@
       "adminTitle": "虛構代表處管理",
       "create": "新建代表處",
       "createTitle": "建立代表處",
-      "editTitle": "編輯代表處 · {name}",
+      "editTitle": "編輯代表處 · {{name}}",
       "code": "代表處編碼",
       "codeTip": "3-20 位大寫字母、數字或底線",
       "namePlaceholder": "例如:中央大街代表處",
@@ -2964,22 +3074,6 @@
       "open": "開放",
       "close": "關閉",
       "maintenance": "維護"
-    },
-    "notice": {
-      "adminTitle": "公告管理",
-      "publish": "發布公告",
-      "createTitle": "發布公告",
-      "editTitle": "編輯公告",
-      "title": "標題",
-      "body": "內文",
-      "level": "等級",
-      "office": "關聯代表處",
-      "officeAll": "署級公告",
-      "officeTip": "署級公告全署可見,代表處公告僅在該代表處展示",
-      "published": "已發布",
-      "publishedAt": "發布時間",
-      "offline": "已下線",
-      "offlineAction": "下線"
     },
     "home": {
       "hero": "以趣味與友誼之名,與世界建立虛構外交關係",
@@ -3005,7 +3099,7 @@
       "guideBody": {
         "conditions": "擁有虛構世界觀的國家、城邦、社區、組織或活動團體均可申請;目前開放「虛構國家 × 正式建交」。",
         "materials": "虛構介紹、活動憑證或社區證明等,圖片/PDF,單一不超過 5MB。",
-        "duration": "預計 {hours} 小時內完成審核;如需補件將以站內信通知。",
+        "duration": "預計 {{hours}} 小時內完成審核;如需補件將以站內信通知。",
         "courtesy": "入境禮遇通道、活動優先邀請、優先審核均為趣味化禮遇,不承諾現實禮遇。"
       },
       "quickTitle": "快速入口",
@@ -3016,8 +3110,8 @@
         "verify": "驗真查詢",
         "faq": "常見問題"
       },
-      "myStats": "我的建交關係 {relations} 條 · 有效外交身分 {identities} 個 · 未讀訊息 {unread} 則",
-      "agreementsActive": "生效中互免協議 {count} 份"
+      "myStats": "我的建交關係 {{relations}} 條 · 有效外交身分 {{identities}} 個 · 未讀訊息 {{unread}} 則",
+      "agreementsActive": "生效中互免協議 {{count}} 份"
     },
     "admin": {
       "navLabel": "外交署管理導覽",
@@ -3078,121 +3172,197 @@
       "approveIdentityConfirm": "確定通過 {{no}} 的外交身分申請嗎?通過後身分立即生效。",
       "freezeConfirm": "確定凍結 {{no}} 嗎?凍結期間該身分不可用於外交簽註。",
       "unfreezeConfirm": "確定解凍 {{no}} 嗎?解凍後身分恢復有效。",
-      "revokeConfirm": "確定註銷 {{no}} 嗎?註銷後不可恢復,已簽發的外交簽註將同步註銷。"
-    },
-    "verifyAdmin": {
-      "title": "驗真與風控",
-      "tabLogs": "驗真紀錄",
-      "tabRisk": "黑名單與風控",
-      "allKinds": "全部類型",
-      "allResults": "全部結果",
-      "limitTitle": "驗真限流配置",
-      "limitTip": "每 IP 每 5 分鐘驗真次數上限(防列舉);儲存後立即生效。",
-      "limitConfirm": "確定把驗真限流改為每 5 分鐘 {{count}} 次嗎?",
-      "limitSaved": "驗真限流已更新為每 5 分鐘 {{count}} 次"
-    },
-    "verifyLog": {
-      "query": "查詢內容",
-      "kind": "類型",
-      "result": "結果",
-      "at": "時間",
-      "result_valid": "驗真通過",
-      "result_not_found": "未查詢到",
-      "result_status_established": "已建交",
-      "result_status_suspended": "已中止",
-      "result_status_severed": "已斷交",
-      "result_status_active": "有效",
-      "result_status_frozen": "已凍結",
-      "result_status_expired": "已過期",
-      "result_status_revoked": "已撤銷",
-      "result_status_terminated": "已終止"
-    },
-    "blacklist": {
-      "add": "加入名單",
-      "userId": "使用者 ID",
-      "level": "等級",
-      "warn": "觀察",
-      "block": "限制",
-      "reason": "原因",
-      "lift": "移出名單",
-      "liftConfirm": "確定將 {{user}} 移出限制名單嗎?",
-      "lifted": "已移出限制名單",
-      "user": "使用者",
-      "since": "加入時間"
-    },
-    "config": {
-      "title": "類型與配置",
-      "objectTypes": "建交對象類型",
-      "relationTypes": "建交類型",
-      "identityTypes": "外交身分類型",
-      "courtesyTypes": "禮遇類型",
-      "settings": "全域設定",
-      "editType": "編輯類型",
-      "guide": "類型說明頁文案",
-      "guideTip": "適用場景、虛擬禮遇、樣例建交公報等說明",
-      "validityDays": "有效期(天)",
-      "open": "開放",
-      "closed": "關閉",
-      "prefixRelation": "建交編號前綴",
-      "prefixIdentity": "外交身分編號前綴",
-      "prefixAgreement": "協議編號前綴",
-      "supplementDays": "補件期限(天)",
-      "reviewHours": "審核時長提示(小時)",
-      "verifyLimit": "驗真限流(次/5分鐘)",
-      "maxIdentities": "單人 concurrent 身分上限"
-    },
-    "stats": {
-      "title": "統計與報表",
-      "export": "匯出 CSV",
-      "submitted": "建交申請量",
-      "established": "已建交",
-      "rejected": "駁回量",
-      "supplements": "補件次數",
-      "passRate": "通過率",
-      "rejectRate": "駁回率",
-      "supplementRate": "補件率",
-      "identitiesActive": "有效外交身分",
-      "agreementsActive": "生效中協議",
-      "verifyQueries": "驗真查詢量",
-      "verifyToday": "今日驗真量",
-      "objectDistribution": "建交對象類型分布",
-      "identityDistribution": "外交身分類型分布",
-      "courtesyUsage": "禮遇使用量",
-      "rejectReasons": "常見駁回原因",
-      "trend7": "近 7 日提交量",
-      "type": "類型",
-      "count": "數量"
-    },
-    "audit": {
-      "title": "稽核與合規",
-      "tabLog": "稽核日誌",
-      "tabTemplates": "訊息範本",
-      "tabSendLog": "發送紀錄",
-      "action": "操作",
-      "actionPrefix": "按操作前綴篩選,如 dip:relation",
-      "actor": "操作人",
-      "targetType": "對象類型",
-      "targetId": "對象標識",
-      "detail": "詳情",
-      "at": "時間"
-    },
-    "templates": {
-      "title": "範本標題",
-      "body": "範本內文",
-      "variables": "可用變數",
-      "code": "範本編碼",
-      "editTitle": "編輯範本 {{code}}",
-      "varTip": "內文支援以雙大括號包住的變數名稱(如編號、日期),儲存後立即生效。"
+      "revokeConfirm": "確定註銷 {{no}} 嗎?註銷後不可恢復,已簽發的外交簽註將同步註銷。",
+      "audit": {
+        "title": "稽核與合規",
+        "tabLog": "稽核日誌",
+        "tabTemplates": "訊息範本",
+        "tabSendLog": "發送紀錄",
+        "action": "操作",
+        "actionPrefix": "按操作前綴篩選,如 dip:relation",
+        "actor": "操作人",
+        "targetType": "對象類型",
+        "targetId": "對象標識",
+        "detail": "詳情",
+        "at": "時間",
+        "targetKind": {
+          "relation": "建交關係",
+          "identity": "外交身分",
+          "agreement": "互免協議",
+          "office": "代表處",
+          "notice": "公告",
+          "type": "類型",
+          "settings": "全域設定",
+          "user": "使用者",
+          "template": "訊息範本",
+          "material": "材料"
+        },
+        "actionName": {
+          "relation_establish": "建交通過",
+          "relation_reject": "駁回建交申請",
+          "relation_supplement": "要求補件",
+          "relation_suspend": "暫停建交關係",
+          "relation_resume": "恢復建交關係",
+          "relation_sever": "確認斷交",
+          "relation_sever_dismiss": "駁回斷交申請",
+          "relation_sever_request": "申請斷交",
+          "relation_submit": "提交建交申請",
+          "relation_withdraw": "撤回建交申請",
+          "identity_approve": "外交身分通過",
+          "identity_reject": "駁回外交身分申請",
+          "identity_supplement": "要求補件",
+          "identity_freeze": "凍結外交身分",
+          "identity_unfreeze": "解凍外交身分",
+          "identity_revoke": "註銷外交身分",
+          "identity_submit": "提交外交身分申請",
+          "identity_withdraw": "撤回外交身分申請",
+          "courtesy_record": "登記禮遇使用",
+          "agreement_create": "新增互免協議",
+          "agreement_update": "更新互免協議",
+          "agreement_status": "變更協議狀態",
+          "office_create": "新增代表處",
+          "office_update": "更新代表處",
+          "office_status": "變更代表處狀態",
+          "notice_publish": "發布公告",
+          "notice_update": "更新公告",
+          "notice_offline": "下線公告",
+          "data_delete_notice": "刪除公告",
+          "data_delete_draft": "刪除草稿",
+          "draft_create": "儲存草稿",
+          "config_type_update": "更新類型設定",
+          "config_courtesy_update": "更新禮遇類型",
+          "settings_update": "更新全域設定",
+          "blacklist_add": "加入限制名單",
+          "blacklist_lift": "移出限制名單",
+          "template_update": "更新訊息範本",
+          "file_access": "下載材料",
+          "inter_identity_check": "跨署核驗外交身分",
+          "inter_identity_miss": "跨署核驗未查到身分",
+          "inter_relation_check": "跨署核驗建交關係",
+          "inter_relation_miss": "跨署核驗未查到建交關係",
+          "inter_agreement_check": "跨署核驗互免協議"
+        }
+      },
+      "stats": {
+        "title": "統計與報表",
+        "export": "匯出 CSV",
+        "submitted": "建交申請量",
+        "established": "已建交",
+        "rejected": "駁回量",
+        "supplements": "補件次數",
+        "passRate": "通過率",
+        "rejectRate": "駁回率",
+        "supplementRate": "補件率",
+        "identitiesActive": "有效外交身分",
+        "agreementsActive": "生效中協議",
+        "verifyQueries": "驗真查詢量",
+        "verifyToday": "今日驗真量",
+        "objectDistribution": "建交對象類型分布",
+        "identityDistribution": "外交身分類型分布",
+        "courtesyUsage": "禮遇使用量",
+        "rejectReasons": "常見駁回原因",
+        "trend7": "近 7 日提交量",
+        "type": "類型",
+        "count": "數量"
+      },
+      "config": {
+        "title": "類型與配置",
+        "objectTypes": "建交對象類型",
+        "relationTypes": "建交類型",
+        "identityTypes": "外交身分類型",
+        "courtesyTypes": "禮遇類型",
+        "settings": "全域設定",
+        "editType": "編輯類型",
+        "guide": "類型說明頁文案",
+        "guideTip": "適用場景、虛擬禮遇、樣例建交公報等說明",
+        "validityDays": "有效期(天)",
+        "open": "開放",
+        "closed": "關閉",
+        "prefixRelation": "建交編號前綴",
+        "prefixIdentity": "外交身分編號前綴",
+        "prefixAgreement": "協議編號前綴",
+        "supplementDays": "補件期限(天)",
+        "reviewHours": "審核時長提示(小時)",
+        "verifyLimit": "驗真限流(次/5分鐘)",
+        "maxIdentities": "單人 concurrent 身分上限"
+      },
+      "notice": {
+        "adminTitle": "公告管理",
+        "publish": "發布公告",
+        "createTitle": "發布公告",
+        "editTitle": "編輯公告",
+        "title": "標題",
+        "body": "內文",
+        "level": "等級",
+        "office": "關聯代表處",
+        "officeAll": "署級公告",
+        "officeTip": "署級公告全署可見,代表處公告僅在該代表處展示",
+        "published": "已發布",
+        "publishedAt": "發布時間",
+        "offline": "已下線",
+        "offlineAction": "下線"
+      },
+      "blacklist": {
+        "add": "加入名單",
+        "userId": "使用者 ID",
+        "level": "等級",
+        "warn": "觀察",
+        "block": "限制",
+        "reason": "原因",
+        "lift": "移出名單",
+        "liftConfirm": "確定將 {{user}} 移出限制名單嗎?",
+        "lifted": "已移出限制名單",
+        "user": "使用者",
+        "since": "加入時間"
+      },
+      "verifyAdmin": {
+        "title": "驗真與風控",
+        "tabLogs": "驗真紀錄",
+        "tabRisk": "黑名單與風控",
+        "allKinds": "全部類型",
+        "allResults": "全部結果",
+        "limitTitle": "驗真限流配置",
+        "limitTip": "每 IP 每 5 分鐘驗真次數上限(防列舉);儲存後立即生效。",
+        "limitConfirm": "確定把驗真限流改為每 5 分鐘 {{count}} 次嗎?",
+        "limitSaved": "驗真限流已更新為每 5 分鐘 {{count}} 次"
+      },
+      "verifyLog": {
+        "query": "查詢內容",
+        "kind": "類型",
+        "result": "結果",
+        "at": "時間",
+        "result_valid": "驗真通過",
+        "result_not_found": "未查詢到",
+        "result_status_established": "已建交",
+        "result_status_suspended": "已中止",
+        "result_status_severed": "已斷交",
+        "result_status_active": "有效",
+        "result_status_frozen": "已凍結",
+        "result_status_expired": "已過期",
+        "result_status_revoked": "已撤銷",
+        "result_status_terminated": "已終止",
+        "result_status_pending_review": "待審核",
+        "result_status_supplement_required": "補件中",
+        "result_status_rejected": "已駁回",
+        "result_status_withdrawn": "已撤銷",
+        "result_status_sever_requested": "斷交複核中",
+        "result_status_draft": "草稿",
+        "result_status_pending_effect": "待生效"
+      },
+      "templates": {
+        "title": "範本標題",
+        "body": "範本內文",
+        "variables": "可用變數",
+        "code": "範本編碼",
+        "editTitle": "編輯範本 {{code}}",
+        "varTip": "內文支援以雙大括號包住的變數名稱(如編號、日期),儲存後立即生效。"
+      }
     }
   },
   "protocol": {
     "officeName": "奶龍國皇家禮賓與活動署",
     "officeSub": "活動 · 邀請函 · 活動憑證 · 禮賓服務",
     "scamTitle": "防詐騙提示",
-    "checkinSource": {
-      "manual": "人工",
-      "scan": "掃碼"
-    },
     "scamBody": "本署活動報名與認證完全免費。任何“收費報名”“內部名額”“承諾現實入場或禮遇”的說法都是詐騙,請勿相信。",
     "nav": {
       "home": "首頁",
@@ -3293,12 +3463,6 @@
       "diplomatic": "外交接待方",
       "resident_group": "居民團體"
     },
-    "invType": {
-      "event": "活動邀請函",
-      "foreign": "外賓邀請函",
-      "resident": "居民專屬邀請函",
-      "diplomatic": "外交禮遇邀請函"
-    },
     "basisType": {
       "resident": "居民編號",
       "diplomatic": "外交身份編號",
@@ -3317,34 +3481,6 @@
       "proof": "證明材料",
       "community": "社群證明",
       "other": "其他材料"
-    },
-    "rejectReason": {
-      "info_missing": "資訊不全",
-      "identity_mismatch": "身份不符",
-      "duplicate": "重複報名",
-      "full": "名額已滿",
-      "rule_violation": "違反規則",
-      "other": "其他原因"
-    },
-    "hostReject": {
-      "info_missing": "資訊不全",
-      "material_invalid": "材料不合格",
-      "qualification": "資質不符",
-      "duplicate": "重複申請",
-      "other": "其他原因"
-    },
-    "verifyKind": {
-      "invitation": "邀請函",
-      "pass": "活動憑證",
-      "host": "接待方認證"
-    },
-    "verifyResult": {
-      "valid": "驗真通過",
-      "not_found": "未查詢到",
-      "status_used": "已使用",
-      "status_expired": "已過期",
-      "status_voided": "已作廢",
-      "status_revoked": "已撤銷"
     },
     "history": {
       "registration_draft": "儲存草稿",
@@ -3766,27 +3902,11 @@
         "a": "報名時填寫居民或外交身分編號,系統會與居民登記署/外交署即時校驗。"
       }
     },
-    "config": {
-      "review_hours_hint": "審核時長提示(小時)",
-      "supplement_days": "補件期限(天)",
-      "verify_limit_per_5min": "驗真限流(次/5分鐘)",
-      "max_companions": "最大隨行人數",
-      "max_active_registrations": "每人最多進行中報名",
-      "linkage_enabled": "跨署聯動校驗(0 關閉 / 1 開啟,預設開啟)",
-      "prefix.event": "活動編號字首",
-      "prefix.registration": "報名編號字首",
-      "prefix.invitation": "邀請函編號字首",
-      "prefix.pass": "憑證編號字首",
-      "prefix.host": "接待方編號字首",
-      "prefix.host_cert": "認證證書編號字首",
-      "prefix.courtesy": "禮遇編號字首"
-    },
     "admin": {
       "reviewTitle": "報名審核工作台",
       "reviewSubtitle": "佇列隔離:活動審核員只能看到報名、接待方與禮遇佇列。",
       "eventsTitle": "活動發布與管理",
       "createEvent": "新建活動",
-      "editEvent": "編輯活動",
       "eventsEmpty": "暫無活動",
       "searchEvent": "搜尋活動名稱 / 編號",
       "searchReg": "搜尋報名編號 / 暱稱 / 賬號",
@@ -3805,7 +3925,6 @@
       "approve": "通過",
       "reject": "拒絕",
       "waitlist": "轉為候補",
-      "promote": "候補轉正",
       "markUsed": "標記已使用",
       "supplement": "要求補件",
       "freeze": "凍結",
@@ -3880,7 +3999,21 @@
       "verifyLogs": "驗真記錄",
       "saveLimit": "儲存限流",
       "verifyQuery": "查詢內容",
-      "verifyResult": "結果",
+      "verifyResult": {
+        "valid": "驗真通過",
+        "not_found": "未查詢到",
+        "status_used": "已使用",
+        "status_expired": "已過期",
+        "status_voided": "已作廢",
+        "status_revoked": "已撤銷",
+        "status_pending": "待使用",
+        "status_pending_review": "待審核",
+        "status_supplement_required": "補件中",
+        "status_certified": "已認證",
+        "status_frozen": "已凍結",
+        "status_draft": "草稿",
+        "status_rejected": "已拒絕"
+      },
       "verifyIp": "來源 IP",
       "verifyKindHint": "驗真型別:{{kinds}}",
       "blacklistTitle": "黑名單 / 風險標記",
@@ -3948,7 +4081,139 @@
       "blacklistAdded": "已加入黑名單",
       "liftConfirm": "確定將 {{user}} 移出黑名單嗎?移出後該帳號可繼續驗真。",
       "lifted": "已移出黑名單",
-      "ticketClosed": "工單已回覆並關閉"
+      "ticketClosed": "工單已回覆並關閉",
+      "coverColor": {
+        "app-teal": "藍綠色",
+        "app-orange": "橙色",
+        "app-pink": "粉色",
+        "app-blue": "藍色",
+        "purple": "紫色",
+        "app-green": "綠色",
+        "app-yellow": "黃色"
+      },
+      "templateEditTitle": "編輯訊息模板 {{code}}",
+      "audit": {
+        "action": {
+          "pass_issue": "簽發憑證",
+          "registration_promote": "候補轉正",
+          "inter_check_miss": "跨署核驗未命中",
+          "inter_check": "跨署核驗",
+          "inter_invitation_check": "邀請函核驗",
+          "inter_pass_check": "憑證核驗",
+          "inter_host_check": "接待方核驗",
+          "inter_mark_used": "跨署標記已使用",
+          "registration_draft": "儲存報名草稿",
+          "registration_delete": "刪除報名草稿",
+          "registration_submit": "提交報名",
+          "registration_cancel": "取消報名",
+          "material_upload": "上傳材料",
+          "material_access": "存取材料",
+          "invitation_accept": "接受邀請",
+          "invitation_decline": "婉拒邀請",
+          "host_draft": "儲存接待方草稿",
+          "host_delete": "刪除接待方草稿",
+          "host_submit": "提交接待方認證",
+          "courtesy_submit": "提交禮遇申請",
+          "courtesy_cancel": "取消禮遇申請",
+          "ticket_create": "提交工單",
+          "privacy_erase": "清除個人資料",
+          "type_create": "新增活動類型",
+          "type_update": "更新活動類型",
+          "event_create": "創建活動",
+          "event_update": "更新活動",
+          "event_cancel": "取消活動",
+          "event_status": "變更活動狀態",
+          "event_delete": "刪除活動",
+          "event_notice": "發布活動公告",
+          "registration_waitlist": "報名轉候補",
+          "registration_approve": "報名通過",
+          "registration_reject": "報名駁回",
+          "invitation_issue": "簽發邀請函",
+          "invitation_revoke": "撤銷邀請函",
+          "pass_void": "作廢憑證",
+          "pass_reissue": "補發憑證",
+          "host_approve": "接待方認證通過",
+          "host_reject": "接待方認證駁回",
+          "host_supplement": "要求接待方補件",
+          "host_freeze": "凍結接待方",
+          "host_unfreeze": "解凍接待方",
+          "host_revoke": "註銷接待方",
+          "host_permissions": "調整接待方權限",
+          "courtesy_type_create": "新增禮遇類型",
+          "courtesy_type_update": "更新禮遇類型",
+          "courtesy_approve": "禮遇申請通過",
+          "courtesy_reject": "禮遇申請駁回",
+          "courtesy_used": "禮遇已使用",
+          "checkin_in": "活動簽到",
+          "checkin_out": "活動簽退",
+          "blacklist_add": "加入黑名單",
+          "blacklist_lift": "移出黑名單",
+          "ticket_close": "關閉工單",
+          "config_update": "更新署務配置",
+          "notice_create": "新增公告",
+          "notice_update": "更新公告",
+          "notice_delete": "刪除公告",
+          "template_update": "更新訊息模板",
+          "export_csv": "匯出 CSV"
+        },
+        "targetType": {
+          "event_type": "活動類型",
+          "event": "活動",
+          "registration": "報名",
+          "pass": "憑證",
+          "invitation": "邀請函",
+          "host": "接待方",
+          "courtesy_type": "禮遇類型",
+          "courtesy": "禮遇申請",
+          "user": "使用者",
+          "ticket": "工單",
+          "config": "設定",
+          "notice": "公告",
+          "template": "訊息模板",
+          "export": "匯出",
+          "material": "材料",
+          "protocol_doc": "禮賓文書"
+        }
+      },
+      "config": {
+        "review_hours_hint": "審核時長提示(小時)",
+        "supplement_days": "補件期限(天)",
+        "verify_limit_per_5min": "驗真限流(次/5分鐘)",
+        "max_companions": "最大隨行人數",
+        "max_active_registrations": "每人最多進行中報名",
+        "linkage_enabled": "跨署聯動校驗(0 關閉 / 1 開啟,預設開啟)"
+      },
+      "rejectReason": {
+        "info_missing": "資訊不全",
+        "identity_mismatch": "身份不符",
+        "duplicate": "重複報名",
+        "full": "名額已滿",
+        "rule_violation": "違反規則",
+        "other": "其他原因"
+      },
+      "hostReject": {
+        "info_missing": "資訊不全",
+        "material_invalid": "材料不合格",
+        "qualification": "資質不符",
+        "duplicate": "重複申請",
+        "other": "其他原因"
+      },
+      "invType": {
+        "event": "活動邀請函",
+        "foreign": "外賓邀請函",
+        "resident": "居民專屬邀請函",
+        "diplomatic": "外交禮遇邀請函"
+      },
+      "verifyKind": {
+        "invitation": "邀請函",
+        "pass": "活動憑證",
+        "host": "接待方認證"
+      },
+      "checkinSource": {
+        "manual": "人工",
+        "scan": "掃碼"
+      },
+      "verifyResultLabel": "結果"
     }
   },
   "appeal": {
@@ -4126,7 +4391,7 @@
     },
     "home": {
       "heroTitle": "有異議,請依法申訴",
-      "heroSub": "對簽註、入境、居民登記、外交與文書處理結果有異議,可在此提交結果申訴;也可提出投訴建議或聯絡客服。",
+      "heroSub": "對簽註、入境、居民登記、外交事務、文書認證、檔案與禮賓活動的處理結果有異議,可在此提交結果申訴;也可提出投訴建議或聯絡客服。",
       "entryApply": "我要申訴",
       "entryMy": "我的申訴",
       "entryVerify": "驗真查詢",
@@ -4145,7 +4410,7 @@
         "publicity": "處理公示"
       },
       "serviceDesc": {
-        "apply": "對五類業務結果提交申訴並上傳材料。",
+        "apply": "對七類業務結果提交申訴並上傳材料。",
         "my": "檢視進度、補充材料、撤回與結果。",
         "review": "對處理決定申請一次終局複核。",
         "complaint": "反映服務問題或提出改進建議。",
@@ -4155,7 +4420,7 @@
       "notices": "署內公告",
       "guide": "辦事指南",
       "guideScope": "可申訴範圍",
-      "guideScopeBody": "簽註、入境、居民登記、外交事務與文書認證的處理結果,均可在規定期效內申訴。",
+      "guideScopeBody": "簽註、入境、居民登記、外交事務、文書認證、檔案與禮賓活動的處理結果,均可在規定期效內申訴。",
       "guideMaterials": "所需材料",
       "guideMaterialsBody": "業務編號、申訴理由、期望結果與聯絡方式;截圖或證明材料可選傳。",
       "guideSla": "受理與處理時限",
@@ -4470,13 +4735,15 @@
     "guide": {
       "title": "辦事指南",
       "scopeTitle": "可申訴範圍",
-      "scopeIntro": "對以下五類業務的處理結果有異議,可在規定期效內提交結果申訴。",
+      "scopeIntro": "對以下七類業務的處理結果有異議,可在規定期效內提交結果申訴。",
       "scope": {
         "visa": "簽註拒簽、批註條件或有效期異議",
         "immigration": "入境查驗、拒絕入境或紀錄異議",
         "resident": "居民登記審核、變更或續期異議",
         "diplomatic": "外交身分、建交或互免協議異議",
-        "document": "文書認證結果或認證內容異議"
+        "document": "文書認證結果或認證內容異議",
+        "archives": "檔案刪除、查閱與證明出具異議",
+        "protocol": "活動報名、邀請與禮遇安排異議"
       },
       "excludedTitle": "不予受理情形",
       "excluded": {
@@ -4529,7 +4796,7 @@
       "diffTitle": "申訴與複核的區別",
       "diffAppeal": {
         "t": "結果申訴",
-        "d": "針對五類業務署的處理結果,向申訴署提出;可要求撤銷、變更或轉交。"
+        "d": "針對七類業務署的處理結果,向申訴署提出;可要求撤銷、變更或轉交。"
       },
       "diffReview": {
         "t": "處理複核",
@@ -4685,7 +4952,19 @@
       "offlineConfirm": "確定下線「{{title}}」嗎?下線後入口網站不再顯示該內容。",
       "offlined": "已下線",
       "backToDraftConfirm": "確定將「{{title}}」退回草稿嗎?",
-      "backToDraftDone": "已退回草稿"
+      "backToDraftDone": "已退回草稿",
+      "config": {
+        "appeal_prefix": "申訴編號前綴",
+        "review_prefix": "覆核編號前綴",
+        "complaint_prefix": "投訴建議編號前綴",
+        "ticket_prefix": "工單編號前綴",
+        "decision_prefix": "決定書編號前綴",
+        "supplement_days": "補件期限(天)",
+        "review_days": "覆核期限(天)",
+        "accept_sla_hours": "受理時限(小時)",
+        "resolve_sla_hours": "處理時限(小時)",
+        "verify_limit_per_5min": "驗真限流(次/5分鐘)"
+      }
     },
     "inspect": {
       "title": "監察與審核品質",
@@ -4702,12 +4981,11 @@
       "nightOps": "夜間操作 {{count}} 次",
       "consistencyTitle": "結果一致性",
       "integrationTitle": "業務聯動與抽查",
-      "integrationLive": "五類業務已全部接入即時校驗與抽查。",
+      "integrationLive": "七類業務已全部接入即時校驗與抽查。",
       "integrated": "已接入",
       "reserved": "預留",
       "sample": "抽查",
       "sampleSummary": "{{office}}:庫內 {{total}} 條,本次抽查 {{count}} 條",
-      "sampleNote": "監察抽查",
       "sampleDone": "已抽查 {{count}} 條記錄並產生監察報告",
       "reportsTitle": "監察報告",
       "createReport": "建立報告",
@@ -4725,7 +5003,11 @@
         "quality": "品質報告",
         "anomaly": "異常報告",
         "consistency": "一致性報告"
-      }
+      },
+      "reportTitle": "{{office}}審核抽查",
+      "reportSummary": "抽查 {{office}}:共 {{total}} 條,抽樣 {{sampled}} 條",
+      "reportStatusLine": "狀態分布:{{list}}",
+      "reportNote": "說明:{{note}}"
     },
     "stats": {
       "title": "統計報表",
@@ -4817,7 +5099,20 @@
         "blacklist_user": "加入黑名單",
         "unblacklist_user": "移出黑名單",
         "update_appeal_config": "更新署務設定",
-        "export_appeals_csv": "匯出申訴 CSV"
+        "export_appeals_csv": "匯出申訴 CSV",
+        "create_appeal_draft": "創建申訴草稿",
+        "submit_appeal": "提交申訴",
+        "withdraw_appeal": "撤回申訴",
+        "supplement_appeal": "補交材料",
+        "evaluate_appeal": "評價申訴",
+        "submit_review": "提交覆核申請",
+        "submit_complaint": "提交投訴建議",
+        "evaluate_complaint": "評價投訴建議",
+        "submit_ticket": "提交工單",
+        "close_ticket": "關閉工單",
+        "privacy_erase": "清除個人資料",
+        "appeal_decision_writeback": "決定書寫回業務",
+        "auto_close_supplement_timeout": "補件超時自動關閉"
       },
       "result": {
         "valid": "有效",
@@ -4831,6 +5126,51 @@
         "not_found": "未查詢到",
         "rate_limited": "觸發限流"
       }
+    },
+    "bizAction": {
+      "accept": "受理",
+      "approve": "通過",
+      "approved": "認證通過",
+      "auto_expired": "到期失效",
+      "cert_issued": "簽發證書",
+      "cert_marked_used": "標註已使用",
+      "cert_regenerated": "補發證書",
+      "cert_revoked": "撤銷證書",
+      "create": "創建",
+      "draft_saved": "儲存草稿",
+      "enter": "入境登記",
+      "establish": "建交",
+      "execute": "執行",
+      "exit": "出境登記",
+      "freeze": "凍結",
+      "invalidate": "失效",
+      "issue": "簽發",
+      "mark_used": "標記已使用",
+      "reject": "駁回",
+      "rejected": "認證駁回",
+      "require_supplement": "要求補件",
+      "resubmitted": "補件重提",
+      "resume": "恢復",
+      "revoke": "註銷",
+      "sever": "斷交",
+      "sever_dismiss": "駁回斷交申請",
+      "sever_request": "申請斷交",
+      "submit": "提交",
+      "submitted": "提交申請",
+      "supplement_requested": "要求補件",
+      "supplement_submit": "提交補件",
+      "suspend": "暫停",
+      "unfreeze": "解凍",
+      "void": "作廢",
+      "withdraw": "撤回",
+      "withdrawn": "撤回申請"
+    },
+    "reason": {
+      "other": "其他原因",
+      "duplicate": "重複申訴",
+      "not_appealable": "不屬於可申訴事項",
+      "missing_materials": "材料不全",
+      "outside_window": "超出辦理時限"
     }
   },
   "arch": {
@@ -4990,11 +5330,6 @@
       "visa": "簽註申請署",
       "immigration": "皇家口岸入境署"
     },
-    "action": {
-      "list": "查詢目錄",
-      "detail": "查看詳情",
-      "export": "匯出"
-    },
     "event": {
       "submit": "提交申請",
       "accept": "受理",
@@ -5141,8 +5476,24 @@
           "request.approve": "批准申請",
           "request.execute": "執行申請",
           "request.reject": "駁回申請"
+        },
+        "targetLabel": {
+          "archive": "檔案",
+          "deletion_request": "刪除申請",
+          "archive_rule": "歸檔規則"
         }
+      },
+      "action": {
+        "list": "查詢目錄",
+        "detail": "查看詳情",
+        "export": "匯出"
       }
+    },
+    "recordType": {
+      "visa_application": "簽註申請紀錄",
+      "visa_permit": "電子簽註紀錄",
+      "im_declaration": "入境申報紀錄",
+      "im_entry": "出入境紀錄"
     }
   },
   "post": {
@@ -5338,6 +5689,10 @@
       "archives_appeal_reopened": {
         "title": "申訴複核重開刪除申請:{{no}}",
         "body": "你的資料刪除申請 {{no}} 經申訴複核重新進入處理流程,請留意進度更新。"
+      },
+      "annual_report_ready": {
+        "title": "年度報告 {{year}} 已產生",
+        "body": "你的 {{year}} 年度報告(編號 {{no}})已產生,可到統計署「我的報告」查看、下載或重新產生。"
       }
     },
     "postcardStatus": {
@@ -5360,10 +5715,6 @@
       "education": "教育與科學署",
       "archives": "檔案與紀錄署",
       "stats": "統計署"
-    },
-    "field": {
-      "no": "編號",
-      "publishedAt": "發布時間"
     },
     "admin": {
       "allStatus": "全部狀態",
@@ -5400,7 +5751,9 @@
         "variables": "變數清單",
         "varTip": "變數用雙花括號包裹,如 {{no}}、{{title}};傳送時用 params 裡同名字段取代,缺省為空。",
         "updatedAt": "更新時間",
-        "deleteTip": "範本 {{type}} 將被軟刪除,不再參與渲染。確定要刪除嗎?"
+        "deleteTip": "範本 {{type}} 將被軟刪除,不再參與渲染。確定要刪除嗎?",
+        "typePlaceholder": "小寫字母、數字與底線",
+        "variablesPlaceholder": "變數名稱,以逗號分隔"
       },
       "postcards": {
         "title": "明信片管理",
@@ -5427,7 +5780,20 @@
         "color": "卡片配色",
         "description": "範本描述",
         "sortOrder": "排序",
-        "deleteTip": "範本 {{code}} 將被刪除;已有明信片使用過的範本會被拒絕刪除。確定刪除嗎?"
+        "deleteTip": "範本 {{code}} 將被刪除;已有明信片使用過的範本會被拒絕刪除。確定刪除嗎?",
+        "color_app-teal": "藍綠",
+        "color_app-yellow": "明黃",
+        "color_app-orange": "橙色",
+        "color_app-pink": "粉色",
+        "color_app-blue": "藍色",
+        "color_app-green": "綠色",
+        "color_purple": "紫色",
+        "color_app-red": "紅色",
+        "color_lime-green": "青檸綠",
+        "color_yellow-green": "黃綠",
+        "color_brown": "棕色",
+        "color_warm-peach-pink": "暖桃粉",
+        "codePlaceholder": "大寫字母、數字與底線"
       },
       "stats": {
         "title": "基礎統計",
@@ -5457,7 +5823,42 @@
         "target": "對象",
         "detail": "詳情",
         "time": "時間",
-        "searchPlaceholder": "依動作關鍵字篩選"
+        "searchPlaceholder": "依動作關鍵字篩選",
+        "actionName": {
+          "notice_create": "新建公告",
+          "notice_update": "編輯公告",
+          "notice_delete": "刪除公告",
+          "notice_publish": "發布公告",
+          "notice_offline": "下架公告",
+          "template_create": "新建通知模板",
+          "template_update": "編輯通知模板",
+          "template_delete": "刪除通知模板",
+          "card_template_create": "新建明信片模板",
+          "card_template_update": "編輯明信片模板",
+          "card_template_delete": "刪除明信片模板",
+          "postcard_takedown": "下架明信片",
+          "postcard_send": "寄出明信片",
+          "postcard_draft": "暫存明信片",
+          "postcard_update": "編輯明信片",
+          "postcard_receive": "確認收件",
+          "postcard_favorite": "收藏明信片",
+          "postcard_unfavorite": "取消收藏",
+          "postcard_delete": "刪除明信片",
+          "subscribe_notice": "訂閱公告",
+          "unsubscribe_notice": "取消訂閱公告",
+          "update_preference": "更新訂閱偏好"
+        },
+        "targetType": {
+          "notice": "公告",
+          "template": "通知模板",
+          "postcard": "明信片",
+          "card_template": "明信片模板",
+          "user": "使用者"
+        }
+      },
+      "field": {
+        "no": "編號",
+        "publishedAt": "發布時間"
       }
     }
   },
@@ -5561,7 +5962,17 @@
         "revokeTitle": "回收徽章:{{name}}",
         "revokeTip": "回收後 {{user}} 的這枚徽章立即失效;若之後重新達標也不會自動補發。",
         "revokeReasonPlaceholder": "回收原因(可選,200 字以內)",
-        "revokeDone": "徽章已回收"
+        "revokeDone": "徽章已回收",
+        "icon": {
+          "TrophyIcon": "獎盃",
+          "StarIcon": "星星",
+          "CompassIcon": "指南針",
+          "MapIcon": "地圖",
+          "CameraIcon": "相機",
+          "HeartIcon": "愛心",
+          "FlagIcon": "旗幟"
+        },
+        "codePlaceholder": "以小寫字母開頭,可含數字與底線"
       },
       "stats": {
         "title": "基礎統計",
@@ -5606,8 +6017,30 @@
           "badge_delete": "刪除徽章",
           "badge_award": "發放徽章",
           "badge_revoke": "回收徽章",
-          "checkin": "景點打卡"
+          "checkin": "景點打卡",
+          "attraction_online": "上線景點",
+          "attraction_offline": "下線景點"
+        },
+        "targetType": {
+          "attraction": "景點",
+          "article": "文章",
+          "badge": "徽章",
+          "config": "規則設定"
         }
+      },
+      "field": {
+        "no": "編號",
+        "type": "類型",
+        "openState": "開放狀態",
+        "summary": "簡介",
+        "description": "介紹",
+        "checkinPoints": "打卡點",
+        "sortOrder": "排序",
+        "title": "標題",
+        "body": "內文",
+        "publishedAt": "發布時間",
+        "icon": "圖示",
+        "updatedAt": "更新時間"
       }
     },
     "type": {
@@ -5637,20 +6070,6 @@
         "exited": "已離境",
         "invalid": "已作廢"
       }
-    },
-    "field": {
-      "no": "編號",
-      "type": "類型",
-      "openState": "開放狀態",
-      "summary": "簡介",
-      "description": "介紹",
-      "checkinPoints": "打卡點",
-      "sortOrder": "排序",
-      "title": "標題",
-      "body": "內文",
-      "publishedAt": "發布時間",
-      "icon": "圖示",
-      "updatedAt": "更新時間"
     },
     "filter": {
       "allTypes": "全部類型",
@@ -5945,7 +6364,9 @@
         "sortOrder": "排序",
         "description": "指標說明",
         "formula": "口徑定義",
-        "deleteConfirm": "確定刪除口徑「{{name}}」嗎?刪除後前台立即不再展示。"
+        "deleteConfirm": "確定刪除口徑「{{name}}」嗎?刪除後前台立即不再展示。",
+        "codePlaceholder": "以小寫字母開頭,可含數字與底線",
+        "statusValuePlaceholder": "來源表狀態列的取值,留空表示全部"
       },
       "export": {
         "title": "資料匯出",
@@ -6009,10 +6430,6 @@
     "recordStatus": {
       "in_progress": "進行中",
       "completed": "已完成"
-    },
-    "reviewAction": {
-      "approve": "通過",
-      "reject": "駁回"
     },
     "targetType": {
       "entry": "詞條",
@@ -6242,6 +6659,14 @@
           "approve_content": "審核通過",
           "reject_content": "審核駁回"
         }
+      },
+      "reviewAction": {
+        "approve": "通過",
+        "reject": "駁回"
+      },
+      "taskStatus": {
+        "active": "啟用",
+        "inactive": "停用"
       }
     }
   },
@@ -6250,10 +6675,7 @@
     "subtitle": "與您帳戶關聯的有效證件與紀錄,跨署統一查看與到期提醒。",
     "empty": "暫無證件紀錄,先到各署辦理業務後會自動出現在這裡。",
     "refresh": "重新整理",
-    "noExpiry": "長期有效",
     "expiringSoon": "即將到期",
-    "expired": "已過期",
-    "valid": "有效",
     "column": {
       "office": "簽發署",
       "type": "證件類型",
@@ -6261,7 +6683,6 @@
       "status": "狀態",
       "validUntil": "有效期至"
     },
-    "viewDetail": "查看詳情",
     "goTo": "前往{{office}}",
     "status": {
       "valid": "有效",
@@ -6283,8 +6704,7 @@
       "diplomaticOrphaned": "您的外交身分已失效，仍有 {{count}} 份外交簽註處於有效狀態"
     },
     "benefits": {
-      "title": "我的互認權益",
-      "empty": "暫無可享受的互認權益"
+      "title": "我的互認權益"
     }
   },
   "residentPrefill": {
@@ -6297,38 +6717,5 @@
     "skip": "暫不使用",
     "nothing": "居民證沒有可直接預填的欄位,請手動填寫",
     "filled": "已從居民證預填"
-  },
-  "recognizeAdmin": {
-    "title": "跨署互認規則",
-    "subtitle": "配置持有哪些證件可免辦、簡化或優先辦理哪些業務；規則啟停即時生效，業務申請時自動校驗。",
-    "create": "新增規則",
-    "edit": "編輯規則",
-    "delete": "刪除規則",
-    "deleteConfirm": "確定刪除互認規則「{{benefit}}」嗎？",
-    "service": "目標業務",
-    "holderSource": "持有證件署",
-    "holderKind": "證件種類",
-    "effect": "互認方式",
-    "benefit": "權益說明(簡體)",
-    "benefitTw": "權益說明(繁體)",
-    "empty": "暫無互認規則",
-    "created": "規則已建立",
-    "updated": "規則已更新",
-    "benefitRequired": "請填寫權益說明",
-    "serviceKey": {
-      "visa": "簽註申請署",
-      "immigration": "皇家口岸入境署",
-      "resident": "皇家居民登記署",
-      "dip": "皇家外交事務署",
-      "protocol": "皇家禮賓與活動署",
-      "docs": "皇家文書與認證署",
-      "appeal": "皇家申訴與監察署",
-      "archives": "皇家檔案與紀錄署"
-    },
-    "effects": {
-      "simplify": "簡化辦理",
-      "waive": "免於辦理",
-      "priority": "優先辦理"
-    }
   }
 }

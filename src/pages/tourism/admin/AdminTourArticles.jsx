@@ -39,7 +39,10 @@ function statusOptions(t) {
 }
 
 export default function AdminTourArticles() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isTw = String(i18n.language || '').startsWith('zh-TW');
+  // 第二列永远显示「另一种语言」:繁中界面显示简体源(titleCn),简中界面显示繁体(titleTw)。
+  const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
@@ -146,15 +149,15 @@ export default function AdminTourArticles() {
   };
 
   const columns = [
-    { title: t('tour.field.no'), dataIndex: 'no', width: 180 },
-    { title: t('tour.field.title'), dataIndex: 'title' },
+    { title: t('tour.admin.field.no'), dataIndex: 'no', width: 180 },
+    { title: t('tour.admin.field.title'), dataIndex: 'title' },
     {
-      title: t('tour.field.title') + ' · ' + t('common.traditional'),
-      dataIndex: 'titleTw',
-      render: (v) => v || '-',
+      title: t('tour.admin.field.title') + ' · ' + otherLangLabel,
+      dataIndex: 'title',
+      render: (v, row) => (isTw ? (row.titleCn ?? row.titleTw ?? row.title) : row.titleTw) || '-',
     },
     {
-      title: t('tour.field.type'),
+      title: t('tour.admin.field.type'),
       dataIndex: 'type',
       width: 90,
       render: (v) => (
@@ -173,7 +176,7 @@ export default function AdminTourArticles() {
         </Tag>
       ),
     },
-    { title: t('tour.field.publishedAt'), dataIndex: 'publishedAt', width: 110, render: fmtDate },
+    { title: t('tour.admin.field.publishedAt'), dataIndex: 'publishedAt', width: 110, render: fmtDate },
     {
       title: t('common.actions'),
       dataIndex: 'actions',
@@ -260,7 +263,7 @@ export default function AdminTourArticles() {
         <div className="tour-form">
           <div className="tour-form-grid">
             <label>
-              {t('tour.field.title')} *
+              {t('tour.admin.field.title')} *
               <Input
                 size="large"
                 value={form.title}
@@ -270,7 +273,7 @@ export default function AdminTourArticles() {
               />
             </label>
             <label>
-              {t('tour.field.title')} · {t('common.traditional')}
+              {t('tour.admin.field.title')} · {t('common.traditional')}
               <Input
                 size="large"
                 value={form.titleTw}
@@ -280,7 +283,7 @@ export default function AdminTourArticles() {
               />
             </label>
             <label>
-              {t('tour.field.type')}
+              {t('tour.admin.field.type')}
               <Select value={form.type} onChange={(key) => setForm({ ...form, type: key })} options={typeOptions(t)} />
             </label>
             <label>
@@ -293,19 +296,19 @@ export default function AdminTourArticles() {
             </label>
           </div>
           <label>
-            {t('tour.field.summary')}
+            {t('tour.admin.field.summary')}
             <TextArea rows={2} maxLength={300} value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.summary')} · {t('common.traditional')}
+            {t('tour.admin.field.summary')} · {t('common.traditional')}
             <TextArea rows={2} maxLength={300} value={form.summaryTw} onChange={(e) => setForm({ ...form, summaryTw: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.body')}
+            {t('tour.admin.field.body')}
             <TextArea rows={6} maxLength={6000} value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.body')} · {t('common.traditional')}
+            {t('tour.admin.field.body')} · {t('common.traditional')}
             <TextArea rows={6} maxLength={6000} value={form.bodyTw} onChange={(e) => setForm({ ...form, bodyTw: e.target.value })} />
           </label>
         </div>

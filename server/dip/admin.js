@@ -26,6 +26,18 @@ ensureDipSchema();
 const router = Router();
 
 const REJECT_REASONS = new Set(['info_missing', 'info_false', 'duplicate', 'type_mismatch', 'other']);
+const REJECT_REASON_TEXT = {
+  info_missing: ['信息不全', '資訊不全'],
+  info_false: ['信息不实', '資訊不實'],
+  duplicate: ['重复申请', '重複申請'],
+  type_mismatch: ['类型不符', '類型不符'],
+  other: ['其他原因', '其他原因'],
+};
+function reasonText(code, tw = false) {
+  const pair = REJECT_REASON_TEXT[code];
+  if (!pair) return String(code ?? '');
+  return tw ? pair[1] : pair[0];
+}
 const OFFICE_STATUSES = new Set(['open', 'closed', 'maintenance']);
 const AGREEMENT_TYPES = new Set(['entry_courtesy', 'visa_waiver', 'event_pass']);
 const EDITABLE_SETTINGS = new Set([
@@ -73,7 +85,7 @@ function relationDetail(row) {
     decidedAt: row.decided_at,
     events: db
       .prepare(
-        `SELECT e.action, e.note, e.created_at, u.display_name AS actor
+        `SELECT e.action, e.note, e.note_tw, e.created_at, u.display_name AS actor
          FROM dip_events e LEFT JOIN users u ON u.id = e.actor_id
          WHERE e.owner_type = 'relation' AND e.owner_id = ? ORDER BY e.id`
       )
@@ -148,7 +160,9 @@ function approveRelationCore(row, actor, { note = '', auto = false } = {}) {
   if (!['pending_review', 'supplement_required'].includes(row.status)) {
     throw conflict('DIP_INVALID_STATE', 'Only pending relations can be established');
   }
-  const typeName = db.prepare('SELECT name FROM dip_relation_types WHERE code = ?').get(row.relation_type)?.name || row.relation_type;
+  const typeRow = db.prepare('SELECT name, name_tw FROM dip_relation_types WHERE code = ?').get(row.relation_type);
+  const typeName = typeRow?.name || row.relation_type;
+  const typeNameTw = typeRow?.name_tw || typeName;
   const ts = now();
   const info = db
     .prepare(
@@ -163,7 +177,8 @@ function approveRelationCore(row, actor, { note = '', auto = false } = {}) {
     row.user_id,
     'relation_established',
     { no: row.no, entity: row.entity_name, typeName },
-    { relationNo: row.no }
+    { relationNo: row.no },
+    { no: row.no, entity: row.entity_name, typeName: typeNameTw }
   );
   audit(actor?.id ?? null, 'dip:relation.establish', 'relation', row.no, auto ? { auto: true } : {});
 }
@@ -186,8 +201,14 @@ router.post('/relations/:id/reject', ...reviewer, (req, res) => {
   db.prepare(
     "UPDATE dip_relations SET status = 'rejected', reject_code = ?, reject_comment = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(reason, comment, req.user.id, ts, ts, row.id);
-  logEvent('relation', row.id, 'reject', req.user.id, `${reason}${comment ? ` - ${comment}` : ''}`);
-  notify(row.user_id, 'relation_rejected', { no: row.no, reason, comment: comment || '如有疑问请联系管理员。' }, { relationNo: row.no });
+  logEvent('relation', row.id, 'reject', req.user.id, `${reasonText(reason)}${comment ? ` - ${comment}` : ''}`, `${reasonText(reason, true)}${comment ? ` - ${comment}` : ''}`);
+  notify(
+    row.user_id,
+    'relation_rejected',
+    { no: row.no, reason: reasonText(reason), comment: comment || '如有疑问请联系管理员。' },
+    { relationNo: row.no },
+    { no: row.no, reason: reasonText(reason, true), comment: comment || '如有疑問請聯絡管理員。' }
+  );
   audit(req.user.id, 'dip:relation.reject', 'relation', row.no, { reason });
   res.json({ relation: relationDetail(getRelation(row.id)) });
 });
@@ -264,8 +285,14 @@ router.post('/relations/:id/sever', ...reviewer, (req, res) => {
     for (const idt of linked) {
       db.prepare("UPDATE dip_identities SET status = 'expired', inactive_reason = 'relation_severed', updated_at = ? WHERE id = ?").run(ts, idt.id);
       affectedUsers.add(idt.user_id);
-      logEvent('identity', idt.id, 'invalidate', req.user.id, `建交关系 ${row.no} 断交,身份同步失效`);
-      notify(idt.user_id, 'identity_invalidated', { no: idt.no, reason: `建交关系 ${row.no} 已断交` }, { identityNo: idt.no });
+      logEvent('identity', idt.id, 'invalidate', req.user.id, `建交关系 ${row.no} 断交,身份同步失效`, `建交關係 ${row.no} 斷交,身分同步失效`);
+      notify(
+        idt.user_id,
+        'identity_invalidated',
+        { no: idt.no, reason: `建交关系 ${row.no} 已断交` },
+        { identityNo: idt.no },
+        { no: idt.no, reason: `建交關係 ${row.no} 已斷交` }
+      );
     }
     logEvent('relation', row.id, 'sever', req.user.id, reason);
   });
@@ -306,7 +333,7 @@ function identityDetail(row) {
     createdAt: row.created_at,
     events: db
       .prepare(
-        `SELECT e.action, e.note, e.created_at, u.display_name AS actor
+        `SELECT e.action, e.note, e.note_tw, e.created_at, u.display_name AS actor
          FROM dip_events e LEFT JOIN users u ON u.id = e.actor_id
          WHERE e.owner_type = 'identity' AND e.owner_id = ? ORDER BY e.id`
       )
@@ -387,7 +414,9 @@ function approveIdentityCore(row, actor, { note = '', auto = false } = {}) {
     throw conflict('DIP_INVALID_STATE', 'Only pending identities can be approved');
   }
   assertRelationValidForIdentity(row);
-  const typeName = db.prepare('SELECT name FROM dip_identity_types WHERE code = ?').get(row.identity_type)?.name || row.identity_type;
+  const typeRow = db.prepare('SELECT name, name_tw FROM dip_identity_types WHERE code = ?').get(row.identity_type);
+  const typeName = typeRow?.name || row.identity_type;
+  const typeNameTw = typeRow?.name_tw || typeName;
   const ts = now();
   const token = makeToken();
   const approve = db.transaction(() => {
@@ -408,7 +437,13 @@ function approveIdentityCore(row, actor, { note = '', auto = false } = {}) {
     logEvent('identity', row.id, 'approve', actor?.id ?? null, note);
   });
   approve();
-  notify(row.user_id, 'identity_approved', { no: row.no, typeName, termEnd: row.term_end }, { identityNo: row.no });
+  notify(
+    row.user_id,
+    'identity_approved',
+    { no: row.no, typeName, termEnd: row.term_end },
+    { identityNo: row.no },
+    { no: row.no, typeName: typeNameTw, termEnd: row.term_end }
+  );
   audit(actor?.id ?? null, 'dip:identity.approve', 'identity', row.no, auto ? { auto: true } : {});
   return token;
 }
@@ -431,8 +466,14 @@ router.post('/identities/:id/reject', ...reviewer, (req, res) => {
   db.prepare(
     "UPDATE dip_identities SET status = 'rejected', reject_code = ?, reject_comment = ?, decided_by = ?, updated_at = ? WHERE id = ?"
   ).run(reason, comment, req.user.id, ts, row.id);
-  logEvent('identity', row.id, 'reject', req.user.id, `${reason}${comment ? ` - ${comment}` : ''}`);
-  notify(row.user_id, 'identity_rejected', { no: row.no, reason, comment: comment || '如有疑问请联系管理员。' }, { identityNo: row.no });
+  logEvent('identity', row.id, 'reject', req.user.id, `${reasonText(reason)}${comment ? ` - ${comment}` : ''}`, `${reasonText(reason, true)}${comment ? ` - ${comment}` : ''}`);
+  notify(
+    row.user_id,
+    'identity_rejected',
+    { no: row.no, reason: reasonText(reason), comment: comment || '如有疑问请联系管理员。' },
+    { identityNo: row.no },
+    { no: row.no, reason: reasonText(reason, true), comment: comment || '如有疑問請聯絡管理員。' }
+  );
   audit(req.user.id, 'dip:identity.reject', 'identity', row.no, { reason });
   res.json({ identity: identityDetail(getIdentity(row.id)) });
 });
@@ -1020,7 +1061,7 @@ router.get('/stats', ...adminOnly, (_req, res) => {
   }
   const courtesyUsage = db
     .prepare(
-      `SELECT c.courtesy_code AS code, t.name AS name, COUNT(*) AS n
+      `SELECT c.courtesy_code AS code, t.name AS name, t.name_tw AS name_tw, COUNT(*) AS n
        FROM dip_courtesy_records c LEFT JOIN dip_courtesy_types t ON t.code = c.courtesy_code
        GROUP BY c.courtesy_code ORDER BY n DESC`
     )

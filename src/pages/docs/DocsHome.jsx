@@ -31,7 +31,7 @@ export default function DocsHome() {
         setTypes(tp.items || []);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         if (!cancelled) {
           setNotices([]);
           setTypes([]);

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Background, Card, Input, Tag, Title, Typewriter } from 'animal-island-ui';
 import { SailboatIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { PERMIT_STATUS_COLORS, fmtDate, toastVisaError } from './shared.jsx';
-import { toastError } from '../../components/toast.js';
+import { request } from '../../api/client.js';
 
 export default function VisaVerify() {
   const { t } = useTranslation();
@@ -24,17 +24,12 @@ export default function VisaVerify() {
     if (!query) return;
     setBusy(true);
     try {
-      const res = await fetch(`/api/visa/verify?no=${encodeURIComponent(query)}`);
-      const data = await res.json();
-      if (!res.ok) {
-        toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
-        setResult(failedResult(data));
-        return;
-      }
+      // 走共享请求层:带 X-Nailong-Locale,验真结果(类型名/签发机构)才会是当前语言。
+      const data = await request(`/visa/verify?no=${encodeURIComponent(query)}`);
       setResult({ ...data, query });
     } catch (err) {
       toastVisaError(t, err);
-      setResult({ found: false, query });
+      setResult(failedResult(err));
     } finally {
       setBusy(false);
     }
@@ -43,17 +38,11 @@ export default function VisaVerify() {
   const verifyByToken = async (token) => {
     setBusy(true);
     try {
-      const res = await fetch(`/api/visa/verify?token=${encodeURIComponent(token)}`);
-      const data = await res.json();
-      if (!res.ok) {
-        toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
-        setResult(failedResult(data));
-        return;
-      }
+      const data = await request(`/visa/verify?token=${encodeURIComponent(token)}`);
       setResult({ ...data, query: '' });
     } catch (err) {
       toastVisaError(t, err);
-      setResult({ found: false, query: '' });
+      setResult(failedResult(err));
     } finally {
       setBusy(false);
     }

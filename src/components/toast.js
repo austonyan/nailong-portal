@@ -48,7 +48,16 @@ export const toastError = (message) => toast('error', message);
 export const toastInfo = (message) => toast('info', message);
 export const toastWarning = (message) => toast('warning', message);
 
-// 把 ApiError.code 映射到 api.* 文案,未知错误码回退到服务端 message。
+// 把 ApiError.code 映射到 api.* 文案。
+// 服务端 message 是英文,绝不能直接展示给用户:未知错误码统一回退到通用错误文案,
+// 原始 message 只留在控制台便于排查。
 export function toastApiError(t, err) {
-  toastError(t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') }));
+  const code = err?.code;
+  const key = `api.${code}`;
+  const text = code ? t(key) : '';
+  const known = !!text && text !== key;
+  if (!known && (code || err?.message)) {
+    console.warn('[api] unmapped error', code ?? '(no code)', err?.message ?? '');
+  }
+  toastError(known ? text : t('api.INTERNAL_ERROR'));
 }

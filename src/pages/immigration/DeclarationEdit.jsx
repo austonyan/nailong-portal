@@ -6,7 +6,7 @@ import {
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImNav } from '../../components/immigration/shared.jsx';
+import { ImNav, pickLocalized } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
@@ -16,7 +16,7 @@ const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
 const ITEM_KEYS = ['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card'];
 
 export default function DeclarationEdit() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams(); // draft id when editing
   const [searchParams] = useSearchParams();
@@ -101,7 +101,7 @@ export default function DeclarationEdit() {
       const data = await api.post('/immigration/visa/check', { visaNo });
       setVisaState(data);
       if (data.result === 'valid') toastSuccess(t('imm.declare.visaOk'));
-      else toastWarning(t(`api.IMM_VISA_${data.result.toUpperCase()}`, { defaultValue: data.result }));
+      else toastWarning(t(`api.IMM_VISA_${data.result.toUpperCase()}`, { defaultValue: t('common.unknown') }));
     } catch (err) {
       toastApiError(err);
     }
@@ -212,7 +212,7 @@ export default function DeclarationEdit() {
       <Card>
         <ResidentPrefill onFill={fillFromResident} fields={['nickname', 'contact']} />
         <Form form={form} layout="vertical" onFinish={openConfirm}>
-          <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true }]}>
+          <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true, message: t('common.required') }]}>
             <Select
               options={ports.map((p) => ({ key: p.code, label: `${p.name} (${p.code})` }))}
               placeholder={t('imm.declare.portPlaceholder')}
@@ -225,7 +225,7 @@ export default function DeclarationEdit() {
           <FormItem name="contact" label={t('imm.declare.contact')} rules={[{ required: true, message: t('imm.declare.required') }]}>
             <Input size="large" placeholder={t('imm.declare.contactPlaceholder')} allowClear maxLength={60} />
           </FormItem>
-          <FormItem name="purpose" label={t('imm.declare.purpose')} rules={[{ required: true }]}>
+          <FormItem name="purpose" label={t('imm.declare.purpose')} rules={[{ required: true, message: t('common.required') }]}>
             <Radio options={PURPOSES.map((p) => ({ label: t(`imm.purpose.${p}`), value: p }))} direction="horizontal" />
           </FormItem>
           <FormItem name="purposeNote" label={`${t('imm.declare.purposeNote')}(${t('common.optional')})`}>
@@ -268,10 +268,10 @@ export default function DeclarationEdit() {
             <div className="im-visa-result">
               {visaState.result === 'valid' ? (
                 <Tag color="app-green" variant="solid">
-                  {t('imm.visaResult.valid')} · {visaState.detail?.type} · {t('imm.visaResult.validUntil', { date: visaState.detail?.validUntil })}
+                  {t('imm.visaResult.valid')} · {pickLocalized(visaState.detail, 'type', i18n.language) || '-'} · {t('imm.visaResult.validUntil', { date: visaState.detail?.validUntil })}
                 </Tag>
               ) : (
-                <Tag color="app-red" variant="soft">{t(`imm.visaResult.${visaState.result}`, { defaultValue: visaState.result })}</Tag>
+                <Tag color="app-red" variant="soft">{t(`imm.visaResult.${visaState.result}`, { defaultValue: t('common.unknown') })}</Tag>
               )}
             </div>
           )}
@@ -353,7 +353,7 @@ export default function DeclarationEdit() {
           <p><b>{t('imm.declare.companions')}:</b> {preview.companions ?? 0}</p>
           <p><b>{t('imm.declare.address')}:</b> {preview.address || '-'}</p>
           <p><b>{t('imm.declare.visaNo')}:</b> {preview.visaNo}</p>
-          <p><b>{t('imm.declare.items')}:</b> {selectedQtyItems.map((i) => `${t(`imm.item.${i.key}`)} x${i.qty}`).join(', ') || '-'}</p>
+          <p><b>{t('imm.declare.items')}:</b> {selectedQtyItems.map((i) => `${t(`imm.item.${i.key}`, { defaultValue: t('common.unknown') })} ×${i.qty}`).join(', ') || '-'}</p>
         </div>
       </Modal>
     </div>

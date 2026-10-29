@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
 import { PlusIcon, RefreshIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { toastSuccess, toastError } from '../../components/toast.js';
+import { toastSuccess, toastError, toastApiError } from '../../components/toast.js';
 
 const SERVICES = ['visa', 'immigration', 'resident', 'dip', 'protocol', 'docs', 'appeal', 'archives'];
 const SOURCES = ['visa', 'immigration', 'resident', 'diplomatic', 'document', 'protocol', 'appeal', 'archives'];
@@ -38,7 +38,7 @@ export default function AdminRecognize() {
       const data = await api.get('/recognize');
       setItems(data.items ?? []);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastApiError(t, err);
     } finally {
       setLoading(false);
     }
@@ -74,22 +74,22 @@ export default function AdminRecognize() {
 
   const save = async () => {
     if (!String(form.benefit || '').trim()) {
-      toastError(t('recognizeAdmin.benefitRequired'));
+      toastError(t('admin.recognize.benefitRequired'));
       return;
     }
     setBusy(true);
     try {
       if (editing.id) {
         await api.patch(`/recognize/${editing.id}`, form);
-        toastSuccess(t('recognizeAdmin.updated'));
+        toastSuccess(t('admin.recognize.updated'));
       } else {
         await api.post('/recognize', form);
-        toastSuccess(t('recognizeAdmin.created'));
+        toastSuccess(t('admin.recognize.created'));
       }
       setEditing(null);
       await load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -100,7 +100,7 @@ export default function AdminRecognize() {
       await api.patch(`/recognize/${row.id}`, { enabled: !row.enabled });
       await load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastApiError(t, err);
     }
   };
 
@@ -113,7 +113,7 @@ export default function AdminRecognize() {
       setDeleteTarget(null);
       await load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -121,26 +121,26 @@ export default function AdminRecognize() {
 
   const columns = [
     {
-      title: t('recognizeAdmin.service'),
+      title: t('admin.recognize.service'),
       dataIndex: 'serviceKey',
-      render: (v) => t(`recognizeAdmin.serviceKey.${v}`),
+      render: (v) => t(`admin.recognize.serviceKey.${v}`),
     },
     {
-      title: t('recognizeAdmin.holderSource'),
+      title: t('admin.recognize.holderSource'),
       dataIndex: 'holderSource',
       render: (v) => t(`linkage.office.${v}`),
     },
-    { title: t('recognizeAdmin.holderKind'), dataIndex: 'holderKind', render: (v) => v || '-' },
+    { title: t('admin.recognize.holderKind'), dataIndex: 'holderKind', render: (v) => (v ? t(`linkage.kind.${v}`, { defaultValue: t('common.unknown') }) : '-') },
     {
-      title: t('recognizeAdmin.effect'),
+      title: t('admin.recognize.effect'),
       dataIndex: 'effect',
       render: (v) => (
         <Tag color={EFFECT_COLOR[v] || 'default'} variant="soft">
-          {t(`recognizeAdmin.effects.${v}`)}
+          {t(`admin.recognize.effects.${v}`)}
         </Tag>
       ),
     },
-    { title: t('recognizeAdmin.benefit'), dataIndex: 'benefit' },
+    { title: t('admin.recognize.benefit'), dataIndex: 'benefit' },
     {
       title: t('common.status'),
       dataIndex: 'enabled',
@@ -165,14 +165,14 @@ export default function AdminRecognize() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('recognizeAdmin.title')}</Title>
-        <p className="muted-text">{t('recognizeAdmin.subtitle')}</p>
+        <Title size="middle">{t('admin.recognize.title')}</Title>
+        <p className="muted-text">{t('admin.recognize.subtitle')}</p>
         <div className="table-actions">
           <Button icon={<RefreshIcon />} onClick={load} loading={loading}>
             {t('common.refresh')}
           </Button>
           <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
-            {t('recognizeAdmin.create')}
+            {t('admin.recognize.create')}
           </Button>
         </div>
       </div>
@@ -183,14 +183,14 @@ export default function AdminRecognize() {
           loading={loading}
           rowKey="id"
           pagination={{ pageSize: 20, showTotal: true }}
-          emptyText={t('recognizeAdmin.empty')}
+          emptyText={t('admin.recognize.empty')}
         />
       </Card>
 
       <Modal
         maskClosable={false}
         open={editing !== null}
-        title={editing?.id ? t('recognizeAdmin.edit') : t('recognizeAdmin.create')}
+        title={editing?.id ? t('admin.recognize.edit') : t('admin.recognize.create')}
         onClose={closeModal}
         typewriter={false}
         footer={
@@ -206,15 +206,15 @@ export default function AdminRecognize() {
       >
         <div className="recognize-form">
           <label className="recognize-field">
-            <span>{t('recognizeAdmin.service')}</span>
+            <span>{t('admin.recognize.service')}</span>
             <Select
               value={form.serviceKey}
               onChange={(v) => setField('serviceKey', v)}
-              options={SERVICES.map((s) => ({ key: s, label: t(`recognizeAdmin.serviceKey.${s}`) }))}
+              options={SERVICES.map((s) => ({ key: s, label: t(`admin.recognize.serviceKey.${s}`) }))}
             />
           </label>
           <label className="recognize-field">
-            <span>{t('recognizeAdmin.holderSource')}</span>
+            <span>{t('admin.recognize.holderSource')}</span>
             <Select
               value={form.holderSource}
               onChange={(v) => setField('holderSource', v)}
@@ -222,23 +222,29 @@ export default function AdminRecognize() {
             />
           </label>
           <label className="recognize-field">
-            <span>{t('recognizeAdmin.holderKind')}</span>
-            <Input value={form.holderKind} onChange={(e) => setField('holderKind', e.target.value)} placeholder="card / permit / identity" allowClear />
+            <span>{t('admin.recognize.holderKind')}</span>
+            <Input
+              value={form.holderKind}
+              onChange={(e) => setField('holderKind', e.target.value)}
+              placeholder={t('admin.recognize.holderKindPlaceholder')}
+              allowClear
+            />
+            <span className="muted-text">{t('admin.recognize.holderKindTip')}</span>
           </label>
           <label className="recognize-field">
-            <span>{t('recognizeAdmin.effect')}</span>
+            <span>{t('admin.recognize.effect')}</span>
             <Select
               value={form.effect}
               onChange={(v) => setField('effect', v)}
-              options={EFFECTS.map((e) => ({ key: e, label: t(`recognizeAdmin.effects.${e}`) }))}
+              options={EFFECTS.map((e) => ({ key: e, label: t(`admin.recognize.effects.${e}`) }))}
             />
           </label>
           <label className="recognize-field">
-            <span>{t('recognizeAdmin.benefit')}</span>
+            <span>{t('admin.recognize.benefit')}</span>
             <Input value={form.benefit} onChange={(e) => setField('benefit', e.target.value)} allowClear />
           </label>
           <label className="recognize-field">
-            <span>{t('recognizeAdmin.benefitTw')}</span>
+            <span>{t('admin.recognize.benefitTw')}</span>
             <Input value={form.benefitTw || ''} onChange={(e) => setField('benefitTw', e.target.value)} allowClear />
           </label>
           <label className="recognize-field recognize-field-inline">
@@ -251,7 +257,7 @@ export default function AdminRecognize() {
       <Modal
         maskClosable={false}
         open={deleteTarget !== null}
-        title={t('recognizeAdmin.delete')}
+        title={t('admin.recognize.delete')}
         onClose={() => !busy && setDeleteTarget(null)}
         typewriter={false}
         footer={
@@ -265,7 +271,7 @@ export default function AdminRecognize() {
           </>
         }
       >
-        {deleteTarget ? t('recognizeAdmin.deleteConfirm', { benefit: deleteTarget.benefit }) : ''}
+        {deleteTarget ? t('admin.recognize.deleteConfirm', { benefit: deleteTarget.benefit }) : ''}
       </Modal>
     </div>
   );

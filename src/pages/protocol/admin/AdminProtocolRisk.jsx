@@ -19,7 +19,21 @@ import { toastSuccess } from '../shared.jsx';
 import { toastError } from '../../../components/toast.js';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
-const RESULTS = ['valid', 'not_found', 'status_used', 'status_expired', 'status_voided', 'status_revoked'];
+const RESULTS = [
+  'valid',
+  'not_found',
+  'status_used',
+  'status_expired',
+  'status_voided',
+  'status_revoked',
+  'status_pending',
+  'status_pending_review',
+  'status_supplement_required',
+  'status_certified',
+  'status_frozen',
+  'status_draft',
+  'status_rejected',
+];
 const KINDS = ['invitation', 'pass', 'host'];
 // 服务端 /admin/tickets 只返回最近 100 条,不做客户端假分页。
 const TICKET_LIMIT = 100;
@@ -156,14 +170,14 @@ export default function AdminProtocolRisk() {
   const logColumns = [
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },
     { title: t('protocol.admin.verifyQuery'), dataIndex: 'query', width: 190 },
-    { title: t('protocol.field.type'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`protocol.verifyKind.${v}`, { defaultValue: v }) : '-') },
+    { title: t('protocol.field.type'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`protocol.admin.verifyKind.${v}`, { defaultValue: t('common.unknown') }) : '-') },
     {
-      title: t('protocol.admin.verifyResult'),
+      title: t('protocol.admin.verifyResultLabel'),
       dataIndex: 'result',
       width: 150,
       render: (v) => (
         <Tag color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'app-red' : 'app-yellow'} variant="soft" size="small">
-          {t(`protocol.verifyResult.${v}`, { defaultValue: v })}
+          {t(`protocol.admin.verifyResult.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
@@ -219,7 +233,7 @@ export default function AdminProtocolRisk() {
           <Select
             value={logResult}
             onChange={(v) => { setLogResult(v); setLogPage(1); }}
-            options={[{ key: '', label: t('protocol.common.allStatus') }, ...RESULTS.map((r) => ({ key: r, label: t(`protocol.verifyResult.${r}`, { defaultValue: r }) }))]}
+            options={[{ key: '', label: t('protocol.common.allStatus') }, ...RESULTS.map((r) => ({ key: r, label: t(`protocol.admin.verifyResult.${r}`, { defaultValue: t('common.unknown') }) }))]}
           />
           <Input
             allowClear
@@ -253,7 +267,7 @@ export default function AdminProtocolRisk() {
             </div>
           )}
         </Card>
-        <p className="muted-text">{t('protocol.admin.verifyKindHint', { kinds: KINDS.map((k) => t(`protocol.verifyKind.${k}`)).join(' / ') })}</p>
+        <p className="muted-text">{t('protocol.admin.verifyKindHint', { kinds: KINDS.map((k) => t(`protocol.admin.verifyKind.${k}`)).join(' / ') })}</p>
       </div>
 
       <div className="protocol-section">

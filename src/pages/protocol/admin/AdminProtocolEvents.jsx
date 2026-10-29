@@ -468,7 +468,7 @@ export default function AdminProtocolEvents() {
             </label>
             <label className="protocol-field">
               <span>{t('protocol.field.coverColor')}</span>
-              <Select value={form.coverColor} onChange={(v) => setForm((p) => ({ ...p, coverColor: v }))} options={COLORS.map((c) => ({ key: c, label: c }))} />
+              <Select value={form.coverColor} onChange={(v) => setForm((p) => ({ ...p, coverColor: v }))} options={COLORS.map((c) => ({ key: c, label: t(`protocol.admin.coverColor.${c}`, { defaultValue: t('common.unknown') }) }))} />
             </label>
           </div>
           <label className="protocol-field">

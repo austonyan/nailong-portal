@@ -25,6 +25,8 @@ export default function AdminEduReview() {
   const [busy, setBusy] = useState(false);
   const [history, setHistory] = useState(null);
   const [historyType, setHistoryType] = useState('');
+  // 审核详情只回 categoryCode;名称从分类字典解析,取不到就显示「未知」。
+  const [categories, setCategories] = useState([]);
 
   const load = useCallback(async () => {
     const params = new URLSearchParams();
@@ -57,6 +59,25 @@ export default function AdminEduReview() {
   useEffect(() => {
     loadHistory();
   }, [loadHistory]);
+
+  // 分类字典只用于回显名称,取不到(权限/网络)不影响审核主流程。
+  useEffect(() => {
+    let alive = true;
+    api
+      .get('/education/categories')
+      .then((data) => {
+        if (alive) setCategories(data.items ?? []);
+      })
+      .catch(() => {
+        if (alive) setCategories([]);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const categoryName = (code) =>
+    categories.find((item) => item.code === code)?.name ?? t('common.unknown');
 
   const openDetail = async (row) => {
     try {
@@ -139,7 +160,7 @@ export default function AdminEduReview() {
       title: t('edu.admin.review.action'),
       dataIndex: 'action',
       width: 90,
-      render: (v) => <StatusTag value={v} prefix="edu.reviewAction" />,
+      render: (v) => <StatusTag value={v} prefix="edu.admin.reviewAction" />,
     },
     { title: t('edu.admin.review.note'), dataIndex: 'note', render: (v) => v || '-' },
     { title: t('edu.field.reviewer'), dataIndex: 'reviewerName', width: 120 },
@@ -242,7 +263,7 @@ export default function AdminEduReview() {
             {detail.categoryCode && (
               <div className="edu-info-row">
                 <span className="edu-info-label">{t('edu.field.category')}</span>
-                <span>{detail.categoryCode}</span>
+                <span>{categoryName(detail.categoryCode)}</span>
               </div>
             )}
             <div className="edu-info-row">
@@ -258,7 +279,7 @@ export default function AdminEduReview() {
                 <Title size="small">{t('edu.admin.review.historyTitle')}</Title>
                 {detail.reviewHistory.map((item) => (
                   <div key={item.id} className="edu-info-row">
-                    <StatusTag value={item.action} prefix="edu.reviewAction" />
+                    <StatusTag value={item.action} prefix="edu.admin.reviewAction" />
                     <span>{item.note || '-'}</span>
                     <span className="muted-text">
                       {item.reviewerName} · {fmtDateTime(item.createdAt)}

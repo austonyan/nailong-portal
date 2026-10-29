@@ -112,7 +112,7 @@ export default function AdminPostStats() {
               <div key={row.type} className="postal-recipient-item">
                 <div>
                   <div className="postal-recipient-name">
-                    {t(`post.msg.${row.type}.title`, { defaultValue: row.type })}
+                    {t(`post.msg.${row.type}.title`, { defaultValue: t('common.unknown') })}
                   </div>
                 </div>
                 <Tag color="app-blue" variant="soft">

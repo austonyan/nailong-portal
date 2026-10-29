@@ -20,6 +20,7 @@ import {
   sweepAll,
 } from './util.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
+import { reqLocale } from '../locale.js';
 
 const router = Router();
 
@@ -27,6 +28,18 @@ ensureResidentSchema();
 
 const QUEUE_STATUSES = ['pending_review', 'supplement_required', 'approved', 'rejected', 'withdrawn', 'closed'];
 const REJECT_REASONS = new Set(['incomplete', 'false_info', 'duplicate', 'type_mismatch', 'other']);
+const REJECT_REASON_TEXT = {
+  incomplete: ['信息不全', '資訊不全'],
+  false_info: ['信息不实', '資訊不實'],
+  duplicate: ['重复登记', '重複登記'],
+  type_mismatch: ['类型不符', '類型不符'],
+  other: ['其他', '其他'],
+};
+function reasonText(code, tw = false) {
+  const pair = REJECT_REASON_TEXT[code];
+  if (!pair) return String(code ?? '');
+  return tw ? pair[1] : pair[0];
+}
 const CARD_STATUSES = new Set(['valid', 'frozen', 'expired', 'voided']);
 
 function applicationWithMeta(row) {
@@ -63,6 +76,7 @@ function applicationWithMeta(row) {
     ...serializeApplication(row),
     card: serializeCard(card),
     typeName: typeRow?.name ?? row.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     validYears: typeRow?.valid_years ?? null,
     username: user?.username ?? '',
     displayName: user?.display_name ?? '',
@@ -204,7 +218,13 @@ router.post('/applications/:id/reject', (req, res) => {
   ).run(reasonCode, comment, req.user.id, now(), now(), app.id);
   recordReview(req.user, app, 'reject', reasonCode, comment);
   audit(req.user, 'reject_application', 'application', app.app_no, { reasonCode, comment });
-  notify(app.user_id, 'rejected', { no: app.app_no, reason: reasonCode, note: comment }, { appNo: app.app_no });
+  notify(
+    app.user_id,
+    'rejected',
+    { no: app.app_no, reason: reasonText(reasonCode), note: comment },
+    { appNo: app.app_no },
+    { no: app.app_no, reason: reasonText(reasonCode, true), note: comment }
+  );
   res.json({ application: applicationWithMeta(getApplication(app.id)) });
 });
 
@@ -331,7 +351,13 @@ router.post('/changes/:id/reject', (req, res) => {
     reasonCode, note, req.user.id, now(), now(), change.id
   );
   audit(req.user, 'reject_change', 'change', change.no, { reasonCode, note });
-  notify(change.user_id, 'change_rejected', { no: change.no, reason: reasonCode, note }, { changeNo: change.no });
+  notify(
+    change.user_id,
+    'change_rejected',
+    { no: change.no, reason: reasonText(reasonCode), note },
+    { changeNo: change.no },
+    { no: change.no, reason: reasonText(reasonCode, true), note }
+  );
   res.json({ change: serializeChange(db.prepare('SELECT * FROM res_changes WHERE id = ?').get(change.id)) });
 });
 
@@ -361,11 +387,15 @@ router.get('/cards', (req, res) => {
     )
     .all(...params);
   res.json({
-    items: rows.map((row) => ({
-      ...serializeCard(row),
-      username: row.username,
-      typeName: db.prepare('SELECT name FROM res_types WHERE code = ?').get(row.type_code)?.name ?? row.type_code,
-    })),
+    items: rows.map((row) => {
+      const typeRow = db.prepare('SELECT name, name_tw FROM res_types WHERE code = ?').get(row.type_code);
+      return {
+        ...serializeCard(row),
+        username: row.username,
+        typeName: typeRow?.name ?? row.type_code,
+        typeNameTw: typeRow?.name_tw ?? null,
+      };
+    }),
   });
 });
 
@@ -471,19 +501,23 @@ router.get('/residents', (req, res) => {
     )
     .all(...params);
   res.json({
-    items: rows.map((row) => ({
-      userId: row.user_id,
-      username: row.username,
-      cardNo: row.card_no,
-      typeCode: row.type_code,
-      typeName: db.prepare('SELECT name FROM res_types WHERE code = ?').get(row.type_code)?.name ?? row.type_code,
-      nickname: row.nickname,
-      contact: mask(row.contact),
-      virtualAddress: mask(row.virtual_address, 4),
-      cardStatus: row.card_status,
-      validUntil: row.valid_until,
-      since: row.since,
-    })),
+    items: rows.map((row) => {
+      const typeRow = db.prepare('SELECT name, name_tw FROM res_types WHERE code = ?').get(row.type_code);
+      return {
+        userId: row.user_id,
+        username: row.username,
+        cardNo: row.card_no,
+        typeCode: row.type_code,
+        typeName: typeRow?.name ?? row.type_code,
+        typeNameTw: typeRow?.name_tw ?? null,
+        nickname: row.nickname,
+        contact: mask(row.contact),
+        virtualAddress: mask(row.virtual_address, 4),
+        cardStatus: row.card_status,
+        validUntil: row.valid_until,
+        since: row.since,
+      };
+    }),
   });
 });
 
@@ -772,6 +806,15 @@ router.get('/stats', (_req, res) => {
   const typeDistribution = db
     .prepare('SELECT type_code, COUNT(*) AS n FROM res_applications WHERE submitted_at IS NOT NULL GROUP BY type_code ORDER BY n DESC')
     .all();
+  const typeMeta = new Map(
+    db.prepare('SELECT code, name, name_tw FROM res_types').all().map((t) => [t.code, t])
+  );
+  const withTypeName = (rows) =>
+    rows.map((row) => ({
+      ...row,
+      typeName: typeMeta.get(row.type_code)?.name ?? row.type_code,
+      typeNameTw: typeMeta.get(row.type_code)?.name_tw ?? null,
+    }));
   const residentTypeDistribution = db
     .prepare("SELECT type_code, COUNT(*) AS n FROM res_cards WHERE status IN ('valid','frozen') GROUP BY type_code ORDER BY n DESC")
     .all();
@@ -808,8 +851,8 @@ router.get('/stats', (_req, res) => {
     rejectRate: submitted ? rejected / submitted : 0,
     supplementRate: submitted ? supplementCount / submitted : 0,
     avgReviewHours: Math.max(0, Math.round(avgReviewMs * 24 * 10) / 10),
-    typeDistribution,
-    residentTypeDistribution,
+    typeDistribution: withTypeName(typeDistribution),
+    residentTypeDistribution: withTypeName(residentTypeDistribution),
     rejectReasons,
     cardStatusCounts,
     changeCounts,
@@ -832,9 +875,20 @@ function csvEscape(v) {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
+const CSV_STATUS_TEXT = {
+  draft: ['草稿', '草稿'],
+  pending_review: ['待审核', '待審核'],
+  supplement_required: ['补件中', '補件中'],
+  approved: ['已通过', '已通過'],
+  rejected: ['已驳回', '已駁回'],
+  withdrawn: ['已撤销', '已撤銷'],
+  closed: ['已关闭', '已關閉'],
+};
+
 // 居民数据导出(敏感:写入审计日志)
 router.get('/export.csv', (req, res) => {
   sweepAll();
+  const tw = reqLocale(req) === 'zh-TW';
   audit(req.user, 'export_residents_csv', 'export', '', { by: req.user.username });
   const rows = db
     .prepare(
@@ -842,11 +896,26 @@ router.get('/export.csv', (req, res) => {
        WHERE ra.status != 'draft' ORDER BY ra.id`
     )
     .all();
-  const header = ['app_no', 'username', 'type_code', 'status', 'nickname', 'submitted_at', 'decided_at', 'reject_code'];
+  const typeNames = new Map(
+    db.prepare('SELECT code, name, name_tw FROM res_types').all().map((t) => [t.code, tw ? t.name_tw || t.name : t.name])
+  );
+  const header = tw
+    ? ['申請編號', '帳號', '居民類型', '狀態', '暱稱', '提交時間', '審核時間', '駁回原因']
+    : ['申请编号', '账号', '居民类型', '状态', '昵称', '提交时间', '审核时间', '驳回原因'];
   const lines = [header.join(',')];
   for (const r of rows) {
+    const status = CSV_STATUS_TEXT[r.status];
     lines.push(
-      [r.app_no, r.username, r.type_code, r.status, r.nickname, r.submitted_at, r.decided_at, r.reject_code]
+      [
+        r.app_no,
+        r.username,
+        typeNames.get(r.type_code) ?? r.type_code,
+        status ? status[tw ? 1 : 0] : r.status,
+        r.nickname,
+        r.submitted_at,
+        r.decided_at,
+        r.reject_code ? reasonText(r.reject_code, tw) : '',
+      ]
         .map(csvEscape)
         .join(',')
     );
@@ -857,8 +926,11 @@ router.get('/export.csv', (req, res) => {
 });
 
 router.get('/audit.csv', (req, res) => {
+  const tw = reqLocale(req) === 'zh-TW';
   const rows = db.prepare('SELECT * FROM res_audit ORDER BY id DESC LIMIT 5000').all();
-  const header = ['id', 'actor_name', 'action', 'target_type', 'target_id', 'detail', 'created_at'];
+  const header = tw
+    ? ['編號', '操作人', '操作', '對象類型', '對象編號', '詳情', '時間']
+    : ['编号', '操作人', '操作', '对象类型', '对象编号', '详情', '时间'];
   const lines = [header.join(',')];
   for (const r of rows) {
     lines.push([r.id, r.actor_name, r.action, r.target_type, r.target_id, r.detail, r.created_at].map(csvEscape).join(','));

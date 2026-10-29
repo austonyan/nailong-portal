@@ -36,18 +36,18 @@ export default function AdminStatAudit() {
 
   const columns = [
     { title: t('stat.admin.audit.time'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
-    { title: t('stat.admin.audit.actor'), dataIndex: 'actor_name', width: 120, render: (v) => v || 'system' },
+    { title: t('stat.admin.audit.actor'), dataIndex: 'actor_name', width: 120, render: (v) => v || t('common.system') },
     {
       title: t('stat.admin.audit.action'),
       dataIndex: 'action',
       width: 170,
       render: (v) => (
         <Tag variant="soft" color="app-blue">
-          {t(`stat.admin.actions.${v}`, { defaultValue: v })}
+          {t(`stat.admin.actions.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
-    { title: t('stat.admin.audit.targetType'), dataIndex: 'target_type', width: 110, render: (v) => t(`stat.admin.targetType.${v}`, { defaultValue: v }) },
+    { title: t('stat.admin.audit.targetType'), dataIndex: 'target_type', width: 110, render: (v) => (v ? t(`stat.admin.targetType.${v}`, { defaultValue: t('common.unknown') }) : '-') },
     { title: t('stat.admin.audit.targetId'), dataIndex: 'target_id', width: 200 },
     {
       title: t('stat.admin.audit.detail'),

@@ -10,13 +10,13 @@ export default function MaterialList({ materials, type }) {
   const { t } = useTranslation();
   const [preview, setPreview] = useState(null); // { url, name }
 
-  const kindLabel = (kind) => type?.materials?.find((m) => m.key === kind)?.label || kind;
+  const kindLabel = (kind) => type?.materials?.find((m) => m.key === kind)?.label || t('common.unknown');
   const openPreview = async (mat) => {
     try {
       const url = await materialPreviewUrl(mat.id);
       setPreview({ url, name: mat.filename });
     } catch (err) {
-      toastError(t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') }));
+      toastError(t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 

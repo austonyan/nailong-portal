@@ -114,8 +114,8 @@ export default function AdminResReview() {
   };
 
   const columns = [
-    { title: t('res.field.appNo'), dataIndex: 'appNo', width: 180 },
-    { title: t('res.field.applicant'), dataIndex: 'username', width: 130 },
+    { title: t('res.admin.field.appNo'), dataIndex: 'appNo', width: 180 },
+    { title: t('res.admin.field.applicant'), dataIndex: 'username', width: 130 },
     { title: t('res.card.type'), dataIndex: 'typeName', width: 110 },
     {
       title: t('common.status'),
@@ -127,7 +127,7 @@ export default function AdminResReview() {
         </Tag>
       ),
     },
-    { title: t('res.field.submittedAt'), dataIndex: 'submittedAt', width: 160, render: fmtDateTime },
+    { title: t('res.admin.field.submittedAt'), dataIndex: 'submittedAt', width: 160, render: fmtDateTime },
     { title: t('res.form.nickname'), dataIndex: 'nickname', width: 120 },
     {
       title: t('common.actions'),
@@ -245,7 +245,7 @@ export default function AdminResReview() {
                 [t('res.form.virtualAddress'), detail.virtualAddress || '-'],
                 [t('res.form.purposes'), (detail.purposes || []).map((p) => t(`res.purpose.${p}`)).join('、')],
                 [t('res.form.bio'), detail.bio || '-'],
-                [t('res.field.submittedAt'), fmtDateTime(detail.submittedAt)],
+                [t('res.admin.field.submittedAt'), fmtDateTime(detail.submittedAt)],
               ].map(([label, value]) => (
                 <div key={label} className="res-field-row">
                   <dt>{label}</dt>

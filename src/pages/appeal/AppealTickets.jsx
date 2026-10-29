@@ -139,7 +139,7 @@ export default function AppealTickets() {
           <p className="muted-text">
             {t(`appeal.ticketCategory.${tk.category}`)} · {t('appeal.my.submittedAt', { time: fmtDateTime(tk.submittedAt || tk.createdAt) })}
           </p>
-          <p className="appeal-item-reason">{tk.title}</p>
+          <p className="appeal-item-reason">{tk.erased ? t('common.erased') : tk.title}</p>
         </Card>
       ))}
 
@@ -208,11 +208,11 @@ export default function AppealTickets() {
               </div>
               <div>
                 <dt>{t('appeal.ticket.titleLabel')}</dt>
-                <dd>{detail.title}</dd>
+                <dd>{detail.erased ? t('common.erased') : detail.title}</dd>
               </div>
               <div>
                 <dt>{t('appeal.ticket.contentLabel')}</dt>
-                <dd>{detail.content}</dd>
+                <dd>{detail.erased ? t('common.erased') : detail.content}</dd>
               </div>
             </dl>
             <h4>{t('appeal.ticket.threadTitle')}</h4>

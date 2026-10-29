@@ -332,7 +332,11 @@ router.post('/appeals/:id/submit', (req, res) => {
   ).run(bizStatus, ts, ts, row.id);
   record('appeal', row.id, req.user, 'submit');
   sendMsg(req.user.id, 'appeal', row.id, 'appeal_submitted', { code: row.code });
-  audit(req.user, 'submit_appeal', 'appeal', row.code, { bizStatus, bizOffice: bizCheck.office || '' });
+  audit(req.user, 'submit_appeal', 'appeal', row.code, {
+    bizStatus,
+    bizOffice: bizCheck.office || '',
+    bizOfficeTw: bizCheck.officeTw || '',
+  });
   res.json({ appeal: appealWithMeta(db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(row.id)) });
 });
 
@@ -734,8 +738,8 @@ router.post('/privacy/erase', (req, res) => {
     `UPDATE appeal_appeals SET reason = '', expected = '', contact = '', evaluation_comment = '', updated_at = ? WHERE user_id = ?`
   ).run(now(), req.user.id);
   db.prepare(`UPDATE appeal_reviews SET reason = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
-  db.prepare(`UPDATE appeal_complaints SET anonymous = 1, contact = '', content = '(erased)', rating_comment = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
-  db.prepare(`UPDATE appeal_tickets SET title = '(erased)', content = '(erased)', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
+  db.prepare(`UPDATE appeal_complaints SET anonymous = 1, erased = 1, contact = '', content = '', rating_comment = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
+  db.prepare(`UPDATE appeal_tickets SET erased = 1, title = '', content = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
   db.prepare('UPDATE appeal_messages SET archived = 1, read = 1 WHERE user_id = ?').run(req.user.id);
   audit(req.user, 'privacy_erase', 'user', req.user.id);
   res.json({ ok: true });

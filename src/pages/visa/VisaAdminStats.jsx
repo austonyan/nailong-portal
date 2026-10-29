@@ -91,7 +91,7 @@ export default function VisaAdminStats() {
             </Card>
             <Card className="stat-card">
               <span className="stat-label">{t('visa.admin.stats.avgReviewHours')}</span>
-              <span className="stat-number">{stats.avgReviewHours}h</span>
+              <span className="stat-number">{t('common.unitHours', { hours: stats.avgReviewHours })}</span>
             </Card>
             <Card className="stat-card">
               <span className="stat-label">{t('visa.admin.stats.verifyToday')}</span>
@@ -115,7 +115,7 @@ export default function VisaAdminStats() {
               <div className="visa-tag-cloud">
                 {stats.typeDistribution.map((row) => (
                   <Tag key={row.type_code} color="app-teal" variant="soft">
-                    {typeNames[row.type_code] ?? row.type_code} · {row.n}
+                    {typeNames[row.type_code] ?? t('common.unknown')} · {row.n}
                   </Tag>
                 ))}
               </div>
@@ -151,7 +151,7 @@ export default function VisaAdminStats() {
 
       <Card>
         <h4>{t('visa.admin.stats.verifyLogs')}</h4>
-        <Table className="table-fit" columns={logColumns} dataSource={verifyLogs ?? []} loading={verifyLogs === null} rowKey="id" pagination={{ pageSize: 10 }} />
+        <Table className="table-fit" columns={logColumns} dataSource={verifyLogs ?? []} loading={verifyLogs === null} rowKey="id" pagination={{ pageSize: 10 }} emptyText={t('common.empty')} />
       </Card>
     </div>
   );

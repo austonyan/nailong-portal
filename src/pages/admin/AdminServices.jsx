@@ -5,10 +5,9 @@ import {
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { SERVICE_COLORS, SERVICE_ICONS, serviceIcon } from '../../components/icons.js';
-import { toastSuccess, toastError } from '../../components/toast.js';
+import { toastSuccess, toastApiError } from '../../components/toast.js';
 
-const ICON_OPTIONS = Object.keys(SERVICE_ICONS).map((name) => ({ key: name, label: name.replace(/Icon$/, '') }));
-const COLOR_OPTIONS = SERVICE_COLORS.map((c) => ({ key: c, label: c }));
+// 图标/配色的展示名走词条:选项里不再直接出现 `Rocket`、`app-teal` 这类英文 token。
 // 与服务端同一条枚举(server/routes/services.js validateServiceBody 的 entryMode)。
 // 门户卡片怎么打开这个服务完全由它决定(src/pages/Portal.jsx openService)。
 const ENTRY_MODES = ['external', 'internal', 'internal_sso'];
@@ -23,6 +22,15 @@ export default function AdminServices() {
   const [busy, setBusy] = useState(false);
   const [form] = useForm();
 
+  const iconOptions = Object.keys(SERVICE_ICONS).map((name) => ({
+    key: name,
+    label: t(`admin.services.iconName.${name}`, { defaultValue: t('common.unknown') }),
+  }));
+  const colorOptions = SERVICE_COLORS.map((color) => ({
+    key: color,
+    label: t(`admin.services.colorName.${color}`, { defaultValue: t('common.unknown') }),
+  }));
+
   const loadServices = useCallback(async () => {
     const data = await api.get('/services/admin');
     setServices(data.items.map((s) => ({ ...s, key: s.key })));
@@ -30,7 +38,7 @@ export default function AdminServices() {
 
   useEffect(() => {
     Promise.all([loadServices(), api.get('/roles/permissions').then((d) => setPermissions(d.items))]).catch((err) => {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
       setServices([]);
     });
   }, [loadServices, t]);
@@ -83,7 +91,7 @@ export default function AdminServices() {
       closeModal();
       await loadServices();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -97,7 +105,7 @@ export default function AdminServices() {
       setDeleteTarget(null);
       await loadServices();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     }
   };
 
@@ -106,7 +114,7 @@ export default function AdminServices() {
       await api.patch(`/services/${service.id}`, { enabled: checked });
       await loadServices();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     }
   };
 
@@ -188,7 +196,7 @@ export default function AdminServices() {
         </Button>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={services ?? []} loading={services === null} rowKey="key" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={services ?? []} loading={services === null} rowKey="key" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal maskClosable={false} open={editing !== null} title={editing?.id ? t('admin.services.edit') : t('admin.services.create')} onClose={closeModal} footer={null} typewriter={false} width={540}>
@@ -200,7 +208,7 @@ export default function AdminServices() {
             <Input size="large" placeholder={t('common.twOptional')} allowClear />
           </FormItem>
           <FormItem name="key" label={t('common.key')} help={t('admin.roles.keyTip')} rules={[{ required: true, message: t('admin.roles.keyTip') }]}>
-            <Input size="large" disabled={!!editing?.id} placeholder="wiki" />
+            <Input size="large" disabled={!!editing?.id} placeholder={t('admin.services.keyPlaceholder')} />
           </FormItem>
           <FormItem
             name="url"
@@ -220,10 +228,10 @@ export default function AdminServices() {
             <Input size="large" placeholder={t('common.twOptional')} allowClear />
           </FormItem>
           <FormItem name="icon" label={t('admin.services.icon')} rules={[{ required: true, message: t('admin.services.icon') }]}>
-            <Select options={ICON_OPTIONS} />
+            <Select options={iconOptions} />
           </FormItem>
           <FormItem name="color" label={t('admin.services.color')} rules={[{ required: true, message: t('admin.services.color') }]}>
-            <Select options={COLOR_OPTIONS} />
+            <Select options={colorOptions} />
           </FormItem>
           <FormItem
             name="requiredPermission"

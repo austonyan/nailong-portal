@@ -86,7 +86,7 @@ export default function ImmigrationMessages() {
               {!m.read && <Badge dot color="app-red" />}
               <b>{m.title}</b>
               <span className="muted-text">{fmtDateTime(m.created_at)}</span>
-              <Tag size="small">{t(`imm.msg.template.${m.templateCode}`, { defaultValue: m.templateCode })}</Tag>
+              <Tag size="small">{t(`imm.msg.template.${m.templateCode}`, { defaultValue: t('common.unknown') })}</Tag>
             </div>
             <p className="im-ann-body">{m.body}</p>
             <div className="im-msg-actions">

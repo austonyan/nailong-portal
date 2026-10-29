@@ -79,10 +79,10 @@ export default function AdminResChanges() {
   };
 
   const columns = [
-    { title: t('res.field.changeNo'), dataIndex: 'no', width: 170 },
-    { title: t('res.field.applicant'), dataIndex: 'username', width: 120 },
+    { title: t('res.admin.field.changeNo'), dataIndex: 'no', width: 170 },
+    { title: t('res.admin.field.applicant'), dataIndex: 'username', width: 120 },
     {
-      title: t('res.field.changeType'),
+      title: t('res.admin.field.changeType'),
       dataIndex: 'type',
       width: 100,
       render: (v) => (
@@ -91,8 +91,8 @@ export default function AdminResChanges() {
         </Tag>
       ),
     },
-    { title: t('res.field.cardNo'), dataIndex: 'cardNo', width: 160 },
-    { title: t('res.field.summary'), dataIndex: 'summary', render: (_, row) => summary(row) },
+    { title: t('res.admin.field.cardNo'), dataIndex: 'cardNo', width: 160 },
+    { title: t('res.admin.field.summary'), dataIndex: 'summary', render: (_, row) => summary(row) },
     {
       title: t('common.status'),
       dataIndex: 'status',
@@ -103,7 +103,7 @@ export default function AdminResChanges() {
         </Tag>
       ),
     },
-    { title: t('res.field.createdAt'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
+    { title: t('res.admin.field.createdAt'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
     {
       title: t('common.actions'),
       dataIndex: 'actions',

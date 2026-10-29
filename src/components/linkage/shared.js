@@ -48,5 +48,5 @@ export function linkageStatusKey(source, kind, status) {
 }
 
 export function linkageStatusLabel(t, source, kind, status) {
-  return t(linkageStatusKey(source, kind, status), { defaultValue: status });
+  return t(linkageStatusKey(source, kind, status), { defaultValue: t('common.unknown') });
 }

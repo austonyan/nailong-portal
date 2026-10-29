@@ -79,21 +79,21 @@ function AgreementModal({ initial, onClose, onSaved }) {
     >
       <Form form={form} layout="vertical">
         <div className="dip-form-row">
-          <FormItem name="partyA" label={t('dip.agreement.partyA')} rules={[{ required: true }]}>
+          <FormItem name="partyA" label={t('dip.agreement.partyA')} rules={[{ required: true, message: t('common.required') }]}>
             <Input maxLength={60} placeholder={t('dip.agreement.partyPlaceholder')} />
           </FormItem>
-          <FormItem name="partyB" label={t('dip.agreement.partyB')} rules={[{ required: true }]}>
+          <FormItem name="partyB" label={t('dip.agreement.partyB')} rules={[{ required: true, message: t('common.required') }]}>
             <Input maxLength={60} placeholder={t('dip.agreement.partyPlaceholder')} />
           </FormItem>
         </div>
-        <FormItem name="type" label={t('dip.agreement.type')} rules={[{ required: true }]}>
+        <FormItem name="type" label={t('dip.agreement.type')} rules={[{ required: true, message: t('common.required') }]}>
           <Select options={TYPES.map((x) => ({ key: x, label: t(`dip.agreementType.${x}`) }))} />
         </FormItem>
         <div className="dip-form-row">
-          <FormItem name="effectiveFrom" label={t('dip.agreement.effectiveFrom')} rules={[{ required: true }]}>
+          <FormItem name="effectiveFrom" label={t('dip.agreement.effectiveFrom')} rules={[{ required: true, message: t('common.required') }]}>
             <Input type="date" />
           </FormItem>
-          <FormItem name="effectiveTo" label={t('dip.agreement.effectiveTo')} rules={[{ required: true }]}>
+          <FormItem name="effectiveTo" label={t('dip.agreement.effectiveTo')} rules={[{ required: true, message: t('common.required') }]}>
             <Input type="date" />
           </FormItem>
         </div>
@@ -157,7 +157,7 @@ export default function AdminDipAgreements() {
   const columns = [
     { title: t('dip.agreement.no'), dataIndex: 'no', width: 190 },
     { title: t('dip.agreement.parties'), width: 200, render: (_, r) => `${r.partyA} × ${r.partyB}` },
-    { title: t('dip.agreement.type'), dataIndex: 'type', width: 110, render: (v) => t(`dip.agreementType.${v}`, { defaultValue: v }) },
+    { title: t('dip.agreement.type'), dataIndex: 'type', width: 110, render: (v) => t(`dip.agreementType.${v}`, { defaultValue: t('common.unknown') }) },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
     {
       title: t('dip.agreement.validRange'),
@@ -200,7 +200,7 @@ export default function AdminDipAgreements() {
         </Button>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
       {modal !== null && <AgreementModal initial={modal} onClose={() => setModal(null)} onSaved={load} />}
     </div>

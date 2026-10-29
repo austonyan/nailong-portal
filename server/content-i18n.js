@@ -514,6 +514,16 @@ function backfillByTitle(db, table, rows) {
   return changed;
 }
 
+// 旧库的种子日程时间仍是中文(`第 1 天 10:00`);改成语言中立写法,
+// 新建库直接用 ASCII,老库在这里一次性归一。
+function normalizeScheduleTime(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/^第\s*(\d+)\s*天\s*(\d{2}:\d{2})$/, 'D$1 $2')
+    .replace(/^每日\s*(\d{2}:\d{2})\s*[-~～]\s*(\d{2}:\d{2})$/, 'Daily $1-$2')
+    .replace(/^周末\s*(\d{2}:\d{2})$/, 'Weekend $1');
+}
+
 function backfillProtocolEvents(db, rows) {
   const select = db.prepare('SELECT id, schedule FROM pro_events WHERE event_no = ?');
   const update = db.prepare(
@@ -550,6 +560,11 @@ function backfillProtocolEvents(db, rows) {
     if (!Array.isArray(schedule)) continue;
     let dirty = false;
     schedule.forEach((item, index) => {
+      const normalized = normalizeScheduleTime(item.time);
+      if (normalized !== item.time) {
+        item.time = normalized;
+        dirty = true;
+      }
       if (!item.titleTw && values.schedule[index]) {
         item.titleTw = values.schedule[index];
         dirty = true;

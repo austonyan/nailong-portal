@@ -142,7 +142,15 @@ router.get('/notices', (_req, res) => {
   const items = db
     .prepare('SELECT * FROM doc_notices WHERE enabled = 1 ORDER BY created_at DESC, id DESC LIMIT 20')
     .all()
-    .map((n) => ({ id: n.id, title: n.title, body: n.body, level: n.level, createdAt: n.created_at }));
+    .map((n) => ({
+      id: n.id,
+      title: n.title,
+      body: n.body,
+      titleTw: n.title_tw,
+      bodyTw: n.body_tw,
+      level: n.level,
+      createdAt: n.created_at,
+    }));
   res.json({ items });
 });
 
@@ -437,11 +445,15 @@ router.get('/applications', applyAuth, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM doc_applications WHERE ${where}`).get(...params).n;
   const items = db
     .prepare(
-      `SELECT a.*, t.name AS type_name FROM doc_applications a LEFT JOIN doc_types t ON t.code = a.type_code
+      `SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw FROM doc_applications a LEFT JOIN doc_types t ON t.code = a.type_code
        WHERE ${where} ORDER BY a.updated_at DESC, a.id DESC LIMIT ? OFFSET ?`
     )
     .all(...params, pageSize, offset)
-    .map((row) => ({ ...D.serializeApplication(row), typeName: row.type_name ?? row.type_code }));
+    .map((row) => ({
+      ...D.serializeApplication(row),
+      typeName: row.type_name ?? row.type_code,
+      typeNameTw: row.type_name_tw ?? null,
+    }));
   res.json({ items, total, page, pageSize });
 });
 
@@ -556,11 +568,15 @@ router.get('/certificates', applyAuth, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM doc_certificates WHERE ${where}`).get(...params).n;
   const items = db
     .prepare(
-      `SELECT c.*, t.name AS type_name FROM doc_certificates c LEFT JOIN doc_types t ON t.code = c.type_code
+      `SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw FROM doc_certificates c LEFT JOIN doc_types t ON t.code = c.type_code
        WHERE ${where} ORDER BY c.issued_at DESC, c.id DESC LIMIT ? OFFSET ?`
     )
     .all(...params, pageSize, offset)
-    .map((row) => ({ ...D.serializeCertificate(row), typeName: row.type_name ?? row.type_code }));
+    .map((row) => ({
+      ...D.serializeCertificate(row),
+      typeName: row.type_name ?? row.type_code,
+      typeNameTw: row.type_name_tw ?? null,
+    }));
   res.json({ items, total, page, pageSize });
 });
 
@@ -570,11 +586,13 @@ router.get('/certificates/:id', applyAuth, (req, res) => {
   if (!cert) throw notFound('Certificate not found');
   const owned = new Set(req.user.permissions || []);
   if (cert.user_id !== req.user.id && !owned.has('docs:certify')) throw forbidden('FORBIDDEN', 'Not your certificate');
-  const row = { ...cert, type_name: D.getTypeRow(cert.type_code)?.name };
+  const typeRow = D.getTypeRow(cert.type_code);
+  const row = { ...cert, type_name: typeRow?.name, type_name_tw: typeRow?.name_tw };
   res.json({
     item: {
       ...D.serializeCertificate(row),
       typeName: row.type_name ?? cert.type_code,
+      typeNameTw: row.type_name_tw ?? null,
       application: serializeApplicationDetail(D.getApplicationRow(cert.application_id)),
       issuer: D.getConfig('docs.issuer_name', '奶龙国皇家文书与认证署'),
       issuerTw: D.getConfig('docs.issuer_name_tw', '奶龍國皇家文書與認證署'),
@@ -659,7 +677,7 @@ router.get('/admin/queue', certifyAuth, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM doc_applications a WHERE ${where}`).get(...params).n;
   const items = db
     .prepare(
-      `SELECT a.*, t.name AS type_name, u.username FROM doc_applications a
+      `SELECT a.*, t.name AS type_name, t.name_tw AS type_name_tw, u.username FROM doc_applications a
        LEFT JOIN doc_types t ON t.code = a.type_code LEFT JOIN users u ON u.id = a.user_id
        WHERE ${where} ORDER BY a.submitted_at, a.id LIMIT ? OFFSET ?`
     )
@@ -667,6 +685,7 @@ router.get('/admin/queue', certifyAuth, (req, res) => {
     .map((row) => ({
       ...D.serializeApplication(row),
       typeName: row.type_name ?? row.type_code,
+      typeNameTw: row.type_name_tw ?? null,
       username: row.username,
       materialCount: db.prepare('SELECT COUNT(*) AS n FROM doc_materials WHERE application_id = ?').get(row.id).n,
     }));
@@ -704,7 +723,7 @@ function approveApplicationCore(app, actor, { comment = '', auto = false } = {})
       .prepare("SELECT cert_no FROM doc_certificates WHERE type_code = ? AND biz_no = ? AND status = 'valid' LIMIT 1")
       .get(app.type_code, app.biz_no);
     if (linked) {
-      throw conflict('DOC_BIZ_ALREADY_CERTIFIED', `The linked business record is already certified by ${linked.cert_no}`);
+      throw conflict('DOC_BIZ_ALREADY_CERTIFIED', 'The linked business record is already certified');
     }
   }
 
@@ -756,7 +775,7 @@ router.post('/admin/applications/:id/reject', certifyAuth, (req, res) => {
     "UPDATE doc_applications SET status = 'rejected', reject_code = ?, reject_comment = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(reasonCode, comment, req.user.id, ts, ts, app.id);
   D.addRecord(app.id, req.user, 'rejected', { reasonCode, comment });
-  D.sendMsg(app.user_id, app.id, 'rejected', { appNo: app.app_no, reasonCode });
+  D.sendMsg(app.user_id, app.id, 'rejected', { appNo: app.app_no, reason: reasonCode, reasonCode });
   D.audit(req.user, 'certify_reject', 'application', app.app_no, { reasonCode });
   res.json({ item: serializeApplicationDetail(loadApplication(app.id)) });
 });
@@ -927,12 +946,17 @@ router.get('/admin/certificates', manageAuth, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM doc_certificates c WHERE ${where}`).get(...params).n;
   const items = db
     .prepare(
-      `SELECT c.*, t.name AS type_name, u.username FROM doc_certificates c
+      `SELECT c.*, t.name AS type_name, t.name_tw AS type_name_tw, u.username FROM doc_certificates c
        LEFT JOIN doc_types t ON t.code = c.type_code LEFT JOIN users u ON u.id = c.user_id
        WHERE ${where} ORDER BY c.issued_at DESC, c.id DESC LIMIT ? OFFSET ?`
     )
     .all(...params, pageSize, offset)
-    .map((row) => ({ ...D.serializeCertificate(row), typeName: row.type_name ?? row.type_code, username: row.username }));
+    .map((row) => ({
+      ...D.serializeCertificate(row),
+      typeName: row.type_name ?? row.type_code,
+      typeNameTw: row.type_name_tw ?? null,
+      username: row.username,
+    }));
   res.json({ items, total, page, pageSize });
 });
 

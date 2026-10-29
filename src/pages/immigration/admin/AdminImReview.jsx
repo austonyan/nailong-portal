@@ -5,7 +5,7 @@ import {
 import { CheckCircleIcon, ClockIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
+import { ImAdminNav, StatusTag, pickLocalized } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 import { fmtDateTime } from '../../../lib/date.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
@@ -13,6 +13,14 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 const QUEUE_STATUSES = ['pending', 'supplement', 'approved', 'rejected', 'entered', 'exited', 'withdrawn'];
 const REJECT_REASONS = ['visa_invalid', 'incomplete', 'duplicate', 'port_closed', 'other'];
 const ITEM_KEYS = ['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card'];
+
+// 附件大小按 KB / MB 显示,规则与 components/immigration/Attachments.jsx 一致。
+function fmtSize(bytes) {
+  if (bytes == null) return '-';
+  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${bytes} B`;
+}
 
 function InfoRow({ label, children }) {
   return (
@@ -24,7 +32,7 @@ function InfoRow({ label, children }) {
 }
 
 function ReviewDrawer({ id, onClose, onChanged }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [decl, setDecl] = useState(null);
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('incomplete');
@@ -88,21 +96,21 @@ function ReviewDrawer({ id, onClose, onChanged }) {
         <InfoRow label={t('imm.declare.companions')}>{d.companions}</InfoRow>
         <InfoRow label={t('imm.declare.address')}>{d.address || '-'}</InfoRow>
         <InfoRow label={t('imm.declare.items')}>
-          {(d.items ?? []).map((i) => `${t(`imm.item.${ITEM_KEYS.includes(i.key) ? i.key : 'plush'}`)} x${i.qty}`).join(', ') || '-'}
+          {(d.items ?? []).map((i) => `${t(`imm.item.${ITEM_KEYS.includes(i.key) ? i.key : 'unknown'}`)} ×${i.qty}`).join(', ') || '-'}
         </InfoRow>
         <InfoRow label={t('imm.declare.visaNo')}>
           {d.visaNo ?? '-'}{' '}
           {d.visaResult && (
             <Tag size="small" color={d.visaResult === 'valid' ? 'app-green' : 'app-red'} variant="soft">
-              {t(`imm.visaResult.${d.visaResult}`, { defaultValue: d.visaResult })}
+              {t(`imm.visaResult.${d.visaResult}`, { defaultValue: t('common.unknown') })}
             </Tag>
           )}
         </InfoRow>
-        {d.visaCached?.detail?.type && (
+        {(d.visaCached?.detail?.typeTw || d.visaCached?.detail?.type) ? (
           <InfoRow label={t('imm.admin.review.visaDetail')}>
-            {d.visaCached.detail.type} · {t('imm.visaResult.validUntil', { date: fmtDateTime(d.visaCached.detail.validUntil) })}
+            {pickLocalized(d.visaCached.detail, 'type', i18n.language) || '-'} · {t('imm.visaResult.validUntil', { date: fmtDateTime(d.visaCached.detail.validUntil) })}
           </InfoRow>
-        )}
+        ) : null}
         {d.supplementRequest && (
           <InfoRow label={t('imm.mydecl.supplementRequired')}>{d.supplementRequest}</InfoRow>
         )}
@@ -116,7 +124,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
           <b>{t('imm.attachments.title')}</b>
           {(d.attachments ?? []).map((att) => (
             <p key={att.id} className="im-attachment-row">
-              {att.filename} <span className="muted-text">{att.size}B</span>
+              {att.filename} <span className="muted-text">{fmtSize(att.size)}</span>
             </p>
           ))}
         </Card>
@@ -127,7 +135,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
         <ul className="im-timeline">
           {(d.events ?? []).map((e, idx) => (
             <li key={idx}>
-              <span className="im-timeline-action">{t(`imm.event.${e.action}`, { defaultValue: e.action })}</span>
+              <span className="im-timeline-action">{t(`imm.event.${e.action}`, { defaultValue: t('common.unknown') })}</span>
               <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="im-timeline-note">{e.note}</p>}
             </li>
@@ -285,7 +293,7 @@ export default function AdminImReview() {
       </div>
 
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
 
       <Drawer maskClosable={false} open={openId !== null} title={t('imm.admin.review.detailTitle')} onClose={() => setOpenId(null)} width={560}>

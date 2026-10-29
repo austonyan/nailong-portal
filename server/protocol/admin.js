@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { db, now } from '../db.js';
 import { authenticate } from '../auth.js';
 import { ApiError, badRequest, conflict, forbidden, notFound } from '../http.js';
-import { reqLocale } from '../locale.js';
+import { reqLocale, pickText } from '../locale.js';
 import { ensureProtocolSchema, getConfig, getConfigInt, setConfig } from './schema.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 import {
@@ -38,6 +38,26 @@ router.use(authenticate);
 const EVENT_STATUSES = ['draft', 'pending_publish', 'registration', 'registration_closed', 'ongoing', 'ended', 'cancelled'];
 const REJECT_REASONS = new Set(['info_missing', 'identity_mismatch', 'duplicate', 'full', 'rule_violation', 'other']);
 const HOST_REJECT_REASONS = new Set(['info_missing', 'material_invalid', 'qualification', 'duplicate', 'other']);
+const REJECT_REASON_TEXT = {
+  info_missing: ['信息不全', '資訊不全'],
+  identity_mismatch: ['身份不符', '身分不符'],
+  duplicate: ['重复报名', '重複報名'],
+  full: ['名额已满', '名額已滿'],
+  rule_violation: ['违反规则', '違反規則'],
+  other: ['其他原因', '其他原因'],
+};
+const HOST_REJECT_REASON_TEXT = {
+  info_missing: ['信息不全', '資訊不全'],
+  material_invalid: ['材料不合格', '材料不合格'],
+  qualification: ['资质不符', '資質不符'],
+  duplicate: ['重复申请', '重複申請'],
+  other: ['其他原因', '其他原因'],
+};
+function reasonText(code, tw = false, map = REJECT_REASON_TEXT) {
+  const pair = map[code];
+  if (!pair) return String(code ?? '');
+  return tw ? pair[1] : pair[0];
+}
 
 function toIso(value) {
   if (!value) return null;
@@ -344,7 +364,12 @@ router.patch('/events/:id', manager, (req, res) => {
   );
   audit(req.user, 'event_update', 'event', event.event_no, {});
   if (event.status !== 'draft') {
-    notifyEventAttendees(event.id, 'event_changed', { event: event.title, note: '活动信息已更新，请查看活动详情。' });
+    notifyEventAttendees(
+      event.id,
+      'event_changed',
+      { event: event.title, note: '活动信息已更新，请查看活动详情。' },
+      { event: event.title_tw || event.title, note: '活動資訊已更新，請查看活動詳情。' }
+    );
   }
   res.json({ event: serializeEvent(eventById(event.id)) });
 });
@@ -366,18 +391,38 @@ router.post('/events/:id/status', manager, (req, res) => {
     const active = db
       .prepare("SELECT id, user_id, reg_no FROM pro_registrations WHERE event_id = ? AND status IN ('pending_review','approved','waitlisted','checked_in')")
       .all(event.id);
+    const cancelReasonCn = reason || '活动安排调整';
+    const cancelReasonTw = reason || '活動安排調整';
     for (const reg of active) {
       db.prepare("UPDATE pro_registrations SET status = 'cancelled', updated_at = ? WHERE id = ?").run(ts, reg.id);
       db.prepare("UPDATE pro_passes SET status = 'voided', void_reason = 'event_cancelled', updated_at = ? WHERE registration_id = ?").run(ts, reg.id);
-      notify(reg.user_id, 'event_cancelled', { event: event.title, reason: reason || '活动安排调整' }, { eventId: event.id });
+      notify(
+        reg.user_id,
+        'event_cancelled',
+        { event: event.title, reason: cancelReasonCn },
+        { eventId: event.id },
+        { event: event.title_tw || event.title, reason: cancelReasonTw }
+      );
     }
-    notifyEventAttendees(event.id, 'event_cancelled', { event: event.title, reason: reason || '活动安排调整' });
+    notifyEventAttendees(
+      event.id,
+      'event_cancelled',
+      { event: event.title, reason: cancelReasonCn },
+      { event: event.title_tw || event.title, reason: cancelReasonTw }
+    );
     audit(req.user, 'event_cancel', 'event', event.event_no, { reason, affected: active.length });
   } else {
     const publishedAt = to === 'registration' ? ts : event.published_at;
     db.prepare('UPDATE pro_events SET status = ?, published_at = ?, updated_at = ? WHERE id = ?').run(to, publishedAt, ts, event.id);
     audit(req.user, 'event_status', 'event', event.event_no, { from: event.status, to, reason });
-    if (to === 'registration') notifyEventAttendees(event.id, 'event_changed', { event: event.title, note: '活动已开放/恢复报名。' });
+    if (to === 'registration') {
+      notifyEventAttendees(
+        event.id,
+        'event_changed',
+        { event: event.title, note: '活动已开放/恢复报名。' },
+        { event: event.title_tw || event.title, note: '活動已開放/恢復報名。' }
+      );
+    }
   }
   res.json({ event: serializeEvent(eventById(event.id)) });
 });
@@ -448,7 +493,7 @@ router.get('/registrations', reviewer, (req, res) => {
     .get(...params).n;
   const rows = db
     .prepare(
-      `SELECT r.*, u.username, u.display_name, e.title AS event_title, e.event_no AS event_no, e.starts_at AS event_starts_at
+      `SELECT r.*, u.username, u.display_name, e.title AS event_title, e.title_tw AS event_title_tw, e.event_no AS event_no, e.starts_at AS event_starts_at
        FROM pro_registrations r JOIN users u ON u.id = r.user_id JOIN pro_events e ON e.id = r.event_id
        WHERE ${clause} ORDER BY CASE r.status WHEN 'pending_review' THEN 0 WHEN 'waitlisted' THEN 1 ELSE 2 END, r.submitted_at, r.id
        LIMIT ? OFFSET ?`
@@ -460,6 +505,7 @@ router.get('/registrations', reviewer, (req, res) => {
       username: r.username,
       displayName: r.display_name,
       eventTitle: r.event_title,
+      eventTitleTw: r.event_title_tw ?? null,
       eventNo: r.event_no,
       eventStartsAt: r.event_starts_at,
     })),
@@ -489,7 +535,13 @@ function approveRegistration(reg, actor, note = '', { auto = false } = {}) {
         note, actor?.id ?? null, now(), now(), reg.id
       );
     }
-    notify(reg.user_id, 'registration_waitlisted', { no: reg.reg_no, event: event.title }, { eventId: event.id });
+    notify(
+      reg.user_id,
+      'registration_waitlisted',
+      { no: reg.reg_no, event: event.title },
+      { eventId: event.id },
+      { no: reg.reg_no, event: event.title_tw || event.title }
+    );
     audit(actor, 'registration_waitlist', 'registration', reg.reg_no, { reason: 'capacity_full', ...(auto ? { auto: true } : {}) });
     return { waitlisted: true };
   }
@@ -498,7 +550,13 @@ function approveRegistration(reg, actor, note = '', { auto = false } = {}) {
   ).run(note, actor?.id ?? null, now(), now(), reg.id);
   const fresh = db.prepare('SELECT * FROM pro_registrations WHERE id = ?').get(reg.id);
   const pass = issuePass(fresh);
-  notify(reg.user_id, 'registration_approved', { no: reg.reg_no, event: event.title, passNo: pass.pass_no }, { eventId: event.id, passNo: pass.pass_no });
+  notify(
+    reg.user_id,
+    'registration_approved',
+    { no: reg.reg_no, event: event.title, passNo: pass.pass_no },
+    { eventId: event.id, passNo: pass.pass_no },
+    { no: reg.reg_no, event: event.title_tw || event.title, passNo: pass.pass_no }
+  );
   audit(actor, 'registration_approve', 'registration', reg.reg_no, { passNo: pass.pass_no, ...(auto ? { auto: true } : {}) });
   return { waitlisted: false, pass };
 }
@@ -518,7 +576,13 @@ router.post('/registrations/:id/waitlist', reviewer, (req, res) => {
     "UPDATE pro_registrations SET status = 'waitlisted', review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(str(req.body?.comment, 500), req.user.id, now(), now(), reg.id);
   const event = db.prepare('SELECT * FROM pro_events WHERE id = ?').get(reg.event_id);
-  notify(reg.user_id, 'registration_waitlisted', { no: reg.reg_no, event: event?.title ?? '' }, { eventId: reg.event_id });
+  notify(
+    reg.user_id,
+    'registration_waitlisted',
+    { no: reg.reg_no, event: event?.title ?? '' },
+    { eventId: reg.event_id },
+    { no: reg.reg_no, event: event?.title_tw || event?.title || '' }
+  );
   audit(req.user, 'registration_waitlist', 'registration', reg.reg_no, {});
   res.json({ registration: registrationFull(db.prepare('SELECT * FROM pro_registrations WHERE id = ?').get(reg.id)) });
 });
@@ -532,7 +596,13 @@ router.post('/registrations/:id/reject', reviewer, (req, res) => {
   db.prepare(
     "UPDATE pro_registrations SET status = 'rejected', reject_code = ?, reject_comment = ?, review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(reason, comment, comment, req.user.id, now(), now(), reg.id);
-  notify(reg.user_id, 'registration_rejected', { no: reg.reg_no, reason, comment }, { eventId: reg.event_id });
+  notify(
+    reg.user_id,
+    'registration_rejected',
+    { no: reg.reg_no, reason: reasonText(reason), comment },
+    { eventId: reg.event_id },
+    { no: reg.reg_no, reason: reasonText(reason, true), comment }
+  );
   audit(req.user, 'registration_reject', 'registration', reg.reg_no, { reason, comment });
   res.json({ ok: true });
 });
@@ -631,12 +701,23 @@ router.post('/invitations', manager, (req, res) => {
       ts
     );
   const inv = db.prepare('SELECT * FROM pro_invitations WHERE id = ?').get(info.lastInsertRowid);
-  notify(invitee.id, 'invitation_issued', {
-    no: inviteNo,
-    event: event.title,
-    typeName: serializeInvitation(inv).typeName,
-    validUntil: validUntil.slice(0, 10),
-  }, { eventId: event.id, invitationNo: inviteNo });
+  notify(
+    invitee.id,
+    'invitation_issued',
+    {
+      no: inviteNo,
+      event: event.title,
+      typeName: serializeInvitation(inv).typeName,
+      validUntil: validUntil.slice(0, 10),
+    },
+    { eventId: event.id, invitationNo: inviteNo },
+    {
+      no: inviteNo,
+      event: event.title_tw || event.title,
+      typeName: serializeInvitation(inv).typeNameTw || serializeInvitation(inv).typeName,
+      validUntil: validUntil.slice(0, 10),
+    }
+  );
   audit(req.user, 'invitation_issue', 'invitation', inviteNo, { eventId: event.id, invitee: invitee.username, type });
   res.status(201).json({ invitation: serializeInvitation(inv) });
 });
@@ -647,8 +728,14 @@ router.post('/invitations/:id/revoke', manager, (req, res) => {
   assertTransition('invitation', row.status, 'revoked');
   const reason = str(req.body?.reason, 300);
   db.prepare("UPDATE pro_invitations SET status = 'revoked', revoked_reason = ?, updated_at = ? WHERE id = ?").run(reason, now(), row.id);
-  const event = db.prepare('SELECT title FROM pro_events WHERE id = ?').get(row.event_id);
-  notify(row.invitee_user_id, 'invitation_revoked', { no: row.invite_no, event: event?.title ?? '', reason }, { eventId: row.event_id });
+  const event = db.prepare('SELECT title, title_tw FROM pro_events WHERE id = ?').get(row.event_id);
+  notify(
+    row.invitee_user_id,
+    'invitation_revoked',
+    { no: row.invite_no, event: event?.title ?? '', reason },
+    { eventId: row.event_id },
+    { no: row.invite_no, event: event?.title_tw || event?.title || '', reason }
+  );
   audit(req.user, 'invitation_revoke', 'invitation', row.invite_no, { reason });
   res.json({ ok: true });
 });
@@ -706,7 +793,15 @@ router.post('/passes/:id/void', manager, (req, res) => {
   assertTransition('pass', row.status, 'voided');
   const reason = str(req.body?.reason, 300) || 'manual_void';
   db.prepare("UPDATE pro_passes SET status = 'voided', void_reason = ?, updated_at = ? WHERE id = ?").run(reason, now(), row.id);
-  notify(row.user_id, 'pass_voided', { passNo: row.pass_no, reason }, { passNo: row.pass_no });
+  const reasonCn = reason === 'manual_void' ? '手动作废' : reason;
+  const reasonTw = reason === 'manual_void' ? '手動作廢' : reason;
+  notify(
+    row.user_id,
+    'pass_voided',
+    { passNo: row.pass_no, reason: reasonCn },
+    { passNo: row.pass_no },
+    { passNo: row.pass_no, reason: reasonTw }
+  );
   audit(req.user, 'pass_void', 'pass', row.pass_no, { reason });
   res.json({ ok: true });
 });
@@ -790,7 +885,13 @@ router.post('/hosts/:id/reject', reviewer, (req, res) => {
   db.prepare(
     "UPDATE pro_hosts SET status = 'rejected', reject_code = ?, reject_comment = ?, review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(reason, comment, comment, req.user.id, now(), now(), host.id);
-  notify(host.user_id, 'host_rejected', { no: host.host_no, reason, comment }, { hostNo: host.host_no });
+  notify(
+    host.user_id,
+    'host_rejected',
+    { no: host.host_no, reason: reasonText(reason, false, HOST_REJECT_REASON_TEXT), comment },
+    { hostNo: host.host_no },
+    { no: host.host_no, reason: reasonText(reason, true, HOST_REJECT_REASON_TEXT), comment }
+  );
   audit(req.user, 'host_reject', 'host', host.host_no, { reason, comment });
   res.json({ ok: true });
 });
@@ -946,11 +1047,17 @@ function approveCourtesyCore(row, actor, { days = 14, comment = '', auto = false
   db.prepare(
     "UPDATE pro_courtesy_apps SET status = 'approved', valid_until = ?, review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(validUntil, comment, actor?.id ?? null, ts, ts, row.id);
-  const type = db.prepare('SELECT name FROM pro_courtesy_types WHERE code = ?').get(row.type_code);
+  const type = db.prepare('SELECT name, name_tw FROM pro_courtesy_types WHERE code = ?').get(row.type_code);
   db.prepare('INSERT INTO pro_courtesy_records (user_id, application_id, type_code, note, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)').run(
     row.user_id, row.id, row.type_code, '礼遇申请通过', actor?.id ?? null, ts
   );
-  notify(row.user_id, 'courtesy_approved', { no: row.app_no, typeName: type?.name ?? row.type_code, validUntil: validUntil.slice(0, 10) }, { appNo: row.app_no });
+  notify(
+    row.user_id,
+    'courtesy_approved',
+    { no: row.app_no, typeName: type?.name ?? row.type_code, validUntil: validUntil.slice(0, 10) },
+    { appNo: row.app_no },
+    { no: row.app_no, typeName: type?.name_tw || type?.name || row.type_code, validUntil: validUntil.slice(0, 10) }
+  );
   audit(actor, 'courtesy_approve', 'courtesy', row.app_no, { days: validDays, ...(auto ? { auto: true } : {}) });
 }
 
@@ -970,7 +1077,13 @@ router.post('/courtesy/applications/:id/reject', reviewer, (req, res) => {
   db.prepare(
     "UPDATE pro_courtesy_apps SET status = 'rejected', reject_code = ?, reject_comment = ?, review_note = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
   ).run(reason, comment, comment, req.user.id, now(), now(), row.id);
-  notify(row.user_id, 'courtesy_rejected', { no: row.app_no, reason, comment }, { appNo: row.app_no });
+  notify(
+    row.user_id,
+    'courtesy_rejected',
+    { no: row.app_no, reason: reasonText(reason), comment },
+    { appNo: row.app_no },
+    { no: row.app_no, reason: reasonText(reason, true), comment }
+  );
   audit(req.user, 'courtesy_reject', 'courtesy', row.app_no, { reason, comment });
   res.json({ ok: true });
 });
@@ -989,16 +1102,24 @@ router.post('/courtesy/applications/:id/mark-used', reviewer, (req, res) => {
 });
 
 router.get('/courtesy/records', reviewer, (req, res) => {
+  const locale = reqLocale(req);
   const { pageSize, offset } = pageParams(req.query, { pageSize: 20 });
   const rows = db
     .prepare(
-      `SELECT r.*, c.app_no, t.name AS type_name, u.username, u.display_name
+      `SELECT r.*, c.app_no, t.name AS type_name, t.name_tw AS type_name_tw, u.username, u.display_name
        FROM pro_courtesy_records r LEFT JOIN pro_courtesy_apps c ON c.id = r.application_id
        LEFT JOIN pro_courtesy_types t ON t.code = r.type_code
        JOIN users u ON u.id = r.user_id ORDER BY r.id DESC LIMIT ? OFFSET ?`
     )
     .all(pageSize, offset);
-  res.json({ items: rows });
+  res.json({
+    items: rows.map((r) => ({
+      ...r,
+      type_name: pickText(r.type_name, r.type_name_tw, locale),
+      typeName: r.type_name,
+      typeNameTw: r.type_name_tw ?? null,
+    })),
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -1007,6 +1128,7 @@ router.get('/courtesy/records', reviewer, (req, res) => {
 
 router.get('/checkins', checker, (req, res) => {
   sweepAll();
+  const locale = reqLocale(req);
   const { pageSize, offset } = pageParams(req.query, { pageSize: 20 });
   const where = ['1 = 1'];
   const params = [];
@@ -1025,12 +1147,22 @@ router.get('/checkins', checker, (req, res) => {
     .get(...params).n;
   const rows = db
     .prepare(
-      `SELECT l.*, p.pass_no, p.holder_name, e.title AS event_title, u.display_name AS actor_name
+      `SELECT l.*, p.pass_no, p.holder_name, e.title AS event_title, e.title_tw AS event_title_tw, u.display_name AS actor_name
        FROM pro_checkin_logs l LEFT JOIN pro_passes p ON p.id = l.pass_id LEFT JOIN pro_events e ON e.id = l.event_id
        LEFT JOIN users u ON u.id = l.actor_id WHERE ${clause} ORDER BY l.id DESC LIMIT ? OFFSET ?`
     )
     .all(...params, pageSize, offset);
-  res.json({ items: rows, total, page: Number(req.query.page) || 1, pageSize });
+  res.json({
+    items: rows.map((r) => ({
+      ...r,
+      event_title: pickText(r.event_title, r.event_title_tw, locale),
+      eventTitle: r.event_title,
+      eventTitleTw: r.event_title_tw ?? null,
+    })),
+    total,
+    page: Number(req.query.page) || 1,
+    pageSize,
+  });
 });
 
 router.post('/checkin', checker, (req, res) => {
@@ -1054,7 +1186,13 @@ router.post('/checkin', checker, (req, res) => {
     db.prepare("INSERT INTO pro_checkin_logs (pass_id, registration_id, event_id, action, source, actor_id, note, created_at) VALUES (?, ?, ?, 'in', 'manual', ?, '', ?)").run(
       pass.id, pass.registration_id, event.id, req.user.id, ts
     );
-    notify(pass.user_id, 'checkin_done', { event: event.title, passNo: pass.pass_no, time: ts.replace('T', ' ').slice(0, 16) }, { passNo: pass.pass_no });
+    notify(
+      pass.user_id,
+      'checkin_done',
+      { event: event.title, passNo: pass.pass_no, time: ts.replace('T', ' ').slice(0, 16) },
+      { passNo: pass.pass_no },
+      { event: event.title_tw || event.title, passNo: pass.pass_no, time: ts.replace('T', ' ').slice(0, 16) }
+    );
     audit(req.user, 'checkin_in', 'pass', pass.pass_no, { eventId: event.id });
   } else {
     if (pass.status !== 'used') throw conflict('EVT_PASS_INVALID', `Pass is ${pass.status}`);
@@ -1288,7 +1426,7 @@ router.get('/stats', manager, (_req, res) => {
   const eventByStatus = Object.fromEntries(grouped('pro_events', 'status', 'WHERE deleted_at IS NULL').map((r) => [r.key, r.n]));
   const eventByType = db
     .prepare(
-      `SELECT t.code, t.name, COUNT(e.id) AS n FROM pro_event_types t LEFT JOIN pro_events e ON e.type_code = t.code AND e.deleted_at IS NULL
+      `SELECT t.code, t.name, t.name_tw, COUNT(e.id) AS n FROM pro_event_types t LEFT JOIN pro_events e ON e.type_code = t.code AND e.deleted_at IS NULL
        GROUP BY t.code ORDER BY t.sort_order`
     )
     .all();
@@ -1298,7 +1436,7 @@ router.get('/stats', manager, (_req, res) => {
   const courtesyByStatus = Object.fromEntries(grouped('pro_courtesy_apps', 'status').map((r) => [r.key, r.n]));
   const courtesyByType = db
     .prepare(
-      `SELECT t.code, t.name, COUNT(c.id) AS n FROM pro_courtesy_types t LEFT JOIN pro_courtesy_apps c ON c.type_code = t.code
+      `SELECT t.code, t.name, t.name_tw, COUNT(c.id) AS n FROM pro_courtesy_types t LEFT JOIN pro_courtesy_apps c ON c.type_code = t.code
        GROUP BY t.code ORDER BY t.sort_order`
     )
     .all();

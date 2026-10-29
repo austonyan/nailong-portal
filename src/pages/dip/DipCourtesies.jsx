@@ -36,7 +36,7 @@ export default function DipCourtesies() {
   };
 
   const recordColumns = [
-    { title: t('dip.courtesy.type'), dataIndex: 'courtesy_name', width: 140, render: (v, r) => v || t(`dip.courtesy.${r.courtesy_code}`, { defaultValue: r.courtesy_code }) },
+    { title: t('dip.courtesy.type'), dataIndex: 'courtesy_name', width: 140, render: (v, r) => t(`dip.courtesy.${r.courtesy_code}`, { defaultValue: v || t('common.unknown') }) },
     {
       title: t('dip.courtesy.source'),
       dataIndex: 'source',
@@ -104,7 +104,7 @@ export default function DipCourtesies() {
 
       <Card>
         <Title size="small">{t('dip.courtesy.recordsTitle')}</Title>
-        <Table className="table-fit" columns={recordColumns} dataSource={data?.items ?? []} loading={data === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={recordColumns} dataSource={data?.items ?? []} loading={data === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
     </div>
   );

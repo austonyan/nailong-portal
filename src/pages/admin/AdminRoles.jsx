@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Table, Tag, Title, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { toastSuccess, toastError } from '../../components/toast.js';
+import { toastSuccess, toastApiError } from '../../components/toast.js';
 
 export default function AdminRoles() {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ export default function AdminRoles() {
 
   useEffect(() => {
     Promise.all([loadRoles(), api.get('/roles/permissions').then((d) => setPermissionGroups(d.groups))]).catch((err) => {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
       setRoles([]);
     });
   }, [loadRoles, t]);
@@ -75,7 +75,7 @@ export default function AdminRoles() {
       closeModal();
       await loadRoles();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -89,7 +89,7 @@ export default function AdminRoles() {
       setDeleteTarget(null);
       await loadRoles();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     }
   };
 
@@ -149,13 +149,13 @@ export default function AdminRoles() {
         </Button>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={roles ?? []} loading={roles === null} rowKey="key" pagination={false} />
+        <Table className="table-fit" columns={columns} dataSource={roles ?? []} loading={roles === null} rowKey="key" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <Modal maskClosable={false} open={editing !== null} title={editing?.id ? t('admin.roles.edit') : t('admin.roles.create')} onClose={closeModal} footer={null} typewriter={false} width={560}>
         <Form form={form} layout="vertical" onFinish={submit}>
           <FormItem name="key" label={t('admin.roles.key')} help={t('admin.roles.keyTip')} rules={[{ required: true, message: t('admin.roles.keyTip') }]}>
-            <Input size="large" disabled={!!editing?.id} placeholder="editor" />
+            <Input size="large" disabled={!!editing?.id} placeholder={t('admin.roles.keyPlaceholder')} />
           </FormItem>
           <FormItem name="name" label={t('admin.roles.name')} rules={[{ required: true, message: t('admin.roles.name') }]}>
             <Input size="large" allowClear />

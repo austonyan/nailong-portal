@@ -47,7 +47,7 @@ export default function DocsApply() {
         if (!cancelled) setTypes(d.items);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         if (!cancelled) setTypes([]);
       });
     return () => {
@@ -85,7 +85,7 @@ export default function DocsApply() {
           formData: item.formData || {},
         });
       })
-      .catch((err) => toastError(t(`api.${err.code}`, { defaultValue: err.message })));
+      .catch((err) => toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') })));
     return () => {
       cancelled = true;
     };
@@ -125,7 +125,7 @@ export default function DocsApply() {
         if (!silent) toastSuccess(t('docs.apply.draftSaved'));
         return d.item.id;
       } catch (err) {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         return null;
       } finally {
         setSaving(false);
@@ -147,7 +147,7 @@ export default function DocsApply() {
       const d = await requestForm(`/docs/applications/${id}/materials`, fd);
       setMaterials((list) => [...list, d.item]);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -156,7 +156,7 @@ export default function DocsApply() {
       await api.del(`/docs/materials/${m.id}`);
       setMaterials((list) => list.filter((x) => x.id !== m.id));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -193,7 +193,7 @@ export default function DocsApply() {
       setConfirming(false);
       navigate(`/docs/applications/${d.item.id}`);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }

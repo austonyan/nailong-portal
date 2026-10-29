@@ -42,8 +42,8 @@ export default function AdminResResidents() {
   };
 
   const columns = [
-    { title: t('res.field.cardNo'), dataIndex: 'cardNo', width: 180 },
-    { title: t('res.field.applicant'), dataIndex: 'username', width: 120 },
+    { title: t('res.admin.field.cardNo'), dataIndex: 'cardNo', width: 180 },
+    { title: t('res.admin.field.applicant'), dataIndex: 'username', width: 120 },
     { title: t('res.card.type'), dataIndex: 'typeName', width: 110 },
     { title: t('res.form.nickname'), dataIndex: 'nickname', width: 120 },
     { title: t('res.form.contact'), dataIndex: 'contact', width: 140 },

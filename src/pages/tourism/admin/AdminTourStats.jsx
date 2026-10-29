@@ -1,6 +1,7 @@
 // 基础统计:打卡量、徽章量与近 7 日趋势、热门景点,全部为简单 COUNT。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 import { Card, Table, Tag, Title } from 'animal-island-ui';
 import { TrophyIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -35,7 +36,7 @@ export default function AdminTourStats() {
 
   const topColumns = [
     { title: t('common.name'), dataIndex: 'name' },
-    { title: t('tour.field.no'), dataIndex: 'no', width: 180 },
+    { title: t('tour.admin.field.no'), dataIndex: 'no', width: 180 },
     { title: t('tour.admin.stats.checkins'), dataIndex: 'checkins', width: 100 },
   ];
 
@@ -93,13 +94,13 @@ export default function AdminTourStats() {
         <Title size="small">{t('tour.admin.stats.trendTitle')}</Title>
         <div className="tour-trend">
           {(stats?.trend ?? []).map((day) => (
-            <div key={day.day} className="tour-trend-col" title={day.day}>
+            <div key={day.day} className="tour-trend-col" title={dayjs(day.day).format('YYYY-MM-DD')}>
               <span className="tour-trend-n">{day.checkins}</span>
               <div
                 className="tour-trend-bar"
                 style={{ height: `${Math.max(4, Math.round((day.checkins / maxTrend) * 90))}px` }}
               />
-              <span className="tour-audit-detail">{day.day.slice(5)}</span>
+              <span className="tour-audit-detail">{dayjs(day.day).format('MM-DD')}</span>
             </div>
           ))}
           {!stats && <p className="muted-text">{t('common.loading')}</p>}

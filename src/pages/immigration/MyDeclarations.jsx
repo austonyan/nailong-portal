@@ -72,13 +72,13 @@ function DeclarationDetail({ id, onClose, onChanged }) {
         <InfoRow label={t('imm.declare.companions')}>{d.companions}</InfoRow>
         <InfoRow label={t('imm.declare.address')}>{d.address || '-'}</InfoRow>
         <InfoRow label={t('imm.declare.items')}>
-          {(d.items ?? []).map((i) => `${t(`imm.item.${i.key}`)} x${i.qty}`).join(', ') || '-'}
+          {(d.items ?? []).map((i) => `${t(`imm.item.${i.key}`, { defaultValue: t('common.unknown') })} ×${i.qty}`).join(', ') || '-'}
         </InfoRow>
         <InfoRow label={t('imm.declare.visaNo')}>
           {d.visaNo ?? '-'}{' '}
           {d.visaResult && (
             <Tag size="small" color={d.visaResult === 'valid' ? 'app-green' : 'app-red'} variant="soft">
-              {t(`imm.visaResult.${d.visaResult}`, { defaultValue: d.visaResult })}
+              {t(`imm.visaResult.${d.visaResult}`, { defaultValue: t('common.unknown') })}
             </Tag>
           )}
         </InfoRow>
@@ -141,8 +141,8 @@ function DeclarationDetail({ id, onClose, onChanged }) {
         <ul className="im-timeline">
           {(d.events ?? []).map((e, idx) => (
             <li key={idx}>
-              <span className="im-timeline-action">{t(`imm.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {fmtDateTime(e.created_at)}</span>
+              <span className="im-timeline-action">{t(`imm.event.${e.action}`, { defaultValue: t('common.unknown') })}</span>
+              <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="im-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -256,7 +256,7 @@ export default function MyDeclarations() {
         </Link>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
 
       <Drawer maskClosable={false} open={openId !== null} title={t('imm.mydecl.detailTitle')} onClose={() => setOpenId(null)} width={540}>

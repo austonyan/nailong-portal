@@ -7,7 +7,7 @@ import AuthLayout from '../components/AuthLayout.jsx';
 import LanguageSelect from '../components/LanguageSelect.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { useSetup } from '../setup/SetupContext.jsx';
-import { toastSuccess, toastError } from '../components/toast.js';
+import { toastSuccess, toastError, toastApiError } from '../components/toast.js';
 
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,32}$/;
 const TOTAL_STEPS = 3;
@@ -64,7 +64,7 @@ export default function Setup() {
         navigate('/login', { replace: true });
         return;
       }
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -169,7 +169,7 @@ export default function Setup() {
                 { type: 'email', message: t('setup.emailRule') },
               ]}
             >
-              <Input size="large" type="email" placeholder="admin@example.com" allowClear />
+              <Input size="large" type="email" placeholder={t('setup.emailPlaceholder')} allowClear />
             </FormItem>
             <FormItem
               name="password"

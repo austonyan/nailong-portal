@@ -111,6 +111,7 @@ function applicationWithMeta(row) {
   return {
     ...serializeApplication(row),
     typeName: typeRow?.name ?? row.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     validYears: typeRow?.valid_years ?? null,
     materials,
     reviews,
@@ -251,9 +252,14 @@ router.get('/applications', (req, res) => {
   const rows = db.prepare('SELECT * FROM res_applications WHERE user_id = ? ORDER BY id DESC LIMIT 100').all(req.user.id);
   res.json({
     items: rows.map((row) => {
-      const typeRow = db.prepare('SELECT name FROM res_types WHERE code = ?').get(row.type_code);
+      const typeRow = db.prepare('SELECT name, name_tw FROM res_types WHERE code = ?').get(row.type_code);
       const card = db.prepare('SELECT * FROM res_cards WHERE application_id = ? ORDER BY id DESC LIMIT 1').get(row.id);
-      return { ...serializeApplication(row), typeName: typeRow?.name ?? row.type_code, card: serializeCard(card) };
+      return {
+        ...serializeApplication(row),
+        typeName: typeRow?.name ?? row.type_code,
+        typeNameTw: typeRow?.name_tw ?? null,
+        card: serializeCard(card),
+      };
     }),
   });
 });
@@ -494,7 +500,12 @@ router.get('/card', (req, res) => {
     .prepare('SELECT COUNT(*) AS n FROM res_changes WHERE user_id = ? AND status = ?')
     .get(req.user.id, 'pending_review').n;
   res.json({
-    card: { ...serializeCard(card), appNo: app?.app_no, typeName: typeRow?.name ?? card.type_code },
+    card: {
+      ...serializeCard(card),
+      appNo: app?.app_no,
+      typeName: typeRow?.name ?? card.type_code,
+      typeNameTw: typeRow?.name_tw ?? null,
+    },
     resident: resident ? serializeResident(resident) : null,
     pendingChanges: changes,
   });
@@ -606,14 +617,28 @@ router.get('/benefits', (req, res) => {
   const card = db.prepare('SELECT * FROM res_cards WHERE user_id = ? ORDER BY id DESC LIMIT 1').get(req.user.id);
   const typeRow = card ? db.prepare('SELECT * FROM res_types WHERE code = ?').get(card.type_code) : null;
   const announcements = db
-    .prepare("SELECT id, title, body, level, created_at FROM res_notices WHERE enabled = 1 AND level = 'policy' ORDER BY id DESC LIMIT 5")
-    .all();
+    .prepare(
+      "SELECT id, title, title_tw, body, body_tw, level, created_at FROM res_notices WHERE enabled = 1 AND level = 'policy' ORDER BY id DESC LIMIT 5"
+    )
+    .all()
+    .map((n) => ({
+      id: n.id,
+      title: n.title,
+      body: n.body,
+      titleTw: n.title_tw,
+      bodyTw: n.body_tw,
+      level: n.level,
+      createdAt: n.created_at,
+    }));
   const channelInfo = residentChannels(req.user.id);
   res.json({
     card: card ? serializeCard(card) : null,
     typeName: typeRow?.name ?? null,
+    typeNameTw: typeRow?.name_tw ?? null,
     benefits: typeRow?.benefits ?? '',
+    benefitsTw: typeRow?.benefits_tw ?? null,
     duties: typeRow?.duties ?? '',
+    dutiesTw: typeRow?.duties_tw ?? null,
     announcements,
     // 联动快捷通道:按居民卡状态 + 各署真实配置下发可用性与跳转地址
     ...channelInfo,

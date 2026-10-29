@@ -33,7 +33,7 @@ function BlacklistModal({ onClose, onSaved }) {
     <Modal
       maskClosable={false}
       open
-      title={t('dip.blacklist.add')}
+      title={t('dip.admin.blacklist.add')}
       onClose={onClose}
       typewriter={false}
       footer={
@@ -46,10 +46,10 @@ function BlacklistModal({ onClose, onSaved }) {
       }
     >
       <div className="dip-form-row">
-        <Input value={userId} onChange={(e) => setUserId(e.target.value.replace(/\D/g, ''))} placeholder={t('dip.blacklist.userId')} />
-        <Select value={level} onChange={setLevel} options={[{ key: 'warn', label: t('dip.blacklist.warn') }, { key: 'block', label: t('dip.blacklist.block') }]} />
+        <Input value={userId} onChange={(e) => setUserId(e.target.value.replace(/\D/g, ''))} placeholder={t('dip.admin.blacklist.userId')} />
+        <Select value={level} onChange={setLevel} options={[{ key: 'warn', label: t('dip.admin.blacklist.warn') }, { key: 'block', label: t('dip.admin.blacklist.block') }]} />
       </div>
-      <TextArea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t('dip.blacklist.reason')} maxLength={200} />
+      <TextArea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t('dip.admin.blacklist.reason')} maxLength={200} />
     </Modal>
   );
 }
@@ -106,11 +106,11 @@ export default function AdminDipVerify() {
 
   const lift = (row) =>
     confirm({
-      title: t('dip.blacklist.lift'),
-      tip: t('dip.blacklist.liftConfirm', { user: `${row.display_name || row.username} (#${row.user_id})` }),
-      confirmText: t('dip.blacklist.lift'),
+      title: t('dip.admin.blacklist.lift'),
+      tip: t('dip.admin.blacklist.liftConfirm', { user: `${row.display_name || row.username} (#${row.user_id})` }),
+      confirmText: t('dip.admin.blacklist.lift'),
       action: () => api.post(`/dip/admin/blacklist/${row.id}/lift`),
-      success: t('dip.blacklist.lifted'),
+      success: t('dip.admin.blacklist.lifted'),
       onDone: loadBlacklist,
       onError: (err) => toastDipError(t, err),
     });
@@ -124,45 +124,45 @@ export default function AdminDipVerify() {
     }
     confirm({
       danger: false,
-      title: t('dip.verifyAdmin.limitTitle'),
-      tip: t('dip.verifyAdmin.limitConfirm', { count: value }),
+      title: t('dip.admin.verifyAdmin.limitTitle'),
+      tip: t('dip.admin.verifyAdmin.limitConfirm', { count: value }),
       confirmText: t('common.save'),
       action: () => api.put('/dip/admin/config/settings', { items: [{ key: 'verify_limit_per_5min', value }] }),
-      success: t('dip.verifyAdmin.limitSaved', { count: value }),
+      success: t('dip.admin.verifyAdmin.limitSaved', { count: value }),
       onError: (err) => toastDipError(t, err),
     });
   };
 
   const logColumns = [
-    { title: t('dip.verifyLog.query'), dataIndex: 'query', width: 200 },
-    { title: t('dip.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`, { defaultValue: v }) : '-') },
-    { title: t('dip.verifyLog.result'), dataIndex: 'result', width: 140, render: (v) => (
+    { title: t('dip.admin.verifyLog.query'), dataIndex: 'query', width: 200 },
+    { title: t('dip.admin.verifyLog.kind'), dataIndex: 'kind', width: 100, render: (v) => (v ? t(`dip.verify.kind${v.charAt(0).toUpperCase()}${v.slice(1)}`, { defaultValue: t('common.unknown') }) : '-') },
+    { title: t('dip.admin.verifyLog.result'), dataIndex: 'result', width: 140, render: (v) => (
       <Tag size="small" color={v === 'valid' ? 'app-green' : v === 'not_found' ? 'default' : 'app-orange'} variant="soft">
-        {t(`dip.verifyLog.result_${v}`, { defaultValue: v })}
+        {t(`dip.admin.verifyLog.result_${v}`, { defaultValue: t('common.unknown') })}
       </Tag>
     ) },
     { title: 'IP', dataIndex: 'ip', width: 130, render: (v) => v || '-' },
-    { title: t('dip.verifyLog.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
+    { title: t('dip.admin.verifyLog.at'), dataIndex: 'created_at', width: 160, render: (v) => fmtDateTime(v) },
   ];
 
   const blColumns = [
-    { title: t('dip.blacklist.user'), width: 140, render: (_, r) => `${r.display_name || r.username} (#${r.user_id})` },
-    { title: t('dip.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => (
-      <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`dip.blacklist.${v}`)}</Tag>
+    { title: t('dip.admin.blacklist.user'), width: 140, render: (_, r) => `${r.display_name || r.username} (#${r.user_id})` },
+    { title: t('dip.admin.blacklist.level'), dataIndex: 'level', width: 90, render: (v) => (
+      <Tag color={v === 'block' ? 'app-red' : 'app-yellow'} variant="soft">{t(`dip.admin.blacklist.${v}`)}</Tag>
     ) },
-    { title: t('dip.blacklist.reason'), dataIndex: 'reason' },
-    { title: t('dip.blacklist.since'), dataIndex: 'created_at', width: 150, render: (v) => fmtDateTime(v) },
-    { title: t('common.actions'), width: 100, render: (_, r) => <Button size="small" onClick={() => lift(r)}>{t('dip.blacklist.lift')}</Button> },
+    { title: t('dip.admin.blacklist.reason'), dataIndex: 'reason' },
+    { title: t('dip.admin.blacklist.since'), dataIndex: 'created_at', width: 150, render: (v) => fmtDateTime(v) },
+    { title: t('common.actions'), width: 100, render: (_, r) => <Button size="small" onClick={() => lift(r)}>{t('dip.admin.blacklist.lift')}</Button> },
   ];
 
   return (
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.verifyAdmin.title')}</Title>
+        <Title size="middle" color="purple">{t('dip.admin.verifyAdmin.title')}</Title>
         <div className="dip-msg-filter">
-          <Button type={tab === 'logs' ? 'primary' : 'default'} size="small" onClick={() => setTab('logs')}>{t('dip.verifyAdmin.tabLogs')}</Button>
-          <Button type={tab === 'risk' ? 'primary' : 'default'} size="small" onClick={() => setTab('risk')}>{t('dip.verifyAdmin.tabRisk')}</Button>
+          <Button type={tab === 'logs' ? 'primary' : 'default'} size="small" onClick={() => setTab('logs')}>{t('dip.admin.verifyAdmin.tabLogs')}</Button>
+          <Button type={tab === 'risk' ? 'primary' : 'default'} size="small" onClick={() => setTab('risk')}>{t('dip.admin.verifyAdmin.tabRisk')}</Button>
         </div>
       </div>
 
@@ -170,8 +170,8 @@ export default function AdminDipVerify() {
         <>
           <Card>
             <div className="dip-admin-filter">
-              <Select value={kind} onChange={(v) => { setKind(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allKinds') }, { key: 'relation', label: t('dip.verify.kindRelation') }, { key: 'identity', label: t('dip.verify.kindIdentity') }, { key: 'agreement', label: t('dip.verify.kindAgreement') }]} />
-              <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={[{ key: '', label: t('dip.verifyAdmin.allResults') }, { key: 'valid', label: t('dip.verifyLog.result_valid') }, { key: 'not_found', label: t('dip.verifyLog.result_not_found') }]} />
+              <Select value={kind} onChange={(v) => { setKind(v); setPage(1); }} options={[{ key: '', label: t('dip.admin.verifyAdmin.allKinds') }, { key: 'relation', label: t('dip.verify.kindRelation') }, { key: 'identity', label: t('dip.verify.kindIdentity') }, { key: 'agreement', label: t('dip.verify.kindAgreement') }]} />
+              <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={[{ key: '', label: t('dip.admin.verifyAdmin.allResults') }, { key: 'valid', label: t('dip.admin.verifyLog.result_valid') }, { key: 'not_found', label: t('dip.admin.verifyLog.result_not_found') }]} />
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
@@ -182,7 +182,7 @@ export default function AdminDipVerify() {
                     setPage(1);
                   }
                 }}
-                placeholder={t('dip.verifyLog.query')}
+                placeholder={t('dip.admin.verifyLog.query')}
                 allowClear
                 maxLength={40}
               />
@@ -201,11 +201,12 @@ export default function AdminDipVerify() {
               loading={logs === null}
               rowKey="id"
               pagination={{ current: page, defaultPageSize: 20, total: logsTotal, showTotal: true, onChange: setPage }}
+              emptyText={t('common.empty')}
             />
           </Card>
           <Card>
-            <b>{t('dip.verifyAdmin.limitTitle')}</b>
-            <p className="muted-text">{t('dip.verifyAdmin.limitTip')}</p>
+            <b>{t('dip.admin.verifyAdmin.limitTitle')}</b>
+            <p className="muted-text">{t('dip.admin.verifyAdmin.limitTip')}</p>
             <div className="dip-admin-filter">
               <Input value={limit} onChange={(e) => setLimit(e.target.value.replace(/\D/g, ''))} placeholder="30" style={{ maxWidth: 140 }} />
               <Button type="primary" onClick={saveLimit}>{t('common.save')}</Button>
@@ -217,10 +218,10 @@ export default function AdminDipVerify() {
       {tab === 'risk' && (
         <Card>
           <div className="page-header">
-            <Title size="small">{t('dip.verifyAdmin.tabRisk')}</Title>
-            <Button type="primary" size="small" icon={<PlusIcon />} onClick={() => setAddOpen(true)}>{t('dip.blacklist.add')}</Button>
+            <Title size="small">{t('dip.admin.verifyAdmin.tabRisk')}</Title>
+            <Button type="primary" size="small" icon={<PlusIcon />} onClick={() => setAddOpen(true)}>{t('dip.admin.blacklist.add')}</Button>
           </div>
-          <Table className="table-fit" columns={blColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} />
+          <Table className="table-fit" columns={blColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
         </Card>
       )}
 

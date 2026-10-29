@@ -50,7 +50,7 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
     <Modal
       maskClosable={false}
       open
-      title={`${t('dip.config.editType')} · ${initial.code}`}
+      title={`${t('dip.admin.config.editType')} · ${initial.code}`}
       onClose={onClose}
       typewriter={false}
       width={540}
@@ -67,14 +67,14 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
         <p className="dip-info-row"><span className="dip-info-label">{t('common.description')}</span><Input value={description} onChange={(e) => setDescription(e.target.value)} maxLength={200} /></p>
         <p className="dip-info-row"><span className="dip-info-label">{t('common.description')} · {t('common.traditional')}</span><Input value={descriptionTw} placeholder={t('common.twOptional')} onChange={(e) => setDescriptionTw(e.target.value)} maxLength={200} /></p>
         {kind === 'relation' && (
-          <p className="dip-info-row"><span className="dip-info-label">{t('dip.config.validityDays')}</span><Input value={validityDays} onChange={(e) => setValidityDays(e.target.value.replace(/\D/g, ''))} /></p>
+          <p className="dip-info-row"><span className="dip-info-label">{t('dip.admin.config.validityDays')}</span><Input value={validityDays} onChange={(e) => setValidityDays(e.target.value.replace(/\D/g, ''))} /></p>
         )}
         <p className="dip-config-guide">
-          <span className="dip-info-label">{t('dip.config.guide')}</span>
-          <TextArea rows={5} value={guide} onChange={(e) => setGuide(e.target.value)} maxLength={1000} placeholder={t('dip.config.guideTip')} />
+          <span className="dip-info-label">{t('dip.admin.config.guide')}</span>
+          <TextArea rows={5} value={guide} onChange={(e) => setGuide(e.target.value)} maxLength={1000} placeholder={t('dip.admin.config.guideTip')} />
         </p>
         <p className="dip-config-guide">
-          <span className="dip-info-label">{t('dip.config.guide')} · {t('common.traditional')}</span>
+          <span className="dip-info-label">{t('dip.admin.config.guide')} · {t('common.traditional')}</span>
           <TextArea rows={5} value={guideTw} onChange={(e) => setGuideTw(e.target.value)} maxLength={1000} placeholder={t('common.twOptional')} />
         </p>
       </div>
@@ -83,13 +83,13 @@ function TypeEditModal({ kind, initial, onClose, onSaved }) {
 }
 
 const SETTINGS_ROWS = [
-  { key: 'relation_no_prefix', label: 'dip.config.prefixRelation' },
-  { key: 'identity_no_prefix', label: 'dip.config.prefixIdentity' },
-  { key: 'agreement_no_prefix', label: 'dip.config.prefixAgreement' },
-  { key: 'supplement_days', label: 'dip.config.supplementDays' },
-  { key: 'review_hours_hint', label: 'dip.config.reviewHours' },
-  { key: 'verify_limit_per_5min', label: 'dip.config.verifyLimit' },
-  { key: 'max_identities_per_user', label: 'dip.config.maxIdentities' },
+  { key: 'relation_no_prefix', label: 'dip.admin.config.prefixRelation' },
+  { key: 'identity_no_prefix', label: 'dip.admin.config.prefixIdentity' },
+  { key: 'agreement_no_prefix', label: 'dip.admin.config.prefixAgreement' },
+  { key: 'supplement_days', label: 'dip.admin.config.supplementDays' },
+  { key: 'review_hours_hint', label: 'dip.admin.config.reviewHours' },
+  { key: 'verify_limit_per_5min', label: 'dip.admin.config.verifyLimit' },
+  { key: 'max_identities_per_user', label: 'dip.admin.config.maxIdentities' },
 ];
 
 export default function AdminDipConfig() {
@@ -143,7 +143,7 @@ export default function AdminDipConfig() {
         { title: t('common.key'), dataIndex: 'code', width: 160 },
         { title: t('common.name'), dataIndex: 'name', width: 130 },
         { title: t('common.description'), dataIndex: 'description', style: { maxWidth: 320 } },
-        ...(kind === 'relation' ? [{ title: t('dip.config.validityDays'), dataIndex: 'validity_days', width: 100 }] : []),
+        ...(kind === 'relation' ? [{ title: t('dip.admin.config.validityDays'), dataIndex: 'validity_days', width: 100 }] : []),
         {
           title: t('common.status'),
           dataIndex: 'enabled',
@@ -151,7 +151,7 @@ export default function AdminDipConfig() {
           render: (v, r) => (
             <span className="dip-switch-row">
               <Switch checked={!!v} size="small" onChange={(next) => toggleEnabled(kind, r, next)} />
-              <Tag size="small" color={v ? 'app-green' : 'default'} variant="soft">{v ? t('dip.config.open') : t('dip.config.closed')}</Tag>
+              <Tag size="small" color={v ? 'app-green' : 'default'} variant="soft">{v ? t('dip.admin.config.open') : t('dip.admin.config.closed')}</Tag>
             </span>
           ),
         },
@@ -160,7 +160,7 @@ export default function AdminDipConfig() {
       dataSource={rows}
       rowKey="id"
       pagination={false}
-      size="small"
+      emptyText={t('common.empty')}
     />
   );
 
@@ -177,7 +177,7 @@ export default function AdminDipConfig() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.config.title')}</Title>
+        <Title size="middle" color="purple">{t('dip.admin.config.title')}</Title>
       </div>
 
       <Card>
@@ -185,19 +185,19 @@ export default function AdminDipConfig() {
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.config.objectTypes')}</Title>
+        <Title size="small">{t('dip.admin.config.objectTypes')}</Title>
         {typeTable('object', data.objectTypes)}
       </Card>
       <Card>
-        <Title size="small">{t('dip.config.relationTypes')}</Title>
+        <Title size="small">{t('dip.admin.config.relationTypes')}</Title>
         {typeTable('relation', data.relationTypes)}
       </Card>
       <Card>
-        <Title size="small">{t('dip.config.identityTypes')}</Title>
+        <Title size="small">{t('dip.admin.config.identityTypes')}</Title>
         {typeTable('identity', data.identityTypes)}
       </Card>
       <Card>
-        <Title size="small">{t('dip.config.courtesyTypes')}</Title>
+        <Title size="small">{t('dip.admin.config.courtesyTypes')}</Title>
         <Table className="table-fit"
           columns={[
             { title: t('common.key'), dataIndex: 'code', width: 160 },
@@ -215,12 +215,12 @@ export default function AdminDipConfig() {
           dataSource={data.courtesyTypes}
           rowKey="id"
           pagination={false}
-          size="small"
+          emptyText={t('common.empty')}
         />
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.config.settings')}</Title>
+        <Title size="small">{t('dip.admin.config.settings')}</Title>
         <div className="dip-settings-grid">
           {SETTINGS_ROWS.map((r) => (
             <label key={r.key} className="dip-setting-row">
