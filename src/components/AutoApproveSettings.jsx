@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Select, Title } from 'animal-island-ui';
 import { api } from '../api/client.js';
-import { toastSuccess, toastError } from './toast.js';
+import { toastSuccess, toastApiError } from './toast.js';
 import { fmtDateTime } from '../lib/date.js';
 
 const MODES = ['off', 'immediate', 'delayed'];
@@ -24,7 +24,7 @@ export default function AutoApproveSettings({ service }) {
       setMode(next.mode);
       setDelay(String(next.delayMinutes > 0 ? next.delayMinutes : 60));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastApiError(t, err);
     }
   }, [service, t]);
 
@@ -47,9 +47,9 @@ export default function AutoApproveSettings({ service }) {
       setSettings(next);
       setMode(next.mode);
       if (next.delayMinutes > 0) setDelay(String(next.delayMinutes));
-      toastSuccess(t('common.save'));
+      toastSuccess(t('common.saved'));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -58,7 +58,11 @@ export default function AutoApproveSettings({ service }) {
   return (
     <div className="auto-approve-panel">
       <Title size="small">{t('autoApprove.title')}</Title>
-      <p className="muted-text">{t('autoApprove.scope', { flows: t(`autoApprove.flows.${service}`) })}</p>
+      <p className="muted-text">
+        {t('autoApprove.scope', {
+          flows: t(`autoApprove.flows.${service}`, { defaultValue: t('common.unknown') }),
+        })}
+      </p>
       <div className="auto-approve-row">
         <span className="auto-approve-label">{t('autoApprove.mode')}</span>
         <Select

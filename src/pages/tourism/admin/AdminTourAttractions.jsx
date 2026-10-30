@@ -49,7 +49,10 @@ function statusOptions(t) {
 }
 
 export default function AdminTourAttractions() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isTw = String(i18n.language || '').startsWith('zh-TW');
+  // 第二列永远显示「另一种语言」:繁中界面显示简体源(nameCn),简中界面显示繁体(nameTw)。
+  const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
@@ -165,15 +168,15 @@ export default function AdminTourAttractions() {
   };
 
   const columns = [
-    { title: t('tour.field.no'), dataIndex: 'no', width: 180 },
+    { title: t('tour.admin.field.no'), dataIndex: 'no', width: 180 },
     { title: t('common.name'), dataIndex: 'name' },
     {
-      title: t('common.name') + ' · ' + t('common.traditional'),
-      dataIndex: 'nameTw',
-      render: (v) => v || '-',
+      title: t('common.name') + ' · ' + otherLangLabel,
+      dataIndex: 'name',
+      render: (v, row) => (isTw ? (row.nameCn ?? row.nameTw ?? row.name) : row.nameTw) || '-',
     },
     {
-      title: t('tour.field.type'),
+      title: t('tour.admin.field.type'),
       dataIndex: 'type',
       width: 90,
       render: (v) => (
@@ -183,7 +186,7 @@ export default function AdminTourAttractions() {
       ),
     },
     {
-      title: t('tour.field.openState'),
+      title: t('tour.admin.field.openState'),
       dataIndex: 'openState',
       width: 90,
       render: (v) => (
@@ -202,8 +205,8 @@ export default function AdminTourAttractions() {
         </Tag>
       ),
     },
-    { title: t('tour.field.sortOrder'), dataIndex: 'sortOrder', width: 70 },
-    { title: t('tour.field.updatedAt'), dataIndex: 'updatedAt', width: 150, render: fmtDateTime },
+    { title: t('tour.admin.field.sortOrder'), dataIndex: 'sortOrder', width: 70 },
+    { title: t('tour.admin.field.updatedAt'), dataIndex: 'updatedAt', width: 150, render: fmtDateTime },
     {
       title: t('common.actions'),
       dataIndex: 'actions',
@@ -312,11 +315,11 @@ export default function AdminTourAttractions() {
               />
             </label>
             <label>
-              {t('tour.field.type')}
+              {t('tour.admin.field.type')}
               <Select value={form.type} onChange={(key) => setForm({ ...form, type: key })} options={typeOptions(t)} />
             </label>
             <label>
-              {t('tour.field.openState')}
+              {t('tour.admin.field.openState')}
               <Select
                 value={form.openState}
                 onChange={(key) => setForm({ ...form, openState: key })}
@@ -332,7 +335,7 @@ export default function AdminTourAttractions() {
               />
             </label>
             <label>
-              {t('tour.field.sortOrder')}
+              {t('tour.admin.field.sortOrder')}
               <Input
                 size="large"
                 value={form.sortOrder}
@@ -341,23 +344,23 @@ export default function AdminTourAttractions() {
             </label>
           </div>
           <label>
-            {t('tour.field.summary')}
+            {t('tour.admin.field.summary')}
             <TextArea rows={2} maxLength={200} value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.summary')} · {t('common.traditional')}
+            {t('tour.admin.field.summary')} · {t('common.traditional')}
             <TextArea rows={2} maxLength={200} value={form.summaryTw} onChange={(e) => setForm({ ...form, summaryTw: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.description')}
+            {t('tour.admin.field.description')}
             <TextArea rows={4} maxLength={4000} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.description')} · {t('common.traditional')}
+            {t('tour.admin.field.description')} · {t('common.traditional')}
             <TextArea rows={4} maxLength={4000} value={form.descriptionTw} onChange={(e) => setForm({ ...form, descriptionTw: e.target.value })} />
           </label>
           <label>
-            {t('tour.field.checkinPoints')}
+            {t('tour.admin.field.checkinPoints')}
             <TextArea
               rows={3}
               value={form.checkinPoints}
@@ -366,7 +369,7 @@ export default function AdminTourAttractions() {
             />
           </label>
           <label>
-            {t('tour.field.checkinPoints')} · {t('common.traditional')}
+            {t('tour.admin.field.checkinPoints')} · {t('common.traditional')}
             <TextArea rows={3} value={form.checkinPointsTw} onChange={(e) => setForm({ ...form, checkinPointsTw: e.target.value })} />
           </label>
           <p className="muted-text tour-config-tip">{t('tour.admin.attractions.pointsTip')}</p>

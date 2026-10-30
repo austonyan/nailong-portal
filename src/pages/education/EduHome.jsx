@@ -42,7 +42,7 @@ export default function EduHome() {
     );
   }
 
-  const categoryName = (code) => data.categories.find((c) => c.code === code)?.name ?? code;
+  const categoryName = (code) => data.categories.find((c) => c.code === code)?.name ?? t('common.unknown');
 
   return (
     <div className="edu-section">

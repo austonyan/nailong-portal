@@ -261,6 +261,7 @@ export function maskPermit(permit, typeRow) {
     visaNo: permit.visa_no,
     typeCode: permit.type_code,
     typeName: typeRow?.name ?? permit.type_code,
+    typeNameTw: typeRow?.name_tw ?? null,
     status: permit.status,
     valid: permit.status === 'valid',
     issuedAt: permit.issued_at,

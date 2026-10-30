@@ -68,7 +68,7 @@ export default function AdminResRisk() {
 
   const dupColumns = [
     { title: t('common.userId'), dataIndex: 'user_id', width: 90 },
-    { title: t('res.field.applicant'), dataIndex: 'username', width: 140 },
+    { title: t('res.admin.field.applicant'), dataIndex: 'username', width: 140 },
     {
       title: t('res.admin.risk.applications'),
       dataIndex: 'applications',
@@ -83,9 +83,9 @@ export default function AdminResRisk() {
 
   const blacklistColumns = [
     { title: t('common.userId'), dataIndex: 'userId', width: 90 },
-    { title: t('res.field.applicant'), dataIndex: 'username', width: 140 },
+    { title: t('res.admin.field.applicant'), dataIndex: 'username', width: 140 },
     { title: t('res.admin.risk.reason'), dataIndex: 'reason' },
-    { title: t('res.field.createdAt'), dataIndex: 'createdAt', width: 160, render: fmtDateTime },
+    { title: t('res.admin.field.createdAt'), dataIndex: 'createdAt', width: 160, render: fmtDateTime },
     {
       title: t('common.actions'),
       dataIndex: 'actions',

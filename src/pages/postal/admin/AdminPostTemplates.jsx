@@ -125,7 +125,7 @@ export default function AdminPostTemplates() {
           </Tag>
         ) : (
           <Tag color="app-blue" variant="soft" size="small">
-            {t(`post.source.${value}`, { defaultValue: value })}
+            {t(`post.source.${value}`, { defaultValue: t('common.unknown') })}
           </Tag>
         ),
     },
@@ -212,7 +212,7 @@ export default function AdminPostTemplates() {
               value={form.source}
               onChange={(key) => setForm({ ...form, source: key })}
               options={[
-                ...POSTAL_SOURCES.map((value) => ({ key: value, label: t(`post.source.${value}`, { defaultValue: value }) })),
+                ...POSTAL_SOURCES.map((value) => ({ key: value, label: t(`post.source.${value}`, { defaultValue: t('common.unknown') }) })),
                 { key: '*', label: t('post.admin.templates.anySource') },
               ]}
             />
@@ -223,7 +223,7 @@ export default function AdminPostTemplates() {
               size="large"
               value={form.type}
               maxLength={60}
-              placeholder="postcard_received"
+              placeholder={t('post.admin.templates.typePlaceholder')}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
             />
           </label>
@@ -275,7 +275,7 @@ export default function AdminPostTemplates() {
               size="large"
               value={form.variables}
               maxLength={120}
-              placeholder="no, title"
+              placeholder={t('post.admin.templates.variablesPlaceholder')}
               onChange={(e) => setForm({ ...form, variables: e.target.value })}
             />
           </label>

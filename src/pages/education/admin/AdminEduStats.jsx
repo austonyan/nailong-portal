@@ -58,7 +58,7 @@ export default function AdminEduStats() {
       title: t('common.status'),
       dataIndex: 'status',
       width: 100,
-      render: (v) => <StatusTag value={v} />,
+      render: (v) => <StatusTag value={v} prefix="edu.admin.taskStatus" />,
     },
     { title: t('edu.admin.tasks.participants'), dataIndex: 'participants', width: 100 },
     { title: t('edu.admin.tasks.completedCol'), dataIndex: 'completed', width: 100 },

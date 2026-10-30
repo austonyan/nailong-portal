@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Select, Tag, Upload } from 'animal-island-ui';
 import { PaperclipIcon, TrashIcon } from 'naive-icons';
-import { getAccessToken } from '../../api/client.js';
+import { getAccessToken, getLocaleHeader } from '../../api/client.js';
 import { toastDipError } from './shared.jsx';
 
 const KINDS = ['intro', 'proof', 'community', 'appointment', 'letter', 'other'];
@@ -22,7 +22,7 @@ export default function DipMaterials({ ownerType, ownerId, materials = [], canUp
   const download = async (mat) => {
     try {
       const res = await fetch(`/api/dip/materials/${mat.id}/download`, {
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
+        headers: { Authorization: `Bearer ${getAccessToken()}`, ...getLocaleHeader() },
       });
       if (!res.ok) throw new Error(res.status);
       const blob = await res.blob();
@@ -41,7 +41,7 @@ export default function DipMaterials({ ownerType, ownerId, materials = [], canUp
     try {
       const res = await fetch(`/api/dip/materials/${mat.id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
+        headers: { Authorization: `Bearer ${getAccessToken()}`, ...getLocaleHeader() },
       });
       if (!res.ok) throw new Error(res.status);
       onChanged({ id: mat.id, removed: true });
@@ -54,6 +54,7 @@ export default function DipMaterials({ ownerType, ownerId, materials = [], canUp
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/api/dip/materials/${ownerType}/${ownerId}`);
     xhr.setRequestHeader('Authorization', `Bearer ${getAccessToken()}`);
+    xhr.setRequestHeader('X-Nailong-Locale', getLocaleHeader()['X-Nailong-Locale']);
     xhr.onload = () => {
       if (xhr.status < 400) onSuccess(JSON.parse(xhr.responseText || '{}'));
       else onError(JSON.parse(xhr.responseText || '{}'));
@@ -82,7 +83,7 @@ export default function DipMaterials({ ownerType, ownerId, materials = [], canUp
             <button type="button" className="dip-material-name" onClick={() => download(mat)}>
               {mat.filename}
             </button>
-            <Tag size="small">{t(`dip.materialKind.${mat.kind}`, { defaultValue: mat.kind })}</Tag>
+            <Tag size="small">{t(`dip.materialKind.${mat.kind}`, { defaultValue: t('common.unknown') })}</Tag>
             {mat.origin === 'supplement' && <Tag size="small" color="warm-peach-pink" variant="soft">{t('dip.material.supplementOrigin')}</Tag>}
             <span className="muted-text">{fmtSize(mat.size)}</span>
             {canUpload && (

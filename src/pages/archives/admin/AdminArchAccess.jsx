@@ -9,9 +9,9 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const ACTION_OPTIONS = [
   { key: '', labelKey: 'arch.admin.access.allActions' },
-  { key: 'list', labelKey: 'arch.action.list' },
-  { key: 'detail', labelKey: 'arch.action.detail' },
-  { key: 'export', labelKey: 'arch.action.export' },
+  { key: 'list', labelKey: 'arch.admin.action.list' },
+  { key: 'detail', labelKey: 'arch.admin.action.detail' },
+  { key: 'export', labelKey: 'arch.admin.action.export' },
 ];
 
 const OFFICE_OPTIONS = [
@@ -79,12 +79,12 @@ export default function AdminArchAccess() {
       width: 100,
       render: (v) => (
         <Tag color={(ACTION_TAG[v] ?? { color: 'brown', variant: 'soft' }).color} variant={(ACTION_TAG[v] ?? { variant: 'soft' }).variant} size="small">
-          {t(`arch.action.${v}`, { defaultValue: v })}
+          {t(`arch.admin.action.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
     { title: t('arch.catalog.office'), dataIndex: 'office', width: 110, render: (v) => (v ? t(`arch.office.${v}`) : <span className="muted-text">-</span>) },
-    { title: t('arch.admin.access.recordType'), dataIndex: 'recordType', width: 140, render: (v) => v || <span className="muted-text">-</span> },
+    { title: t('arch.admin.access.recordType'), dataIndex: 'recordType', width: 140, render: (v) => (v ? t(`arch.recordType.${v}`, { defaultValue: t('common.unknown') }) : <span className="muted-text">-</span>) },
     { title: t('arch.admin.access.detail'), dataIndex: 'detail', render: (v) => <span className="arch-note">{JSON.stringify(v)}</span> },
     { title: 'IP', dataIndex: 'ip', width: 120, render: (v) => v || <span className="muted-text">-</span> },
   ];

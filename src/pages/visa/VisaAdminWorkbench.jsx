@@ -6,13 +6,13 @@ import {
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial } from '../../api/visa.js';
-import { fmtDate } from '../../lib/date.js';
 import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
   REJECT_REASONS,
   REVIEW_ACTION_COLORS,
   TextArea,
+  fmtDate,
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';

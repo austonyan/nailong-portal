@@ -21,6 +21,23 @@ const ACTION_COLORS = {
   verify_rate_limited: 'warm-peach-pink',
 };
 
+const DETAIL_FIELDS = {
+  appNo: 'docs.admin.audit.detailFields.appNo',
+  typeCode: 'docs.admin.audit.detailFields.typeCode',
+  certNo: 'docs.admin.audit.detailFields.certNo',
+  newCertNo: 'docs.admin.audit.detailFields.newCertNo',
+  auto: 'docs.admin.audit.detailFields.auto',
+  reasonCode: 'docs.admin.audit.detailFields.reason',
+  reason: 'docs.admin.audit.detailFields.reasonText',
+  days: 'docs.admin.audit.detailFields.days',
+  name: 'docs.admin.audit.detailFields.name',
+  title: 'docs.admin.audit.detailFields.title',
+  enabled: 'docs.admin.audit.detailFields.enabled',
+  updated: 'docs.admin.audit.detailFields.updated',
+  fields: 'docs.admin.audit.detailFields.fields',
+  query: 'docs.admin.audit.detailFields.query',
+};
+
 export default function DocsAudit() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
@@ -32,6 +49,40 @@ export default function DocsAudit() {
   const dq = useDebouncedValue(q, 300);
   const pageSize = 15;
 
+  // 审计 detail 是 JSON 文本:按已知字段渲染,不再把整段 JSON 塞进表格。
+  const detailValue = (key, value) => {
+    if (key === 'reasonCode') return t(`docs.reason.${value}`, { defaultValue: t('common.unknown') });
+    if (key === 'enabled' || key === 'auto') return value ? t('common.yes') : t('common.no');
+    if (Array.isArray(value)) return value.join(', ');
+    if (value && typeof value === 'object') return Object.values(value).join(', ');
+    return String(value);
+  };
+  const renderDetail = (raw) => {
+    let detail = raw;
+    if (typeof raw === 'string') {
+      try {
+        detail = JSON.parse(raw);
+      } catch {
+        return <span className="docs-audit-detail">{raw}</span>;
+      }
+    }
+    if (!detail || typeof detail !== 'object') return '-';
+    const rows = Object.entries(detail).filter(
+      ([key, value]) => DETAIL_FIELDS[key] && value !== null && value !== '' && !(Array.isArray(value) && value.length === 0)
+    );
+    if (!rows.length) return '-';
+    return (
+      <span className="docs-audit-detail">
+        {rows.map(([key, value], index) => (
+          <span key={key}>
+            {index > 0 ? ' · ' : ''}
+            <b>{t(DETAIL_FIELDS[key])}</b>: {detailValue(key, value)}
+          </span>
+        ))}
+      </span>
+    );
+  };
+
   const load = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page, pageSize, action, q: dq });
@@ -39,7 +90,7 @@ export default function DocsAudit() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [page, action, dq, t]);
@@ -57,12 +108,21 @@ export default function DocsAudit() {
       width: 210,
       render: (v) => (
         <Tag color={ACTION_COLORS[v] || 'brown'} variant="soft">
-          {t(`docs.admin.audit.actions.${v}`, { defaultValue: v })}
+          {t(`docs.admin.audit.actions.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
-    { title: t('docs.admin.audit.target'), width: 180, render: (_, r) => `${r.targetType} ${r.targetId}` },
-    { title: t('docs.admin.audit.detail'), dataIndex: 'detail', render: (v) => <span className="docs-cell-clip docs-audit-detail">{v}</span> },
+    {
+      title: t('docs.admin.audit.target'),
+      width: 180,
+      render: (_, r) => (
+        <span>
+          {t(`docs.admin.audit.targetTypes.${r.targetType}`, { defaultValue: t('common.unknown') })}
+          {r.targetId ? ` ${r.targetId}` : ''}
+        </span>
+      ),
+    },
+    { title: t('docs.admin.audit.detail'), dataIndex: 'detail', render: (v) => renderDetail(v) },
   ];
 
   return (

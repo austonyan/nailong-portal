@@ -40,8 +40,11 @@ function AuditTab() {
   // 动作码形如 `im:port.create`:去掉命名空间前缀并压平分隔符,再查词条。
   const actionLabel = (code) => {
     const key = String(code ?? '').replace(/^im:/, '').replace(/[.:]/g, '_');
-    return t(`imm.admin.audit.actionName.${key}`, { defaultValue: code });
+    return code ? t(`imm.admin.audit.actionName.${key}`, { defaultValue: t('common.unknown') }) : '-';
   };
+
+  // 对象类型码(port / declaration / pass_code …)同样查词条,导出与表格共用。
+  const targetLabel = (code) => (code ? t(`imm.admin.audit.targetKind.${code}`, { defaultValue: t('common.unknown') }) : '-');
 
   const actionFilters = ['port', 'declaration', 'pass', 'record', 'visa', 'blacklist', 'template', 'settings', 'file', 'data'];
 
@@ -57,7 +60,12 @@ function AuditTab() {
         { key: 'detail', label: t('imm.admin.audit.detail') },
         { key: 'created_at', label: t('common.createdAt') },
       ],
-      items ?? []
+      (items ?? []).map((r) => ({
+        ...r,
+        actor: r.actor ?? t('common.system'),
+        action: actionLabel(r.action),
+        target_type: targetLabel(r.target_type),
+      }))
     );
   };
 
@@ -70,7 +78,7 @@ function AuditTab() {
       width: 220,
       render: (v) => <Tag size="small" color="app-blue" variant="soft">{actionLabel(v)}</Tag>,
     },
-    { title: t('imm.admin.audit.targetType'), dataIndex: 'target_type', width: 110, render: (v) => t(`imm.admin.audit.targetKind.${v}`, { defaultValue: v }) },
+    { title: t('imm.admin.audit.targetType'), dataIndex: 'target_type', width: 110, render: (v) => targetLabel(v) },
     { title: t('imm.admin.audit.targetId'), dataIndex: 'target_id', width: 170 },
     {
       title: t('imm.admin.audit.detail'),
@@ -105,6 +113,7 @@ function AuditTab() {
         loading={items === null}
         rowKey="id"
         pagination={{ current: page, pageSize, total, onChange: (p) => setPage(p), showTotal: true }}
+        emptyText={t('common.empty')}
       />
     </>
   );
@@ -178,7 +187,7 @@ function BlacklistTab() {
           {t('imm.admin.blacklist.add')}
         </Button>
       </div>
-      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       <Modal
         open={adding}
         title={t('imm.admin.blacklist.add')}
@@ -280,7 +289,7 @@ function TemplatesTab() {
 
   return (
     <>
-      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} />
+      <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       <Modal
         open={editing !== null}
         title={t('imm.admin.templates.editTitle', { code: editing?.code })}
@@ -353,6 +362,7 @@ function SendLogTab() {
       loading={items === null}
       rowKey="id"
       pagination={{ current: page, pageSize, total, onChange: (p) => setPage(p), showTotal: true }}
+      emptyText={t('common.empty')}
     />
   );
 }

@@ -30,7 +30,7 @@ export default function DocsApplicationDetail() {
       .get(`/docs/applications/${id}`)
       .then((d) => setItem(d.item))
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         setItem(false);
       });
   }, [id, t]);
@@ -47,7 +47,7 @@ export default function DocsApplicationDetail() {
       setWithdrawOpen(false);
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -60,7 +60,7 @@ export default function DocsApplicationDetail() {
       toastSuccess(t('docs.detail.resubmitted'));
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -75,7 +75,7 @@ export default function DocsApplicationDetail() {
       toastSuccess(t('docs.detail.uploaded'));
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -137,7 +137,7 @@ export default function DocsApplicationDetail() {
           {deadline && (
             <p className="docs-deadline">
               <ClockIcon size={16} /> {t('docs.detail.supplementDeadline')}
-              <Countdown value={deadline} format="DD 天 HH:mm:ss" size="small" />
+              <Countdown value={deadline} format={t('docs.detail.countdownFormat')} size="small" />
             </p>
           )}
           <div className="docs-supplement-upload">
@@ -209,7 +209,7 @@ export default function DocsApplicationDetail() {
             {Object.entries(item.formData || {})
               .filter(([, v]) => v)
               .flatMap(([k, v]) => [
-                <dt key={k}>{type?.formFields?.find((f) => f.key === k)?.label || k}</dt>,
+                <dt key={k}>{type?.formFields?.find((f) => f.key === k)?.label || t('common.unknown')}</dt>,
                 <dd key={`${k}-v`}>{v}</dd>,
               ])}
             <dt>{t('docs.appList.submittedAt')}</dt>
@@ -224,7 +224,7 @@ export default function DocsApplicationDetail() {
               <li key={r.id}>
                 <span className="docs-timeline-dot" />
                 <div>
-                  <strong>{t(`docs.record.${r.action}`, { defaultValue: r.action })}</strong>
+                  <strong>{t(`docs.record.${r.action}`, { defaultValue: t('common.unknown') })}</strong>
                   {r.reasonCode && <Tag size="small" color="app-red" variant="soft">{t(`docs.reason.${r.reasonCode}`)}</Tag>}
                   {r.comment && <p className="muted-text">{r.comment}</p>}
                   <p className="muted-text">

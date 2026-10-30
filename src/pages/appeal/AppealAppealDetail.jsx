@@ -11,6 +11,7 @@ import {
   APPEAL_STATUS_COLORS,
   DECISION_TYPE_COLORS,
   TextArea,
+  fmtDate,
   fmtDateTime,
   reviewDeadline,
   toastAppealError,
@@ -84,7 +85,7 @@ export default function AppealAppealDetail() {
         load();
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         onError(err);
       });
   };
@@ -139,7 +140,7 @@ export default function AppealAppealDetail() {
               {t(`appeal.bizType.${appeal.bizType}`)} · {appeal.bizCode}
               {appeal.bizStatus && (
                 <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'warm-peach-pink'} variant="soft">
-                  {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: appeal.bizStatus })}
+                  {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: t('common.unknown') })}
                 </Tag>
               )}
             </dd>
@@ -195,7 +196,7 @@ export default function AppealAppealDetail() {
             </Button>
           )}
           {canReview && deadline && (
-            <span className="muted-text">{t('appeal.detail.reviewWindow', { date: deadline.format('YYYY-MM-DD') })}</span>
+            <span className="muted-text">{t('appeal.detail.reviewWindow', { date: fmtDate(deadline) })}</span>
           )}
         </div>
       </Card>
@@ -262,7 +263,7 @@ export default function AppealAppealDetail() {
           {appeal.records.map((r) => (
             <li key={r.id}>
               <Tag variant="soft" color="app-teal" size="small">
-                {t(`appeal.recordAction.${r.action}`, { defaultValue: r.action })}
+                {t(`appeal.recordAction.${r.action}`, { defaultValue: t('common.unknown') })}
               </Tag>
               <span>{r.actorName || t('appeal.detail.systemActor')}</span>
               <span className="muted-text">{fmtDateTime(r.createdAt)}</span>

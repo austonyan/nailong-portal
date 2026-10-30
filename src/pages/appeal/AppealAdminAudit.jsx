@@ -24,8 +24,8 @@ function VerifyResultTag({ value }) {
   const raw = String(value ?? '');
   const [kind, status] = raw.includes(':') ? raw.split(':') : [null, raw];
   const label = kind
-    ? `${t(`appeal.audit.kind.${kind}`, { defaultValue: kind })} · ${t(`appeal.audit.result.${status}`, { defaultValue: status })}`
-    : t(`appeal.audit.result.${raw}`, { defaultValue: raw });
+    ? `${t(`appeal.audit.kind.${kind}`, { defaultValue: t('common.unknown') })} · ${t(`appeal.audit.result.${status}`, { defaultValue: t('common.unknown') })}`
+    : t(`appeal.audit.result.${raw}`, { defaultValue: t('common.unknown') });
   return (
     <Tag variant="soft" color={VERIFY_RESULT_COLORS[status] || 'brown'}>
       {label}
@@ -63,8 +63,8 @@ export default function AppealAdminAudit() {
 
   const auditColumns = [
     { title: t('appeal.audit.colActor'), dataIndex: 'actor_name', width: 130 },
-    { title: t('appeal.audit.colAction'), dataIndex: 'action', width: 200, render: (v) => t(`appeal.audit.action.${v}`, { defaultValue: v }) },
-    { title: t('appeal.audit.colTarget'), width: 180, render: (_v, r) => `${t(`appeal.audit.target.${r.target_type}`, { defaultValue: r.target_type })} ${r.target_id}` },
+    { title: t('appeal.audit.colAction'), dataIndex: 'action', width: 200, render: (v) => t(`appeal.audit.action.${v}`, { defaultValue: t('common.unknown') }) },
+    { title: t('appeal.audit.colTarget'), width: 180, render: (_v, r) => `${t(`appeal.audit.target.${r.target_type}`, { defaultValue: t('common.unknown') })} ${r.target_id}` },
     { title: t('appeal.audit.colDetail'), dataIndex: 'detail', render: (v) => <span className="muted-text">{v}</span> },
     { title: t('appeal.audit.colTime'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
   ];

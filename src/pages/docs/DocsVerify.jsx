@@ -119,7 +119,7 @@ export default function DocsVerify() {
         setResult(d);
         loadHistory();
       } catch (err) {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       } finally {
         setBusy(false);
       }
@@ -142,7 +142,7 @@ export default function DocsVerify() {
       width: 120,
       render: (v) => (
         <Tag color={v === 'not_found' ? 'app-red' : 'app-green'} variant="soft">
-          {t(`docs.verify.result.${v}`)}
+          {t(`docs.verify.result.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },

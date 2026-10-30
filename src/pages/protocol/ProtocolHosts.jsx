@@ -328,7 +328,7 @@ export default function ProtocolHosts() {
               {materials.map((m) => (
                 <li key={m.id}>
                   <Tag size="small" variant="soft" color="app-blue">
-                    {t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind })}
+                    {t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}
                   </Tag>
                   <span className="protocol-material-name">{m.filename}</span>
                   <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>

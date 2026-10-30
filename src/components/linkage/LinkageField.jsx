@@ -6,6 +6,7 @@ import { Button, Card, Input, Tag } from 'animal-island-ui';
 import { LinkIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../toast.js';
+import { fmtDate } from '../../lib/date.js';
 import LinkagePicker from './LinkagePicker.jsx';
 import { linkageStatusLabel } from './shared.js';
 
@@ -98,8 +99,8 @@ export default function LinkageField({
           </div>
           <div className="linkage-selected-meta">
             {picked.holder && <span>{t('linkage.picker.holder', { name: picked.holder })}</span>}
-            {picked.issuedAt && <span>{t('linkage.picker.issuedAt', { date: picked.issuedAt })}</span>}
-            {picked.validUntil && <span>{t('linkage.picker.validUntil', { date: picked.validUntil })}</span>}
+            {picked.issuedAt && <span>{t('linkage.picker.issuedAt', { date: fmtDate(picked.issuedAt) })}</span>}
+            {picked.validUntil && <span>{t('linkage.picker.validUntil', { date: fmtDate(picked.validUntil) })}</span>}
           </div>
           <div className="linkage-selected-actions">
             <Button size="small" disabled={disabled} onClick={() => setPickerOpen(true)}>

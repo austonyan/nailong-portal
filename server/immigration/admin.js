@@ -28,6 +28,18 @@ ensureImmigrationSchema();
 const router = Router();
 
 const REJECT_REASONS = new Set(['visa_invalid', 'incomplete', 'duplicate', 'port_closed', 'other']);
+const REJECT_REASON_TEXT = {
+  visa_invalid: ['签注无效', '簽注無效'],
+  incomplete: ['信息不全', '資訊不全'],
+  duplicate: ['重复申报', '重複申報'],
+  port_closed: ['口岸关闭', '口岸關閉'],
+  other: ['其他原因', '其他原因'],
+};
+function reasonText(code, tw = false) {
+  const pair = REJECT_REASON_TEXT[code];
+  if (!pair) return String(code ?? '');
+  return tw ? pair[1] : pair[0];
+}
 const PORT_TYPES = new Set(['land', 'air', 'sea']);
 const PORT_STATUSES = new Set(['open', 'closed', 'maintenance']);
 const CHANNEL_TYPES = new Set(['normal', 'reserved', 'special']);
@@ -263,6 +275,7 @@ function serializeQueueRow(row, { withRisk = false } = {}) {
     status: row.status,
     portCode: row.port_code,
     portName: row.port_name,
+    portNameTw: row.port_name_tw ?? null,
     nickname: row.nickname,
     contact: row.contact,
     purpose: row.purpose,
@@ -282,7 +295,7 @@ function serializeQueueRow(row, { withRisk = false } = {}) {
 function queueRow(id) {
   return db
     .prepare(
-      `SELECT d.*, p.code AS port_code, p.name AS port_name FROM im_declarations d
+      `SELECT d.*, p.code AS port_code, p.name AS port_name, p.name_tw AS port_name_tw FROM im_declarations d
        JOIN im_ports p ON p.id = d.port_id WHERE d.id = ? AND d.deleted_at IS NULL`
     )
     .get(id);
@@ -308,7 +321,7 @@ router.get('/declarations', ...inspector, (req, res) => {
   const total = db.prepare(`SELECT COUNT(*) AS n FROM im_declarations d WHERE ${where.join(' AND ')}`).get(...params).n;
   const rows = db
     .prepare(
-      `SELECT d.*, p.code AS port_code, p.name AS port_name FROM im_declarations d
+      `SELECT d.*, p.code AS port_code, p.name AS port_name, p.name_tw AS port_name_tw FROM im_declarations d
        JOIN im_ports p ON p.id = d.port_id WHERE ${where.join(' AND ')}
        ORDER BY CASE d.status WHEN 'pending' THEN 0 WHEN 'supplement' THEN 1 ELSE 2 END, d.submitted_at ASC
        LIMIT ? OFFSET ?`
@@ -344,6 +357,7 @@ function serializeAdminDeclaration(row) {
     userId: row.user_id,
     portCode: row.port_code,
     portName: row.port_name,
+    portNameTw: row.port_name_tw ?? null,
     nickname: row.nickname,
     contact: row.contact,
     purpose: row.purpose,
@@ -365,7 +379,7 @@ function serializeAdminDeclaration(row) {
     createdAt: row.created_at,
     events: db
       .prepare(
-        `SELECT e.action, e.note, e.created_at, u.display_name AS actor
+        `SELECT e.action, e.note, e.note_tw, e.created_at, u.display_name AS actor
          FROM im_declaration_events e LEFT JOIN users u ON u.id = e.actor_id
          WHERE e.declaration_id = ? ORDER BY e.id`
       )
@@ -425,8 +439,14 @@ router.post('/declarations/:id/reject', ...inspector, (req, res) => {
   db.prepare(
     "UPDATE im_declarations SET status = 'rejected', reject_reason = ?, reject_note = ?, reviewed_at = ?, reviewed_by = ?, updated_at = ? WHERE id = ?"
   ).run(reason, note, ts, req.user.id, ts, row.id);
-  logEvent(row.id, 'reject', req.user.id, `${reason}${note ? ` - ${note}` : ''}`);
-  notify(row.user_id, 'rejected', { no: row.no, reason, note: note || '如有疑问请联系管理员。' }, { declarationNo: row.no });
+  logEvent(row.id, 'reject', req.user.id, `${reasonText(reason)}${note ? ` - ${note}` : ''}`, `${reasonText(reason, true)}${note ? ` - ${note}` : ''}`);
+  notify(
+    row.user_id,
+    'rejected',
+    { no: row.no, reason: reasonText(reason), note: note || '如有疑问请联系管理员。' },
+    { declarationNo: row.no },
+    { no: row.no, reason: reasonText(reason, true), note: note || '如有疑問請聯絡管理員。' }
+  );
   audit(req.user.id, 'im:declaration.reject', 'declaration', row.no, { reason });
   res.json({ declaration: serializeAdminDeclaration(queueRow(row.id)) });
 });
@@ -503,7 +523,7 @@ router.post('/pass-codes/verify', ...verifier, (req, res) => {
   const codeNo = readString(req.body?.codeNo, { name: 'codeNo', min: 4, max: 32 }).toUpperCase();
   const row = db
     .prepare(
-      `SELECT pc.*, d.no AS declaration_no, d.status AS declaration_status, d.stay_days, d.nickname, d.user_id, d.visa_no, p.status AS port_status, p.name AS port_name
+      `SELECT pc.*, d.no AS declaration_no, d.status AS declaration_status, d.stay_days, d.nickname, d.user_id, d.visa_no, p.status AS port_status, p.name AS port_name, p.name_tw AS port_name_tw
        FROM im_pass_codes pc
        JOIN im_declarations d ON d.id = pc.declaration_id
        JOIN im_ports p ON p.id = pc.port_id
@@ -564,6 +584,7 @@ router.post('/pass-codes/verify', ...verifier, (req, res) => {
     entryRecordNo: entryNo,
     stampStyle,
     portName: row.port_name,
+    portNameTw: row.port_name_tw ?? null,
   });
 });
 
@@ -589,7 +610,7 @@ router.get('/records', ...adminOnly, (req, res) => {
     const total = db.prepare('SELECT COUNT(*) AS n FROM im_exit_records WHERE deleted_at IS NULL').get().n;
     const rows = db
       .prepare(
-        `SELECT xr.*, u.display_name AS traveler, er.no AS entry_no, p.name AS port_name
+        `SELECT xr.*, u.display_name AS traveler, er.no AS entry_no, p.name AS port_name, p.name_tw AS port_name_tw
          FROM im_exit_records xr
          JOIN im_entry_records er ON er.id = xr.entry_record_id
          JOIN im_ports p ON p.id = xr.port_id
@@ -603,7 +624,8 @@ router.get('/records', ...adminOnly, (req, res) => {
       page,
       pageSize,
       items: rows.map((r) => ({
-        id: r.id, no: r.no, traveler: r.traveler, entryNo: r.entry_no, portName: r.port_name,
+        id: r.id, no: r.no, traveler: r.traveler, entryNo: r.entry_no,
+        portName: r.port_name, portNameTw: r.port_name_tw ?? null,
         exitDate: r.exit_date, createdAt: r.created_at,
       })),
     });
@@ -611,7 +633,7 @@ router.get('/records', ...adminOnly, (req, res) => {
   const total = db.prepare('SELECT COUNT(*) AS n FROM im_entry_records WHERE deleted_at IS NULL').get().n;
   const rows = db
     .prepare(
-      `SELECT er.*, u.display_name AS traveler, d.no AS declaration_no, p.name AS port_name
+      `SELECT er.*, u.display_name AS traveler, d.no AS declaration_no, p.name AS port_name, p.name_tw AS port_name_tw
        FROM im_entry_records er
        JOIN users u ON u.id = er.user_id
        JOIN im_declarations d ON d.id = er.declaration_id
@@ -625,7 +647,8 @@ router.get('/records', ...adminOnly, (req, res) => {
     page,
     pageSize,
     items: rows.map((r) => ({
-      id: r.id, no: r.no, traveler: r.traveler, declarationNo: r.declaration_no, portName: r.port_name,
+      id: r.id, no: r.no, traveler: r.traveler, declarationNo: r.declaration_no,
+      portName: r.port_name, portNameTw: r.port_name_tw ?? null,
       visaNo: r.visa_no, entryDate: r.entry_date, stayDays: r.stay_days, stampStyle: r.stamp_style,
       status: r.status, note: r.note,
     })),
@@ -689,7 +712,7 @@ router.get('/stats', ...adminOnly, (_req, res) => {
 
   const portTraffic = db
     .prepare(
-      `SELECT p.name AS portName, COUNT(*) AS declarations FROM im_declarations d
+      `SELECT p.name AS portName, p.name_tw AS portNameTw, COUNT(*) AS declarations FROM im_declarations d
        JOIN im_ports p ON p.id = d.port_id WHERE d.deleted_at IS NULL AND d.status != 'draft' GROUP BY p.id ORDER BY declarations DESC`
     )
     .all();

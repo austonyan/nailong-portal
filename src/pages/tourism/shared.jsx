@@ -100,7 +100,9 @@ export function fmtDate(iso) {
 }
 
 export function tourErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  const key = `api.${err?.code}`;
+  const text = err?.code ? t(key) : '';
+  return text && text !== key ? text : t('api.INTERNAL_ERROR');
 }
 
 // 统一走全站 toast(库的通知 API 在 React 19 下会抛异常,不能用于关键流程)

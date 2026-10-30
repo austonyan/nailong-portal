@@ -73,7 +73,10 @@ export default function AdminArchRequests() {
       load();
     } catch (err) {
       toastArchError(err);
-      setError(err?.message || '');
+      // 弹窗里也只显示本地化文案:服务端 message 是英文。
+      const key = `api.${err?.code}`;
+      const text = err?.code ? t(key) : '';
+      setError(text && text !== key ? text : t('api.INTERNAL_ERROR'));
     } finally {
       setBusy(false);
     }
@@ -99,7 +102,11 @@ export default function AdminArchRequests() {
       title: t('arch.request.scope'),
       dataIndex: 'scopeTypes',
       width: 190,
-      render: (v, record) => (v ?? []).map((type) => type.name).join('、') || record.scope.join(', '),
+      render: (v, record) => {
+        const separator = t('common.listSeparator');
+        const names = (v ?? []).map((type) => type.name);
+        return (names.length ? names : (record.scope ?? [])).join(separator);
+      },
     },
     { title: t('common.status'), dataIndex: 'status', width: 110, render: (v) => <RequestStatusTag value={v} /> },
     { title: t('common.createdAt'), dataIndex: 'createdAt', width: 150, render: (v) => fmtDateTime(v) },
@@ -233,7 +240,7 @@ export default function AdminArchRequests() {
                   <div key={event.id} className="arch-timeline-item">
                     <div className="arch-timeline-head">
                       <Tag color="app-blue" variant="soft" size="small">
-                        {t(`arch.event.${event.action}`, { defaultValue: event.action })}
+                        {t(`arch.event.${event.action}`, { defaultValue: t('common.unknown') })}
                       </Tag>
                       <span className="arch-timeline-time">{fmtDateTime(event.createdAt)}</span>
                       {event.actorName && <span className="muted-text">{event.actorName}</span>}

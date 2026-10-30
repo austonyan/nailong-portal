@@ -4,7 +4,8 @@ import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Switch, Table, Ta
 import { EditIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
-import { toastSuccess, toastError } from '../../components/toast.js';
+import { toastSuccess, toastApiError } from '../../components/toast.js';
+import { fmtDateTime } from '../../lib/date.js';
 
 export default function AdminUsers() {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ export default function AdminUsers() {
 
   useEffect(() => {
     Promise.all([loadUsers(), api.get('/roles').then((d) => setRoles(d.items))]).catch((err) => {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
       setUsers([]);
     });
   }, [loadUsers, t]);
@@ -79,7 +80,7 @@ export default function AdminUsers() {
       closeModal();
       await loadUsers();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -93,7 +94,7 @@ export default function AdminUsers() {
       setDeleteTarget(null);
       await loadUsers();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     }
   };
 
@@ -131,7 +132,7 @@ export default function AdminUsers() {
       title: t('common.lastLogin'),
       dataIndex: 'lastLoginAt',
       width: 150,
-      render: (value) => (value ? new Date(value).toLocaleString() : '-'),
+      render: (value) => (value ? fmtDateTime(value) : '-'),
     },
     {
       title: t('common.actions'),
@@ -176,6 +177,7 @@ export default function AdminUsers() {
           loading={users === null}
           rowKey="key"
           pagination={{ defaultPageSize: 10, showTotal: true }}
+          emptyText={t('common.empty')}
         />
       </Card>
 

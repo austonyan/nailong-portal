@@ -30,13 +30,15 @@ export default function AdminTourAudit() {
 
   // 服务端动作码形如 `tour:attraction_create`,前缀里的冒号不能直接进 i18n key。
   const actionLabel = (value) =>
-    t(`tour.admin.audit.actionName.${String(value ?? '').replace(/^tour:/, '')}`, { defaultValue: value });
+    t(`tour.admin.audit.actionName.${String(value ?? '').replace(/^tour:/, '')}`, {
+      defaultValue: t('common.unknown'),
+    });
 
   const columns = [
     { title: t('tour.admin.audit.time'), dataIndex: 'createdAt', width: 160, render: fmtDateTime },
     { title: t('tour.admin.audit.actor'), dataIndex: 'actorName', width: 130, render: (v) => v || '-' },
     { title: t('tour.admin.audit.action'), dataIndex: 'action', width: 200, render: actionLabel },
-    { title: t('tour.admin.audit.target'), dataIndex: 'targetId', render: (v, row) => v || row.targetType || '-' },
+    { title: t('tour.admin.audit.target'), dataIndex: 'targetId', render: (v, row) => v || (row.targetType ? t(`tour.admin.audit.targetType.${row.targetType}`, { defaultValue: t('common.unknown') }) : '-') },
     {
       title: t('tour.admin.audit.detail'),
       dataIndex: 'detail',

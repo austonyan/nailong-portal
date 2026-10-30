@@ -6,6 +6,7 @@ import { badRequest } from '../http.js';
 import {
   LINKED_OFFICES,
   crossOfficeAlerts,
+  linkedOffice,
   listOwnedRecords,
   listUserCertificates,
   linkageIdentity,
@@ -70,7 +71,7 @@ router.get('/records', (req, res) => {
   });
   res.json({
     source,
-    office: LINKED_OFFICES[source] || '',
+    ...linkedOffice(source),
     identity: linkageIdentity(req.user.id),
     records,
     fetchedAt: now(),

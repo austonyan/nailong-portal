@@ -103,7 +103,7 @@ export default function AppealComplaints() {
         openDetail(detail);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         onError(err);
       });
   };
@@ -157,7 +157,7 @@ export default function AppealComplaints() {
           <p className="muted-text">
             {t(`appeal.complaintCategory.${c.category}`)} · {t('appeal.my.submittedAt', { time: fmtDateTime(c.submittedAt || c.createdAt) })}
           </p>
-          <p className="appeal-item-reason">{c.content}</p>
+          <p className="appeal-item-reason">{c.erased ? t('common.erased') : c.content}</p>
           {c.reply && (
             <p className="appeal-item-reply">
               {t('appeal.complaint.replyLabel')}: {c.reply}
@@ -239,7 +239,7 @@ export default function AppealComplaints() {
               </div>
               <div>
                 <dt>{t('appeal.complaint.contentLabel')}</dt>
-                <dd>{detail.content}</dd>
+                <dd>{detail.erased ? t('common.erased') : detail.content}</dd>
               </div>
               <div>
                 <dt>{t('appeal.my.submittedAtLabel')}</dt>

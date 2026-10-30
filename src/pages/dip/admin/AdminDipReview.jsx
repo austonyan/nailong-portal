@@ -73,7 +73,7 @@ function MaterialLinks({ materials }) {
           <a href={`/api/dip/materials/${m.id}/download`} onClick={(e) => download(e, m)}>
             {m.filename}
           </a>
-          <span className="muted-text"> · {t(`dip.materialKind.${m.kind}`, { defaultValue: m.kind })}</span>
+          <span className="muted-text"> · {t(`dip.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
         </li>
       ))}
     </ul>
@@ -137,15 +137,15 @@ function RelationDrawer({ id, onChanged }) {
         <RiskTags risk={r.risk} />
       </div>
       <Card>
-        <InfoRow label={t('dip.apply.objectType')}>{t(`dip.objectType.${r.objectType}`, { defaultValue: r.objectType })}</InfoRow>
-        <InfoRow label={t('dip.apply.relationType')}>{t(`dip.relationType.${r.relationType}`, { defaultValue: r.relationType })}</InfoRow>
+        <InfoRow label={t('dip.apply.objectType')}>{t(`dip.objectType.${r.objectType}`, { defaultValue: t('common.unknown') })}</InfoRow>
+        <InfoRow label={t('dip.apply.relationType')}>{t(`dip.relationType.${r.relationType}`, { defaultValue: t('common.unknown') })}</InfoRow>
         <InfoRow label={t('dip.apply.entityName')}>{r.entityName}</InfoRow>
         <InfoRow label={t('dip.apply.repNickname')}>{r.repNickname}</InfoRow>
         <InfoRow label={t('dip.apply.contact')}>{r.contact}</InfoRow>
         <InfoRow label={t('dip.apply.reason')}>{r.reason || '-'}</InfoRow>
         <InfoRow label={t('dip.apply.purpose')}>{t(`dip.purpose.${r.purpose}`)}</InfoRow>
         <InfoRow label={t('dip.apply.courtesies')}>
-          {(r.courtesies ?? []).map((c) => t(`dip.courtesy.${c}`, { defaultValue: c })).join('、') || '-'}
+          {(r.courtesies ?? []).map((c) => t(`dip.courtesy.${c}`, { defaultValue: t('common.unknown') })).join('、') || '-'}
         </InfoRow>
         {r.supplementNote && <InfoRow label={t('dip.relation.supplementRequired')}>{r.supplementNote}</InfoRow>}
         {r.severReason && <InfoRow label={t('dip.relation.severRequest')}>{r.severReason}</InfoRow>}
@@ -161,8 +161,8 @@ function RelationDrawer({ id, onChanged }) {
         <ul className="dip-timeline">
           {(r.events ?? []).map((e, idx) => (
             <li key={idx}>
-              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {fmtDateTime(e.created_at)}</span>
+              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: t('common.unknown') })}</span>
+              <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="dip-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -359,7 +359,7 @@ function IdentityDrawer({ id, onChanged }) {
         <RiskTags risk={d.risk} />
       </div>
       <Card>
-        <InfoRow label={t('dip.identity.type')}>{t(`dip.identityType.${d.identityType}`, { defaultValue: d.identityType })}</InfoRow>
+        <InfoRow label={t('dip.identity.type')}>{t(`dip.identityType.${d.identityType}`, { defaultValue: t('common.unknown') })}</InfoRow>
         <InfoRow label={t('dip.identity.relationNo')}>
           {d.relationNo || '-'} {d.relationId && <Tag size="small" color="app-teal" variant="soft">#{d.relationId}</Tag>}
         </InfoRow>
@@ -381,8 +381,8 @@ function IdentityDrawer({ id, onChanged }) {
         <ul className="dip-timeline">
           {(d.events ?? []).map((e, idx) => (
             <li key={idx}>
-              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {fmtDateTime(e.created_at)}</span>
+              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: t('common.unknown') })}</span>
+              <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="dip-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -597,6 +597,7 @@ export default function AdminDipReview() {
           loading={data === null}
           rowKey="id"
           pagination={{ defaultPageSize: 20, showTotal: true, total: data?.total }}
+          emptyText={t('common.empty')}
         />
       </Card>
 

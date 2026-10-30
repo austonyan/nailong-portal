@@ -118,7 +118,7 @@ export default function AdminPostNotices() {
   };
 
   const columns = [
-    { title: t('post.field.no'), dataIndex: 'no', width: 190 },
+    { title: t('post.admin.field.no'), dataIndex: 'no', width: 190 },
     { title: t('post.admin.notices.title'), dataIndex: 'title' },
     {
       title: t('post.admin.notices.level'),
@@ -140,7 +140,7 @@ export default function AdminPostNotices() {
         </Tag>
       ),
     },
-    { title: t('post.field.publishedAt'), dataIndex: 'publishedAt', width: 150, render: fmtDateTime },
+    { title: t('post.admin.field.publishedAt'), dataIndex: 'publishedAt', width: 150, render: fmtDateTime },
     { title: t('post.admin.notices.notified'), dataIndex: 'notificationCount', width: 90 },
     {
       title: t('common.actions'),

@@ -7,12 +7,12 @@ import {
 import { EyeIcon, RefreshIcon, PrinterIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial, uploadVisaMaterial } from '../../api/visa.js';
-import { fmtDate } from '../../lib/date.js';
 import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
   REVIEW_ACTION_COLORS,
   TextArea,
+  fmtDate,
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
@@ -89,7 +89,7 @@ export default function VisaApplicationDetail() {
         onSuccess(material);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         onError(err);
       });
   };

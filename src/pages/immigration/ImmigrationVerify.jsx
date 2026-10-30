@@ -83,7 +83,7 @@ export default function ImmigrationVerify() {
           <div className="im-verify-result">
             <p className="im-verify-code">{result.codeNo}</p>
             <Tag color={STATUS_COLOR[result.status] ?? 'brown'} variant="soft">
-              {t(`imm.status.${result.status}`, { defaultValue: result.status })}
+              {t(`imm.status.${result.status}`, { defaultValue: t('common.unknown') })}
             </Tag>
             <p className="muted-text">
               {result.portName} · {t('imm.pass.validUntil')}: {fmtDate(result.validUntil)}

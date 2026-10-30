@@ -74,7 +74,7 @@ export default function ResidentMyApplications() {
             >
               <div className="res-app-item-main">
                 <b className="res-app-no">{app.appNo}</b>
-                <span className="muted-text">{app.typeName}</span>
+                <span className="muted-text">{app.typeName || t('common.unknown')}</span>
                 <span className="muted-text">{fmtDateTime(app.submittedAt || app.createdAt)}</span>
               </div>
               <div className="res-app-item-side">

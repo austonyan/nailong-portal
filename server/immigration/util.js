@@ -171,12 +171,12 @@ function renderTemplate(text, vars) {
   return String(text).replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => String(vars[key] ?? ''));
 }
 
-export function notify(userId, code, vars = {}, related = {}) {
+export function notify(userId, code, vars = {}, related = {}, varsTw = vars) {
   const tpl = db.prepare('SELECT * FROM im_message_templates WHERE code = ? AND enabled = 1').get(code);
-  const title = renderTemplate(tpl?.title_template ?? code, vars);
-  const body = renderTemplate(tpl?.body_template ?? '', vars);
-  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', vars) || null;
-  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', vars) || null;
+  const title = renderTemplate(tpl?.title_template ?? '系统通知', vars);
+  const body = renderTemplate(tpl?.body_template ?? '你有一条新的站内消息,请登录门户查看。', vars);
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '系統通知', varsTw) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '你有一則新的站內訊息,請登入入口網站查看。', varsTw) || null;
   db.prepare(
     'INSERT INTO im_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   ).run(userId, code, title, body, titleTw, bodyTw, JSON.stringify(related), now());

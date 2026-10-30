@@ -33,6 +33,7 @@ import {
 } from '../appeal.js';
 import { record, recordsFor } from './appeal.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
+import { pickText, reqLocale } from '../locale.js';
 
 const router = Router();
 const APPEAL_OPEN = "('pending_accept','accepted','processing','supplement_required')";
@@ -286,7 +287,7 @@ processRouter.post('/appeals/merge', (req, res) => {
   db.prepare("UPDATE appeal_appeals SET status = 'closed', merged_into = ?, closed_at = ?, updated_at = ? WHERE id = ?").run(
     target.code, now(), now(), source.id
   );
-  record('appeal', source.id, req.user, 'merge', `merged into ${target.code}`);
+  record('appeal', source.id, req.user, 'merge', `已合并至 ${target.code}`);
   audit(req.user, 'merge_appeals', 'appeal', source.code, { targetCode: target.code });
   sendMsg(source.user_id, 'appeal', source.id, 'appeal_merged', { code: source.code, targetCode: target.code });
   res.json({ appeal: appealAdminMeta(getAppeal(source.id)) });
@@ -300,9 +301,9 @@ function complaintAdminMeta(row) {
   const user = db.prepare('SELECT username, display_name FROM users WHERE id = ?').get(row.user_id);
   return {
     ...serializeComplaint(row),
-    // 匿名投诉:不向处理员展示账号身份
-    username: row.anonymous ? '(anonymous)' : user?.username ?? '',
-    displayName: row.anonymous ? '(anonymous)' : user?.display_name ?? '',
+    // 匿名投诉:不向处理员展示账号身份,由前端渲染 common.anonymous
+    username: row.anonymous ? '' : user?.username ?? '',
+    displayName: row.anonymous ? '' : user?.display_name ?? '',
     materials: db
       .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'complaint' AND owner_id = ? ORDER BY id")
       .all(row.id)
@@ -489,7 +490,9 @@ processRouter.post('/tickets/:id/status', (req, res) => {
   db.prepare('UPDATE appeal_tickets SET status = ?, closed_at = ?, updated_at = ? WHERE id = ?').run(
     status, status === 'closed' ? now() : row.closed_at, now(), row.id
   );
-  record('ticket', row.id, req.user, `mark_${status}`);
+  // action 继续用 mark_* 供前端映射文案,comment 写中文,避免时间线出现英文码。
+  const statusNote = { processing: '工单转入处理中', closed: '工单已办结关闭', escalated: '工单已升级处理' }[status];
+  record('ticket', row.id, req.user, `mark_${status}`, statusNote);
   audit(req.user, `ticket_${status}`, 'ticket', row.code);
   if (status === 'escalated') sendMsg(row.user_id, 'ticket', row.id, 'ticket_escalated', { code: row.code });
   if (status === 'closed') sendMsg(row.user_id, 'ticket', row.id, 'ticket_closed', { code: row.code });
@@ -655,9 +658,25 @@ inspectRouter.get('/inspect/records', (req, res) => {
   res.json({ items: rows });
 });
 
+// 监察报告:title/content 是旧版单语文本列,新记录同时落结构化 payload
+// (bizType/total/sampled/statusCounts/note),前端优先按 payload 双语渲染。
+function inspectReportMeta(row) {
+  let payload = {};
+  if (row.payload) {
+    try {
+      payload = JSON.parse(row.payload);
+    } catch {
+      payload = {};
+    }
+  }
+  // 旧列 title/content/created_by/created_at 原样保留(现有页面按蛇形键渲染),
+  // 只把 payload 从 JSON 文本换成对象。
+  return { ...row, payload };
+}
+
 inspectRouter.get('/inspect/reports', (_req, res) => {
   const rows = db.prepare('SELECT * FROM appeal_inspect_reports ORDER BY id DESC LIMIT 50').all();
-  res.json({ items: rows });
+  res.json({ items: rows.map(inspectReportMeta) });
 });
 
 inspectRouter.post('/inspect/reports', (req, res) => {
@@ -665,9 +684,16 @@ inspectRouter.post('/inspect/reports', (req, res) => {
   const content = String(req.body?.content || '').trim().slice(0, 4000);
   const kind = ['quality', 'anomaly', 'consistency'].includes(req.body?.kind) ? req.body.kind : 'quality';
   if (!title || !content) throw badRequest('VALIDATION_ERROR', 'Title and content are required');
+  const payloadIn = req.body?.payload && typeof req.body.payload === 'object' ? req.body.payload : null;
+  const payload = payloadIn
+    ? {
+        bizType: String(payloadIn.bizType || '').slice(0, 32),
+        note: String(payloadIn.note || '').slice(0, 500),
+      }
+    : {};
   const info = db
-    .prepare('INSERT INTO appeal_inspect_reports (title, kind, content, created_by, created_at) VALUES (?, ?, ?, ?, ?)')
-    .run(title, kind, content, req.user.displayName || req.user.username, now());
+    .prepare('INSERT INTO appeal_inspect_reports (title, kind, content, payload, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .run(title, kind, content, JSON.stringify(payload), req.user.displayName || req.user.username, now());
   audit(req.user, 'create_inspect_report', 'inspect_report', info.lastInsertRowid, { kind });
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
 });
@@ -684,6 +710,7 @@ inspectRouter.post('/inspect/sampling', (req, res) => {
     total: sample.total,
     sampled: sample.items.length,
   });
+  const statusCounts = Object.fromEntries(sample.byStatus.map((s) => [s.status, s.n]));
   const dist = sample.byStatus.map((s) => `${s.status}:${s.n}`).join(' / ') || '暂无记录';
   const content = [
     `抽查范围:${sample.office}(库内 ${sample.total} 条)`,
@@ -692,10 +719,18 @@ inspectRouter.post('/inspect/sampling', (req, res) => {
   ]
     .filter(Boolean)
     .join(';');
+  const payload = { bizType, total: sample.total, sampled: sample.items.length, statusCounts, note };
   db.prepare(
-    'INSERT INTO appeal_inspect_reports (title, kind, content, created_by, created_at) VALUES (?, ?, ?, ?, ?)'
-  ).run(`${sample.office}审核抽查`, 'quality', content, req.user.displayName || req.user.username, now());
-  res.json({ ok: true, reserved: false, sample });
+    'INSERT INTO appeal_inspect_reports (title, kind, content, payload, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(
+    `${sample.office}审核抽查`,
+    'quality',
+    content,
+    JSON.stringify(payload),
+    req.user.displayName || req.user.username,
+    now()
+  );
+  res.json({ ok: true, reserved: false, sample, payload });
 });
 
 // ===========================================================================
@@ -802,7 +837,14 @@ manageRouter.get('/templates', (_req, res) => {
     items: db
       .prepare('SELECT * FROM appeal_msg_templates ORDER BY type')
       .all()
-      .map((r) => ({ type: r.type, title: r.title, body: r.body, enabled: !!r.enabled })),
+      .map((r) => ({
+        type: r.type,
+        title: r.title,
+        titleTw: r.title_tw,
+        body: r.body,
+        bodyTw: r.body_tw,
+        enabled: !!r.enabled,
+      })),
   });
 });
 
@@ -811,8 +853,14 @@ manageRouter.patch('/templates/:type', (req, res) => {
   if (!row) throw notFound('Template not found');
   const title = req.body?.title !== undefined ? String(req.body.title).trim().slice(0, 200) : row.title;
   const body = req.body?.body !== undefined ? String(req.body.body).trim().slice(0, 1000) : row.body;
+  const titleTw =
+    req.body?.titleTw !== undefined ? String(req.body.titleTw || '').trim().slice(0, 200) || null : row.title_tw;
+  const bodyTw =
+    req.body?.bodyTw !== undefined ? String(req.body.bodyTw || '').trim().slice(0, 1000) || null : row.body_tw;
   const enabled = req.body?.enabled !== undefined ? (req.body.enabled ? 1 : 0) : row.enabled;
-  db.prepare('UPDATE appeal_msg_templates SET title = ?, body = ?, enabled = ? WHERE type = ?').run(title, body, enabled, row.type);
+  db.prepare('UPDATE appeal_msg_templates SET title = ?, title_tw = ?, body = ?, body_tw = ?, enabled = ? WHERE type = ?').run(
+    title, titleTw, body, bodyTw, enabled, row.type
+  );
   audit(req.user, 'update_msg_template', 'template', row.type, { enabled });
   res.json({ ok: true });
 });
@@ -941,20 +989,86 @@ function csvEscape(v) {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
+// 导出是给管理员看的正式文件:表头与枚举列跟随 X-Nailong-Locale,
+// 不能把 `biz_type`/`status` 这类内部代码直接写进 CSV。
+const APPEAL_CSV_HEADERS = [
+  ['编号', '編號'],
+  ['用户', '使用者'],
+  ['业务类型', '業務類型'],
+  ['业务编号', '業務編號'],
+  ['状态', '狀態'],
+  ['优先级', '優先級'],
+  ['决定类型', '決定類型'],
+  ['提交时间', '提交時間'],
+  ['办结时间', '辦結時間'],
+  ['合并至', '合併至'],
+];
+const APPEAL_CSV_STATUS = {
+  draft: ['草稿', '草稿'],
+  pending_accept: ['待受理', '待受理'],
+  accepted: ['已受理', '已受理'],
+  processing: ['处理中', '處理中'],
+  supplement_required: ['待补件', '待補件'],
+  resolved: ['已处理', '已處理'],
+  rejected: ['已驳回', '已駁回'],
+  withdrawn: ['已撤回', '已撤回'],
+  closed: ['已关闭', '已關閉'],
+};
+const APPEAL_CSV_PRIORITY = {
+  low: ['低', '低'],
+  normal: ['普通', '普通'],
+  high: ['高', '高'],
+  urgent: ['紧急', '緊急'],
+};
+const APPEAL_CSV_DECISION = {
+  maintain: ['维持原决定', '維持原決定'],
+  undo: ['撤销原决定', '撤銷原決定'],
+  change: ['变更决定', '變更決定'],
+  transfer: ['转交其他署', '轉交其他署'],
+};
+const APPEAL_CSV_BIZ = {
+  visa: ['签注申请', '簽註申請'],
+  immigration: ['入境事务', '入境事務'],
+  resident: ['居民登记', '居民登記'],
+  diplomatic: ['外交事务', '外交事務'],
+  document: ['文书与认证', '文書與認證'],
+  archives: ['档案与记录', '檔案與紀錄'],
+  protocol: ['礼宾与活动', '禮賓與活動'],
+};
+const csvLabel = (map, value, locale) => {
+  const pair = map[value];
+  return pair ? pickText(pair[0], pair[1], locale) : value ?? '';
+};
+
 // 导出需审计:每次导出都落一条 audit 记录(审批留痕)
 manageRouter.get('/export.csv', (req, res) => {
   sweepAll();
+  const locale = reqLocale(req);
   const rows = db
     .prepare(
       `SELECT aa.*, u.username FROM appeal_appeals aa JOIN users u ON u.id = aa.user_id
        WHERE aa.status != 'draft' ORDER BY aa.id`
     )
     .all();
-  const header = ['code', 'username', 'biz_type', 'biz_code', 'status', 'priority', 'decision_type', 'submitted_at', 'resolved_at', 'merged_into'];
-  const lines = [header.join(',')];
+  const col = (i) => pickText(APPEAL_CSV_HEADERS[i][0], APPEAL_CSV_HEADERS[i][1], locale);
+  const header = [
+    col(0), col(1), col(2), col(3), col(4), col(5), col(6), col(7), col(8), col(9),
+  ];
+  const lines = [header.map(csvEscape).join(',')];
   for (const r of rows) {
     lines.push(
-      [r.code, r.username, r.biz_type, r.biz_code, r.status, r.priority, r.decision_type, r.submitted_at, r.resolved_at, r.merged_into]
+      [
+        r.code,
+        r.username,
+        csvLabel(APPEAL_CSV_BIZ, r.biz_type, locale),
+        r.biz_code,
+        csvLabel(APPEAL_CSV_STATUS, r.status, locale),
+        csvLabel(APPEAL_CSV_PRIORITY, r.priority, locale),
+        r.decision_type ? csvLabel(APPEAL_CSV_DECISION, r.decision_type, locale) : '',
+        r.submitted_at,
+        r.resolved_at,
+        r.merged_into,
+      ]
         .map(csvEscape)
         .join(',')
     );

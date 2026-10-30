@@ -28,7 +28,7 @@ export default function DocsVerifyAdmin() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [page, dq, result, t]);
@@ -58,7 +58,7 @@ export default function DocsVerifyAdmin() {
       width: 130,
       render: (v) => (
         <Tag color={v === 'not_found' ? 'app-red' : 'app-green'} variant="soft">
-          {t(`docs.verify.result.${v}`)}
+          {t(`docs.verify.result.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
@@ -111,7 +111,7 @@ export default function DocsVerifyAdmin() {
       <Card className="docs-filter-card">
         <div className="docs-filter-row">
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.admin.verify.searchPh')} allowClear />
-          <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={RESULT_OPTIONS.map((r) => ({ key: r, label: r === 'all' ? t('docs.filter.all') : t(`docs.verify.result.${r}`) }))} />
+          <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={RESULT_OPTIONS.map((r) => ({ key: r, label: r === 'all' ? t('docs.filter.all') : t(`docs.verify.result.${r}`, { defaultValue: t('common.unknown') }) }))} />
           <Button type="primary" icon={<SearchIcon />} onClick={() => { setPage(1); load(); }}>
             {t('common.search')}
           </Button>

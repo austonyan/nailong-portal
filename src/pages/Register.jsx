@@ -3,8 +3,9 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Form, FormItem, Input, Title, useForm } from 'animal-island-ui';
 import AuthLayout from '../components/AuthLayout.jsx';
+import LanguageSelect from '../components/LanguageSelect.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { toastSuccess, toastError } from '../components/toast.js';
+import { toastSuccess, toastApiError } from '../components/toast.js';
 
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,32}$/;
 
@@ -29,7 +30,7 @@ export default function Register() {
       toastSuccess(t('auth.registerSuccess'));
       navigate('/', { replace: true });
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -37,6 +38,10 @@ export default function Register() {
 
   return (
     <AuthLayout width={440}>
+      {/* 注册页同样需要语言入口:未登录用户无法从顶栏切换。 */}
+      <div className="setup-language">
+        <LanguageSelect />
+      </div>
       <Card>
         <h1 className="page-title">
           <Title size="middle" color="app-teal">
@@ -59,7 +64,7 @@ export default function Register() {
             <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
           </FormItem>
           <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('api.VALIDATION_ERROR') }]}>
-            <Input size="large" type="email" placeholder="you@example.com" allowClear />
+            <Input size="large" type="email" placeholder={t('auth.emailPlaceholder')} allowClear />
           </FormItem>
           <FormItem
             name="password"

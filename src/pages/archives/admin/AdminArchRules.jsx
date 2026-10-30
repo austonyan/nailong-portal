@@ -32,7 +32,9 @@ export default function AdminArchRules() {
   const openEdit = (item) => {
     setEditing(item);
     setIncluded(item.included);
-    setRetention(item.retention ?? '');
+    // 繁中界面下 localeMiddleware 已把 retention 换成繁体,简体源在 retentionCn;
+    // 直接绑 retention 会把繁体写回简体字段,所以简体输入框优先取 retentionCn。
+    setRetention(item.retentionCn ?? item.retention ?? '');
     setRetentionTw(item.retentionTw ?? '');
     setError('');
   };

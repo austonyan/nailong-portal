@@ -231,7 +231,7 @@ export default function AdminProtocolHosts() {
             <ul className="protocol-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
-                  <Tag size="small" variant="soft" color="app-blue">{t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind })}</Tag>
+                  <Tag size="small" variant="soft" color="app-blue">{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</Tag>
                   <span className="protocol-material-name">{m.filename}</span>
                   <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
                     {t('protocol.action.preview')}
@@ -295,7 +295,7 @@ export default function AdminProtocolHosts() {
           <label className="protocol-field">
             <span>{t('protocol.field.reason')}</span>
             {action.kind === 'reject' ? (
-              <Select value={reason} onChange={setReason} options={REASONS.map((r) => ({ key: r, label: t(`protocol.hostReject.${r}`) }))} />
+              <Select value={reason} onChange={setReason} options={REASONS.map((r) => ({ key: r, label: t(`protocol.admin.hostReject.${r}`) }))} />
             ) : null}
           </label>
         )}

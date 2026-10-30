@@ -187,7 +187,7 @@ export default function ProtocolEventDetail() {
               {materialsRequired.map((m) => (
                 <li key={`${m.kind}-${m.required ? 1 : 0}`}>
                   <FileIcon size={16} />
-                  <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind })}</span>
+                  <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
                   <Tag color={m.required ? 'warm-peach-pink' : 'brown'} variant="soft" size="small">
                     {m.required ? t('protocol.common.required') : t('protocol.common.optional')}
                   </Tag>
@@ -210,7 +210,7 @@ export default function ProtocolEventDetail() {
             <Card key={n.id} className="protocol-notice-card">
               <div className="protocol-notice-head">
                 <Tag color={n.level === 'change' ? 'warm-peach-pink' : n.level === 'cancel' ? 'app-red' : 'app-blue'} variant="soft">
-                  {t(`protocol.level.${n.level}`, { defaultValue: n.level })}
+                  {t(`protocol.level.${n.level}`, { defaultValue: t('common.unknown') })}
                 </Tag>
                 <strong>{n.title}</strong>
                 <span className="muted-text protocol-notice-time">{fmtDateTime(n.createdAt)}</span>

@@ -152,7 +152,7 @@ async function main() {
   // --- 目录/公告/活动按请求语言返回 ----------------------------------------
   const services = await api('/services/admin', { token, locale: 'zh-TW' });
   const visaService = services.data.items?.find((s) => s.key === 'visa');
-  check('services 繁体', visaService?.name === '奶龍國簽註申請署' && visaService?.nameCn === '奶龍國簽註申請署', JSON.stringify(visaService));
+  check('services 繁体', visaService?.name === '奶龍國簽註申請署' && visaService?.nameCn === '奶龙国签注申请署', JSON.stringify(visaService));
 
   const visaTypes = await api('/visa/admin/types', { token, locale: 'zh-TW' });
   check('visa_types 繁体', visaTypes.data.items?.[0]?.name === '旅遊簽註', JSON.stringify(visaTypes.data.items?.[0]));

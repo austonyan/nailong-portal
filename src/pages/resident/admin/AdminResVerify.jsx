@@ -65,12 +65,12 @@ export default function AdminResVerify() {
       width: 120,
       render: (v) => (
         <Tag color={RESULT_COLORS[v] || 'brown'} variant="soft">
-          {t(`res.admin.verify.result.${v}`, { defaultValue: v })}
+          {t(`res.admin.verify.result.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
     },
-    { title: t('res.admin.verify.source'), dataIndex: 'source', width: 100 },
-    { title: t('res.field.createdAt'), dataIndex: 'created_at', width: 170, render: fmtDateTime },
+    { title: t('res.admin.verify.source'), dataIndex: 'source', width: 100, render: (v) => t(`res.admin.verify.sourceValue.${v}`, { defaultValue: t('common.unknown') }) },
+    { title: t('res.admin.field.createdAt'), dataIndex: 'created_at', width: 170, render: fmtDateTime },
   ];
 
   return (

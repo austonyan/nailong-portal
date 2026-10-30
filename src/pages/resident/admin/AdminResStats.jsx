@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CountUp, Progress, Title } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
-import { toastResError } from '../shared.jsx';
+import { fmtDate, toastResError } from '../shared.jsx';
 
 function StatCard({ label, value, suffix }) {
   return (
@@ -57,7 +57,7 @@ export default function AdminResStats() {
           <span className="stat-label">{t('res.admin.stats.rejectRate')}</span>
           <Progress percent={stats.rejectRate * 100} infoFormat={(p) => `${Math.round(p)}%`} />
           <span className="stat-label">{t('res.admin.stats.avgReview')}</span>
-          <span className="stat-number">{stats.avgReviewHours != null ? `${stats.avgReviewHours}h` : '-'}</span>
+          <span className="stat-number">{stats.avgReviewHours != null ? t('common.unitHours', { hours: stats.avgReviewHours }) : '-'}</span>
         </Card>
         <Card className="stat-card">
           <span className="stat-label">{t('res.admin.stats.cardsValid')}</span>
@@ -88,7 +88,7 @@ export default function AdminResStats() {
             {stats.trend.map((d) => (
               <div key={d.day} className="res-trend-col">
                 <div className="res-trend-bar" style={{ height: `${(d.submissions / maxTrend) * 90 + 4}px` }} title={`${d.day}: ${d.submissions}`} />
-                <span className="muted-text">{d.day.slice(5)}</span>
+                <span className="muted-text">{fmtDate(d.day)}</span>
                 <span className="res-trend-n">{d.submissions}</span>
               </div>
             ))}
@@ -99,7 +99,7 @@ export default function AdminResStats() {
           <b>{t('res.admin.stats.typeDistribution')}</b>
           {stats.typeDistribution.map((row) => (
             <p key={row.type_code} className="res-info-row">
-              <span>{row.type_code}</span>
+              <span>{row.typeName || row.type_code}</span>
               <b>{row.n}</b>
             </p>
           ))}
@@ -109,7 +109,7 @@ export default function AdminResStats() {
           <b>{t('res.admin.stats.residentDistribution')}</b>
           {stats.residentTypeDistribution.map((row) => (
             <p key={row.type_code} className="res-info-row">
-              <span>{row.type_code}</span>
+              <span>{row.typeName || row.type_code}</span>
               <b>{row.n}</b>
             </p>
           ))}

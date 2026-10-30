@@ -540,6 +540,7 @@ export function maskHost(row) {
     certNo: row.cert_no,
     validUntil: null,
     issuedBy: '奶龙国皇家礼宾与活动署',
+    issuedByTw: '奶龍國皇家禮賓與活動署',
     valid: row.status === 'certified',
   };
 }
@@ -696,22 +697,22 @@ function renderTemplate(text, vars) {
   return String(text).replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => String(vars[key] ?? ''));
 }
 
-export function notify(userId, code, vars = {}, related = {}) {
+export function notify(userId, code, vars = {}, related = {}, varsTw = vars) {
   const tpl = db.prepare('SELECT * FROM pro_message_templates WHERE code = ? AND enabled = 1').get(code);
-  const title = renderTemplate(tpl?.title_template ?? code, vars);
-  const body = renderTemplate(tpl?.body_template ?? '', vars);
-  const titleTw = renderTemplate(tpl?.title_template_tw ?? '', vars) || null;
-  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '', vars) || null;
+  const title = renderTemplate(tpl?.title_template ?? '系统通知', vars);
+  const body = renderTemplate(tpl?.body_template ?? '你有一条新的站内消息,请登录门户查看。', vars);
+  const titleTw = renderTemplate(tpl?.title_template_tw ?? '系統通知', varsTw) || null;
+  const bodyTw = renderTemplate(tpl?.body_template_tw ?? '你有一則新的站內訊息,請登入入口網站查看。', varsTw) || null;
   db.prepare(
     'INSERT INTO pro_messages (user_id, template_code, title, body, title_tw, body_tw, related, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   ).run(userId, code, title, body, titleTw, bodyTw, JSON.stringify(related), now());
 }
 
-export function notifyEventAttendees(eventId, code, vars = {}) {
+export function notifyEventAttendees(eventId, code, vars = {}, varsTw = vars) {
   const rows = db
     .prepare("SELECT DISTINCT user_id FROM pro_registrations WHERE event_id = ? AND status IN ('approved','checked_in','waitlisted')")
     .all(eventId);
-  for (const row of rows) notify(row.user_id, code, vars, { eventId });
+  for (const row of rows) notify(row.user_id, code, vars, { eventId }, varsTw);
 }
 
 // ---------------------------------------------------------------------------

@@ -3,8 +3,9 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Form, FormItem, Input, Title, useForm } from 'animal-island-ui';
 import AuthLayout from '../components/AuthLayout.jsx';
+import LanguageSelect from '../components/LanguageSelect.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { toastSuccess, toastError } from '../components/toast.js';
+import { toastSuccess, toastApiError } from '../components/toast.js';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ export default function Login() {
       toastSuccess(t('auth.welcomeBack', { name: loggedIn.displayName || loggedIn.username }));
       navigate(location.state?.from || '/', { replace: true });
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
     } finally {
       setBusy(false);
     }
@@ -31,6 +32,10 @@ export default function Login() {
 
   return (
     <AuthLayout>
+      {/* 未登录也能切换语言(zh-TW 用户登录前就要能读懂界面)。 */}
+      <div className="setup-language">
+        <LanguageSelect />
+      </div>
       <Card>
         <h1 className="page-title">
           <Title size="middle">{t('auth.loginTitle')}</Title>

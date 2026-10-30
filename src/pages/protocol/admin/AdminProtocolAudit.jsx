@@ -39,8 +39,8 @@ export default function AdminProtocolAudit() {
   const columns = [
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },
     { title: t('protocol.admin.auditActor'), dataIndex: 'actor_name', width: 120 },
-    { title: t('protocol.admin.auditAction'), dataIndex: 'action', width: 190 },
-    { title: t('protocol.admin.auditTarget'), width: 190, render: (_, r) => `${r.target_type}:${r.target_id}` },
+    { title: t('protocol.admin.auditAction'), dataIndex: 'action', width: 190, render: (v) => t(`protocol.admin.audit.action.${v}`, { defaultValue: t('common.unknown') }) },
+    { title: t('protocol.admin.auditTarget'), width: 190, render: (_, r) => `${t(`protocol.admin.audit.targetType.${r.target_type}`, { defaultValue: t('common.unknown') })}:${r.target_id}` },
     {
       title: t('common.actions'),
       width: 90,
@@ -84,7 +84,7 @@ export default function AdminProtocolAudit() {
       <Modal
         maskClosable={false}
         open={detail !== null}
-        title={detail?.action}
+        title={detail ? t(`protocol.admin.audit.action.${detail.action}`, { defaultValue: t('common.unknown') }) : ''}
         onClose={() => setDetail(null)}
         typewriter={false}
         width={620}
@@ -93,7 +93,7 @@ export default function AdminProtocolAudit() {
         {detail && (
           <div className="protocol-audit-detail">
             <p><strong>{t('protocol.admin.auditActor')}:</strong> {detail.actor_name || '-'}</p>
-            <p><strong>{t('protocol.admin.auditTarget')}:</strong> {detail.target_type}:{detail.target_id}</p>
+            <p><strong>{t('protocol.admin.auditTarget')}:</strong> {t(`protocol.admin.audit.targetType.${detail.target_type}`, { defaultValue: t('common.unknown') })}:{detail.target_id}</p>
             <p><strong>{t('protocol.field.createdAt')}:</strong> {fmtDateTime(detail.created_at)}</p>
             <pre className="protocol-json">{detail.detail}</pre>
           </div>

@@ -104,7 +104,7 @@ export default function EduEntries() {
             <p className="edu-card-summary">{item.summary}</p>
             <div className="edu-meta">
               <Tag size="small" color="app-blue" variant="soft">
-                {categories.find((c) => c.code === item.categoryCode)?.name ?? item.categoryCode}
+                {categories.find((c) => c.code === item.categoryCode)?.name ?? t('common.unknown')}
               </Tag>
               <span>{item.no}</span>
             </div>

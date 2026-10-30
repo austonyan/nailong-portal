@@ -90,7 +90,7 @@ export default function AppealMessages() {
             <strong>{t(`appeal.msg.${m.type}.title`, { defaultValue: t('appeal.msg.system.title'), ...m.params })}</strong>
             <span className="muted-text appeal-notice-time">{fmtDateTime(m.createdAt)}</span>
           </div>
-          <p className="muted-text">{t(`appeal.msg.${m.type}.body`, { defaultValue: '', ...m.params })}</p>
+          <p className="muted-text">{t(`appeal.msg.${m.type}.body`, { defaultValue: t('appeal.msg.system.body'), ...m.params })}</p>
           <div className="table-actions appeal-message-actions">
             <Button type="text" size="small" onClick={() => goTarget(m)}>
               {t('appeal.messages.view')}

@@ -1,7 +1,7 @@
 // 审计:敏感操作的留痕查询(操作人、动作、对象、详情与时间)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Table, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { fmtDateTime, toastPostError } from '../shared.jsx';
@@ -34,14 +34,27 @@ export default function AdminPostAudit() {
     load();
   }, [load]);
 
+  // 服务端写入的动作码与对象类型都走词条;未知值不把英文码直接摊到界面上。
+  const actionLabel = (v) => (v ? t(`post.admin.audit.actionName.${v}`, { defaultValue: t('common.unknown') }) : '-');
+  const targetTypeLabel = (v) => (v ? t(`post.admin.audit.targetType.${v}`, { defaultValue: t('common.unknown') }) : '-');
+
   const columns = [
     { title: t('post.admin.audit.actor'), dataIndex: 'actorName', width: 130, render: (v) => v || t('post.admin.audit.system') },
-    { title: t('post.admin.audit.action'), dataIndex: 'action', width: 220 },
+    {
+      title: t('post.admin.audit.action'),
+      dataIndex: 'action',
+      width: 220,
+      render: (v) => (
+        <Tag color="app-blue" variant="soft" size="small">
+          {actionLabel(v)}
+        </Tag>
+      ),
+    },
     {
       title: t('post.admin.audit.target'),
       dataIndex: 'targetId',
       width: 200,
-      render: (_, row) => `${row.targetType || '-'} ${row.targetId || ''}`.trim(),
+      render: (_, row) => `${targetTypeLabel(row.targetType)} ${row.targetId || ''}`.trim(),
     },
     {
       title: t('post.admin.audit.detail'),

@@ -59,7 +59,7 @@ export default function AdminImVerify() {
       if (data.result === 'accepted') {
         toastSuccess(t('imm.admin.verify.accepted', { no: data.entryRecordNo }));
       } else {
-        toastWarning(t(`imm.admin.verify.result.${data.result}`, { defaultValue: data.result }));
+        toastWarning(t(`imm.admin.verify.result.${data.result}`, { defaultValue: t('common.unknown') }));
       }
       setVerifying(null);
       search();
@@ -89,7 +89,7 @@ export default function AdminImVerify() {
 
   const checkColumns = [
     { title: t('imm.pass.codeNo'), dataIndex: 'codeNo', width: 190 },
-    { title: t('imm.admin.verify.resultTitle'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'brown'} variant="soft">{t(`imm.admin.verify.result.${v}`, { defaultValue: v })}</Tag> },
+    { title: t('imm.admin.verify.resultTitle'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'brown'} variant="soft">{t(`imm.admin.verify.result.${v}`, { defaultValue: t('common.unknown') })}</Tag> },
     { title: t('imm.admin.review.opinion'), dataIndex: 'note', render: (v) => v || '-' },
     { title: t('imm.admin.verify.officer'), dataIndex: 'officer', width: 110, render: (v) => v ?? '-' },
     { title: t('common.createdAt'), dataIndex: 'createdAt', width: 160, render: (v) => fmtDateTime(v) },
@@ -164,7 +164,7 @@ export default function AdminImVerify() {
 
       <Card className="im-checks-card">
         <b>{t('imm.admin.verify.checkLog')}</b>
-        <Table className="table-fit" columns={checkColumns} dataSource={checks ?? []} loading={checks === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={checkColumns} dataSource={checks ?? []} loading={checks === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
 
       <Modal

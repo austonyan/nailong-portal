@@ -147,7 +147,7 @@ export default function AdminProtocolCourtesy() {
 
   const appColumns = [
     { title: t('protocol.field.appNo'), dataIndex: 'appNo', width: 180 },
-    { title: t('protocol.field.type'), dataIndex: 'typeName', width: 110 },
+    { title: t('protocol.field.type'), dataIndex: 'typeName', width: 110, render: (v) => v || t('common.unknown') },
     { title: t('protocol.field.account'), dataIndex: 'username', width: 110 },
     { title: t('protocol.field.basis'), width: 180, render: (_, r) => `${t(`protocol.basisType.${r.basisType}`)} · ${r.basisNo}` },
     { title: t('common.status'), dataIndex: 'status', width: 110, render: (v) => <StatusTag status={v} /> },
@@ -178,7 +178,7 @@ export default function AdminProtocolCourtesy() {
 
   const recordColumns = [
     { title: t('protocol.field.createdAt'), dataIndex: 'created_at', width: 160, render: fmtDateTime },
-    { title: t('protocol.field.type'), dataIndex: 'type_name', width: 130 },
+    { title: t('protocol.field.type'), dataIndex: 'type_name', width: 130, render: (v) => v || t('common.unknown') },
     { title: t('protocol.field.account'), dataIndex: 'display_name', width: 130 },
     { title: t('protocol.field.appNo'), dataIndex: 'app_no', width: 180 },
     { title: t('protocol.field.note'), dataIndex: 'note' },
@@ -351,7 +351,7 @@ export default function AdminProtocolCourtesy() {
         {action?.kind === 'reject' && (
           <label className="protocol-field">
             <span>{t('protocol.field.rejectReason')}</span>
-            <Select value={reason} onChange={setReason} options={REASONS.map((r) => ({ key: r, label: t(`protocol.rejectReason.${r}`) }))} />
+            <Select value={reason} onChange={setReason} options={REASONS.map((r) => ({ key: r, label: t(`protocol.admin.rejectReason.${r}`) }))} />
           </label>
         )}
         {['approve', 'reject'].includes(action?.kind) && (

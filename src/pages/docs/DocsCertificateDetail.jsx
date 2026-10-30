@@ -26,7 +26,7 @@ export default function DocsCertificateDetail() {
         if (!cancelled) setItem(d.item);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         if (!cancelled) setItem(false);
       });
     return () => {
@@ -85,6 +85,7 @@ export default function DocsCertificateDetail() {
             onClick={() =>
               exportCertificatePng({
                 cert: item,
+                title: t('docs.cert.titleEn'),
                 typeName: item.typeName,
                 bizNoLabel: item.application?.type?.bizNoLabel,
                 issuer: item.issuer,

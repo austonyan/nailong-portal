@@ -23,7 +23,7 @@ export default function DocsSettings() {
       setConfig(map);
       setBlacklist(b.items);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   }, [t]);
 
@@ -43,7 +43,7 @@ export default function DocsSettings() {
       toastSuccess(t('common.save'));
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -62,7 +62,7 @@ export default function DocsSettings() {
       setAddForm({ userId: '', reason: '' });
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
     }
@@ -74,7 +74,7 @@ export default function DocsSettings() {
       toastSuccess(t('common.deleted'));
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 

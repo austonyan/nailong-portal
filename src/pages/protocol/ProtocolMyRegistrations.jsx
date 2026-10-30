@@ -182,7 +182,7 @@ export default function ProtocolMyRegistrations() {
                 [t('protocol.field.contact'), detail.contact],
                 [t('protocol.field.identityType'), t(`protocol.identity.${detail.identityType}`)],
                 [t('protocol.field.identityNo'), detail.identityNo || '-'],
-                [t('protocol.field.identityCheck'), t(`protocol.identityCheck.${detail.identityCheck}`, { defaultValue: detail.identityCheck })],
+                [t('protocol.field.identityCheck'), t(`protocol.identityCheck.${detail.identityCheck}`, { defaultValue: t('common.unknown') })],
                 [t('protocol.field.partySize'), detail.partySize],
                 [t('protocol.field.invitationNo'), detail.invitationNo || '-'],
                 [t('protocol.field.note'), detail.note || '-'],
@@ -248,9 +248,9 @@ export default function ProtocolMyRegistrations() {
               {(detail.history || []).map((h) => (
                 <li key={h.id}>
                   <Tag size="small" variant="soft" color="app-blue">
-                    {t(`protocol.history.${h.action}`, { defaultValue: h.action })}
+                    {t(`protocol.history.${h.action}`, { defaultValue: t('common.unknown') })}
                   </Tag>
-                  <span>{h.actorName || 'system'}</span>
+                  <span>{h.actorName || t('common.system')}</span>
                   <span className="muted-text">{fmtDateTime(h.createdAt)}</span>
                 </li>
               ))}

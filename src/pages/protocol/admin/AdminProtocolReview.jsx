@@ -247,7 +247,7 @@ export default function AdminProtocolReview() {
                 [t('protocol.field.contact'), detail.contact],
                 [t('protocol.field.identityType'), t(`protocol.identity.${detail.identityType}`)],
                 [t('protocol.field.identityNo'), detail.identityNo || '-'],
-                [t('protocol.field.identityCheck'), t(`protocol.identityCheck.${detail.identityCheck}`, { defaultValue: detail.identityCheck })],
+                [t('protocol.field.identityCheck'), t(`protocol.identityCheck.${detail.identityCheck}`, { defaultValue: t('common.unknown') })],
                 [t('protocol.field.partySize'), detail.partySize],
                 [t('protocol.field.companions'), detail.companions.map((c) => c.nickname).join('、') || '-'],
                 [t('protocol.field.invitationNo'), detail.invitationNo || '-'],
@@ -259,7 +259,7 @@ export default function AdminProtocolReview() {
             <ul className="protocol-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
-                  <Tag size="small" variant="soft" color="app-blue">{t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind })}</Tag>
+                  <Tag size="small" variant="soft" color="app-blue">{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</Tag>
                   <span className="protocol-material-name">{m.filename}</span>
                   <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
                     {t('protocol.action.preview')}
@@ -301,7 +301,7 @@ export default function AdminProtocolReview() {
         {action?.kind === 'reject' && (
           <label className="protocol-field">
             <span>{t('protocol.field.rejectReason')}</span>
-            <Select value={reason} onChange={setReason} options={REASONS.map((r) => ({ key: r, label: t(`protocol.rejectReason.${r}`) }))} />
+            <Select value={reason} onChange={setReason} options={REASONS.map((r) => ({ key: r, label: t(`protocol.admin.rejectReason.${r}`) }))} />
           </label>
         )}
         <label className="protocol-field">

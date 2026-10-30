@@ -72,10 +72,10 @@ function OfficeModal({ initial, onClose, onSaved }) {
     >
       <Form form={form} layout="vertical">
         <div className="dip-form-row">
-          <FormItem name="code" label={t('dip.office.code')} rules={[{ required: true }]} help={t('dip.office.codeTip')}>
+          <FormItem name="code" label={t('dip.office.code')} rules={[{ required: true, message: t('common.required') }]} help={t('dip.office.codeTip')}>
             <Input maxLength={20} disabled={editing} placeholder="OFC_CENTRAL" />
           </FormItem>
-          <FormItem name="name" label={t('dip.office.name')} rules={[{ required: true }]}>
+          <FormItem name="name" label={t('dip.office.name')} rules={[{ required: true, message: t('common.required') }]}>
             <Input maxLength={40} placeholder={t('dip.office.namePlaceholder')} />
           </FormItem>
           <FormItem name="nameTw" label={`${t('dip.office.name')} · ${t('common.traditional')}`}>
@@ -157,7 +157,7 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
     <Modal
       maskClosable={false}
       open
-      title={editing ? t('dip.notice.editTitle') : t('dip.notice.createTitle')}
+      title={editing ? t('dip.admin.notice.editTitle') : t('dip.admin.notice.createTitle')}
       onClose={onClose}
       typewriter={false}
       width={520}
@@ -169,25 +169,25 @@ function NoticeModal({ initial, offices, onClose, onSaved }) {
       }
     >
       <Form form={form} layout="vertical">
-        <FormItem name="title" label={t('dip.notice.title')} rules={[{ required: true }]}>
+        <FormItem name="title" label={t('dip.admin.notice.title')} rules={[{ required: true, message: t('common.required') }]}>
           <Input maxLength={80} />
         </FormItem>
-        <FormItem name="titleTw" label={`${t('dip.notice.title')} · ${t('common.traditional')}`}>
+        <FormItem name="titleTw" label={`${t('dip.admin.notice.title')} · ${t('common.traditional')}`}>
           <Input maxLength={80} placeholder={t('common.twOptional')} />
         </FormItem>
-        <FormItem name="body" label={t('dip.notice.body')} rules={[{ required: true }]}>
+        <FormItem name="body" label={t('dip.admin.notice.body')} rules={[{ required: true, message: t('common.required') }]}>
           <TextArea rows={4} maxLength={1000} />
         </FormItem>
-        <FormItem name="bodyTw" label={`${t('dip.notice.body')} · ${t('common.traditional')}`}>
+        <FormItem name="bodyTw" label={`${t('dip.admin.notice.body')} · ${t('common.traditional')}`}>
           <TextArea rows={4} maxLength={1000} placeholder={t('common.twOptional')} />
         </FormItem>
         <div className="dip-form-row">
-          <FormItem name="level" label={t('dip.notice.level')}>
+          <FormItem name="level" label={t('dip.admin.notice.level')}>
             <Select options={['info', 'warning', 'critical'].map((l) => ({ key: l, label: t(`dip.level.${l}`) }))} />
           </FormItem>
-          <FormItem name="officeId" label={t('dip.notice.office')} help={t('dip.notice.officeTip')}>
+          <FormItem name="officeId" label={t('dip.admin.notice.office')} help={t('dip.admin.notice.officeTip')}>
             <Select
-              options={[{ key: '', label: t('dip.notice.officeAll') }, ...offices.map((o) => ({ key: String(o.id), label: o.name }))]}
+              options={[{ key: '', label: t('dip.admin.notice.officeAll') }, ...offices.map((o) => ({ key: String(o.id), label: o.name }))]}
             />
           </FormItem>
         </div>
@@ -272,23 +272,23 @@ export default function AdminDipOffices() {
   ];
 
   const noticeColumns = [
-    { title: t('dip.notice.title'), dataIndex: 'title', width: 200 },
-    { title: t('dip.notice.office'), dataIndex: 'officeName', width: 130, render: (v) => v || t('dip.notice.officeAll') },
-    { title: t('dip.notice.level'), dataIndex: 'level', width: 90, render: (v) => t(`dip.level.${v}`) },
+    { title: t('dip.admin.notice.title'), dataIndex: 'title', width: 200 },
+    { title: t('dip.admin.notice.office'), dataIndex: 'officeName', width: 130, render: (v) => v || t('dip.admin.notice.officeAll') },
+    { title: t('dip.admin.notice.level'), dataIndex: 'level', width: 90, render: (v) => t(`dip.level.${v}`) },
     {
       title: t('common.status'),
       dataIndex: 'status',
       width: 90,
-      render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('dip.notice.published')}</Tag> : <Tag color="brown" variant="soft">{t('dip.notice.offline')}</Tag>),
+      render: (v) => (v === 'published' ? <Tag color="app-green" variant="soft">{t('dip.admin.notice.published')}</Tag> : <Tag color="brown" variant="soft">{t('dip.admin.notice.offline')}</Tag>),
     },
-    { title: t('dip.notice.publishedAt'), dataIndex: 'publishedAt', width: 150, render: (v) => fmtDateTime(v) },
+    { title: t('dip.admin.notice.publishedAt'), dataIndex: 'publishedAt', width: 150, render: (v) => fmtDateTime(v) },
     {
       title: t('common.actions'),
       width: 240,
       render: (_, r) => (
         <div className="table-actions">
           <Button size="small" onClick={() => setNoticeModal(r)}>{t('common.edit')}</Button>
-          {r.status === 'published' && <Button size="small" onClick={() => offlineNotice(r)}>{t('dip.notice.offlineAction')}</Button>}
+          {r.status === 'published' && <Button size="small" onClick={() => offlineNotice(r)}>{t('dip.admin.notice.offlineAction')}</Button>}
           <Button type="default" size="small" danger onClick={() => deleteNotice(r)}>{t('common.delete')}</Button>
         </div>
       ),
@@ -306,17 +306,17 @@ export default function AdminDipOffices() {
       </div>
 
       <Card>
-        <Table className="table-fit" columns={officeColumns} dataSource={offices ?? []} loading={offices === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={officeColumns} dataSource={offices ?? []} loading={offices === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       <div className="page-header">
         <h2 className="section-title">
-          <Title size="middle">{t('dip.notice.adminTitle')}</Title>
+          <Title size="middle">{t('dip.admin.notice.adminTitle')}</Title>
         </h2>
-        <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeModal({})}>{t('dip.notice.publish')}</Button>
+        <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeModal({})}>{t('dip.admin.notice.publish')}</Button>
       </div>
       <Card>
-        <Table className="table-fit" columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} />
+        <Table className="table-fit" columns={noticeColumns} dataSource={notices ?? []} loading={notices === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
 
       {officeModal !== null && <OfficeModal initial={officeModal} onClose={() => setOfficeModal(null)} onSaved={load} />}

@@ -184,7 +184,7 @@ export default function DipApply() {
           <FormItem name="reason" label={t('dip.apply.reason')} rules={[{ required: true, message: t('dip.apply.required') }]}>
             <TextArea rows={4} maxLength={500} placeholder={t('dip.apply.reasonPlaceholder')} />
           </FormItem>
-          <FormItem name="purpose" label={t('dip.apply.purpose')} rules={[{ required: true }]}>
+          <FormItem name="purpose" label={t('dip.apply.purpose')} rules={[{ required: true, message: t('dip.apply.required') }]}>
             <Radio options={PURPOSES.map((p) => ({ label: t(`dip.purpose.${p}`), value: p }))} direction="horizontal" />
           </FormItem>
           <FormItem label={t('dip.apply.courtesies')} help={t('dip.apply.courtesiesTip')}>
@@ -242,14 +242,14 @@ export default function DipApply() {
         typewriter={false}
       >
         <div className="dip-confirm-list">
-          <p><b>{t('dip.apply.objectType')}:</b> {t(`dip.objectType.${preview.objectType}`, { defaultValue: preview.objectType })}</p>
-          <p><b>{t('dip.apply.relationType')}:</b> {t(`dip.relationType.${preview.relationType}`, { defaultValue: preview.relationType })}</p>
+          <p><b>{t('dip.apply.objectType')}:</b> {t(`dip.objectType.${preview.objectType}`, { defaultValue: t('common.unknown') })}</p>
+          <p><b>{t('dip.apply.relationType')}:</b> {t(`dip.relationType.${preview.relationType}`, { defaultValue: t('common.unknown') })}</p>
           <p><b>{t('dip.apply.entityName')}:</b> {preview.entityName}</p>
           <p><b>{t('dip.apply.repNickname')}:</b> {preview.repNickname}</p>
           <p><b>{t('dip.apply.contact')}:</b> {preview.contact}</p>
           <p><b>{t('dip.apply.reason')}:</b> {preview.reason}</p>
           <p><b>{t('dip.apply.purpose')}:</b> {t(`dip.purpose.${preview.purpose ?? 'display'}`)}</p>
-          <p><b>{t('dip.apply.courtesies')}:</b> {(courtesies.length ? courtesies.map((c) => t(`dip.courtesy.${c}`, { defaultValue: c })).join('、') : '-')}</p>
+          <p><b>{t('dip.apply.courtesies')}:</b> {(courtesies.length ? courtesies.map((c) => t(`dip.courtesy.${c}`, { defaultValue: t('common.unknown') })).join('、') : '-')}</p>
           <p><b>{t('dip.material.title')}:</b> {t('dip.apply.materialCount', { count: materials.length })}</p>
         </div>
       </Modal>

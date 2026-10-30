@@ -93,7 +93,7 @@ export default function AppealApply() {
         onSuccess(material);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         onError(err);
       });
   };
@@ -198,7 +198,7 @@ export default function AppealApply() {
         </div>
         {appeal && appeal.bizStatus && (
           <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'warm-peach-pink'} variant="soft">
-            {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: appeal.bizStatus })}
+            {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: t('common.unknown') })}
           </Tag>
         )}
       </Card>

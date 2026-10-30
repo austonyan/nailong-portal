@@ -119,7 +119,7 @@ const ENUMS = {
   'imm.admin.verify.result': ['accepted', 'used', 'expired', 'voided', 'unknown', 'port_closed', 'visa_blocked'],
   'res.noticeLevel': ['info', 'policy', 'event'],
   'res.admin.verify.result': ['valid', 'expired', 'voided', 'frozen', 'not_found', 'rate_limited'],
-  'res.msgTpl': [
+  'res.admin.msgTpl': [
     'submitted', 'supplement_required', 'supplement_received', 'approved', 'rejected',
     'withdrawn', 'closed', 'card_issued', 'card_frozen', 'card_unfrozen', 'card_voided',
     'card_reissued', 'card_expired', 'expiry_reminder', 'change_approved', 'change_rejected',
@@ -149,7 +149,7 @@ const ENUMS = {
     'voided', 'entered', 'exited',
   ],
   'arch.office': ['visa', 'immigration'],
-  'arch.action': ['list', 'detail', 'export'],
+  'arch.admin.action': ['list', 'detail', 'export'],
   'arch.event': ['submit', 'accept', 'approve', 'execute', 'reject'],
   'arch.field': [
     'applicationNo', 'visaNo', 'appNo', 'type', 'status', 'submittedAt', 'issuedAt',
@@ -206,7 +206,7 @@ const ENUMS = {
   ],
   'edu.status': ['draft', 'pending_review', 'published', 'offline'],
   'edu.recordStatus': ['in_progress', 'completed'],
-  'edu.reviewAction': ['approve', 'reject'],
+  'edu.admin.reviewAction': ['approve', 'reject'],
   'edu.targetType': ['entry', 'article', 'task', 'badge'],
   'linkage.office': [
     'visa', 'immigration', 'resident', 'diplomatic', 'document', 'protocol', 'appeal', 'archives',

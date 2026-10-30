@@ -73,15 +73,15 @@ function RelationDetail({ id, onClose, onChanged }) {
         <StatusTag value={r.status} />
       </div>
       <Card>
-        <InfoRow label={t('dip.apply.objectType')}>{t(`dip.objectType.${r.objectType}`, { defaultValue: r.objectType })}</InfoRow>
-        <InfoRow label={t('dip.apply.relationType')}>{t(`dip.relationType.${r.relationType}`, { defaultValue: r.relationType })}</InfoRow>
+        <InfoRow label={t('dip.apply.objectType')}>{t(`dip.objectType.${r.objectType}`, { defaultValue: t('common.unknown') })}</InfoRow>
+        <InfoRow label={t('dip.apply.relationType')}>{t(`dip.relationType.${r.relationType}`, { defaultValue: t('common.unknown') })}</InfoRow>
         <InfoRow label={t('dip.apply.entityName')}>{r.entityName}</InfoRow>
         <InfoRow label={t('dip.apply.repNickname')}>{r.repNickname}</InfoRow>
         <InfoRow label={t('dip.apply.contact')}>{r.contact}</InfoRow>
         <InfoRow label={t('dip.apply.reason')}>{r.reason || '-'}</InfoRow>
         <InfoRow label={t('dip.apply.purpose')}>{t(`dip.purpose.${r.purpose}`)}</InfoRow>
         <InfoRow label={t('dip.apply.courtesies')}>
-          {(r.courtesies ?? []).map((c) => t(`dip.courtesy.${c}`, { defaultValue: c })).join('、') || '-'}
+          {(r.courtesies ?? []).map((c) => t(`dip.courtesy.${c}`, { defaultValue: t('common.unknown') })).join('、') || '-'}
         </InfoRow>
         {r.establishedAt && <InfoRow label={t('dip.relation.establishedAt')}>{fmtDateTime(r.establishedAt)}</InfoRow>}
       </Card>
@@ -142,8 +142,8 @@ function RelationDetail({ id, onClose, onChanged }) {
         <ul className="dip-timeline">
           {(r.events ?? []).map((e, idx) => (
             <li key={idx}>
-              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {fmtDateTime(e.created_at)}</span>
+              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: t('common.unknown') })}</span>
+              <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="dip-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -257,7 +257,7 @@ export default function DipRelations() {
       title: t('dip.apply.objectType'),
       dataIndex: 'objectType',
       width: 110,
-      render: (v) => t(`dip.objectType.${v}`, { defaultValue: v }),
+      render: (v) => t(`dip.objectType.${v}`, { defaultValue: t('common.unknown') }),
     },
     { title: t('common.status'), dataIndex: 'status', width: 110, render: (v) => <StatusTag value={v} /> },
     { title: t('dip.relation.submittedAt'), dataIndex: 'submittedAt', width: 160, render: (v) => fmtDateTime(v) },
@@ -304,7 +304,7 @@ export default function DipRelations() {
         </Link>
       </div>
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
 
       <Drawer maskClosable={false} open={openId !== null} title={t('dip.relation.detailTitle')} onClose={() => setOpenId(null)} width={560}>

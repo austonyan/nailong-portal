@@ -180,7 +180,7 @@ export default function AdminEduEntries() {
       title: t('edu.field.category'),
       dataIndex: 'categoryCode',
       width: 110,
-      render: (v) => categories.find((c) => c.code === v)?.name ?? v,
+      render: (v) => categories.find((c) => c.code === v)?.name ?? t('common.unknown'),
     },
     {
       title: t('common.status'),

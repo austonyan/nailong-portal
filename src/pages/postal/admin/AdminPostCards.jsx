@@ -61,7 +61,7 @@ export default function AdminPostCards() {
   };
 
   const columns = [
-    { title: t('post.field.no'), dataIndex: 'no', width: 200 },
+    { title: t('post.admin.field.no'), dataIndex: 'no', width: 200 },
     {
       title: t('post.postcards.from'),
       dataIndex: 'senderName',

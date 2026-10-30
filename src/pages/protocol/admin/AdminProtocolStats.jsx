@@ -101,7 +101,7 @@ export default function AdminProtocolStats() {
           <h2 className="block-heading">{t('protocol.admin.eventByType')}</h2>
           <Table className="table-fit"
             columns={[
-              { title: t('protocol.field.type'), dataIndex: 'name' },
+              { title: t('protocol.field.type'), dataIndex: 'name', render: (v) => v || t('common.unknown') },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
             ]}
             dataSource={stats.events.byType}
@@ -125,7 +125,7 @@ export default function AdminProtocolStats() {
           <h2 className="block-heading">{t('protocol.admin.rejectReasons')}</h2>
           <Table className="table-fit"
             columns={[
-              { title: t('protocol.field.reason'), dataIndex: 'code', render: (v) => t(`protocol.rejectReason.${v}`, { defaultValue: v }) },
+              { title: t('protocol.field.reason'), dataIndex: 'code', render: (v) => t(`protocol.admin.rejectReason.${v}`, { defaultValue: t('common.unknown') }) },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
             ]}
             dataSource={stats.registrations.rejectReasons}
@@ -138,7 +138,7 @@ export default function AdminProtocolStats() {
           <h2 className="block-heading">{t('protocol.admin.courtesyByType')}</h2>
           <Table className="table-fit"
             columns={[
-              { title: t('protocol.field.type'), dataIndex: 'name' },
+              { title: t('protocol.field.type'), dataIndex: 'name', render: (v) => v || t('common.unknown') },
               { title: t('protocol.admin.count'), dataIndex: 'n', width: 100 },
             ]}
             dataSource={stats.courtesy.byType}

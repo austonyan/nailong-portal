@@ -72,7 +72,9 @@ export function normalizeDocNo(text) {
 }
 
 // 证书画布导出 PNG(下载图片用): 按证书字段重绘,不截图 DOM。
-export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer, sealEnabled, labels = {} }) {
+// 画布上的所有文案(标题、字段名、印章)都由调用方按当前语言传入 —
+// 这里不做任何语言兜底,否则 zh-TW 下会冒出简体字。
+export async function exportCertificatePng({ cert, title, typeName, bizNoLabel, issuer, sealEnabled, labels = {} }) {
   const W = 960;
   const H = 660;
   const canvas = document.createElement('canvas');
@@ -109,16 +111,16 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
   ctx.fillText(issuer || '', W / 2, 96);
   ctx.font = '700 20px "Noto Sans SC", sans-serif';
   ctx.fillStyle = primary;
-  ctx.fillText('CERTIFICATE OF AUTHENTICATION', W / 2, 130);
+  ctx.fillText(title || '', W / 2, 130);
 
   // 字段
   const rows = [
-    [labels.certNo || '文书编号', cert.certNo],
-    [labels.type || '文书类型', typeName],
-    [labels.holder || '持有人', cert.holderName],
-    [bizNoLabel || labels.bizNo || '关联业务编号', cert.bizNo || '—'],
-    [labels.issuedAt || '认证日期', cert.issuedAt ? fmtDate(cert.issuedAt) : ''],
-    [labels.expiresAt || '有效期至', cert.expiresAt ? fmtDate(cert.expiresAt) : ''],
+    [labels.certNo || '', cert.certNo],
+    [labels.type || '', typeName],
+    [labels.holder || '', cert.holderName],
+    [bizNoLabel || labels.bizNo || '', cert.bizNo || '—'],
+    [labels.issuedAt || '', cert.issuedAt ? fmtDate(cert.issuedAt) : ''],
+    [labels.expiresAt || '', cert.expiresAt ? fmtDate(cert.expiresAt) : ''],
   ];
   ctx.textAlign = 'left';
   let y = 190;
@@ -152,10 +154,10 @@ export async function exportCertificatePng({ cert, typeName, bizNoLabel, issuer,
     ctx.fillStyle = red;
     ctx.textAlign = 'center';
     ctx.font = '700 15px "Noto Sans SC", sans-serif';
-    ctx.fillText(labels.seal1 || '皇家文书与', cx, cy - 30);
-    ctx.fillText(labels.seal2 || '认证署', cx, cy - 10);
+    ctx.fillText(labels.seal1 || '', cx, cy - 30);
+    ctx.fillText(labels.seal2 || '', cx, cy - 10);
     ctx.font = '900 20px "Noto Sans SC", sans-serif';
-    ctx.fillText(labels.seal3 || '认证专用章', cx, cy + 24);
+    ctx.fillText(labels.seal3 || '', cx, cy + 24);
     ctx.restore();
   }
 

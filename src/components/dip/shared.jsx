@@ -40,7 +40,7 @@ export function StatusTag({ value, i18nPrefix = 'dip.status' }) {
   const style = STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
-      {t(`${i18nPrefix}.${value}`, { defaultValue: value })}
+      {t(`${i18nPrefix}.${value}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -56,7 +56,7 @@ export function DipLevelTag({ level }) {
   const style = LEVEL_TAG[level] ?? LEVEL_TAG.info;
   return (
     <Tag color={style.color} variant={style.variant} size="small">
-      {t(`dip.level.${level}`, { defaultValue: level })}
+      {t(`dip.level.${level}`, { defaultValue: t('common.unknown') })}
     </Tag>
   );
 }
@@ -70,7 +70,7 @@ export function fmtDate(iso) {
 }
 
 export function dipErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
 }
 
 export function toastDipError(t, err) {

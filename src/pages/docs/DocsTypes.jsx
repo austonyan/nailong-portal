@@ -30,7 +30,7 @@ export default function DocsTypes() {
         if (!cancelled) setTypes(d.items);
       })
       .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: err.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         if (!cancelled) setTypes([]);
       });
     return () => {

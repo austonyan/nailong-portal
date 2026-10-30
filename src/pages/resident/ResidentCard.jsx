@@ -130,7 +130,7 @@ export default function ResidentCard() {
             </div>
             <div>
               <span className="res-card-label">{t('res.card.type')}</span>
-              <span className="res-card-value">{card.typeName}</span>
+              <span className="res-card-value">{card.typeName || t('common.unknown')}</span>
             </div>
             <div>
               <span className="res-card-label">{t('res.card.issuedAt')}</span>

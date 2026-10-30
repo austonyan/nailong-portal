@@ -6,6 +6,7 @@ import { Button, Card, Modal, Skeleton, Tag } from 'animal-island-ui';
 import { InboxIcon, RefreshIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../toast.js';
+import { fmtDate } from '../../lib/date.js';
 import LinkageConsentModal from './LinkageConsentModal.jsx';
 import { grantLinkageConsent, hasLinkageConsent, linkageStatusLabel } from './shared.js';
 
@@ -165,7 +166,7 @@ export default function LinkagePicker({ open, consumer, source, kind, credential
                         {linkageStatusLabel(t, source, item.kind, item.status)}
                       </Tag>
                       <Tag size="small" variant="soft">
-                        {t(`linkage.kind.${item.kind}`, { defaultValue: item.kind })}
+                        {t(`linkage.kind.${item.kind}`, { defaultValue: t('common.unknown') })}
                       </Tag>
                       {item.appealable && (
                         <Tag size="small" color="app-blue" variant="soft">
@@ -176,8 +177,8 @@ export default function LinkagePicker({ open, consumer, source, kind, credential
                   </div>
                   <div className="linkage-record-meta">
                     {item.holder && <span>{t('linkage.picker.holder', { name: item.holder })}</span>}
-                    {item.issuedAt && <span>{t('linkage.picker.issuedAt', { date: item.issuedAt })}</span>}
-                    {item.validUntil && <span>{t('linkage.picker.validUntil', { date: item.validUntil })}</span>}
+                    {item.issuedAt && <span>{t('linkage.picker.issuedAt', { date: fmtDate(item.issuedAt) })}</span>}
+                    {item.validUntil && <span>{t('linkage.picker.validUntil', { date: fmtDate(item.validUntil) })}</span>}
                   </div>
                 </Card>
               );

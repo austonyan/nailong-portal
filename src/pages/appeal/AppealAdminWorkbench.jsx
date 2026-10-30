@@ -17,6 +17,7 @@ import {
   toastAppealError,
 } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
+import { linkageStatusLabel } from '../../components/linkage/shared.js';
 import { useDebouncedValue } from '../../lib/useDebouncedValue.js';
 
 const QUEUE_STATUS = ['', 'pending_accept', 'accepted', 'processing', 'supplement_required', 'resolved', 'rejected', 'withdrawn', 'closed'];
@@ -325,17 +326,17 @@ export default function AppealAdminWorkbench() {
             {detail.bizLink?.integrated && detail.bizLink.found ? (
               <div className="appeal-biz-link">
                 <div className="appeal-dist-row">
-                  <Tag color="app-green" variant="soft">{detail.bizLink.office}</Tag>
+                  <Tag color="app-green" variant="soft">{t(`linkage.office.${detail.bizType}`, { defaultValue: t('common.unknown') })}</Tag>
                   <b>{detail.bizLink.title}</b>
                   <span className="muted-text">
-                    {detail.bizLink.code} · {detail.bizLink.status}
+                    {detail.bizLink.code} · {linkageStatusLabel(t, detail.bizType, '', detail.bizLink.status)}
                   </span>
                 </div>
                 {detail.bizLink.timeline?.length > 0 && (
                   <ul className="appeal-record-timeline">
                     {detail.bizLink.timeline.map((r, idx) => (
                       <li key={`${r.createdAt}-${idx}`}>
-                        <Tag variant="soft" color="app-teal" size="small">{r.action}</Tag>
+                        <Tag variant="soft" color="app-teal" size="small">{t(`appeal.bizAction.${r.action}`, { defaultValue: t('common.unknown') })}</Tag>
                         <span className="muted-text">{fmtDateTime(r.createdAt)}</span>
                         {r.comment && <p className="muted-text">{r.comment}</p>}
                       </li>
@@ -352,7 +353,7 @@ export default function AppealAdminWorkbench() {
               {detail.records.map((r) => (
                 <li key={r.id}>
                   <Tag variant="soft" color="app-teal" size="small">
-                    {t(`appeal.recordAction.${r.action}`, { defaultValue: r.action })}
+                    {t(`appeal.recordAction.${r.action}`, { defaultValue: t('common.unknown') })}
                   </Tag>
                   <span>{r.actorName}</span>
                   <span className="muted-text">{fmtDateTime(r.createdAt)}</span>

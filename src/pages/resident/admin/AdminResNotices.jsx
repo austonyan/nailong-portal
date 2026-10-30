@@ -169,7 +169,7 @@ export default function AdminResNotices() {
       width: 90,
       render: (v, record) => <Switch checked={!!v} loading={rowBusy} disabled={rowBusy} onChange={() => toggleNotice(record)} />,
     },
-    { title: t('res.field.createdAt'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
+    { title: t('res.admin.field.createdAt'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
     {
       title: t('common.actions'),
       dataIndex: 'actions',
@@ -190,7 +190,7 @@ export default function AdminResNotices() {
   const messageColumns = [
     { title: t('res.admin.notices.messages.to'), dataIndex: 'username', width: 120 },
     { title: t('res.admin.notices.messages.title'), dataIndex: 'title' },
-    { title: t('res.admin.notices.messages.template'), dataIndex: 'template_code', width: 160 },
+    { title: t('res.admin.notices.messages.template'), dataIndex: 'template_code', width: 160, render: (v) => t(`res.admin.msgTpl.${v}`, { defaultValue: t('common.unknown') }) },
     {
       title: t('res.admin.notices.messages.read'),
       dataIndex: 'read',
@@ -201,7 +201,7 @@ export default function AdminResNotices() {
         </Tag>
       ),
     },
-    { title: t('res.field.createdAt'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
+    { title: t('res.admin.field.createdAt'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
   ];
 
   return (
@@ -241,7 +241,7 @@ export default function AdminResNotices() {
                   {(templates ?? []).map((tpl) => (
                     <div key={tpl.code} className="res-tpl-item">
                       <div className="res-tpl-head">
-                        <b>{t(`res.msgTpl.${tpl.code}`, { defaultValue: tpl.code })}</b>
+                        <b>{t(`res.admin.msgTpl.${tpl.code}`, { defaultValue: t('common.unknown') })}</b>
                         <Tag size="small" variant="soft" color="app-blue">
                           {tpl.variables || '-'}
                         </Tag>
@@ -317,7 +317,7 @@ export default function AdminResNotices() {
 
       <Modal
         open={editingTpl !== null}
-        title={editingTpl ? t(`res.msgTpl.${editingTpl.code}`, { defaultValue: editingTpl.code }) : ''}
+        title={editingTpl ? t(`res.admin.msgTpl.${editingTpl.code}`, { defaultValue: t('common.unknown') }) : ''}
         onClose={() => {
           if (!busy) setEditingTpl(null);
         }}

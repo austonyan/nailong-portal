@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../api/client.js';
+import { linkageStatusLabel } from '../../components/linkage/shared.js';
 import { TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
@@ -56,7 +57,7 @@ export default function AppealAdminInspect() {
 
   const doSample = async () => {
     try {
-      const data = await api.post('/appeal/admin/inspect/sampling', { bizType: sampleBiz, note: t('appeal.inspect.sampleNote') });
+      const data = await api.post('/appeal/admin/inspect/sampling', { bizType: sampleBiz });
       setSampleResult(data.sample);
       toastSuccess(t('appeal.inspect.sampleDone', { count: data.sample?.items?.length ?? 0 }));
       await load();
@@ -65,9 +66,35 @@ export default function AppealAdminInspect() {
     }
   };
 
+  // 新报告有结构化 payload,按当前语言渲染;极少数解析失败的旧行才回退原文。
+  const reportTitle = (r) =>
+    r.payload?.bizType
+      ? t('appeal.inspect.reportTitle', { office: t(`linkage.office.${r.payload.bizType}`) })
+      : r.title;
+  const renderReport = (r) => {
+    const p = r.payload;
+    if (!p?.bizType) return <p className="muted-text appeal-report-body">{r.content}</p>;
+    const statuses = Object.entries(p.statusCounts || {});
+    return (
+      <p className="muted-text appeal-report-body">
+        {t('appeal.inspect.reportSummary', {
+          office: t(`linkage.office.${p.bizType}`),
+          total: p.total,
+          sampled: p.sampled,
+        })}
+        {statuses.length > 0 && ` · ${t('appeal.inspect.reportStatusLine', {
+          list: statuses
+            .map(([status, n]) => `${linkageStatusLabel(t, p.bizType, undefined, status)} ${n}`)
+            .join(' / '),
+        })}`}
+        {p.note && ` · ${t('appeal.inspect.reportNote', { note: p.note })}`}
+      </p>
+    );
+  };
+
   const recordColumns = [
-    { title: t('appeal.inspect.colTarget'), width: 140, render: (_v, r) => `${t(`appeal.ownerType.${r.target_type}`)} #${r.target_id}` },
-    { title: t('appeal.inspect.colAction'), dataIndex: 'action', width: 160 },
+    { title: t('appeal.inspect.colTarget'), width: 140, render: (_v, r) => `${t(`appeal.ownerType.${r.target_type}`, { defaultValue: t('common.unknown') })} #${r.target_id}` },
+    { title: t('appeal.inspect.colAction'), dataIndex: 'action', width: 160, render: (v) => t(`appeal.recordAction.${v}`, { defaultValue: t('common.unknown') }) },
     { title: t('appeal.inspect.colActor'), dataIndex: 'actor_name', width: 140 },
     { title: t('appeal.inspect.colComment'), dataIndex: 'comment' },
     { title: t('appeal.inspect.colTime'), dataIndex: 'created_at', width: 150, render: fmtDateTime },
@@ -96,11 +123,11 @@ export default function AppealAdminInspect() {
             <h2 className="block-heading">{t('appeal.inspect.slaTitle')}</h2>
             <div className="appeal-stat-grid">
               <div className="appeal-stat-item">
-                <strong>{summary.avgAcceptHours}h</strong>
+                <strong>{summary.avgAcceptHours != null ? t('common.unitHours', { hours: summary.avgAcceptHours }) : '-'}</strong>
                 <span>{t('appeal.inspect.avgAccept')}</span>
               </div>
               <div className="appeal-stat-item">
-                <strong>{summary.avgResolveDays}d</strong>
+                <strong>{summary.avgResolveDays != null ? t('common.unitDays', { days: summary.avgResolveDays }) : '-'}</strong>
                 <span>{t('appeal.inspect.avgResolve')}</span>
               </div>
               <div className="appeal-stat-item">
@@ -172,7 +199,7 @@ export default function AppealAdminInspect() {
               <div className="appeal-sample-result">
                 <p className="muted-text">
                   {t('appeal.inspect.sampleSummary', {
-                    office: sampleResult.office,
+                    office: t(`linkage.office.${sampleResult.bizType ?? sampleBiz}`, { defaultValue: t('common.unknown') }),
                     total: sampleResult.total,
                     count: sampleResult.items.length,
                   })}
@@ -180,7 +207,7 @@ export default function AppealAdminInspect() {
                 <div className="appeal-dist-row">
                   {sampleResult.byStatus.map((s) => (
                     <Tag key={s.status} variant="outlined" size="small" color="brown">
-                      {s.status}: {s.n}
+                      {linkageStatusLabel(t, sampleResult.bizType ?? sampleBiz, '', s.status)}: {s.n}
                     </Tag>
                   ))}
                 </div>
@@ -188,7 +215,7 @@ export default function AppealAdminInspect() {
                   {sampleResult.items.map((s) => (
                     <li key={s.code}>
                       <b>{s.code}</b>
-                      <span className="muted-text"> · {s.title} · {s.status} · {fmtDateTime(s.updatedAt)}</span>
+                      <span className="muted-text"> · {s.title} · {linkageStatusLabel(t, sampleResult.bizType ?? sampleBiz, '', s.status)} · {fmtDateTime(s.updatedAt)}</span>
                     </li>
                   ))}
                 </ul>
@@ -205,9 +232,9 @@ export default function AppealAdminInspect() {
                   <Tag variant="soft" color={r.kind === 'anomaly' ? 'app-red' : r.kind === 'consistency' ? 'app-blue' : 'app-green'}>
                     {t(`appeal.inspect.kind.${r.kind}`)}
                   </Tag>
-                  <strong>{r.title}</strong>
+                  <strong>{reportTitle(r)}</strong>
                   <span className="muted-text"> {r.created_by} · {fmtDateTime(r.created_at)}</span>
-                  <p className="muted-text appeal-report-body">{r.content}</p>
+                  {renderReport(r)}
                 </li>
               ))}
             </ul>

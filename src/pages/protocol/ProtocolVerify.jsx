@@ -26,7 +26,7 @@ export default function ProtocolVerify() {
       const res = await fetch(`/api/protocol/verify?${params.toString()}`);
       const data = await res.json();
       if (!res.ok) {
-        toastError(t(`api.${data.code}`, { defaultValue: data.message || t('api.INTERNAL_ERROR') }));
+        toastError(t(`api.${data.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
         return;
       }
       setResult({ ...data, query: q });

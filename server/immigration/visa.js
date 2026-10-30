@@ -93,6 +93,14 @@ function recordCheck(visaNo, userId, result, detail, source) {
   return ts;
 }
 
+// 历史缓存(旧版本写入)可能只有简体 type,补上 typeTw 供 localeMiddleware 成对切换。
+function withTypeTw(detail) {
+  if (!detail || typeof detail !== 'object' || !detail.type || detail.typeTw) return detail;
+  const row = db.prepare('SELECT name_tw FROM visa_types WHERE name = ? LIMIT 1').get(String(detail.type));
+  if (row?.name_tw) detail.typeTw = row.name_tw;
+  return detail;
+}
+
 // Latest cached check within TTL for the same visa number. Writeback rows are
 // terminal: once the port authority marks a permit used, it stays used even if
 // a demo cache entry exists.
@@ -105,10 +113,10 @@ export function cachedCheck(visaNo) {
     .get(visaNo);
   if (!row) return null;
   if (row.source === 'writeback' && row.result === 'used') {
-    return { result: 'used', detail: JSON.parse(row.detail || '{}'), checkedAt: row.created_at, cached: true };
+    return { result: 'used', detail: withTypeTw(JSON.parse(row.detail || '{}')), checkedAt: row.created_at, cached: true };
   }
   if (Date.now() - Date.parse(row.created_at) > CACHE_TTL_MS) return null;
-  return { result: row.result, detail: JSON.parse(row.detail || '{}'), checkedAt: row.created_at, cached: true };
+  return { result: row.result, detail: withTypeTw(JSON.parse(row.detail || '{}')), checkedAt: row.created_at, cached: true };
 }
 
 export function checkVisa(visaNo, user, { useCache = true } = {}) {

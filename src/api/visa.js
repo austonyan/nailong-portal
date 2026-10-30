@@ -7,6 +7,8 @@ export function uploadVisaMaterial({ applicationId, kind, file, onProgress }) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/visa/materials');
     xhr.setRequestHeader('Authorization', `Bearer ${getAccessToken()}`);
+    // 与 JSON/blob 请求一致:上传也要带语言头,服务端返回的材料/错误文案才跟随界面语言。
+    xhr.setRequestHeader('X-Nailong-Locale', getLocaleHeader()['X-Nailong-Locale']);
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
     };

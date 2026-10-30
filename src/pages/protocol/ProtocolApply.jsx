@@ -95,7 +95,7 @@ export default function ProtocolApply() {
         }
       } catch (err) {
         toastProtocolError(t, err);
-        if (!cancelled) setLoadError(err.message || 'error');
+        if (!cancelled) setLoadError(err.code || 'INTERNAL_ERROR');
       }
     };
     load();
@@ -111,7 +111,7 @@ export default function ProtocolApply() {
     for (const m of materialsRequired) {
       if (seen.has(m.kind)) continue;
       seen.add(m.kind);
-      list.push({ key: m.kind, label: t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind }) });
+      list.push({ key: m.kind, label: t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') }) });
     }
     return list;
   }, [materialsRequired, t]);
@@ -204,7 +204,9 @@ export default function ProtocolApply() {
   if (!event) {
     return (
       <Card type="dashed">
-        <p className="muted-text">{loadError || t('common.loading')}</p>
+        <p className="muted-text">
+          {loadError ? t(`api.${loadError}`, { defaultValue: t('common.loadFailed') }) : t('common.loading')}
+        </p>
         <Button onClick={() => navigate('/protocol/events')}>{t('protocol.action.back')}</Button>
       </Card>
     );
@@ -339,7 +341,7 @@ export default function ProtocolApply() {
               <ul className="protocol-material-req">
                 {materialsRequired.map((m) => (
                   <li key={`${m.kind}-${m.required ? 1 : 0}`}>
-                    <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind })}</span>
+                    <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
                     <Tag color={m.required ? 'warm-peach-pink' : 'brown'} size="small" variant="soft">
                       {m.required ? t('protocol.common.required') : t('protocol.common.optional')}
                     </Tag>
@@ -376,7 +378,7 @@ export default function ProtocolApply() {
               {materials.map((m) => (
                 <li key={m.id}>
                   <Tag size="small" variant="soft" color="app-blue">
-                    {t(`protocol.materialKind.${m.kind}`, { defaultValue: m.kind })}
+                    {t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}
                   </Tag>
                   <span className="protocol-material-name">{m.filename}</span>
                   <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>

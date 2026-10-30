@@ -34,7 +34,7 @@ export default function DocsApplications() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       setItems([]);
     }
   }, [page, status, t]);
@@ -51,7 +51,7 @@ export default function DocsApplications() {
       setDeleteTarget(null);
       load();
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: err.message }));
+      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 

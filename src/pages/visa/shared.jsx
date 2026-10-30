@@ -48,7 +48,7 @@ export function fmtDate(iso) {
 }
 
 export function visaErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
 }
 
 export function toastVisaError(t, err) {

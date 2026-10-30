@@ -155,7 +155,7 @@ function ResidentApplyScreen() {
     try {
       await form.validateFields();
       if (!purposes.length) {
-        resToast('error', t('res.form.purposes'));
+        resToast('error', t('res.form.purposesRequired'));
         return;
       }
       await saveDraft(true);

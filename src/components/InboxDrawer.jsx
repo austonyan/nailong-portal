@@ -36,6 +36,22 @@ const MESSAGE_KEYS = {
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
+// 服务端在 params 里同时给 reason(自由文本)与 reasonCode(枚举码):有码且词条
+// 存在时用词条渲染,缺词条才退回自由文本,避免把英文码直接显示在站内信里。
+const REASON_PREFIX = {
+  visa: 'visa.rejectReason',
+  docs: 'docs.reason',
+  appeal: 'appeal.reason',
+};
+
+function localizedReason(t, office, params) {
+  const prefix = REASON_PREFIX[office];
+  if (!prefix || !params.reasonCode) return params.reason;
+  const key = `${prefix}.${params.reasonCode}`;
+  const text = t(key);
+  return text && text !== key ? text : params.reason;
+}
+
 function messageParams(params) {
   if (!params || typeof params !== 'object') return {};
   const out = {};
@@ -52,6 +68,7 @@ function messageText(t, item) {
   const map = MESSAGE_KEYS[item.office];
   if (!map) return { title: t('inbox.fallbackTitle'), body: t('inbox.fallbackBody') };
   const params = messageParams(item.params);
+  params.reason = localizedReason(t, item.office, params);
   return {
     title: t(`${map.prefix}${item.type}.title`, {
       ...params,
@@ -59,7 +76,7 @@ function messageText(t, item) {
     }),
     body: t(`${map.prefix}${item.type}.body`, {
       ...params,
-      defaultValue: map.fallback ? '' : t('inbox.fallbackBody'),
+      defaultValue: map.fallback ? t(`${map.fallback}.body`) : t('inbox.fallbackBody'),
     }),
   };
 }
@@ -69,7 +86,7 @@ function officeLabel(t, item) {
     return t(`post.source.${item.source}`, { defaultValue: t('nav.postal') });
   }
   const office = OFFICE_NAV.find((entry) => entry.key === item.office);
-  return office ? t(office.labelKey) : item.office;
+  return office ? t(office.labelKey) : t('common.unknown');
 }
 
 export default function InboxDrawer() {

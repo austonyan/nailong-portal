@@ -138,7 +138,7 @@ export default function ProtocolCourtesy() {
                   <strong>{eligibility.valid ? t('protocol.courtesy.eligible') : t('protocol.courtesy.notEligible')}</strong>
                   <p className="muted-text">
                     {t('protocol.courtesy.eligibilityStatus', {
-                      status: t(`protocol.courtesy.status.${eligibility.status}`, { defaultValue: eligibility.status }),
+                      status: t(`protocol.courtesy.status.${eligibility.status}`, { defaultValue: t('common.unknown') }),
                     })}
                     {eligibility.status === 'reserved' ? ` · ${t('protocol.courtesy.reserved')}` : ''}
                   </p>
@@ -195,7 +195,7 @@ export default function ProtocolCourtesy() {
                       <StatusTag status={app.status} />
                     </div>
                     <p className="muted-text">
-                      {app.typeName} · {t(`protocol.basisType.${app.basisType}`)} {app.basisNo}
+                      {app.typeName || t('common.unknown')} · {t(`protocol.basisType.${app.basisType}`)} {app.basisNo}
                     </p>
                     <p className="muted-text">
                       {t('protocol.courtesy.validUntil')}: {fmtDate(app.validUntil)} · {fmtDateTime(app.submittedAt)}

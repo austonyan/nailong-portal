@@ -94,14 +94,14 @@ export default function DipVerify() {
                   {item.kind === 'relation' && (
                     <>
                       <p>{t('dip.apply.entityName')}: {item.entityName}</p>
-                      <p>{t('dip.verify.relationType')}: {t(`dip.relationType.${item.relationType}`, { defaultValue: item.relationType })}</p>
+                      <p>{t('dip.verify.relationType')}: {t(`dip.relationType.${item.relationType}`, { defaultValue: t('common.unknown') })}</p>
                       {item.establishedAt && <p>{t('dip.relation.establishedAt')}: {fmtDate(item.establishedAt)}</p>}
                     </>
                   )}
                   {item.kind === 'identity' && (
                     <>
                       <p>{t('dip.identity.entity')}: {item.entityName}</p>
-                      <p>{t('dip.identity.type')}: {t(`dip.identityType.${item.identityType}`, { defaultValue: item.identityType })}</p>
+                      <p>{t('dip.identity.type')}: {t(`dip.identityType.${item.identityType}`, { defaultValue: t('common.unknown') })}</p>
                       <p>{t('dip.identity.term')}: {fmtDate(item.termStart)} ~ {fmtDate(item.termEnd)}</p>
                     </>
                   )}

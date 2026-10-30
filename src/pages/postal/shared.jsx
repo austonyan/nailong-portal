@@ -75,7 +75,9 @@ export function fmtDate(iso) {
 }
 
 export function postErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: err?.message || t('api.INTERNAL_ERROR') });
+  const key = `api.${err?.code}`;
+  const text = err?.code ? t(key) : '';
+  return text && text !== key ? text : t('api.INTERNAL_ERROR');
 }
 
 // 全站统一提示(库的命令式通知 API 在 React 19 下会抛异常,不能用于关键流程)
@@ -113,5 +115,5 @@ export function messageBody(t, i18n, msg) {
 }
 
 export function sourceLabel(t, source) {
-  return t(`post.source.${source}`, { defaultValue: source });
+  return t(`post.source.${source}`, { defaultValue: t('common.unknown') });
 }

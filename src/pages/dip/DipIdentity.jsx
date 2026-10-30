@@ -14,6 +14,8 @@ import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
+const INACTIVE_REASON_CODES = ['term_ended', 'relation_severed'];
+
 function InfoRow({ label, children }) {
   return (
     <p className="dip-info-row">
@@ -132,7 +134,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
         <StatusTag value={d.status} />
       </div>
       <Card>
-        <InfoRow label={t('dip.identity.type')}>{t(`dip.identityType.${d.identityType}`, { defaultValue: d.identityType })}</InfoRow>
+        <InfoRow label={t('dip.identity.type')}>{t(`dip.identityType.${d.identityType}`, { defaultValue: t('common.unknown') })}</InfoRow>
         <InfoRow label={t('dip.identity.relationNo')}>{d.relationNo || '-'}</InfoRow>
         <InfoRow label={t('dip.identity.entity')}>{d.entityName}</InfoRow>
         <InfoRow label={t('dip.identity.holder')}>{d.nickname}</InfoRow>
@@ -140,7 +142,9 @@ function IdentityDetail({ id, onClose, onChanged }) {
         <InfoRow label={t('dip.identity.term')}>{fmtDate(d.termStart)} ~ {fmtDate(d.termEnd)}</InfoRow>
         {(d.status === 'frozen' || d.status === 'revoked' || d.status === 'expired') && d.inactiveReason && (
           <InfoRow label={t('dip.identity.inactiveReason')}>
-            {t(`dip.inactiveReason.${d.inactiveReason}`, { defaultValue: d.inactiveReason })}
+            {INACTIVE_REASON_CODES.includes(d.inactiveReason)
+              ? t(`dip.inactiveReason.${d.inactiveReason}`)
+              : d.inactiveReason}
           </InfoRow>
         )}
       </Card>
@@ -187,8 +191,8 @@ function IdentityDetail({ id, onClose, onChanged }) {
         <ul className="dip-timeline">
           {(d.events ?? []).map((e, idx) => (
             <li key={idx}>
-              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: e.action })}</span>
-              <span className="muted-text">{e.actor ?? 'system'} · {fmtDateTime(e.created_at)}</span>
+              <span className="dip-timeline-action">{t(`dip.event.${e.action}`, { defaultValue: t('common.unknown') })}</span>
+              <span className="muted-text">{e.actor ?? t('common.system')} · {fmtDateTime(e.created_at)}</span>
               {e.note && <p className="dip-timeline-note">{e.note}</p>}
             </li>
           ))}
@@ -481,7 +485,7 @@ export default function DipIdentity() {
       title: t('dip.identity.type'),
       dataIndex: 'identityType',
       width: 110,
-      render: (v) => t(`dip.identityType.${v}`, { defaultValue: v }),
+      render: (v) => t(`dip.identityType.${v}`, { defaultValue: t('common.unknown') }),
     },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <StatusTag value={v} /> },
     {
@@ -539,7 +543,7 @@ export default function DipIdentity() {
       <IdentityForm key={editing ?? 'new'} catalog={catalog} relations={relations} editing={editing} onSaved={load} />
 
       <Card>
-        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} />
+        <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
 
       <Drawer maskClosable={false} open={openId !== null} title={t('dip.identity.detailTitle')} onClose={() => setOpenId(null)} width={560}>

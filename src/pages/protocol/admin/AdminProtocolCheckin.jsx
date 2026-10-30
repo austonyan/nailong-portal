@@ -83,7 +83,7 @@ export default function AdminProtocolCheckin() {
       title: t('protocol.field.source'),
       dataIndex: 'source',
       width: 100,
-      render: (v) => t(`protocol.checkinSource.${v}`, { defaultValue: v }),
+      render: (v) => t(`protocol.admin.checkinSource.${v}`, { defaultValue: t('common.unknown') }),
     },
   ];
 

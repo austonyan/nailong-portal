@@ -21,7 +21,7 @@ import {
   UsersIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { StatusTag, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
+import { StatusTag, fmtDate, fmtDateTime, fmtMonthDay, fmtTime, toastProtocolError } from './shared.jsx';
 
 const TYPE_ICONS = [CalendarIcon, GiftIcon, ImageIcon, UsersIcon, StarIcon, HomeIcon];
 const SERVICE_ICONS = [SendIcon, MailIcon, CreditCardIcon, UserPlusIcon, StarIcon, SearchIcon];
@@ -139,7 +139,7 @@ export default function ProtocolHome() {
             <Card key={n.id} className="protocol-notice-card">
               <div className="protocol-notice-head">
                 <Tag color={n.level === 'policy' ? 'warm-peach-pink' : n.level === 'event' ? 'app-pink' : 'app-blue'} variant="soft">
-                  {t(`protocol.level.${n.level}`, { defaultValue: n.level })}
+                  {t(`protocol.level.${n.level}`, { defaultValue: t('common.unknown') })}
                 </Tag>
                 <strong>{n.title}</strong>
                 <span className="muted-text protocol-notice-time">{fmtDateTime(n.createdAt)}</span>
@@ -253,8 +253,8 @@ export default function ProtocolHome() {
               onKeyDown={cardKeyDown(() => navigate(`/protocol/events/${ev.eventNo}`))}
             >
               <div className="protocol-upcoming-date">
-                <strong>{fmtDateTime(ev.startsAt).slice(5, 10)}</strong>
-                <span>{fmtDateTime(ev.startsAt).slice(11, 16)}</span>
+                <strong>{fmtMonthDay(ev.startsAt)}</strong>
+                <span>{fmtTime(ev.startsAt)}</span>
               </div>
               <div className="protocol-upcoming-main">
                 <strong>{ev.title}</strong>
