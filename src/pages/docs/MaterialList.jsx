@@ -33,7 +33,7 @@ export default function MaterialList({ materials, type }) {
           <span className="docs-mat-name">{mat.filename}</span>
           <span className="muted-text">{formatBytes(mat.size)}</span>
           {mat.origin === 'supplement' && (
-            <Tag size="small" color="app-orange" variant="soft">
+            <Tag size="small" color="warm-peach-pink" variant="soft">
               {t('docs.apply.supplementOrigin')}
             </Tag>
           )}

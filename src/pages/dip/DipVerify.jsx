@@ -54,7 +54,9 @@ export default function DipVerify() {
       <Card className="dip-verify-card">
         <div className="dip-verify-head">
           <CompassIcon size={24} />
-          <Title size="middle" color="purple">{t('dip.verify.title')}</Title>
+          <h1 className="page-title">
+            <Title size="middle" color="purple">{t('dip.verify.title')}</Title>
+          </h1>
         </div>
         <p className="muted-text">{t('dip.verify.tip')}</p>
 
@@ -79,7 +81,7 @@ export default function DipVerify() {
             {!result.found ? (
               <div className="dip-verify-invalid">
                 <ShieldIcon size={20} />
-                <Tag color="app-red" variant="solid">{t('dip.verify.notFound')}</Tag>
+                <Tag color="app-red" variant="soft">{t('dip.verify.notFound')}</Tag>
               </div>
             ) : (
               <>
@@ -111,7 +113,7 @@ export default function DipVerify() {
                   )}
                   <p className="muted-text">{t('dip.verify.issuedBy')}: {item.issuedBy}</p>
                 </div>
-                <Tag color={item.valid ? 'app-green' : 'app-orange'} variant={item.valid ? 'solid' : 'soft'}>
+                <Tag color={item.valid ? 'app-green' : 'brown'} variant="soft">
                   {item.valid ? t('dip.verify.valid') : t('dip.verify.notValid')}
                 </Tag>
               </>

@@ -1,5 +1,5 @@
 // 帮助中心:报名、邀请函、活动凭证、礼遇与隐私说明,附防诈骗提示。
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Collapse, Title } from 'animal-island-ui';
 import { AlertTriangleIcon, HelpCircleIcon, MailIcon, ShieldIcon } from 'naive-icons';
@@ -8,16 +8,17 @@ const FAQ_KEYS = ['applyTime', 'invitationVisa', 'passUsage', 'waitlist', 'host'
 
 export default function ProtocolHelp() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.help.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.help.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.help.subtitle')}</p>
       </div>
 
-      <Card color="app-yellow" className="protocol-scam-banner">
+      <Card pattern="app-yellow" className="protocol-scam-banner">
         <div className="protocol-scam-inner">
           <AlertTriangleIcon size={22} />
           <div>
@@ -28,7 +29,9 @@ export default function ProtocolHelp() {
       </Card>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-teal">{t('protocol.help.faqTitle')}</Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">{t('protocol.help.faqTitle')}</Title>
+        </h2>
         <div className="protocol-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`protocol.help.faq.${key}.q`)} answer={t(`protocol.help.faq.${key}.a`)} />
@@ -37,21 +40,25 @@ export default function ProtocolHelp() {
       </section>
 
       <div className="protocol-guide-grid">
-        <Card className="protocol-guide-card" hoverable onClick={() => navigate('/protocol/events')}>
-          <HelpCircleIcon size={22} />
-          <h4>{t('protocol.help.browseTitle')}</h4>
-          <p>{t('protocol.help.browseBody')}</p>
-          <Button type="dashed" size="small">{t('protocol.home.browseEvents')}</Button>
-        </Card>
-        <Card className="protocol-guide-card" hoverable onClick={() => navigate('/protocol/messages')}>
-          <MailIcon size={22} />
-          <h4>{t('protocol.help.supportTitle')}</h4>
-          <p>{t('protocol.help.supportBody')}</p>
-          <Button type="dashed" size="small">{t('protocol.help.supportEntry')}</Button>
-        </Card>
+        <Link to="/protocol/events" className="protocol-guide-link">
+          <Card className="protocol-guide-card" hoverable>
+            <HelpCircleIcon size={22} />
+            <h3>{t('protocol.help.browseTitle')}</h3>
+            <p>{t('protocol.help.browseBody')}</p>
+            <Button type="dashed" size="small">{t('protocol.home.browseEvents')}</Button>
+          </Card>
+        </Link>
+        <Link to="/protocol/messages" className="protocol-guide-link">
+          <Card className="protocol-guide-card" hoverable>
+            <MailIcon size={22} />
+            <h3>{t('protocol.help.supportTitle')}</h3>
+            <p>{t('protocol.help.supportBody')}</p>
+            <Button type="dashed" size="small">{t('protocol.help.supportEntry')}</Button>
+          </Card>
+        </Link>
         <Card className="protocol-guide-card">
           <ShieldIcon size={22} />
-          <h4>{t('protocol.help.privacyTitle')}</h4>
+          <h3>{t('protocol.help.privacyTitle')}</h3>
           <p>{t('protocol.help.privacyBody')}</p>
         </Card>
       </div>

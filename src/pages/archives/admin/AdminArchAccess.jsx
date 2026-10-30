@@ -23,7 +23,7 @@ const OFFICE_OPTIONS = [
 const ACTION_TAG = {
   list: { color: 'app-blue', variant: 'soft' },
   detail: { color: 'app-teal', variant: 'soft' },
-  export: { color: 'app-orange', variant: 'soft' },
+  export: { color: 'warm-peach-pink', variant: 'soft' },
 };
 
 export default function AdminArchAccess() {
@@ -78,7 +78,7 @@ export default function AdminArchAccess() {
       dataIndex: 'action',
       width: 100,
       render: (v) => (
-        <Tag color={(ACTION_TAG[v] ?? { color: 'default', variant: 'soft' }).color} variant={(ACTION_TAG[v] ?? { variant: 'soft' }).variant} size="small">
+        <Tag color={(ACTION_TAG[v] ?? { color: 'brown', variant: 'soft' }).color} variant={(ACTION_TAG[v] ?? { variant: 'soft' }).variant} size="small">
           {t(`arch.admin.action.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
@@ -93,9 +93,11 @@ export default function AdminArchAccess() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.admin.access.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.admin.access.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

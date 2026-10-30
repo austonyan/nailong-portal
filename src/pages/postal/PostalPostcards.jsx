@@ -95,11 +95,25 @@ export default function PostalPostcards() {
       ) : (
         <div className="postal-postcard-list">
           {items.map((card) => (
-            <Card key={card.id} hoverable onClick={() => setDetail(card)}>
+            <Card
+              key={card.id}
+              hoverable
+              role="button"
+              tabIndex={0}
+              onClick={() => setDetail(card)}
+              onKeyDown={(e) => {
+                // 卡片内部有「签收/收藏/删除」按钮:只在焦点落在卡片本身时响应 Enter/Space
+                if (e.target !== e.currentTarget) return;
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setDetail(card);
+                }
+              }}
+            >
               <div className="postal-postcard">
                 <div className="postal-postcard-head">
                   <b>{card.templateName}</b>
-                  <Tag color={POSTCARD_STATUS_COLORS[card.status] || 'default'} variant="soft" size="small">
+                  <Tag color={POSTCARD_STATUS_COLORS[card.status] || 'brown'} variant="soft" size="small">
                     {t(`post.postcardStatus.${card.status}`)}
                   </Tag>
                 </div>
@@ -187,16 +201,18 @@ export default function PostalPostcards() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-pink">
-          {t('post.postcards.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-pink">
+            {t('post.postcards.title')}
+          </Title>
+        </h1>
         <Button type="primary" icon={<MailIcon />} onClick={() => navigate('/postal/postcards/new')}>
           {t('post.postcards.write')}
         </Button>
       </div>
 
       <div className="postal-quota">
-        <Tag color="app-yellow" variant="soft">
+        <Tag color="app-blue" variant="soft">
           {t('post.postcards.quota', { used: data?.usedToday ?? 0, limit: data?.dailyLimit ?? 10 })}
         </Tag>
         <span>{t('post.postcards.quotaTip')}</span>
@@ -258,7 +274,7 @@ export default function PostalPostcards() {
           <div className="postal-postcard">
             <div className="postal-postcard-head">
               <b>{detail.templateName}</b>
-              <Tag color={POSTCARD_STATUS_COLORS[detail.status] || 'default'} variant="soft">
+              <Tag color={POSTCARD_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                 {t(`post.postcardStatus.${detail.status}`)}
               </Tag>
             </div>

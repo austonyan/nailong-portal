@@ -156,7 +156,9 @@ export default function AdminProtocolReview() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.reviewTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.reviewTitle')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.admin.reviewSubtitle')}</p>
       </div>
 
@@ -233,12 +235,12 @@ export default function AdminProtocolReview() {
                 {detail.user?.displayName} (@{detail.user?.username})
               </span>
             </div>
-            <h4>{t('protocol.field.event')}</h4>
+            <h2 className="block-heading">{t('protocol.field.event')}</h2>
             <Card>
               <strong>{detail.event.title}</strong>
               <p className="muted-text">{fmtDateTime(detail.event.startsAt)} · {detail.event.venueName}</p>
             </Card>
-            <h4>{t('protocol.admin.formAndIdentity')}</h4>
+            <h2 className="block-heading">{t('protocol.admin.formAndIdentity')}</h2>
             <DescList
               rows={[
                 [t('protocol.field.nickname'), detail.nickname],
@@ -253,7 +255,7 @@ export default function AdminProtocolReview() {
                 [t('protocol.field.submittedAt'), fmtDateTime(detail.submittedAt)],
               ]}
             />
-            <h4>{t('protocol.field.materials')}</h4>
+            <h2 className="block-heading">{t('protocol.field.materials')}</h2>
             <ul className="protocol-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
@@ -267,7 +269,7 @@ export default function AdminProtocolReview() {
               {detail.materials.length === 0 && <li className="muted-text">{t('protocol.apply.noMaterials')}</li>}
             </ul>
             {detail.rejectComment && (
-              <Card color="app-red">
+              <Card pattern="app-red">
                 <strong>{t('protocol.field.rejectReason')}</strong>
                 <p>{detail.rejectComment}</p>
               </Card>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Table, Title } from 'animal-island-ui';
 import { ClockIcon, DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -52,7 +52,7 @@ function PassCodeModal({ passCode, onClose }) {
         <div ref={canvasHostRef} className={`im-pass-qr-wrap${usable ? '' : ' im-pass-qr-disabled'}`}>
           <PassQr value={verifyUrl} />
         </div>
-        {!usable && <Tag color="app-red" variant="soft">{t(`imm.status.${passCode.status}`)}</Tag>}
+        {!usable && <StatusTag value={passCode.status} />}
         <div className="im-pass-meta">
           <p><b>{passCode.codeNo}</b></p>
           <p>{t('imm.mydecl.no')}: {passCode.declarationNo}</p>
@@ -114,9 +114,11 @@ export default function PassCodes() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('imm.pass.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('imm.pass.title')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.pass.empty')} />

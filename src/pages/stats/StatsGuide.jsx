@@ -37,33 +37,37 @@ export default function StatsGuide() {
   return (
     <div className="stat-page">
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('stat.guide.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('stat.guide.title')}
+          </Title>
+        </h1>
         <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(data.asOf) })}</span>
       </div>
       <p className="muted-text">{t('stat.guide.tip')}</p>
 
       <div className="stat-metric-grid">
         <Card className="stat-metric-card">
-          <h4>{t('stat.guide.frequencyTitle')}</h4>
+          <h2 className="block-heading">{t('stat.guide.frequencyTitle')}</h2>
           <p className="stat-metric-desc">{t('stat.guide.frequencyBody')}</p>
         </Card>
         <Card className="stat-metric-card">
-          <h4>{t('stat.guide.privacyTitle')}</h4>
+          <h2 className="block-heading">{t('stat.guide.privacyTitle')}</h2>
           <p className="stat-metric-desc">{t('stat.guide.privacyBody')}</p>
         </Card>
         <Card className="stat-metric-card">
-          <h4>{t('stat.guide.scopeTitle')}</h4>
+          <h2 className="block-heading">{t('stat.guide.scopeTitle')}</h2>
           <p className="stat-metric-desc">{t('stat.guide.scopeBody')}</p>
         </Card>
       </div>
 
       <Divider type="wave-yellow" />
 
-      <Title size="middle" color="app-orange">
-        {t('stat.guide.metricsTitle')}
-      </Title>
+      <h2 className="section-title">
+        <Title size="middle" color="app-orange">
+          {t('stat.guide.metricsTitle')}
+        </Title>
+      </h2>
       <div className="stat-metric-grid">
         {data.items.map((metric) => (
           <Card key={metric.code} className="stat-metric-card">

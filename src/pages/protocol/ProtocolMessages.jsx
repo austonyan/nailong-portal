@@ -122,7 +122,7 @@ export default function ProtocolMessages() {
   const supportTab = (
     <div className="protocol-support-layout">
       <Card className="protocol-form-card">
-        <h4>{t('protocol.messages.supportTitle')}</h4>
+        <h3>{t('protocol.messages.supportTitle')}</h3>
         <p className="muted-text">{t('protocol.messages.supportTip')}</p>
         <label className="protocol-field">
           <span>{t('protocol.field.subject')}</span>
@@ -137,21 +137,21 @@ export default function ProtocolMessages() {
         </Button>
       </Card>
       <Card className="protocol-privacy-card">
-        <h4><ShieldIcon size={18} /> {t('protocol.messages.privacyTitle')}</h4>
+        <h3><ShieldIcon size={18} /> {t('protocol.messages.privacyTitle')}</h3>
         <p className="muted-text">{t('protocol.messages.privacyTip')}</p>
         <Button type="text" size="small" danger onClick={() => setEraseOpen(true)}>
           {t('protocol.messages.eraseData')}
         </Button>
       </Card>
       <Card>
-        <h4>{t('protocol.messages.myTickets')}</h4>
+        <h3>{t('protocol.messages.myTickets')}</h3>
         {tickets.length === 0 && <p className="muted-text">{t('protocol.messages.noTickets')}</p>}
         <ul className="protocol-ticket-list">
           {tickets.map((tk) => (
             <li key={tk.id}>
               <div className="protocol-inline-between">
                 <strong>{tk.subject}</strong>
-                <Tag color={tk.status === 'closed' ? 'app-green' : 'app-yellow'} variant="soft" size="small">
+                <Tag color={tk.status === 'closed' ? 'app-green' : 'app-blue'} variant="soft" size="small">
                   {t(`protocol.messages.ticket_${tk.status}`)}
                 </Tag>
               </div>
@@ -172,7 +172,9 @@ export default function ProtocolMessages() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.messages.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.messages.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.messages.subtitle')}</p>
       </div>
 
@@ -221,7 +223,7 @@ export default function ProtocolMessages() {
         <p>{t('protocol.messages.eraseTip')}</p>
       </Modal>
 
-      <Card color="app-yellow" className="protocol-scam-banner protocol-mt">
+      <Card pattern="app-yellow" className="protocol-scam-banner protocol-mt">
         <div className="protocol-scam-inner">
           <BellIcon size={20} />
           <div>

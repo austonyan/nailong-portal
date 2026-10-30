@@ -68,11 +68,13 @@ export default function DocsVerifyAdmin() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.verify.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.verify.title')}</Title>
+        </h1>
       </div>
 
       {summary?.alerts?.length > 0 && (
-        <Card color="app-orange" className="docs-band-card docs-alert">
+        <Card pattern="app-orange" className="docs-band-card docs-alert">
           <div className="docs-band-head">
             <AlertTriangleIcon size={18} />
             <strong>{t('docs.admin.verify.alertTitle')}</strong>

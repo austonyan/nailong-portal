@@ -96,9 +96,11 @@ export default function ResidentCard() {
   return (
     <div className="res-card-page">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('res.card.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('res.card.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="res-card" data-status={card.status}>
@@ -155,13 +157,13 @@ export default function ResidentCard() {
       </div>
 
       {card.status === 'frozen' && card.freezeReason && (
-        <Card color="app-yellow" className="res-notice-card">
+        <Card pattern="app-yellow" className="res-notice-card">
           <b>{t('res.card.frozenReason')}</b>
           <p>{card.freezeReason}</p>
         </Card>
       )}
       {card.status === 'expired' && (
-        <Card color="app-orange" className="res-notice-card">
+        <Card pattern="app-orange" className="res-notice-card">
           <b>{t('res.card.expiredTip')}</b>
           <Button type="primary" size="small" onClick={() => navigate('/resident/changes?type=renewal')}>
             {t('res.card.renewNow')}
@@ -186,7 +188,7 @@ export default function ResidentCard() {
 
       {resident && (
         <Card className="res-info-card">
-          <h4>{t('res.card.infoTitle')}</h4>
+          <h2>{t('res.card.infoTitle')}</h2>
           <dl className="res-info-list">
             <div>
               <dt>{t('res.form.virtualAddress')}</dt>

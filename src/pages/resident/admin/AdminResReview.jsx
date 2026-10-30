@@ -122,7 +122,7 @@ export default function AdminResReview() {
       dataIndex: 'status',
       width: 130,
       render: (v) => (
-        <Tag color={APPLICATION_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={APPLICATION_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`res.appStatus.${v}`)}
         </Tag>
       ),
@@ -150,7 +150,9 @@ export default function AdminResReview() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.workbench.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.workbench.title')}</Title>
+        </h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}
@@ -220,19 +222,19 @@ export default function AdminResReview() {
         {detail && (
           <div className="res-admin-detail">
             <div className="res-admin-detail-head">
-              <Tag color={APPLICATION_STATUS_COLORS[detail.status]} variant="solid">
+              <Tag color={APPLICATION_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                 {t(`res.appStatus.${detail.status}`)}
               </Tag>
               <span className="muted-text">
                 {detail.displayName} (@{detail.username})
               </span>
               {detail.pastApplications > 1 && (
-                <Tag color="app-orange" variant="soft" size="small">
+                <Tag color="warm-peach-pink" variant="soft" size="small">
                   {t('res.admin.pastApps', { count: detail.pastApplications })}
                 </Tag>
               )}
               {detail.blacklisted && (
-                <Tag color="app-red" variant="solid" size="small">
+                <Tag color="app-red" variant="soft" size="small">
                   {t('res.admin.blacklisted')}
                 </Tag>
               )}
@@ -254,11 +256,11 @@ export default function AdminResReview() {
               ))}
             </dl>
 
-            <h4>{t('res.detail.materialsTitle')}</h4>
+            <h2 className="block-heading">{t('res.detail.materialsTitle')}</h2>
             <ul className="res-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
-                  <Tag size="small" variant="soft" color={m.origin === 'supplement' ? 'app-orange' : 'app-blue'}>
+                  <Tag size="small" variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'}>
                     {t(`res.materialKind.${m.kind}`)}
                   </Tag>
                   <span>{m.filename}</span>
@@ -270,12 +272,12 @@ export default function AdminResReview() {
               {detail.materials.length === 0 && <li className="muted-text">{t('common.empty')}</li>}
             </ul>
 
-            <h4>{t('res.detail.recordsTitle')}</h4>
+            <h2 className="block-heading">{t('res.detail.recordsTitle')}</h2>
             <ul className="res-review-timeline">
               {detail.reviews.map((r) => (
                 <li key={r.id}>
                   <div className="res-review-head">
-                    <Tag variant="soft" color={r.action === 'reject' ? 'app-red' : r.action === 'approve' ? 'app-green' : 'app-yellow'}>
+                    <Tag variant="soft" color={r.action === 'reject' ? 'app-red' : r.action === 'approve' ? 'app-green' : 'warm-peach-pink'}>
                       {t(REVIEW_ACTION_I18N[r.action] || 'res.reviewAction.other')}
                     </Tag>
                     <span>{r.reviewerName}</span>
@@ -289,7 +291,7 @@ export default function AdminResReview() {
 
             {detail.supplementNote && (
               <div className="res-admin-supplement">
-                <h4>{t('res.detail.supplementRequired')}</h4>
+                <h2 className="block-heading">{t('res.detail.supplementRequired')}</h2>
                 <p className="muted-text">
                   {detail.supplementNote} ({fmtDateTime(detail.supplementDeadline)})
                 </p>

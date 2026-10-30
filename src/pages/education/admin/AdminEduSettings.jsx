@@ -8,9 +8,11 @@ export default function AdminEduSettings() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('autoApprove.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('autoApprove.title')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <AutoApproveSettings service="education" />

@@ -15,6 +15,16 @@ import {
 } from './shared.jsx';
 import { toastSuccess } from './shared.jsx';
 
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
+
 export default function ProtocolMyRegistrations() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -113,7 +123,9 @@ export default function ProtocolMyRegistrations() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.my.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.my.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.my.subtitle')}</p>
       </div>
 
@@ -149,15 +161,21 @@ export default function ProtocolMyRegistrations() {
               <span className="muted-text">{fmtDateTime(detail.submittedAt || detail.createdAt)}</span>
             </div>
 
-            <h4>{t('protocol.my.eventInfo')}</h4>
-            <Card hoverable onClick={() => navigate(`/protocol/events/${detail.event.eventNo}`)}>
+            <h2 className="block-heading">{t('protocol.my.eventInfo')}</h2>
+            <Card
+              hoverable
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/protocol/events/${detail.event.eventNo}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/protocol/events/${detail.event.eventNo}`))}
+            >
               <strong>{detail.event.title}</strong>
               <p className="muted-text">
                 {fmtDateTime(detail.event.startsAt)} · {detail.event.venueName}
               </p>
             </Card>
 
-            <h4>{t('protocol.my.formInfo')}</h4>
+            <h2 className="block-heading">{t('protocol.my.formInfo')}</h2>
             <DescList
               rows={[
                 [t('protocol.field.nickname'), detail.nickname],
@@ -173,7 +191,7 @@ export default function ProtocolMyRegistrations() {
 
             {detail.companions.length > 0 && (
               <>
-                <h4>{t('protocol.field.companions')}</h4>
+                <h2 className="block-heading">{t('protocol.field.companions')}</h2>
                 <ul className="protocol-companion-list">
                   {detail.companions.map((c, i) => (
                     <li key={`${c.nickname}-${i}`}>
@@ -186,7 +204,7 @@ export default function ProtocolMyRegistrations() {
               </>
             )}
 
-            <h4>{t('protocol.field.materials')}</h4>
+            <h2 className="block-heading">{t('protocol.field.materials')}</h2>
             <ul className="protocol-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
@@ -201,7 +219,7 @@ export default function ProtocolMyRegistrations() {
             </ul>
 
             {detail.rejectComment && (
-              <Card color="app-red">
+              <Card pattern="app-red">
                 <strong>{t('protocol.field.rejectReason')}</strong>
                 <p>{detail.rejectComment}</p>
               </Card>
@@ -210,8 +228,8 @@ export default function ProtocolMyRegistrations() {
 
             {detail.pass && (
               <>
-                <h4>{t('protocol.my.pass')}</h4>
-                <Card color="app-teal">
+                <h2 className="block-heading">{t('protocol.my.pass')}</h2>
+                <Card pattern="app-teal">
                   <div className="protocol-inline-between">
                     <div>
                       <strong>{detail.pass.passNo}</strong>
@@ -225,7 +243,7 @@ export default function ProtocolMyRegistrations() {
               </>
             )}
 
-            <h4>{t('protocol.my.timeline')}</h4>
+            <h2 className="block-heading">{t('protocol.my.timeline')}</h2>
             <ul className="protocol-timeline">
               {(detail.history || []).map((h) => (
                 <li key={h.id}>

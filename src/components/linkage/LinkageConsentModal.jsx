@@ -55,7 +55,7 @@ export default function LinkageConsentModal({ open, consumer, source, credential
       }
     >
       <div className="linkage-consent-body">
-        <Card color="app-teal" className="linkage-consent-card">
+        <Card pattern="app-teal" className="linkage-consent-card">
           <div className="linkage-consent-identity">
             <Avatar size="large">{displayName.slice(0, 1)}</Avatar>
             <div>

@@ -218,9 +218,9 @@ function VisaApplyScreen() {
   if (submitted) {
     return (
       <div className="visa-form-page">
-        <Card color="app-teal" className="visa-submitted-card">
+        <Card pattern="app-teal" className="visa-submitted-card">
           <CheckCircleIcon size={40} />
-          <h3>{t('visa.form.submittedTitle')}</h3>
+          <h1 className="page-title-card">{t('visa.form.submittedTitle')}</h1>
           <p className="visa-submitted-no">{t('visa.form.submittedNo', { no: submitted.appNo })}</p>
           <p className="muted-text">{t('visa.form.submittedHint', { hours: reviewHours })}</p>
           <div className="visa-guide-actions">
@@ -239,9 +239,11 @@ function VisaApplyScreen() {
 
   return (
     <div className="visa-form-page">
-      <Title size="middle" color="app-teal">
-        {t('visa.form.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('visa.form.title')}
+        </Title>
+      </h1>
       {appNo && (
         <p className="muted-text">
           {t('visa.form.draftNo', { no: appNo })}
@@ -314,9 +316,9 @@ function VisaApplyScreen() {
       </Card>
 
       <Card className="visa-form-card">
-        <h4>
+        <h2>
           <PaperclipIcon size={18} /> {t('visa.form.materialsTitle')}
-        </h4>
+        </h2>
         <p className="muted-text">{t('visa.form.materialsTip')}</p>
         {!appId ? (
           // 草稿号还没回来时不渲染上传入口:内层触发器禁用了也能拖文件,
@@ -327,7 +329,7 @@ function VisaApplyScreen() {
         ) : (
         <div className="visa-materials-section">
           <div className="visa-materials-block">
-            <h5>{t('visa.form.materialAvatar')}</h5>
+            <h3>{t('visa.form.materialAvatar')}</h3>
             <Upload
               accept="image/*,application/pdf"
               maxCount={1}
@@ -349,7 +351,7 @@ function VisaApplyScreen() {
             )}
           </div>
           <div className="visa-materials-block">
-            <h5>{t('visa.form.materialOther')}</h5>
+            <h3>{t('visa.form.materialOther')}</h3>
             <Upload
               drag
               accept="image/*,application/pdf"

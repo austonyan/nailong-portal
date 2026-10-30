@@ -10,11 +10,11 @@ import { fmtDateTime } from '../../../lib/date.js';
 
 const RESULT_COLORS = {
   accepted: 'app-green',
-  used: 'app-blue',
-  expired: 'default',
+  used: 'app-green',
+  expired: 'brown',
   voided: 'app-red',
-  unknown: 'default',
-  port_closed: 'app-orange',
+  unknown: 'brown',
+  port_closed: 'brown',
   visa_blocked: 'app-red',
 };
 
@@ -89,7 +89,7 @@ export default function AdminImVerify() {
 
   const checkColumns = [
     { title: t('imm.pass.codeNo'), dataIndex: 'codeNo', width: 190 },
-    { title: t('imm.admin.verify.resultTitle'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'default'} variant="soft">{t(`imm.admin.verify.result.${v}`, { defaultValue: t('common.unknown') })}</Tag> },
+    { title: t('imm.admin.verify.resultTitle'), dataIndex: 'result', width: 120, render: (v) => <Tag color={RESULT_COLORS[v] ?? 'brown'} variant="soft">{t(`imm.admin.verify.result.${v}`, { defaultValue: t('common.unknown') })}</Tag> },
     { title: t('imm.admin.review.opinion'), dataIndex: 'note', render: (v) => v || '-' },
     { title: t('imm.admin.verify.officer'), dataIndex: 'officer', width: 110, render: (v) => v ?? '-' },
     { title: t('common.createdAt'), dataIndex: 'createdAt', width: 160, render: (v) => fmtDateTime(v) },
@@ -99,9 +99,11 @@ export default function AdminImVerify() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('imm.admin.verify.workbenchTitle')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.admin.verify.workbenchTitle')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

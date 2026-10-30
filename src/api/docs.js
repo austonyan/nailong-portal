@@ -44,9 +44,9 @@ export function isImageMime(mime) {
 
 // 申请/文书状态 → 标签配色
 export const APPLICATION_STATUS_COLORS = {
-  draft: 'default',
-  pending: 'app-yellow',
-  supplementing: 'app-orange',
+  draft: 'brown',
+  pending: 'warm-peach-pink',
+  supplementing: 'warm-peach-pink',
   approved: 'app-green',
   rejected: 'app-red',
   withdrawn: 'brown',
@@ -54,8 +54,8 @@ export const APPLICATION_STATUS_COLORS = {
 
 export const CERT_STATUS_COLORS = {
   valid: 'app-green',
-  used: 'app-blue',
-  expired: 'default',
+  used: 'app-green',
+  expired: 'brown',
   revoked: 'app-red',
 };
 

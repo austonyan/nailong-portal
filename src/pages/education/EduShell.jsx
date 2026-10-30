@@ -73,7 +73,7 @@ export default function EduShell({ permission, children }) {
         }
       >
         <div className="edu-sso-body">
-          <Card color="app-blue" className="edu-sso-card">
+          <Card pattern="app-blue" className="edu-sso-card">
             <div className="edu-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

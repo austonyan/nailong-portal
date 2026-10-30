@@ -119,11 +119,11 @@ export default function AdminUsers() {
       width: 90,
       render: (value) =>
         value === 'active' ? (
-          <Tag color="app-green" variant="solid">
+          <Tag color="app-green" variant="soft">
             {t('common.enabled')}
           </Tag>
         ) : (
-          <Tag color="app-red" variant="soft">
+          <Tag color="brown" variant="soft">
             {t('common.disabled')}
           </Tag>
         ),
@@ -161,7 +161,9 @@ export default function AdminUsers() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('admin.users.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('admin.users.title')}</Title>
+        </h1>
         {can('users:write') && (
           <Button type="primary" icon={<UserPlusIcon />} onClick={openCreate}>
             {t('admin.users.create')}

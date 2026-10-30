@@ -151,7 +151,7 @@ export default function AdminDipConfig() {
           render: (v, r) => (
             <span className="dip-switch-row">
               <Switch checked={!!v} size="small" onChange={(next) => toggleEnabled(kind, r, next)} />
-              <Tag size="small" color={v ? 'app-green' : 'default'} variant="soft">{v ? t('dip.admin.config.open') : t('dip.admin.config.closed')}</Tag>
+              <Tag size="small" color={v ? 'app-green' : 'brown'} variant="soft">{v ? t('dip.admin.config.open') : t('dip.admin.config.closed')}</Tag>
             </span>
           ),
         },
@@ -177,7 +177,9 @@ export default function AdminDipConfig() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.admin.config.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.admin.config.title')}</Title>
+        </h1>
       </div>
 
       <Card>

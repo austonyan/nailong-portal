@@ -125,7 +125,7 @@ export default function AdminPostNotices() {
       dataIndex: 'level',
       width: 90,
       render: (value) => (
-        <Tag color={NOTICE_LEVEL_COLORS[value] || 'default'} variant="soft">
+        <Tag color={NOTICE_LEVEL_COLORS[value] || 'brown'} variant="soft">
           {t(`post.level.${value}`)}
         </Tag>
       ),
@@ -135,7 +135,7 @@ export default function AdminPostNotices() {
       dataIndex: 'status',
       width: 90,
       render: (value) => (
-        <Tag color={NOTICE_STATUS_COLORS[value] || 'default'} variant="soft">
+        <Tag color={NOTICE_STATUS_COLORS[value] || 'brown'} variant="soft">
           {t(`post.admin.noticeStatus.${value}`)}
         </Tag>
       ),
@@ -182,9 +182,11 @@ export default function AdminPostNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-teal">
-          {t('post.admin.notices.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('post.admin.notices.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

@@ -154,7 +154,9 @@ export default function AdminProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.hostsTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.hostsTitle')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.admin.hostsSubtitle')}</p>
       </div>
 
@@ -225,7 +227,7 @@ export default function AdminProtocolHosts() {
                 [t('protocol.field.reviewNote'), detail.reviewNote || '-'],
               ]}
             />
-            <h4>{t('protocol.field.materials')}</h4>
+            <h2 className="block-heading">{t('protocol.field.materials')}</h2>
             <ul className="protocol-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
@@ -239,14 +241,14 @@ export default function AdminProtocolHosts() {
               {detail.materials.length === 0 && <li className="muted-text">{t('protocol.apply.noMaterials')}</li>}
             </ul>
             {detail.rejectComment && (
-              <Card color="app-red">
+              <Card pattern="app-red">
                 <strong>{t('protocol.field.rejectReason')}</strong>
                 <p>{detail.rejectComment}</p>
               </Card>
             )}
             {detail.status === 'certified' && can('evt:manage') && (
               <>
-                <h4>{t('protocol.admin.hostPermissions')}</h4>
+                <h2 className="block-heading">{t('protocol.admin.hostPermissions')}</h2>
                 <div className="protocol-switch-grid">
                   <label>
                     <span>{t('protocol.hosts.canPublish')}</span>

@@ -16,21 +16,21 @@ export const CONTENT_TARGETS = ['entry', 'article'];
 export const REVIEW_ACTIONS = ['approve', 'reject'];
 
 const STATUS_STYLE = {
-  draft: { color: 'default', variant: 'outlined' },
-  pending_review: { color: 'app-yellow', variant: 'soft' },
-  published: { color: 'app-teal', variant: 'solid' },
-  offline: { color: 'default', variant: 'soft' },
+  draft: { color: 'brown', variant: 'soft' },
+  pending_review: { color: 'warm-peach-pink', variant: 'soft' },
+  published: { color: 'app-teal', variant: 'soft' },
+  offline: { color: 'brown', variant: 'soft' },
   active: { color: 'app-green', variant: 'soft' },
-  inactive: { color: 'default', variant: 'outlined' },
+  inactive: { color: 'brown', variant: 'soft' },
   in_progress: { color: 'app-blue', variant: 'soft' },
-  completed: { color: 'app-teal', variant: 'solid' },
+  completed: { color: 'app-green', variant: 'soft' },
   approve: { color: 'app-green', variant: 'soft' },
   reject: { color: 'app-red', variant: 'soft' },
 };
 
 export function StatusTag({ value, prefix = 'edu.status' }) {
   const { t } = useTranslation();
-  const style = STATUS_STYLE[value] ?? { color: 'default', variant: 'soft' };
+  const style = STATUS_STYLE[value] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size="small">
       {t(`${prefix}.${value}`, { defaultValue: t('common.unknown') })}

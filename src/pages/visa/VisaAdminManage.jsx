@@ -6,7 +6,7 @@ import {
 import { PlusIcon, TrashIcon, EditIcon, BanIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
-import { TextArea, toastVisaError } from './shared.jsx';
+import { NOTICE_LEVEL_COLORS, TextArea, toastVisaError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
@@ -276,7 +276,11 @@ function NoticesTab() {
       title: t('visa.admin.noticeLevel'),
       dataIndex: 'level',
       width: 110,
-      render: (v) => <Tag variant="soft">{t(`visa.noticeLevel.${v}`)}</Tag>,
+      render: (v) => (
+        <Tag variant="soft" color={NOTICE_LEVEL_COLORS[v] || 'brown'}>
+          {t(`visa.noticeLevel.${v}`)}
+        </Tag>
+      ),
     },
     {
       title: t('common.status'),
@@ -511,7 +515,9 @@ export default function VisaAdminManage() {
   const { t } = useTranslation();
   return (
     <div>
-      <Title size="middle">{t('visa.admin.manage.title')}</Title>
+      <h1 className="page-title">
+        <Title size="middle">{t('visa.admin.manage.title')}</Title>
+      </h1>
       <Tabs
         items={[
           { key: 'types', label: t('visa.admin.manage.types'), children: <TypesTab /> },

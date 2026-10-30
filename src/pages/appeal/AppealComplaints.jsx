@@ -7,7 +7,7 @@ import {
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
-import { TextArea, COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { TextArea, COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AppealComplaints() {
@@ -113,7 +113,9 @@ export default function AppealComplaints() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.complaint.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.complaint.title')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Button type="primary" icon={<PlusIcon />} onClick={() => setCreateOpen(true)}>
             {t('appeal.complaint.create')}
@@ -133,16 +135,24 @@ export default function AppealComplaints() {
       )}
 
       {(items ?? []).map((c) => (
-        <Card key={c.id} hoverable className="appeal-item-card" onClick={() => openDetail(c)}>
+        <Card
+          key={c.id}
+          hoverable
+          className="appeal-item-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => openDetail(c)}
+          onKeyDown={(e) => activateByKey(e, () => openDetail(c))}
+        >
           <div className="appeal-item-head">
             <strong>{c.code}</strong>
             <Tag variant="soft" color={c.kind === 'complaint' ? 'app-red' : 'app-teal'}>
               {t(`appeal.complaintKind.${c.kind}`)}
             </Tag>
-            <Tag color={COMPLAINT_STATUS_COLORS[c.status] || 'default'} variant="soft">
+            <Tag color={COMPLAINT_STATUS_COLORS[c.status] || 'brown'} variant="soft">
               {t(`appeal.complaintStatus.${c.status}`)}
             </Tag>
-            {c.anonymous && <Tag variant="outlined">{t('appeal.complaint.anonymousTag')}</Tag>}
+            {c.anonymous && <Tag variant="outlined" color="brown">{t('appeal.complaint.anonymousTag')}</Tag>}
           </div>
           <p className="muted-text">
             {t(`appeal.complaintCategory.${c.category}`)} · {t('appeal.my.submittedAt', { time: fmtDateTime(c.submittedAt || c.createdAt) })}
@@ -218,13 +228,13 @@ export default function AppealComplaints() {
               <div>
                 <dt>{t('common.status')}</dt>
                 <dd>
-                  <Tag color={COMPLAINT_STATUS_COLORS[detail.status] || 'default'} variant="soft">
+                  <Tag color={COMPLAINT_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                     {t(`appeal.complaintStatus.${detail.status}`)}
                   </Tag>
                   <Tag variant="soft" color={detail.kind === 'complaint' ? 'app-red' : 'app-teal'}>
                     {t(`appeal.complaintKind.${detail.kind}`)}
                   </Tag>
-                  <Tag variant="outlined">{t(`appeal.complaintCategory.${detail.category}`)}</Tag>
+                  <Tag variant="outlined" color="brown">{t(`appeal.complaintCategory.${detail.category}`)}</Tag>
                 </dd>
               </div>
               <div>

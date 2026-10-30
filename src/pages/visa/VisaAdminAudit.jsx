@@ -78,7 +78,7 @@ export default function VisaAdminAudit() {
       dataIndex: 'action',
       width: 220,
       render: (v) => (
-        <Tag variant="soft" color={AUDIT_ACTION_COLORS[v] || 'default'}>
+        <Tag variant="soft" color={AUDIT_ACTION_COLORS[v] || 'brown'}>
           {t(`visa.admin.audit.action.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
@@ -92,7 +92,9 @@ export default function VisaAdminAudit() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('visa.admin.audit.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.admin.audit.title')}</Title>
+        </h1>
         <Input
           size="middle"
           allowClear

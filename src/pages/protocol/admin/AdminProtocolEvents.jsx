@@ -319,7 +319,9 @@ export default function AdminProtocolEvents() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.eventsTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.eventsTitle')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openNew}>
           {t('protocol.admin.createEvent')}
         </Button>
@@ -480,7 +482,7 @@ export default function AdminProtocolEvents() {
             <Input value={form.venueNoteTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, venueNoteTw: e.target.value }))} />
           </label>
 
-          <h4>{t('protocol.field.schedule')}</h4>
+          <h2 className="block-heading">{t('protocol.field.schedule')}</h2>
           {form.schedule.map((row, i) => (
             <div key={i} className="protocol-schedule-edit">
               <Input value={row.time} onChange={(e) => setForm((p) => ({ ...p, schedule: p.schedule.map((s, idx) => (idx === i ? { ...s, time: e.target.value } : s)) }))} placeholder={t('protocol.admin.scheduleTime')} />
@@ -510,7 +512,7 @@ export default function AdminProtocolEvents() {
             <TextArea rows={2} value={form.noticeTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, noticeTw: e.target.value }))} />
           </label>
 
-          <h4>{t('protocol.admin.materialsConfig')}</h4>
+          <h2 className="block-heading">{t('protocol.admin.materialsConfig')}</h2>
           <Checkbox
             options={MATERIAL_KINDS.map((kind) => ({ label: t(`protocol.materialKind.${kind}`), value: kind }))}
             value={form.requiredMaterials}
@@ -589,7 +591,7 @@ export default function AdminProtocolEvents() {
       >
         <div className="protocol-notice-admin">
           <Card>
-            <h4>{t('protocol.admin.addNotice')}</h4>
+            <h2 className="block-heading">{t('protocol.admin.addNotice')}</h2>
             <label className="protocol-field">
               <span>{t('protocol.field.title')}</span>
               <Input value={noticeForm.title} onChange={(e) => setNoticeForm((p) => ({ ...p, title: e.target.value }))} />
@@ -615,7 +617,7 @@ export default function AdminProtocolEvents() {
               <li key={n.id}>
                 <div className="protocol-inline-between">
                   <strong>{n.title}</strong>
-                  <Tag size="small" color={n.level === 'change' ? 'app-orange' : n.level === 'cancel' ? 'app-red' : 'app-blue'} variant="soft">
+                  <Tag size="small" color={n.level === 'change' ? 'warm-peach-pink' : n.level === 'cancel' ? 'app-red' : 'app-blue'} variant="soft">
                     {t(`protocol.level.${n.level}`)}
                   </Tag>
                 </div>

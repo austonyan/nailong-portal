@@ -39,7 +39,9 @@ export default function StatsHome() {
   return (
     <div className="stat-page">
       <Background type="sprinkles" className="stat-hero">
-        <Title size="large">{t('stat.home.heroTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="large">{t('stat.home.heroTitle')}</Title>
+        </h1>
         <Typewriter speed={30}>
           <p className="stat-hero-sub">{t('stat.home.heroSub')}</p>
         </Typewriter>
@@ -55,9 +57,11 @@ export default function StatsHome() {
 
       <section className="stat-section">
         <div className="page-header">
-          <Title size="middle" color="app-teal">
-            {t('stat.home.metricsTitle')}
-          </Title>
+          <h2 className="section-title">
+            <Title size="middle" color="app-teal">
+              {t('stat.home.metricsTitle')}
+            </Title>
+          </h2>
           <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(home.asOf) })}</span>
         </div>
         <p className="muted-text">{t('stat.home.metricsTip')}</p>
@@ -82,9 +86,11 @@ export default function StatsHome() {
       <Divider type="wave-yellow" />
 
       <section className="stat-section">
-        <Title size="middle" color="app-blue">
-          {t('stat.home.latestTitle')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-blue">
+            {t('stat.home.latestTitle')}
+          </Title>
+        </h2>
         <Card className="stat-report-hero">
           {home.my.latest ? (
             <>

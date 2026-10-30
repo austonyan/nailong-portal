@@ -89,7 +89,7 @@ export default function LinkageField({
               {picked.name && <span className="linkage-selected-code">{picked.code}</span>}
             </div>
             <div className="linkage-selected-tags">
-              <Tag size="small" color={picked.valid ? 'app-green' : 'app-orange'} variant="soft">
+              <Tag size="small" color={picked.valid ? 'app-green' : 'brown'} variant="soft">
                 {linkageStatusLabel(t, source, picked.kind, picked.status)}
               </Tag>
               <Tag size="small" color="app-teal" variant="soft">
@@ -177,7 +177,7 @@ export default function LinkageField({
                       {t('linkage.verify.notOwned')}
                     </Tag>
                   ) : (
-                    <Tag size="small" color="app-orange" variant="soft">
+                    <Tag size="small" color="brown" variant="soft">
                       {t('linkage.verify.notFound')}
                     </Tag>
                   )}

@@ -25,12 +25,14 @@ export default function ArchHelp() {
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.help.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.help.title')}
+          </Title>
+        </h1>
       </div>
 
-      <Card color="app-yellow">
+      <Card pattern="app-yellow">
         <b>{t('arch.help.introTitle')}</b>
         <p>{t('arch.help.intro')}</p>
         <div className="arch-tag-row">
@@ -47,9 +49,11 @@ export default function ArchHelp() {
       </Card>
 
       <section>
-        <Title size="middle" color="brown">
-          {t('arch.help.guides')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="brown">
+            {t('arch.help.guides')}
+          </Title>
+        </h2>
         <div className="arch-guide-list">
           {(guides ?? []).map((guide) => (
             <Collapse key={guide.code} question={guide.title} answer={guide.body} />
@@ -63,9 +67,11 @@ export default function ArchHelp() {
       </section>
 
       <section>
-        <Title size="middle" color="brown">
-          {t('arch.help.faq')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="brown">
+            {t('arch.help.faq')}
+          </Title>
+        </h2>
         <div className="arch-guide-list">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`arch.help.${key}.q`)} answer={t(`arch.help.${key}.a`)} />

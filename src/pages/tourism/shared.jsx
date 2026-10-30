@@ -21,10 +21,10 @@ import { toast } from '../../components/toast.js';
 export const ATTRACTION_TYPES = ['landmark', 'nature', 'culture', 'food'];
 
 export const ATTRACTION_TYPE_COLORS = {
-  landmark: 'app-orange',
+  landmark: 'app-teal',
   nature: 'app-green',
   culture: 'purple',
-  food: 'app-yellow',
+  food: 'app-pink',
 };
 
 const ATTRACTION_ICONS = {
@@ -38,15 +38,15 @@ export const OPEN_STATES = ['open', 'limited', 'closed'];
 
 export const OPEN_STATE_COLORS = {
   open: 'app-green',
-  limited: 'app-yellow',
-  closed: 'app-red',
+  limited: 'warm-peach-pink',
+  closed: 'brown',
 };
 
 export const ARTICLE_TYPES = ['festival', 'folk', 'world'];
 
 export const ARTICLE_TYPE_COLORS = {
   festival: 'app-pink',
-  folk: 'app-yellow',
+  folk: 'purple',
   world: 'app-teal',
 };
 

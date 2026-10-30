@@ -50,16 +50,16 @@ export function TextArea({ rows = 4, className = '', ...rest }) {
 }
 
 const REQUEST_STATUS_TAG = {
-  pending: { color: 'app-yellow', variant: 'soft' },
-  reviewing: { color: 'app-blue', variant: 'soft' },
-  executing: { color: 'app-orange', variant: 'soft' },
-  completed: { color: 'app-green', variant: 'solid' },
+  pending: { color: 'warm-peach-pink', variant: 'soft' },
+  reviewing: { color: 'app-teal', variant: 'soft' },
+  executing: { color: 'app-blue', variant: 'soft' },
+  completed: { color: 'app-green', variant: 'soft' },
   rejected: { color: 'app-red', variant: 'soft' },
 };
 
 export function RequestStatusTag({ value }) {
   const { t } = useTranslation();
-  const style = REQUEST_STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
+  const style = REQUEST_STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant}>
       {t(`arch.status.${value}`, { defaultValue: t('common.unknown') })}
@@ -68,28 +68,28 @@ export function RequestStatusTag({ value }) {
 }
 
 const RECORD_STATUS_TAG = {
-  draft: { color: 'default', variant: 'outlined' },
-  pending: { color: 'app-yellow', variant: 'soft' },
-  pending_review: { color: 'app-yellow', variant: 'soft' },
-  supplement: { color: 'app-orange', variant: 'soft' },
-  supplement_required: { color: 'app-orange', variant: 'soft' },
+  draft: { color: 'brown', variant: 'soft' },
+  pending: { color: 'warm-peach-pink', variant: 'soft' },
+  pending_review: { color: 'warm-peach-pink', variant: 'soft' },
+  supplement: { color: 'warm-peach-pink', variant: 'soft' },
+  supplement_required: { color: 'warm-peach-pink', variant: 'soft' },
   approved: { color: 'app-green', variant: 'soft' },
-  issued: { color: 'app-green', variant: 'soft' },
-  valid: { color: 'app-green', variant: 'solid' },
+  issued: { color: 'app-teal', variant: 'soft' },
+  valid: { color: 'app-green', variant: 'soft' },
   rejected: { color: 'app-red', variant: 'soft' },
   invalid: { color: 'app-red', variant: 'soft' },
-  withdrawn: { color: 'default', variant: 'soft' },
-  closed: { color: 'default', variant: 'soft' },
-  used: { color: 'app-blue', variant: 'soft' },
-  expired: { color: 'default', variant: 'soft' },
-  voided: { color: 'app-red', variant: 'dashed' },
-  entered: { color: 'app-teal', variant: 'solid' },
+  withdrawn: { color: 'brown', variant: 'soft' },
+  closed: { color: 'brown', variant: 'soft' },
+  used: { color: 'app-green', variant: 'soft' },
+  expired: { color: 'brown', variant: 'soft' },
+  voided: { color: 'app-red', variant: 'soft' },
+  entered: { color: 'app-teal', variant: 'soft' },
   exited: { color: 'app-blue', variant: 'soft' },
 };
 
 export function RecordStatusTag({ value }) {
   const { t } = useTranslation();
-  const style = RECORD_STATUS_TAG[value] ?? { color: 'default', variant: 'soft' };
+  const style = RECORD_STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size="small">
       {t(`arch.recStatus.${value}`, { defaultValue: t('common.unknown') })}
@@ -99,12 +99,12 @@ export function RecordStatusTag({ value }) {
 
 const OFFICE_TAG = {
   visa: { color: 'app-teal', variant: 'soft' },
-  immigration: { color: 'app-orange', variant: 'soft' },
+  immigration: { color: 'purple', variant: 'soft' },
 };
 
 export function OfficeTag({ office }) {
   const { t } = useTranslation();
-  const style = OFFICE_TAG[office] ?? { color: 'default', variant: 'soft' };
+  const style = OFFICE_TAG[office] ?? { color: 'brown', variant: 'soft' };
   return (
     <Tag color={style.color} variant={style.variant} size="small">
       {t(`arch.office.${office}`, { defaultValue: t('common.unknown') })}

@@ -209,7 +209,7 @@ export default function PostalMessages() {
                 <div className="postal-msg-head">
                   <div className="postal-msg-actions">
                     <Tag
-                      color={isSelected ? 'app-teal' : 'default'}
+                      color={isSelected ? 'app-teal' : 'brown'}
                       variant="soft"
                       size="small"
                       onClick={() => toggleSelect(msg.id)}
@@ -226,7 +226,7 @@ export default function PostalMessages() {
                 <p className="postal-msg-body">{messageBody(t, i18n, msg)}</p>
                 <div className="postal-msg-actions">
                   {!msg.read && (
-                    <Tag color="app-yellow" variant="soft" size="small">
+                    <Tag color="warm-peach-pink" variant="soft" size="small">
                       {t('post.messages.unreadTag')}
                     </Tag>
                   )}
@@ -252,10 +252,12 @@ export default function PostalMessages() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-blue">
-          {t('post.messages.title')}
-        </Title>
-        <Tag color="app-yellow" variant="soft">
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('post.messages.title')}
+          </Title>
+        </h1>
+        <Tag color="warm-peach-pink" variant="soft">
           {t('post.messages.unread', { count: data?.unread ?? 0 })}
         </Tag>
       </div>

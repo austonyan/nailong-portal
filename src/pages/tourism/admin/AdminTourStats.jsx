@@ -44,9 +44,11 @@ export default function AdminTourStats() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">
-          {t('tour.admin.stats.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">
+            {t('tour.admin.stats.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="tour-stats-grid">
@@ -110,7 +112,7 @@ export default function AdminTourStats() {
       <Card className="tour-section">
         <div className="tour-section-head">
           <Title size="small">{t('tour.admin.stats.topAttractions')}</Title>
-          <Tag size="small" color="app-orange" variant="soft">
+          <Tag size="small" color="app-teal" variant="soft">
             <TrophyIcon size={12} /> {t('tour.admin.stats.top5')}
           </Tag>
         </div>

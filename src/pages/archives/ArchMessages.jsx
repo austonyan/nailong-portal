@@ -8,8 +8,8 @@ import { ArchNav, fmtDateTime, toastArchError } from './shared.jsx';
 
 const MESSAGE_COLORS = {
   submitted: 'app-blue',
-  reviewing: 'app-yellow',
-  executing: 'app-orange',
+  reviewing: 'app-teal',
+  executing: 'app-blue',
   completed: 'app-green',
   rejected: 'app-red',
 };
@@ -61,13 +61,22 @@ export default function ArchMessages() {
     return params;
   };
 
+  const cardKeyDown = (action) => (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+  };
+
   return (
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.messages.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.messages.title')}
+          </Title>
+        </h1>
         <div className="table-actions">
           <Button type="primary" icon={<InboxIcon />} disabled={!unread} onClick={markAll}>
             {t('arch.messages.markAll')}
@@ -86,10 +95,13 @@ export default function ArchMessages() {
             key={msg.id}
             className={`arch-msg-card ${msg.read ? '' : 'unread'}`}
             hoverable
+            role="button"
+            tabIndex={0}
             onClick={() => markRead(msg)}
+            onKeyDown={cardKeyDown(() => markRead(msg))}
           >
             <div className="arch-msg-head">
-              <Tag color={MESSAGE_COLORS[msg.type] || 'default'} variant="soft" size="small">
+              <Tag color={MESSAGE_COLORS[msg.type] || 'brown'} variant="soft" size="small">
                 <MailIcon size={12} /> {t(`arch.msgType.${msg.type}`)}
               </Tag>
               <strong>{t(`arch.msg.${msg.type}.title`, formatParams(msg))}</strong>

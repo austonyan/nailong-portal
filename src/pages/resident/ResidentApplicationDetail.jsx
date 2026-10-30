@@ -121,9 +121,11 @@ export default function ResidentApplicationDetail() {
   return (
     <div className="res-app-detail">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {app.appNo}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {app.appNo}
+          </Title>
+        </h1>
         <StatusTag value={app.status} map={APPLICATION_STATUS_COLORS} i18nPrefix="res.appStatus" />
       </div>
       <p className="muted-text">
@@ -131,7 +133,7 @@ export default function ResidentApplicationDetail() {
       </p>
 
       {app.status === 'supplement_required' && (
-        <Card color="app-orange" className="res-supplement-notice">
+        <Card pattern="app-orange" className="res-supplement-notice">
           <div className="res-supplement-head">
             <AlertTriangleIcon size={20} />
             <b>{t('res.detail.supplementRequired')}</b>
@@ -145,7 +147,7 @@ export default function ResidentApplicationDetail() {
       )}
 
       {app.status === 'rejected' && (
-        <Card color="app-red" className="res-reject-notice">
+        <Card pattern="app-red" className="res-reject-notice">
           <b>{t('res.detail.rejectedTitle')}</b>
           <p>
             {t('res.detail.rejectReason')}: {t(`res.rejectReason.${app.rejectCode || 'other'}`)}
@@ -155,7 +157,7 @@ export default function ResidentApplicationDetail() {
       )}
 
       <Card className="res-info-card">
-        <h4>{t('res.detail.infoTitle')}</h4>
+        <h2>{t('res.detail.infoTitle')}</h2>
         <dl className="res-info-list">
           <div>
             <dt>{t('res.form.nickname')}</dt>
@@ -191,16 +193,16 @@ export default function ResidentApplicationDetail() {
       </Card>
 
       <Card className="res-info-card">
-        <h4>
+        <h2>
           <PaperclipIcon size={18} /> {t('res.detail.materialsTitle')}
-        </h4>
+        </h2>
         {app.materials.length === 0 ? (
           <p className="muted-text">{t('common.empty')}</p>
         ) : (
           <div className="res-materials-section">
             {app.materials.map((m) => (
               <div key={m.id} className="res-material-row">
-                <Tag variant="soft" color={m.origin === 'supplement' ? 'app-orange' : 'app-blue'}>
+                <Tag variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'}>
                   {t(`res.materialKind.${m.kind}`)}
                   {m.origin === 'supplement' ? ` · ${t('res.materialOrigin.supplement')}` : ''}
                 </Tag>
@@ -213,7 +215,7 @@ export default function ResidentApplicationDetail() {
       </Card>
 
       <Card className="res-info-card">
-        <h4>{t('res.detail.recordsTitle')}</h4>
+        <h2>{t('res.detail.recordsTitle')}</h2>
         {app.reviews.length === 0 ? (
           <p className="muted-text">{t('res.detail.noRecords')}</p>
         ) : (
@@ -221,7 +223,7 @@ export default function ResidentApplicationDetail() {
             {app.reviews.map((r) => (
               <div key={r.id} className="res-review-item">
                 <div className="res-review-head">
-                  <Tag color={r.action === 'approve' ? 'app-green' : r.action === 'reject' ? 'app-red' : 'app-orange'} variant="soft">
+                  <Tag color={r.action === 'approve' ? 'app-green' : r.action === 'reject' ? 'app-red' : 'warm-peach-pink'} variant="soft">
                     {t(REVIEW_ACTION_I18N[r.action] || 'res.reviewAction.other')}
                   </Tag>
                   <span className="muted-text">
@@ -280,7 +282,7 @@ export default function ResidentApplicationDetail() {
           </Upload>
           {supplementMaterials.map((m) => (
             <div key={m.id} className="res-material-row">
-              <Tag variant="soft" color="app-orange">
+              <Tag variant="soft" color="warm-peach-pink">
                 {t('res.materialOrigin.supplement')}
               </Tag>
               <span className="res-material-name">{m.filename}</span>

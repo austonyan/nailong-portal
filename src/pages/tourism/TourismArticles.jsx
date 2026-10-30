@@ -38,12 +38,21 @@ export default function TourismArticles() {
     ...ARTICLE_TYPES.map((value) => ({ key: value, label: t(`tour.articleType.${value}`) })),
   ];
 
+  const cardKeyDown = (action) => (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+  };
+
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('tour.articles.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('tour.articles.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('tour.articles.tip')}</p>
 
@@ -66,11 +75,14 @@ export default function TourismArticles() {
           <Card
             key={article.id}
             hoverable
+            role="button"
+            tabIndex={0}
             className="tour-article-card"
             onClick={() => navigate(`/tourism/articles/${article.id}`)}
+            onKeyDown={cardKeyDown(() => navigate(`/tourism/articles/${article.id}`))}
           >
             <div className="tour-ann-head">
-              <Tag size="small" color={ARTICLE_TYPE_COLORS[article.type] || 'default'} variant="soft">
+              <Tag size="small" color={ARTICLE_TYPE_COLORS[article.type] || 'brown'} variant="soft">
                 {t(`tour.articleType.${article.type}`)}
               </Tag>
               <b>{article.title}</b>

@@ -53,9 +53,11 @@ export default function EduEntries() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-blue">
-          {t('edu.entries.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('edu.entries.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('edu.entries.tip')}</p>
 
@@ -96,9 +98,9 @@ export default function EduEntries() {
       <div className="edu-grid">
         {(items ?? []).map((item) => (
           <Card key={item.id} className="edu-card" hoverable>
-            <h3 className="edu-card-title">
+            <h2 className="edu-card-title">
               <Link to={`/education/entries/${item.id}`}>{item.title}</Link>
-            </h3>
+            </h2>
             <p className="edu-card-summary">{item.summary}</p>
             <div className="edu-meta">
               <Tag size="small" color="app-blue" variant="soft">

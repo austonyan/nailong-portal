@@ -58,7 +58,9 @@ export default function VisaPermits() {
   return (
     <div className="visa-permits-page">
       <div className="page-header">
-        <Title size="middle">{t('visa.permit.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.permit.title')}</Title>
+        </h1>
       </div>
 
       <Tabs
@@ -108,7 +110,7 @@ function EvisaCard({ permit }) {
           <div className="evisa-issuer">{t('visa.officeName')}</div>
           <div className="evisa-kind">{t('visa.permit.electronic')}</div>
         </div>
-        <Tag color={PERMIT_STATUS_COLORS[permit.status] || 'default'} variant="solid" size="large">
+        <Tag color={PERMIT_STATUS_COLORS[permit.status] || 'brown'} variant="soft" size="large">
           {t(`visa.permitStatus.${permit.status}`)}
         </Tag>
       </div>

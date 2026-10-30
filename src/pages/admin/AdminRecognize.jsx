@@ -21,7 +21,7 @@ const EMPTY_FORM = {
   sortOrder: 0,
 };
 
-const EFFECT_COLOR = { simplify: 'app-yellow', waive: 'app-green', priority: 'app-teal' };
+const EFFECT_COLOR = { simplify: 'purple', waive: 'app-green', priority: 'app-teal' };
 
 export default function AdminRecognize() {
   const { t } = useTranslation();
@@ -135,7 +135,7 @@ export default function AdminRecognize() {
       title: t('admin.recognize.effect'),
       dataIndex: 'effect',
       render: (v) => (
-        <Tag color={EFFECT_COLOR[v] || 'default'} variant="soft">
+        <Tag color={EFFECT_COLOR[v] || 'brown'} variant="soft">
           {t(`admin.recognize.effects.${v}`)}
         </Tag>
       ),
@@ -165,7 +165,9 @@ export default function AdminRecognize() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('admin.recognize.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('admin.recognize.title')}</Title>
+        </h1>
         <p className="muted-text">{t('admin.recognize.subtitle')}</p>
         <div className="table-actions">
           <Button icon={<RefreshIcon />} onClick={load} loading={loading}>

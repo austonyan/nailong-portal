@@ -130,9 +130,11 @@ export default function AdminArchRequests() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.admin.requests.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.admin.requests.title')}
+          </Title>
+        </h1>
         <Select value={status} onChange={(v) => { setStatus(v); setPage(1); }} options={STATUS_OPTIONS.map((o) => ({ key: o.key, label: t(o.labelKey) }))} />
       </div>
 

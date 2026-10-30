@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Button, Card, Tag, Title } from 'animal-island-ui';
 import { RefreshIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -11,8 +11,8 @@ import { fmtDate } from '../../lib/date.js';
 
 const STATUS_COLOR = {
   unused: 'app-green',
-  used: 'app-blue',
-  expired: 'default',
+  used: 'app-green',
+  expired: 'brown',
   voided: 'app-red',
 };
 
@@ -58,18 +58,20 @@ export default function ImmigrationVerify() {
       <Card className="im-verify-card">
         <div className="im-verify-head">
           <ShieldIcon size={24} />
-          <h2>{t('imm.verify.title')}</h2>
+          <h1 className="page-title">
+            <Title size="middle">{t('imm.verify.title')}</Title>
+          </h1>
         </div>
         {state === 'idle' && <p className="muted-text">{t('imm.verify.noToken')}</p>}
         {state === 'loading' && <p className="muted-text">{t('common.loading')}</p>}
         {state === 'done' && result?.status === 'invalid' && (
           <div className="im-verify-result">
-            <Tag color="app-red" variant="solid">{t('imm.verify.invalid')}</Tag>
+            <Tag color="app-red" variant="soft">{t('imm.verify.invalid')}</Tag>
           </div>
         )}
         {state === 'done' && result?.status === 'error' && (
           <div className="im-verify-result">
-            <Tag color="app-orange" variant="soft">{t('imm.verify.failed')}</Tag>
+            <Tag color="app-red" variant="soft">{t('imm.verify.failed')}</Tag>
             <p className="muted-text">{t('imm.verify.failedTip')}</p>
             {/* 重试期间错误分支整块换成加载文案,按钮随之卸载,点不了第二下 */}
             <Button type="default" icon={<RefreshIcon />} onClick={retry}>
@@ -80,7 +82,7 @@ export default function ImmigrationVerify() {
         {resultIsPass && (
           <div className="im-verify-result">
             <p className="im-verify-code">{result.codeNo}</p>
-            <Tag color={STATUS_COLOR[result.status] ?? 'default'} variant="soft">
+            <Tag color={STATUS_COLOR[result.status] ?? 'brown'} variant="soft">
               {t(`imm.status.${result.status}`, { defaultValue: t('common.unknown') })}
             </Tag>
             <p className="muted-text">

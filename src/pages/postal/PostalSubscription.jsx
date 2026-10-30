@@ -59,11 +59,13 @@ export default function PostalSubscription() {
 
   return (
     <div className="postal-section">
-      <Title size="middle" color="app-teal">
-        {t('post.subscription.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('post.subscription.title')}
+        </Title>
+      </h1>
 
-      <Card color="app-yellow">
+      <Card pattern="app-yellow">
         <div className="postal-postcard-head">
           <div>
             <b>{t('post.subscription.noticeTitle')}</b>

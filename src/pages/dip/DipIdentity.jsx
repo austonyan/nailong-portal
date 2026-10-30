@@ -150,7 +150,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
       </Card>
 
       {d.status === 'rejected' && (
-        <Card color="app-red" className="dip-reject-card">
+        <Card pattern="app-red" className="dip-reject-card">
           <b>{t('dip.identity.rejected')}</b>
           <p>{t(`dip.rejectReason.${d.rejectCode ?? 'other'}`)}</p>
           {d.rejectComment && <p className="muted-text">{d.rejectComment}</p>}
@@ -158,7 +158,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
       )}
 
       {d.status === 'supplement_required' && (
-        <Card color="app-orange">
+        <Card pattern="app-orange">
           <b>{t('dip.relation.supplementRequired')}</b>
           <p>{d.supplementNote}</p>
           {d.supplementDeadline && <p className="muted-text">{t('dip.relation.supplementDeadline', { date: fmtDate(d.supplementDeadline) })}</p>}
@@ -312,7 +312,7 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
     <Card>
       <Title size="small" color="purple">{t('dip.identity.applyTitle')}</Title>
       {established.length === 0 && !editing && (
-        <Card color="app-yellow" className="dip-hint-card">
+        <Card pattern="app-yellow" className="dip-hint-card">
           <p>
             {t('dip.identity.needRelation')}{' '}
             <Link to="/dip/apply">{t('dip.identity.goApply')}</Link>
@@ -520,10 +520,12 @@ export default function DipIdentity() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.identity.pageTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.identity.pageTitle')}</Title>
+        </h1>
       </div>
 
-      <Card color="purple" className="dip-visa-channel" id="visa">
+      <Card pattern="purple" className="dip-visa-channel" id="visa">
         <b>{t('dip.identity.visaChannelTitle')}</b>
         <p className="muted-text">{t('dip.identity.visaChannelTip')}</p>
         {activeIdentity ? (
@@ -534,7 +536,7 @@ export default function DipIdentity() {
             <Tag color="app-teal" variant="soft">{t('dip.identity.carryNo', { no: activeIdentity.no })}</Tag>
           </div>
         ) : (
-          <Tag color="app-orange" variant="soft">{t('dip.identity.visaNeedActive')}</Tag>
+          <Tag color="warm-peach-pink" variant="soft">{t('dip.identity.visaNeedActive')}</Tag>
         )}
       </Card>
 

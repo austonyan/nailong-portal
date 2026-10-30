@@ -10,6 +10,9 @@ import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
+// 证书状态配色按 UI 规范收敛:已过期用中性棕(共享表仍是 default)。
+const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+
 export default function DocsCertificates() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -50,11 +53,11 @@ export default function DocsCertificates() {
       width: 100,
       render: (v, row) => (
         <span className="docs-cert-status">
-          <Tag color={CERT_STATUS_COLORS[v] || 'default'} variant="soft">
+          <Tag color={STATUS_COLORS[v] || 'brown'} variant="soft">
             {t(`docs.certStatus.${v}`)}
           </Tag>
           {expiringSoon(row) && (
-            <Tag size="small" color="app-orange" variant="soft">
+            <Tag size="small" color="warm-peach-pink" variant="soft">
               <BellIcon size={12} /> {t('docs.cert.expiringSoon')}
             </Tag>
           )}
@@ -77,7 +80,9 @@ export default function DocsCertificates() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.certList.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.certList.title')}</Title>
+        </h1>
         <div className="docs-filter">
           <Select
             value={status}

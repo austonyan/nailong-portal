@@ -35,6 +35,10 @@ export default function AppLayout() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main">
+        {t('common.skipToContent')}
+      </a>
+
       {showSider && <Sidebar />}
 
       <div className="app-body">
@@ -89,7 +93,7 @@ export default function AppLayout() {
           </div>
         </header>
 
-        <main className="app-main">
+        <main id="main" className="app-main" tabIndex={-1}>
           <Outlet />
         </main>
 

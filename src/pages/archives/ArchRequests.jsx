@@ -121,16 +121,18 @@ export default function ArchRequests() {
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.request.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.request.title')}
+          </Title>
+        </h1>
         <Button type="primary" icon={<TrashIcon />} onClick={openForm} disabled={!!active}>
           {t('arch.request.new')}
         </Button>
       </div>
 
       {active && (
-        <Card color="app-yellow" className="arch-tag-row">
+        <Card pattern="app-yellow" className="arch-tag-row">
           <ShieldIcon size={18} />
           <span>{t('arch.request.activeTip')}</span>
           <RequestStatusTag value={active.status} />

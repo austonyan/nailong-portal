@@ -84,7 +84,7 @@ export default function DipMaterials({ ownerType, ownerId, materials = [], canUp
               {mat.filename}
             </button>
             <Tag size="small">{t(`dip.materialKind.${mat.kind}`, { defaultValue: t('common.unknown') })}</Tag>
-            {mat.origin === 'supplement' && <Tag size="small" color="app-orange" variant="soft">{t('dip.material.supplementOrigin')}</Tag>}
+            {mat.origin === 'supplement' && <Tag size="small" color="warm-peach-pink" variant="soft">{t('dip.material.supplementOrigin')}</Tag>}
             <span className="muted-text">{fmtSize(mat.size)}</span>
             {canUpload && (
               <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => remove(mat)}>

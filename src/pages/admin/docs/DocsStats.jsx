@@ -5,6 +5,15 @@ import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../../api/docs.js';
 import { toastError } from '../../../components/toast.js';
 
+// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿与已过期中性棕(共享表仍是旧色)。
+const APP_TAG_COLORS = {
+  ...APPLICATION_STATUS_COLORS,
+  draft: 'brown',
+  pending: 'warm-peach-pink',
+  supplementing: 'warm-peach-pink',
+};
+const CERT_TAG_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+
 function pct(v) {
   return v === null || v === undefined ? '—' : `${Math.round(v * 100)}%`;
 }
@@ -37,7 +46,9 @@ export default function DocsStats() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.stats.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.stats.title')}</Title>
+        </h1>
       </div>
 
       <div className="portal-stats">
@@ -78,11 +89,11 @@ export default function DocsStats() {
 
       <div className="docs-detail-grid">
         <Card className="docs-block">
-          <h3 className="docs-block-title">{t('docs.admin.stats.appByStatus')}</h3>
+          <h2 className="docs-block-title">{t('docs.admin.stats.appByStatus')}</h2>
           <ul className="docs-kv-list">
             {byStatus.map(([s, n]) => (
               <li key={s}>
-                <Tag color={APPLICATION_STATUS_COLORS[s] || 'default'} variant="soft">
+                <Tag color={APP_TAG_COLORS[s] || 'brown'} variant="soft">
                   {t(`docs.status.${s}`)}
                 </Tag>
                 <strong>{n}</strong>
@@ -95,7 +106,7 @@ export default function DocsStats() {
           <ul className="docs-kv-list">
             {certByStatus.map(([s, n]) => (
               <li key={s}>
-                <Tag color={CERT_STATUS_COLORS[s] || 'default'} variant="soft">
+                <Tag color={CERT_TAG_COLORS[s] || 'brown'} variant="soft">
                   {t(`docs.certStatus.${s}`)}
                 </Tag>
                 <strong>{n}</strong>

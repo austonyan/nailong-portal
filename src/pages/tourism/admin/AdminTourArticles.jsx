@@ -161,7 +161,7 @@ export default function AdminTourArticles() {
       dataIndex: 'type',
       width: 90,
       render: (v) => (
-        <Tag size="small" color={ARTICLE_TYPE_COLORS[v] || 'default'} variant="soft">
+        <Tag size="small" color={ARTICLE_TYPE_COLORS[v] || 'brown'} variant="soft">
           {t(`tour.articleType.${v}`)}
         </Tag>
       ),
@@ -171,7 +171,7 @@ export default function AdminTourArticles() {
       dataIndex: 'status',
       width: 90,
       render: (v) => (
-        <Tag size="small" color={v === 'published' ? 'app-green' : 'default'} variant="soft">
+        <Tag size="small" color={v === 'published' ? 'app-green' : 'brown'} variant="soft">
           {t(v === 'published' ? 'tour.admin.articleStatus.published' : 'tour.admin.articleStatus.offline')}
         </Tag>
       ),
@@ -201,9 +201,11 @@ export default function AdminTourArticles() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('tour.admin.articles.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('tour.admin.articles.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

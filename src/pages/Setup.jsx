@@ -98,11 +98,13 @@ export default function Setup() {
           <span className="setup-mark">
             <SailboatIcon size={30} />
           </span>
-          <Tag color="app-yellow" variant="soft">
+          <Tag color="app-teal" variant="soft">
             {t('setup.badge')}
           </Tag>
         </div>
-        <Title size="middle">{titles[step]}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{titles[step]}</Title>
+        </h1>
         <p className="muted-text auth-subtitle">{subtitles[step]}</p>
 
         {step !== 'done' && (
@@ -147,7 +149,7 @@ export default function Setup() {
                 { pattern: USERNAME_RE, message: t('setup.usernameRule') },
               ]}
             >
-              <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear />
+              <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear autoComplete="username" />
             </FormItem>
             <FormItem
               name="displayName"
@@ -189,7 +191,7 @@ export default function Setup() {
                 },
               ]}
             >
-              <Input size="large" type="password" placeholder={t('setup.passwordHint')} />
+              <Input size="large" type="password" placeholder={t('setup.passwordHint')} autoComplete="new-password" />
             </FormItem>
             <FormItem
               name="confirmPassword"

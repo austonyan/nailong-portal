@@ -68,7 +68,9 @@ export default function AdminDipStats() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.admin.stats.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.admin.stats.title')}</Title>
+        </h1>
         <Button type="primary" onClick={exportStats}>{t('dip.admin.stats.export')}</Button>
       </div>
 

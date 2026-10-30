@@ -96,13 +96,15 @@ export default function ProtocolCourtesy() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.courtesy.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.courtesy.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.courtesy.subtitle')}</p>
       </div>
 
       <div className="protocol-courtesy-layout">
         <Card className="protocol-eligibility-card">
-          <h4>{t('protocol.courtesy.eligibility')}</h4>
+          <h2 className="block-heading">{t('protocol.courtesy.eligibility')}</h2>
           <p className="muted-text">{t('protocol.courtesy.eligibilityTip')}</p>
           <div className="protocol-eligibility-form">
             <Select
@@ -130,7 +132,7 @@ export default function ProtocolCourtesy() {
             </Button>
           </div>
           {eligibility && (
-            <Card color={eligibility.valid ? 'app-teal' : 'app-red'}>
+            <Card pattern={eligibility.valid ? 'app-teal' : 'app-red'}>
               <div className="protocol-inline-between">
                 <div>
                   <strong>{eligibility.valid ? t('protocol.courtesy.eligible') : t('protocol.courtesy.notEligible')}</strong>
@@ -152,14 +154,16 @@ export default function ProtocolCourtesy() {
         </Card>
 
         <Card className="protocol-courtesy-rules">
-          <h4>{t('protocol.courtesy.rules')}</h4>
+          <h2 className="block-heading">{t('protocol.courtesy.rules')}</h2>
           <p>{t('protocol.courtesy.rulesBody')}</p>
           <p className="muted-text">{t('protocol.courtesy.notPromise')}</p>
         </Card>
       </div>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-orange">{t('protocol.courtesy.types')}</Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">{t('protocol.courtesy.types')}</Title>
+        </h2>
         <div className="protocol-courtesy-grid">
           {types.map((tp) => (
             <Card key={tp.code} className="protocol-courtesy-card">
@@ -176,7 +180,9 @@ export default function ProtocolCourtesy() {
       </section>
 
       <section className="protocol-section">
-        <Title size="middle" color="app-blue">{t('protocol.courtesy.myTitle')}</Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-blue">{t('protocol.courtesy.myTitle')}</Title>
+        </h2>
         <Card>
           {apps && apps.length === 0 && <p className="muted-text">{t('protocol.courtesy.empty')}</p>}
           <div className="protocol-courtesy-apps">

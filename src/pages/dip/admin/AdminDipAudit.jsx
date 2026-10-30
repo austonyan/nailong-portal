@@ -139,7 +139,7 @@ export default function AdminDipAudit() {
       title: t('common.status'),
       dataIndex: 'enabled',
       width: 90,
-      render: (v) => <Tag size="small" color={v ? 'app-green' : 'default'} variant="soft">{v ? t('common.enabled') : t('common.disabled')}</Tag>,
+      render: (v) => <Tag size="small" color={v ? 'app-green' : 'brown'} variant="soft">{v ? t('common.enabled') : t('common.disabled')}</Tag>,
     },
     { title: t('common.actions'), width: 90, render: (_, r) => <Button size="small" onClick={() => setEditing(r)}>{t('common.edit')}</Button> },
   ];
@@ -157,7 +157,9 @@ export default function AdminDipAudit() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.admin.audit.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.admin.audit.title')}</Title>
+        </h1>
         <div className="dip-msg-filter">
           <Button type={tab === 'log' ? 'primary' : 'default'} size="small" onClick={() => setTab('log')}>{t('dip.admin.audit.tabLog')}</Button>
           <Button type={tab === 'templates' ? 'primary' : 'default'} size="small" onClick={() => setTab('templates')}>{t('dip.admin.audit.tabTemplates')}</Button>

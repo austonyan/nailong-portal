@@ -86,7 +86,7 @@ export default function EduEntryDetail() {
       </div>
 
       <Card>
-        <h2 className="edu-detail-title">{entry.title}</h2>
+        <h1 className="page-title edu-detail-title">{entry.title}</h1>
         <p className="edu-detail-sub">{entry.summary}</p>
         <div className="edu-meta">
           <span>{entry.no}</span>
@@ -119,9 +119,9 @@ export default function EduEntryDetail() {
           <div className="edu-related-list">
             {entry.related.map((item) => (
               <Card key={item.id} className="edu-card" hoverable>
-                <h3 className="edu-card-title">
+                <h2 className="edu-card-title">
                   <Link to={`/education/entries/${item.id}`}>{item.title}</Link>
-                </h3>
+                </h2>
                 <p className="edu-card-summary">{item.summary}</p>
               </Card>
             ))}

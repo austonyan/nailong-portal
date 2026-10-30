@@ -87,6 +87,15 @@ export default function LinkagePicker({ open, consumer, source, kind, credential
 
   const selectedKey = selected ? `${selected.kind}:${selected.code}` : '';
 
+  // 记录卡是 div 上的 role="button":键盘 Enter/Space 与点击同样选中,Space 要
+  // preventDefault,否则页面会跟着滚动。
+  const pickByKey = (event, item) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setSelected(item);
+    }
+  };
+
   return (
     <Modal
       maskClosable={false}
@@ -116,7 +125,7 @@ export default function LinkagePicker({ open, consumer, source, kind, credential
         {loading && <Skeleton variant="paragraph" rows={4} />}
 
         {!loading && error && (
-          <Card color="app-red" className="linkage-picker-error">
+          <Card pattern="app-red" className="linkage-picker-error">
             <p>{error}</p>
             <Button size="small" icon={<RefreshIcon />} onClick={() => setReloadTick((n) => n + 1)}>
               {t('linkage.picker.retry')}
@@ -140,9 +149,12 @@ export default function LinkagePicker({ open, consumer, source, kind, credential
                 <Card
                   key={key}
                   hoverable
-                  color={selectedKey === key ? 'app-yellow' : 'default'}
+                  pattern={selectedKey === key ? 'app-yellow' : 'none'}
                   className="linkage-record"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setSelected(item)}
+                  onKeyDown={(e) => pickByKey(e, item)}
                 >
                   <div className="linkage-record-head">
                     <div className="linkage-record-title">
@@ -150,7 +162,7 @@ export default function LinkagePicker({ open, consumer, source, kind, credential
                       {item.name && <span className="linkage-record-code">{item.code}</span>}
                     </div>
                     <div className="linkage-record-tags">
-                      <Tag size="small" color={item.valid ? 'app-green' : 'app-orange'} variant="soft">
+                      <Tag size="small" color={item.valid ? 'app-green' : 'brown'} variant="soft">
                         {linkageStatusLabel(t, source, item.kind, item.status)}
                       </Tag>
                       <Tag size="small" variant="soft">

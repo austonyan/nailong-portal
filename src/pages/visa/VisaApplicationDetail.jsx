@@ -10,6 +10,7 @@ import { openVisaMaterial, uploadVisaMaterial } from '../../api/visa.js';
 import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
+  REVIEW_ACTION_COLORS,
   TextArea,
   fmtDate,
   fmtDateTime,
@@ -114,14 +115,16 @@ export default function VisaApplicationDetail() {
   return (
     <div className="visa-detail-page">
       <div className="page-header">
-        <Title size="middle">{t('visa.detail.title')}</Title>
-        <Tag color={APPLICATION_STATUS_COLORS[app.status] || 'default'} variant="solid" size="large">
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.detail.title')}</Title>
+        </h1>
+        <Tag color={APPLICATION_STATUS_COLORS[app.status] || 'brown'} variant="soft" size="large">
           {t(`visa.status.${app.status}`)}
         </Tag>
       </div>
 
       {app.status === 'rejected' && (
-        <Card color="app-red" className="visa-reject-banner">
+        <Card pattern="app-red" className="visa-reject-banner">
           <strong>{t('visa.detail.rejectTitle')}</strong>
           <p>
             {t(`visa.rejectReason.${app.rejectCode || 'other'}`)}
@@ -130,7 +133,7 @@ export default function VisaApplicationDetail() {
         </Card>
       )}
       {app.status === 'closed' && (
-        <Card color="app-orange" className="visa-reject-banner">
+        <Card pattern="app-orange" className="visa-reject-banner">
           <strong>{t('visa.detail.closedTitle')}</strong>
           <p>{t('visa.detail.closedBody')}</p>
         </Card>
@@ -148,13 +151,13 @@ export default function VisaApplicationDetail() {
       </Card>
 
       {app.permit && (
-        <Card color="app-teal" className="visa-permit-banner">
+        <Card pattern="app-teal" className="visa-permit-banner">
           <div className="visa-permit-banner-inner">
             <div>
               <strong>{t('visa.detail.permitReady')}</strong>
               <p>{t('visa.permit.no', { no: app.permit.visaNo })}</p>
             </div>
-            <Tag color={PERMIT_STATUS_COLORS[app.permit.status] || 'default'} variant="solid">
+            <Tag color={PERMIT_STATUS_COLORS[app.permit.status] || 'brown'} variant="soft">
               {t(`visa.permitStatus.${app.permit.status}`)}
             </Tag>
             <Button type="primary" onClick={() => navigate('/visa/permits')}>
@@ -165,8 +168,8 @@ export default function VisaApplicationDetail() {
       )}
 
       {canSupplement && (
-        <Card color="app-orange" className="visa-supplement-card">
-          <h4>{t('visa.detail.supplementTitle')}</h4>
+        <Card pattern="app-orange" className="visa-supplement-card">
+          <h2>{t('visa.detail.supplementTitle')}</h2>
           {app.supplementDeadline && (
             <p>
               {t('visa.detail.supplementDeadline', { time: fmtDateTime(app.supplementDeadline) })}
@@ -200,7 +203,7 @@ export default function VisaApplicationDetail() {
       )}
 
       <Card className="visa-detail-card">
-        <h4>{t('visa.detail.materials')}</h4>
+        <h2>{t('visa.detail.materials')}</h2>
         {app.materials.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
         <ul className="visa-material-list">
           {app.materials.map((m) => (
@@ -218,13 +221,13 @@ export default function VisaApplicationDetail() {
       </Card>
 
       <Card className="visa-detail-card">
-        <h4>{t('visa.detail.reviews')}</h4>
+        <h2>{t('visa.detail.reviews')}</h2>
         {app.reviews.length === 0 && <p className="muted-text">{t('visa.detail.noReviews')}</p>}
         <ul className="visa-review-timeline">
           {app.reviews.map((r) => (
             <li key={r.id}>
               <div className="visa-review-head">
-                <Tag variant="soft" color={r.action === 'reject' ? 'app-red' : r.action === 'approve' ? 'app-green' : 'app-yellow'}>
+                <Tag variant="soft" color={REVIEW_ACTION_COLORS[r.action] || 'brown'}>
                   {t(`visa.reviewAction.${r.action}`)}
                 </Tag>
                 <span>{r.reviewerName}</span>

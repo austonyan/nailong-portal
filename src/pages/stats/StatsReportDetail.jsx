@@ -81,9 +81,11 @@ export default function StatsReportDetail() {
   return (
     <div className="stat-page">
       <div className="page-header no-print">
-        <Title size="middle" color="app-blue">
-          {t('stat.report.title', { year: report.year })}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-blue">
+            {t('stat.report.title', { year: report.year })}
+          </Title>
+        </h1>
         <div className="table-actions">
           <Button icon={<ArrowLeftIcon />} onClick={() => navigate('/stats/reports')}>
             {t('stat.report.back')}
@@ -100,7 +102,7 @@ export default function StatsReportDetail() {
       <div className="stat-report-paper stat-print-area">
         <div className="stat-report-head">
           <div>
-            <h3>{t('stat.report.paperTitle', { year: report.year })}</h3>
+            <h2>{t('stat.report.paperTitle', { year: report.year })}</h2>
             <div className="stat-report-meta">{t('stat.report.paperSub')}</div>
           </div>
           <div className="stat-report-meta">

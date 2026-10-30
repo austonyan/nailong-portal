@@ -84,9 +84,11 @@ export default function AdminArchAudit() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.admin.audit.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.admin.audit.title')}
+          </Title>
+        </h1>
         <Button type="text" size="small" icon={<DownloadIcon />} onClick={exportAll} disabled={!items?.length}>
           {t('arch.catalog.export')}
         </Button>

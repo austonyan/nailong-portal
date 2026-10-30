@@ -9,10 +9,10 @@ import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { CHANGE_TYPES, StatusTag, TextArea, fmtDate, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
 
 const CHANGE_STATUS_COLORS = {
-  pending_review: 'app-yellow',
+  pending_review: 'warm-peach-pink',
   approved: 'app-green',
   rejected: 'app-red',
-  cancelled: 'default',
+  cancelled: 'brown',
 };
 
 export default function ResidentChanges() {
@@ -112,13 +112,15 @@ export default function ResidentChanges() {
   return (
     <div className="res-changes-page">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('res.changes.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('res.changes.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card className="res-form-card">
-        <h4>{t('res.changes.newTitle')}</h4>
+        <h2 className="block-heading">{t('res.changes.newTitle')}</h2>
         <Tabs
           activeKey={changeType}
           onChange={(key) => setChangeType(key)}
@@ -174,7 +176,7 @@ export default function ResidentChanges() {
       </Card>
 
       <Card className="res-info-card">
-        <h4>{t('res.changes.recordsTitle')}</h4>
+        <h2>{t('res.changes.recordsTitle')}</h2>
         {items === null ? (
           <p className="muted-text">{t('common.loading')}</p>
         ) : items.length === 0 ? (

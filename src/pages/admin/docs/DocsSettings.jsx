@@ -97,7 +97,9 @@ export default function DocsSettings() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.settings.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.settings.title')}</Title>
+        </h1>
         <Button type="primary" loading={busy} onClick={save} disabled={busy}>
           {t('common.save')}
         </Button>
@@ -108,7 +110,7 @@ export default function DocsSettings() {
       </Card>
 
       <Card className="docs-block">
-        <h3 className="docs-block-title">{t('docs.admin.settings.numbering')}</h3>
+        <h2 className="docs-block-title">{t('docs.admin.settings.numbering')}</h2>
         <div className="docs-editor-grid">
           {textField('docs.app_no_prefix', t('docs.admin.settings.appPrefix'), t('docs.admin.settings.prefixTip'), 8)}
           {textField('docs.cert_no_prefix', t('docs.admin.settings.certPrefix'), t('docs.admin.settings.prefixTip'), 8)}
@@ -190,7 +192,7 @@ export default function DocsSettings() {
             <Input value={addForm.reason} onChange={(e) => setAddForm((f) => ({ ...f, reason: e.target.value }))} maxLength={200} />
           </label>
           <p className="muted-text">
-            <Tag size="small" color="app-orange" variant="soft">
+            <Tag size="small" color="warm-peach-pink" variant="soft">
               {t('docs.admin.settings.blacklistEffectTag')}
             </Tag>
             {t('docs.admin.settings.blacklistEffect')}

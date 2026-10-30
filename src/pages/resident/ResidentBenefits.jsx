@@ -39,9 +39,11 @@ export default function ResidentBenefits() {
   return (
     <div className="res-benefits-page">
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('res.benefits.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('res.benefits.title')}
+          </Title>
+        </h1>
         {data.typeName && (
           <Tag color="app-green" variant="soft">
             {data.typeName}
@@ -52,11 +54,11 @@ export default function ResidentBenefits() {
       {data.card ? (
         <>
           <Card className="res-info-card">
-            <h4>{t('res.benefits.myBenefits', { type: data.typeName || t('common.unknown') })}</h4>
+            <h2>{t('res.benefits.myBenefits', { type: data.typeName || t('common.unknown') })}</h2>
             <p>{data.benefits || t('res.type.benefitsPlaceholder')}</p>
           </Card>
           <Card className="res-info-card">
-            <h4>{t('res.type.duties')}</h4>
+            <h2>{t('res.type.duties')}</h2>
             <p>{data.duties || t('res.type.dutiesPlaceholder')}</p>
           </Card>
         </>
@@ -67,19 +69,21 @@ export default function ResidentBenefits() {
       )}
 
       <section>
-        <Title size="middle">{t('res.benefits.channels')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('res.benefits.channels')}</Title>
+        </h2>
         <p className="muted-text">{t('res.benefits.channelsTip')}</p>
         <div className="res-channel-grid">
           {CHANNELS.map(({ key, icon: Icon }) => {
             const open = !!data.channels?.[key];
             const href = data.links?.[key];
             return (
-              <Card key={key} className="res-channel-card" color="app-teal">
+              <Card key={key} className="res-channel-card" pattern="app-teal">
                 <Icon size={28} />
                 <b>{t(`res.channel.${key}.name`)}</b>
                 <p className="muted-text">{t(`res.channel.${key}.desc`)}</p>
                 <div className="res-channel-foot">
-                  <Tag color={open ? 'app-green' : 'app-yellow'} variant="soft" size="small">
+                  <Tag color={open ? 'app-green' : 'warm-peach-pink'} variant="soft" size="small">
                     {open ? t('res.channelState.open') : t('res.channelState.reserved')}
                   </Tag>
                   {open && href && (
@@ -97,9 +101,11 @@ export default function ResidentBenefits() {
       </section>
 
       <section>
-        <Title size="middle" color="app-orange">
-          {t('res.benefits.announcements')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">
+            {t('res.benefits.announcements')}
+          </Title>
+        </h2>
         <div className="res-ann-list">
           {data.announcements.map((n) => (
             <Card key={n.id} className="res-ann-item">
@@ -118,7 +124,7 @@ export default function ResidentBenefits() {
         </div>
       </section>
 
-      <Card color="app-yellow" className="res-fraud-card">
+      <Card pattern="app-yellow" className="res-fraud-card">
         <b>{t('res.benefits.achievements')}</b>
         <p>{t('res.benefits.achievementsTip')}</p>
       </Card>

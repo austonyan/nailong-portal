@@ -124,8 +124,10 @@ export default function AppealAppealDetail() {
   return (
     <div className="appeal-detail-page">
       <div className="page-header">
-        <Title size="middle">{appeal.code}</Title>
-        <Tag color={APPEAL_STATUS_COLORS[appeal.status] || 'default'} variant="soft">
+        <h1 className="page-title">
+          <Title size="middle">{appeal.code}</Title>
+        </h1>
+        <Tag color={APPEAL_STATUS_COLORS[appeal.status] || 'brown'} variant="soft">
           {t(`appeal.status.${appeal.status}`)}
         </Tag>
       </div>
@@ -137,7 +139,7 @@ export default function AppealAppealDetail() {
             <dd>
               {t(`appeal.bizType.${appeal.bizType}`)} · {appeal.bizCode}
               {appeal.bizStatus && (
-                <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'app-orange'} variant="soft">
+                <Tag color={appeal.bizStatus === 'verified' ? 'app-green' : 'warm-peach-pink'} variant="soft">
                   {t(`appeal.bizStatus.${appeal.bizStatus}`, { defaultValue: t('common.unknown') })}
                 </Tag>
               )}
@@ -200,13 +202,13 @@ export default function AppealAppealDetail() {
       </Card>
 
       {appeal.decisionType && (
-        <Card color="app-teal" className="appeal-decision-banner">
-          <h4>
+        <Card pattern="app-teal" className="appeal-decision-banner">
+          <h2>
             {t('appeal.detail.decisionTitle')}
-            <Tag color={DECISION_TYPE_COLORS[appeal.decisionType] || 'default'} variant="soft">
+            <Tag color={DECISION_TYPE_COLORS[appeal.decisionType] || 'brown'} variant="soft">
               {t(`appeal.decisionType.${appeal.decisionType}`)}
             </Tag>
-          </h4>
+          </h2>
           <p>{appeal.decisionReason}</p>
           {appeal.decisionBasis && (
             <p className="muted-text">{t('appeal.detail.decisionBasis')}: {appeal.decisionBasis}</p>
@@ -220,8 +222,8 @@ export default function AppealAppealDetail() {
       )}
 
       {appeal.status === 'supplement_required' && (
-        <Card color="app-orange" className="appeal-supplement-card">
-          <h4>{t('appeal.detail.supplementTitle')}</h4>
+        <Card pattern="app-orange" className="appeal-supplement-card">
+          <h2 className="block-heading">{t('appeal.detail.supplementTitle')}</h2>
           <p className="muted-text">{t('appeal.detail.supplementTip')}</p>
           <TextArea rows={3} maxLength={500} value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} placeholder={t('appeal.detail.supplementPlaceholder')} />
           <div className="appeal-materials-section">
@@ -236,14 +238,14 @@ export default function AppealAppealDetail() {
       )}
 
       <Card className="appeal-detail-card">
-        <h4>
+        <h2 className="block-heading">
           <PaperclipIcon size={18} /> {t('appeal.detail.materials')}
-        </h4>
+        </h2>
         {appeal.materials.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
         <ul className="appeal-material-list">
           {appeal.materials.map((m) => (
             <li key={m.id}>
-              <Tag color={m.origin === 'supplement' ? 'app-orange' : 'app-blue'} variant="soft">
+              <Tag color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'} variant="soft">
                 {t(`appeal.materialKind.${m.kind}`)}
               </Tag>
               <span>{m.filename}</span>
@@ -256,7 +258,7 @@ export default function AppealAppealDetail() {
       </Card>
 
       <Card className="appeal-detail-card">
-        <h4>{t('appeal.detail.records')}</h4>
+        <h2 className="block-heading">{t('appeal.detail.records')}</h2>
         <ul className="appeal-record-timeline">
           {appeal.records.map((r) => (
             <li key={r.id}>

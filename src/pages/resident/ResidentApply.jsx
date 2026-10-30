@@ -20,6 +20,16 @@ import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
 import { PURPOSES, TextArea, resToast, toastResError, toastResSuccess } from './shared.jsx';
 
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
+
 // 路由 /resident/apply 与 /resident/apply/:typeCode 复用同一个组件:React Router
 // 按组件类型复用实例,useState 只在首次挂载时读路由参数。不按路由参数加 key 重挂载,
 // 从类型选择页点进具体类型时 URL 会变、页面却停在选择页(看起来像点击无反应)。
@@ -177,9 +187,9 @@ function ResidentApplyScreen() {
   if (submitted) {
     return (
       <div className="res-form-page">
-        <Card color="app-green" className="res-submitted-card">
+        <Card pattern="app-green" className="res-submitted-card">
           <CheckCircleIcon size={40} />
-          <h3>{t('res.form.submittedTitle')}</h3>
+          <h1 className="page-title-card">{t('res.form.submittedTitle')}</h1>
           <p className="res-submitted-no">{t('res.form.submittedNo', { no: submitted.appNo })}</p>
           <p className="muted-text">{t('res.form.submittedHint', { hours: reviewHours })}</p>
           <div className="res-guide-actions">
@@ -199,9 +209,11 @@ function ResidentApplyScreen() {
 
   return (
     <div className="res-form-page">
-      <Title size="middle" color="app-green">
-        {t('res.form.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-green">
+          {t('res.form.title')}
+        </Title>
+      </h1>
       {appNo && (
         <p className="muted-text">
           {t('res.form.draftNo', { no: appNo })}
@@ -240,16 +252,16 @@ function ResidentApplyScreen() {
       </Card>
 
       <Card className="res-form-card">
-        <h4>
+        <h2 className="block-heading">
           <PaperclipIcon size={18} /> {t('res.form.materialsTitle')}
-        </h4>
+        </h2>
         <p className="muted-text">{t('res.form.materialsTip')}</p>
         <div className="res-materials-section">
           <div className="res-materials-block">
-            <h5>
+            <h3>
               {t('res.form.materialAvatar')}
               {typeInfo?.requireAvatar ? <Tag color="app-red" variant="soft" size="small">{t('common.required')}</Tag> : null}
-            </h5>
+            </h3>
             <Upload accept="image/*,application/pdf" maxCount={1} showUploadList={false} customRequest={uploadMaterial('avatar')} disabled={!appId}>
               {t('res.form.uploadAvatar')}
             </Upload>
@@ -266,10 +278,10 @@ function ResidentApplyScreen() {
             )}
           </div>
           <div className="res-materials-block">
-            <h5>
+            <h3>
               {t('res.form.materialProof')}
               {typeInfo?.requireAddressProof ? <Tag color="app-red" variant="soft" size="small">{t('common.required')}</Tag> : null}
-            </h5>
+            </h3>
             <Upload accept="image/*,application/pdf" maxCount={1} showUploadList={false} customRequest={uploadMaterial('address_proof')} disabled={!appId}>
               {t('res.form.uploadProof')}
             </Upload>
@@ -286,7 +298,7 @@ function ResidentApplyScreen() {
             )}
           </div>
           <div className="res-materials-block">
-            <h5>{t('res.form.materialOther')}</h5>
+            <h3>{t('res.form.materialOther')}</h3>
             <Upload drag accept="image/*,application/pdf" maxCount={6} showUploadList={false} customRequest={uploadMaterial('other')} disabled={!appId}>
               <div style={{ padding: 24 }}>{t('res.form.uploadOther')}</div>
             </Upload>
@@ -378,13 +390,23 @@ function TypePicker() {
 
   return (
     <div className="res-form-page">
-      <Title size="middle" color="app-green">
-        {t('res.apply.pickType')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-green">
+          {t('res.apply.pickType')}
+        </Title>
+      </h1>
       <p className="muted-text">{t('res.apply.pickTypeTip')}</p>
       <div className="res-type-grid">
         {(types ?? []).map((type) => (
-          <Card key={type.code} hoverable className="res-type-card" onClick={() => navigate(`/resident/apply/${type.code}`)}>
+          <Card
+            key={type.code}
+            hoverable
+            className="res-type-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(`/resident/apply/${type.code}`)}
+            onKeyDown={cardKeyDown(() => navigate(`/resident/apply/${type.code}`))}
+          >
             <div className="res-type-head">
               <b>{type.name}</b>
               <Tag color="app-green" variant="soft" size="small">

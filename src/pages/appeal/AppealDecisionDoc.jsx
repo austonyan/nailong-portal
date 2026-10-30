@@ -52,7 +52,7 @@ export default function AppealDecisionDoc() {
 
       <Card className="appeal-doc-paper">
         <div className="appeal-doc-head">
-          <h2>{t('appeal.doc.title')}</h2>
+          <h1 className="page-title">{t('appeal.doc.title')}</h1>
           <p className="muted-text">{t('appeal.officeName')} · {t('appeal.officeSub')}</p>
         </div>
         <p className="appeal-doc-no">{t('appeal.doc.noLabel')}: {doc.code}</p>
@@ -66,10 +66,10 @@ export default function AppealDecisionDoc() {
           <div>
             <dt>{t('appeal.doc.decisionLabel')}</dt>
             <dd>
-              <Tag color={DECISION_TYPE_COLORS[doc.decisionType] || 'default'} variant="soft">
+              <Tag color={DECISION_TYPE_COLORS[doc.decisionType] || 'brown'} variant="soft">
                 {t(`appeal.decisionType.${doc.decisionType}`)}
               </Tag>
-              <Tag color={DECISION_STATUS_COLORS[doc.status] || 'default'} variant="soft">
+              <Tag color={DECISION_STATUS_COLORS[doc.status] || 'brown'} variant="soft">
                 {t(`appeal.decisionStatus.${doc.status}`)}
               </Tag>
             </dd>

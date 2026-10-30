@@ -32,9 +32,11 @@ export default function TourismBadges() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-green">
-          {t('tour.badges.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-green">
+            {t('tour.badges.title')}
+          </Title>
+        </h1>
         <Button size="small" onClick={() => navigate('/tourism/attractions')}>
           {t('tour.badges.goCheckin')}
         </Button>
@@ -67,7 +69,7 @@ export default function TourismBadges() {
                     {t('tour.badges.awardedAt', { time: fmtDateTime(badge.awardedAt) })}
                   </Tag>
                 ) : (
-                  <Tag size="small" variant="soft">
+                  <Tag size="small" color="app-blue" variant="soft">
                     {t('tour.badges.inProgress')}
                   </Tag>
                 )}

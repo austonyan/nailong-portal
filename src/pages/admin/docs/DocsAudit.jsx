@@ -18,7 +18,7 @@ const ACTION_COLORS = {
   type_update: 'app-blue',
   blacklist_add: 'app-red',
   blacklist_remove: 'app-green',
-  verify_rate_limited: 'app-orange',
+  verify_rate_limited: 'warm-peach-pink',
 };
 
 const DETAIL_FIELDS = {
@@ -107,7 +107,7 @@ export default function DocsAudit() {
       dataIndex: 'action',
       width: 210,
       render: (v) => (
-        <Tag color={ACTION_COLORS[v] || 'default'} variant="soft">
+        <Tag color={ACTION_COLORS[v] || 'brown'} variant="soft">
           {t(`docs.admin.audit.actions.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
@@ -128,7 +128,9 @@ export default function DocsAudit() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.audit.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.audit.title')}</Title>
+        </h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">

@@ -5,7 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Tag, Title } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { appealErrMsg } from './shared.jsx';
+import {
+  APPEAL_STATUS_COLORS,
+  DECISION_STATUS_COLORS,
+  REVIEW_STATUS_COLORS,
+  appealErrMsg,
+} from './shared.jsx';
 import { fmtDateTime } from '../../lib/date.js';
 
 const KIND_COLORS = { appeal: 'app-blue', review: 'app-teal', decision: 'app-green' };
@@ -37,12 +42,12 @@ export default function AppealVerify() {
   const statusTag = (r) => {
     if (!r.found) return null;
     if (r.kind === 'appeal') {
-      return <Tag color={r.valid ? 'app-green' : 'default'} variant="soft">{t(`appeal.status.${r.status}`)}</Tag>;
+      return <Tag color={APPEAL_STATUS_COLORS[r.status] || 'brown'} variant="soft">{t(`appeal.status.${r.status}`)}</Tag>;
     }
     if (r.kind === 'review') {
-      return <Tag color={r.valid ? 'app-green' : 'app-yellow'} variant="soft">{t(`appeal.reviewStatus.${r.status}`)}</Tag>;
+      return <Tag color={REVIEW_STATUS_COLORS[r.status] || 'brown'} variant="soft">{t(`appeal.reviewStatus.${r.status}`)}</Tag>;
     }
-    return <Tag color={r.valid ? 'app-green' : 'app-red'} variant="soft">{t(`appeal.decisionStatus.${r.status}`)}</Tag>;
+    return <Tag color={DECISION_STATUS_COLORS[r.status] || 'brown'} variant="soft">{t(`appeal.decisionStatus.${r.status}`)}</Tag>;
   };
 
   return (
@@ -57,9 +62,11 @@ export default function AppealVerify() {
         </div>
       </div>
 
-      <Title size="middle" color="app-teal">
-        {t('appeal.verify.title')}
-      </Title>
+      <h1 className="page-title">
+        <Title size="middle" color="app-teal">
+          {t('appeal.verify.title')}
+        </Title>
+      </h1>
       <p className="muted-text">{t('appeal.verify.tip')}</p>
 
       <Card className="appeal-verify-card">
@@ -85,7 +92,7 @@ export default function AppealVerify() {
           {result.found ? (
             <>
               <div className="appeal-verify-head">
-                <Tag color={KIND_COLORS[result.kind] || 'default'} variant="soft">
+                <Tag color={KIND_COLORS[result.kind] || 'brown'} variant="soft">
                   {t(`appeal.verifyKind.${result.kind}`)}
                 </Tag>
                 <strong>{result.code}</strong>

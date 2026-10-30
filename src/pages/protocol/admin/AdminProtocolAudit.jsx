@@ -55,7 +55,9 @@ export default function AdminProtocolAudit() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.auditTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.auditTitle')}</Title>
+        </h1>
         <Button
           type="dashed"
           icon={<DownloadIcon />}

@@ -22,6 +22,8 @@ import { useDebouncedValue } from '../../lib/useDebouncedValue.js';
 
 const QUEUE_STATUS = ['', 'pending_accept', 'accepted', 'processing', 'supplement_required', 'resolved', 'rejected', 'withdrawn', 'closed'];
 const DECIDE_TYPES = ['maintain', 'undo', 'change', 'transfer'];
+// 队列分页大小:与 server/routes/appealAdmin.js 的 /appeals/queue pageSize 一致。
+const PAGE_SIZE = 10;
 
 export default function AppealAdminWorkbench() {
   const { t } = useTranslation();
@@ -145,7 +147,7 @@ export default function AppealAdminWorkbench() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag color={APPEAL_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={APPEAL_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`appeal.status.${v}`)}
         </Tag>
       ),
@@ -155,7 +157,7 @@ export default function AppealAdminWorkbench() {
       dataIndex: 'priority',
       width: 90,
       render: (v) => (
-        <Tag color={PRIORITY_COLORS[v] || 'default'} variant="outlined">
+        <Tag color={PRIORITY_COLORS[v] || 'brown'} variant="soft">
           {t(`appeal.priority.${v}`)}
         </Tag>
       ),
@@ -185,12 +187,14 @@ export default function AppealAdminWorkbench() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.admin.workbenchTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.admin.workbenchTitle')}</Title>
+        </h1>
         <div className="table-actions appeal-admin-counters">
-          <Tag variant="soft" color="app-yellow">{t('appeal.admin.counterPending', { count: counters.pending ?? 0 })}</Tag>
+          <Tag variant="soft" color="warm-peach-pink">{t('appeal.admin.counterPending', { count: counters.pending ?? 0 })}</Tag>
           <Tag variant="soft" color="app-blue">{t('appeal.admin.counterProcessing', { count: counters.processing ?? 0 })}</Tag>
-          <Tag variant="soft" color="app-orange">{t('appeal.admin.counterSupplement', { count: counters.supplementing ?? 0 })}</Tag>
-          {counters.overdue > 0 && <Tag variant="solid" color="app-red">{t('appeal.admin.counterOverdue', { count: counters.overdue })}</Tag>}
+          <Tag variant="soft" color="warm-peach-pink">{t('appeal.admin.counterSupplement', { count: counters.supplementing ?? 0 })}</Tag>
+          {counters.overdue > 0 && <Tag variant="soft" color="app-red">{t('appeal.admin.counterOverdue', { count: counters.overdue })}</Tag>}
         </div>
       </div>
 
@@ -230,9 +234,9 @@ export default function AppealAdminWorkbench() {
           pagination={false}
           emptyText={t('appeal.admin.queueEmpty')}
         />
-        {total > 10 && (
+        {total > PAGE_SIZE && (
           <div className="appeal-pagination">
-            <Pagination total={total} current={page} pageSize={10} onChange={setPage} showTotal />
+            <Pagination total={total} current={page} pageSize={PAGE_SIZE} onChange={setPage} showTotal />
           </div>
         )}
       </Card>
@@ -241,7 +245,7 @@ export default function AppealAdminWorkbench() {
         {detail && (
           <div className="appeal-detail-body">
             <div className="appeal-detail-head">
-              <Tag color={APPEAL_STATUS_COLORS[detail.status] || 'default'} variant="solid">
+              <Tag color={APPEAL_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                 {t(`appeal.status.${detail.status}`)}
               </Tag>
               <span className="muted-text">
@@ -293,7 +297,7 @@ export default function AppealAdminWorkbench() {
                 <div>
                   <dt>{t('appeal.detail.decisionTitle')}</dt>
                   <dd>
-                    <Tag color={DECISION_TYPE_COLORS[detail.decisionType] || 'default'} variant="soft">
+                    <Tag color={DECISION_TYPE_COLORS[detail.decisionType] || 'brown'} variant="soft">
                       {t(`appeal.decisionType.${detail.decisionType}`)}
                     </Tag>
                     {detail.decisionReason}
@@ -302,11 +306,11 @@ export default function AppealAdminWorkbench() {
               )}
             </dl>
 
-            <h4>{t('appeal.detail.materials')}</h4>
+            <h2 className="block-heading">{t('appeal.detail.materials')}</h2>
             <ul className="appeal-material-list">
               {detail.materials.map((m) => (
                 <li key={m.id}>
-                  <Tag variant="soft" color={m.origin === 'supplement' ? 'app-orange' : 'app-blue'} size="small">
+                  <Tag variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'} size="small">
                     {t(`appeal.materialKind.${m.kind}`)}
                   </Tag>
                   <span>{m.filename}</span>
@@ -318,7 +322,7 @@ export default function AppealAdminWorkbench() {
               {detail.materials.length === 0 && <li className="muted-text">{t('common.empty')}</li>}
             </ul>
 
-            <h4>{t('appeal.admin.bizLink')}</h4>
+            <h2 className="block-heading">{t('appeal.admin.bizLink')}</h2>
             {detail.bizLink?.integrated && detail.bizLink.found ? (
               <div className="appeal-biz-link">
                 <div className="appeal-dist-row">
@@ -344,7 +348,7 @@ export default function AppealAdminWorkbench() {
               <p className="muted-text">{t('appeal.admin.bizLinkMissing')}</p>
             )}
 
-            <h4>{t('appeal.detail.records')}</h4>
+            <h2 className="block-heading">{t('appeal.detail.records')}</h2>
             <ul className="appeal-record-timeline">
               {detail.records.map((r) => (
                 <li key={r.id}>

@@ -50,9 +50,11 @@ export default function ArchRecordDetail() {
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.detail.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.detail.title')}
+          </Title>
+        </h1>
         <div className="table-actions">
           <Button type="text" icon={<ArrowLeftIcon />} onClick={() => navigate('/archives/records')}>
             {t('arch.detail.back')}
@@ -70,7 +72,7 @@ export default function ArchRecordDetail() {
         <>
           <Card>
             <div className="arch-type-head">
-              <h3>{data.recordType?.name || t(`arch.recordType.${type}`, { defaultValue: t('common.unknown') })}</h3>
+              <h2>{data.recordType?.name || t(`arch.recordType.${type}`, { defaultValue: t('common.unknown') })}</h2>
               <div className="arch-tag-row">
                 <OfficeTag office={data.record.office} />
                 <RecordStatusTag value={data.record.status} />
@@ -97,7 +99,7 @@ export default function ArchRecordDetail() {
             </div>
           </Card>
 
-          <Card color="app-teal" className="arch-tag-row">
+          <Card pattern="app-teal" className="arch-tag-row">
             <ExternalLinkIcon size={18} />
             <span>{t('arch.detail.sourceTip')}</span>
             <Link to={data.record.sourceUrl}>

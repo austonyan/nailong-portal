@@ -67,7 +67,7 @@ export default function AdminEduStats() {
       dataIndex: 'completionRate',
       width: 110,
       render: (v) => (
-        <Tag size="small" color={v >= 100 ? 'app-teal' : 'app-yellow'} variant="soft">
+        <Tag size="small" color={v >= 100 ? 'app-green' : 'app-blue'} variant="soft">
           {v}%
         </Tag>
       ),
@@ -77,9 +77,11 @@ export default function AdminEduStats() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('edu.admin.stats.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('edu.admin.stats.title')}
+          </Title>
+        </h1>
       </div>
 
       <div className="edu-stat-grid">

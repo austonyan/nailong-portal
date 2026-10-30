@@ -52,7 +52,7 @@ export default function AdminResVerify() {
 
   const RESULT_COLORS = {
     valid: 'app-green',
-    not_found: 'app-orange',
+    not_found: 'brown',
     rate_limited: 'app-red',
   };
 
@@ -64,7 +64,7 @@ export default function AdminResVerify() {
       dataIndex: 'result',
       width: 120,
       render: (v) => (
-        <Tag color={RESULT_COLORS[v] || 'default'} variant="soft">
+        <Tag color={RESULT_COLORS[v] || 'brown'} variant="soft">
           {t(`res.admin.verify.result.${v}`, { defaultValue: t('common.unknown') })}
         </Tag>
       ),
@@ -77,11 +77,13 @@ export default function AdminResVerify() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.verify.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.verify.title')}</Title>
+        </h1>
       </div>
 
       <Card className="res-info-card">
-        <h4>{t('res.admin.verify.configTitle')}</h4>
+        <h2>{t('res.admin.verify.configTitle')}</h2>
         <p className="muted-text">{t('res.admin.verify.configTip')}</p>
         <div className="res-config-grid">
           <label>
@@ -109,7 +111,7 @@ export default function AdminResVerify() {
       </Card>
 
       <Card>
-        <h4>{t('res.admin.verify.logsTitle')}</h4>
+        <h2 className="block-heading">{t('res.admin.verify.logsTitle')}</h2>
         <Table className="table-fit" columns={columns} dataSource={logs ?? []} loading={logs === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />
       </Card>
     </div>

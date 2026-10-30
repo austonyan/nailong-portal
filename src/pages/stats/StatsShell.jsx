@@ -103,7 +103,7 @@ export default function StatsShell({ permission, children }) {
         }
       >
         <div className="stat-sso-body">
-          <Card color="app-blue" className="stat-sso-card">
+          <Card pattern="app-blue" className="stat-sso-card">
             <div className="stat-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

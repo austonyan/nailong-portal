@@ -73,7 +73,7 @@ export default function VisaMyApplications() {
       dataIndex: 'status',
       width: 120,
       render: (v) => (
-        <Tag color={APPLICATION_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={APPLICATION_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`visa.status.${v}`)}
         </Tag>
       ),
@@ -111,7 +111,9 @@ export default function VisaMyApplications() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('visa.my.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('visa.my.title')}</Title>
+        </h1>
         <div className="table-actions">
           <Button icon={<DownloadIcon />} onClick={exportCsv}>
             {t('visa.my.export')}

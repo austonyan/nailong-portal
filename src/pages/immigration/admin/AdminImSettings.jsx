@@ -10,9 +10,11 @@ export default function AdminImSettings() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('autoApprove.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('autoApprove.title')}
+          </Title>
+        </h1>
       </div>
       <Card>
         <AutoApproveSettings service="immigration" />

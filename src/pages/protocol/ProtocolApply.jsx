@@ -223,14 +223,16 @@ export default function ProtocolApply() {
   return (
     <div className="protocol-apply-page">
       <div className="page-header">
-        <Title size="middle">{draft ? t('protocol.apply.editTitle') : t('protocol.apply.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{draft ? t('protocol.apply.editTitle') : t('protocol.apply.title')}</Title>
+        </h1>
         <p className="muted-text">
           {event.title} · {fmtDateTime(event.startsAt)} · {event.venueName}
         </p>
       </div>
 
       {readOnly && (
-        <Card color="app-yellow">
+        <Card pattern="app-yellow">
           <p>{t('protocol.apply.editLocked', { status: t(`protocol.status.${draft.status}`) })}</p>
         </Card>
       )}
@@ -238,7 +240,7 @@ export default function ProtocolApply() {
       <div className="protocol-apply-layout">
         <div className="protocol-apply-main">
           <Card className="protocol-form-card">
-            <h4>{t('protocol.apply.infoSection')}</h4>
+            <h2>{t('protocol.apply.infoSection')}</h2>
             <div className="protocol-form-grid">
               <label className="protocol-field">
                 <span>{t('protocol.field.nickname')} *</span>
@@ -259,7 +261,7 @@ export default function ProtocolApply() {
               </label>
             </div>
 
-            <h4>{t('protocol.apply.identitySection')}</h4>
+            <h2>{t('protocol.apply.identitySection')}</h2>
             <Radio
               value={form.identityType}
               onChange={(v) => update({ identityType: String(v) })}
@@ -284,7 +286,7 @@ export default function ProtocolApply() {
               </div>
             )}
 
-            <h4>{t('protocol.apply.companionsSection')}</h4>
+            <h2>{t('protocol.apply.companionsSection')}</h2>
             <p className="muted-text">{t('protocol.apply.companionsHint', { max: maxCompanions })}</p>
             {form.companions.map((c, i) => (
               <div key={i} className="protocol-companion-row">
@@ -322,7 +324,7 @@ export default function ProtocolApply() {
               </Button>
             )}
 
-            <h4>{t('protocol.apply.noteSection')}</h4>
+            <h2>{t('protocol.apply.noteSection')}</h2>
             <TextArea
               rows={3}
               value={form.note}
@@ -333,14 +335,14 @@ export default function ProtocolApply() {
           </Card>
 
           <Card className="protocol-form-card">
-            <h4>{t('protocol.apply.materialsSection')}</h4>
+            <h2>{t('protocol.apply.materialsSection')}</h2>
             <p className="muted-text">{t('protocol.apply.materialsHint')}</p>
             {materialsRequired.length > 0 && (
               <ul className="protocol-material-req">
                 {materialsRequired.map((m) => (
                   <li key={`${m.kind}-${m.required ? 1 : 0}`}>
                     <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
-                    <Tag color={m.required ? 'app-orange' : 'default'} size="small" variant="soft">
+                    <Tag color={m.required ? 'warm-peach-pink' : 'brown'} size="small" variant="soft">
                       {m.required ? t('protocol.common.required') : t('protocol.common.optional')}
                     </Tag>
                   </li>
@@ -396,7 +398,7 @@ export default function ProtocolApply() {
 
         <aside className="protocol-apply-side">
           <Card>
-            <h4>{t('protocol.apply.summary')}</h4>
+            <h2>{t('protocol.apply.summary')}</h2>
             <div className="protocol-summary-row">
               <span>{t('protocol.field.partySize')}</span>
               <strong>{partySize}</strong>

@@ -124,9 +124,11 @@ export default function ArchRecords() {
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <Title size="middle" color="brown">
-          {t('arch.catalog.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('arch.catalog.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

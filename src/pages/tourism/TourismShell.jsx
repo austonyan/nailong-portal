@@ -103,7 +103,7 @@ export default function TourismShell({ permission, children }) {
         }
       >
         <div className="tour-sso-body">
-          <Card color="app-pink" className="tour-sso-card">
+          <Card pattern="app-pink" className="tour-sso-card">
             <div className="tour-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

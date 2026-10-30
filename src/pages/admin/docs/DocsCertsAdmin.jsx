@@ -10,6 +10,9 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
+// 证书状态配色按 UI 规范收敛:已过期用中性棕(共享表仍是 default)。
+const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+
 export default function DocsCertsAdmin() {
   const { t } = useTranslation();
   const [items, setItems] = useState(null);
@@ -101,7 +104,7 @@ export default function DocsCertsAdmin() {
       dataIndex: 'status',
       width: 90,
       render: (v) => (
-        <Tag color={CERT_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`docs.certStatus.${v}`)}
         </Tag>
       ),
@@ -136,7 +139,9 @@ export default function DocsCertsAdmin() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.admin.certs.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.admin.certs.title')}</Title>
+        </h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">

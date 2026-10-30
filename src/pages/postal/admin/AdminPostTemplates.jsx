@@ -159,9 +159,11 @@ export default function AdminPostTemplates() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="app-orange">
-          {t('post.admin.templates.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('post.admin.templates.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

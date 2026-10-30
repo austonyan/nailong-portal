@@ -6,6 +6,12 @@ import { Button, Card, Table, Tag, Title } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { StampIcon, fmtDateTime, toastTourError } from './shared.jsx';
 
+const STAMP_STATUS_COLORS = {
+  entered: 'app-teal',
+  exited: 'app-blue',
+  invalid: 'app-red',
+};
+
 export default function TourismCollection() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -40,9 +46,11 @@ export default function TourismCollection() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-yellow">
-          {t('tour.collection.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('tour.collection.title')}
+          </Title>
+        </h1>
         <Button size="small" onClick={() => navigate('/tourism/attractions')}>
           {t('tour.collection.moreCheckins')}
         </Button>
@@ -83,7 +91,7 @@ export default function TourismCollection() {
                   <Tag size="small" color="app-teal" variant="soft">
                     {t(`tour.stamp.style.${stamp.stampStyle}`)}
                   </Tag>
-                  <Tag size="small" variant="soft">
+                  <Tag size="small" color={STAMP_STATUS_COLORS[stamp.status] || 'brown'} variant="soft">
                     {t(`tour.stamp.status.${stamp.status}`)}
                   </Tag>
                 </div>

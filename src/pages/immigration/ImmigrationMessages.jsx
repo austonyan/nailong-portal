@@ -49,9 +49,11 @@ export default function ImmigrationMessages() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('imm.msg.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('imm.msg.title')}
+          </Title>
+        </h1>
         <Button
           type="text"
           size="small"
@@ -86,7 +88,7 @@ export default function ImmigrationMessages() {
               {!m.read && <Badge dot color="app-red" />}
               <b>{m.title}</b>
               <span className="muted-text">{fmtDateTime(m.created_at)}</span>
-              <Tag size="small">{t(`imm.msg.template.${m.templateCode}`, { defaultValue: t('common.unknown') })}</Tag>
+              <Tag size="small" color="app-blue" variant="soft">{t(`imm.msg.template.${m.templateCode}`, { defaultValue: t('common.unknown') })}</Tag>
             </div>
             <p className="im-ann-body">{m.body}</p>
             <div className="im-msg-actions">

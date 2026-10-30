@@ -61,12 +61,14 @@
 }
 
 .postal-nav-link:hover {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .postal-nav-link.active {
-  background: var(--animal-primary-color);
-  color: var(--animal-bg-color);
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
 }
 
 .postal-nav-divider {
@@ -117,8 +119,7 @@
 .postal-hero-sub {
   margin: 0;
   font-size: 15px;
-  /* 横幅是深色 app-blue 卡片,secondary 文字色只有约 1.1:1 对比度,改用暖底色做浅字 */
-  color: var(--animal-bg-color);
+  /* 横幅是 pattern 花纹卡(浅底深字),直接用卡片自带的文字色,不再覆盖成浅字 */
   max-width: 640px;
 }
 
@@ -250,12 +251,6 @@
   border: var(--animal-border-width) solid var(--animal-border-color);
   border-radius: var(--animal-border-radius-lg);
   resize: vertical;
-  outline: none;
-}
-
-.postal-textarea:focus {
-  border-color: var(--animal-focus-yellow);
-  box-shadow: 0 0 0 3px var(--animal-primary-color-bg);
 }
 
 .postal-textarea::placeholder {

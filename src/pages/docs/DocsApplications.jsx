@@ -10,6 +10,14 @@ import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'draft', 'pending', 'supplementing', 'approved', 'rejected', 'withdrawn'];
 
+// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿中性棕(共享表仍是旧色)。
+const STATUS_COLORS = {
+  ...APPLICATION_STATUS_COLORS,
+  draft: 'brown',
+  pending: 'warm-peach-pink',
+  supplementing: 'warm-peach-pink',
+};
+
 export default function DocsApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -55,7 +63,7 @@ export default function DocsApplications() {
       dataIndex: 'status',
       width: 100,
       render: (v) => (
-        <Tag color={APPLICATION_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`docs.status.${v}`)}
         </Tag>
       ),
@@ -86,7 +94,9 @@ export default function DocsApplications() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.appList.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.appList.title')}</Title>
+        </h1>
         <div className="docs-filter">
           <Select
             value={status}

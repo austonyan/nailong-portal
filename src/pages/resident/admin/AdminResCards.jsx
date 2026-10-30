@@ -100,7 +100,7 @@ export default function AdminResCards() {
       dataIndex: 'status',
       width: 110,
       render: (v) => (
-        <Tag color={CARD_STATUS_COLORS[v] || 'default'} variant="soft">
+        <Tag color={CARD_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`res.cardStatus.${v}`)}
         </Tag>
       ),
@@ -140,7 +140,9 @@ export default function AdminResCards() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <Title size="middle">{t('res.admin.cards.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('res.admin.cards.title')}</Title>
+        </h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}

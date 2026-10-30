@@ -67,9 +67,11 @@ export default function AdminPostAudit() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <Title size="middle" color="brown">
-          {t('post.admin.audit.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="brown">
+            {t('post.admin.audit.title')}
+          </Title>
+        </h1>
       </div>
 
       <Card>

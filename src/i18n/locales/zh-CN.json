@@ -89,6 +89,7 @@
     "loadFailed": "加载失败,请稍后重试",
     "readState": "已读",
     "unreadState": "未读",
+    "skipToContent": "跳到主内容",
     "unknown": "未知",
     "unitHours": "{{hours}} 小时",
     "unitDays": "{{days}} 天",

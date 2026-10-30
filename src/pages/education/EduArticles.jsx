@@ -38,9 +38,11 @@ export default function EduArticles() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-teal">
-          {t('edu.articles.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-teal">
+            {t('edu.articles.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('edu.articles.tip')}</p>
 
@@ -72,9 +74,9 @@ export default function EduArticles() {
       <div className="edu-grid">
         {(items ?? []).map((item) => (
           <Card key={item.id} className="edu-card" hoverable>
-            <h3 className="edu-card-title">
+            <h2 className="edu-card-title">
               <Link to={`/education/articles/${item.id}`}>{item.title}</Link>
-            </h3>
+            </h2>
             <p className="edu-card-summary">{item.summary}</p>
             <div className="edu-meta">
               <span>{item.no}</span>

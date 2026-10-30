@@ -67,7 +67,9 @@ export default function VisaVerify() {
         <span className="muted-text">{t('visa.officeName')}</span>
       </header>
       <Background type="sprinkles" className="visa-verify-hero">
-        <Title size="large">{t('visa.verify.title')}</Title>
+        <h1 className="page-title">
+          <Title size="large">{t('visa.verify.title')}</Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="visa-hero-sub">{t('visa.verify.subtitle')}</p>
         </Typewriter>
@@ -94,7 +96,7 @@ export default function VisaVerify() {
       </Card>
 
       {result && (
-        <Card className="visa-verify-result" color={result.found ? 'app-teal' : 'app-orange'}>
+        <Card className="visa-verify-result" pattern={result.found ? 'app-teal' : 'app-orange'}>
           {result.found ? (
             <div className="visa-verify-found">
               <div className="visa-verify-row">
@@ -103,7 +105,7 @@ export default function VisaVerify() {
               </div>
               <div className="visa-verify-row">
                 <span className="evisa-label">{t('common.status')}</span>
-                <Tag color={PERMIT_STATUS_COLORS[result.status] || 'default'} variant="solid">
+                <Tag color={PERMIT_STATUS_COLORS[result.status] || 'brown'} variant="soft">
                   {t(`visa.permitStatus.${result.status}`)}
                 </Tag>
               </div>

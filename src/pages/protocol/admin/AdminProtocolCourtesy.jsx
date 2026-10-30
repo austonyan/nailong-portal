@@ -126,7 +126,7 @@ export default function AdminProtocolCourtesy() {
     { title: t('protocol.field.code'), dataIndex: 'code', width: 150 },
     { title: t('protocol.field.name'), dataIndex: 'name', width: 160 },
     { title: t('protocol.field.description'), dataIndex: 'description' },
-    { title: t('common.status'), dataIndex: 'enabled', width: 90, render: (v) => <Tag color={v ? 'app-green' : 'default'} variant="soft">{v ? t('common.enabled') : t('common.disabled')}</Tag> },
+    { title: t('common.status'), dataIndex: 'enabled', width: 90, render: (v) => <Tag color={v ? 'app-green' : 'brown'} variant="soft">{v ? t('common.enabled') : t('common.disabled')}</Tag> },
     {
       title: t('common.actions'),
       width: 100,
@@ -187,7 +187,9 @@ export default function AdminProtocolCourtesy() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.admin.courtesyTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.admin.courtesyTitle')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.admin.courtesySubtitle')}</p>
       </div>
 

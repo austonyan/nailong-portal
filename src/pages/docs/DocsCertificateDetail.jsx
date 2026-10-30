@@ -8,6 +8,9 @@ import { CERT_STATUS_COLORS, exportCertificatePng } from '../../api/docs.js';
 import CertificateView from './CertificateView.jsx';
 import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
+// 证书状态配色按 UI 规范收敛:已过期用中性棕(共享表仍是 default)。
+const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+
 export default function DocsCertificateDetail() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -66,8 +69,10 @@ export default function DocsCertificateDetail() {
     <div className="docs-cert-detail">
       <div className="page-header docs-cert-header">
         <div className="docs-cert-title">
-          <Title size="middle">{t('docs.certDetail.title')}</Title>
-          <Tag color={CERT_STATUS_COLORS[item.status]} variant="soft">
+          <h1 className="page-title">
+            <Title size="middle">{t('docs.certDetail.title')}</Title>
+          </h1>
+          <Tag color={STATUS_COLORS[item.status] || 'brown'} variant="soft">
             {t(`docs.certStatus.${item.status}`)}
           </Tag>
         </div>
@@ -121,14 +126,14 @@ export default function DocsCertificateDetail() {
       </div>
 
       {item.status === 'revoked' && item.revokedReason && (
-        <Card color="app-red" className="docs-band-card">
+        <Card pattern="app-red" className="docs-band-card">
           <strong>{t('docs.certDetail.revokedTitle')}</strong>
           <p>{item.revokedReason}</p>
         </Card>
       )}
 
       <Card className="docs-block">
-        <h3 className="docs-block-title">{t('docs.certDetail.tipsTitle')}</h3>
+        <h2 className="docs-block-title">{t('docs.certDetail.tipsTitle')}</h2>
         <ul className="docs-tips">
           <li>{t('docs.certDetail.tip1')}</li>
           <li>{t('docs.certDetail.tip2')}</li>

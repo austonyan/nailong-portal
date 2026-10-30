@@ -107,7 +107,7 @@ export default function PostalShell({ permission, children }) {
         }
       >
         <div className="postal-sso-body">
-          <Card color="app-blue">
+          <Card pattern="app-blue">
             <div className="postal-sso-identity">
               <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
               <div>

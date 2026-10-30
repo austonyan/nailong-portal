@@ -41,13 +41,22 @@ export default function ArchHome() {
 
   const displayName = user?.displayName || user?.username || '';
 
+  const cardKeyDown = (action) => (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+  };
+
   return (
     <div className="arch-page">
       <ArchNav />
       <Background type="sprinkles" className="arch-hero">
-        <Title size="large" color="brown">
-          {t('arch.home.hero')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="large" color="brown">
+            {t('arch.home.hero')}
+          </Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="arch-hero-sub">{t('arch.home.tagline')}</p>
         </Typewriter>
@@ -76,7 +85,7 @@ export default function ArchHome() {
       </section>
 
       {(data?.activeRequest || (data?.unreadMessages ?? 0) > 0) && (
-        <Card color="app-yellow" className="arch-tag-row">
+        <Card pattern="app-yellow" className="arch-tag-row">
           <ShieldIcon size={18} />
           {data.activeRequest ? (
             <>
@@ -99,14 +108,25 @@ export default function ArchHome() {
       )}
 
       <section>
-        <Title size="middle" color="brown">
-          {t('arch.home.quickEntries')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="brown">
+            {t('arch.home.quickEntries')}
+          </Title>
+        </h2>
         <div className="arch-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
             return (
-              <Card key={entry.key} color={entry.color} hoverable className="arch-quick-card" onClick={() => navigate(entry.to)}>
+              <Card
+                key={entry.key}
+                pattern={entry.color}
+                hoverable
+                role="button"
+                tabIndex={0}
+                className="arch-quick-card"
+                onClick={() => navigate(entry.to)}
+                onKeyDown={cardKeyDown(() => navigate(entry.to))}
+              >
                 <Icon size={28} />
                 <h3>{t(`arch.nav.${entry.key}`)}</h3>
               </Card>
@@ -116,12 +136,22 @@ export default function ArchHome() {
       </section>
 
       <section>
-        <Title size="middle" color="brown">
-          {t('arch.home.catalog')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="brown">
+            {t('arch.home.catalog')}
+          </Title>
+        </h2>
         <div className="arch-type-grid">
           {(data?.recordTypes ?? []).map((type) => (
-            <Card key={type.code} hoverable className="arch-type-card" onClick={() => navigate(`/archives/records?office=${type.office}&type=${type.code}`)}>
+            <Card
+              key={type.code}
+              hoverable
+              role="button"
+              tabIndex={0}
+              className="arch-type-card"
+              onClick={() => navigate(`/archives/records?office=${type.office}&type=${type.code}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/archives/records?office=${type.office}&type=${type.code}`))}
+            >
               <div className="arch-type-head">
                 <h3>{type.name}</h3>
                 <OfficeTag office={type.office} />
@@ -141,9 +171,11 @@ export default function ArchHome() {
       </section>
 
       <section>
-        <Title size="middle" color="brown">
-          {t('arch.home.guides')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="brown">
+            {t('arch.home.guides')}
+          </Title>
+        </h2>
         <div className="arch-guide-list">
           {(data?.guides ?? []).map((guide) => (
             <Collapse key={guide.code} question={guide.title} answer={guide.body} />
@@ -156,7 +188,7 @@ export default function ArchHome() {
         </div>
       </section>
 
-      <Card color="brown" className="arch-note-card">
+      <Card pattern="brown" className="arch-note-card">
         <b>{t('arch.home.noteTitle')}</b>
         <p>{t('arch.home.noteBody')}</p>
       </Card>

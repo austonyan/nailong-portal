@@ -78,7 +78,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
       </div>
 
       {(d.risk?.flags ?? []).length > 0 && (
-        <Card color="app-red" className="im-risk-card">
+        <Card pattern="app-red" className="im-risk-card">
           <b>{t('imm.admin.review.riskFlags')}:</b>
           {d.risk.flags.map((f) => (
             <Tag key={f} color="app-red" variant="soft" size="small">{t(`imm.admin.risk.${f}`)}</Tag>
@@ -269,9 +269,11 @@ export default function AdminImReview() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <Title size="middle" color="app-orange">
-          {t('imm.admin.review.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-orange">
+            {t('imm.admin.review.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('imm.admin.review.queueNote')}</p>
 

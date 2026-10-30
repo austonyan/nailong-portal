@@ -5,7 +5,7 @@ import {
   Button, Card, Collapse, Drawer, Input, Modal, Select, Tag, Title } from 'animal-island-ui';
 import { PlusIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { TextArea, TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { TextArea, TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, PRIORITY_COLORS, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
@@ -108,7 +108,9 @@ export default function AppealTickets() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <Title size="middle">{t('appeal.ticket.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('appeal.ticket.title')}</Title>
+        </h1>
         <div className="table-actions appeal-filter-bar">
           <Button type="primary" icon={<PlusIcon />} onClick={() => setCreateOpen(true)}>
             {t('appeal.ticket.create')}
@@ -128,13 +130,21 @@ export default function AppealTickets() {
       )}
 
       {(items ?? []).map((tk) => (
-        <Card key={tk.id} hoverable className="appeal-item-card" onClick={() => openDetail(tk)}>
+        <Card
+          key={tk.id}
+          hoverable
+          className="appeal-item-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => openDetail(tk)}
+          onKeyDown={(e) => activateByKey(e, () => openDetail(tk))}
+        >
           <div className="appeal-item-head">
             <strong>{tk.code}</strong>
-            <Tag color={TICKET_STATUS_COLORS[tk.status] || 'default'} variant="soft">
+            <Tag color={TICKET_STATUS_COLORS[tk.status] || 'brown'} variant="soft">
               {t(`appeal.ticketStatus.${tk.status}`)}
             </Tag>
-            <Tag variant="outlined">{t(`appeal.ticketPriority.${tk.priority}`)}</Tag>
+            <Tag color={PRIORITY_COLORS[tk.priority] || 'brown'} variant="soft">{t(`appeal.ticketPriority.${tk.priority}`)}</Tag>
           </div>
           <p className="muted-text">
             {t(`appeal.ticketCategory.${tk.category}`)} · {t('appeal.my.submittedAt', { time: fmtDateTime(tk.submittedAt || tk.createdAt) })}
@@ -144,7 +154,7 @@ export default function AppealTickets() {
       ))}
 
       <Card className="appeal-faq-card">
-        <h4>{t('appeal.ticket.faqTitle')}</h4>
+        <h2 className="block-heading">{t('appeal.ticket.faqTitle')}</h2>
         <Input
           size="large"
           allowClear
@@ -200,10 +210,10 @@ export default function AppealTickets() {
               <div>
                 <dt>{t('common.status')}</dt>
                 <dd>
-                  <Tag color={TICKET_STATUS_COLORS[detail.status] || 'default'} variant="soft">
+                  <Tag color={TICKET_STATUS_COLORS[detail.status] || 'brown'} variant="soft">
                     {t(`appeal.ticketStatus.${detail.status}`)}
                   </Tag>
-                  <Tag variant="outlined">{t(`appeal.ticketCategory.${detail.category}`)}</Tag>
+                  <Tag variant="outlined" color="brown">{t(`appeal.ticketCategory.${detail.category}`)}</Tag>
                 </dd>
               </div>
               <div>
@@ -215,7 +225,7 @@ export default function AppealTickets() {
                 <dd>{detail.erased ? t('common.erased') : detail.content}</dd>
               </div>
             </dl>
-            <h4>{t('appeal.ticket.threadTitle')}</h4>
+            <h2 className="block-heading">{t('appeal.ticket.threadTitle')}</h2>
             <ul className="appeal-ticket-thread">
               {detail.replies.map((r) => (
                 <li key={r.id} className={r.isStaff ? 'staff' : 'user'}>

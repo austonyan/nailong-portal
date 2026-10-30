@@ -6,6 +6,16 @@ import { ClipboardIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastError } from '../../components/toast.js';
 
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
+
 export default function DocsTypes() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,14 +61,24 @@ export default function DocsTypes() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('docs.types.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('docs.types.title')}</Title>
+        </h1>
       </div>
       <div className="portal-grid">
         {types.map((tp) => (
-          <Card key={tp.code} hoverable className="docs-type-card docs-type-card-lg" onClick={() => setFocus(tp)}>
+          <Card
+            key={tp.code}
+            hoverable
+            className="docs-type-card docs-type-card-lg"
+            role="button"
+            tabIndex={0}
+            onClick={() => setFocus(tp)}
+            onKeyDown={cardKeyDown(() => setFocus(tp))}
+          >
             <div className="docs-type-head">
-              <h3 className="docs-type-name">{tp.name}</h3>
-              <Tag size="small" variant="outlined">
+              <h2 className="docs-type-name">{tp.name}</h2>
+              <Tag size="small" color="brown" variant="outlined">
                 {tp.code}
               </Tag>
             </div>
@@ -116,9 +136,9 @@ export default function DocsTypes() {
         {focus && (
           <div className="docs-type-detail">
             <p>{focus.description}</p>
-            <h4>{t('docs.types.guideTitle')}</h4>
+            <h2>{t('docs.types.guideTitle')}</h2>
             <p className="docs-guide-text">{focus.guide || t('docs.types.guideEmpty')}</p>
-            <h4>{t('docs.types.materialsTitle')}</h4>
+            <h2>{t('docs.types.materialsTitle')}</h2>
             <ul className="docs-material-list">
               {(focus.materials || []).map((m) => (
                 <li key={m.key}>
@@ -128,7 +148,7 @@ export default function DocsTypes() {
                       {t('docs.apply.required')}
                     </Tag>
                   ) : (
-                    <Tag size="small" variant="soft">
+                    <Tag size="small" color="brown" variant="soft">
                       {t('common.optional')}
                     </Tag>
                   )}
@@ -139,7 +159,7 @@ export default function DocsTypes() {
               ))}
               {(focus.materials || []).length === 0 && <li className="muted-text">{t('docs.types.materialsEmpty')}</li>}
             </ul>
-            <h4>{t('docs.types.formTitle')}</h4>
+            <h2>{t('docs.types.formTitle')}</h2>
             <ul className="docs-material-list">
               <li>
                 {t('docs.apply.nickname')} / {t('docs.apply.contact')} /{' '}
@@ -148,11 +168,11 @@ export default function DocsTypes() {
               {(focus.formFields || []).map((f) => (
                 <li key={f.key}>
                   {f.label}
-                  {f.required ? <Tag size="small" color="app-red" variant="soft">{t('docs.apply.required')}</Tag> : <Tag size="small" variant="soft">{t('common.optional')}</Tag>}
+                  {f.required ? <Tag size="small" color="app-red" variant="soft">{t('docs.apply.required')}</Tag> : <Tag size="small" color="brown" variant="soft">{t('common.optional')}</Tag>}
                 </li>
               ))}
             </ul>
-            <h4>{t('docs.types.shownTitle')}</h4>
+            <h2>{t('docs.types.shownTitle')}</h2>
             <p className="muted-text">{t('docs.types.shownBody')}</p>
           </div>
         )}

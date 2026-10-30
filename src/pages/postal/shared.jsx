@@ -44,21 +44,24 @@ export const POSTAL_SOURCES = [
   'system',
 ];
 
+// 状态标签配色(与全站语义表一致):重要 → warm-peach-pink,草稿/失效 → brown,
+// 已寄出(已提交)→ app-blue,已签收 → app-green,已下架 → app-red。
+// 标签文字上不再出现 app-yellow / app-orange / lime-green / yellow-green / default。
 export const NOTICE_LEVEL_COLORS = {
   info: 'app-blue',
-  important: 'app-yellow',
+  important: 'warm-peach-pink',
   event: 'app-pink',
 };
 
 export const NOTICE_STATUS_COLORS = {
-  draft: 'default',
+  draft: 'brown',
   published: 'app-green',
   offline: 'brown',
 };
 
 export const POSTCARD_STATUS_COLORS = {
-  draft: 'default',
-  sent: 'app-yellow',
+  draft: 'brown',
+  sent: 'app-blue',
   received: 'app-green',
   taken_down: 'app-red',
 };

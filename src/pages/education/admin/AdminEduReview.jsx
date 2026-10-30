@@ -170,9 +170,11 @@ export default function AdminEduReview() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle" color="app-yellow">
-          {t('edu.admin.review.title')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="middle" color="app-yellow">
+            {t('edu.admin.review.title')}
+          </Title>
+        </h1>
       </div>
       <p className="muted-text">{t('edu.admin.review.tip')}</p>
 

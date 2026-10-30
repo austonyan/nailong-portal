@@ -54,7 +54,9 @@ export default function ResidentVerify() {
         <span className="muted-text">{t('res.officeName')}</span>
       </header>
       <Background type="sprinkles" className="res-verify-hero">
-        <Title size="large">{t('res.verify.title')}</Title>
+        <h1 className="page-title">
+          <Title size="large">{t('res.verify.title')}</Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="res-hero-sub">{t('res.verify.subtitle')}</p>
         </Typewriter>
@@ -80,7 +82,7 @@ export default function ResidentVerify() {
       </Card>
 
       {result && (
-        <Card className="res-verify-result" color={result.found ? 'app-green' : 'app-orange'}>
+        <Card className="res-verify-result" pattern={result.found ? 'app-green' : 'app-orange'}>
           {result.found ? (
             <div className="res-verify-found">
               <div className="res-verify-row">
@@ -89,7 +91,7 @@ export default function ResidentVerify() {
               </div>
               <div className="res-verify-row">
                 <span className="res-card-label">{t('common.status')}</span>
-                <Tag color={CARD_STATUS_COLORS[result.status] || 'default'} variant="solid">
+                <Tag color={CARD_STATUS_COLORS[result.status] || 'brown'} variant="soft">
                   {t(`res.cardStatus.${result.status}`)}
                 </Tag>
               </div>

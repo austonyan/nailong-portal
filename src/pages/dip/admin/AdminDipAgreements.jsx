@@ -168,7 +168,7 @@ export default function AdminDipAgreements() {
       title: t('dip.agreement.published'),
       dataIndex: 'published',
       width: 80,
-      render: (v) => (v ? <Tag color="app-green" variant="soft">{t('dip.agreement.published')}</Tag> : <Tag>{t('dip.agreement.unpublished')}</Tag>),
+      render: (v) => (v ? <Tag color="app-green" variant="soft">{t('dip.agreement.published')}</Tag> : <Tag color="brown" variant="soft">{t('dip.agreement.unpublished')}</Tag>),
     },
     { title: t('dip.agreement.updatedAt'), dataIndex: 'updatedAt', width: 150, render: (v) => fmtDateTime(v) },
     {
@@ -194,7 +194,9 @@ export default function AdminDipAgreements() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <Title size="middle" color="purple">{t('dip.agreement.adminTitle')}</Title>
+        <h1 className="page-title">
+          <Title size="middle" color="purple">{t('dip.agreement.adminTitle')}</Title>
+        </h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setModal({ effectiveFrom: dayjs().format('YYYY-MM-DD') })}>
           {t('dip.agreement.create')}
         </Button>

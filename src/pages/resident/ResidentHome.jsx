@@ -5,7 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
 import { BadgeCheckIcon, BellIcon, ClipboardIcon, HelpCircleIcon, ListIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { NOTICE_LEVEL_COLORS, fmtDateTime, toastResError } from './shared.jsx';
+import {
+  APPLICATION_STATUS_COLORS,
+  CARD_STATUS_COLORS,
+  NOTICE_LEVEL_COLORS,
+  fmtDateTime,
+  toastResError,
+} from './shared.jsx';
 
 const QUICK_ENTRIES = [
   { to: '/resident/apply', key: 'apply', icon: ClipboardIcon, color: 'app-green' },
@@ -18,6 +24,16 @@ const QUICK_ENTRIES = [
 const GUIDE_KEYS = ['conditions', 'materials', 'duration', 'rights'];
 
 const FAQ_KEYS = ['realWorld', 'fee', 'howLong', 'rejected'];
+
+// Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
+function cardKeyDown(handler) {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handler();
+    }
+  };
+}
 
 export default function ResidentHome() {
   const { t } = useTranslation();
@@ -43,26 +59,28 @@ export default function ResidentHome() {
   return (
     <div className="res-home">
       <Background type="sprinkles" className="res-hero">
-        <Title size="large" color="app-green">
-          {t('res.home.hero')}
-        </Title>
+        <h1 className="page-title">
+          <Title size="large" color="app-green">
+            {t('res.home.hero')}
+          </Title>
+        </h1>
         <Typewriter speed={35}>
           <p className="res-hero-sub">{t('res.home.tagline')}</p>
         </Typewriter>
       </Background>
 
       <section className="res-home-status">
-        <Card className="res-status-card" color={home?.myCard ? 'app-green' : 'app-teal'}>
+        <Card className="res-status-card" pattern={home?.myCard ? 'app-green' : 'app-teal'}>
           <div className="res-status-head">
             <BadgeCheckIcon size={20} />
             <span>{t('res.home.myResidency')}</span>
           </div>
           {home?.myCard ? (
             <>
-              <h3 className="res-status-name">{home.myCard.nickname || home.myCard.cardNo}</h3>
+              <h2 className="res-status-name">{home.myCard.nickname || home.myCard.cardNo}</h2>
               <p className="muted-text">{home.myCard.cardNo}</p>
               <div className="res-status-tags">
-                <Tag color="app-green" variant="soft">
+                <Tag color={CARD_STATUS_COLORS[home.myCard.status] || 'brown'} variant="soft">
                   {t(`res.cardStatus.${home.myCard.status}`)}
                 </Tag>
               </div>
@@ -83,7 +101,7 @@ export default function ResidentHome() {
             <>
               <h3 className="res-status-name">{home.myApplication.appNo}</h3>
               <div className="res-status-tags">
-                <Tag color="app-yellow" variant="soft">
+                <Tag color={APPLICATION_STATUS_COLORS[home.myApplication.status] || 'brown'} variant="soft">
                   {t(`res.appStatus.${home.myApplication.status}`)}
                 </Tag>
               </div>
@@ -112,14 +130,25 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <Title size="middle" color="app-green">
-          {t('res.home.quickEntries')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-green">
+            {t('res.home.quickEntries')}
+          </Title>
+        </h2>
         <div className="res-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
             return (
-              <Card key={entry.key} color={entry.color} hoverable className="res-quick-card" onClick={() => navigate(entry.to)}>
+              <Card
+                key={entry.key}
+                pattern={entry.color}
+                hoverable
+                className="res-quick-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(entry.to)}
+                onKeyDown={cardKeyDown(() => navigate(entry.to))}
+              >
                 <Icon size={30} />
                 <h3>{t(`res.nav.${entry.key}`)}</h3>
               </Card>
@@ -131,12 +160,22 @@ export default function ResidentHome() {
       <Divider type="wave-yellow" />
 
       <section>
-        <Title size="middle" color="app-teal">
-          {t('res.home.types')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-teal">
+            {t('res.home.types')}
+          </Title>
+        </h2>
         <div className="res-type-grid">
           {(home?.types ?? []).map((type) => (
-            <Card key={type.code} hoverable className="res-type-card" onClick={() => navigate(`/resident/guide#${type.code}`)}>
+            <Card
+              key={type.code}
+              hoverable
+              className="res-type-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/resident/guide#${type.code}`)}
+              onKeyDown={cardKeyDown(() => navigate(`/resident/guide#${type.code}`))}
+            >
               <div className="res-type-head">
                 <b>{type.name}</b>
                 <Tag color="app-green" variant="soft" size="small">
@@ -156,7 +195,9 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <Title size="middle">{t('res.home.guide')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('res.home.guide')}</Title>
+        </h2>
         <div className="res-faq">
           {GUIDE_KEYS.map((key) => (
             <Collapse key={key} question={t(`res.home.guideItems.${key}.q`)} answer={t(`res.home.guideItems.${key}.a`)} />
@@ -165,14 +206,16 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <Title size="middle" color="app-orange">
-          {t('res.home.announcements')}
-        </Title>
+        <h2 className="section-title">
+          <Title size="middle" color="app-orange">
+            {t('res.home.announcements')}
+          </Title>
+        </h2>
         <div className="res-ann-list">
           {(home?.notices ?? []).map((n) => (
             <Card key={n.id} className="res-ann-item">
               <div className="res-ann-head">
-                <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'default'} variant="soft" size="small">
+                <Tag color={NOTICE_LEVEL_COLORS[n.level] || 'brown'} variant="soft" size="small">
                   {t(`res.noticeLevel.${n.level}`)}
                 </Tag>
                 <b>{n.title}</b>
@@ -190,7 +233,9 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <Title size="middle">{t('res.home.faq')}</Title>
+        <h2 className="section-title">
+          <Title size="middle">{t('res.home.faq')}</Title>
+        </h2>
         <div className="res-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`res.faq.${key}.q`)} answer={t(`res.faq.${key}.a`)} />

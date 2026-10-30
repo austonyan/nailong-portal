@@ -55,11 +55,13 @@ export default function ProtocolInvitations() {
   return (
     <div>
       <div className="page-header">
-        <Title size="middle">{t('protocol.invitations.title')}</Title>
+        <h1 className="page-title">
+          <Title size="middle">{t('protocol.invitations.title')}</Title>
+        </h1>
         <p className="muted-text">{t('protocol.invitations.subtitle')}</p>
       </div>
 
-      <Card color="app-blue" className="protocol-info-card">
+      <Card pattern="app-blue" className="protocol-info-card">
         <MailIcon size={20} />
         <p>{t('protocol.invitations.usage')}</p>
       </Card>
@@ -76,7 +78,7 @@ export default function ProtocolInvitations() {
               <Tag color="app-teal" variant="solid">{inv.typeName}</Tag>
               <StatusTag status={inv.status} />
             </div>
-            <h3>{inv.eventTitle}</h3>
+            <h2>{inv.eventTitle}</h2>
             <p className="protocol-invitation-no">{inv.inviteNo}</p>
             <div className="protocol-event-meta">
               <span><CalendarIcon size={14} /> {fmtDateTime(inv.eventStartsAt)}</span>
@@ -84,7 +86,7 @@ export default function ProtocolInvitations() {
             </div>
             <div className="protocol-invitation-meta">
               <Tag variant="outlined" size="small">{t('protocol.invitations.validUntil', { date: fmtDate(inv.validUntil) })}</Tag>
-              <Tag variant="outlined" size="small" color={inv.response === 'accepted' ? 'app-green' : inv.response === 'declined' ? 'app-red' : 'default'}>
+              <Tag variant="soft" size="small" color={inv.response === 'accepted' ? 'app-green' : inv.response === 'declined' ? 'app-red' : 'warm-peach-pink'}>
                 {t(`protocol.invitations.response_${inv.response}`)}
               </Tag>
             </div>
