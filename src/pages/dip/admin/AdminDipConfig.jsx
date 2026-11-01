@@ -2,10 +2,10 @@
 // (编号规则、补件天数、限流)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
-import { DipAdminNav, TextArea, toastDipError } from '../../../components/dip/shared.jsx';
+import { TextArea, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 
 function TypeEditModal({ kind, initial, onClose, onSaved }) {
@@ -167,7 +167,6 @@ export default function AdminDipConfig() {
   if (!data) {
     return (
       <div className="dip-page">
-        <DipAdminNav />
         <p className="muted-text">{t('common.loading')}</p>
       </div>
     );
@@ -175,9 +174,8 @@ export default function AdminDipConfig() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.admin.config.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.admin.config.title')}</Title></h1>
       </div>
 
       <Card>

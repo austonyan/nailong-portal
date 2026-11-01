@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DECISION_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
@@ -29,7 +29,7 @@ export default function AppealDecisions() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.decision.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.decision.title')}</Title></h1>
       </div>
 
       {items === null && (

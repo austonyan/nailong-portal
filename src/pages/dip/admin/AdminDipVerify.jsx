@@ -1,10 +1,10 @@
 // 验真管理: 验真记录查询 / 限流配置 / 风控与黑名单。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 
@@ -157,9 +157,8 @@ export default function AdminDipVerify() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.admin.verifyAdmin.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.admin.verifyAdmin.title')}</Title></h1>
         <div className="dip-msg-filter">
           <Button type={tab === 'logs' ? 'primary' : 'default'} size="small" onClick={() => setTab('logs')}>{t('dip.admin.verifyAdmin.tabLogs')}</Button>
           <Button type={tab === 'risk' ? 'primary' : 'default'} size="small" onClick={() => setTab('risk')}>{t('dip.admin.verifyAdmin.tabRisk')}</Button>

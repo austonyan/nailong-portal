@@ -1,11 +1,11 @@
 // 审计查看:景点/内容/徽章/配置与打卡的全部敏感动作记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table } from 'animal-island-ui';
+import { Title, Button, Card, Input, Table } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { fmtDateTime, toastTourError } from '../shared.jsx';
-import { TourAdminNav } from '../TourismShell.jsx';
+
 
 export default function AdminTourAudit() {
   const { t } = useTranslation();
@@ -48,9 +48,8 @@ export default function AdminTourAudit() {
 
   return (
     <div>
-      <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('tour.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.admin.audit.title')}</Title></h1>
       </div>
 
       <Card>

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, ClockIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag, pickLocalized } from '../../../components/immigration/shared.jsx';
+import { StatusTag, pickLocalized } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 import { fmtDateTime } from '../../../lib/date.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
@@ -266,9 +266,8 @@ export default function AdminImReview() {
 
   return (
     <div className="im-page">
-      <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.admin.review.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.admin.review.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('imm.admin.review.queueNote')}</p>
 

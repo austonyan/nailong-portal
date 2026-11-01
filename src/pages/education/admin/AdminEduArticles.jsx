@@ -2,7 +2,7 @@
 // 同一套状态机与审核队列。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ConfirmModal, StatusTag, TextArea, fmtDateTime, toastEduError } from '../shared.jsx';
@@ -189,7 +189,7 @@ export default function AdminEduArticles() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.admin.articles.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.admin.articles.title')}</Title></h1>
       </div>
 
       <Card>

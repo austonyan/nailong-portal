@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Form, FormItem, Input, useForm } from 'animal-island-ui';
 import AuthLayout from '../components/AuthLayout.jsx';
 import LanguageSelect from '../components/LanguageSelect.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
@@ -43,7 +43,7 @@ export default function Register() {
         <LanguageSelect />
       </div>
       <Card>
-        <h1 className="page-title">{t('auth.registerTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('auth.registerTitle')}</Title></h1>
         <p className="muted-text auth-subtitle">{t('auth.registerSubtitle')}</p>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <FormItem

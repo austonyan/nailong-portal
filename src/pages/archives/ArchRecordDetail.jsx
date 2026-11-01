@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, ExternalLinkIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { OfficeTag, RecordStatusTag, fmtDate, fmtDateTime, toastArchError } from './shared.jsx';
@@ -49,7 +49,7 @@ export default function ArchRecordDetail() {
   return (
     <div className="arch-page">
       <div className="page-header">
-        <h1 className="page-title">{t('arch.detail.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.detail.title')}</Title></h1>
         <div className="table-actions">
           <Button type="text" icon={<ArrowLeftIcon />} onClick={() => navigate('/archives/records')}>
             {t('arch.detail.back')}

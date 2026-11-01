@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Tag } from 'animal-island-ui';
 import { CompassIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { StatusTag, fmtDate } from '../../components/dip/shared.jsx';
@@ -54,7 +54,7 @@ export default function DipVerify() {
       <Card className="dip-verify-card">
         <div className="dip-verify-head">
           <CompassIcon size={24} />
-          <h1 className="page-title">{t('dip.verify.title')}</h1>
+          <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.verify.title')}</Title></h1>
         </div>
         <p className="muted-text">{t('dip.verify.tip')}</p>
 

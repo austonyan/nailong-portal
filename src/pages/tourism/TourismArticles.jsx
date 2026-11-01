@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Select, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Select, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { ARTICLE_TYPES, ARTICLE_TYPE_COLORS, fmtDate, toastTourError } from './shared.jsx';
@@ -48,7 +48,7 @@ export default function TourismArticles() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('tour.articles.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.articles.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('tour.articles.tip')}</p>
 

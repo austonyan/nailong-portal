@@ -1,16 +1,7 @@
 // 接待方认证:登记、材料上传、状态追踪、认证证书与权限展示。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Select,
-  Tag,
-  Upload,
-} from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Tag, Upload } from 'animal-island-ui';
 import { BadgeCheckIcon, EyeIcon, PlusIcon, SendIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -167,7 +158,7 @@ export default function ProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.hosts.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.hosts.title')}</Title></h1>
         <p className="muted-text">{t('protocol.hosts.subtitle')}</p>
       </div>
 

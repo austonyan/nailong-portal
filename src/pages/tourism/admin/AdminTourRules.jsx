@@ -1,12 +1,12 @@
 // 打卡规则配置:每用户每日打卡上限 + 全站每日打卡上限(0 = 不限)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input } from 'animal-island-ui';
+import { Title, Button, Card, Input } from 'animal-island-ui';
 import { ClipboardIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
 import { toastTourError } from '../shared.jsx';
-import { TourAdminNav } from '../TourismShell.jsx';
+
 
 export default function AdminTourRules() {
   const { t } = useTranslation();
@@ -58,9 +58,8 @@ export default function AdminTourRules() {
 
   return (
     <div>
-      <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('tour.admin.rules.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.admin.rules.title')}</Title></h1>
       </div>
 
       <Card className="tour-config-card">

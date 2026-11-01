@@ -1,10 +1,10 @@
 // 居民卡管理:状态管理、冻结/解冻/注销(原因+审计)、补发与到期批量提醒。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { BellIcon, RefreshIcon, SnowflakeIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { CARD_STATUS_COLORS, TextArea, fmtDate, toastResError } from '../shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
@@ -138,9 +138,8 @@ export default function AdminResCards() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.cards.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.cards.title')}</Title></h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}

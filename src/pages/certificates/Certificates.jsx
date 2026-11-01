@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { LinkIcon } from 'naive-icons';
 import { fmtDate } from '../../lib/date.js';
 import { api } from '../../api/client.js';
@@ -117,7 +117,7 @@ export default function Certificates() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('certificates.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('certificates.title')}</Title></h1>
         <p className="muted-text">{t('certificates.subtitle')}</p>
         {expiringCount > 0 && (
           <Card type="dashed" className="certificates-expiring">

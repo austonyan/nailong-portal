@@ -7,85 +7,6 @@
   gap: 18px;
 }
 
-.stat-office-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  background: var(--animal-bg-color-secondary);
-  border: var(--animal-border-width) solid var(--animal-border-color-light);
-  border-radius: var(--animal-border-radius-lg);
-}
-
-.stat-office-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.stat-office-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--animal-border-radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
-}
-
-.stat-office-name {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.stat-office-sub {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--animal-text-color-muted);
-}
-
-.stat-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px;
-  background: var(--animal-bg-color-secondary);
-  border-radius: 999px;
-  border: var(--animal-border-width) solid var(--animal-border-color-light);
-}
-
-.stat-nav-link {
-  padding: 8px 16px;
-  border-radius: 999px;
-  color: var(--animal-text-color-secondary);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.stat-nav-link:hover {
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-text-color);
-}
-
-.stat-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
-}
-
-.stat-admin-nav {
-  margin-bottom: 4px;
-}
-
 .stat-hero {
   border-radius: var(--animal-border-radius-lg);
   padding: 32px;
@@ -353,36 +274,31 @@
 
 .stat-required {
   color: var(--animal-error-color);
-}
-
-@media (max-width: 640px) {
-  .stat-hero {
+}@media (max-width: 640px) {
+.stat-hero {
     padding: 24px 16px;
   }
 
-  .stat-report-paper {
+.stat-report-paper {
     padding: 16px;
   }
 
-  .stat-report-head {
+.stat-report-head {
     align-items: flex-start;
   }
 }
-
 @media print {
-  .app-header,
+.app-header,
   .app-footer,
-  .stat-office-banner,
-  .stat-nav,
   .no-print {
     display: none !important;
   }
 
-  body.stat-printing .app-main {
+body.stat-printing .app-main {
     padding: 0;
   }
 
-  body.stat-printing .stat-report-paper {
+body.stat-printing .stat-report-paper {
     border: none;
     box-shadow: none;
     max-width: none;

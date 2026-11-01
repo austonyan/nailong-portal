@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { OfficeTag, RecordStatusTag, exportCsv, toastArchError } from './shared.jsx';
@@ -123,7 +123,7 @@ export default function ArchRecords() {
   return (
     <div className="arch-page">
       <div className="page-header">
-        <h1 className="page-title">{t('arch.catalog.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.catalog.title')}</Title></h1>
       </div>
 
       <Card>

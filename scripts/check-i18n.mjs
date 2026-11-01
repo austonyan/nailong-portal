@@ -178,7 +178,7 @@ const ENUMS = {
   'tour.type': ['landmark', 'nature', 'culture', 'food'],
   'tour.openState': ['open', 'limited', 'closed'],
   'tour.articleType': ['festival', 'folk', 'world'],
-  'tour.nav': ['home', 'attractions', 'articles', 'collection', 'badges', 'my', 'manage'],
+  'tour.nav': ['home', 'attractions', 'articles', 'collection', 'badges', 'my'],
   'tour.admin.tabs': ['attractions', 'articles', 'rules', 'badges', 'stats', 'audit'],
   'tour.stamp.style': ['wave', 'star', 'claw'],
   'tour.stamp.status': ['entered', 'exited', 'invalid'],

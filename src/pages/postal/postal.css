@@ -6,82 +6,6 @@
   gap: 16px;
 }
 
-.postal-office-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.postal-office-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.postal-office-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--animal-border-radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
-}
-
-.postal-office-name {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.postal-office-sub {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--animal-text-color-muted);
-}
-
-.postal-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.postal-nav-link {
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  background: var(--animal-bg-color-secondary);
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.postal-nav-link:hover {
-  color: var(--animal-text-color);
-}
-
-.postal-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
-}
-
-.postal-nav-divider {
-  width: 1px;
-  align-self: stretch;
-  background: var(--animal-border-color-light);
-  margin: 2px 4px;
-}
-
 /* ---------- home ---------- */
 
 .postal-home {
@@ -452,20 +376,17 @@
   gap: 10px;
   font-size: 14px;
   padding: 4px 0;
-}
-
-@media (max-width: 720px) {
-  .postal-postcard-list {
+}@media (max-width: 720px) {
+.postal-postcard-list {
     grid-template-columns: 1fr;
   }
 }
-
 @media (max-width: 640px) {
-  .postal-hero {
+.postal-hero {
     padding: 24px 16px;
   }
 
-  .postal-msg-head,
+.postal-msg-head,
   .postal-postcard-head,
   .postal-section-head {
     align-items: flex-start;

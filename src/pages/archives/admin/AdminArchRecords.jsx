@@ -1,10 +1,10 @@
 // 档案查询(管理端) — 按用户/编号/类型查,脱敏展示;导出需二次确认并写审计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ArchAdminNav, OfficeTag, RecordStatusTag, exportCsv, toastArchError } from '../shared.jsx';
+import { OfficeTag, RecordStatusTag, exportCsv, toastArchError } from '../shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
 const OFFICES = [
@@ -132,9 +132,8 @@ export default function AdminArchRecords() {
 
   return (
     <div className="arch-page">
-      <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('arch.admin.records.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.admin.records.title')}</Title></h1>
         <Button type="primary" icon={<DownloadIcon />} onClick={() => setExportOpen(true)} disabled={!items?.length}>
           {t('arch.admin.records.export')}
         </Button>

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BookIcon, ClipboardIcon, MapIcon, TrophyIcon, UserIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -60,7 +60,7 @@ export default function TourismHome() {
   return (
     <div className="tour-page">
       <Background type="sprinkles" className="nl-hero tour-hero">
-        <h1 className="page-title">{t('tour.home.hero')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.home.hero')}</Title></h1>
         <Typewriter speed={35}>
           <p className="tour-hero-sub">{t('tour.home.tagline')}</p>
         </Typewriter>

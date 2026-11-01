@@ -1,11 +1,11 @@
 // 数据导出:勾选指标导出 CSV(写 stat_export_logs 留痕),并查看历史导出记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Table } from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, Table } from 'animal-island-ui';
 import { DownloadIcon, RefreshIcon } from 'naive-icons';
 import { requestBlob, api } from '../../../api/client.js';
 import { toastSuccess } from '../../../components/toast.js';
-import { StatsAdminNav } from '../StatsShell.jsx';
+
 import { fmtDateTime, toastStatError } from '../shared.jsx';
 
 export default function AdminStatExport() {
@@ -72,9 +72,8 @@ export default function AdminStatExport() {
 
   return (
     <div className="stat-admin-page">
-      <StatsAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('stat.admin.export.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('stat.admin.export.title')}</Title></h1>
         <Button icon={<RefreshIcon />} loading={loading} disabled={loading} onClick={load}>
           {t('stat.admin.export.refresh')}
         </Button>

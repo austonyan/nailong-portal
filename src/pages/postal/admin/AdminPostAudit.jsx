@@ -1,7 +1,7 @@
 // 审计:敏感操作的留痕查询(操作人、动作、对象、详情与时间)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { fmtDateTime, toastPostError } from '../shared.jsx';
@@ -67,7 +67,7 @@ export default function AdminPostAudit() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">{t('post.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.audit.title')}</Title></h1>
       </div>
 
       <Card>

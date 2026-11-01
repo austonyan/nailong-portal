@@ -2,16 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Input,
-  Modal,
-  Radio,
-  Select,
-  Tag,
-  Upload,
-} from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Radio, Select, Tag, Upload } from 'animal-island-ui';
 import { EyeIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
@@ -222,7 +213,7 @@ export default function ProtocolApply() {
   return (
     <div className="protocol-apply-page">
       <div className="page-header">
-        <h1 className="page-title">{draft ? t('protocol.apply.editTitle') : t('protocol.apply.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{draft ? t('protocol.apply.editTitle') : t('protocol.apply.title')}</Title></h1>
         <p className="muted-text">
           {event.title} · {fmtDateTime(event.startsAt)} · {event.venueName}
         </p>

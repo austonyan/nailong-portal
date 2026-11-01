@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Progress, Table, Tag } from 'animal-island-ui';
+import { Title, Card, Progress, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../../api/docs.js';
 import { toastError } from '../../../components/toast.js';
@@ -46,7 +46,7 @@ export default function DocsStats() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.stats.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.stats.title')}</Title></h1>
       </div>
 
       <div className="portal-stats">

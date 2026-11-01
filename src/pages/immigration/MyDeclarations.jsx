@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
 import { CodeIcon, EditIcon, PlusIcon, RefreshIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { StatusTag } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 import { toastSuccess } from '../../components/toast.js';
 import { fmtDateTime } from '../../lib/date.js';
@@ -246,9 +246,8 @@ export default function MyDeclarations() {
 
   return (
     <div className="im-page">
-      <ImNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.mydecl.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.mydecl.title')}</Title></h1>
         <Link to="/immigration/declare">
           <Button type="primary" icon={<PlusIcon />}>{t('imm.nav.declare')}</Button>
         </Link>

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Select, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Modal, Select, Tag } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { REVIEW_STATUS_COLORS, DECISION_TYPE_COLORS, TextArea, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
@@ -76,7 +76,7 @@ export default function AppealReviews() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.review.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.review.title')}</Title></h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}

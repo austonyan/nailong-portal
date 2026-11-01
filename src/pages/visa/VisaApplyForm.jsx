@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, DatePicker, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
+import { Title, Button, Card, DatePicker, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api, ApiError } from '../../api/client.js';
 import { uploadVisaMaterial } from '../../api/visa.js';
@@ -238,7 +238,7 @@ function VisaApplyScreen() {
 
   return (
     <div className="visa-form-page">
-      <h1 className="page-title">{t('visa.form.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="brown">{t('visa.form.title')}</Title></h1>
       {appNo && (
         <p className="muted-text">
           {t('visa.form.draftNo', { no: appNo })}

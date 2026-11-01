@@ -2,10 +2,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
@@ -292,9 +292,8 @@ export default function DipRelations() {
 
   return (
     <div className="dip-page">
-      <DipNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.relation.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.relation.title')}</Title></h1>
         <Link to="/dip/apply">
           <Button type="primary" icon={<PlusIcon />}>{t('dip.nav.apply')}</Button>
         </Link>

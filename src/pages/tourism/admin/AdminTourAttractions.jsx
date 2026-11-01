@@ -1,7 +1,7 @@
 // 景点管理:增删改查、上下线与开放状态、双语字段(简体 + 繁体成对编辑)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EditIcon, MapIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -14,7 +14,7 @@ import {
   fmtDateTime,
   toastTourError,
 } from '../shared.jsx';
-import { TourAdminNav } from '../TourismShell.jsx';
+
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const EMPTY_FORM = {
@@ -229,9 +229,8 @@ export default function AdminTourAttractions() {
 
   return (
     <div>
-      <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('tour.admin.attractions.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.admin.attractions.title')}</Title></h1>
       </div>
 
       <Card>

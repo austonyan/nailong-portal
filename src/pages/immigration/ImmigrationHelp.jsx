@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Card, Collapse, Divider } from 'animal-island-ui';
+import { Title, Card, Collapse, Divider } from 'animal-island-ui';
 import { ChatIcon, HelpCircleIcon, ShieldIcon } from 'naive-icons';
-import { ImNav } from '../../components/immigration/shared.jsx';
+
 
 const FAQ_KEYS = ['visaInvalid', 'passUsage', 'recordsWhere', 'fee', 'privacy', 'realEffect'];
 
@@ -10,9 +10,8 @@ export default function ImmigrationHelp() {
   const { t } = useTranslation();
   return (
     <div className="im-page">
-      <ImNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.help.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.help.title')}</Title></h1>
       </div>
 
       <Card pattern="app-yellow" className="im-fraud-card">

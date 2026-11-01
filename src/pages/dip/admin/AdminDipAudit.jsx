@@ -1,9 +1,9 @@
 // 审计与合规: 审计日志查询 / 消息模板编辑 / 发送记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
-import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 
 function TemplateModal({ initial, onClose, onSaved }) {
@@ -155,9 +155,8 @@ export default function AdminDipAudit() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.admin.audit.title')}</Title></h1>
         <div className="dip-msg-filter">
           <Button type={tab === 'log' ? 'primary' : 'default'} size="small" onClick={() => setTab('log')}>{t('dip.admin.audit.tabLog')}</Button>
           <Button type={tab === 'templates' ? 'primary' : 'default'} size="small" onClick={() => setTab('templates')}>{t('dip.admin.audit.tabTemplates')}</Button>

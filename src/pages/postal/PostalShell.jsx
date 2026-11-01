@@ -1,84 +1,38 @@
-// 邮政与通信署 shell: SSO identity confirmation (once per browser session,
-// same contract as the other in-SPA services) + user/admin sub navigation.
-import { NavLink, useNavigate } from 'react-router-dom';
+// 邮政与通信署 Shell:改用共享 OfficeShell 骨架。原 5 个用户页签与 6 个管理页签经分隔线
+// 混排一行,现按路由前缀自动切换:用户页签只放市民功能,管理页签从侧栏「管理台」进。
 import { useTranslation } from 'react-i18next';
-import { Button } from 'animal-island-ui';
-import { MailIcon } from 'naive-icons';
-import { useAuth } from '../../auth/AuthContext.jsx';
-import SsoConfirmModal from '../../components/SsoConfirmModal.jsx';
+import OfficeShell from '../../components/office/OfficeChrome.jsx';
 import './postal.css';
-
-const USER_TABS = [
-  { to: '/postal', key: 'home', end: true },
-  { to: '/postal/notices', key: 'notices' },
-  { to: '/postal/messages', key: 'messages' },
-  { to: '/postal/postcards', key: 'postcards' },
-  { to: '/postal/subscription', key: 'subscription' },
-];
-
-const ADMIN_TABS = [
-  { to: '/postal/admin/notices', key: 'adminNotices' },
-  { to: '/postal/admin/templates', key: 'adminTemplates' },
-  { to: '/postal/admin/card-templates', key: 'adminCardTemplates' },
-  { to: '/postal/admin/postcards', key: 'adminPostcards' },
-  { to: '/postal/admin/stats', key: 'adminStats' },
-  { to: '/postal/admin/audit', key: 'adminAudit' },
-];
 
 export default function PostalShell({ permission, children }) {
   const { t } = useTranslation();
-  const { can } = useAuth();
-  const navigate = useNavigate();
-
-  if (permission && !can(permission)) {
-    return (
-      <div className="center-screen">
-        <h2>{t('errors.forbiddenTitle')}</h2>
-        <p className="muted-text">{t('errors.forbiddenTip')}</p>
-        <Button type="primary" onClick={() => navigate('/')}>
-          {t('errors.backHome')}
-        </Button>
-      </div>
-    );
-  }
-
-  const navClass = ({ isActive }) => (isActive ? 'postal-nav-link active' : 'postal-nav-link');
-
   return (
-    <div className="postal-page">
-      <div className="postal-office-banner">
-        <div className="postal-office-brand">
-          <span className="postal-office-emblem">
-            <MailIcon size={22} />
-          </span>
-          <div>
-            <div className="postal-office-name">{t('post.officeName')}</div>
-            <div className="postal-office-sub">{t('post.officeSub')}</div>
-          </div>
-        </div>
-      </div>
-
-      <nav className="postal-nav" aria-label={t('post.officeName')}>
-        {USER_TABS.map((tab) => (
-          <NavLink key={tab.key} to={tab.to} end={tab.end} className={navClass}>
-            {t(`post.nav.${tab.key}`)}
-          </NavLink>
-        ))}
-        {can('post:manage') && (
-          <>
-            <span className="postal-nav-divider" aria-hidden="true" />
-            {ADMIN_TABS.map((tab) => (
-              <NavLink key={tab.key} to={tab.to} className={navClass}>
-                {t(`post.nav.${tab.key}`)}
-              </NavLink>
-            ))}
-          </>
-        )}
-      </nav>
-
+    <OfficeShell
+      officeKey="postal"
+      permission={permission}
+      pageClassName="postal-page"
+      name={t('post.officeName')}
+      sub={t('post.officeSub')}
+      ssoFlag="nailong.postal.sso"
+      ssoTip={t('post.sso.tip')}
+      ssoPattern="app-blue"
+      userTabs={[
+        { to: '/postal', end: true, label: t('post.nav.home') },
+        { to: '/postal/notices', label: t('post.nav.notices') },
+        { to: '/postal/messages', label: t('post.nav.messages') },
+        { to: '/postal/postcards', label: t('post.nav.postcards') },
+        { to: '/postal/subscription', label: t('post.nav.subscription') },
+      ]}
+      adminTabs={[
+        { to: '/postal/admin/notices', label: t('post.nav.adminNotices') },
+        { to: '/postal/admin/templates', label: t('post.nav.adminTemplates') },
+        { to: '/postal/admin/card-templates', label: t('post.nav.adminCardTemplates') },
+        { to: '/postal/admin/postcards', label: t('post.nav.adminPostcards') },
+        { to: '/postal/admin/stats', label: t('post.nav.adminStats') },
+        { to: '/postal/admin/audit', label: t('post.nav.adminAudit') },
+      ]}
+    >
       {children}
-
-      <SsoConfirmModal flag="nailong.postal.sso" tip={t('post.sso.tip')} pattern="app-blue" />
-    </div>
+    </OfficeShell>
   );
 }

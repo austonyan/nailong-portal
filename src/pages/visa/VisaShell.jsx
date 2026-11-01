@@ -1,73 +1,36 @@
-// Visa service shell: sub navigation + the SSO identity confirmation that the
-// unified portal shows before entering the service (once per browser session).
-import { NavLink, useNavigate } from 'react-router-dom';
+// 签注申请署 Shell:共享骨架(标题条 + 单一页签栏 + SSO 门)的署级配置。
+// 管理页签(workbench/manage/stats/audit)只在管理路由下渲染,用户页签不再混入。
 import { useTranslation } from 'react-i18next';
-import { Button } from 'animal-island-ui';
 import { BadgeCheckIcon } from 'naive-icons';
-import { useAuth } from '../../auth/AuthContext.jsx';
-import SsoConfirmModal from '../../components/SsoConfirmModal.jsx';
+import OfficeShell from '../../components/office/OfficeChrome.jsx';
 
 export default function VisaShell({ permission, children }) {
   const { t } = useTranslation();
-  const { can } = useAuth();
-  const navigate = useNavigate();
-
-  if (permission && !can(permission)) {
-    return (
-      <div className="center-screen">
-        <h2>{t('errors.forbiddenTitle')}</h2>
-        <p className="muted-text">{t('errors.forbiddenTip')}</p>
-        <Button type="primary" onClick={() => navigate('/')}>
-          {t('errors.backHome')}
-        </Button>
-      </div>
-    );
-  }
-
-  const navClass = ({ isActive }) => (isActive ? 'visa-nav-link active' : 'visa-nav-link');
-
   return (
-    <div className="visa-page">
-      <div className="visa-office-banner">
-        <div className="visa-office-brand">
-          <span className="visa-office-emblem">
-            <BadgeCheckIcon size={22} />
-          </span>
-          <div>
-            <div className="visa-office-name">{t('visa.officeName')}</div>
-            <div className="visa-office-sub">{t('visa.officeSub')}</div>
-          </div>
-        </div>
-      </div>
-
-      <nav className="visa-nav" aria-label={t('visa.officeName')}>
-        <NavLink to="/visa" end className={navClass}>
-          {t('visa.nav.home')}
-        </NavLink>
-        <NavLink to="/visa/applications" className={navClass}>
-          {t('visa.nav.applications')}
-        </NavLink>
-        <NavLink to="/visa/permits" className={navClass}>
-          {t('visa.nav.permits')}
-        </NavLink>
-        <NavLink to="/visa/messages" className={navClass}>
-          {t('visa.nav.messages')}
-        </NavLink>
-        {can('visa:review') && (
-          <NavLink to="/visa/admin/workbench" className={navClass}>
-            {t('visa.nav.workbench')}
-          </NavLink>
-        )}
-        {can('visa:manage') && (
-          <NavLink to="/visa/admin/manage" className={navClass}>
-            {t('visa.nav.manage')}
-          </NavLink>
-        )}
-      </nav>
-
+    <OfficeShell
+      officeKey="visa"
+      permission={permission}
+      pageClassName="visa-page"
+      icon={<BadgeCheckIcon size={22} />}
+      name={t('visa.officeName')}
+      sub={t('visa.officeSub')}
+      ssoFlag="nailong.visa.sso"
+      ssoTip={t('visa.sso.tip')}
+      ssoPattern="app-teal"
+      userTabs={[
+        { to: '/visa', end: true, label: t('visa.nav.home') },
+        { to: '/visa/applications', label: t('visa.nav.applications') },
+        { to: '/visa/permits', label: t('visa.nav.permits') },
+        { to: '/visa/messages', label: t('visa.nav.messages') },
+      ]}
+      adminTabs={[
+        { to: '/visa/admin/workbench', label: t('visa.nav.workbench') },
+        { to: '/visa/admin/manage', label: t('visa.nav.manage') },
+        { to: '/visa/admin/stats', label: t('visa.admin.stats.title') },
+        { to: '/visa/admin/audit', label: t('visa.admin.audit.title') },
+      ]}
+    >
       {children}
-
-      <SsoConfirmModal flag="nailong.visa.sso" tip={t('visa.sso.tip')} pattern="app-teal" />
-    </div>
+    </OfficeShell>
   );
 }

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tabs, Tag } from 'animal-island-ui';
 import { DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { PERMIT_STATUS_COLORS, fmtDate, fmtDateTime, toastVisaError } from './shared.jsx';
@@ -58,7 +58,7 @@ export default function VisaPermits() {
   return (
     <div className="visa-permits-page">
       <div className="page-header">
-        <h1 className="page-title">{t('visa.permit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.permit.title')}</Title></h1>
       </div>
 
       <Tabs

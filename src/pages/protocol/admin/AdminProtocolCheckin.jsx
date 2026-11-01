@@ -1,15 +1,7 @@
 // 活动签到:凭证编号核销、签到/签退与记录查询。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Input,
-  Pagination,
-  Radio,
-  Table,
-  Tag,
-} from 'animal-island-ui';
+import { Title, Button, Card, Input, Pagination, Radio, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { StatusTag, fmtDateTime, toastProtocolError } from '../shared.jsx';
@@ -89,7 +81,7 @@ export default function AdminProtocolCheckin() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.checkinTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.checkinTitle')}</Title></h1>
         <p className="muted-text">{t('protocol.admin.checkinSubtitle')}</p>
       </div>
 

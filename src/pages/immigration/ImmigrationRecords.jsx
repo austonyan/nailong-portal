@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { DownloadIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImNav, StampView, StatusTag, exportCsv } from '../../components/immigration/shared.jsx';
+import { StampView, StatusTag, exportCsv } from '../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 function daysLeft(entry) {
@@ -161,9 +161,8 @@ export default function ImmigrationRecords() {
   const { t } = useTranslation();
   return (
     <div className="im-page">
-      <ImNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.records.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.records.title')}</Title></h1>
       </div>
       <Card>
         <Tabs

@@ -1,7 +1,7 @@
 // 审计与合规:敏感操作审计日志、验真记录、导出留痕查询。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Table, Tabs, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
@@ -84,7 +84,7 @@ export default function AppealAdminAudit() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.audit.title')}</Title></h1>
       </div>
 
       <Card>

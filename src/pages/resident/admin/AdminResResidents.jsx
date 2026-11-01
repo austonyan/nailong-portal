@@ -1,10 +1,10 @@
 // 居民信息管理:居民列表与详情(敏感字段服务端脱敏,关联业务预留)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { CARD_STATUS_COLORS, fmtDate, toastResError } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
@@ -82,9 +82,8 @@ export default function AdminResResidents() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.residents.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.residents.title')}</Title></h1>
         <div className="table-actions res-filter-bar">
           <Input size="middle" allowClear prefix={<SearchIcon size={14} />} placeholder={t('res.admin.searchPlaceholder')} value={q} onChange={(e) => setQ(e.target.value)} />
         </div>

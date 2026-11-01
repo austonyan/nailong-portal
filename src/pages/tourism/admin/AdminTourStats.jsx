@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { Card, Table, Tag } from 'animal-island-ui';
+import { Title, Card, Table, Tag } from 'animal-island-ui';
 import { TrophyIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastTourError } from '../shared.jsx';
-import { TourAdminNav } from '../TourismShell.jsx';
+
 
 export default function AdminTourStats() {
   const { t } = useTranslation();
@@ -42,9 +42,8 @@ export default function AdminTourStats() {
 
   return (
     <div>
-      <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('tour.admin.stats.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.admin.stats.title')}</Title></h1>
       </div>
 
       <div className="tour-stats-grid">

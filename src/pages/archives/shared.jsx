@@ -2,11 +2,9 @@
 // formatted dates, the office sub-navigation and the tokenised textarea.
 // (Non-component exports are intentional helpers, not a components-file slip.)
 /* eslint-disable react/only-export-components */
-import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tag } from 'animal-island-ui';
 import i18n from '../../i18n/index.js';
-import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastApiError } from '../../components/toast.js';
 import { StatusTag as SharedStatusTag } from '../../components/StatusTag.jsx';
 import { TextArea as SharedTextArea } from '../../components/TextArea.jsx';
@@ -81,60 +79,7 @@ export function OfficeTag({ office }) {
   );
 }
 
-const USER_TABS = [
-  { to: '/archives', key: 'home', end: true },
-  { to: '/archives/records', key: 'records' },
-  { to: '/archives/requests', key: 'requests' },
-  { to: '/archives/messages', key: 'messages' },
-  { to: '/archives/help', key: 'help' },
-];
 
-const ADMIN_TABS = [
-  { to: '/archives/admin/rules', key: 'rules' },
-  { to: '/archives/admin/records', key: 'records' },
-  { to: '/archives/admin/requests', key: 'requests' },
-  { to: '/archives/admin/access', key: 'access' },
-  { to: '/archives/admin/audit', key: 'audit' },
-  { to: '/archives/admin/settings', key: 'settings' },
-];
 
-export function ArchNav() {
-  const { t } = useTranslation();
-  const { can } = useAuth();
-  return (
-    <nav className="arch-nav" aria-label={t('arch.nav.label')}>
-      {USER_TABS.map((tab) => (
-        <NavLink
-          key={tab.key}
-          to={tab.to}
-          end={tab.end}
-          className={({ isActive }) => (isActive ? 'arch-nav-link active' : 'arch-nav-link')}
-        >
-          {t(`arch.nav.${tab.key}`)}
-        </NavLink>
-      ))}
-      {can('arch:manage') && (
-        <NavLink to="/archives/admin/requests" className={({ isActive }) => (isActive ? 'arch-nav-link active' : 'arch-nav-link arch-nav-admin')}>
-          {t('arch.nav.admin')}
-        </NavLink>
-      )}
-    </nav>
-  );
-}
 
-export function ArchAdminNav() {
-  const { t } = useTranslation();
-  return (
-    <nav className="arch-subnav" aria-label={t('arch.nav.adminLabel')}>
-      {ADMIN_TABS.map((tab) => (
-        <NavLink
-          key={tab.key}
-          to={tab.to}
-          className={({ isActive }) => (isActive ? 'arch-subnav-link active' : 'arch-subnav-link')}
-        >
-          {t(`arch.nav.${tab.key}`)}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
+

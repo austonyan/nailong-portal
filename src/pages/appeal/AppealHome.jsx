@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   FileIcon,
@@ -58,7 +58,7 @@ export default function AppealHome() {
   return (
     <div className="appeal-home">
       <Background type="sprinkles" className="appeal-hero">
-        <h1 className="page-title">{t('appeal.home.heroTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.home.heroTitle')}</Title></h1>
         <Typewriter speed={30}>
           <p className="appeal-hero-sub">{t('appeal.home.heroSub')}</p>
         </Typewriter>

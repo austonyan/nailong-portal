@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Select, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Select, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -54,7 +54,7 @@ export default function TourismAttractions() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('tour.attractions.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.attractions.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('tour.attractions.tip')}</p>
 

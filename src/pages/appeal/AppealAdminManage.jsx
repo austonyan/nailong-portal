@@ -1,16 +1,7 @@
 // 申诉署管理:公告、公示、站内信模板、黑名单、重复申诉识别与系统配置。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Input,
-  Modal,
-  Select,
-  Table,
-  Tabs,
-  Tag,
-} from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
@@ -302,7 +293,7 @@ export default function AppealAdminManage() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.admin.manageTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.admin.manageTitle')}</Title></h1>
       </div>
 
       <Card>

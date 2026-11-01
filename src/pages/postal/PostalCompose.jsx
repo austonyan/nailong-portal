@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastError, toastSuccess, toastWarning } from '../../components/toast.js';
@@ -99,7 +99,7 @@ export default function PostalCompose() {
         </Tag>
       </div>
 
-      <h1 className="page-title">{t('post.compose.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.compose.title')}</Title></h1>
 
       <Card>
         <b>{t('post.compose.pickTemplate')}</b>

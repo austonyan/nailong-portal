@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { BanIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
@@ -97,7 +97,7 @@ export default function DocsSettings() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.settings.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.settings.title')}</Title></h1>
         <Button type="primary" loading={busy} onClick={save} disabled={busy}>
           {t('common.save')}
         </Button>

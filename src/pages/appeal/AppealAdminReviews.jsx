@@ -1,17 +1,7 @@
 // 复核管理:复核队列、详情、受理与复核决定(维持/撤销/变更,一次终局)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-  Table,
-  Tag,
-} from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial } from '../../api/appeal.js';
@@ -122,7 +112,7 @@ export default function AppealAdminReviews() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.admin.reviewTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.admin.reviewTitle')}</Title></h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}

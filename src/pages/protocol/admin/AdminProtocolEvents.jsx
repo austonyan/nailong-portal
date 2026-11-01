@@ -1,20 +1,7 @@
 // 活动发布与管理:创建/编辑、状态机(发布/截止/开始/结束/取消)、公告与删除。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Checkbox,
-  DatePicker,
-  Drawer,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-  Switch,
-  Table,
-  Tag,
-} from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, DatePicker, Drawer, Input, Modal, Pagination, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SearchIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import {
@@ -318,7 +305,7 @@ export default function AdminProtocolEvents() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.eventsTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.eventsTitle')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openNew}>
           {t('protocol.admin.createEvent')}
         </Button>

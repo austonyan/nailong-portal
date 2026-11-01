@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
@@ -128,7 +128,7 @@ export default function DocsNotices() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.notices.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.notices.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('docs.admin.notices.create')}
         </Button>

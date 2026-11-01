@@ -1,7 +1,7 @@
 // 站内信 — 删除申请状态变化的通知(source=archives,经邮政契约落库)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { InboxIcon, MailIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastArchError } from './shared.jsx';
@@ -71,7 +71,7 @@ export default function ArchMessages() {
   return (
     <div className="arch-page">
       <div className="page-header">
-        <h1 className="page-title">{t('arch.messages.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.messages.title')}</Title></h1>
         <div className="table-actions">
           <Button type="primary" icon={<InboxIcon />} disabled={!unread} onClick={markAll}>
             {t('arch.messages.markAll')}

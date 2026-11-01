@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Table, Tabs } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Table, Tabs } from 'animal-island-ui';
 import { AlertTriangleIcon, DownloadIcon, EditIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
-import { ImAdminNav, StampView, StatusTag, exportCsv } from '../../../components/immigration/shared.jsx';
+import { StampView, StatusTag, exportCsv } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
 function EntryRecordsTab() {
@@ -224,9 +224,8 @@ export default function AdminImRecords() {
   const { t } = useTranslation();
   return (
     <div className="im-page">
-      <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.records.adminTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.records.adminTitle')}</Title></h1>
       </div>
       <Card>
         <Tabs

@@ -1,7 +1,7 @@
 // 签注管理:类型 / 公告 / 配置 / 黑名单(Tabs)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
 import { PlusIcon, TrashIcon, EditIcon, BanIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
@@ -514,7 +514,7 @@ export default function VisaAdminManage() {
   const { t } = useTranslation();
   return (
     <div>
-      <h1 className="page-title">{t('visa.admin.manage.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="brown">{t('visa.admin.manage.title')}</Title></h1>
       <Tabs
         items={[
           { key: 'types', label: t('visa.admin.manage.types'), children: <TypesTab /> },

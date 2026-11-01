@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag } from '../../../components/immigration/shared.jsx';
+import { StatusTag } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 import { fmtDate } from '../../../lib/date.js';
 
@@ -491,9 +491,8 @@ export default function AdminImPorts() {
   const { t } = useTranslation();
   return (
     <div className="im-page">
-      <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.admin.portsTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.admin.portsTitle')}</Title></h1>
       </div>
       <Card>
         <Tabs

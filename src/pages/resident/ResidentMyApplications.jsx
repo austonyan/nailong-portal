@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card } from 'animal-island-ui';
+import { Title, Button, Card } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, StatusTag, fmtDateTime, toastResError } from './shared.jsx';
 
@@ -46,7 +46,7 @@ export default function ResidentMyApplications() {
   return (
     <div className="res-my-apps">
       <div className="page-header">
-        <h1 className="page-title">{t('res.myApps.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.myApps.title')}</Title></h1>
         <Button type="primary" onClick={() => navigate('/resident/apply')}>
           {t('res.myApps.new')}
         </Button>

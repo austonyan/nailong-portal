@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BadgeCheckIcon, BellIcon, ClipboardIcon, HelpCircleIcon, ListIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -59,7 +59,7 @@ export default function ResidentHome() {
   return (
     <div className="res-home">
       <Background type="sprinkles" className="res-hero">
-        <h1 className="page-title">{t('res.home.hero')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.home.hero')}</Title></h1>
         <Typewriter speed={35}>
           <p className="res-hero-sub">{t('res.home.tagline')}</p>
         </Typewriter>

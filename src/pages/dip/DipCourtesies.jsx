@@ -1,10 +1,10 @@
 // 外交礼遇: 礼遇类型说明 / 凭外交身份编号查资格 / 我的使用记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Table, Tag } from 'animal-island-ui';
 import { SearchIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 
 export default function DipCourtesies() {
   const { t } = useTranslation();
@@ -50,9 +50,8 @@ export default function DipCourtesies() {
 
   return (
     <div className="dip-page">
-      <DipNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.courtesy.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.courtesy.title')}</Title></h1>
       </div>
 
       <Card>

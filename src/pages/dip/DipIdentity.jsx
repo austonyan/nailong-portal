@@ -3,12 +3,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import {
-  DipNav, DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
-} from '../../components/dip/shared.jsx';
+import { DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../components/toast.js';
@@ -517,9 +515,8 @@ export default function DipIdentity() {
 
   return (
     <div className="dip-page">
-      <DipNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.identity.pageTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.identity.pageTitle')}</Title></h1>
       </div>
 
       <Card pattern="purple" className="dip-visa-channel" id="visa">

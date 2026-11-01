@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { StampIcon, fmtDateTime, toastTourError } from './shared.jsx';
 
@@ -46,7 +46,7 @@ export default function TourismCollection() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('tour.collection.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.collection.title')}</Title></h1>
         <Button size="small" onClick={() => navigate('/tourism/attractions')}>
           {t('tour.collection.moreCheckins')}
         </Button>

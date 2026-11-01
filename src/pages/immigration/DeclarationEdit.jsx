@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, useForm } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImNav, pickLocalized } from '../../components/immigration/shared.jsx';
+import { pickLocalized } from '../../components/immigration/shared.jsx';
 import Attachments from '../../components/immigration/Attachments.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
@@ -200,9 +200,8 @@ export default function DeclarationEdit() {
 
   return (
     <div className="im-page">
-      <ImNav />
       <div className="page-header">
-        <h1 className="page-title">{decl?.id ? t('imm.declare.editTitle') : t('imm.declare.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{decl?.id ? t('imm.declare.editTitle') : t('imm.declare.title')}</Title></h1>
         {decl?.no && <Tag color="app-blue" variant="soft">{decl.no}</Tag>}
       </div>
 

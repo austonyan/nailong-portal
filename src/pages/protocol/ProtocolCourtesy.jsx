@@ -1,7 +1,7 @@
 // 礼宾服务:礼遇类型、资格查询(居民/外交/邀请函)、礼遇申请与使用记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select } from 'animal-island-ui';
 import { BanIcon, SearchIcon, ShieldIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
@@ -96,7 +96,7 @@ export default function ProtocolCourtesy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.courtesy.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.courtesy.title')}</Title></h1>
         <p className="muted-text">{t('protocol.courtesy.subtitle')}</p>
       </div>
 

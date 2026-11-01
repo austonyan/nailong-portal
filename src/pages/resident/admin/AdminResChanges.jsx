@@ -1,10 +1,10 @@
 // 变更与升级审批:信息变更/类型升级/续期申请的审批队列。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { CHANGE_TYPES, TextArea, fmtDateTime, toastResError } from '../shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
@@ -124,9 +124,8 @@ export default function AdminResChanges() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.changes.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.changes.title')}</Title></h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}

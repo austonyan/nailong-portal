@@ -1,9 +1,9 @@
 // 统计与报表:登记量、通过率、类型分布、居民卡状态、验真量与趋势。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CountUp, Progress } from 'animal-island-ui';
+import { Title, Card, CountUp, Progress } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { fmtDate, toastResError } from '../shared.jsx';
 
 function StatCard({ label, value, suffix }) {
@@ -34,9 +34,8 @@ export default function AdminResStats() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.stats.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.stats.title')}</Title></h1>
       </div>
 
       <div className="portal-stats">

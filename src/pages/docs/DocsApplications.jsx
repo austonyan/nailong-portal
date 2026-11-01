@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, PencilIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS } from '../../api/docs.js';
@@ -94,7 +94,7 @@ export default function DocsApplications() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.appList.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.appList.title')}</Title></h1>
         <div className="docs-filter">
           <Select
             value={status}

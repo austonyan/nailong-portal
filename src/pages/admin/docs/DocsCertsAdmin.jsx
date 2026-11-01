@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { RefreshIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../../api/docs.js';
@@ -139,7 +139,7 @@ export default function DocsCertsAdmin() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.certs.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.certs.title')}</Title></h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">

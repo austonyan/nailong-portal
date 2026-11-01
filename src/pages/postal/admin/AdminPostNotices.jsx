@@ -1,7 +1,7 @@
 // 公告管理:CRUD、发布/下线、双语编辑与通知统计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -182,7 +182,7 @@ export default function AdminPostNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">{t('post.admin.notices.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.notices.title')}</Title></h1>
       </div>
 
       <Card>

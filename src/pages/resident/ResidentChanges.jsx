@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, useForm } from 'animal-island-ui';
 import { SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
@@ -112,7 +112,7 @@ export default function ResidentChanges() {
   return (
     <div className="res-changes-page">
       <div className="page-header">
-        <h1 className="page-title">{t('res.changes.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.changes.title')}</Title></h1>
       </div>
 
       <Card className="res-form-card">

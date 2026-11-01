@@ -2,17 +2,7 @@
 // 以及验真/风控/工单报表面板。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Checkbox,
-  Input,
-  Modal,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
-} from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, Input, Modal, Switch, Table, Tabs, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
@@ -319,7 +309,7 @@ export default function AdminProtocolManage() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.manageTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.manageTitle')}</Title></h1>
         <p className="muted-text">{t('protocol.admin.manageSubtitle')}</p>
       </div>
 

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
 import { BookIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastEduError } from './shared.jsx';
@@ -53,7 +53,7 @@ export default function EduEntries() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.entries.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.entries.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('edu.entries.tip')}</p>
 

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Radio, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, Radio, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, FileIcon, HelpCircleIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastVisaError } from './shared.jsx';
@@ -51,7 +51,7 @@ export default function VisaApplyGuide() {
 
   return (
     <div className="visa-guide-page">
-      <h1 className="page-title">{t('visa.applyGuide.title', { name: type.name })}</h1>
+      <h1 className="page-title"><Title size="middle" color="brown">{t('visa.applyGuide.title', { name: type.name })}</Title></h1>
 
       <Card className="visa-guide-type-card">
         <h2>{type.name}</h2>

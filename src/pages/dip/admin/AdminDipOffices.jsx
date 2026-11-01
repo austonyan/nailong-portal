@@ -1,10 +1,10 @@
 // 虚构代表处管理: 代表处 CRUD / 状态(开放·关闭·维护) / 公告发布编辑下线。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
 function OfficeModal({ initial, onClose, onSaved }) {
@@ -297,9 +297,8 @@ export default function AdminDipOffices() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.office.adminTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.office.adminTitle')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setOfficeModal({})}>{t('dip.office.create')}</Button>
       </div>
 

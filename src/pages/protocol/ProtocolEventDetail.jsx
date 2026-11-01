@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Divider, Progress, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Divider, Progress, Tag } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   CalendarIcon,
@@ -75,7 +75,7 @@ export default function ProtocolEventDetail() {
             {event.residentOnly && <Tag color="app-green" variant="outlined">{t('protocol.eventDetail.residentOnly')}</Tag>}
             {event.diplomaticOnly && <Tag color="purple" variant="outlined">{t('protocol.eventDetail.diplomaticOnly')}</Tag>}
           </div>
-          <h1 className="page-title">{event.title}</h1>
+          <h1 className="page-title"><Title size="middle" color="yellow-green">{event.title}</Title></h1>
           <p className="protocol-detail-sub">{event.subtitle}</p>
           <div className="protocol-detail-meta">
             <span>

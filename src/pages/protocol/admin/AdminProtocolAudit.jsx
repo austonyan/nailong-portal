@@ -1,7 +1,7 @@
 // 审计与合规:敏感操作日志查询、详情与导出。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Pagination, Table } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Pagination, Table } from 'animal-island-ui';
 import { DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { exportProtocolCsv, fmtDateTime, toastProtocolError } from '../shared.jsx';
@@ -55,7 +55,7 @@ export default function AdminProtocolAudit() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.auditTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.auditTitle')}</Title></h1>
         <Button
           type="dashed"
           icon={<DownloadIcon />}

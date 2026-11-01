@@ -1,7 +1,7 @@
 // 统计与报表:申请量/通过率/驳回率/补件率/平均审核时长 + 验真记录。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { downloadVisaFile } from '../../api/visa.js';
@@ -74,7 +74,7 @@ export default function VisaAdminStats() {
   return (
     <div className="visa-stats-page">
       <div className="page-header">
-        <h1 className="page-title">{t('visa.admin.stats.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.admin.stats.title')}</Title></h1>
         <Button icon={<DownloadIcon />} onClick={exportCsv}>
           {t('visa.admin.stats.export')}
         </Button>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Progress, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Pagination, Progress, Select, Table, Tag } from 'animal-island-ui';
 import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
@@ -68,7 +68,7 @@ export default function DocsVerifyAdmin() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.verify.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.verify.title')}</Title></h1>
       </div>
 
       {summary?.alerts?.length > 0 && (

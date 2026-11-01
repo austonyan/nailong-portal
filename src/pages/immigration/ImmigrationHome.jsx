@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BellIcon, CodeIcon, CompassIcon, FileIcon, ListIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { AnnouncementLevelTag, CrowdMeter, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { AnnouncementLevelTag, CrowdMeter, StatusTag } from '../../components/immigration/shared.jsx';
 import { fmtDate } from '../../lib/date.js';
 
 const QUICK_ENTRIES = [
@@ -46,9 +46,8 @@ export default function ImmigrationHome() {
 
   return (
     <div className="im-page">
-      <ImNav />
       <Background type="sprinkles" className="im-hero">
-        <h1 className="page-title">{t('imm.home.hero')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.home.hero')}</Title></h1>
         <Typewriter speed={35}>
           <p className="im-hero-sub">{t('imm.home.tagline')}</p>
         </Typewriter>

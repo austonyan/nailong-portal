@@ -2,7 +2,6 @@
 // QR canvas, CSV export helpers and the error toast mapper.
 /* eslint-disable react/only-export-components */
 import { useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import { Tag } from 'animal-island-ui';
@@ -87,49 +86,8 @@ export function TextArea({ className = '', ...rest }) {
   return <SharedTextArea className={`dip-textarea ${className}`} {...rest} />;
 }
 
-const USER_TABS = [
-  { to: '/dip', key: 'home', end: true },
-  { to: '/dip/apply', key: 'apply' },
-  { to: '/dip/relations', key: 'relations' },
-  { to: '/dip/identity', key: 'identity' },
-  { to: '/dip/agreements', key: 'agreements' },
-  { to: '/dip/courtesies', key: 'courtesies' },
-  { to: '/dip/offices', key: 'offices' },
-  { to: '/dip/messages', key: 'messages' },
-];
 
-export function DipNav() {
-  const { t } = useTranslation();
-  return (
-    <nav className="dip-subnav" aria-label={t('dip.nav.label')}>
-      {USER_TABS.map((tab) => (
-        <NavLink key={tab.key} to={tab.to} end={tab.end} className={({ isActive }) => (isActive ? 'dip-subnav-link active' : 'dip-subnav-link')}>
-          {t(`dip.nav.${tab.key}`)}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
 
-const ADMIN_TABS = [
-  { to: '/admin/dip/review', key: 'review' },
-  { to: '/admin/dip/agreements', key: 'agreements' },
-  { to: '/admin/dip/offices', key: 'offices' },
-  { to: '/admin/dip/verify', key: 'verify' },
-  { to: '/admin/dip/config', key: 'config' },
-  { to: '/admin/dip/stats', key: 'stats' },
-  { to: '/admin/dip/audit', key: 'audit' },
-];
 
-export function DipAdminNav() {
-  const { t } = useTranslation();
-  return (
-    <nav className="dip-subnav" aria-label={t('dip.admin.navLabel')}>
-      {ADMIN_TABS.map((tab) => (
-        <NavLink key={tab.key} to={tab.to} className={({ isActive }) => (isActive ? 'dip-subnav-link active' : 'dip-subnav-link')}>
-          {t(`dip.admin.tabs.${tab.key}`)}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
+
+

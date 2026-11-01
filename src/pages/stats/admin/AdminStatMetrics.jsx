@@ -1,11 +1,11 @@
 // 统计口径管理:指标双语定义、来源署与来源表、状态筛选、启停与软删除。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastSuccess } from '../../../components/toast.js';
-import { StatsAdminNav } from '../StatsShell.jsx';
+
 import { TextArea, toastStatError } from '../shared.jsx';
 
 const OFFICES = [
@@ -221,9 +221,8 @@ export default function AdminStatMetrics() {
 
   return (
     <div className="stat-admin-page">
-      <StatsAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('stat.admin.metrics.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('stat.admin.metrics.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('stat.admin.metrics.create')}
         </Button>

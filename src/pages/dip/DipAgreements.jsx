@@ -1,10 +1,10 @@
 // 互免协议: 公示列表 / 详情 / 我的互免资格查询 / 常见问题。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Input, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Collapse, Input, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
+import { StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 const FAQ_KEYS = ['effect', 'fee', 'reality'];
@@ -46,9 +46,8 @@ export default function DipAgreements() {
 
   return (
     <div className="dip-page">
-      <DipNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.agreement.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.agreement.title')}</Title></h1>
       </div>
 
       <Card>

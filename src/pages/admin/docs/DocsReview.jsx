@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, REJECT_REASON_KEYS } from '../../../api/docs.js';
@@ -130,7 +130,7 @@ export default function DocsReview() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.review.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.review.title')}</Title></h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">
