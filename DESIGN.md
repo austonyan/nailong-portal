@@ -195,6 +195,7 @@ components:
 - **棕墨 (Ink Brown)** (`ink-brown`): 标题、正文、表格、按钮文字、链接（配合下划线）。对纸白 6.65:1。
 - **淡墨 (Ink Faded)** (`ink-faded`): 2.86:1，只用于装饰性文字和非信息图形——不能承载正文、表单标签、错误提示或表格关键列。
 - **禁用墨 (Ink Disabled)** (`ink-disabled`): 禁用控件文字。
+- **次级墨 (Secondary Ink)** (`--animal-text-color-secondary`): 未选中的页签、卡片说明、库的 Collapse 正文与分页「共 N 条」。运行时值是棕墨向纸面提亮 8%（4.9–5.5:1），由 `src/index.css` 的 `:root` 覆盖库的 `#9f927d`——原值只有 2.86:1，当不了文字色。
 - **暖边框 (Border Warm)** (`border-warm`): 分隔线、卡片边。1.33:1，不能单独承担控件边界识别。
 - **发丝边 (Border Hairline)** (`border-hairline`): 表格虚线、卡片内分隔。
 - **重边框 (Border Strong)** (`border-strong`): 4.42:1；需要被识别的自定义控件边界。
@@ -228,6 +229,8 @@ components:
 
 ### Named Rules
 **The Twelve-Pixel Floor Rule.** 屏幕上的说明文字不小于 12px；需要"更浅的层级"时用 13px + 棕墨 + 间距，不用淡墨压小字。
+
+**The Two-Ink Rule.** 可读的字只有两档墨：正文墨（6.65:1）与次级墨（≥4.5:1）。链接、表头小标题、状态说明一律用墨色，颜色只出现在填充、描边和图标里；`#9f927d` 的淡墨不再承载任何文字。
 
 **The Ribbon-Is-Visual Rule.** `Title` 渲染的是 `<span>`，不产生标题层级。每个页面自己补 `<h1>`/`<h2>`/`<h3>`；飘带颜色一个页面不超过三种。
 
@@ -313,7 +316,7 @@ components:
 
 ### Tables
 - **Always `className="table-fit"`:** 表头与长文本换行，靠自动列宽压缩进容器，**永不横向滚动**。
-- **Type:** 表头 14px/700、正文 14px/500、单元格上下 14px；数字列右对齐 + `tabular-nums`；状态列左对齐；操作列右对齐并用 `.table-actions` 换行。
+- **Type:** 表头 14px/700、正文 14px/500、单元格上下 14px；数字列右对齐 + `tabular-nums`；状态列左对齐；操作列右对齐并用 `.table-actions`。`.table-actions` 在 ≥901px 不换行（换行会把行高从 60 撑到 96px，一屏读不满 10 行），≤900px 才退回换行。
 - **States:** 加载保留表头与容器高度；空态用 `emptyText`；**失败不能渲染成空列表**——表格外给错误说明和重试。
 - **No ellipsis.** 申请号、证件号、姓名、状态必须换行完整显示。
 

@@ -69,9 +69,13 @@ user asks. §9.1 is the checklist for adding a new office — follow it in order
 - `npm run dev` — Vite dev server with HMR (proxies `/api` to :3001)
 - `npm run dev:server` — API server on http://localhost:3001 with watch
 - `npm run dev:all` — both at once (concurrently)
-- `npm run build` — runs `check:i18n` → `check:ui` → `check:tokens` → `vite build` (any check
-  failure aborts the build); `npm run start` — API server (also serves `dist/` if present)
+- `npm run build` — runs `check:i18n` → `check:ui` → `check:tokens` → `check:copy` → `vite build`
+  (any check failure aborts the build); `npm run start` — API server (also serves `dist/` if present)
 - `npm run check:i18n` — every referenced i18n key has zh-CN + zh-TW entries
+- `npm run check:copy` — locale 文案排版规则(ui-spec 01-foundations §2.3):含中文的值里,邻中文
+  (或插值)的 `,` `:` `;` `?` `!` 与 `(…)` 必须用全角;中文与英文/数字/插值之间不手动加空格;
+  省略号用 `…`;敬语统一「你」,出现「您」即违规。`node scripts/check-copy.mjs --fix` 幂等归一
+  (插值与 URL 自动保护)。
 - `npm run check:ui` — the frontend interaction conventions below
 - `npm run check:tokens` — `src/**/*.css` may only reference `--animal-*` names that exist in
   the installed library CSS (unknown token = build error); raw hex/rgb are warnings, exempt
@@ -187,7 +191,7 @@ short version:
   toastApiError`；任何提示辅助函数都委托给它。
 - 每个 `<Table>` 必须带 `className="table-fit"`。表格靠自动列宽 + 表头/长文本换行压缩进
   容器，**不要加横向滚动**；不要给 Table 传 `size`，不要给列写 `ellipsis`。操作列用
-  `.table-actions`（已自动换行）。
+  `.table-actions`（≥901px 不换行，≤900px 才换行）。
 - **弹窗只能显式关闭**：每个 `<Modal>` / `<Drawer>` 都必须写 `maskClosable={false}`，点遮罩
   不再关闭（库默认是 `true`，误点一下就会丢掉整张表单）。关闭入口是「取消/关闭」按钮、抽屉
   右上角的 ×，或 Esc。`footer={null}` 的弹窗要自带取消/关闭按钮（用 `.form-actions` 排版）。

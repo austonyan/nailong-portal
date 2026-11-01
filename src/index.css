@@ -92,6 +92,16 @@ h3 {
   --nl-focus-ring: 2px;
   --nl-focus-offset: 2px;
   --nl-focus-scroll-margin: 64px;
+
+  /* 库把这个 token 定义成 #9f927d(对纸面 2.5–2.9:1),自己却在 Collapse 正文、
+     Tabs 内容和 Date 标签里当正文色用;项目侧还有 70 处「未选中页签 / 说明文字」。
+     这里提到棕墨向纸面提亮 8%(4.9–5.5:1):仍比正文浅一档,但可读。
+     DESIGN.md 十二像素底线——层级交给字重与间距,不用淡墨压小字。 */
+  --animal-text-color-secondary: color-mix(
+    in srgb,
+    var(--animal-text-color) 92%,
+    var(--animal-bg-color)
+  );
 }
 
 /* 统一焦点可见:棕色文字色 #794f27 压在奶油底 #f8f8f0 上 6.65:1,
@@ -363,6 +373,14 @@ html {
   }
 }
 
+/* 账号操作条:基础间距 10px。必须写在下面的 @media 之前 —— 同特异性的后续声明
+   会盖掉媒体查询里的值(.header-right 的窄屏 gap 曾因此长期失效)。 */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* 手机宽度:账号操作独占一行并右对齐,避免顶栏把整页撑出横向滚动 */
 @media (max-width: 640px) {
   .app-header-inner {
@@ -371,11 +389,11 @@ html {
     padding: 10px 16px;
   }
 
+  /* 360px 下铃铛/语言/头像/退出必须落在同一行:不许内部再换行 */
   .header-right {
+    flex-wrap: nowrap;
     gap: 6px;
     margin-left: auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
   }
 
   /* 只留图标:退出登录文字隐藏后顶栏能单行放下,避免三行堆叠 */
@@ -383,9 +401,14 @@ html {
   .logout-label {
     display: none;
   }
+
+  /* 退出按钮收到图标宽度(库默认左右各 16px),为同一行再腾出 25px */
+  .app-logout {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 
-.header-right,
 .visa-admin-detail-head,
 .docs-cert-title,
 .im-attachment-upload,
@@ -597,10 +620,18 @@ html {
   margin-bottom: 16px;
 }
 
+/* 操作列:桌面不换行。换行会让整行高度翻倍(96px),一屏放不下 10 行;
+   列宽不够时由 auto 布局向其它列要空间。窄屏再退回换行。 */
 .table-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
+}
+
+@media (max-width: 900px) {
+  .table-actions {
+    flex-wrap: wrap;
+  }
 }
 
 /* 共享多行输入(src/components/TextArea.jsx):库内没有 Textarea 组件,外观统一由
@@ -622,8 +653,20 @@ html {
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.nl-textarea::placeholder {
-  color: var(--animal-text-color-disabled);
+/* placeholder 统一取「棕墨 82% + 纸面 18%」(≈4.6:1):够看清,又明显浅于真实输入值。
+   库里 Input 的 placeholder 硬编码 #c4b89e(1.9:1),只能按组件前缀覆盖。 */
+[class*='animal-input-']::placeholder,
+.nl-textarea::placeholder,
+.visa-textarea::placeholder,
+.appeal-textarea::placeholder,
+.docs-textarea::placeholder,
+.res-textarea::placeholder {
+  color: color-mix(in srgb, var(--animal-text-color) 82%, var(--animal-bg-color));
+}
+
+/* 分页「共 N 条」:库里写死 #a09080(2.77:1),换成项目可读的次级墨。 */
+[class*='animal-total-'] {
+  color: var(--animal-text-color-secondary);
 }
 
 .nl-textarea:focus {
@@ -705,6 +748,22 @@ html {
 .table-fit td {
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+/* 360 验收宽度:卡片里只剩 ~250px。单元格左右各 20px 的库默认内边距在 7 列表里
+   要吃掉 280px,标签的 nowrap 又把每列钉在最小宽度上 —— 窄屏统一收内边距并放开
+   标签换行,把表压回容器内。 */
+@media (max-width: 640px) {
+  .table-fit th,
+  .table-fit td {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .table-fit [class*='animal-tag-'] {
+    white-space: normal;
+    height: auto;
+  }
 }
 
 /* ---------- auth ---------- */
@@ -1030,10 +1089,12 @@ html {
   font-weight: 700;
 }
 
+/* 服务卡简介:卡片被库染成不同浅色,简介沿用卡片的色相只有 4.2:1,
+   统一回到墨色(各色卡上都 ≥6:1),色相留给图标与描边。 */
 .service-card-desc {
   margin: 0;
   font-size: 13px;
-  opacity: 0.92;
+  color: var(--animal-text-color);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1402,12 +1463,13 @@ html {
   font-weight: 600;
 }
 
+/* 状态色只做填充(DESIGN.md 状态即填充):文字回到墨色,靠图标与文案表达语义。 */
 .visa-quiz-result {
   margin-top: 14px;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--animal-success-color);
+  color: var(--animal-text-color);
   font-weight: 600;
 }
 
@@ -1452,11 +1514,6 @@ html {
 .res-textarea:focus,
 .appeal-textarea:focus {
   border-color: var(--animal-text-color);
-}
-
-.visa-textarea::placeholder,
-.appeal-textarea::placeholder {
-  color: var(--animal-text-color-muted);
 }
 
 .visa-materials-section {
@@ -2093,10 +2150,11 @@ html {
   list-style: disc;
 }
 
+/* 小标题是正文色:薄荷对纸面 1.97:1,不能承载文字(DESIGN.md 薄荷不作墨)。 */
 .docs-type-detail :is(h2, h4) {
   margin: 14px 0 4px;
   font-size: 14px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .docs-type-detail p,
@@ -2194,7 +2252,7 @@ html {
 .docs-mat-name {
   border: none;
   background: none;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-family: var(--animal-font-family);
   font-weight: 600;
   font-size: 13px;
@@ -2602,7 +2660,7 @@ html {
 .docs-review-detail :is(h2, h4) {
   margin: 16px 0 6px;
   font-size: 14px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .docs-review-actions {
@@ -2622,7 +2680,7 @@ html {
 .docs-type-editor :is(h2, h4) {
   margin: 18px 0 8px;
   font-size: 14px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .docs-editor-grid {
@@ -2685,10 +2743,6 @@ html {
   line-height: 1.6;
   resize: vertical;
   min-height: 80px;
-}
-
-.docs-textarea::placeholder {
-  color: var(--animal-text-color-disabled);
 }
 
 /* ---------- immigration (皇家口岸入境署) ---------- */
@@ -2788,9 +2842,9 @@ html {
 }
 
 .im-link {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: underline;
   font-size: 14px;
 }
 
@@ -2918,7 +2972,7 @@ html {
   border: none;
   background: none;
   padding: 0;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
   font-size: 14px;
   font-family: inherit;
@@ -3329,7 +3383,7 @@ html {
 
 .dip-service-card:hover {
   transform: translateY(-2px);
-  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
 }
 
 .dip-guide-grid {
@@ -3440,11 +3494,12 @@ html {
   border: none;
   background: none;
   padding: 0;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-family: var(--animal-font-family);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .dip-check-row {
@@ -3558,9 +3613,9 @@ html {
 }
 
 .dip-material-links a {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .dip-stat-cols {
@@ -3791,8 +3846,8 @@ html {
 }
 
 .res-link {
-  color: var(--animal-primary-color);
-  text-decoration: none;
+  color: var(--animal-text-color);
+  text-decoration: underline;
   font-size: 13px;
 }
 
@@ -3836,7 +3891,6 @@ html {
 }
 
 .res-textarea::placeholder {
-  color: var(--animal-text-color-muted);
   font-weight: 400;
 }
 
@@ -4311,7 +4365,7 @@ html {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  color: var(--animal-warning-color);
+  color: var(--animal-text-color);
 }
 
 .appeal-scam-inner p {
@@ -4559,7 +4613,7 @@ html {
 .appeal-item-reply {
   margin: 8px 0 0;
   font-size: 13px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .appeal-item-actions {
@@ -4630,7 +4684,7 @@ html {
 
 .appeal-anon-tip {
   font-size: 12px;
-  color: var(--animal-warning-color);
+  color: var(--animal-text-color);
 }
 
 .appeal-ticket-thread {
