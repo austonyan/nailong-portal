@@ -2,7 +2,7 @@
 // 脱敏展示,限流与防枚举提示。
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Tag } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -62,11 +62,7 @@ export default function AppealVerify() {
         </div>
       </div>
 
-      <h1 className="page-title">
-        <Title size="middle" color="app-teal">
-          {t('appeal.verify.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('appeal.verify.title')}</h1>
       <p className="muted-text">{t('appeal.verify.tip')}</p>
 
       <Card className="appeal-verify-card">

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { FileIcon, PrinterIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastStatError } from './shared.jsx';
@@ -38,10 +38,8 @@ export default function StatsHome() {
 
   return (
     <div className="stat-page">
-      <Background type="sprinkles" className="stat-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('stat.home.heroTitle')}</Title>
-        </h1>
+      <Background type="sprinkles" className="nl-hero stat-hero">
+        <h1 className="page-title">{t('stat.home.heroTitle')}</h1>
         <Typewriter speed={30}>
           <p className="stat-hero-sub">{t('stat.home.heroSub')}</p>
         </Typewriter>
@@ -57,11 +55,7 @@ export default function StatsHome() {
 
       <section className="stat-section">
         <div className="page-header">
-          <h2 className="section-title">
-            <Title size="middle" color="app-teal">
-              {t('stat.home.metricsTitle')}
-            </Title>
-          </h2>
+          <h2 className="section-title">{t('stat.home.metricsTitle')}</h2>
           <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(home.asOf) })}</span>
         </div>
         <p className="muted-text">{t('stat.home.metricsTip')}</p>
@@ -86,11 +80,7 @@ export default function StatsHome() {
       <Divider type="wave-yellow" />
 
       <section className="stat-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-blue">
-            {t('stat.home.latestTitle')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('stat.home.latestTitle')}</h2>
         <Card className="stat-report-hero">
           {home.my.latest ? (
             <>

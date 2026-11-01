@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Select, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, RssIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { NOTICE_LEVELS, NOTICE_LEVEL_COLORS, fmtDateTime, toastPostError } from './shared.jsx';
@@ -83,9 +83,7 @@ export default function PostalNotices() {
               <Tag color={NOTICE_LEVEL_COLORS[detail.level] || 'brown'} variant="soft">
                 {t(`post.level.${detail.level}`)}
               </Tag>
-              <h1 className="page-title">
-                <Title size="middle">{detail.title}</Title>
-              </h1>
+              <h1 className="page-title">{detail.title}</h1>
             </div>
             <div className="postal-notice-meta">
               <span>{detail.no}</span>
@@ -101,11 +99,7 @@ export default function PostalNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('post.notices.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.notices.title')}</h1>
         <div className="postal-filter-bar">
           <Input
             size="middle"

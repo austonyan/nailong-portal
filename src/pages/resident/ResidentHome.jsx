@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BadgeCheckIcon, BellIcon, ClipboardIcon, HelpCircleIcon, ListIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -59,11 +59,7 @@ export default function ResidentHome() {
   return (
     <div className="res-home">
       <Background type="sprinkles" className="res-hero">
-        <h1 className="page-title">
-          <Title size="large" color="app-green">
-            {t('res.home.hero')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('res.home.hero')}</h1>
         <Typewriter speed={35}>
           <p className="res-hero-sub">{t('res.home.tagline')}</p>
         </Typewriter>
@@ -130,11 +126,7 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-green">
-            {t('res.home.quickEntries')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('res.home.quickEntries')}</h2>
         <div className="res-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
@@ -160,11 +152,7 @@ export default function ResidentHome() {
       <Divider type="wave-yellow" />
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('res.home.types')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('res.home.types')}</h2>
         <div className="res-type-grid">
           {(home?.types ?? []).map((type) => (
             <Card
@@ -195,9 +183,7 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle">{t('res.home.guide')}</Title>
-        </h2>
+        <h2 className="section-title">{t('res.home.guide')}</h2>
         <div className="res-faq">
           {GUIDE_KEYS.map((key) => (
             <Collapse key={key} question={t(`res.home.guideItems.${key}.q`)} answer={t(`res.home.guideItems.${key}.a`)} />
@@ -206,11 +192,7 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('res.home.announcements')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('res.home.announcements')}</h2>
         <div className="res-ann-list">
           {(home?.notices ?? []).map((n) => (
             <Card key={n.id} className="res-ann-item">
@@ -233,9 +215,7 @@ export default function ResidentHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle">{t('res.home.faq')}</Title>
-        </h2>
+        <h2 className="section-title">{t('res.home.faq')}</h2>
         <div className="res-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`res.faq.${key}.q`)} answer={t(`res.faq.${key}.a`)} />

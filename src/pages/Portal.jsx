@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Background, Button, Card, Divider, Modal, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Avatar, Background, Button, Card, Divider, Modal, Tag, Typewriter } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
@@ -70,9 +70,7 @@ export default function Portal() {
   return (
     <div className="portal-page">
       <Background type="sprinkles" className="portal-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('auth.welcomeBack', { name: displayName })}</Title>
-        </h1>
+        <h1 className="page-title">{t('auth.welcomeBack', { name: displayName })}</h1>
         <Typewriter speed={40}>
           <p className="portal-tagline">{t('portal.tagline')}</p>
         </Typewriter>
@@ -108,11 +106,7 @@ export default function Portal() {
       <Divider type="wave-yellow" />
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('portal.services')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('portal.services')}</h2>
         {loading ? (
           <div className="portal-grid">
             <Card type="dashed">

@@ -1,7 +1,7 @@
 // 风控与黑名单:重复登记识别、验真限流概况与黑名单管理。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Table, Tag } from 'animal-island-ui';
 import { BanIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
@@ -102,9 +102,7 @@ export default function AdminResRisk() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('res.admin.risk.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.admin.risk.title')}</h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => { setUserId(''); setReason(''); setAddOpen(true); }}>
           {t('res.admin.risk.add')}
         </Button>

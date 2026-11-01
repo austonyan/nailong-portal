@@ -1,7 +1,7 @@
 // 跨署互认规则管理台:配置"持 A 证件可免办/简化/优先办 B 业务"。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { PlusIcon, RefreshIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess, toastError, toastApiError } from '../../components/toast.js';
@@ -165,9 +165,7 @@ export default function AdminRecognize() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('admin.recognize.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('admin.recognize.title')}</h1>
         <p className="muted-text">{t('admin.recognize.subtitle')}</p>
         <div className="table-actions">
           <Button icon={<RefreshIcon />} onClick={load} loading={loading}>

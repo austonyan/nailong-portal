@@ -239,7 +239,7 @@ LAUNCHER=$(ls -d "$HOME"/.zcode/cli/plugins/cache/impeccable/impeccable/*/skills
 
 ## Smoke scripts (this is the test suite)
 
-18 scripts, ~713 assertions, all green on 2026-11-01 (matrix in `docs/work.md` §7):
+18 scripts, all green on 2026-11-01; per-script assertion matrix in `docs/work.md` §7:
 
 - **Self-contained** (boot their own temporary API on a fresh `NAILONG_DATA_DIR`):
   `node server/scripts/smoke-setup.mjs`, `smoke-i18n`, `smoke-messages`, `smoke-auto-approve`,
@@ -251,8 +251,9 @@ LAUNCHER=$(ls -d "$HOME"/.zcode/cli/plugins/cache/impeccable/impeccable/*/skills
   `smoke-appeal`, `smoke-linkage`. Start the server with a fresh `NAILONG_DATA_DIR` and the
   `*_INTER_SERVICE_TOKEN` vars the flow needs. The docs office has no dedicated smoke script —
   it is covered by `smoke-linkage` + `smoke-auto-approve`.
-- Scripts use **fixed usernames**: never reuse a data dir across runs. Temp DBs get their
-  first admin via `server/scripts/bootstrap-admin.mjs` (reads `ADMIN_PASSWORD`).
+- Scripts use **fixed usernames**: never reuse a data dir across runs. They bootstrap the
+  first admin through `ensureAdmin()` from `server/scripts/bootstrap-admin.mjs` (password
+  from `ADMIN_PASSWORD`, else a dev default).
 
 ## Cross-service linkage
 
@@ -352,10 +353,11 @@ so the per-office inbox pages and the global one never disagree.
 ## Current state
 
 As of 2026-11-01 the portal and all 12 offices are functional end to end (18 smoke
-scripts / 713 assertions green on a fresh DB): auth, RBAC, service cards, profile, admin
-screens, 43 permission codes, cross-service linkage, per-office auto-approval, service
-mutual-recognition (`/api/recognize`, eligibility output only — it never mutates office state
-machines), cross-office inbox and the 邮政契约 notification bus. The UI is built entirely with
-animal-island-ui components + `--animal-*` tokens; the 2026-10-30 UI-spec convergence batch is
-recorded in `docs/ui-spec/07-convergence-2026-10-30.md`. Remaining known defects are
-documented (not hidden) in `docs/work.md` §8 — check there before reporting one as new.
+scripts plus the immigration self-starter, all green on a fresh DB): auth, RBAC, service cards,
+profile, admin screens, 43 permission codes, cross-service linkage, per-office auto-approval,
+service mutual-recognition (`/api/recognize`, eligibility output only — it never mutates office
+state machines), cross-office inbox and the 邮政契约 notification bus. The UI is built entirely
+with animal-island-ui components + `--animal-*` tokens; the 2026-10-30 UI-spec convergence batch
+is recorded in `docs/ui-spec/07-convergence-2026-10-30.md`. The `docs/work.md` §8 audit defects
+are mostly closed with smoke coverage; what remains open is P3, §8.4 (intentional), and the
+five §8.2 sub-items named at the top of this file — check there before reporting one as new.

@@ -2,7 +2,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Input, Modal, Select, Table, Tabs, Tag, Title } from 'animal-island-ui';
+  Button,
+  Card,
+  Input,
+  Modal,
+  Select,
+  Table,
+  Tabs,
+  Tag,
+} from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import AutoApproveSettings from '../../components/AutoApproveSettings.jsx';
@@ -294,9 +302,7 @@ export default function AppealAdminManage() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('appeal.admin.manageTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('appeal.admin.manageTitle')}</h1>
       </div>
 
       <Card>

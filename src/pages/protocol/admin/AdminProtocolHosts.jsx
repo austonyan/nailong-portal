@@ -12,7 +12,6 @@ import {
   Switch,
   Table,
   Tag,
-  Title,
 } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, LockIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -154,9 +153,7 @@ export default function AdminProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.admin.hostsTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.admin.hostsTitle')}</h1>
         <p className="muted-text">{t('protocol.admin.hostsSubtitle')}</p>
       </div>
 

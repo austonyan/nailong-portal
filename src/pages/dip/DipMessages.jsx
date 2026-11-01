@@ -2,7 +2,7 @@
 // 支持已读/未读、归档。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { FolderIcon, CheckIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
@@ -57,9 +57,7 @@ export default function DipMessages() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.messages.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.messages.title')}</h1>
         {data?.unreadCount > 0 && <Tag color="warm-peach-pink" variant="soft">{t('dip.messages.unreadCount', { count: data.unreadCount })}</Tag>}
         <Button type="default" size="small" icon={<CheckIcon />} onClick={markAll}>{t('dip.messages.readAll')}</Button>
       </div>

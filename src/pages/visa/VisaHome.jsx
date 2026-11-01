@@ -2,16 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Background,
-  Button,
-  Card,
-  Collapse,
-  Divider,
-  Tag,
-  Title,
-  Typewriter,
-} from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import {
   AirplaneIcon,
   AlertTriangleIcon,
@@ -85,9 +76,7 @@ export default function VisaHome() {
   return (
     <div className="visa-home">
       <Background type="sprinkles" className="visa-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('visa.home.heroTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('visa.home.heroTitle')}</h1>
         <Typewriter speed={30}>
           <p className="visa-hero-sub">{t('visa.home.heroSub')}</p>
         </Typewriter>
@@ -115,11 +104,7 @@ export default function VisaHome() {
       </Card>
 
       <section className="visa-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('visa.home.notices')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('visa.home.notices')}</h2>
         <div className="visa-notice-list">
           {home.notices.length === 0 && (
             <Card type="dashed">
@@ -142,11 +127,7 @@ export default function VisaHome() {
       </section>
 
       <section className="visa-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('visa.home.types')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('visa.home.types')}</h2>
         <div className="visa-type-grid">
           {home.types.map((tp) => (
             <Card
@@ -183,11 +164,7 @@ export default function VisaHome() {
       {!!recs?.length && (
         <section className="visa-section">
           <div className="visa-notice-head">
-            <h2 className="section-title">
-              <Title size="middle" color="app-green">
-                {t('visa.home.tourismTitle')}
-              </Title>
-            </h2>
+            <h2 className="section-title">{t('visa.home.tourismTitle')}</h2>
             <Link to="/tourism" className="visa-link">
               {t('visa.home.tourismAll')}
             </Link>
@@ -219,11 +196,7 @@ export default function VisaHome() {
       )}
 
       <section className="visa-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-blue">
-            {t('visa.home.guide')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('visa.home.guide')}</h2>
         <div className="visa-guide-grid">
           <Card className="visa-guide-card">
             <h3>{t('visa.home.guideCondition')}</h3>
@@ -249,11 +222,7 @@ export default function VisaHome() {
       <Divider type="wave-yellow" />
 
       <section className="visa-section">
-        <h2 className="section-title">
-          <Title size="middle" color="purple">
-            {t('visa.home.faq')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('visa.home.faq')}</h2>
         <div className="visa-faq">
           {['reject', 'fee', 'real', 'duration', 'port'].map((key) => (
             <Collapse key={key} question={t(`visa.faq.${key}.q`)} answer={t(`visa.faq.${key}.a`)} />

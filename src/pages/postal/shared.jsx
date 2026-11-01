@@ -1,8 +1,13 @@
-// Shared bits for the postal-office pages: status palettes, date formatting,
-// error toasts, the tokenized textarea and the message-text renderer.
+// Shared bits for the postal-office pages: status palettes and the message-text
+// renderer. Date formatting, the textarea and the error-toast mapper now live in
+// the shared modules below and are only re-exported here (call sites unchanged).
 /* eslint-disable react/only-export-components */
-import dayjs from 'dayjs';
-import { toastError } from '../../components/toast.js';
+import { toastApiError } from '../../components/toast.js';
+
+// 全站唯一的时间格式化实现(src/lib/date.js,带 isValid() 保护)。
+export { fmtDate, fmtDateTime } from '../../lib/date.js';
+// 全站唯一的多行输入框(src/components/TextArea.jsx)。
+export { TextArea as PostTextarea } from '../../components/TextArea.jsx';
 
 export const NOTICE_LEVELS = ['info', 'important', 'event'];
 export const NOTICE_STATUSES = ['draft', 'published', 'offline'];
@@ -66,28 +71,9 @@ export const POSTCARD_STATUS_COLORS = {
   taken_down: 'app-red',
 };
 
-export function fmtDateTime(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD HH:mm') : '-';
-}
-
-export function fmtDate(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD') : '-';
-}
-
-export function postErrMsg(t, err) {
-  const key = `api.${err?.code}`;
-  const text = err?.code ? t(key) : '';
-  return text && text !== key ? text : t('api.INTERNAL_ERROR');
-}
-
-// 全站统一提示(库的命令式通知 API 在 React 19 下会抛异常,不能用于关键流程)
+// 错误提示委托全站统一的 api.<code> 映射(未知码回退通用文案,不展示服务端英文)。
 export function toastPostError(t, err) {
-  toastError(postErrMsg(t, err));
-}
-
-// 库里没有多行输入;按输入框的视觉语言用 --animal-* 令牌自定义。
-export function PostTextarea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`post-textarea ${className}`} {...rest} />;
+  toastApiError(t, err);
 }
 
 // 消息正文优先用管理端模板渲染结果(title/body 成对存在),否则按 post.msg.<type>

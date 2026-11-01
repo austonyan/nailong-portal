@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Input, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Input, Tag, Typewriter } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon, UsersIcon } from 'naive-icons';
 import { CARD_STATUS_COLORS, fmtDate, resToast } from './shared.jsx';
 
@@ -54,9 +54,7 @@ export default function ResidentVerify() {
         <span className="muted-text">{t('res.officeName')}</span>
       </header>
       <Background type="sprinkles" className="res-verify-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('res.verify.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.verify.title')}</h1>
         <Typewriter speed={35}>
           <p className="res-hero-sub">{t('res.verify.subtitle')}</p>
         </Typewriter>

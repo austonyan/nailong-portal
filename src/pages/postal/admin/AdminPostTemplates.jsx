@@ -2,7 +2,7 @@
 // 启用后 sendPostalMessage 命中相同 source+type 时会渲染模板并随消息存储。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -159,11 +159,7 @@ export default function AdminPostTemplates() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-orange">
-            {t('post.admin.templates.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.admin.templates.title')}</h1>
       </div>
 
       <Card>

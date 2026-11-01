@@ -1,7 +1,7 @@
 // 可申诉事项说明:范围、不可申诉情形、材料清单、时效与复核区别、常见问题。
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Collapse, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, ClockIcon, FileIcon } from 'naive-icons';
 import { BIZ_TYPES, activateByKey } from './shared.jsx';
 
@@ -11,16 +11,10 @@ export default function AppealGuide() {
 
   return (
     <div className="appeal-guide-page">
-      <h1 className="page-title">
-        <Title size="middle" color="app-teal">
-          {t('appeal.guide.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('appeal.guide.title')}</h1>
 
       <Card className="appeal-guide-block">
-        <h2>
-          <CheckCircleIcon size={18} /> {t('appeal.guide.scopeTitle')}
-        </h2>
+        <h2><CheckCircleIcon size={18} /> {t('appeal.guide.scopeTitle')}</h2>
         <p className="muted-text">{t('appeal.guide.scopeIntro')}</p>
         <div className="appeal-biz-grid">
           {BIZ_TYPES.map((b) => (
@@ -43,9 +37,7 @@ export default function AppealGuide() {
       </Card>
 
       <Card className="appeal-guide-block">
-        <h2>
-          <BanIcon size={18} /> {t('appeal.guide.excludedTitle')}
-        </h2>
+        <h2><BanIcon size={18} /> {t('appeal.guide.excludedTitle')}</h2>
         <ul className="appeal-list">
           {['late', 'duplicate', 'malicious', 'unrelated'].map((k) => (
             <li key={k}>
@@ -56,9 +48,7 @@ export default function AppealGuide() {
       </Card>
 
       <Card className="appeal-guide-block">
-        <h2>
-          <FileIcon size={18} /> {t('appeal.guide.materialsTitle')}
-        </h2>
+        <h2><FileIcon size={18} /> {t('appeal.guide.materialsTitle')}</h2>
         <ul className="appeal-list">
           {['code', 'reason', 'expected', 'contact', 'screenshot', 'proof'].map((k) => (
             <li key={k}>
@@ -69,9 +59,7 @@ export default function AppealGuide() {
       </Card>
 
       <Card className="appeal-guide-block">
-        <h2>
-          <ClockIcon size={18} /> {t('appeal.guide.slaTitle')}
-        </h2>
+        <h2><ClockIcon size={18} /> {t('appeal.guide.slaTitle')}</h2>
         <p>{t('appeal.guide.slaBody')}</p>
       </Card>
 
@@ -90,11 +78,7 @@ export default function AppealGuide() {
       </Card>
 
       <section className="appeal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('appeal.guide.faq')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('appeal.guide.faq')}</h2>
         <div className="appeal-faq">
           {['how', 'change', 'fee', 'who', 'docs'].map((k) => (
             <Collapse key={k} question={t(`appeal.guide.faqItem.${k}.q`)} answer={t(`appeal.guide.faqItem.${k}.a`)} />

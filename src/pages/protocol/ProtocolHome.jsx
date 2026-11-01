@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Progress, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Progress, Tag, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   CalendarIcon,
@@ -83,9 +83,7 @@ export default function ProtocolHome() {
   return (
     <div className="protocol-home">
       <Background type="sprinkles" className="protocol-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('protocol.home.heroTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.home.heroTitle')}</h1>
         <Typewriter speed={30}>
           <p className="protocol-hero-sub">{t('protocol.home.heroSub')}</p>
         </Typewriter>
@@ -124,11 +122,7 @@ export default function ProtocolHome() {
       </Card>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('protocol.home.notices')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.home.notices')}</h2>
         <div className="protocol-notice-list">
           {home.notices.length === 0 && (
             <Card type="dashed">
@@ -151,11 +145,7 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('protocol.home.categories')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.home.categories')}</h2>
         <p className="muted-text protocol-section-sub">{t('protocol.home.categoriesSub')}</p>
         <div className="protocol-type-grid">
           {home.types.map((tp, i) => {
@@ -184,11 +174,7 @@ export default function ProtocolHome() {
 
       <section className="protocol-section">
         <div className="protocol-section-head">
-          <h2 className="section-title">
-            <Title size="middle" color="app-pink">
-              {t('protocol.home.hot')}
-            </Title>
-          </h2>
+          <h2 className="section-title">{t('protocol.home.hot')}</h2>
           <Link to="/protocol/events?open=1" className="protocol-link">
             {t('protocol.home.viewAll')}
           </Link>
@@ -236,11 +222,7 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-blue">
-            {t('protocol.home.upcoming')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.home.upcoming')}</h2>
         <div className="protocol-upcoming-list">
           {home.upcoming.map((ev) => (
             <Card
@@ -281,11 +263,7 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="purple">
-            {t('protocol.home.services')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.home.services')}</h2>
         <div className="protocol-service-grid">
           {services.map((svc, i) => {
             const Icon = SERVICE_ICONS[i];
@@ -313,11 +291,7 @@ export default function ProtocolHome() {
       </section>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-green">
-            {t('protocol.home.guide')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.home.guide')}</h2>
         <div className="protocol-guide-grid">
           {guides.map((g) => (
             <Card
@@ -344,11 +318,7 @@ export default function ProtocolHome() {
       <Divider type="wave-yellow" />
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="brown">
-            {t('protocol.home.faq')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.home.faq')}</h2>
         <div className="protocol-faq">
           {faqs.map((key) => (
             <Collapse key={key} question={t(`protocol.faq.${key}.q`)} answer={t(`protocol.faq.${key}.a`)} />

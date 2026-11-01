@@ -90,14 +90,14 @@ export default function TourismShell({ permission, children }) {
       <Modal
         maskClosable={false}
         open={ssoOpen}
-        title={t('tour.sso.title')}
+        title={t('portal.sso.title')}
         onClose={cancelSso}
         typewriter={false}
         footer={
           <>
             <Button onClick={cancelSso}>{t('common.cancel')}</Button>
             <Button type="primary" onClick={confirmSso}>
-              {t('tour.sso.confirm')}
+              {t('portal.sso.confirm')}
             </Button>
           </>
         }

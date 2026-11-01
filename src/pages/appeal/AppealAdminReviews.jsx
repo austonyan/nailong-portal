@@ -2,7 +2,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+  Button,
+  Card,
+  Drawer,
+  Input,
+  Modal,
+  Pagination,
+  Select,
+  Table,
+  Tag,
+} from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial } from '../../api/appeal.js';
@@ -113,9 +122,7 @@ export default function AppealAdminReviews() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('appeal.admin.reviewTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('appeal.admin.reviewTitle')}</h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS, normalizeDocNo } from '../../api/docs.js';
@@ -151,11 +151,7 @@ export default function DocsVerify() {
 
   return (
     <div className="docs-verify">
-      <h1 className="page-title">
-        <Title size="middle" color="app-blue">
-          {t('docs.verify.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('docs.verify.title')}</h1>
       <Card className="docs-block">
         <p className="muted-text">{t('docs.verify.tip')}</p>
         <div className="docs-verify-bar">

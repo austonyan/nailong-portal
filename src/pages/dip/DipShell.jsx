@@ -56,14 +56,14 @@ export default function DipShell({ permission, children }) {
       <Modal
         maskClosable={false}
         open={ssoOpen}
-        title={t('dip.sso.title')}
+        title={t('portal.sso.title')}
         onClose={cancelSso}
         typewriter={false}
         footer={
           <>
             <Button onClick={cancelSso}>{t('common.cancel')}</Button>
             <Button type="primary" onClick={confirmSso}>
-              {t('dip.sso.confirm')}
+              {t('portal.sso.confirm')}
             </Button>
           </>
         }

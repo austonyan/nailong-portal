@@ -1,7 +1,7 @@
 // 互免协议: 公示列表 / 详情 / 我的互免资格查询 / 常见问题。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Input, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Collapse, Input, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
@@ -48,13 +48,11 @@ export default function DipAgreements() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.agreement.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.agreement.title')}</h1>
       </div>
 
       <Card>
-        <Title size="small">{t('dip.agreement.checkTitle')}</Title>
+        <h2 className="block-heading">{t('dip.agreement.checkTitle')}</h2>
         <p className="muted-text">{t('dip.agreement.checkTip')}</p>
         <div className="dip-check-row">
           <Input
@@ -95,7 +93,7 @@ export default function DipAgreements() {
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.agreement.listTitle')}</Title>
+        <h2 className="block-heading">{t('dip.agreement.listTitle')}</h2>
         <div className="dip-agreement-list">
           {(items ?? []).map((a) => (
             <Card key={a.no} className="dip-agreement-item">
@@ -118,7 +116,7 @@ export default function DipAgreements() {
       </Card>
 
       <Card id="faq">
-        <Title size="small">{t('dip.faq.title')}</Title>
+        <h2 className="block-heading">{t('dip.faq.title')}</h2>
         <div className="dip-faq">
           {FAQ_KEYS.map((k) => (
             <Collapse key={k} question={t(`dip.faq.${k}Q`)} answer={<p className="muted-text">{t(`dip.faq.${k}A`)}</p>} />

@@ -12,7 +12,6 @@ import {
   Table,
   Tag,
   Tabs,
-  Title,
 } from 'animal-island-ui';
 import { BanIcon, PlusIcon, RefreshIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -300,9 +299,7 @@ export default function AdminProtocolIssuance() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.admin.issuanceTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.admin.issuanceTitle')}</h1>
         <p className="muted-text">{t('protocol.admin.issuanceSubtitle')}</p>
       </div>
 

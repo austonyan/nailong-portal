@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, FileIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { downloadVisaFile } from '../../api/visa.js';
@@ -111,9 +111,7 @@ export default function VisaMyApplications() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('visa.my.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('visa.my.title')}</h1>
         <div className="table-actions">
           <Button icon={<DownloadIcon />} onClick={exportCsv}>
             {t('visa.my.export')}

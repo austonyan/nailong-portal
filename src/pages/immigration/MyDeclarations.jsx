@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
 import { CodeIcon, EditIcon, PlusIcon, RefreshIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -248,11 +248,7 @@ export default function MyDeclarations() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('imm.mydecl.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.mydecl.title')}</h1>
         <Link to="/immigration/declare">
           <Button type="primary" icon={<PlusIcon />}>{t('imm.nav.declare')}</Button>
         </Link>

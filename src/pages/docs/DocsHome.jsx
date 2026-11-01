@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   BadgeCheckIcon,
@@ -69,11 +69,7 @@ export default function DocsHome() {
   return (
     <div className="docs-home">
       <Background type="sprinkles" className="docs-home-hero">
-        <h1 className="page-title">
-          <Title size="middle" color="app-yellow">
-            {t('docs.home.welcome')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('docs.home.welcome')}</h1>
         <Typewriter speed={35}>
           <p className="docs-home-tagline">{t('docs.home.tagline')}</p>
         </Typewriter>
@@ -113,11 +109,7 @@ export default function DocsHome() {
       <Divider type="wave-yellow" />
 
       <section className="docs-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('docs.home.notices')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('docs.home.notices')}</h2>
         {notices === null ? (
           <Card type="dashed">
             <p className="muted-text">{t('common.loading')}</p>
@@ -147,11 +139,7 @@ export default function DocsHome() {
       </section>
 
       <section className="docs-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-blue">
-            {t('docs.home.catalog')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('docs.home.catalog')}</h2>
         {types === null ? (
           <Card type="dashed">
             <p className="muted-text">{t('common.loading')}</p>
@@ -181,11 +169,7 @@ export default function DocsHome() {
       </section>
 
       <section className="docs-section" id="faq">
-        <h2 className="section-title">
-          <Title size="middle" color="purple">
-            {t('docs.home.guide')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('docs.home.guide')}</h2>
         <Card className="docs-guide-card">
           {guides.map((g) => (
             <Collapse key={g.q} question={g.q} answer={g.a} />

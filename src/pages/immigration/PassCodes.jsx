@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Table, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Table } from 'animal-island-ui';
 import { ClockIcon, DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -114,11 +114,7 @@ export default function PassCodes() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('imm.pass.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.pass.title')}</h1>
       </div>
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.pass.empty')} />

@@ -1,7 +1,7 @@
 // 公告与消息模板:公告发布/编辑/下线,站内信模板编辑与发送记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tabs, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
@@ -208,9 +208,7 @@ export default function AdminResNotices() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('res.admin.notices.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.admin.notices.title')}</h1>
       </div>
 
       <Tabs

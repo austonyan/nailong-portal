@@ -1,7 +1,7 @@
 // 虚构代表处管理: 代表处 CRUD / 状态(开放·关闭·维护) / 公告发布编辑下线。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Modal, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, StatusTag, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
@@ -299,9 +299,7 @@ export default function AdminDipOffices() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.office.adminTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.office.adminTitle')}</h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setOfficeModal({})}>{t('dip.office.create')}</Button>
       </div>
 
@@ -310,9 +308,7 @@ export default function AdminDipOffices() {
       </Card>
 
       <div className="page-header">
-        <h2 className="section-title">
-          <Title size="middle">{t('dip.admin.notice.adminTitle')}</Title>
-        </h2>
+        <h2 className="section-title">{t('dip.admin.notice.adminTitle')}</h2>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setNoticeModal({})}>{t('dip.admin.notice.publish')}</Button>
       </div>
       <Card>

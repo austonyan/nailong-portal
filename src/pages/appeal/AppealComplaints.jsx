@@ -3,7 +3,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Checkbox, Drawer, Input, Modal, Rate, Radio, Select, Tag, Title, Upload } from 'animal-island-ui';
+  Button,
+  Card,
+  Checkbox,
+  Drawer,
+  Input,
+  Modal,
+  Rate,
+  Radio,
+  Select,
+  Tag,
+  Upload,
+} from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
@@ -113,9 +124,7 @@ export default function AppealComplaints() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('appeal.complaint.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('appeal.complaint.title')}</h1>
         <div className="table-actions appeal-filter-bar">
           <Button type="primary" icon={<PlusIcon />} onClick={() => setCreateOpen(true)}>
             {t('appeal.complaint.create')}

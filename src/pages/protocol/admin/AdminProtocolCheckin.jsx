@@ -9,7 +9,6 @@ import {
   Radio,
   Table,
   Tag,
-  Title,
 } from 'animal-island-ui';
 import { CheckCircleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -90,9 +89,7 @@ export default function AdminProtocolCheckin() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.admin.checkinTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.admin.checkinTitle')}</h1>
         <p className="muted-text">{t('protocol.admin.checkinSubtitle')}</p>
       </div>
 

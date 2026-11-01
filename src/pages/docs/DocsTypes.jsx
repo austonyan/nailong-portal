@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Button, Card, Collapse, Divider, Modal, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Collapse, Divider, Modal, Tag } from 'animal-island-ui';
 import { ClipboardIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastError } from '../../components/toast.js';
@@ -61,9 +61,7 @@ export default function DocsTypes() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('docs.types.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('docs.types.title')}</h1>
       </div>
       <div className="portal-grid">
         {types.map((tp) => (
@@ -100,9 +98,7 @@ export default function DocsTypes() {
       <Divider type="hairline" />
 
       <Card className="docs-guide-card">
-        <Title size="small" color="purple">
-          {t('docs.types.faqTitle')}
-        </Title>
+        <h2 className="block-heading">{t('docs.types.faqTitle')}</h2>
         <Collapse question={t('docs.types.faq1q')} answer={t('docs.types.faq1a')} />
         <Collapse question={t('docs.types.faq2q')} answer={t('docs.types.faq2a')} />
         <Collapse question={t('docs.types.faq3q')} answer={t('docs.types.faq3a')} />

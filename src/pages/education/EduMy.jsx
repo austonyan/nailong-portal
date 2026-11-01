@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Tag, Title } from 'animal-island-ui';
+import { Card, Tag } from 'animal-island-ui';
 import { BookIcon, FileIcon, HeartIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TargetTypeTag, fmtDateTime, toastEduError } from './shared.jsx';
@@ -38,11 +38,7 @@ export default function EduMy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('edu.my.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('edu.my.title')}</h1>
       </div>
 
       <div className="edu-stat-grid">
@@ -66,7 +62,7 @@ export default function EduMy() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="small">{t('edu.my.history')}</Title>
+          <h2 className="block-heading">{t('edu.my.history')}</h2>
         </div>
         <div className="edu-related-list">
           {data.history.map((item) => (
@@ -93,7 +89,7 @@ export default function EduMy() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="small">{t('edu.my.favorites')}</Title>
+          <h2 className="block-heading">{t('edu.my.favorites')}</h2>
         </div>
         <div className="edu-related-list">
           {data.favorites.map((item) => (
@@ -113,7 +109,7 @@ export default function EduMy() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="small">{t('edu.badges.title')}</Title>
+          <h2 className="block-heading">{t('edu.badges.title')}</h2>
         </div>
         <div className="edu-badge-grid">
           {data.badges.map((badge) => (
@@ -129,7 +125,7 @@ export default function EduMy() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <Title size="small">{t('edu.my.continueReading')}</Title>
+          <h2 className="block-heading">{t('edu.my.continueReading')}</h2>
         </div>
         <div className="edu-meta">
           <Link to="/education/entries" className="edu-link">

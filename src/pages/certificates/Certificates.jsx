@@ -2,11 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Table, Tag } from 'animal-island-ui';
 import { LinkIcon } from 'naive-icons';
-import dayjs from 'dayjs';
+import { fmtDate } from '../../lib/date.js';
 import { api } from '../../api/client.js';
-import { toastError } from '../../components/toast.js';
+import { toastApiError } from '../../components/toast.js';
 
 const OFFICE_ROUTE = {
   visa: '/visa/permits',
@@ -41,8 +41,6 @@ export default function Certificates() {
   const [benefits, setBenefits] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fmtDate = (iso) => (iso ? dayjs(iso).format('YYYY-MM-DD') : '-');
-
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -56,7 +54,7 @@ export default function Certificates() {
       setAlerts(alertData.alerts ?? []);
       setBenefits(recs.flatMap((r) => r.items ?? []).filter((i) => i.eligible));
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
+      toastApiError(t, err);
       setItems([]);
       setAlerts([]);
       setBenefits([]);
@@ -119,9 +117,7 @@ export default function Certificates() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('certificates.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('certificates.title')}</h1>
         <p className="muted-text">{t('certificates.subtitle')}</p>
         {expiringCount > 0 && (
           <Card type="dashed" className="certificates-expiring">
@@ -134,7 +130,7 @@ export default function Certificates() {
 
       {alerts.length > 0 && (
         <Card type="dashed" className="certificates-alerts">
-          <Title variant="layer" color="app-orange" size="small">{t('certificates.alert.title')}</Title>
+          <h2 className="block-heading">{t('certificates.alert.title')}</h2>
           <ul className="certificates-alert-list">
             {alerts.map((a) => (
               <li key={a.type}>
@@ -152,7 +148,7 @@ export default function Certificates() {
 
       {benefits.length > 0 && (
         <Card type="dashed" className="certificates-benefits">
-          <Title variant="layer" color="app-teal" size="small">{t('certificates.benefits.title')}</Title>
+          <h2 className="block-heading">{t('certificates.benefits.title')}</h2>
           <ul className="certificates-benefit-list">
             {benefits.map((b) => (
               <li key={`${b.serviceKey}-${b.id}`}>

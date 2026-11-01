@@ -1,7 +1,7 @@
 // 基础统计:消息量与已读率、明信片发送量、公告与订阅概览。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Table, Tag, Title } from 'animal-island-ui';
+import { Card, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { sourceLabel, toastPostError } from '../shared.jsx';
 
@@ -57,11 +57,7 @@ export default function AdminPostStats() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('post.admin.stats.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.admin.stats.title')}</h1>
       </div>
 
       <div className="postal-stat-grid">
@@ -89,11 +85,7 @@ export default function AdminPostStats() {
       </div>
 
       <div className="postal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('post.admin.stats.bySource')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('post.admin.stats.bySource')}</h2>
         <Card>
           <Table
             className="table-fit"
@@ -107,11 +99,7 @@ export default function AdminPostStats() {
       </div>
 
       <div className="postal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-yellow">
-            {t('post.admin.stats.byType')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('post.admin.stats.byType')}</h2>
         <Card>
           <div className="postal-notice-list">
             {stats.byType.map((row) => (

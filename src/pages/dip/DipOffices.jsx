@@ -1,7 +1,7 @@
 // 使领馆/代表处展示: 代表处列表 + 详情(简介/联系方式/服务事项/公告)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Drawer, Tag, Title } from 'animal-island-ui';
+import { Card, Drawer, Tag } from 'animal-island-ui';
 import { HomeIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, DipLevelTag, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
@@ -37,9 +37,7 @@ export default function DipOffices() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.office.pageTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.office.pageTitle')}</h1>
       </div>
 
       <div className="dip-office-grid">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Title } from 'animal-island-ui';
+import { Card } from 'animal-island-ui';
 import { ArrowUpRightIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -31,11 +31,7 @@ export default function ImmigrationPorts() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-orange">
-            {t('imm.ports.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.ports.title')}</h1>
       </div>
       <p className="muted-text">{t('imm.ports.subtitle')}</p>
       <div className="im-ports-grid">

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
@@ -99,11 +99,7 @@ export default function AdminImVerify() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('imm.admin.verify.workbenchTitle')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.admin.verify.workbenchTitle')}</h1>
       </div>
 
       <Card>

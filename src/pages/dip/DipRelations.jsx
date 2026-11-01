@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
@@ -294,11 +294,7 @@ export default function DipRelations() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">
-            {t('dip.relation.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('dip.relation.title')}</h1>
         <Link to="/dip/apply">
           <Button type="primary" icon={<PlusIcon />}>{t('dip.nav.apply')}</Button>
         </Link>

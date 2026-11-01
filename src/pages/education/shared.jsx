@@ -1,13 +1,18 @@
-// 奶龙国皇家教育与科学署 — shared UI atoms: status tags, sub-navigation,
-// the tokenized textarea (the library ships no Textarea) and the error toast
-// mapper. Kept inside the education folder so no shared file is touched.
+// 奶龙国皇家教育与科学署 — shared UI atoms: the office sub-navigation and the
+// office status palette. Status tags, date formatting, the textarea and the
+// error-toast mapper are the shared implementations re-exported below.
 /* eslint-disable react/only-export-components */
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
 import { Button, Modal, Tag } from 'animal-island-ui';
-import { toastError } from '../../components/toast.js';
+import { toastApiError } from '../../components/toast.js';
+import { StatusTag as SharedStatusTag } from '../../components/StatusTag.jsx';
 import { useAuth } from '../../auth/AuthContext.jsx';
+
+// 全站唯一的时间格式化实现(src/lib/date.js,带 isValid() 保护)。
+export { fmtDateTime } from '../../lib/date.js';
+// 全站唯一的多行输入框(src/components/TextArea.jsx)。
+export { TextArea } from '../../components/TextArea.jsx';
 
 export const CONTENT_STATUSES = ['draft', 'pending_review', 'published', 'offline'];
 export const TASK_STATUSES = ['active', 'inactive'];
@@ -28,14 +33,10 @@ const STATUS_STYLE = {
   reject: { color: 'app-red', variant: 'soft' },
 };
 
+// 标签渲染由 src/components/StatusTag.jsx 承担,教育署只保留自己的配色表与
+// i18n 前缀默认值;调用点 (<StatusTag value=... prefix=.../>) 保持不变。
 export function StatusTag({ value, prefix = 'edu.status' }) {
-  const { t } = useTranslation();
-  const style = STATUS_STYLE[value] ?? { color: 'brown', variant: 'soft' };
-  return (
-    <Tag color={style.color} variant={style.variant} size="small">
-      {t(`${prefix}.${value}`, { defaultValue: t('common.unknown') })}
-    </Tag>
-  );
+  return <SharedStatusTag value={value} map={STATUS_STYLE} prefix={prefix} size="small" />;
 }
 
 export function TargetTypeTag({ value }) {
@@ -86,24 +87,9 @@ export function EduNav() {
   );
 }
 
-// 库里没有多行输入;按 Input 的视觉语言用令牌自定义,FormItem 直接注入
-// value/onChange 也能工作(原生受控)。
-export function TextArea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`edu-textarea ${className}`} {...rest} />;
-}
-
-export function fmtDateTime(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD HH:mm') : '-';
-}
-
-export function eduErrMsg(t, err) {
-  const key = `api.${err?.code}`;
-  const text = err?.code ? t(key) : '';
-  return text && text !== key ? text : t('api.INTERNAL_ERROR');
-}
-
+// 错误提示委托全站统一的 api.<code> 映射(未知码回退通用文案,不展示服务端英文)。
 export function toastEduError(t, err) {
-  toastError(eduErrMsg(t, err));
+  toastApiError(t, err);
 }
 
 export function pct(part, total) {

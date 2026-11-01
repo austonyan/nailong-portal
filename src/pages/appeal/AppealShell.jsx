@@ -126,14 +126,14 @@ export default function AppealShell({ permission, children }) {
       <Modal
         maskClosable={false}
         open={ssoOpen}
-        title={t('appeal.sso.title')}
+        title={t('portal.sso.title')}
         onClose={cancelSso}
         typewriter={false}
         footer={
           <>
             <Button onClick={cancelSso}>{t('common.cancel')}</Button>
             <Button type="primary" onClick={confirmSso}>
-              {t('appeal.sso.confirm')}
+              {t('portal.sso.confirm')}
             </Button>
           </>
         }

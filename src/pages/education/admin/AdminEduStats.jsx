@@ -1,7 +1,7 @@
 // 基础统计(edu:manage):阅读量、收藏量、内容状态分布与任务完成率。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Table, Tag, Title } from 'animal-island-ui';
+import { Card, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { StatusTag, toastEduError } from '../shared.jsx';
 
@@ -77,11 +77,7 @@ export default function AdminEduStats() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('edu.admin.stats.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('edu.admin.stats.title')}</h1>
       </div>
 
       <div className="edu-stat-grid">
@@ -94,7 +90,7 @@ export default function AdminEduStats() {
       </div>
 
       <Card>
-        <Title size="small">{t('edu.admin.stats.contentTitle')}</Title>
+        <h2 className="block-heading">{t('edu.admin.stats.contentTitle')}</h2>
         <Table
           className="table-fit"
           columns={contentColumns}
@@ -106,7 +102,7 @@ export default function AdminEduStats() {
       </Card>
 
       <Card>
-        <Title size="small">{t('edu.admin.stats.tasksTitle')}</Title>
+        <h2 className="block-heading">{t('edu.admin.stats.tasksTitle')}</h2>
         <Table
           className="table-fit"
           columns={taskColumns}

@@ -9,7 +9,6 @@ import {
   Modal,
   Select,
   Tag,
-  Title,
   Upload,
 } from 'animal-island-ui';
 import { BadgeCheckIcon, EyeIcon, PlusIcon, SendIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
@@ -168,9 +167,7 @@ export default function ProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.hosts.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.hosts.title')}</h1>
         <p className="muted-text">{t('protocol.hosts.subtitle')}</p>
       </div>
 

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Rate, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Modal, Rate, Tag, Upload } from 'animal-island-ui';
 import { EyeIcon, PaperclipIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
@@ -124,9 +124,7 @@ export default function AppealAppealDetail() {
   return (
     <div className="appeal-detail-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{appeal.code}</Title>
-        </h1>
+        <h1 className="page-title">{appeal.code}</h1>
         <Tag color={APPEAL_STATUS_COLORS[appeal.status] || 'brown'} variant="soft">
           {t(`appeal.status.${appeal.status}`)}
         </Tag>
@@ -238,9 +236,7 @@ export default function AppealAppealDetail() {
       )}
 
       <Card className="appeal-detail-card">
-        <h2 className="block-heading">
-          <PaperclipIcon size={18} /> {t('appeal.detail.materials')}
-        </h2>
+        <h2 className="block-heading"><PaperclipIcon size={18} /> {t('appeal.detail.materials')}</h2>
         {appeal.materials.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
         <ul className="appeal-material-list">
           {appeal.materials.map((m) => (

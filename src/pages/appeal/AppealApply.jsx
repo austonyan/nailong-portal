@@ -4,7 +4,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Card, Form, FormItem, Input, Modal, Select, Tag, Title, Upload, useForm } from 'animal-island-ui';
+  Button,
+  Card,
+  Form,
+  FormItem,
+  Input,
+  Modal,
+  Select,
+  Tag,
+  Upload,
+  useForm,
+} from 'animal-island-ui';
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadAppealMaterial } from '../../api/appeal.js';
@@ -153,11 +163,7 @@ export default function AppealApply() {
 
   return (
     <div className="appeal-form-page">
-      <h1 className="page-title">
-        <Title size="middle" color="app-teal">
-          {t('appeal.apply.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('appeal.apply.title')}</h1>
       {appeal && (
         <p className="muted-text">
           {t('appeal.apply.draftNo', { no: appeal.code })} · {t(`appeal.status.${appeal.status}`)}
@@ -218,9 +224,7 @@ export default function AppealApply() {
       </Card>
 
       <Card className="appeal-form-card">
-        <h2>
-          <PaperclipIcon size={18} /> {t('appeal.apply.materialsTitle')}
-        </h2>
+        <h2><PaperclipIcon size={18} /> {t('appeal.apply.materialsTitle')}</h2>
         <p className="muted-text">{t('appeal.apply.materialsTip')}</p>
         <div className="appeal-materials-section">
           <Upload

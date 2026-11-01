@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   FileIcon,
@@ -58,9 +58,7 @@ export default function AppealHome() {
   return (
     <div className="appeal-home">
       <Background type="sprinkles" className="appeal-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('appeal.home.heroTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('appeal.home.heroTitle')}</h1>
         <Typewriter speed={30}>
           <p className="appeal-hero-sub">{t('appeal.home.heroSub')}</p>
         </Typewriter>
@@ -93,11 +91,7 @@ export default function AppealHome() {
       </Card>
 
       <section className="appeal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('appeal.home.services')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('appeal.home.services')}</h2>
         <div className="appeal-service-grid">
           {services.map((s) => (
             <Card
@@ -120,11 +114,7 @@ export default function AppealHome() {
       </section>
 
       <section className="appeal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('appeal.home.notices')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('appeal.home.notices')}</h2>
         <div className="appeal-notice-list">
           {home.notices.length === 0 && (
             <Card type="dashed">
@@ -147,11 +137,7 @@ export default function AppealHome() {
       </section>
 
       <section className="appeal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-blue">
-            {t('appeal.home.guide')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('appeal.home.guide')}</h2>
         <div className="appeal-guide-grid">
           <Card className="appeal-guide-card">
             <h3>{t('appeal.home.guideScope')}</h3>
@@ -178,11 +164,7 @@ export default function AppealHome() {
       <Divider type="wave-yellow" />
 
       <section className="appeal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="purple">
-            {t('appeal.home.faq')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('appeal.home.faq')}</h2>
         <div className="appeal-faq">
           {['duration', 'effect', 'fee', 'review', 'anonymous'].map((key) => (
             <Collapse key={key} question={t(`appeal.faq.${key}.q`)} answer={t(`appeal.faq.${key}.a`)} />

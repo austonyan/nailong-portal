@@ -2,7 +2,7 @@
 // 不含申诉人信息与敏感细节。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Tag, Title } from 'animal-island-ui';
+import { Card, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
 
@@ -31,11 +31,7 @@ export default function AppealPublicity() {
 
   return (
     <div className="appeal-publicity-page">
-      <h1 className="page-title">
-        <Title size="middle" color="app-teal">
-          {t('appeal.publicity.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('appeal.publicity.title')}</h1>
       <p className="muted-text">{t('appeal.publicity.maskTip')}</p>
 
       {stats && (

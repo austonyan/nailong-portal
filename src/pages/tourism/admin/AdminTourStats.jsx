@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { Card, Table, Tag, Title } from 'animal-island-ui';
+import { Card, Table, Tag } from 'animal-island-ui';
 import { TrophyIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastTourError } from '../shared.jsx';
@@ -44,11 +44,7 @@ export default function AdminTourStats() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">
-            {t('tour.admin.stats.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('tour.admin.stats.title')}</h1>
       </div>
 
       <div className="tour-stats-grid">
@@ -93,7 +89,7 @@ export default function AdminTourStats() {
       </div>
 
       <Card className="tour-section">
-        <Title size="small">{t('tour.admin.stats.trendTitle')}</Title>
+        <h2 className="block-heading">{t('tour.admin.stats.trendTitle')}</h2>
         <div className="tour-trend">
           {(stats?.trend ?? []).map((day) => (
             <div key={day.day} className="tour-trend-col" title={dayjs(day.day).format('YYYY-MM-DD')}>
@@ -111,7 +107,7 @@ export default function AdminTourStats() {
 
       <Card className="tour-section">
         <div className="tour-section-head">
-          <Title size="small">{t('tour.admin.stats.topAttractions')}</Title>
+          <h2 className="block-heading">{t('tour.admin.stats.topAttractions')}</h2>
           <Tag size="small" color="app-teal" variant="soft">
             <TrophyIcon size={12} /> {t('tour.admin.stats.top5')}
           </Tag>

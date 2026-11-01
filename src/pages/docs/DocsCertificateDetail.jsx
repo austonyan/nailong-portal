@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { CopyIcon, DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS, exportCertificatePng } from '../../api/docs.js';
@@ -69,9 +69,7 @@ export default function DocsCertificateDetail() {
     <div className="docs-cert-detail">
       <div className="page-header docs-cert-header">
         <div className="docs-cert-title">
-          <h1 className="page-title">
-            <Title size="middle">{t('docs.certDetail.title')}</Title>
-          </h1>
+          <h1 className="page-title">{t('docs.certDetail.title')}</h1>
           <Tag color={STATUS_COLORS[item.status] || 'brown'} variant="soft">
             {t(`docs.certStatus.${item.status}`)}
           </Tag>

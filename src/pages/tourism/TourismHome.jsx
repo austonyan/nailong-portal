@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BookIcon, ClipboardIcon, MapIcon, TrophyIcon, UserIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -59,12 +59,8 @@ export default function TourismHome() {
 
   return (
     <div className="tour-page">
-      <Background type="sprinkles" className="tour-hero">
-        <h1 className="page-title">
-          <Title size="large" color="app-pink">
-            {t('tour.home.hero')}
-          </Title>
-        </h1>
+      <Background type="sprinkles" className="nl-hero tour-hero">
+        <h1 className="page-title">{t('tour.home.hero')}</h1>
         <Typewriter speed={35}>
           <p className="tour-hero-sub">{t('tour.home.tagline')}</p>
         </Typewriter>
@@ -91,11 +87,7 @@ export default function TourismHome() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <h2 className="section-title">
-            <Title size="middle" color="app-orange">
-              {t('tour.home.recommendations')}
-            </Title>
-          </h2>
+          <h2 className="section-title">{t('tour.home.recommendations')}</h2>
           <Button size="small" onClick={() => navigate('/tourism/attractions')}>
             {t('tour.home.viewAll')}
           </Button>
@@ -141,11 +133,7 @@ export default function TourismHome() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <h2 className="section-title">
-            <Title size="middle" color="app-teal">
-              {t('tour.home.quickEntries')}
-            </Title>
-          </h2>
+          <h2 className="section-title">{t('tour.home.quickEntries')}</h2>
         </div>
         <div className="tour-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
@@ -173,11 +161,7 @@ export default function TourismHome() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <h2 className="section-title">
-            <Title size="middle" color="app-yellow">
-              {t('tour.home.festivals')}
-            </Title>
-          </h2>
+          <h2 className="section-title">{t('tour.home.festivals')}</h2>
           <Button size="small" onClick={() => navigate('/tourism/articles')}>
             {t('tour.home.viewAllArticles')}
           </Button>

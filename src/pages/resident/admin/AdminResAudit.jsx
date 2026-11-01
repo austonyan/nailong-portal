@@ -1,7 +1,7 @@
 // 审计与合规:敏感操作审计日志查询与导出。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Title } from 'animal-island-ui';
+import { Button, Card, Input, Table } from 'animal-island-ui';
 import { DownloadIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { downloadResidentFile } from '../../../api/resident.js';
@@ -42,9 +42,7 @@ export default function AdminResAudit() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('res.admin.audit.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.admin.audit.title')}</h1>
         <div className="table-actions res-filter-bar">
           <Input size="middle" allowClear prefix={<SearchIcon size={14} />} placeholder={t('res.admin.audit.actionPlaceholder')} value={action} onChange={(e) => setAction(e.target.value)} />
           <Button icon={<DownloadIcon />} onClick={() => downloadResidentFile('/resident/admin/audit.csv', 'resident-audit.csv').catch((err) => toastResError(t, err))}>

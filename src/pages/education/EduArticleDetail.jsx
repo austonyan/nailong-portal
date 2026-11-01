@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Divider, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Divider, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, EyeIcon, HeartIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastEduError } from './shared.jsx';
@@ -112,7 +112,7 @@ export default function EduArticleDetail() {
       {(article.more ?? []).length > 0 && (
         <div className="edu-section">
           <div className="edu-section-head">
-            <Title size="small">{t('edu.articles.more')}</Title>
+            <h2 className="block-heading">{t('edu.articles.more')}</h2>
           </div>
           <div className="edu-related-list">
             {article.more.map((item) => (

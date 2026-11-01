@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Card, Collapse, Divider, Title } from 'animal-island-ui';
+import { Card, Collapse, Divider } from 'animal-island-ui';
 import { ChatIcon, HelpCircleIcon, ShieldIcon } from 'naive-icons';
 import { ImNav } from '../../components/immigration/shared.jsx';
 
@@ -12,11 +12,7 @@ export default function ImmigrationHelp() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-green">
-            {t('imm.help.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.help.title')}</h1>
       </div>
 
       <Card pattern="app-yellow" className="im-fraud-card">
@@ -30,9 +26,7 @@ export default function ImmigrationHelp() {
       <Divider type="hairline" />
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle">{t('imm.help.faqTitle')}</Title>
-        </h2>
+        <h2 className="section-title">{t('imm.help.faqTitle')}</h2>
         <div className="im-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`imm.faq.${key}.q`)} answer={t(`imm.faq.${key}.a`)} />
@@ -41,11 +35,7 @@ export default function ImmigrationHelp() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('imm.help.contactTitle')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('imm.help.contactTitle')}</h2>
         <div className="im-help-cards">
           <Card hoverable className="im-help-card">
             <ChatIcon size={26} />

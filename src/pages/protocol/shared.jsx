@@ -2,12 +2,16 @@
 // QR canvas, private uploads/previews, CSV exports and the error toast mapper.
 /* eslint-disable react/only-export-components */
 import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import QRCode from 'qrcode';
-import { Tag } from 'animal-island-ui';
 import { getAccessToken } from '../../api/client.js';
-import { toast } from '../../components/toast.js';
+import { toast, toastApiError, apiErrorMessage } from '../../components/toast.js';
+import { StatusTag as SharedStatusTag } from '../../components/StatusTag.jsx';
+import { TextArea as SharedTextArea } from '../../components/TextArea.jsx';
+
+// 时间格式与空值兜底统一由共享层实现(src/lib/date.js 带 isValid 保护);
+// 这里只再导出,署内调用点不变。
+export { fmtDate, fmtDateTime, fmtTime } from '../../lib/date.js';
 
 // 状态语义 → 标签配色:成功/通过/有效/已使用=app-green,驳回/拒绝/作废/撤销/冻结=app-red,
 // 待处理/审核中/候补/补件/待使用=warm-peach-pink,进行中/报名中=app-blue,
@@ -38,13 +42,7 @@ const STATUS_STYLE = {
 };
 
 export function StatusTag({ status, size }) {
-  const { t } = useTranslation();
-  const style = STATUS_STYLE[status] ?? { color: 'brown', variant: 'soft' };
-  return (
-    <Tag color={style.color} variant={style.variant} size={size}>
-      {t(`protocol.status.${status}`, { defaultValue: t('common.unknown') })}
-    </Tag>
-  );
+  return <SharedStatusTag value={status} map={STATUS_STYLE} i18nPrefix="protocol.status" size={size} />;
 }
 
 export const EVENT_STATUS_COLORS = {
@@ -101,24 +99,12 @@ export const COURTESY_STATUS_COLORS = {
   expired: 'brown',
 };
 
-export function fmtDate(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD') : '-';
-}
-
-export function fmtDateTime(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD HH:mm') : '-';
-}
-
-export function fmtTime(iso) {
-  return iso ? dayjs(iso).format('HH:mm') : '';
-}
-
 export function fmtMonthDay(iso) {
   return iso ? dayjs(iso).format('MM-DD') : '-';
 }
 
 export function protocolErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
+  return apiErrorMessage(t, err);
 }
 
 export function protocolToast(kind, message) {
@@ -129,11 +115,11 @@ export const toastSuccess = (message) => protocolToast('success', message);
 export const toastError = (message) => protocolToast('error', message);
 
 export function toastProtocolError(t, err) {
-  toastError(protocolErrMsg(t, err));
+  toastApiError(t, err);
 }
 
 export function TextArea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`protocol-textarea ${className}`} {...rest} />;
+  return <SharedTextArea rows={rows} className={`protocol-textarea ${className}`} {...rest} />;
 }
 
 // 二维码只承载验真 URL(不可猜测 token),不含任何个人信息。

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { Card, CountUp, Progress, Title } from 'animal-island-ui';
+import { Card, CountUp, Progress } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
 import { CrowdMeter, ImAdminNav } from '../../../components/immigration/shared.jsx';
@@ -36,11 +36,7 @@ export default function AdminImStats() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('imm.admin.stats.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.admin.stats.title')}</h1>
       </div>
 
       <div className="portal-stats">

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, PrinterIcon, RefreshIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -81,11 +81,7 @@ export default function StatsReportDetail() {
   return (
     <div className="stat-page">
       <div className="page-header no-print">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('stat.report.title', { year: report.year })}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('stat.report.title', { year: report.year })}</h1>
         <div className="table-actions">
           <Button icon={<ArrowLeftIcon />} onClick={() => navigate('/stats/reports')}>
             {t('stat.report.back')}

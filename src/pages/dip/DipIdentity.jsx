@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -310,7 +309,7 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
 
   return (
     <Card>
-      <Title size="small" color="purple">{t('dip.identity.applyTitle')}</Title>
+      <h2 className="block-heading">{t('dip.identity.applyTitle')}</h2>
       {established.length === 0 && !editing && (
         <Card pattern="app-yellow" className="dip-hint-card">
           <p>
@@ -520,9 +519,7 @@ export default function DipIdentity() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.identity.pageTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.identity.pageTitle')}</h1>
       </div>
 
       <Card pattern="purple" className="dip-visa-channel" id="visa">

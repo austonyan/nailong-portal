@@ -10,7 +10,6 @@ import {
   Select,
   Table,
   Tag,
-  Title,
 } from 'animal-island-ui';
 import { BanIcon, DownloadIcon, MailIcon, PlusIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -232,7 +231,7 @@ export default function AdminProtocolRisk() {
     <div className="protocol-risk-panel">
       <div className="protocol-section">
         <div className="protocol-inline-between">
-          <Title size="small" color="app-blue">{t('protocol.admin.verifyLogs')}</Title>
+          <h2 className="block-heading">{t('protocol.admin.verifyLogs')}</h2>
           <div className="protocol-inline-gap">
             <Input type="number" value={limit} onChange={(e) => setLimit(e.target.value)} style={{ width: 100 }} />
             <Button type="dashed" size="small" onClick={askSaveLimit}>{t('protocol.admin.saveLimit')}</Button>
@@ -281,7 +280,7 @@ export default function AdminProtocolRisk() {
 
       <div className="protocol-section">
         <div className="protocol-inline-between">
-          <Title size="small" color="app-red">{t('protocol.admin.blacklistTitle')}</Title>
+          <h2 className="block-heading">{t('protocol.admin.blacklistTitle')}</h2>
           <Button type="primary" size="small" icon={<PlusIcon />} onClick={() => setBlacklistOpen(true)}>
             {t('protocol.admin.blacklistAdd')}
           </Button>
@@ -292,7 +291,7 @@ export default function AdminProtocolRisk() {
       </div>
 
       <div className="protocol-section">
-        <Title size="small" color="app-orange">{t('protocol.admin.tickets')}</Title>
+        <h2 className="block-heading">{t('protocol.admin.tickets')}</h2>
         <Card>
           <p className="muted-text">{t('common.recentOnly', { count: TICKET_LIMIT })}</p>
           <Table className="table-fit" columns={ticketColumns} dataSource={tickets} rowKey="id" pagination={false} emptyText={t('protocol.common.noData')} />
@@ -300,7 +299,7 @@ export default function AdminProtocolRisk() {
       </div>
 
       <div className="protocol-section">
-        <Title size="small" color="purple">{t('protocol.admin.exports')}</Title>
+        <h2 className="block-heading">{t('protocol.admin.exports')}</h2>
         <Card>
           <div className="protocol-export-grid">
             {[

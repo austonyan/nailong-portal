@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, Card, Input, Modal, Radio, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Radio, Tag, Upload } from 'animal-island-ui';
 import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
@@ -232,11 +232,7 @@ export default function DocsApply() {
 
   return (
     <div className="docs-apply">
-      <h1 className="page-title">
-        <Title size="middle" color="app-teal">
-          {t('docs.apply.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('docs.apply.title')}</h1>
 
       <Card className="docs-block">
         <h2 className="docs-block-title">{t('docs.apply.step1')}</h2>

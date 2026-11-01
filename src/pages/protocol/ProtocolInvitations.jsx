@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Tag } from 'animal-island-ui';
 import { CalendarIcon, CheckCircleIcon, DownloadIcon, MailIcon, SearchIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { StatusTag, downloadProtocolFile, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
@@ -55,9 +55,7 @@ export default function ProtocolInvitations() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.invitations.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.invitations.title')}</h1>
         <p className="muted-text">{t('protocol.invitations.subtitle')}</p>
       </div>
 

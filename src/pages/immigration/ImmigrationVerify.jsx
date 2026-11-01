@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { RefreshIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -58,9 +58,7 @@ export default function ImmigrationVerify() {
       <Card className="im-verify-card">
         <div className="im-verify-head">
           <ShieldIcon size={24} />
-          <h1 className="page-title">
-            <Title size="middle">{t('imm.verify.title')}</Title>
-          </h1>
+          <h1 className="page-title">{t('imm.verify.title')}</h1>
         </div>
         {state === 'idle' && <p className="muted-text">{t('imm.verify.noToken')}</p>}
         {state === 'loading' && <p className="muted-text">{t('common.loading')}</p>}

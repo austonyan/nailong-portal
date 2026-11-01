@@ -1,7 +1,7 @@
 // 删除申请处理 — 队列:受理 → 通过或驳回 → 执行并出回执。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, EyeIcon, SendIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ArchAdminNav, RequestStatusTag, TextArea, fmtDateTime, toastArchError } from '../shared.jsx';
@@ -130,11 +130,7 @@ export default function AdminArchRequests() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="brown">
-            {t('arch.admin.requests.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('arch.admin.requests.title')}</h1>
         <Select value={status} onChange={(v) => { setStatus(v); setPage(1); }} options={STATUS_OPTIONS.map((o) => ({ key: o.key, label: t(o.labelKey) }))} />
       </div>
 

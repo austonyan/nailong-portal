@@ -4,49 +4,30 @@
 /* eslint-disable react/only-export-components */
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
 import { Tag } from 'animal-island-ui';
 import i18n from '../../i18n/index.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
-import { toastError } from '../../components/toast.js';
+import { toastApiError } from '../../components/toast.js';
+import { StatusTag as SharedStatusTag } from '../../components/StatusTag.jsx';
+import { TextArea as SharedTextArea } from '../../components/TextArea.jsx';
+
+// 时间格式与客户端 CSV 导出统一由共享层实现:src/lib/date.js 带 isValid 保护,
+// src/lib/csv.js 的 exportCsv 与本署旧实现逐字一致。这里只再导出,调用点不变。
+// 档案署的时间戳一直带秒(详情时间线、列表、站内信参数、审计 CSV 导出都是),
+// 因此本署的 fmtDateTime 走共享层的秒级版本,不要退回分钟级。
+export { fmtDate } from '../../lib/date.js';
+export { fmtDateTimeSec as fmtDateTime } from '../../lib/date.js';
+export { exportCsv } from '../../lib/csv.js';
 
 // Toast helper usable outside React components.
 // 服务端 message 是英文:未知错误码只回退到通用文案,不把 message 摊到界面上。
 export function toastArchError(err) {
-  const key = `api.${err?.code}`;
-  const text = err?.code ? i18n.t(key) : '';
-  toastError(text && text !== key ? text : i18n.t('api.INTERNAL_ERROR'));
+  toastApiError(i18n.t, err);
 }
 
-// 时间统一转浏览器本地时区(dayjs),与签注署等其他署页面一致;
-// 不能直接截 ISO 字符串(那是 UTC,会差 8 小时甚至差一天)。
-export function fmtDateTime(value) {
-  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '-';
-}
-
-export function fmtDate(value) {
-  return value ? dayjs(value).format('YYYY-MM-DD') : '-';
-}
-
-// Client-side CSV (UTF-8 BOM keeps Excel happy with Chinese headers).
-export function exportCsv(filename, columns, rows) {
-  const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const lines = [columns.map((c) => cell(c.label)).join(',')];
-  for (const row of rows) lines.push(columns.map((c) => cell(row[c.key])).join(','));
-  const blob = new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-// 库内没有 Textarea 组件:长文本用令牌化 textarea(<ns>-textarea)。
+// 库内没有 Textarea 组件:共享组件负责令牌化外观,这里只补署内样式类。
 export function TextArea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`arch-textarea ${className}`} {...rest} />;
+  return <SharedTextArea rows={rows} className={`arch-textarea ${className}`} {...rest} />;
 }
 
 const REQUEST_STATUS_TAG = {
@@ -58,13 +39,7 @@ const REQUEST_STATUS_TAG = {
 };
 
 export function RequestStatusTag({ value }) {
-  const { t } = useTranslation();
-  const style = REQUEST_STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
-  return (
-    <Tag color={style.color} variant={style.variant}>
-      {t(`arch.status.${value}`, { defaultValue: t('common.unknown') })}
-    </Tag>
-  );
+  return <SharedStatusTag value={value} map={REQUEST_STATUS_TAG} i18nPrefix="arch.status" />;
 }
 
 const RECORD_STATUS_TAG = {
@@ -88,13 +63,7 @@ const RECORD_STATUS_TAG = {
 };
 
 export function RecordStatusTag({ value }) {
-  const { t } = useTranslation();
-  const style = RECORD_STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
-  return (
-    <Tag color={style.color} variant={style.variant} size="small">
-      {t(`arch.recStatus.${value}`, { defaultValue: t('common.unknown') })}
-    </Tag>
-  );
+  return <SharedStatusTag value={value} map={RECORD_STATUS_TAG} i18nPrefix="arch.recStatus" size="small" />;
 }
 
 const OFFICE_TAG = {

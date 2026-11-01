@@ -2,7 +2,7 @@
 // 消息正文由 post.msg.<type> 渲染(管理端启用模板时优先用模板渲染结果)。
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Select, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Select, Tabs, Tag } from 'animal-island-ui';
 import { BellIcon, FolderPlusIcon, InboxIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -252,11 +252,7 @@ export default function PostalMessages() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('post.messages.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.messages.title')}</h1>
         <Tag color="warm-peach-pink" variant="soft">
           {t('post.messages.unread', { count: data?.unread ?? 0 })}
         </Tag>

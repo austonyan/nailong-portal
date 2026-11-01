@@ -1,7 +1,7 @@
 // 明信片管理:全量列表(含草稿/已下架)与违规下架。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -109,11 +109,7 @@ export default function AdminPostCards() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-red">
-            {t('post.admin.postcards.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.admin.postcards.title')}</h1>
       </div>
 
       <Card>

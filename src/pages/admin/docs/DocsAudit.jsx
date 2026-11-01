@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
@@ -128,9 +128,7 @@ export default function DocsAudit() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('docs.admin.audit.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('docs.admin.audit.title')}</h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">

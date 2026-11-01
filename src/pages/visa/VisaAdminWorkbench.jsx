@@ -1,8 +1,7 @@
 // 审核工作台:待审队列、申请详情、通过/驳回/补件、签发与签注状态管理。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial } from '../../api/visa.js';
@@ -166,9 +165,7 @@ export default function VisaAdminWorkbench() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('visa.admin.workbench.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('visa.admin.workbench.title')}</h1>
         <div className="table-actions visa-filter-bar">
           <Select
             value={status}

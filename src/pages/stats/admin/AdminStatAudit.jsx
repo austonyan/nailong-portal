@@ -1,7 +1,7 @@
 // 审计查看:本署全部敏感操作(口径增删改、导出、年度报告生成)留痕一览。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Select, Table, Tag } from 'animal-island-ui';
 import { RefreshIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { StatsAdminNav } from '../StatsShell.jsx';
@@ -60,11 +60,7 @@ export default function AdminStatAudit() {
     <div className="stat-admin-page">
       <StatsAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-yellow">
-            {t('stat.admin.audit.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('stat.admin.audit.title')}</h1>
         <div className="table-actions">
           <Select
             value={action}

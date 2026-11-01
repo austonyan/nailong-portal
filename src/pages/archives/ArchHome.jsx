@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Typewriter } from 'animal-island-ui';
 import { CalendarIcon, CompassIcon, InboxIcon, ListIcon, MailIcon, ShieldIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
@@ -52,11 +52,7 @@ export default function ArchHome() {
     <div className="arch-page">
       <ArchNav />
       <Background type="sprinkles" className="arch-hero">
-        <h1 className="page-title">
-          <Title size="large" color="brown">
-            {t('arch.home.hero')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('arch.home.hero')}</h1>
         <Typewriter speed={35}>
           <p className="arch-hero-sub">{t('arch.home.tagline')}</p>
         </Typewriter>
@@ -108,11 +104,7 @@ export default function ArchHome() {
       )}
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="brown">
-            {t('arch.home.quickEntries')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('arch.home.quickEntries')}</h2>
         <div className="arch-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
@@ -136,11 +128,7 @@ export default function ArchHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="brown">
-            {t('arch.home.catalog')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('arch.home.catalog')}</h2>
         <div className="arch-type-grid">
           {(data?.recordTypes ?? []).map((type) => (
             <Card
@@ -171,11 +159,7 @@ export default function ArchHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="brown">
-            {t('arch.home.guides')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('arch.home.guides')}</h2>
         <div className="arch-guide-list">
           {(data?.guides ?? []).map((guide) => (
             <Collapse key={guide.code} question={guide.title} answer={guide.body} />

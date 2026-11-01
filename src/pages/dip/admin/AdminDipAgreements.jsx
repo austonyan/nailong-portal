@@ -1,7 +1,7 @@
 // 互免协议管理: 创建 / 编辑 / 生效 / 终止 / 公示开关。协议变更全部审计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Select, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import dayjs from 'dayjs';
 import { api } from '../../../api/client.js';
@@ -194,9 +194,7 @@ export default function AdminDipAgreements() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.agreement.adminTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.agreement.adminTitle')}</h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setModal({ effectiveFrom: dayjs().format('YYYY-MM-DD') })}>
           {t('dip.agreement.create')}
         </Button>
