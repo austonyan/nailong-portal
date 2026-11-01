@@ -86,34 +86,6 @@
   margin-bottom: 4px;
 }
 
-.stat-sso-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.stat-sso-card {
-  padding: 16px;
-}
-
-.stat-sso-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.stat-sso-name {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
-.stat-sso-account {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .stat-hero {
   border-radius: var(--animal-border-radius-lg);
   padding: 32px;

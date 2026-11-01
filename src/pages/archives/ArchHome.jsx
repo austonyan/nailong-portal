@@ -6,7 +6,7 @@ import { Background, Button, Card, Collapse, Typewriter } from 'animal-island-ui
 import { CalendarIcon, CompassIcon, InboxIcon, ListIcon, MailIcon, ShieldIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
-import { ArchNav, OfficeTag, RequestStatusTag, toastArchError } from './shared.jsx';
+import { OfficeTag, RequestStatusTag, toastArchError } from './shared.jsx';
 
 const QUICK_ENTRIES = [
   { to: '/archives/records', key: 'records', icon: ListIcon, color: 'app-teal' },
@@ -50,7 +50,6 @@ export default function ArchHome() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <Background type="sprinkles" className="arch-hero">
         <h1 className="page-title">{t('arch.home.hero')}</h1>
         <Typewriter speed={35}>

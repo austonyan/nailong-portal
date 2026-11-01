@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Tag } from 'animal-island-ui';
 import { InboxIcon, MailIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, fmtDateTime, toastArchError } from './shared.jsx';
+import { fmtDateTime, toastArchError } from './shared.jsx';
 
 const MESSAGE_COLORS = {
   submitted: 'app-blue',
@@ -70,7 +70,6 @@ export default function ArchMessages() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
         <h1 className="page-title">{t('arch.messages.title')}</h1>
         <div className="table-actions">

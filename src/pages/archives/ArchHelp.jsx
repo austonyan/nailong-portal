@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Collapse, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
-import { ArchNav, toastArchError } from './shared.jsx';
+import { toastArchError } from './shared.jsx';
 
 const FAQ_KEYS = ['whatArchived', 'masked', 'exportLimit', 'deleteFlow', 'rejectedAppeal'];
 
@@ -23,7 +23,6 @@ export default function ArchHelp() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
         <h1 className="page-title">{t('arch.help.title')}</h1>
       </div>

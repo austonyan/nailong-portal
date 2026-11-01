@@ -38,6 +38,11 @@ typography:
     fontWeight: 800
     lineHeight: 1.2
     letterSpacing: "0.01em"
+  display-sm:
+    fontFamily: "Nunito, Noto Sans SC, sans-serif"
+    fontSize: "24px"
+    fontWeight: 800
+    lineHeight: 1.2
   headline:
     fontFamily: "Nunito, Noto Sans SC, sans-serif"
     fontSize: "20px"
@@ -49,6 +54,17 @@ typography:
     fontSize: "18px"
     fontWeight: 700
     lineHeight: 1.35
+  subsection:
+    fontFamily: "Nunito, Noto Sans SC, sans-serif"
+    fontSize: "16px"
+    fontWeight: 700
+    lineHeight: 1.5
+  body-large:
+    fontFamily: "Nunito, Noto Sans SC, sans-serif"
+    fontSize: "16px"
+    fontWeight: 500
+    lineHeight: 1.6
+    letterSpacing: "0.01em"
   body:
     fontFamily: "Nunito, Noto Sans SC, sans-serif"
     fontSize: "14px"
@@ -209,11 +225,13 @@ components:
 
 ## Typography
 
-**Display Font:** Nunito（拉丁与数字），with Noto Sans SC（中文）
+**Display Font:** Nunito（拉丁与数字），with Noto Sans SC（中文，zh-CN 基线）
 **Body Font:** 同一族（`--animal-font-family`）
 **Label/Mono Font:** 无独立标签字体；编号用 `tabular-nums`，不用等宽字做 UI
 
-**Character:** 一个字体族、两套字形——Nunito 的圆润几何负责拉丁与数字，Noto Sans SC 负责中文。两者都以 woff2 打进组件库，不引入第二套字体，也不在中文里用斜体强调（中文斜体是伪斜体）。字重不低于 400；标题 700，Title 飘带与统计大数字用 800–900。
+**Character:** 一个字体族、两套字形——Nunito 的圆润几何负责拉丁与数字，Noto Sans SC 负责中文。两者都以 woff2 打进组件库，也不在中文里用斜体强调（中文斜体是伪斜体）。字重不低于 400；标题 700，Title 飘带与统计大数字用 800–900。
+
+**zh-TW 宋体层（2026-11-02，用户指定）：** 语言为繁体中文时，中文字形换成宋体以区分正简体语境——正文与界面字（font-weight ≤600）用教育部标准宋体，标题与展示字（≥700）用粗宋体；拉丁与数字仍是 Nunito。两个字重段在 `src/index.css` 注册为同一家族 `NL TW Serif`，靠字重自动分流，任何元素无需单独指定；字号/行高/字距与简体完全一致，简繁同构不破版。web 产物是 `font/edusong-web.woff2` 与 `font/MTRSungBold-web.woff2`（源文件 `edusong_Unicode.ttf` / `MTRSungBold.otf` 保留在 `font/`；粗宋必须经 `pyftsubset --desubroutinize` 重写，FontForge 子例程化 CFF 会被浏览器 OTS 拒收）。字体只在 `html[lang=zh-TW]` 时被引用：zh-CN 模式零下载，首次切繁体一次性拉取后走缓存。
 
 ### Hierarchy
 - **Display** (800, 28px/1.2, `tabular-nums`): 统计数字、关键计数。数字本身用棕墨，薄荷只做旁边的装饰条或图标。

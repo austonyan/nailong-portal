@@ -1,6 +1,60 @@
 /* Nailong portal — app-specific layout styles.
    All colors/radii come from animal-island-ui runtime tokens (--animal-*). */
 
+/* ---------------------------------------------------------------------------
+   繁体中文(zh-TW)字体层。
+   语言切到 zh-TW(html[lang=zh-TW],由 src/i18n/index.js 写入)时,中文换宋体:
+   正文/界面字(font-weight ≤600)用教育部标准宋体(源文件 font/edusong_Unicode.ttf
+   → web 产物 font/edusong-web.woff2),标题/展示字(≥700)用粗宋体(源文件
+   font/MTRSungBold.otf → font/MTRSungBold-web.woff2,FontForge 子例程化 CFF 会被
+   Chromium OTS 拒收,必须 pyftsubset --desubroutinize 重写)。两个文件注册成同一
+   家族「NL TW Serif」,靠字重自动分流——元素无需单独指定;字号/行高/字距全部
+   维持既有版式,保证简繁同构不破版。@font-face 只声明不下载:zh-CN 模式零下载,
+   首次切到 zh-TW 时一次性拉取,之后走浏览器缓存。
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "NL TW Serif";
+  src: url("../font/edusong-web.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NL TW Serif";
+  src: url("../font/MTRSungBold-web.woff2") format("woff2");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 库的 --animal-font-family 定义自带 !important,覆盖必须同为 important;
+   :root:lang(zh-TW) 特异性更高,important 之间按特异性取胜。
+   拉丁与数字仍由 Nunito 承担,繁体宋体只接中文字形。 */
+:root:lang(zh-TW) {
+  --nl-font-family-tw: Nunito, "NL TW Serif", "Noto Sans SC", -apple-system,
+    "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --animal-font-family: var(--nl-font-family-tw) !important;
+}
+
+/* 库里把字体栈硬编码进类选择器、不走变量的组件(Title 飘带、Tabs、Table、
+   Checkbox/Radio 组、Tooltip、Modal blob、分页等)要按类名前缀逐组压回;
+   类名带构建哈希,用 [class*=] 前缀匹配抗库升级。 */
+html:lang(zh-TW) [class*="animal-title-"],
+html:lang(zh-TW) [class*="animal-tabItem-"],
+html:lang(zh-TW) [class*="animal-checkboxGroup-"],
+html:lang(zh-TW) [class*="animal-radioGroup-"],
+html:lang(zh-TW) [class*="animal-tooltipWrapper-"],
+html:lang(zh-TW) [class*="animal-wrapper-"],
+html:lang(zh-TW) [class*="animal-panel-"],
+html:lang(zh-TW) [class*="animal-modalClipped-"],
+html:lang(zh-TW) [class*="animal-footer-btn-"],
+html:lang(zh-TW) [class*="animal-notification-"],
+html:lang(zh-TW) [class*="animal-pagination-"],
+html:lang(zh-TW) [class*="animal-table-"] {
+  font-family: var(--nl-font-family-tw) !important;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -501,7 +555,6 @@ html {
 .dip-notice-list,
 .dip-agreement-list,
 .dip-msg-list,
-.dip-sso-body,
 .res-review-list,
 .res-verify-card,
 .res-verify-found,
@@ -518,8 +571,8 @@ html {
   cursor: pointer;
 }
 
-/* 未读行:4px 薄荷左条 + 浅色底 + 行内「未读」文字 Tag 三件套。
-   4px 薄荷对纸面只有 1.97:1,是装饰不是信号,文字 Tag 才是强制项(DESIGN.md:353)。 */
+/* 未读行:2px 薄荷左条 + 浅色底 + 行内「未读」文字 Tag 三件套。
+   左条只做弱装饰(薄荷对纸面对比不足),文字 Tag 才是强制项(DESIGN.md:353)。 */
 .nl-item-unread,
 .inbox-item.unread,
 .visa-msg-card.unread,
@@ -528,7 +581,7 @@ html {
 .res-msg-item.unread,
 .docs-msg-item.unread,
 .appeal-message-card.unread {
-  border-left: 4px solid var(--animal-primary-color);
+  border-left: 2px solid var(--animal-primary-color);
   background: var(--animal-primary-color-bg);
   padding-left: 12px;
 }
@@ -1662,9 +1715,9 @@ html {
 }
 
 .visa-review-timeline li {
-  border-left: 3px solid var(--animal-primary-color-bg);
-  padding-left: 14px;
-}
+  border-left: 2px solid var(--animal-primary-color-bg);
+      padding-left: 14px;
+    }
 
 .visa-review-head p,
 .visa-review-timeline p,
@@ -1903,7 +1956,6 @@ html {
   margin: 0 0 10px;
 }
 
-.visa-sso-body,
 .docs-block,
 .auto-approve-panel,
 .dip-detail,
@@ -1914,30 +1966,40 @@ html {
   gap: 12px;
 }
 
-.visa-sso-identity,
-.dip-banner-brand,
-.dip-sso-identity {
+.dip-banner-brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.visa-sso-name,
 .docs-mat-kind,
 .im-trend-n,
 .dip-id-card-entity,
-.dip-sso-name,
 .res-trend-n {
   font-weight: 700;
 }
 
-.visa-sso-account {
-  font-size: 12px;
-  opacity: 0.85;
+/* SSO 身份确认弹窗(共享:门户服务卡入口 + 各署 Shell,见 SsoConfirmModal) */
+.sso-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.visa-sso-card p {
-  margin: 0;
+.sso-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sso-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.sso-account {
+  font-size: 12px;
+  opacity: 0.85;
 }
 
 /* ---------- print (电子签注 / 申请详情导出) ---------- */
@@ -2512,7 +2574,7 @@ html {
 }
 
 .doc-cert-seal-sub {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -3010,7 +3072,7 @@ html {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  border-left: 3px solid var(--animal-primary-color);
+  border-left: 2px solid var(--animal-primary-color);
   padding-left: 12px;
 }
 
@@ -3122,7 +3184,7 @@ html {
 
 .im-stamp-date,
 .im-stamp-no {
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .im-records-note {
@@ -3308,7 +3370,7 @@ html {
 .im-trend-bar,
 .res-trend-bar {
   width: 26px;
-  border-radius: 8px 8px 3px 3px;
+  border-radius: 8px;
   background: var(--animal-primary-color);
   min-height: 4px;
 }
@@ -3455,10 +3517,10 @@ html {
   margin-bottom: 6px;
 }
 
-.dip-timeline li {
-  padding-left: 14px;
-  border-left: 3px solid var(--animal-primary-color-bg);
-}
+    .dip-timeline li {
+      padding-left: 14px;
+      border-left: 2px solid var(--animal-primary-color-bg);
+    }
 
 .dip-timeline-action {
   font-weight: 600;
@@ -3711,8 +3773,7 @@ html {
   font-size: 13px;
 }
 
-.dip-id-card-term,
-.dip-sso-account {
+.dip-id-card-term {
   font-size: 13px;
   color: var(--animal-text-color-secondary);
 }

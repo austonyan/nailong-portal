@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, OfficeTag, RecordStatusTag, exportCsv, toastArchError } from './shared.jsx';
+import { OfficeTag, RecordStatusTag, exportCsv, toastArchError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 const OFFICES = [
@@ -122,7 +122,6 @@ export default function ArchRecords() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
         <h1 className="page-title">{t('arch.catalog.title')}</h1>
       </div>

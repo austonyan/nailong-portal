@@ -1,19 +1,16 @@
 // Resident office shell: sub navigation + the SSO identity confirmation that
 // the unified portal shows before entering the service (once per session).
-import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Modal } from 'animal-island-ui';
+import { Button } from 'animal-island-ui';
 import { UsersIcon } from 'naive-icons';
 import { useAuth } from '../../auth/AuthContext.jsx';
-
-const SSO_FLAG = 'nailong.resident.sso';
+import SsoConfirmModal from '../../components/SsoConfirmModal.jsx';
 
 export default function ResidentShell({ permission, children }) {
   const { t } = useTranslation();
-  const { user, can } = useAuth();
+  const { can } = useAuth();
   const navigate = useNavigate();
-  const [ssoOpen, setSsoOpen] = useState(() => sessionStorage.getItem(SSO_FLAG) !== '1');
 
   if (permission && !can(permission)) {
     return (
@@ -26,16 +23,6 @@ export default function ResidentShell({ permission, children }) {
       </div>
     );
   }
-
-  const confirmSso = () => {
-    sessionStorage.setItem(SSO_FLAG, '1');
-    setSsoOpen(false);
-  };
-
-  const cancelSso = () => {
-    setSsoOpen(false);
-    navigate('/');
-  };
 
   const navClass = ({ isActive }) => (isActive ? 'res-nav-link active' : 'res-nav-link');
 
@@ -92,34 +79,7 @@ export default function ResidentShell({ permission, children }) {
 
       {children}
 
-      <Modal
-        maskClosable={false}
-        open={ssoOpen}
-        title={t('portal.sso.title')}
-        onClose={cancelSso}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={cancelSso}>{t('common.cancel')}</Button>
-            <Button type="primary" onClick={confirmSso}>
-              {t('portal.sso.confirm')}
-            </Button>
-          </>
-        }
-      >
-        <div className="visa-sso-body">
-          <Card pattern="app-green" className="visa-sso-card">
-            <div className="visa-sso-identity">
-              <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
-              <div>
-                <div className="visa-sso-name">{user?.displayName || user?.username}</div>
-                <div className="visa-sso-account">@{user?.username}</div>
-              </div>
-            </div>
-          </Card>
-          <p className="muted-text">{t('res.sso.tip')}</p>
-        </div>
-      </Modal>
+      <SsoConfirmModal flag="nailong.resident.sso" tip={t('res.sso.tip')} pattern="app-green" />
     </div>
   );
 }

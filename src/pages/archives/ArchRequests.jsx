@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Checkbox, Modal, Table, Tag } from 'animal-island-ui';
 import { ShieldIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, RequestStatusTag, TextArea, fmtDateTime, toastArchError } from './shared.jsx';
+import { RequestStatusTag, TextArea, fmtDateTime, toastArchError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 const ACTIVE_STATUSES = ['pending', 'reviewing', 'executing'];
@@ -119,7 +119,6 @@ export default function ArchRequests() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
         <h1 className="page-title">{t('arch.request.title')}</h1>
         <Button type="primary" icon={<TrashIcon />} onClick={openForm} disabled={!!active}>

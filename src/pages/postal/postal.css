@@ -82,27 +82,6 @@
   margin: 2px 4px;
 }
 
-.postal-sso-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.postal-sso-identity {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.postal-sso-name {
-  font-weight: 700;
-}
-
-.postal-sso-account {
-  font-size: 12px;
-  opacity: 0.85;
-}
-
 /* ---------- home ---------- */
 
 .postal-home {
@@ -289,7 +268,7 @@
 }
 
 .postal-msg-item.unread {
-  border-left: 4px solid var(--animal-primary-color);
+  border-left: 2px solid var(--animal-primary-color);
 }
 
 .postal-msg-head {

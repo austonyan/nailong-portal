@@ -1,22 +1,19 @@
 // 皇家档案与记录署 shell: office banner, sub navigation and the SSO identity
 // confirmation the unified portal shows before entering the service (once per
 // browser session, direct URLs included).
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Modal } from 'animal-island-ui';
+import { Button } from 'animal-island-ui';
 import { BookIcon } from 'naive-icons';
 import { useAuth } from '../../auth/AuthContext.jsx';
+import SsoConfirmModal from '../../components/SsoConfirmModal.jsx';
 import { ArchNav } from './shared.jsx';
 import './archives.css';
 
-const SSO_FLAG = 'nailong.archives.sso';
-
 export default function ArchShell({ permission = 'arch:portal', admin = false, children }) {
   const { t } = useTranslation();
-  const { user, can } = useAuth();
+  const { can } = useAuth();
   const navigate = useNavigate();
-  const [ssoOpen, setSsoOpen] = useState(() => sessionStorage.getItem(SSO_FLAG) !== '1');
 
   if (permission && !can(permission)) {
     return (
@@ -29,16 +26,6 @@ export default function ArchShell({ permission = 'arch:portal', admin = false, c
       </div>
     );
   }
-
-  const confirmSso = () => {
-    sessionStorage.setItem(SSO_FLAG, '1');
-    setSsoOpen(false);
-  };
-
-  const cancelSso = () => {
-    setSsoOpen(false);
-    navigate('/');
-  };
 
   return (
     <div className="arch-page">
@@ -59,34 +46,7 @@ export default function ArchShell({ permission = 'arch:portal', admin = false, c
 
       {children}
 
-      <Modal
-        maskClosable={false}
-        open={ssoOpen}
-        title={t('portal.sso.title')}
-        onClose={cancelSso}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={cancelSso}>{t('common.cancel')}</Button>
-            <Button type="primary" onClick={confirmSso}>
-              {t('portal.sso.confirm')}
-            </Button>
-          </>
-        }
-      >
-        <div className="arch-sso-body">
-          <Card className="arch-sso-card">
-            <div className="arch-sso-identity">
-              <Avatar size="large">{(user?.displayName || user?.username || '?').slice(0, 1)}</Avatar>
-              <div>
-                <div className="arch-sso-name">{user?.displayName || user?.username}</div>
-                <div className="arch-sso-account">@{user?.username}</div>
-              </div>
-            </div>
-          </Card>
-          <p className="muted-text">{t('arch.sso.tip')}</p>
-        </div>
-      </Modal>
+      <SsoConfirmModal flag="nailong.archives.sso" tip={t('arch.sso.tip')} />
     </div>
   );
 }

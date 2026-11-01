@@ -1,270 +1,587 @@
 {
-  "schemaVersion": 2,
-  "generatedAt": "2026-11-01T20:12:30+08:00",
-  "title": "Design System: 奶龙统一门户",
-  "extensions": {
-    "colorMeta": {
-      "mint-seal": {
-        "role": "primary",
-        "displayName": "薄荷封蜡 Mint Seal",
-        "canonical": "#19c8b9",
-        "tonalRamp": ["#00130f", "#00312b", "#005249", "#00766a", "#00998c", "#49baae", "#84dcd1", "#b9fef5"]
-      },
-      "mint-seal-hover": {
-        "role": "primary",
-        "displayName": "薄荷过渡 Mint Seal Hover",
-        "canonical": "#3dd4c6",
-        "tonalRamp": ["#00130f", "#00312b", "#00524a", "#00756b", "#00988c", "#4db9ae", "#87dbd1", "#bbfef5"]
-      },
-      "mint-seal-active": {
-        "role": "primary",
-        "displayName": "薄荷按下 Mint Seal Active",
-        "canonical": "#50b9ab",
-        "tonalRamp": ["#00120d", "#002f28", "#004f46", "#007267", "#309488", "#67b6aa", "#98d8cd", "#c7fbf2"]
-      },
-      "mint-wash": {
-        "role": "primary",
-        "displayName": "薄荷浅底 Mint Wash",
-        "canonical": "#e6f9f6",
-        "tonalRamp": ["#060d0c", "#1e2726", "#394543", "#566563", "#768684", "#9aa9a6", "#c0ccca", "#e6f1ef"]
-      },
-      "leaf-green": {
-        "role": "tertiary",
-        "displayName": "叶绿 Leaf Green",
-        "canonical": "#6fba2c",
-        "tonalRamp": ["#001200", "#023000", "#195100", "#317400", "#539702", "#7db952", "#a8db86", "#d3feb9"]
-      },
-      "sun-yellow": {
-        "role": "tertiary",
-        "displayName": "日光黄 Sun Yellow",
-        "canonical": "#f5c31c",
-        "tonalRamp": ["#1a0500", "#3a1e00", "#5e3a00", "#845900", "#a77b00", "#c6a02c", "#e6c670", "#ffeca8"]
-      },
-      "coral-red": {
-        "role": "tertiary",
-        "displayName": "珊瑚红 Coral Red",
-        "canonical": "#e05a5a",
-        "tonalRamp": ["#260000", "#4f0007", "#7a151d", "#a82f34", "#d05454", "#ee807d", "#ffaca7", "#ffd7d2"]
-      },
-      "ink-brown": {
-        "role": "neutral",
-        "displayName": "棕墨 Ink Brown",
-        "canonical": "#794f27",
-        "tonalRamp": ["#170600", "#371e06", "#5a3a1b", "#7f5733", "#a27953", "#c29d7c", "#e3c2a6", "#ffe9d2"]
-      },
-      "ink-faded": {
-        "role": "neutral",
-        "displayName": "淡墨 Ink Faded",
-        "canonical": "#9f927d",
-        "tonalRamp": ["#0f0a04", "#2b2418", "#4a4132", "#6b604d", "#8c816d", "#aea492", "#d1c8b9", "#f5ede1"]
-      },
-      "ink-disabled": {
-        "role": "neutral",
-        "displayName": "禁用墨 Ink Disabled",
-        "canonical": "#c4b89e",
-        "tonalRamp": ["#0f0b03", "#2b2416", "#49412f", "#6a604a", "#8c816a", "#aea490", "#d0c8b7", "#f5eedf"]
-      },
-      "paper": {
-        "role": "neutral",
-        "displayName": "纸白 Paper",
-        "canonical": "#f8f8f0",
-        "tonalRamp": ["#0c0c06", "#26261f", "#43423b", "#62625a", "#83837b", "#a6a69d", "#cacac1", "#efefe6"]
-      },
-      "paper-secondary": {
-        "role": "neutral",
-        "displayName": "次级纸 Paper Secondary",
-        "canonical": "#f0e8d8",
-        "tonalRamp": ["#0e0b06", "#29251d", "#474137", "#676054", "#888274", "#aaa498", "#cec9be", "#f2eee5"]
-      },
-      "paper-card": {
-        "role": "neutral",
-        "displayName": "卡片纸 Paper Card",
-        "canonical": "#f7f3df",
-        "tonalRamp": ["#0d0b05", "#27251b", "#454235", "#656252", "#868372", "#a8a596", "#ccc9bd", "#f1efe4"]
-      },
-      "paper-input": {
-        "role": "neutral",
-        "displayName": "输入纸 Paper Input",
-        "canonical": "#fffdf7",
-        "tonalRamp": ["#0d0b06", "#27251f", "#44423b", "#64615a", "#85827a", "#a8a59d", "#ccc9c1", "#f1eee6"]
-      },
-      "border-warm": {
-        "role": "neutral",
-        "displayName": "暖边框 Border Warm",
-        "canonical": "#dcd8d1",
-        "tonalRamp": ["#0e0b06", "#28251f", "#45413b", "#65615a", "#86827a", "#a9a49d", "#cdc8c1", "#f3eee6"]
-      },
-      "border-hairline": {
-        "role": "neutral",
-        "displayName": "发丝边 Border Hairline",
-        "canonical": "#e8e2d6",
-        "tonalRamp": ["#0d0b06", "#28251f", "#45423a", "#656157", "#878278", "#a9a49b", "#cdc9c1", "#f2eee6"]
-      },
-      "border-strong": {
-        "role": "neutral",
-        "displayName": "重边框 Border Strong",
-        "canonical": "#827157",
-        "tonalRamp": ["#110a02", "#2d2314", "#4c402d", "#6e5f47", "#908067", "#b1a38d", "#d4c7b4", "#f7eddd"]
-      },
-      "status-success-ink": { "role": "tertiary", "displayName": "通过墨 Status Success Ink", "canonical": "#2e7d32" },
-      "status-success-wash": { "role": "tertiary", "displayName": "通过底 Status Success Wash", "canonical": "#e8f5e9" },
-      "status-danger-ink": { "role": "tertiary", "displayName": "驳回墨 Status Danger Ink", "canonical": "#c62828" },
-      "status-danger-wash": { "role": "tertiary", "displayName": "驳回底 Status Danger Wash", "canonical": "#ffebee" },
-      "status-warning-ink": { "role": "tertiary", "displayName": "待办墨 Status Warning Ink", "canonical": "#bf360c" },
-      "status-warning-wash": { "role": "tertiary", "displayName": "待办底 Status Warning Wash", "canonical": "#fbe9e7" },
-      "status-info-ink": { "role": "tertiary", "displayName": "进行中墨 Status Info Ink", "canonical": "#1565c0" },
-      "status-info-wash": { "role": "tertiary", "displayName": "进行中底 Status Info Wash", "canonical": "#e6f0ff" },
-      "status-neutral-ink": { "role": "tertiary", "displayName": "草稿墨 Status Neutral Ink", "canonical": "#4e342e" },
-      "status-neutral-wash": { "role": "tertiary", "displayName": "草稿底 Status Neutral Wash", "canonical": "#efebe9" },
-      "status-accent-ink": { "role": "tertiary", "displayName": "已签发墨 Status Accent Ink", "canonical": "#00695c" },
-      "status-accent-wash": { "role": "tertiary", "displayName": "已签发底 Status Accent Wash", "canonical": "#e0f2f1" }
-    },
-    "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "统计数字与关键计数；配合 tabular-nums，颜色仍是棕墨。" },
-      "headline": { "displayName": "Page Title", "purpose": "每页唯一的 h1；区块 h2 的纯文本形态。" },
-      "title": { "displayName": "Card Title", "purpose": "卡片标题、服务卡名称、署内区块标题。" },
-      "body": { "displayName": "Body", "purpose": "默认正文、表格单元格、表单内容。" },
-      "body-compact": { "displayName": "Body Compact", "purpose": "密集表格、卡片元信息、两行服务卡摘要。" },
-      "label": { "displayName": "Label", "purpose": "按钮、Tab、表单标签；与正文同色。" },
-      "caption": { "displayName": "Caption", "purpose": "时间、注释、Tag 文字；屏幕 UI 最小字号。" }
-    },
-    "shadows": [
-      { "name": "button-3d", "value": "0 5px 0 0 #bdaea0", "purpose": "仅 primary / danger-primary 按钮的静止厚度；hover 6px，active 1px。" },
-      { "name": "sm", "value": "var(--animal-shadow-sm)", "purpose": "Toast 与 default 按钮的柔和投影（0 2px 4px rgba(61,52,40,.06)）。" },
-      { "name": "base", "value": "var(--animal-shadow-base)", "purpose": "需要脱离纸面的小浮层（0 3px 10px rgba(61,52,40,.1)）。" },
-      { "name": "lg", "value": "var(--animal-shadow-lg)", "purpose": "大尺寸浮层；Modal / Drawer 用库自带阴影。" }
-    ],
-    "motion": [
-      { "name": "duration-fast", "value": "var(--animal-motion-duration-fast)", "purpose": "0.15s：颜色与背景的即时反馈。" },
-      { "name": "duration-base", "value": "var(--animal-motion-duration-base)", "purpose": "0.25s：hover / 展开 / Toast 的默认时长。" },
-      { "name": "duration-slow", "value": "var(--animal-motion-duration-slow)", "purpose": "0.35s：大浮层出现。" },
-      { "name": "ease", "value": "var(--animal-motion-ease)", "purpose": "cubic-bezier(.4,0,.2,1)：全站唯一缓动。" }
-    ],
-    "breakpoints": [
-      { "name": "phone", "value": "640px" },
-      { "name": "large-phone", "value": "720px" },
-      { "name": "tablet", "value": "900px" },
-      { "name": "sider-collapse", "value": "1024px" },
-      { "name": "content-max", "value": "1440px" }
+ "schemaVersion": 2,
+ "generatedAt": "2026-11-01T20:12:30+08:00",
+ "title": "Design System: 奶龙统一门户",
+ "extensions": {
+  "colorMeta": {
+   "mint-seal": {
+    "role": "primary",
+    "displayName": "薄荷封蜡 Mint Seal",
+    "canonical": "#19c8b9",
+    "tonalRamp": [
+     "#00130f",
+     "#00312b",
+     "#005249",
+     "#00766a",
+     "#00998c",
+     "#49baae",
+     "#84dcd1",
+     "#b9fef5"
     ]
+   },
+   "mint-seal-hover": {
+    "role": "primary",
+    "displayName": "薄荷过渡 Mint Seal Hover",
+    "canonical": "#3dd4c6",
+    "tonalRamp": [
+     "#00130f",
+     "#00312b",
+     "#00524a",
+     "#00756b",
+     "#00988c",
+     "#4db9ae",
+     "#87dbd1",
+     "#bbfef5"
+    ]
+   },
+   "mint-seal-active": {
+    "role": "primary",
+    "displayName": "薄荷按下 Mint Seal Active",
+    "canonical": "#50b9ab",
+    "tonalRamp": [
+     "#00120d",
+     "#002f28",
+     "#004f46",
+     "#007267",
+     "#309488",
+     "#67b6aa",
+     "#98d8cd",
+     "#c7fbf2"
+    ]
+   },
+   "mint-wash": {
+    "role": "primary",
+    "displayName": "薄荷浅底 Mint Wash",
+    "canonical": "#e6f9f6",
+    "tonalRamp": [
+     "#060d0c",
+     "#1e2726",
+     "#394543",
+     "#566563",
+     "#768684",
+     "#9aa9a6",
+     "#c0ccca",
+     "#e6f1ef"
+    ]
+   },
+   "leaf-green": {
+    "role": "tertiary",
+    "displayName": "叶绿 Leaf Green",
+    "canonical": "#6fba2c",
+    "tonalRamp": [
+     "#001200",
+     "#023000",
+     "#195100",
+     "#317400",
+     "#539702",
+     "#7db952",
+     "#a8db86",
+     "#d3feb9"
+    ]
+   },
+   "sun-yellow": {
+    "role": "tertiary",
+    "displayName": "日光黄 Sun Yellow",
+    "canonical": "#f5c31c",
+    "tonalRamp": [
+     "#1a0500",
+     "#3a1e00",
+     "#5e3a00",
+     "#845900",
+     "#a77b00",
+     "#c6a02c",
+     "#e6c670",
+     "#ffeca8"
+    ]
+   },
+   "coral-red": {
+    "role": "tertiary",
+    "displayName": "珊瑚红 Coral Red",
+    "canonical": "#e05a5a",
+    "tonalRamp": [
+     "#260000",
+     "#4f0007",
+     "#7a151d",
+     "#a82f34",
+     "#d05454",
+     "#ee807d",
+     "#ffaca7",
+     "#ffd7d2"
+    ]
+   },
+   "ink-brown": {
+    "role": "neutral",
+    "displayName": "棕墨 Ink Brown",
+    "canonical": "#794f27",
+    "tonalRamp": [
+     "#170600",
+     "#371e06",
+     "#5a3a1b",
+     "#7f5733",
+     "#a27953",
+     "#c29d7c",
+     "#e3c2a6",
+     "#ffe9d2"
+    ]
+   },
+   "ink-faded": {
+    "role": "neutral",
+    "displayName": "淡墨 Ink Faded",
+    "canonical": "#9f927d",
+    "tonalRamp": [
+     "#0f0a04",
+     "#2b2418",
+     "#4a4132",
+     "#6b604d",
+     "#8c816d",
+     "#aea492",
+     "#d1c8b9",
+     "#f5ede1"
+    ]
+   },
+   "ink-disabled": {
+    "role": "neutral",
+    "displayName": "禁用墨 Ink Disabled",
+    "canonical": "#c4b89e",
+    "tonalRamp": [
+     "#0f0b03",
+     "#2b2416",
+     "#49412f",
+     "#6a604a",
+     "#8c816a",
+     "#aea490",
+     "#d0c8b7",
+     "#f5eedf"
+    ]
+   },
+   "paper": {
+    "role": "neutral",
+    "displayName": "纸白 Paper",
+    "canonical": "#f8f8f0",
+    "tonalRamp": [
+     "#0c0c06",
+     "#26261f",
+     "#43423b",
+     "#62625a",
+     "#83837b",
+     "#a6a69d",
+     "#cacac1",
+     "#efefe6"
+    ]
+   },
+   "paper-secondary": {
+    "role": "neutral",
+    "displayName": "次级纸 Paper Secondary",
+    "canonical": "#f0e8d8",
+    "tonalRamp": [
+     "#0e0b06",
+     "#29251d",
+     "#474137",
+     "#676054",
+     "#888274",
+     "#aaa498",
+     "#cec9be",
+     "#f2eee5"
+    ]
+   },
+   "paper-card": {
+    "role": "neutral",
+    "displayName": "卡片纸 Paper Card",
+    "canonical": "#f7f3df",
+    "tonalRamp": [
+     "#0d0b05",
+     "#27251b",
+     "#454235",
+     "#656252",
+     "#868372",
+     "#a8a596",
+     "#ccc9bd",
+     "#f1efe4"
+    ]
+   },
+   "paper-input": {
+    "role": "neutral",
+    "displayName": "输入纸 Paper Input",
+    "canonical": "#fffdf7",
+    "tonalRamp": [
+     "#0d0b06",
+     "#27251f",
+     "#44423b",
+     "#64615a",
+     "#85827a",
+     "#a8a59d",
+     "#ccc9c1",
+     "#f1eee6"
+    ]
+   },
+   "border-warm": {
+    "role": "neutral",
+    "displayName": "暖边框 Border Warm",
+    "canonical": "#dcd8d1",
+    "tonalRamp": [
+     "#0e0b06",
+     "#28251f",
+     "#45413b",
+     "#65615a",
+     "#86827a",
+     "#a9a49d",
+     "#cdc8c1",
+     "#f3eee6"
+    ]
+   },
+   "border-hairline": {
+    "role": "neutral",
+    "displayName": "发丝边 Border Hairline",
+    "canonical": "#e8e2d6",
+    "tonalRamp": [
+     "#0d0b06",
+     "#28251f",
+     "#45423a",
+     "#656157",
+     "#878278",
+     "#a9a49b",
+     "#cdc9c1",
+     "#f2eee6"
+    ]
+   },
+   "border-strong": {
+    "role": "neutral",
+    "displayName": "重边框 Border Strong",
+    "canonical": "#827157",
+    "tonalRamp": [
+     "#110a02",
+     "#2d2314",
+     "#4c402d",
+     "#6e5f47",
+     "#908067",
+     "#b1a38d",
+     "#d4c7b4",
+     "#f7eddd"
+    ]
+   },
+   "status-success-ink": {
+    "role": "tertiary",
+    "displayName": "通过墨 Status Success Ink",
+    "canonical": "#2e7d32"
+   },
+   "status-success-wash": {
+    "role": "tertiary",
+    "displayName": "通过底 Status Success Wash",
+    "canonical": "#e8f5e9"
+   },
+   "status-danger-ink": {
+    "role": "tertiary",
+    "displayName": "驳回墨 Status Danger Ink",
+    "canonical": "#c62828"
+   },
+   "status-danger-wash": {
+    "role": "tertiary",
+    "displayName": "驳回底 Status Danger Wash",
+    "canonical": "#ffebee"
+   },
+   "status-warning-ink": {
+    "role": "tertiary",
+    "displayName": "待办墨 Status Warning Ink",
+    "canonical": "#bf360c"
+   },
+   "status-warning-wash": {
+    "role": "tertiary",
+    "displayName": "待办底 Status Warning Wash",
+    "canonical": "#fbe9e7"
+   },
+   "status-info-ink": {
+    "role": "tertiary",
+    "displayName": "进行中墨 Status Info Ink",
+    "canonical": "#1565c0"
+   },
+   "status-info-wash": {
+    "role": "tertiary",
+    "displayName": "进行中底 Status Info Wash",
+    "canonical": "#e6f0ff"
+   },
+   "status-neutral-ink": {
+    "role": "tertiary",
+    "displayName": "草稿墨 Status Neutral Ink",
+    "canonical": "#4e342e"
+   },
+   "status-neutral-wash": {
+    "role": "tertiary",
+    "displayName": "草稿底 Status Neutral Wash",
+    "canonical": "#efebe9"
+   },
+   "status-accent-ink": {
+    "role": "tertiary",
+    "displayName": "已签发墨 Status Accent Ink",
+    "canonical": "#00695c"
+   },
+   "status-accent-wash": {
+    "role": "tertiary",
+    "displayName": "已签发底 Status Accent Wash",
+    "canonical": "#e0f2f1"
+   }
   },
-  "components": [
-    {
-      "name": "Primary Button",
-      "kind": "button",
-      "refersTo": "button-primary",
-      "description": "每个视图唯一的主操作：奶油底棕字，底部压着 5px 沙色厚度，按下会落回去。",
-      "html": "<button class=\"ds-btn-primary\">提交申请</button>",
-      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:45px;padding:0 20px;border:2px solid var(--animal-bg-color,#f8f8f0);border-radius:50px;background:var(--animal-bg-color,#f8f8f0);color:var(--animal-text-color,#794f27);font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 5px 0 0 #bdaea0;transition:all .25s cubic-bezier(.4,0,.2,1)}.ds-btn-primary:hover{box-shadow:0 6px 0 0 #bdaea0;transform:translateY(-1px)}.ds-btn-primary:active{box-shadow:0 1px 0 0 #bdaea0;transform:translateY(2px)}.ds-btn-primary:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
-    },
-    {
-      "name": "Default Button",
-      "kind": "button",
-      "refersTo": "button-default",
-      "description": "次要操作：同样的药丸与奶油底，但只有 2px 边框与轻阴影；hover 转薄荷描边。",
-      "html": "<button class=\"ds-btn-default\">取消</button>",
-      "css": ".ds-btn-default{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:45px;padding:0 20px;border:2px solid var(--animal-border-color,#dcd8d1);border-radius:50px;background:var(--animal-bg-color,#f8f8f0);color:var(--animal-text-color,#794f27);font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 2px 4px 0 rgba(61,52,40,.06);transition:all .25s cubic-bezier(.4,0,.2,1)}.ds-btn-default:hover{color:var(--animal-primary-color,#19c8b9);border-color:var(--animal-primary-color,#19c8b9);transform:translateY(-1px)}.ds-btn-default:active{transform:translateY(1px)}.ds-btn-default:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
-    },
-    {
-      "name": "Text Input (large)",
-      "kind": "input",
-      "refersTo": "input-large",
-      "description": "表单里的标准字段：48px 药丸、比卡片更亮的输入纸、2px 暖边框，焦点是棕墨双环。",
-      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">联系电话</span><input class=\"ds-input\" type=\"text\" placeholder=\"例：138 0000 0000\" /></label>",
-      "css": ".ds-field{display:inline-flex;flex-direction:column;gap:8px;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif)}.ds-field-label{font-size:14px;font-weight:600;line-height:1.4;letter-spacing:.02em;color:var(--animal-text-color,#794f27)}.ds-input{height:48px;width:320px;max-width:100%;padding:0 22px;border:2px solid var(--animal-border-color,#dcd8d1);border-radius:50px;background:#fffdf7;color:var(--animal-text-color,#794f27);font-family:inherit;font-size:16px;font-weight:500;outline:none;transition:border-color .25s cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:var(--animal-text-color-secondary,#9f927d)}.ds-input:hover{border-color:var(--animal-border-color-hover,#827157)}.ds-input:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
-    },
-    {
-      "name": "Content Card",
-      "kind": "card",
-      "refersTo": "content-card",
-      "description": "内容面：20px 圆角、卡片纸底、无阴影；分组靠间距与 Divider，不套同色卡片。",
-      "html": "<section class=\"ds-card\"><h3 class=\"ds-card-title\">补件通知</h3><p class=\"ds-card-body\">材料不完整，请补充头像后再提交。</p></section>",
-      "css": ".ds-card{width:320px;padding:16px 24px;border-radius:20px;background:#f7f3df;color:#725d42;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-weight:500;transition:all .3s ease}.ds-card-title{margin:0 0 8px;font-size:18px;font-weight:700;line-height:1.35;color:var(--animal-text-color,#794f27)}.ds-card-body{margin:0;font-size:14px;font-weight:500;line-height:1.6}"
-    },
-    {
-      "name": "Service Card",
-      "kind": "card",
-      "description": "门户入口卡：可点击的卡片只在 hover 时上浮 2px；名称 18/700，摘要最多两行，右上角薄荷箭头。",
-      "html": "<button class=\"ds-service-card\"><span class=\"ds-service-name\">签注申请署</span><span class=\"ds-service-desc\">办理入境签注、补件与电子签注核验</span><svg class=\"ds-service-arrow\" viewBox=\"0 0 48 48\" width=\"18\" height=\"18\" aria-hidden=\"true\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19 12 L 31 24 L 19 36\"/></svg></button>",
-      "css": ".ds-service-card{position:relative;display:flex;flex-direction:column;gap:6px;width:280px;padding:16px 24px;border:0;border-radius:20px;background:#f7f3df;color:var(--animal-text-color,#794f27);text-align:left;cursor:pointer;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);transition:transform .25s cubic-bezier(.4,0,.2,1)}.ds-service-card:hover{transform:translateY(-2px)}.ds-service-card:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}.ds-service-name{padding-right:28px;font-size:18px;font-weight:700;line-height:1.35}.ds-service-desc{font-size:13px;font-weight:500;line-height:1.55;color:#725d42;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.ds-service-arrow{position:absolute;top:18px;right:20px;color:var(--animal-primary-color,#19c8b9)}"
-    },
-    {
-      "name": "Status Tag",
-      "kind": "chip",
-      "refersTo": "status-tag",
-      "description": "状态标签只用 soft 配色：深字浅底、12px 文字、999 药丸；文字永远在，颜色不单独承载语义。",
-      "html": "<span class=\"ds-tag ds-tag-success\">已通过</span>",
-      "css": ".ds-tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:12px;font-weight:600;line-height:1}.ds-tag-success{background:#e8f5e9;color:#2e7d32}.ds-tag-danger{background:#ffebee;color:#c62828}.ds-tag-warning{background:#fbe9e7;color:#bf360c}.ds-tag-info{background:#e6f0ff;color:#1565c0}"
-    },
-    {
-      "name": "Sidebar Nav Item",
-      "kind": "nav",
-      "refersTo": "nav-item-active",
-      "description": "管理侧栏条目：999 药丸；hover 薄荷浅底，active 再加一条 3px 薄荷内条与 700 字重。",
-      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item\" href=\"#\">门户首页</a><a class=\"ds-nav-item active\" href=\"#\">签注申请署</a><a class=\"ds-nav-item\" href=\"#\">入境事务署</a></nav>",
-      "css": ".ds-nav{display:flex;flex-direction:column;gap:2px;width:240px;padding:16px 12px;background:#f0e8d8;border-radius:18px;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif)}.ds-nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;color:var(--animal-text-color-secondary,#9f927d);font-size:14px;font-weight:500;text-decoration:none;transition:color .15s cubic-bezier(.4,0,.2,1),background .15s cubic-bezier(.4,0,.2,1)}.ds-nav-item:hover{color:var(--animal-text-color,#794f27);background:#e6f9f6}.ds-nav-item.active{color:var(--animal-text-color,#794f27);background:#e6f9f6;font-weight:700;box-shadow:inset 3px 0 0 0 var(--animal-primary-color,#19c8b9)}.ds-nav-item:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
-    },
-    {
-      "name": "Toast",
-      "kind": "custom",
-      "refersTo": "toast",
-      "description": "顶部居中的轻提示：999 药丸、薄荷浅底 + 薄荷边；错误只换红边，文字仍是棕墨。",
-      "html": "<div class=\"ds-toast\" role=\"status\">已保存</div>",
-      "css": ".ds-toast{display:inline-flex;align-items:center;padding:11px 18px;border:1.5px solid var(--animal-primary-color,#19c8b9);border-radius:999px;background:#e6f9f6;color:var(--animal-text-color,#794f27);font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:14px;font-weight:600;line-height:1.5;box-shadow:0 2px 4px 0 rgba(61,52,40,.06)}.ds-toast.ds-toast-error{border-color:var(--animal-error-color,#e05a5a)}"
-    },
-    {
-      "name": "Stat Card",
-      "kind": "custom",
-      "description": "统计卡：13/600 标签 + 28/800 tabular-nums 数字；薄荷只做旁边的装饰条或图标。",
-      "html": "<div class=\"ds-stat\"><span class=\"ds-stat-label\">待审申请</span><strong class=\"ds-stat-number\">12</strong></div>",
-      "css": ".ds-stat{display:inline-flex;flex-direction:column;gap:8px;min-width:200px;padding:16px 24px;border-radius:20px;background:#f7f3df;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif)}.ds-stat-label{font-size:13px;font-weight:600;line-height:1.55;color:var(--animal-text-color,#794f27)}.ds-stat-number{font-size:28px;font-weight:800;line-height:1.2;color:var(--animal-text-color,#794f27);font-variant-numeric:tabular-nums}"
-    }
+  "typographyMeta": {
+   "display": {
+    "displayName": "Display",
+    "purpose": "统计数字与关键计数；配合 tabular-nums，颜色仍是棕墨。"
+   },
+   "headline": {
+    "displayName": "Page Title",
+    "purpose": "每页唯一的 h1；区块 h2 的纯文本形态。"
+   },
+   "title": {
+    "displayName": "Card Title",
+    "purpose": "卡片标题、服务卡名称、署内区块标题。"
+   },
+   "body": {
+    "displayName": "Body",
+    "purpose": "默认正文、表格单元格、表单内容。"
+   },
+   "body-compact": {
+    "displayName": "Body Compact",
+    "purpose": "密集表格、卡片元信息、两行服务卡摘要。"
+   },
+   "label": {
+    "displayName": "Label",
+    "purpose": "按钮、Tab、表单标签；与正文同色。"
+   },
+   "caption": {
+    "displayName": "Caption",
+    "purpose": "时间、注释、Tag 文字；屏幕 UI 最小字号。"
+   },
+   "display-sm": {
+    "displayName": "Display SM",
+    "purpose": "证书签发行、头像占位字等大号强调（24px 档，ui-spec §2.2）。"
+   },
+   "subsection": {
+    "displayName": "Subsection",
+    "purpose": "卡片内分组、表单分组小标题（16px/700，ui-spec §2.2 Subsection）。"
+   },
+   "body-large": {
+    "displayName": "Body Large",
+    "purpose": "首页导语、说明段（16px/500，ui-spec §2.2 Body large）。"
+   }
+  },
+  "shadows": [
+   {
+    "name": "button-3d",
+    "value": "0 5px 0 0 #bdaea0",
+    "purpose": "仅 primary / danger-primary 按钮的静止厚度；hover 6px，active 1px。"
+   },
+   {
+    "name": "sm",
+    "value": "var(--animal-shadow-sm)",
+    "purpose": "Toast 与 default 按钮的柔和投影（0 2px 4px rgba(61,52,40,.06)）。"
+   },
+   {
+    "name": "base",
+    "value": "var(--animal-shadow-base)",
+    "purpose": "需要脱离纸面的小浮层（0 3px 10px rgba(61,52,40,.1)）。"
+   },
+   {
+    "name": "lg",
+    "value": "var(--animal-shadow-lg)",
+    "purpose": "大尺寸浮层；Modal / Drawer 用库自带阴影。"
+   }
   ],
-  "narrative": {
-    "northStar": "海岛政务厅 (The Island Registry Hall)",
-    "overview": "把十二个署想象成一排海边办事窗口：奶油色的纸、棕色的墨、薄荷色的封蜡，柜台上点着厚墩墩的实体按钮。外层是动物岛的贴纸册——50px 药丸控件、20px 圆角卡片、燕尾飘带标题、blob 剪裁的弹窗；里层是真实的政务后台——上百张表、状态机、审核流、权限码、双语内容。设计的任务不是调和「可爱」与「严肃」，而是让这两者各守其位：装饰集中在壳层，秩序集中在数据层。\n\n系统的核心张力是手感与密度。门户首页、服务卡、标题飘带、Toast 允许有玩具般的触感；一旦进入列表、详情、表单和三栏工作台，视觉噪音必须让位于扫描效率——同屏要能读下 20 行表格、12 张服务卡、一组状态标签，而不靠滚动完成比较。判断一个页面是否成立，看它在 1440px 与 360px 两端是否都还能一眼找到主操作、主状态、主数据。\n\n所有颜色、圆角、阴影、字体、动效都来自 animal-island-ui@2.3.0 运行时的 --animal-* 变量，项目只在 --nl-* 里补充布局常量。没有暗色模式：组件库没有暗色 token 集，任何局部反色都会破坏对比度。这套系统只有一种材质——暖纸——并且只在 primary 按钮上允许物理厚度。\n\n本文件是 docs/ui-spec/ 六层规范的浓缩层：数值以运行时 node_modules/animal-island-ui/dist/index.css 为最高权威，规则以 docs/ui-spec/ 为准；两者冲突时以运行时为准，不要从 docs/design-system/ 抄 hex。",
-    "keyCharacteristics": [
-      "暖奶油纸底 + 棕墨文字 + 薄荷点缀，薄荷从不承载文字。",
-      "药丸控件（50px）、20px 卡片、12px 交互圆角下限。",
-      "只有 primary / danger-primary 按钮有 3D 厚度阴影，其余表面一律平放。",
-      "状态永远「颜色 + 文字（+ 图标）」，没有只靠颜色的状态。",
-      "简繁双语同构：同一版式必须同时容下 zh-CN 与 zh-TW 的最长文案。",
-      "表格靠换行压缩进容器，任何页面都不出现横向滚动。"
-    ],
-    "rules": [
-      { "name": "The Mint-Is-Not-Ink Rule", "body": "薄荷只做底色、描边和图标。任何需要被阅读的文字——包括选中态里的文字——都是棕墨压薄荷浅底，绝不是薄荷字压薄荷底。", "section": "colors" },
-      { "name": "The Four-Surface Rule", "body": "页面、内容面、次级面、浮层，靠明度与边框区分，靠阴影堆不出层级。卡片里不再套同色卡片表示分组；分组用间距、Divider 或 dashed 空态卡。", "section": "colors" },
-      { "name": "The Status-Is-A-Fill Rule", "body": "成功/警告/错误是填充色；要写字就换成标签墨色表里那一行，并且同时给文字。同一颜色不在一个页面里兼职两种语义。", "section": "colors" },
-      { "name": "The Twelve-Pixel Floor Rule", "body": "屏幕上的说明文字不小于 12px；需要更浅的层级时用 13px + 棕墨 + 间距，不用淡墨压小字。", "section": "typography" },
-      { "name": "The Ribbon-Is-Visual Rule", "body": "Title 渲染的是 span，不产生标题层级。每个页面自己补 h1/h2/h3；飘带颜色一个页面不超过三种。", "section": "typography" },
-      { "name": "The One-Raised-Thing Rule", "body": "一个视图里只有主操作按钮有物理厚度。把 3D 阴影套到 default/dashed/text 按钮、卡片或开关上，等于在一个页面里制造两个「按下去的地方」。", "section": "elevation" },
-      { "name": "The Warm-Shadow Rule", "body": "阴影只用 rgba(61, 52, 40, …) 系列；禁止 rgba(0,0,0,.2) 这类冷黑阴影和多层大模糊。", "section": "elevation" },
-      { "name": "The Never-Square Rule", "body": "交互元素没有直角，也没有小于 12px 的圆角；高级感不靠方角。", "section": "shapes" },
-      { "name": "The Two-Signatures Rule", "body": "blob 弹窗与燕尾飘带是这套系统的签名。可以少用，不能改形。", "section": "shapes" }
-    ],
-    "dos": [
-      "Do 颜色、圆角、阴影、字体、动效一律用 var(--animal-*)；布局尺寸用 --nl-*。新代码不出现裸 hex / rgb。",
-      "Do 让按钮和输入框保持 50px 药丸、卡片 20px、交互元素圆角 ≥12px。",
-      "Do 把 3D 厚度只留给 primary / danger-primary 按钮；其他表面平放。",
-      "Do 用 2px 棕墨环 + 2px offset 做键盘焦点，并用 scroll-margin-top: 64px 保证它不被 sticky 顶栏挡住。",
-      "Do 让每个状态同时有颜色和文字（必要时加图标）：未读 = 圆点 + 「未读」+ 左边框；错误 = 图标 + 文案 + 红边。",
-      "Do 状态标签用 variant=\"soft\" 和标签墨色表的六组配色。",
-      "Do 在写死任何宽度前，先用 zh-CN 和 zh-TW 两种最长文案把版式撑一遍——简繁双语同构是硬约束，任何会被截断的标题都不合格。",
-      "Do 让每个 Table 带 className=\"table-fit\"，长文本换行、操作列用 .table-actions。",
-      "Do 每页只放一个 h1、一个主操作；标题层级不跳级。",
-      "Do 用 src/lib/date.js 的 fmtDate / fmtDateTime 输出日期，用 tabular-nums 输出统计数字。"
-    ],
-    "donts": [
-      "Don't 用薄荷做文字色、链接色或 12–14px 的语义文字（1.97:1）；也不要薄荷字压薄荷底。",
-      "Don't 用纯黑 #000、冷灰 #fafafa 背景或冷蓝焦点环。",
-      "Don't 做暗色模式或 prefers-color-scheme 局部反色；组件库没有暗色 token 集。",
-      "Don't 用 border-radius: 0 做高级感，也不要改 Modal 的 blob 或 Title 的燕尾飘带。",
-      "Don't 把阴影堆成层级，或用冷黑 rgba(0,0,0,.2) 阴影。",
-      "Don't 在一个视图里放两个 primary，也不要让不可逆操作用 text 按钮承载。",
-      "Don't 用库的 Notification、原生 alert/confirm/prompt、原生 button/input/select 或 emoji/Unicode 当图标。",
-      "Don't 给 Table 传 size 或给列写 ellipsis；不要让任何页面出现横向滚动。",
-      "Don't 让弹窗点遮罩关闭；不要在没有 onChange 的情况下传 activeKey；不要把 Switch 写成 value。",
-      "Don't 用 overflow: hidden 掩盖双语换行问题；文案必须完整显示，只允许对服务卡简介这类非关键摘要做两行 line-clamp。"
-    ]
+  "motion": [
+   {
+    "name": "duration-fast",
+    "value": "var(--animal-motion-duration-fast)",
+    "purpose": "0.15s：颜色与背景的即时反馈。"
+   },
+   {
+    "name": "duration-base",
+    "value": "var(--animal-motion-duration-base)",
+    "purpose": "0.25s：hover / 展开 / Toast 的默认时长。"
+   },
+   {
+    "name": "duration-slow",
+    "value": "var(--animal-motion-duration-slow)",
+    "purpose": "0.35s：大浮层出现。"
+   },
+   {
+    "name": "ease",
+    "value": "var(--animal-motion-ease)",
+    "purpose": "cubic-bezier(.4,0,.2,1)：全站唯一缓动。"
+   }
+  ],
+  "breakpoints": [
+   {
+    "name": "phone",
+    "value": "640px"
+   },
+   {
+    "name": "large-phone",
+    "value": "720px"
+   },
+   {
+    "name": "tablet",
+    "value": "900px"
+   },
+   {
+    "name": "sider-collapse",
+    "value": "1024px"
+   },
+   {
+    "name": "content-max",
+    "value": "1440px"
+   }
+  ]
+ },
+ "components": [
+  {
+   "name": "Primary Button",
+   "kind": "button",
+   "refersTo": "button-primary",
+   "description": "每个视图唯一的主操作：奶油底棕字，底部压着 5px 沙色厚度，按下会落回去。",
+   "html": "<button class=\"ds-btn-primary\">提交申请</button>",
+   "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:45px;padding:0 20px;border:2px solid var(--animal-bg-color,#f8f8f0);border-radius:50px;background:var(--animal-bg-color,#f8f8f0);color:var(--animal-text-color,#794f27);font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 5px 0 0 #bdaea0;transition:all .25s cubic-bezier(.4,0,.2,1)}.ds-btn-primary:hover{box-shadow:0 6px 0 0 #bdaea0;transform:translateY(-1px)}.ds-btn-primary:active{box-shadow:0 1px 0 0 #bdaea0;transform:translateY(2px)}.ds-btn-primary:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
+  },
+  {
+   "name": "Default Button",
+   "kind": "button",
+   "refersTo": "button-default",
+   "description": "次要操作：同样的药丸与奶油底，但只有 2px 边框与轻阴影；hover 转薄荷描边。",
+   "html": "<button class=\"ds-btn-default\">取消</button>",
+   "css": ".ds-btn-default{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:45px;padding:0 20px;border:2px solid var(--animal-border-color,#dcd8d1);border-radius:50px;background:var(--animal-bg-color,#f8f8f0);color:var(--animal-text-color,#794f27);font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 2px 4px 0 rgba(61,52,40,.06);transition:all .25s cubic-bezier(.4,0,.2,1)}.ds-btn-default:hover{color:var(--animal-primary-color,#19c8b9);border-color:var(--animal-primary-color,#19c8b9);transform:translateY(-1px)}.ds-btn-default:active{transform:translateY(1px)}.ds-btn-default:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
+  },
+  {
+   "name": "Text Input (large)",
+   "kind": "input",
+   "refersTo": "input-large",
+   "description": "表单里的标准字段：48px 药丸、比卡片更亮的输入纸、2px 暖边框，焦点是棕墨双环。",
+   "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">联系电话</span><input class=\"ds-input\" type=\"text\" placeholder=\"例：138 0000 0000\" /></label>",
+   "css": ".ds-field{display:inline-flex;flex-direction:column;gap:8px;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif)}.ds-field-label{font-size:14px;font-weight:600;line-height:1.4;letter-spacing:.02em;color:var(--animal-text-color,#794f27)}.ds-input{height:48px;width:320px;max-width:100%;padding:0 22px;border:2px solid var(--animal-border-color,#dcd8d1);border-radius:50px;background:#fffdf7;color:var(--animal-text-color,#794f27);font-family:inherit;font-size:16px;font-weight:500;outline:none;transition:border-color .25s cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:var(--animal-text-color-secondary,#9f927d)}.ds-input:hover{border-color:var(--animal-border-color-hover,#827157)}.ds-input:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
+  },
+  {
+   "name": "Content Card",
+   "kind": "card",
+   "refersTo": "content-card",
+   "description": "内容面：20px 圆角、卡片纸底、无阴影；分组靠间距与 Divider，不套同色卡片。",
+   "html": "<section class=\"ds-card\"><h3 class=\"ds-card-title\">补件通知</h3><p class=\"ds-card-body\">材料不完整，请补充头像后再提交。</p></section>",
+   "css": ".ds-card{width:320px;padding:16px 24px;border-radius:20px;background:#f7f3df;color:#725d42;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-weight:500;transition:all .3s ease}.ds-card-title{margin:0 0 8px;font-size:18px;font-weight:700;line-height:1.35;color:var(--animal-text-color,#794f27)}.ds-card-body{margin:0;font-size:14px;font-weight:500;line-height:1.6}"
+  },
+  {
+   "name": "Service Card",
+   "kind": "card",
+   "description": "门户入口卡：可点击的卡片只在 hover 时上浮 2px；名称 18/700，摘要最多两行，右上角薄荷箭头。",
+   "html": "<button class=\"ds-service-card\"><span class=\"ds-service-name\">签注申请署</span><span class=\"ds-service-desc\">办理入境签注、补件与电子签注核验</span><svg class=\"ds-service-arrow\" viewBox=\"0 0 48 48\" width=\"18\" height=\"18\" aria-hidden=\"true\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19 12 L 31 24 L 19 36\"/></svg></button>",
+   "css": ".ds-service-card{position:relative;display:flex;flex-direction:column;gap:6px;width:280px;padding:16px 24px;border:0;border-radius:20px;background:#f7f3df;color:var(--animal-text-color,#794f27);text-align:left;cursor:pointer;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);transition:transform .25s cubic-bezier(.4,0,.2,1)}.ds-service-card:hover{transform:translateY(-2px)}.ds-service-card:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}.ds-service-name{padding-right:28px;font-size:18px;font-weight:700;line-height:1.35}.ds-service-desc{font-size:13px;font-weight:500;line-height:1.55;color:#725d42;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.ds-service-arrow{position:absolute;top:18px;right:20px;color:var(--animal-primary-color,#19c8b9)}"
+  },
+  {
+   "name": "Status Tag",
+   "kind": "chip",
+   "refersTo": "status-tag",
+   "description": "状态标签只用 soft 配色：深字浅底、12px 文字、999 药丸；文字永远在，颜色不单独承载语义。",
+   "html": "<span class=\"ds-tag ds-tag-success\">已通过</span>",
+   "css": ".ds-tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:12px;font-weight:600;line-height:1}.ds-tag-success{background:#e8f5e9;color:#2e7d32}.ds-tag-danger{background:#ffebee;color:#c62828}.ds-tag-warning{background:#fbe9e7;color:#bf360c}.ds-tag-info{background:#e6f0ff;color:#1565c0}"
+  },
+  {
+   "name": "Sidebar Nav Item",
+   "kind": "nav",
+   "refersTo": "nav-item-active",
+   "description": "管理侧栏条目：999 药丸；hover 薄荷浅底，active 再加一条 3px 薄荷内条与 700 字重。",
+   "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item\" href=\"#\">门户首页</a><a class=\"ds-nav-item active\" href=\"#\">签注申请署</a><a class=\"ds-nav-item\" href=\"#\">入境事务署</a></nav>",
+   "css": ".ds-nav{display:flex;flex-direction:column;gap:2px;width:240px;padding:16px 12px;background:#f0e8d8;border-radius:18px;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif)}.ds-nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;color:var(--animal-text-color-secondary,#9f927d);font-size:14px;font-weight:500;text-decoration:none;transition:color .15s cubic-bezier(.4,0,.2,1),background .15s cubic-bezier(.4,0,.2,1)}.ds-nav-item:hover{color:var(--animal-text-color,#794f27);background:#e6f9f6}.ds-nav-item.active{color:var(--animal-text-color,#794f27);background:#e6f9f6;font-weight:700;box-shadow:inset 3px 0 0 0 var(--animal-primary-color,#19c8b9)}.ds-nav-item:focus-visible{outline:2px solid var(--animal-text-color,#794f27);outline-offset:2px}"
+  },
+  {
+   "name": "Toast",
+   "kind": "custom",
+   "refersTo": "toast",
+   "description": "顶部居中的轻提示：999 药丸、薄荷浅底 + 薄荷边；错误只换红边，文字仍是棕墨。",
+   "html": "<div class=\"ds-toast\" role=\"status\">已保存</div>",
+   "css": ".ds-toast{display:inline-flex;align-items:center;padding:11px 18px;border:1.5px solid var(--animal-primary-color,#19c8b9);border-radius:999px;background:#e6f9f6;color:var(--animal-text-color,#794f27);font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif);font-size:14px;font-weight:600;line-height:1.5;box-shadow:0 2px 4px 0 rgba(61,52,40,.06)}.ds-toast.ds-toast-error{border-color:var(--animal-error-color,#e05a5a)}"
+  },
+  {
+   "name": "Stat Card",
+   "kind": "custom",
+   "description": "统计卡：13/600 标签 + 28/800 tabular-nums 数字；薄荷只做旁边的装饰条或图标。",
+   "html": "<div class=\"ds-stat\"><span class=\"ds-stat-label\">待审申请</span><strong class=\"ds-stat-number\">12</strong></div>",
+   "css": ".ds-stat{display:inline-flex;flex-direction:column;gap:8px;min-width:200px;padding:16px 24px;border-radius:20px;background:#f7f3df;font-family:var(--animal-font-family,Nunito,\"Noto Sans SC\",sans-serif)}.ds-stat-label{font-size:13px;font-weight:600;line-height:1.55;color:var(--animal-text-color,#794f27)}.ds-stat-number{font-size:28px;font-weight:800;line-height:1.2;color:var(--animal-text-color,#794f27);font-variant-numeric:tabular-nums}"
   }
+ ],
+ "narrative": {
+  "northStar": "海岛政务厅 (The Island Registry Hall)",
+  "overview": "把十二个署想象成一排海边办事窗口：奶油色的纸、棕色的墨、薄荷色的封蜡，柜台上点着厚墩墩的实体按钮。外层是动物岛的贴纸册——50px 药丸控件、20px 圆角卡片、燕尾飘带标题、blob 剪裁的弹窗；里层是真实的政务后台——上百张表、状态机、审核流、权限码、双语内容。设计的任务不是调和「可爱」与「严肃」，而是让这两者各守其位：装饰集中在壳层，秩序集中在数据层。\n\n系统的核心张力是手感与密度。门户首页、服务卡、标题飘带、Toast 允许有玩具般的触感；一旦进入列表、详情、表单和三栏工作台，视觉噪音必须让位于扫描效率——同屏要能读下 20 行表格、12 张服务卡、一组状态标签，而不靠滚动完成比较。判断一个页面是否成立，看它在 1440px 与 360px 两端是否都还能一眼找到主操作、主状态、主数据。\n\n所有颜色、圆角、阴影、字体、动效都来自 animal-island-ui@2.3.0 运行时的 --animal-* 变量，项目只在 --nl-* 里补充布局常量。没有暗色模式：组件库没有暗色 token 集，任何局部反色都会破坏对比度。这套系统只有一种材质——暖纸——并且只在 primary 按钮上允许物理厚度。\n\n本文件是 docs/ui-spec/ 六层规范的浓缩层：数值以运行时 node_modules/animal-island-ui/dist/index.css 为最高权威，规则以 docs/ui-spec/ 为准；两者冲突时以运行时为准，不要从 docs/design-system/ 抄 hex。",
+  "keyCharacteristics": [
+   "暖奶油纸底 + 棕墨文字 + 薄荷点缀，薄荷从不承载文字。",
+   "药丸控件（50px）、20px 卡片、12px 交互圆角下限。",
+   "只有 primary / danger-primary 按钮有 3D 厚度阴影，其余表面一律平放。",
+   "状态永远「颜色 + 文字（+ 图标）」，没有只靠颜色的状态。",
+   "简繁双语同构：同一版式必须同时容下 zh-CN 与 zh-TW 的最长文案。",
+   "表格靠换行压缩进容器，任何页面都不出现横向滚动。"
+  ],
+  "rules": [
+   {
+    "name": "The Mint-Is-Not-Ink Rule",
+    "body": "薄荷只做底色、描边和图标。任何需要被阅读的文字——包括选中态里的文字——都是棕墨压薄荷浅底，绝不是薄荷字压薄荷底。",
+    "section": "colors"
+   },
+   {
+    "name": "The Four-Surface Rule",
+    "body": "页面、内容面、次级面、浮层，靠明度与边框区分，靠阴影堆不出层级。卡片里不再套同色卡片表示分组；分组用间距、Divider 或 dashed 空态卡。",
+    "section": "colors"
+   },
+   {
+    "name": "The Status-Is-A-Fill Rule",
+    "body": "成功/警告/错误是填充色；要写字就换成标签墨色表里那一行，并且同时给文字。同一颜色不在一个页面里兼职两种语义。",
+    "section": "colors"
+   },
+   {
+    "name": "The Twelve-Pixel Floor Rule",
+    "body": "屏幕上的说明文字不小于 12px；需要更浅的层级时用 13px + 棕墨 + 间距，不用淡墨压小字。",
+    "section": "typography"
+   },
+   {
+    "name": "The Ribbon-Is-Visual Rule",
+    "body": "Title 渲染的是 span，不产生标题层级。每个页面自己补 h1/h2/h3；飘带颜色一个页面不超过三种。",
+    "section": "typography"
+   },
+   {
+    "name": "The One-Raised-Thing Rule",
+    "body": "一个视图里只有主操作按钮有物理厚度。把 3D 阴影套到 default/dashed/text 按钮、卡片或开关上，等于在一个页面里制造两个「按下去的地方」。",
+    "section": "elevation"
+   },
+   {
+    "name": "The Warm-Shadow Rule",
+    "body": "阴影只用 rgba(61, 52, 40, …) 系列；禁止 rgba(0,0,0,.2) 这类冷黑阴影和多层大模糊。",
+    "section": "elevation"
+   },
+   {
+    "name": "The Never-Square Rule",
+    "body": "交互元素没有直角，也没有小于 12px 的圆角；高级感不靠方角。",
+    "section": "shapes"
+   },
+   {
+    "name": "The Two-Signatures Rule",
+    "body": "blob 弹窗与燕尾飘带是这套系统的签名。可以少用，不能改形。",
+    "section": "shapes"
+   }
+  ],
+  "dos": [
+   "Do 颜色、圆角、阴影、字体、动效一律用 var(--animal-*)；布局尺寸用 --nl-*。新代码不出现裸 hex / rgb。",
+   "Do 让按钮和输入框保持 50px 药丸、卡片 20px、交互元素圆角 ≥12px。",
+   "Do 把 3D 厚度只留给 primary / danger-primary 按钮；其他表面平放。",
+   "Do 用 2px 棕墨环 + 2px offset 做键盘焦点，并用 scroll-margin-top: 64px 保证它不被 sticky 顶栏挡住。",
+   "Do 让每个状态同时有颜色和文字（必要时加图标）：未读 = 圆点 + 「未读」+ 左边框；错误 = 图标 + 文案 + 红边。",
+   "Do 状态标签用 variant=\"soft\" 和标签墨色表的六组配色。",
+   "Do 在写死任何宽度前，先用 zh-CN 和 zh-TW 两种最长文案把版式撑一遍——简繁双语同构是硬约束，任何会被截断的标题都不合格。",
+   "Do 让每个 Table 带 className=\"table-fit\"，长文本换行、操作列用 .table-actions。",
+   "Do 每页只放一个 h1、一个主操作；标题层级不跳级。",
+   "Do 用 src/lib/date.js 的 fmtDate / fmtDateTime 输出日期，用 tabular-nums 输出统计数字。"
+  ],
+  "donts": [
+   "Don't 用薄荷做文字色、链接色或 12–14px 的语义文字（1.97:1）；也不要薄荷字压薄荷底。",
+   "Don't 用纯黑 #000、冷灰 #fafafa 背景或冷蓝焦点环。",
+   "Don't 做暗色模式或 prefers-color-scheme 局部反色；组件库没有暗色 token 集。",
+   "Don't 用 border-radius: 0 做高级感，也不要改 Modal 的 blob 或 Title 的燕尾飘带。",
+   "Don't 把阴影堆成层级，或用冷黑 rgba(0,0,0,.2) 阴影。",
+   "Don't 在一个视图里放两个 primary，也不要让不可逆操作用 text 按钮承载。",
+   "Don't 用库的 Notification、原生 alert/confirm/prompt、原生 button/input/select 或 emoji/Unicode 当图标。",
+   "Don't 给 Table 传 size 或给列写 ellipsis；不要让任何页面出现横向滚动。",
+   "Don't 让弹窗点遮罩关闭；不要在没有 onChange 的情况下传 activeKey；不要把 Switch 写成 value。",
+   "Don't 用 overflow: hidden 掩盖双语换行问题；文案必须完整显示，只允许对服务卡简介这类非关键摘要做两行 line-clamp。"
+  ]
+ }
 }

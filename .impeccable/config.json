@@ -5,5 +5,74 @@
       "maxFindings": 5,
       "maxChars": 8000
     }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font-size",
+        "value": "11px",
+        "createdAt": "2026-11-01T16:48:16.873Z",
+        "reason": "ui-spec §2.2:11px 保留给打印票据/印章上的装饰字(入境章 im-stamp、证书公章 doc-cert-seal 微缩字)"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "8px",
+        "createdAt": "2026-11-01T16:48:17.101Z",
+        "reason": "ui-spec §4 例外:QR 码框(dip/res-card-qr)与趋势柱(tour/res-trend-bar)可用 4–8px,非交互元素"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "4px 14px 4px 14px",
+        "createdAt": "2026-11-01T16:48:17.330Z",
+        "reason": "入境章爪痕装饰形状(im-stamp-claw),打印印章特例"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "50% 50% 50% 8px",
+        "createdAt": "2026-11-01T16:48:17.579Z",
+        "reason": "礼宾场地示意图钉形(protocol-venue-pin),地图/示意面特例"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#fff",
+        "createdAt": "2026-11-01T16:48:17.807Z",
+        "reason": "ui-spec 02-tokens 例外 1:@media print 打印白底(电子签注/外交文书打印)"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#ffffff",
+        "createdAt": "2026-11-01T16:48:18.051Z",
+        "reason": "ui-spec 02-tokens 例外 2:二维码静区纯白(appeal-doc-qr),QR 识别要求"
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "src/pages/protocol/protocol.css"
+        ],
+        "createdAt": "2026-11-01T16:48:45.837Z",
+        "reason": "protocol-venue-grid 是场地示意图(带定位钉),属规则自述允许的 map 面;CLI 对该规则不支持值级提取,退而求其次用单文件抑制"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "4px",
+        "createdAt": "2026-11-01T16:49:06.820Z",
+        "reason": "入境章爪痕装饰形状(im-stamp-claw 交替圆角拆出的单值),ui-spec §4 打印印章特例"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "14px",
+        "createdAt": "2026-11-01T16:49:07.059Z",
+        "reason": "入境章爪痕装饰形状(im-stamp-claw 交替圆角拆出的单值),ui-spec §4 打印印章特例"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "nl tw serif",
+        "createdAt": "2026-11-01T17:04:01.524Z",
+        "reason": "user confirmed: zh-TW 字体层(正文 edusong_Unicode 400-600 / 标题 MTRSungBold 700-900),声明于 src/index.css @font-face,DESIGN.md Typography 章节同步记录"
+      }
+    ]
   }
 }

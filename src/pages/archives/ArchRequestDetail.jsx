@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, RequestStatusTag, fmtDateTime, toastArchError } from './shared.jsx';
+import { RequestStatusTag, fmtDateTime, toastArchError } from './shared.jsx';
 
 export default function ArchRequestDetail() {
   const { t } = useTranslation();
@@ -28,7 +28,6 @@ export default function ArchRequestDetail() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
         <h1 className="page-title">{t('arch.request.detailTitle')}</h1>
         <div className="table-actions">

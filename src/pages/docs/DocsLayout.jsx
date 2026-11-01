@@ -5,6 +5,7 @@ import { Badge } from 'animal-island-ui';
 import { ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
+import SsoConfirmModal from '../../components/SsoConfirmModal.jsx';
 
 const TABS = [
   { to: '/docs', key: 'home', end: true },
@@ -64,6 +65,9 @@ export default function DocsLayout() {
       </nav>
 
       <Outlet />
+
+      {/* 直连 URL 同样要先过统一门户的单点登录身份确认(每浏览器会话一次)。 */}
+      <SsoConfirmModal flag="nailong.docs.sso" tip={t('docs.sso.tip')} pattern="app-teal" />
     </div>
   );
 }

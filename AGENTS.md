@@ -18,6 +18,16 @@ This portal uses **react-i18next** (docs: https://react.i18next.com/). The i18n 
   a `defaultValue` or be added to the enum whitelist in `scripts/check-i18n.mjs`; admin-office
   keys live under `<namespace>.admin.*` (e.g. `imm.admin.review.*`), never a bare page prefix.
 - The language switcher must offer exactly these two locales.
+- **zh-TW has its own font layer** (`src/index.css`, top of file): when `html[lang=zh-TW]`,
+  CJK glyphs switch to Ming/Song faces — body/interface text (weight ≤600) uses the
+  Education Standard Song, headings/display (≥700) use the bold Song. Both weight bands are
+  registered as one family `NL TW Serif` and split by `font-weight` automatically; sizes,
+  line heights and spacing stay identical to zh-CN (简繁同构). The shipped web artifacts are
+  `font/edusong-web.woff2` and `font/MTRSungBold-web.woff2`; the raw `font/edusong_Unicode.ttf`
+  / `font/MTRSungBold.otf` are sources only and must be rebuilt through
+  `pyftsubset --desubroutinize --flavor=woff2` if updated (FontForge subroutinized CFF is
+  rejected by browser OTS). Fonts are referenced only in the zh-TW scope: zh-CN downloads
+  nothing, the first switch fetches once and browser cache takes over.
 
 Server-stored content (catalogs, notices, message templates, event fields) follows the same
 rule through **bilingual columns**, not i18n keys:

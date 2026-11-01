@@ -52,6 +52,7 @@ const DocsStats = lazy(() => import('./pages/admin/docs/DocsStats.jsx'));
 const DocsNotices = lazy(() => import('./pages/admin/docs/DocsNotices.jsx'));
 const DocsAudit = lazy(() => import('./pages/admin/docs/DocsAudit.jsx'));
 const DocsSettings = lazy(() => import('./pages/admin/docs/DocsSettings.jsx'));
+const ImmShell = lazy(() => import('./pages/immigration/ImmShell.jsx'));
 const ImmigrationHome = lazy(() => import('./pages/immigration/ImmigrationHome.jsx'));
 const ImmigrationPorts = lazy(() => import('./pages/immigration/ImmigrationPorts.jsx'));
 const ImmigrationPortDetail = lazy(() => import('./pages/immigration/ImmigrationPortDetail.jsx'));
@@ -477,7 +478,9 @@ export default function App() {
             path="/immigration"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationHome />
+                <ImmShell>
+                  <ImmigrationHome />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -485,7 +488,9 @@ export default function App() {
             path="/immigration/ports"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationPorts />
+                <ImmShell>
+                  <ImmigrationPorts />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -493,7 +498,9 @@ export default function App() {
             path="/immigration/ports/:code"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationPortDetail />
+                <ImmShell>
+                  <ImmigrationPortDetail />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -501,7 +508,9 @@ export default function App() {
             path="/immigration/declare"
             element={
               <RequirePermission permission="imm:portal">
-                <DeclarationEdit />
+                <ImmShell>
+                  <DeclarationEdit />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -509,7 +518,9 @@ export default function App() {
             path="/immigration/declare/:id"
             element={
               <RequirePermission permission="imm:portal">
-                <DeclarationEdit />
+                <ImmShell>
+                  <DeclarationEdit />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -517,7 +528,9 @@ export default function App() {
             path="/immigration/declarations"
             element={
               <RequirePermission permission="imm:portal">
-                <MyDeclarations />
+                <ImmShell>
+                  <MyDeclarations />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -525,7 +538,9 @@ export default function App() {
             path="/immigration/pass-codes"
             element={
               <RequirePermission permission="imm:portal">
-                <PassCodes />
+                <ImmShell>
+                  <PassCodes />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -533,7 +548,9 @@ export default function App() {
             path="/immigration/records"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationRecords />
+                <ImmShell>
+                  <ImmigrationRecords />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -541,7 +558,9 @@ export default function App() {
             path="/immigration/messages"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationMessages />
+                <ImmShell>
+                  <ImmigrationMessages />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -549,7 +568,9 @@ export default function App() {
             path="/immigration/help"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationHelp />
+                <ImmShell>
+                  <ImmigrationHelp />
+                </ImmShell>
               </RequirePermission>
             }
           />

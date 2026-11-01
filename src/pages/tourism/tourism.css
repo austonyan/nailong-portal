@@ -523,33 +523,6 @@
   color: var(--animal-text-color-muted);
 }
 
-/* SSO 确认弹窗（与署内其它页面保持一致的布局） */
-.tour-sso-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tour-sso-card {
-  padding: 14px 16px;
-}
-
-.tour-sso-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.tour-sso-name {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.tour-sso-account {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
 @media (max-width: 720px) {
   .tour-office-banner {
     align-items: flex-start;
