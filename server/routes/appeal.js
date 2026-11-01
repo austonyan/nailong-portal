@@ -323,6 +323,10 @@ router.post('/appeals/:id/submit', (req, res) => {
   if (bizCheck.found && !bizCheck.owned) {
     throw forbidden('APPEAL_BIZ_NOT_OWNED', 'The linked business record belongs to another account');
   }
+  // 业务件处于不可申诉状态(如已生效签注、处理中申报)直接拦截,避免决定回写时落空。
+  if (bizCheck.found && bizCheck.appealable === false) {
+    throw badRequest('APPEAL_BIZ_NOT_APPEALABLE', `Business record ${row.biz_code} is not in an appealable state`);
+  }
   if (!rateLimit(`appeal-submit:${req.user.id}`, 1, 60_000)) {
     throw badRequest('APPEAL_RATE_LIMITED', 'Please wait a minute before submitting again');
   }
@@ -378,8 +382,11 @@ router.post('/appeals/:id/evaluate', (req, res) => {
   if (!row || row.user_id !== req.user.id) throw notFound('Appeal not found');
   if (row.status !== 'resolved') throw badRequest('APPEAL_INVALID_TRANSITION', 'Only resolved appeals can be evaluated');
   if (row.evaluation_rating) throw badRequest('APPEAL_ALREADY_EVALUATED', 'Appeal already evaluated');
-  const rating = Math.min(5, Math.max(1, Number(req.body?.rating) || 0));
-  if (!rating) throw badRequest('VALIDATION_ERROR', 'rating 1-5 is required');
+  // 评分必须是 1-5 的整数:不再把缺省/非法值静默记成 1 星。
+  const rating = Number(req.body?.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    throw badRequest('VALIDATION_ERROR', 'rating must be an integer between 1 and 5');
+  }
   const comment = String(req.body?.comment || '').trim().slice(0, 300);
   db.prepare('UPDATE appeal_appeals SET evaluation_rating = ?, evaluation_comment = ?, updated_at = ? WHERE id = ?').run(
     rating, comment, now(), row.id
@@ -410,7 +417,10 @@ router.post('/reviews', (req, res) => {
   sweepAll();
   const appeal = db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(Number(req.body?.appealId));
   if (!appeal || appeal.user_id !== req.user.id) throw notFound('Appeal not found');
-  if (!['resolved', 'rejected'].includes(appeal.status)) {
+  // 管理员关闭已决申诉后决定书仍在,复核窗口不应被关闭动作吞掉;
+  // 仅当存在决定书时 closed 才可复核(合并/无决定关闭的不行)。
+  const hasDecision = !!db.prepare('SELECT 1 FROM appeal_decisions WHERE appeal_id = ? LIMIT 1').get(appeal.id);
+  if (!['resolved', 'rejected'].includes(appeal.status) && !(appeal.status === 'closed' && hasDecision)) {
     throw badRequest('APPEAL_REVIEW_NOT_ALLOWED', 'Only decided appeals can be reviewed');
   }
   if (db.prepare('SELECT 1 FROM appeal_reviews WHERE appeal_id = ?').get(appeal.id)) {
@@ -535,8 +545,11 @@ router.post('/complaints/:id/evaluate', (req, res) => {
   if (!row || row.user_id !== req.user.id) throw notFound('Complaint not found');
   if (!['replied', 'closed'].includes(row.status)) throw badRequest('APPEAL_INVALID_TRANSITION', 'Complaint is not replied yet');
   if (row.rating) throw badRequest('APPEAL_ALREADY_EVALUATED', 'Complaint already evaluated');
-  const rating = Math.min(5, Math.max(1, Number(req.body?.rating) || 0));
-  if (!rating) throw badRequest('VALIDATION_ERROR', 'rating 1-5 is required');
+  // 评分必须是 1-5 的整数:不再把缺省/非法值静默记成 1 星。
+  const rating = Number(req.body?.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    throw badRequest('VALIDATION_ERROR', 'rating must be an integer between 1 and 5');
+  }
   db.prepare('UPDATE appeal_complaints SET rating = ?, rating_comment = ?, updated_at = ? WHERE id = ?').run(
     rating, String(req.body?.comment || '').trim().slice(0, 300), now(), row.id
   );
@@ -738,8 +751,19 @@ router.post('/privacy/erase', (req, res) => {
     `UPDATE appeal_appeals SET reason = '', expected = '', contact = '', evaluation_comment = '', updated_at = ? WHERE user_id = ?`
   ).run(now(), req.user.id);
   db.prepare(`UPDATE appeal_reviews SET reason = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
-  db.prepare(`UPDATE appeal_complaints SET anonymous = 1, erased = 1, contact = '', content = '', rating_comment = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
+  db.prepare(`UPDATE appeal_complaints SET anonymous = 1, erased = 1, contact = '', content = '', reply = '', rating_comment = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
   db.prepare(`UPDATE appeal_tickets SET erased = 1, title = '', content = '', updated_at = ? WHERE user_id = ?`).run(now(), req.user.id);
+  // 二次承载自由文本的地方一并抹除:时间线备注、本人工单回复。
+  // 决定书理由与审计明细按合规留存认定不清(保留编号与状态轨迹的初衷)。
+  db.prepare(
+    `UPDATE appeal_records SET comment = ''
+     WHERE comment != '' AND (
+       (target_type = 'appeal' AND target_id IN (SELECT id FROM appeal_appeals WHERE user_id = ?)) OR
+       (target_type = 'complaint' AND target_id IN (SELECT id FROM appeal_complaints WHERE user_id = ?)) OR
+       (target_type = 'ticket' AND target_id IN (SELECT id FROM appeal_tickets WHERE user_id = ?))
+     )`
+  ).run(req.user.id, req.user.id, req.user.id);
+  db.prepare('UPDATE appeal_ticket_replies SET content = \'\' WHERE user_id = ? AND is_staff = 0').run(req.user.id);
   db.prepare('UPDATE appeal_messages SET archived = 1, read = 1 WHERE user_id = ?').run(req.user.id);
   audit(req.user, 'privacy_erase', 'user', req.user.id);
   res.json({ ok: true });

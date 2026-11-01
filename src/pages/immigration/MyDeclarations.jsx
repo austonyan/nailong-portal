@@ -160,7 +160,7 @@ function DeclarationDetail({ id, onClose, onChanged }) {
             </Button>
           </>
         )}
-        {d.status === 'pending' && (
+        {['pending', 'supplement'].includes(d.status) && (
           <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/withdraw`, t('imm.mydecl.withdrawn'))} disabled={busy}>
             {t('imm.mydecl.withdraw')}
           </Button>

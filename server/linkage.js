@@ -1564,16 +1564,30 @@ function renderTemplate(text, vars) {
 
 function notifyBusiness(bizType, target, vars) {
   const ts = now();
+  // visa/document 的消息走前端 i18n 模板(visa.msg.* / docMsg.*),模板里用了
+  // {{appNo}}:补上业务编号,与其他五署 {...vars, no: target.code} 的惯例对齐。
   if (bizType === 'visa') {
     db.prepare(
       'INSERT INTO visa_messages (user_id, application_id, type, params, read, archived, created_at) VALUES (?, ?, ?, ?, 0, 0, ?)'
-    ).run(target.ownerId, target.kind === 'application' ? target.rowId : null, 'appeal_reopened', JSON.stringify(vars), ts);
+    ).run(
+      target.ownerId,
+      target.kind === 'application' ? target.rowId : null,
+      'appeal_reopened',
+      JSON.stringify({ ...vars, no: target.code, appNo: target.code }),
+      ts
+    );
     return;
   }
   if (bizType === 'document') {
     db.prepare(
       'INSERT INTO doc_messages (user_id, application_id, type, params, read, archived, created_at) VALUES (?, ?, ?, ?, 0, 0, ?)'
-    ).run(target.ownerId, target.kind === 'application' ? target.rowId : null, 'appeal_reopened', JSON.stringify(vars), ts);
+    ).run(
+      target.ownerId,
+      target.kind === 'application' ? target.rowId : null,
+      'appeal_reopened',
+      JSON.stringify({ ...vars, no: target.code, appNo: target.code }),
+      ts
+    );
     return;
   }
   if (bizType === 'archives') {

@@ -156,6 +156,8 @@ router.get('/notices', (_req, res) => {
 
 // 验真中心: 公开 + 限流 + 防枚举(非法格式与不存在返回同一形状)。
 router.post('/verify', (req, res) => {
+  // 先跑惰性扫描:过期未扫的证书不得在公开验真里继续返回 valid。
+  D.sweepAll();
   const ip = D.clientIp(req);
   const limit = D.getConfigNumber('docs.verify_limit_per_5min', 20);
   if (!D.rateLimit(`verify:${ip}`, limit, 5 * 60 * 1000)) {
@@ -314,7 +316,16 @@ router.patch('/applications/:id', applyAuth, (req, res) => {
   const typeRow = D.getTypeRow(app.type_code);
   if (!typeRow) throw notFound('Document type not found');
 
-  const payload = validatePayload(typeRow, req.body, { forSubmit: false });
+  // 部分更新语义:未传的字段保留存量值,不再被清空。formData 与 submit
+  // 同口径整体替换(前端始终整表提交,清空过的键以传入为准)。
+  const body = {
+    nickname: req.body?.nickname ?? app.nickname,
+    contact: req.body?.contact ?? app.contact,
+    bizNo: req.body?.bizNo ?? app.biz_no,
+    purpose: req.body?.purpose ?? app.purpose,
+    formData: req.body?.formData ?? JSON.parse(app.form_data || '{}'),
+  };
+  const payload = validatePayload(typeRow, body, { forSubmit: false });
   db.prepare(
     `UPDATE doc_applications SET nickname = ?, contact = ?, biz_no = ?, purpose = ?, form_data = ?, updated_at = ?
      WHERE id = ?`
@@ -466,9 +477,14 @@ router.get('/applications/:id', applyAuth, (req, res) => {
 
 // 补交后重新进入队列
 router.post('/applications/:id/resubmit', applyAuth, (req, res) => {
+  D.sweepAll();
   const app = loadApplication(req.params.id);
   if (app.user_id !== req.user.id) throw forbidden('FORBIDDEN', 'Not your application');
   if (app.status !== 'supplementing') throw conflict('DOC_INVALID_STATE', 'Application is not awaiting supplement');
+  // 截止时间兜底:扫描未跑到的窗口期内也不允许逾期补交。
+  if (app.supplement_deadline && app.supplement_deadline < now()) {
+    throw badRequest('DOC_SUPPLEMENT_EXPIRED', 'The supplement deadline has passed');
+  }
   const supplements = db
     .prepare("SELECT COUNT(*) AS n FROM doc_materials WHERE application_id = ? AND origin = 'supplement'")
     .get(app.id).n;
@@ -996,6 +1012,11 @@ router.post('/admin/certificates/:id/regenerate', manageAuth, (req, res) => {
   if (cert.status === 'valid') throw conflict('DOC_INVALID_STATE', 'Revoke the valid certificate first');
   const app = D.getApplicationRow(cert.application_id);
   if (!app || app.status !== 'approved') throw conflict('DOC_INVALID_STATE', 'Application is not approved');
+  // 同申请只允许一张有效文书:兄弟证书仍有效时必须先处理,不得并行补发。
+  const liveSibling = db
+    .prepare("SELECT cert_no FROM doc_certificates WHERE application_id = ? AND status = 'valid' AND id != ?")
+    .get(app.id, cert.id);
+  if (liveSibling) throw conflict('DOC_DUPLICATE', `Application already has a valid certificate: ${liveSibling.cert_no}`);
   const typeRow = D.getTypeRow(app.type_code);
   const ts = now();
   const expires = new Date(Date.now() + (Number(typeRow?.validity_days) || 365) * 24 * 60 * 60 * 1000).toISOString();

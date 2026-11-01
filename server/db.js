@@ -544,6 +544,9 @@ function migrate() {
   if (!serviceCols.includes('entry_mode')) {
     db.exec("ALTER TABLE services ADD COLUMN entry_mode TEXT NOT NULL DEFAULT 'external'");
   }
+  // 入境署服务卡种子曾漏 entry_mode,默认落成 external(按外部服务新开标签页);
+  // 一次性纠正为站内 SSO 入口,与其余 11 个业务署一致。
+  db.prepare("UPDATE services SET entry_mode = 'internal_sso' WHERE key = 'immigration' AND entry_mode = 'external'").run();
   ensureTwColumns(db, 'services', ['name', 'description']);
   ensureTwColumns(db, 'roles', ['name', 'description']);
   ensureTwColumns(db, 'permissions', ['name', 'description']);

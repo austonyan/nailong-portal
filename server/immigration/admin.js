@@ -19,6 +19,7 @@ import {
   pageParams,
   riskSummary,
   crowding,
+  sweepExitReminders,
 } from './util.js';
 import { cachedCheck, checkVisa, markVisaUsed } from './visa.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
@@ -302,8 +303,10 @@ function queueRow(id) {
 }
 
 router.get('/declarations', ...inspector, (req, res) => {
+  sweepExitReminders();
   const { page, pageSize, offset } = pageParams(req.query);
-  const where = ['d.deleted_at IS NULL'];
+  // 审核队列不含未提交草稿:边检员不应看到他人的草稿。
+  const where = ['d.deleted_at IS NULL', "d.status != 'draft'"];
   const params = [];
   if (req.query.status) {
     where.push('d.status = ?');
@@ -329,7 +332,7 @@ router.get('/declarations', ...inspector, (req, res) => {
     .all(...params, pageSize, offset);
   const counts = {};
   for (const c of db
-    .prepare("SELECT status, COUNT(*) AS n FROM im_declarations WHERE deleted_at IS NULL GROUP BY status")
+    .prepare("SELECT status, COUNT(*) AS n FROM im_declarations WHERE deleted_at IS NULL AND status != 'draft' GROUP BY status")
     .all()) {
     counts[c.status] = c.n;
   }
@@ -796,10 +799,19 @@ router.post('/blacklist', ...adminOnly, (req, res) => {
   if (!user) throw badRequest('VALIDATION_ERROR', 'Unknown userId');
   const level = req.body?.level === 'block' ? 'block' : 'warn';
   const reason = readString(req.body?.reason, { name: 'reason', min: 2, max: 200 });
+  // 可选到期时间:到点后 activeBlacklist 自动视为失效,不必手工解除。
+  let expiresAt = null;
+  if (req.body?.expiresAt) {
+    const t = Date.parse(req.body.expiresAt);
+    if (!Number.isFinite(t) || t <= Date.now()) {
+      throw badRequest('VALIDATION_ERROR', 'expiresAt must be a future ISO timestamp');
+    }
+    expiresAt = new Date(t).toISOString();
+  }
   const info = db
-    .prepare('INSERT INTO im_blacklist (user_id, reason, level, created_by, created_at) VALUES (?, ?, ?, ?, ?)')
-    .run(userId, reason, level, req.user.id, now());
-  audit(req.user.id, 'im:blacklist.add', 'user', userId, { level, reason });
+    .prepare('INSERT INTO im_blacklist (user_id, reason, level, expires_at, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .run(userId, reason, level, expiresAt, req.user.id, now());
+  audit(req.user.id, 'im:blacklist.add', 'user', userId, { level, reason, expiresAt });
   res.status(201).json({ ok: true, id: info.lastInsertRowid });
 });
 

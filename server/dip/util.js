@@ -240,9 +240,58 @@ export function sweepAgreements() {
   ).run(now(), today);
 }
 
+// 补件超时:supplement_deadline 已过仍停在 supplement_required 的件自动按驳回关闭。
+// 状态枚举没有 closed;rejected 可申诉、可被回写重开,对用户是更友好的终态。
+export function sweepSupplementDeadlines() {
+  const today = now().slice(0, 10);
+  const relations = db
+    .prepare(
+      `SELECT id, user_id, no FROM dip_relations
+       WHERE status = 'supplement_required' AND deleted_at IS NULL
+         AND supplement_deadline IS NOT NULL AND supplement_deadline < ?`
+    )
+    .all(today);
+  for (const row of relations) {
+    db.prepare(
+      "UPDATE dip_relations SET status = 'rejected', reject_code = 'supplement_timeout', reject_comment = '', decided_at = ?, updated_at = ? WHERE id = ?"
+    ).run(now(), now(), row.id);
+    logEvent('relation', row.id, 'reject', null, '补件超时,自动关闭', '補件超時,自動關閉');
+    notify(
+      row.user_id,
+      'relation_rejected',
+      { no: row.no, reason: '补件超时,自动关闭', comment: '如需继续申请可提交申诉或重新发起。' },
+      { relationNo: row.no },
+      { no: row.no, reason: '補件超時,自動關閉', comment: '如需繼續申請可提交申訴或重新發起。' }
+    );
+    audit(null, 'dip:relation.supplement_timeout', 'relation', row.no, {});
+  }
+  const identities = db
+    .prepare(
+      `SELECT id, user_id, no FROM dip_identities
+       WHERE status = 'supplement_required' AND deleted_at IS NULL
+         AND supplement_deadline IS NOT NULL AND supplement_deadline < ?`
+    )
+    .all(today);
+  for (const row of identities) {
+    db.prepare(
+      "UPDATE dip_identities SET status = 'rejected', reject_code = 'supplement_timeout', reject_comment = '', inactive_reason = 'supplement_timeout', decided_by = NULL, updated_at = ? WHERE id = ?"
+    ).run(now(), now(), row.id);
+    logEvent('identity', row.id, 'reject', null, '补件超时,自动关闭', '補件超時,自動關閉');
+    notify(
+      row.user_id,
+      'identity_rejected',
+      { no: row.no, reason: '补件超时,自动关闭', comment: '如需继续申请可提交申诉或重新发起。' },
+      { identityNo: row.no },
+      { no: row.no, reason: '補件超時,自動關閉', comment: '如需繼續申請可提交申訴或重新發起。' }
+    );
+    audit(null, 'dip:identity.supplement_timeout', 'identity', row.no, {});
+  }
+}
+
 export function sweepAll() {
   sweepIdentities();
   sweepAgreements();
+  sweepSupplementDeadlines();
 }
 
 // ---------------------------------------------------------------------------

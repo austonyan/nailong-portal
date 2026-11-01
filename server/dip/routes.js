@@ -284,6 +284,7 @@ router.get('/types', ...portalOnly, (_req, res) => {
 // ---------------------------------------------------------------------------
 
 router.get('/relations', ...portalOnly, (req, res) => {
+  sweepAll();
   const { page, pageSize, offset } = pageParams(req.query);
   const where = ['user_id = ?', 'deleted_at IS NULL'];
   const params = [req.user.id];
@@ -421,6 +422,10 @@ router.post('/relations/:id/supplement', ...portalOnly, (req, res) => {
   const row = ownRelation(req, req.params.id);
   if (row.status !== 'supplement_required') {
     throw badRequest('DIP_INVALID_STATE', 'This relation is not awaiting supplements');
+  }
+  // 截止兜底:扫描未跑到的窗口期内也不允许逾期补交。
+  if (row.supplement_deadline && row.supplement_deadline < now().slice(0, 10)) {
+    throw badRequest('DIP_SUPPLEMENT_EXPIRED', 'The supplement deadline has passed');
   }
   consumeRateLimit(actorKey(req), 'dip:supplement');
   const content = readString(req.body?.content, { name: 'content', min: 1, max: 500 });
@@ -637,6 +642,10 @@ router.post('/identities/:id/supplement', ...portalOnly, (req, res) => {
   const row = ownIdentity(req, req.params.id);
   if (row.status !== 'supplement_required') {
     throw badRequest('DIP_INVALID_STATE', 'This identity is not awaiting supplements');
+  }
+  // 截止兜底:扫描未跑到的窗口期内也不允许逾期补交。
+  if (row.supplement_deadline && row.supplement_deadline < now().slice(0, 10)) {
+    throw badRequest('DIP_SUPPLEMENT_EXPIRED', 'The supplement deadline has passed');
   }
   consumeRateLimit(actorKey(req), 'dip:supplement');
   const content = readString(req.body?.content, { name: 'content', min: 1, max: 500 });

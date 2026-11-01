@@ -253,7 +253,21 @@ function normalizeDate(value) {
   return String(value ?? '').slice(0, 10);
 }
 
-function loadRecordsForType(typeCode, { userId = null } = {}) {
+// 管理端筛选的 SQL 下推映射:编号列与日期列随类型而异,归属直接用主表 user_id。
+const TYPE_NO_EXPR = {
+  visa_application: 'a.app_no',
+  visa_permit: 'p.visa_no',
+  im_declaration: 'd.no',
+  im_entry: 'e.no',
+};
+const TYPE_DATE_EXPR = {
+  visa_application: 'COALESCE(a.submitted_at, a.created_at)',
+  visa_permit: 'p.issued_at',
+  im_declaration: 'COALESCE(d.submitted_at, d.created_at)',
+  im_entry: 'e.entry_date',
+};
+
+function loadRecordsForType(typeCode, { userId = null, no = '', from = '', to = '' } = {}) {
   const alias = TYPE_ALIAS[typeCode];
   const alive = TYPE_ALIVE[typeCode];
   const where = [];
@@ -263,7 +277,21 @@ function loadRecordsForType(typeCode, { userId = null } = {}) {
     params.push(userId);
   }
   if (alive) where.push(alive);
-  const sql = `${TYPE_QUERIES[typeCode]}${where.length ? ` WHERE ${where.join(' AND ')}` : ''} ORDER BY ${alias}.id DESC LIMIT 500`;
+  if (no) {
+    where.push(`${TYPE_NO_EXPR[typeCode]} LIKE ?`);
+    params.push(`%${String(no).trim()}%`);
+  }
+  if (from) {
+    where.push(`substr(${TYPE_DATE_EXPR[typeCode]}, 1, 10) >= ?`);
+    params.push(normalizeDate(from));
+  }
+  if (to) {
+    where.push(`substr(${TYPE_DATE_EXPR[typeCode]}, 1, 10) <= ?`);
+    params.push(normalizeDate(to));
+  }
+  // 定向查询(用户/编号)不设上限,老记录也能查到;无筛选的浏览保留 500 条上限。
+  const limit = userId !== null || no ? '' : ' LIMIT 500';
+  const sql = `${TYPE_QUERIES[typeCode]}${where.length ? ` WHERE ${where.join(' AND ')}` : ''} ORDER BY ${alias}.id DESC${limit}`;
   return db.prepare(sql).all(...params).map((row) => ({ typeCode, row: mapRecord(typeCode, row) })).filter((r) => r.row);
 }
 
@@ -341,23 +369,26 @@ export function findUserRecord(userId, typeCode, id) {
 }
 
 // 管理端:可按用户/编号/类型查;隐藏行仍可见并标记 hidden。
+// 用户/编号/日期过滤已下推 SQL,只有标题类关键字仍在内存过滤。
 export function listAdminRecords({ userId = '', no = '', office = '', type = '', from = '', to = '', keyword = '' } = {}) {
   const types = recordTypesWithRules().filter((t) => (!office || t.office === office) && (!type || t.code === type));
   const hidden = hiddenKeySet();
   const users = new Map(db.prepare('SELECT id, username, display_name FROM users').all().map((u) => [u.id, u]));
   const items = [];
   for (const t of types) {
-    for (const { typeCode, row: mapped } of loadRecordsForType(t.code, { userId: null })) {
+    for (const { typeCode, row: mapped } of loadRecordsForType(t.code, {
+      userId: userId === '' ? null : Number(userId),
+      no,
+      from,
+      to,
+    })) {
       const ownerId = ownerIdOf(typeCode, mapped.id);
       const user = ownerId ? users.get(ownerId) : null;
-      if (userId !== '' && String(ownerId ?? '') !== String(userId)) continue;
       const isHidden = hidden.has(`${typeCode}:${mapped.id}`);
       const item = {
         ...presentRecord(typeCode, mapped, { hidden: isHidden }),
         owner: ownerId ? { userId: ownerId, username: user?.username ?? '', displayName: user?.display_name ?? '' } : null,
       };
-      if (no && !String(mapped.no).toLowerCase().includes(String(no).toLowerCase())) continue;
-      if (!inDateRange(item, from, to)) continue;
       if (!matchesKeyword({ ...item, no: mapped.no }, keyword)) continue;
       items.push(item);
     }

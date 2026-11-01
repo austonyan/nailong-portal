@@ -50,3 +50,28 @@ export async function sendTourNotice({ userId, type, params = {} }) {
     .run(userId, 'tourism', type, JSON.stringify(filled), 'queued', now());
   return { channel: 'outbox', skipped: false, id: info.lastInsertRowid };
 }
+
+// 补投发件箱:邮政模块可用时,把 outbox 里积压的 queued 提示补送到
+// post_messages。在本署读取入口懒触发;投递成功标记 sent,失败留待下次。
+export async function flushTourOutbox() {
+  const postal = await loadPostal();
+  if (!postal) return { flushed: 0 };
+  const rows = db.prepare("SELECT * FROM tour_notify_outbox WHERE status = 'queued' ORDER BY id LIMIT 50").all();
+  let flushed = 0;
+  for (const row of rows) {
+    try {
+      await postal.sendPostalMessage({
+        userId: String(row.user_id),
+        source: row.source,
+        type: row.type,
+        params: JSON.parse(row.params || '{}'),
+      });
+      db.prepare("UPDATE tour_notify_outbox SET status = 'sent' WHERE id = ?").run(row.id);
+      flushed += 1;
+    } catch {
+      // 邮政仍不可用:中断本轮,剩余行留在队列。
+      break;
+    }
+  }
+  return { flushed };
+}

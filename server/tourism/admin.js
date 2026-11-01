@@ -16,6 +16,7 @@ import {
   setConfig,
   todayStr,
 } from './util.js';
+import { flushTourOutbox } from './postal.js';
 
 const router = Router();
 
@@ -435,6 +436,8 @@ router.post('/badges/:id/revoke', (req, res) => {
 // ---------------------------------------------------------------------------
 
 router.get('/stats', (_req, res) => {
+  // 管理端看板读取时顺手补投发件箱积压(异步,不阻塞统计)。
+  flushTourOutbox().catch(() => {});
   const today = todayStr();
   const trendRows = db
     .prepare(

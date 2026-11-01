@@ -150,9 +150,13 @@ function buildSnapshot(userId, year) {
       value: userCount('tour_checkins', userId, { column: pickDateColumn('tour_checkins'), year }),
     },
     {
-      // 徽章发放记录(tour_badge_awards),不是徽章目录表 tour_badges。
+      // 徽章发放记录(tour_badge_awards),不是徽章目录表 tour_badges;已回收的不计。
       key: 'badges',
-      value: userCount('tour_badge_awards', userId, { column: pickDateColumn('tour_badge_awards'), year }),
+      value: userCount('tour_badge_awards', userId, {
+        column: pickDateColumn('tour_badge_awards'),
+        year,
+        extra: 'revoked_at IS NULL',
+      }),
     },
   ]);
 
@@ -235,10 +239,15 @@ function buildSnapshot(userId, year) {
 
   add('resident', [
     {
+      // 年度口径:本年新登记的居民档案,而非当前居民总数(卡数已按签发年过滤)。
       key: 'resident',
-      value: tableExists('res_residents')
-        ? safeCount('SELECT COUNT(*) AS n FROM res_residents WHERE user_id = ?', [userId])
-        : null,
+      value:
+        tableExists('res_residents') && hasColumn('res_residents', 'created_at')
+          ? safeCount('SELECT COUNT(*) AS n FROM res_residents WHERE user_id = ? AND substr(created_at, 1, 4) = ?', [
+              userId,
+              String(year),
+            ])
+          : null,
     },
     {
       key: 'cards',

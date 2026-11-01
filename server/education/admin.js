@@ -250,10 +250,28 @@ function publishContent(type, req, res) {
   const row = contentRowOrThrow(type, req.params.id);
   assertContentTransition(type, row.status, 'published');
   const ts = now();
-  db.prepare(
-    `UPDATE ${table} SET status = 'published', published_at = ?, offline_at = NULL, updated_by = ?, updated_at = ? WHERE id = ?`
-  ).run(ts, req.user.id, ts, row.id);
-  audit(req.user, `publish_${type}`, type, row.no, {});
+  db.transaction(() => {
+    db.prepare(
+      `UPDATE ${table} SET status = 'published', published_at = ?, offline_at = NULL, updated_by = ?, updated_at = ? WHERE id = ?`
+    ).run(ts, req.user.id, ts, row.id);
+    // 从待审直接发布 = 管理员行使了审核权:补写审核轨迹与 reviewed 字段,
+    // 与 reviewContent 的 approve 分支同构(offline 重新上线属运营动作,不补写)。
+    if (row.status === 'pending_review') {
+      db.prepare(`UPDATE ${table} SET reviewed_at = ?, reviewed_by = ? WHERE id = ?`).run(ts, req.user.id, row.id);
+      db.prepare(
+        `INSERT INTO edu_reviews (target_type, target_id, target_no, action, note, reviewer_id, reviewer_name, created_at)
+         VALUES (?, ?, ?, 'approve', '', ?, ?, ?)`
+      ).run(
+        type,
+        row.id,
+        row.no,
+        req.user.id,
+        req.user.display_name || req.user.displayName || req.user.username || '',
+        ts
+      );
+    }
+    audit(req.user, `publish_${type}`, type, row.no, {});
+  })();
   const fresh = db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(row.id);
   res.json({ item: serializeContent(type, fresh) });
 }

@@ -294,6 +294,12 @@
     "VISA_DRAFT_NOT_READY": "草稿还没建好,请稍候再上传材料",
     "VISA_INVALID_TRANSITION": "当前状态无法执行该操作",
     "VISA_SUPPLEMENT_EXPIRED": "补件期限已过",
+    "DOC_SUPPLEMENT_EXPIRED": "补件期限已过,无法再补交",
+    "DIP_SUPPLEMENT_EXPIRED": "补件期限已过,无法再补交",
+    "APPEAL_BIZ_NOT_APPEALABLE": "该业务件当前状态不可申诉",
+    "APPEAL_MERGE_MISMATCH": "两件申诉不属于同一用户,不能合并",
+    "RES_CARD_EXISTS": "该用户已有有效居民卡,请先驳回重复的申请",
+    "EVT_CHECKIN_TOO_EARLY": "活动尚未开始,暂不能签到入场",
     "VISA_SUPPLEMENT_EMPTY": "请先上传补件材料或填写说明",
     "VISA_FILE_TOO_LARGE": "文件太大,单个不超过 5MB",
     "VISA_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或 PDF",
@@ -1171,7 +1177,8 @@
       "cert_revoked": "撤销文书",
       "cert_marked_used": "标注已使用",
       "cert_regenerated": "补发文书",
-      "auto_expired": "到期自动失效"
+      "auto_expired": "到期自动失效",
+      "auto_closed": "补件超时自动关闭"
     },
     "filter": {
       "all": "全部",

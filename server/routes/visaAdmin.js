@@ -24,6 +24,8 @@ import { reqLocale } from '../locale.js';
 const router = Router();
 const DECIDED = "('approved','rejected','issued')";
 const QUEUE_STATUSES = ['pending_review', 'supplement_required', 'approved', 'rejected', 'issued', 'withdrawn', 'closed'];
+// 与前端下拉(src/pages/visa/shared.jsx REJECT_REASONS)和 CSV 翻译一致的驳回原因码。
+const REJECT_CODES = new Set(['incomplete_materials', 'false_info', 'type_mismatch', 'duplicate', 'other']);
 
 function applicationWithMeta(row) {
   const typeRow = db.prepare('SELECT * FROM visa_types WHERE code = ?').get(row.type_code);
@@ -163,6 +165,8 @@ function decideApplication(req, res, { action }) {
   } else if (action === 'reject') {
     if (app.status !== 'pending_review') throw badRequest('VISA_INVALID_TRANSITION', 'Only pending applications can be rejected');
     if (!reasonCode) throw badRequest('VISA_REASON_REQUIRED', 'A reject reason code is required');
+    // 原因码限定与前端下拉/CSV 翻译一致的枚举,避免出现渲染不出的自由码。
+    if (!REJECT_CODES.has(reasonCode)) throw badRequest('VALIDATION_ERROR', `Unknown reject reasonCode: ${reasonCode}`);
     db.prepare(
       "UPDATE visa_applications SET status = 'rejected', reject_code = ?, reject_comment = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?"
     ).run(reasonCode, comment, req.user.id, now(), now(), app.id);
@@ -239,6 +243,8 @@ router.get('/permits', (req, res) => {
 
 // 入境署回写"已使用"的内部模拟入口(正式联动见 /api/visa/inter/*)
 router.post('/permits/:visaNo/mark-used', (req, res) => {
+  // 先扫描:过期未扫的签注不可再标记 used。
+  sweepAll();
   const permit = db.prepare('SELECT * FROM visa_permits WHERE visa_no = ?').get(String(req.params.visaNo));
   if (!permit) throw notFound('Permit not found');
   if (permit.status !== 'valid') throw badRequest('VISA_INVALID_TRANSITION', 'Only valid permits can be marked used');
@@ -316,6 +322,10 @@ router.post('/types', (req, res) => {
 router.patch('/types/:id', (req, res) => {
   const row = db.prepare('SELECT * FROM visa_types WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Visa type not found');
+  // 类型 code 不允许修改:历史申请/签注都按 code 引用,改了会留下悬空引用。
+  if (req.body?.code !== undefined && String(req.body.code).trim().toUpperCase() !== row.code) {
+    throw badRequest('VALIDATION_ERROR', 'Type code cannot be changed (existing applications reference it)');
+  }
   const data = validateTypeBody(req.body || {}, { partial: true });
   const cols = Object.keys(data);
   if (cols.length) {
@@ -376,13 +386,40 @@ router.get('/config', (_req, res) => {
   res.json({ items: rows });
 });
 
+const intInRange = (min, max) => (v) => {
+  const n = Number(v);
+  if (!Number.isInteger(n) || n < min || n > max) throw badRequest('VALIDATION_ERROR', `Value must be an integer between ${min} and ${max}`);
+  return n;
+};
+
+// 配置白名单:只接受代码实际消费的键,值按语义校验——编号前缀必须保持
+// 大写字母数字(验真统一按大写查询,小写/非法字符会失配),数值键限定范围。
+const CONFIG_VALIDATORS = {
+  'visa.app_no_prefix': (v) => {
+    const s = String(v ?? '').trim().toUpperCase();
+    if (!/^[A-Z][A-Z0-9]{1,7}$/.test(s)) throw badRequest('VALIDATION_ERROR', 'app_no_prefix must be 2-8 uppercase letters/digits');
+    return s;
+  },
+  'visa.visa_no_prefix': (v) => {
+    const s = String(v ?? '').trim().toUpperCase();
+    if (!/^[A-Z][A-Z0-9]{1,7}$/.test(s)) throw badRequest('VALIDATION_ERROR', 'visa_no_prefix must be 2-8 uppercase letters/digits');
+    return s;
+  },
+  'visa.supplement_days': intInRange(1, 30),
+  'visa.review_hours_hint': intInRange(1, 8760),
+  'visa.verify_limit_per_5min': intInRange(1, 1000),
+};
+
 router.put('/config', (req, res) => {
   const entries = Object.entries(req.body || {});
+  const applied = {};
   for (const [key, value] of entries) {
-    if (!key.startsWith('visa.')) continue;
-    setConfig(key, String(value));
+    const validate = CONFIG_VALIDATORS[key];
+    if (!validate) throw badRequest('VALIDATION_ERROR', `Unknown config key: ${key}`);
+    applied[key] = String(validate(value));
   }
-  audit(req.user, 'update_config', 'config', '', Object.fromEntries(entries));
+  for (const [key, value] of Object.entries(applied)) setConfig(key, value);
+  audit(req.user, 'update_config', 'config', '', applied);
   res.json({ ok: true });
 });
 

@@ -569,7 +569,10 @@ export function sweepApplications() {
     .all(now());
   for (const app of overdue) {
     db.prepare("UPDATE doc_applications SET status = 'withdrawn', updated_at = ? WHERE id = ?").run(now(), app.id);
-    sendMsg(app.user_id, app.id, 'closed', { appNo: app.app_no });
+    // 状态与消息语义一致:超时关闭即 withdrawn(状态枚举里没有 closed),
+    // 并补记时间线,与 sweepCertificates 的 auto_expired 同构。
+    sendMsg(app.user_id, app.id, 'withdrawn', { appNo: app.app_no });
+    addRecord(app.id, { name: 'system' }, 'auto_closed', { comment: app.app_no });
     audit({ name: 'system' }, 'auto_close_supplement_timeout', 'application', app.app_no);
   }
 }

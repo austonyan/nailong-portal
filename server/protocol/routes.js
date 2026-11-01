@@ -10,7 +10,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import QRCode from 'qrcode';
 import { db, now } from '../db.js';
-import { authenticate } from '../auth.js';
+import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, conflict, forbidden, notFound } from '../http.js';
 import { reqLocale } from '../locale.js';
 import { ensureProtocolSchema, getConfig, getConfigInt } from './schema.js';
@@ -259,7 +259,8 @@ router.get('/verify', (req, res) => {
 // Authenticated user routes
 // ---------------------------------------------------------------------------
 
-router.use(authenticate);
+// 用户端全部接口要求 evt:portal(与 visa/resident/dip 等署一致,服务卡权限不再可绕过)。
+router.use(authenticate, requirePermission('evt:portal'));
 
 // Home aggregates: notices, categories, hot/upcoming events, service catalog.
 router.get('/home', (req, res) => {

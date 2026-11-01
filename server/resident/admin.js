@@ -5,7 +5,7 @@ import { Router } from 'express';
 import crypto from 'node:crypto';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
-import { badRequest, notFound } from '../http.js';
+import { badRequest, conflict, forbidden, notFound } from '../http.js';
 import { ensureResidentSchema } from './schema.js';
 import {
   audit,
@@ -108,10 +108,17 @@ function recordReview(actor, app, action, reasonCode, comment) {
 }
 
 // ---------------------------------------------------------------------------
-// 审核工作台 (res:review)
+// 审核工作台 (res:review) / 署内配置管理 (res:manage)
 // ---------------------------------------------------------------------------
 
-router.use(authenticate, requirePermission('res:review'));
+router.use(authenticate);
+// 审核端点按前缀列表守卫,只拦审核段;下方管理段单独要求 res:manage。
+// 这样只持有 res:manage 的自定义角色也能用类型/配置/导出,而不再被
+// 整文件的 res:review 门(双重权限)挡在门外。
+router.use(
+  ['/queue', '/applications', '/changes', '/cards', '/residents', '/verify-logs'],
+  requirePermission('res:review')
+);
 
 router.get('/queue', (req, res) => {
   sweepAll();
@@ -159,6 +166,12 @@ router.get('/applications/:id', (req, res) => {
 // 通过 → 生成居民身份 + 电子居民卡。人工与自动审批共用。
 function approveApplicationCore(app, actor, { comment = '', auto = false } = {}) {
   if (app.status !== 'pending_review') throw badRequest('RES_INVALID_TRANSITION', 'Only pending applications can be approved');
+  // 一人一张有效居民卡:补交的第二份申请在首次审批发卡后再批会重复发卡,
+  // 直接拒绝(注销/过期后重新登记不受影响)。
+  const liveCard = db
+    .prepare("SELECT card_no FROM res_cards WHERE user_id = ? AND status IN ('valid','frozen') ORDER BY id DESC LIMIT 1")
+    .get(app.user_id);
+  if (liveCard) throw conflict('RES_CARD_EXISTS', `User already has a live resident card: ${liveCard.card_no}`);
   const ts = now();
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(app.type_code);
   const avatar = db
@@ -567,11 +580,19 @@ router.get('/verify-logs', (req, res) => {
 // 署内配置管理 (res:manage)
 // ---------------------------------------------------------------------------
 
-router.use(requirePermission('res:manage'));
+// 类型目录:审核页的类型筛选也依赖(res:review 或 res:manage 任一即可读);
+// 类型的新增/修改仍在下方管理段,要求 res:manage。
+const anyReviewOrManage = (req, _res, next) => {
+  const owned = new Set(req.user?.permissions || []);
+  if (owned.has('res:review') || owned.has('res:manage')) return next();
+  return next(forbidden('FORBIDDEN', 'Missing permission: res:review or res:manage'));
+};
 
-router.get('/types', (_req, res) => {
+router.get('/types', anyReviewOrManage, (_req, res) => {
   res.json({ items: db.prepare('SELECT * FROM res_types ORDER BY sort_order, id').all().map(serializeType) });
 });
+
+router.use(requirePermission('res:manage'));
 
 function validateTypeBody(body, { partial = false } = {}) {
   const out = {};

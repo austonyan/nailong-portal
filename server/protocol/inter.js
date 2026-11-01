@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { db, now } from '../db.js';
 import { forbidden, notFound } from '../http.js';
 import { ensureProtocolSchema } from './schema.js';
-import { audit, maskHost, maskInvitation, maskPass, sweepAll } from './util.js';
+import { audit, maskHost, maskInvitation, maskPass, notify, sweepAll } from './util.js';
 
 ensureProtocolSchema();
 
@@ -133,14 +133,34 @@ router.get('/hosts/:no', (req, res) => {
   });
 });
 
-// 签到回写:入境署/签注署等核销方可标记凭证已使用。
+// 签到回写:入境署/签注署等核销方可标记凭证已使用。与人工签到同口径:
+// 校验活动未取消,报名同步置 checked_in,写签到日志(source=scan)并通知。
 router.post('/passes/mark-used', (req, res) => {
   sweepAll();
   const row = db.prepare('SELECT * FROM pro_passes WHERE pass_no = ?').get(String(req.body?.no || '').trim().toUpperCase());
   if (!row) throw notFound('Pass not found');
   if (row.status !== 'pending') return res.json({ ok: false, status: row.status });
-  db.prepare("UPDATE pro_passes SET status = 'used', checked_in_at = ?, updated_at = ? WHERE id = ?").run(now(), now(), row.id);
-  audit({ name: 'inter-service' }, 'inter_mark_used', 'pass', row.pass_no);
+  const event = db.prepare('SELECT * FROM pro_events WHERE id = ?').get(row.event_id);
+  if (!event || event.status === 'cancelled') return res.json({ ok: false, status: 'event_cancelled' });
+  const ts = now();
+  const apply = db.transaction(() => {
+    db.prepare("UPDATE pro_passes SET status = 'used', checked_in_at = ?, updated_at = ? WHERE id = ?").run(ts, ts, row.id);
+    db.prepare("UPDATE pro_registrations SET status = 'checked_in', checked_in_at = ?, updated_at = ? WHERE id = ?").run(
+      ts, ts, row.registration_id
+    );
+    db.prepare("INSERT INTO pro_checkin_logs (pass_id, registration_id, event_id, action, source, actor_id, note, created_at) VALUES (?, ?, ?, 'in', 'scan', NULL, 'inter mark-used', ?)").run(
+      row.id, row.registration_id, event.id, ts
+    );
+  });
+  apply();
+  notify(
+    row.user_id,
+    'checkin_done',
+    { event: event.title, passNo: row.pass_no, time: ts.replace('T', ' ').slice(0, 16) },
+    { passNo: row.pass_no },
+    { event: event.title_tw || event.title, passNo: row.pass_no, time: ts.replace('T', ' ').slice(0, 16) }
+  );
+  audit({ name: 'inter-service' }, 'inter_mark_used', 'pass', row.pass_no, { eventId: event.id });
   res.json({ ok: true, status: 'used' });
 });
 

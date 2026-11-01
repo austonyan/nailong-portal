@@ -46,7 +46,8 @@ export const makeToken = () => crypto.randomBytes(16).toString('hex');
 export const DECL_TRANSITIONS = {
   draft: ['pending'],
   pending: ['approved', 'rejected', 'supplement', 'withdrawn'],
-  supplement: ['pending', 'rejected'],
+  // 补件中的申报允许撤回:用户不必被动等补件截止或管理员驳回。
+  supplement: ['pending', 'rejected', 'withdrawn'],
   approved: ['entered'],
   entered: ['exited'],
   rejected: [],
@@ -156,6 +157,28 @@ export function riskSummary(userId) {
 // ---------------------------------------------------------------------------
 // Audit log
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Exit reminders — lazy sweep, one-shot per entry record (remind_sent flag).
+// ---------------------------------------------------------------------------
+
+// 停留期临期/逾期的一次性出境提醒:exit_reminder 模板早已存在但此前从未发送。
+// 剩余停留 ≤3 天(或已逾期)时触发,每条入境记录只发一次,读取入口处顺带执行。
+export function sweepExitReminders() {
+  const due = db
+    .prepare(
+      `SELECT id, no, user_id, entry_date, stay_days FROM im_entry_records
+       WHERE status = 'entered' AND deleted_at IS NULL AND remind_sent = 0
+         AND julianday('now') >= julianday(entry_date) + stay_days - 3`
+    )
+    .all();
+  for (const rec of due) {
+    db.prepare('UPDATE im_entry_records SET remind_sent = 1, updated_at = ? WHERE id = ?').run(now(), rec.id);
+    const end = Date.parse(`${String(rec.entry_date).slice(0, 10)}T00:00:00Z`) + rec.stay_days * 86400000;
+    const days = Number.isFinite(end) ? Math.max(0, Math.ceil((end - Date.now()) / 86400000)) : 0;
+    notify(rec.user_id, 'exit_reminder', { recordNo: rec.no, days: String(days) }, { recordNo: rec.no });
+  }
+}
 
 export function audit(actorId, action, targetType = '', targetId = '', detail = {}) {
   db.prepare(

@@ -107,7 +107,10 @@ export function ensurePostalSchema() {
     updated_at        TEXT NOT NULL,
     deleted_at        TEXT
   );
-  CREATE UNIQUE INDEX IF NOT EXISTS idx_post_tpl_source_type ON post_templates (source, type);
+  -- 唯一性只约束未删除的行:模板软删除后允许重建同 (source,type) 组合。
+  -- 旧库是全列唯一索引,启动时一次性重建为 partial index。
+  DROP INDEX IF EXISTS idx_post_tpl_source_type;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_post_tpl_source_type ON post_templates (source, type) WHERE deleted_at IS NULL;
 
   -- 平台站内信:只存 source/type/params,由 SPA 用 post.msg.* 渲染。
   -- title/body 列仅在命中管理端启用模板时写入渲染结果;管理端模板未启用则留空。

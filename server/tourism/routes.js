@@ -23,7 +23,7 @@ import {
   todayStr,
   userBadgeCount,
 } from './util.js';
-import { sendTourNotice } from './postal.js';
+import { flushTourOutbox, sendTourNotice } from './postal.js';
 
 const router = Router();
 
@@ -80,6 +80,8 @@ router.use(requirePermission('tour:portal'));
 // ---------------------------------------------------------------------------
 
 router.get('/home', (req, res) => {
+  // 邮政模块可用时顺手补投发件箱里积压的历史通知(异步,不阻塞首页)。
+  flushTourOutbox().catch(() => {});
   const recommendations = db
     .prepare(
       `SELECT * FROM tour_attractions

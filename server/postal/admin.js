@@ -218,7 +218,7 @@ function readTemplateInput(body, base = null) {
 router.post('/templates', (req, res) => {
   const fields = readTemplateInput(req.body);
   const duplicate = db
-    .prepare('SELECT * FROM post_templates WHERE source = ? AND type = ?')
+    .prepare('SELECT * FROM post_templates WHERE source = ? AND type = ? AND deleted_at IS NULL')
     .get(fields.source, fields.type);
   if (duplicate) throw conflict('POST_TEMPLATE_DUPLICATE', 'A template already exists for this source and type');
   const ts = now();
@@ -250,7 +250,7 @@ router.patch('/templates/:id', (req, res) => {
   const fields = readTemplateInput(req.body, row);
   if (fields.source !== row.source || fields.type !== row.type) {
     const duplicate = db
-      .prepare('SELECT id FROM post_templates WHERE source = ? AND type = ? AND id <> ?')
+      .prepare('SELECT id FROM post_templates WHERE source = ? AND type = ? AND deleted_at IS NULL AND id <> ?')
       .get(fields.source, fields.type, row.id);
     if (duplicate) throw conflict('POST_TEMPLATE_DUPLICATE', 'A template already exists for this source and type');
   }
