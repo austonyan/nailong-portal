@@ -214,6 +214,10 @@ async function main() {
     JSON.stringify(firstMetric)
   );
 
+  const metricsAll = await api('/stats/metrics', { token: adminToken });
+  const badgeMetric = metricsAll.data.items?.find((m) => m.code === 'badges_awarded');
+  check('徽章指标指向发放记录表', !!badgeMetric && badgeMetric.tableName === 'tour_badge_awards', JSON.stringify(badgeMetric));
+
   // 服务卡:繁体语言下名称为繁体
   const servicesTw = await api('/services', { token: adminToken, locale: 'zh-TW' });
   const statsCard = (servicesTw.data.items ?? []).find((item) => item.key === 'stats');

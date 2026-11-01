@@ -322,6 +322,22 @@ async function main() {
     '教育审核轨迹以系统身份写入',
     !!row("SELECT id FROM edu_reviews WHERE target_type = 'entry' AND target_id = ? AND action = 'approve' AND reviewer_name = 'system'", eduEntryId)
   );
+
+  // -------------------------------------------------------------------------
+  // 外交补件截止:逾期补交被拒,扫描自动按驳回关闭(状态枚举无 closed)
+  // -------------------------------------------------------------------------
+  const suppRelId = db
+    .prepare(
+      `INSERT INTO dip_relations
+       (no, user_id, object_type, relation_type, entity_name, rep_nickname, contact, status, supplement_note, supplement_deadline, created_at, updated_at, submitted_at)
+       VALUES (?, ?, 'country', 'FORMAL', 'Auto Overdue', 'Auto Rep', 'auto@example.com', 'supplement_required', '请补充证明', ?, ?, ?, ?)`
+    )
+    .run(`AUTO-REL-SUP-${suffix}`, adminId, iso(-2 * 86400000).slice(0, 10), now, now, now).lastInsertRowid;
+  const suppLate = await api(`/dip/relations/${suppRelId}/supplement`, { method: 'POST', token, body: { content: '逾期也要补交' } });
+  check('外交补件逾期提交被拒', suppLate.status === 400 && suppLate.data.code === 'DIP_SUPPLEMENT_EXPIRED', JSON.stringify(suppLate.data).slice(0, 160));
+  await api('/dip/relations', { token });
+  const suppRow = row('SELECT status, reject_code FROM dip_relations WHERE id = ?', suppRelId);
+  check('外交补件超时自动驳回关闭', suppRow.status === 'rejected' && suppRow.reject_code === 'supplement_timeout', JSON.stringify(suppRow));
   const eduAudit = row("SELECT * FROM edu_audit_logs WHERE action = 'approve_content' AND target_id = ?", `AUTO-EDU-${suffix}`);
   check('教育审计标记 auto', eduAudit && JSON.parse(eduAudit.detail).auto === true, JSON.stringify(eduAudit));
 

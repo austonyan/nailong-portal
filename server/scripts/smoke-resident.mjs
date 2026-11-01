@@ -210,15 +210,78 @@ async function fullFlow(adminToken, userToken) {
   check('审计日志', auditLog.data.items.some((a) => a.action === 'approve_application'));
   const csv = await fetch(`${base}/api/resident/admin/export.csv`, { headers: { Authorization: `Bearer ${adminToken}` } });
   check('导出 CSV', csv.status === 200 && (await csv.text()).includes('申请编号'));
+  const smokeTypeCode = `SMK${stamp.toUpperCase()}`;
   const newType = await api('/resident/admin/types', {
     method: 'POST', token: adminToken,
-    body: { code: 'SMOKE', name: '冒烟居民', description: '自动化测试用', validYears: 1, enabled: false },
+    body: { code: smokeTypeCode, name: '冒烟居民', description: '自动化测试用', validYears: 1, enabled: false },
   });
   check('新增居民类型', newType.status === 201, JSON.stringify(newType.data));
   const templates = await api('/resident/admin/templates', { token: adminToken });
   check('消息模板可读', templates.status === 200 && templates.data.items.length >= 16);
   const verifyLogs = await api('/resident/admin/verify-logs', { token: adminToken });
   check('验真记录', verifyLogs.data.items.length >= 3);
+
+  // 权限重排:仅 res:manage 的角色可达类型/配置/导出,审核端点仍被拒;
+  // 仅 res:review 的角色可读类型目录(审核页筛选),写类型被拒。
+  const mgrToken = await register('m');
+  const mgrRole = await api('/roles', {
+    method: 'POST', token: adminToken,
+    body: { key: `res_mgr_${stamp}`, name: '冒烟居民管理', permissions: ['res:manage'] },
+  });
+  check('自定义角色可授 res:manage', mgrRole.status === 201, JSON.stringify(mgrRole.data).slice(0, 200));
+  const mgrLookup = await api(`/users?query=${userName}_m&pageSize=5`, { token: adminToken });
+  const mgrUser = (mgrLookup.data.items || []).find((u) => u.username === `${userName}_m`);
+  await api(`/users/${mgrUser.id}`, { method: 'PATCH', token: adminToken, body: { roleKeys: [mgrRole.data.role?.key] } });
+  const mgrTypes = await api('/resident/admin/types', { token: mgrToken });
+  check('manage 角色可达类型目录', mgrTypes.status === 200, JSON.stringify(mgrTypes.data).slice(0, 160));
+  const mgrConfig = await api('/resident/admin/config', { token: mgrToken });
+  check('manage 角色可达配置', mgrConfig.status === 200);
+  const mgrCsv = await fetch(`${base}/api/resident/admin/export.csv`, { headers: { Authorization: `Bearer ${mgrToken}` } });
+  check('manage 角色可导出 CSV', mgrCsv.status === 200);
+  const mgrQueue = await api('/resident/admin/queue', { token: mgrToken });
+  check('manage 角色不可达审核队列', mgrQueue.status === 403);
+
+  const revToken = await register('r');
+  const revRole = await api('/roles', {
+    method: 'POST', token: adminToken,
+    body: { key: `res_rev_${stamp}`, name: '冒烟居民审核', permissions: ['res:review'] },
+  });
+  check('自定义角色可授 res:review', revRole.status === 201);
+  const revLookup = await api(`/users?query=${userName}_r&pageSize=5`, { token: adminToken });
+  const revUser = (revLookup.data.items || []).find((u) => u.username === `${userName}_r`);
+  await api(`/users/${revUser.id}`, { method: 'PATCH', token: adminToken, body: { roleKeys: [revRole.data.role?.key] } });
+  const revTypes = await api('/resident/admin/types', { token: revToken });
+  check('review 角色可读类型目录', revTypes.status === 200);
+  const revTypeWrite = await api('/resident/admin/types', {
+    method: 'POST', token: revToken, body: { code: 'NOPE', name: '越权类型' },
+  });
+  check('review 角色不可写类型', revTypeWrite.status === 403);
+
+  // 一人一张有效居民卡:放行两份在途申请后逐份审批,第二份必须 409
+  await api('/resident/admin/config', { method: 'PUT', token: adminToken, body: { 'res.max_active_applications': '2' } });
+  const dupToken = await register('d');
+  const dupApps = [];
+  for (const suffix of ['1', '2']) {
+    const created = await api('/resident/applications', { method: 'POST', token: dupToken, body: { typeCode: 'TEMPORARY' } });
+    const id = created.data.application?.id;
+    await upload(dupToken, id, 'avatar', 'a.png');
+    if (suffix === '2') {
+      // 提交限流 1 次/60 秒:等窗口翻页后再提交第二份
+      console.log('  ... 等待提交限流窗口(61s)');
+      await new Promise((resolve) => setTimeout(resolve, 61_000));
+    }
+    const sub = await api(`/resident/applications/${id}/submit`, {
+      method: 'POST', token: dupToken, body: { ...FIELDS, nickname: `双件岛民${stamp}${suffix}` },
+    });
+    check(`双件申请 ${suffix} 提交`, sub.status === 200, JSON.stringify(sub.data).slice(0, 160));
+    dupApps.push(id);
+  }
+  const dupFirst = await api(`/resident/admin/applications/${dupApps[0]}/approve`, { method: 'POST', token: adminToken, body: {} });
+  check('第一份申请正常发卡', dupFirst.status === 200 && /^NRC-/.test(dupFirst.data.application?.card?.cardNo || ''), JSON.stringify(dupFirst.data).slice(0, 160));
+  const dupSecond = await api(`/resident/admin/applications/${dupApps[1]}/approve`, { method: 'POST', token: adminToken, body: {} });
+  check('第二份申请拒绝重复发卡', dupSecond.status === 409 && dupSecond.data.code === 'RES_CARD_EXISTS', JSON.stringify(dupSecond.data).slice(0, 160));
+  await api(`/resident/admin/applications/${dupApps[1]}/reject`, { method: 'POST', token: adminToken, body: { reasonCode: 'duplicate', comment: '已有有效居民卡' } });
+  await api('/resident/admin/config', { method: 'PUT', token: adminToken, body: { 'res.max_active_applications': '1' } });
 
   // 隐私删除(user2 的申请已驳回,无在途申请)
   const erase = await api('/resident/privacy/erase', { method: 'POST', token: user2Token, body: {} });

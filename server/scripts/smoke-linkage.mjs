@@ -278,7 +278,7 @@ async function main() {
   const rejected = await api(`/visa/admin/applications/${visaBId}/reject`, {
     method: 'POST',
     token: adminToken,
-    body: { reasonCode: 'info_mismatch', comment: '联动验收:先驳回再申诉' },
+    body: { reasonCode: 'false_info', comment: '联动验收:先驳回再申诉' },
   });
   check('签注驳回(待申诉)', rejected.status === 200 && rejected.data.application.status === 'rejected');
 
@@ -321,7 +321,9 @@ async function main() {
     JSON.stringify(visaBAfter.data).slice(0, 200)
   );
   const msgsB = await api('/visa/messages', { token: userB.token });
-  check('签注站内信收到申诉重开通知', msgsB.data.items.some((m) => m.type === 'appeal_reopened'));
+  const reopenedMsg = msgsB.data.items.find((m) => m.type === 'appeal_reopened');
+  check('签注站内信收到申诉重开通知', !!reopenedMsg);
+  check('重开通知带申请编号 appNo', reopenedMsg?.params?.appNo === visaBAfter.data.application.appNo, JSON.stringify(reopenedMsg?.params || {}).slice(0, 200));
 
   const appealAdmin = await api(`/appeal/admin/appeals/${appealId}`, { token: adminToken });
   check(

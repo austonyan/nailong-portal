@@ -331,6 +331,31 @@ async function main() {
     return params.badgeName === '阅读小达人' && !!params.taskNo;
   })());
 
+  // 阅读历史去重:同一内容重复打开只落一条(前面 demoEntry 已被读过两次)
+  const readerId = row("SELECT id FROM users WHERE username = 'edu_reader'").id;
+  const demoReadRows = row(
+    'SELECT COUNT(*) AS n FROM edu_read_history WHERE user_id = ? AND target_type = ? AND target_id = ?',
+    readerId,
+    'entry',
+    demoEntry.id
+  ).n;
+  check('重复阅读只落一条历史', demoReadRows === 1, JSON.stringify(demoReadRows));
+
+  // 手工发布待审内容补写审核轨迹(edu_reviews + reviewed_by/at)
+  const manualEntry = await api('/education/admin/entries', {
+    method: 'POST',
+    token: admin,
+    body: { title: '手工发布词条', titleTw: '手工發布詞條', categoryCode: 'WORLD', summary: '手工发布验收', body: '手工发布验收正文' },
+  });
+  await api(`/education/admin/entries/${manualEntry.data.item.id}/submit`, { method: 'POST', token: admin });
+  const manualPublish = await api(`/education/admin/entries/${manualEntry.data.item.id}/publish`, { method: 'POST', token: admin });
+  check('待审词条可手工发布', manualPublish.status === 200 && manualPublish.data.item.status === 'published', JSON.stringify(manualPublish.data).slice(0, 160));
+  check(
+    '手工发布补写审核轨迹',
+    !!row("SELECT id FROM edu_reviews WHERE target_type = 'entry' AND target_id = ? AND action = 'approve'", manualEntry.data.item.id)
+  );
+  check('手工发布记录审核人', row('SELECT reviewed_by FROM edu_entries WHERE id = ?', manualEntry.data.item.id).reviewed_by != null);
+
   // -------------------------------------------------------------------------
   // 任务管理
   // -------------------------------------------------------------------------
