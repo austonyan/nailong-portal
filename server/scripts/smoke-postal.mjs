@@ -269,6 +269,18 @@ async function main() {
   });
   check('重复模板被拒绝', templateDup.status === 409 && templateDup.data.code === 'POST_TEMPLATE_DUPLICATE', JSON.stringify(templateDup.data));
 
+  // 软删除后可重建同 (source,type) 组合(唯一索引只约束未删除行)
+  const tplListAll = await api('/postal/admin/templates', { token: adminToken });
+  const smokeTpl = (tplListAll.data.items ?? []).find((t) => t.source === 'postal' && t.type === 'smoke_notice');
+  const tplDelete = smokeTpl ? await api(`/postal/admin/templates/${smokeTpl.id}`, { method: 'DELETE', token: adminToken }) : { status: 0 };
+  check('软删除自建模板', tplDelete.status === 200, JSON.stringify(tplDelete.data).slice(0, 160));
+  const tplRecreate = await api('/postal/admin/templates', {
+    method: 'POST',
+    token: adminToken,
+    body: { source: 'postal', type: 'smoke_notice', titleTemplate: '重建模板:{{title}}', bodyTemplate: '{{title}} 已发布。', enabled: true },
+  });
+  check('软删后同组合可重建', tplRecreate.status === 201, JSON.stringify(tplRecreate.data).slice(0, 200));
+
   // -------------------------------------------------------------------------
   // 4.5 管理端:明信片模板 CRUD(用户写明信片挑选的卡片款式)
   // -------------------------------------------------------------------------

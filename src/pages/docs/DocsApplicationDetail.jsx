@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Countdown, Modal, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Countdown, Modal, Tag, Upload } from 'animal-island-ui';
 import { ArrowRightIcon, ClockIcon, PaperclipIcon, SendIcon } from 'naive-icons';
 import { api, requestForm } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../api/docs.js';
@@ -95,11 +95,7 @@ export default function DocsApplicationDetail() {
   return (
     <div className="docs-detail">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">
-            {t('docs.detail.title', { no: item.appNo })}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('docs.detail.title', { no: item.appNo })}</h1>
         <Tag color={STATUS_COLORS[item.status] || 'brown'} variant="soft">
           {t(`docs.status.${item.status}`)}
         </Tag>

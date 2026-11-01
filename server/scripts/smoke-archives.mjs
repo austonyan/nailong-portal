@@ -391,6 +391,32 @@ async function main() {
   await api('/archives/admin/rules', { method: 'PATCH', token: adminToken, body: { items: [{ code: 'im_entry', included: true }] } });
 
   // -----------------------------------------------------------------------
+  // 管理端查询 SQL 下推:大量更新的记录不再把老记录挤出 500 条窗口
+  // -----------------------------------------------------------------------
+  const adminId2 = row("SELECT id FROM users WHERE username = 'admin'").id;
+  const oldEntryId = row("SELECT id FROM im_entry_records WHERE no = 'EN261027-ARC001'").id;
+  const bulkDecl = sqlite.prepare(
+    "INSERT INTO im_declarations (no, user_id, port_id, nickname, contact, purpose, status, stay_days, created_at, updated_at, submitted_at) VALUES (?, ?, ?, '批量', 'bulk@example.com', 'fun', 'approved', 3, ?, ?, ?)"
+  );
+  const bulkEntry = sqlite.prepare(
+    "INSERT INTO im_entry_records (no, user_id, declaration_id, port_id, visa_no, entry_date, stay_days, status, created_at, updated_at) VALUES (?, ?, ?, ?, NULL, ?, 3, 'entered', ?, ?)"
+  );
+  const bulkMany = sqlite.transaction(() => {
+    for (let i = 0; i < 505; i += 1) {
+      const declNo = `IM261027-BULK${String(i).padStart(3, '0')}`;
+      const declRowId = bulkDecl.run(declNo, adminId2, portId, ts, ts, ts).lastInsertRowid;
+      bulkEntry.run(`EN261027-BULK${String(i).padStart(3, '0')}`, adminId2, declRowId, portId, '2026-11-01', ts, ts);
+    }
+  });
+  bulkMany();
+  const hitOld = await api(`/archives/admin/records?userId=${userId}&pageSize=10`, { token: adminToken });
+  check(
+    '按用户过滤命中窗口外老记录',
+    hitOld.status === 200 && hitOld.data.items?.some((item) => item.recordType === 'im_entry' && item.id === oldEntryId),
+    JSON.stringify({ count: hitOld.data.items?.length, ids: hitOld.data.items?.map((i) => i.id).slice(0, 5) })
+  );
+
+  // -----------------------------------------------------------------------
   // 访问日志与审计(管理端)
   // -----------------------------------------------------------------------
   const accessLogs = await api('/archives/admin/access-logs?pageSize=50', { token: adminToken });

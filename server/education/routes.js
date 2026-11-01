@@ -83,10 +83,15 @@ function isFavorited(userId, targetType, targetId) {
 }
 
 function recordRead(userId, targetType, row) {
-  db.prepare(
-    `INSERT INTO edu_read_history (user_id, target_type, target_id, target_no, title, title_tw, read_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
-  ).run(userId, targetType, row.id, row.no, row.title, row.title_tw ?? null, now());
+  // 同一用户同一内容只落首读历史(唯一索引 + OR IGNORE);
+  // 返回是否为新阅读,调用方据此决定 view_count 是否 +1,与任务引擎口径一致。
+  const info = db
+    .prepare(
+      `INSERT OR IGNORE INTO edu_read_history (user_id, target_type, target_id, target_no, title, title_tw, read_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(userId, targetType, row.id, row.no, row.title, row.title_tw ?? null, now());
+  return info.changes > 0;
 }
 
 function toggleFavorite(userId, targetType, row) {
@@ -261,8 +266,9 @@ router.get('/entries', (req, res) => {
 router.get('/entries/:id', (req, res) => {
   const userId = req.user.id;
   const row = publishedEntry(req.params.id);
-  db.prepare('UPDATE edu_entries SET view_count = view_count + 1 WHERE id = ?').run(row.id);
-  recordRead(userId, 'entry', row);
+  if (recordRead(userId, 'entry', row)) {
+    db.prepare('UPDATE edu_entries SET view_count = view_count + 1 WHERE id = ?').run(row.id);
+  }
   const completed = syncUserTasks(userId);
   const related = db
     .prepare(
@@ -321,8 +327,9 @@ router.get('/articles', (req, res) => {
 router.get('/articles/:id', (req, res) => {
   const userId = req.user.id;
   const row = publishedArticle(req.params.id);
-  db.prepare('UPDATE edu_articles SET view_count = view_count + 1 WHERE id = ?').run(row.id);
-  recordRead(userId, 'article', row);
+  if (recordRead(userId, 'article', row)) {
+    db.prepare('UPDATE edu_articles SET view_count = view_count + 1 WHERE id = ?').run(row.id);
+  }
   const completed = syncUserTasks(userId);
   const someMore = db
     .prepare(

@@ -1,7 +1,7 @@
 // 访问日志 — 谁、何时、看了哪一类档案(含导出行为)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Select, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ArchAdminNav, fmtDateTime, toastArchError } from '../shared.jsx';
@@ -93,11 +93,7 @@ export default function AdminArchAccess() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="brown">
-            {t('arch.admin.access.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('arch.admin.access.title')}</h1>
       </div>
 
       <Card>

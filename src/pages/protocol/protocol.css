@@ -18,12 +18,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .protocol-office-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,11 +34,14 @@
 
 .protocol-office-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .protocol-office-sub {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -106,7 +110,7 @@
 }
 
 .protocol-hero {
-  padding: 28px;
+  padding: 32px;
   border-radius: var(--animal-border-radius-lg);
   display: flex;
   flex-direction: column;
@@ -116,7 +120,9 @@
 
 .protocol-hero-sub {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
   color: var(--animal-text-color-secondary);
   max-width: 640px;
 }
@@ -232,6 +238,9 @@
 .protocol-type-card h3 {
   margin: 0;
   font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-type-card p {
@@ -259,7 +268,10 @@
 
 .protocol-event-card :is(h2, h3) {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-event-card p {
@@ -309,13 +321,15 @@
   align-items: center;
   min-width: 56px;
   padding: 6px 10px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-primary-color-bg);
   color: var(--animal-primary-color);
 }
 
 .protocol-upcoming-date strong {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .protocol-upcoming-date span {
@@ -351,7 +365,7 @@
 .protocol-service-icon {
   width: 42px;
   height: 42px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -389,7 +403,10 @@
 
 .protocol-guide-card :is(h3, h4) {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-guide-card p {
@@ -441,14 +458,19 @@
 
 .protocol-filter-bar {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   align-items: center;
-  margin: 12px 0;
+  margin: 0 0 16px;
 }
 
 .protocol-filter-bar > * {
-  min-width: 150px;
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.protocol-filter-bar > button {
+  flex: 0 0 auto;
 }
 
 .protocol-pagination {
@@ -476,7 +498,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(240px, 1fr);
   gap: 20px;
-  padding: 22px;
+  padding: 24px;
 }
 
 .protocol-detail-hero-main {
@@ -520,7 +542,7 @@
 .protocol-venue-map {
   position: relative;
   min-height: 220px;
-  border-radius: 20px;
+  border-radius: var(--animal-border-radius-base);
   overflow: hidden;
   border: 1.5px dashed var(--animal-border-color);
   background: var(--animal-bg-color-secondary);
@@ -660,7 +682,7 @@
 
 .protocol-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
 }
 
@@ -750,7 +772,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-primary-color-bg);
   color: var(--animal-text-color-secondary);
   font-size: 12px;
@@ -877,7 +899,10 @@
 
 .protocol-invitation-card :is(h2, h3) {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-invitation-no,
@@ -935,7 +960,9 @@
 
 .protocol-pass-issuer {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-pass-kind {
@@ -959,14 +986,19 @@
 
 .protocol-pass-info :is(h2, h3) {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-pass-no {
   margin: 0;
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .protocol-pass-meta {
@@ -999,8 +1031,8 @@
 }
 
 .protocol-qr {
-  width: 132px;
-  height: 132px;
+  width: 118px;
+  height: 118px;
   border-radius: 12px;
   background: var(--animal-bg-color-secondary);
 }
@@ -1048,7 +1080,10 @@
 
 .protocol-host-card :is(h2, h3) {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .protocol-host-meta {
@@ -1070,7 +1105,7 @@
 .protocol-host-cert {
   margin-top: 12px;
   padding: 20px;
-  border-radius: 18px;
+  border-radius: var(--animal-border-radius-base);
   border: 2px solid var(--animal-primary-color);
   background: var(--animal-bg-color-secondary);
   display: flex;
@@ -1119,8 +1154,12 @@
 }
 
 .protocol-eligibility-form > * {
-  flex: 1;
-  min-width: 150px;
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.protocol-eligibility-form > button {
+  flex: 0 0 auto;
 }
 
 .protocol-courtesy-rules p {
@@ -1255,7 +1294,7 @@
 }
 
 .protocol-verify-hero {
-  padding: 24px;
+  padding: 32px;
   border-radius: var(--animal-border-radius-lg);
 }
 
@@ -1273,8 +1312,8 @@
 }
 
 .protocol-verify-form > *:first-child {
-  flex: 1;
-  min-width: 220px;
+  flex: 1 1 180px;
+  min-width: 0;
 }
 
 .protocol-verify-result {
@@ -1304,7 +1343,7 @@
 
 .protocol-textarea {
   width: 100%;
-  border-radius: 18px;
+  border-radius: var(--animal-border-radius-base);
   border: 1.5px solid var(--animal-border-color);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
@@ -1318,26 +1357,31 @@
 
 .protocol-metric-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .protocol-metric-card {
-  padding: 16px;
+  padding: 16px 24px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .protocol-metric-card strong {
-  font-size: 26px;
-  font-weight: 900;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
   color: var(--animal-primary-color);
 }
 
 .protocol-metric-card small {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
 }
 
 .protocol-stat-columns {
@@ -1404,8 +1448,8 @@
 }
 
 .protocol-checkin-form > *:first-child {
-  flex: 1;
-  min-width: 220px;
+  flex: 1 1 180px;
+  min-width: 0;
 }
 
 .protocol-risk-panel {
@@ -1458,7 +1502,7 @@
 .protocol-json {
   margin: 8px 0 0;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color-secondary);
   font-size: 12px;
@@ -1489,6 +1533,16 @@
 }
 
 @media (max-width: 640px) {
+  .protocol-hero,
+  .protocol-verify-hero {
+    padding: 24px 16px;
+  }
+
+  .protocol-detail-hero,
+  .protocol-pass-card {
+    padding: 16px;
+  }
+
   .protocol-companion-row {
     grid-template-columns: 1fr;
   }
@@ -1547,22 +1601,4 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-}
-
-.protocol-pass-info :is(h2, h3) {
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-.protocol-pass-no {
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.protocol-qr {
-  width: 118px;
-  height: 118px;
 }

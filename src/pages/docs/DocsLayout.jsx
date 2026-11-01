@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Badge, Title } from 'animal-island-ui';
+import { Badge } from 'animal-island-ui';
 import { ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
@@ -43,7 +43,10 @@ export default function DocsLayout() {
   return (
     <div className="docs-page">
       <div className="docs-hero">
-        <Title size="large">{t('docs.title')}</Title>
+        {/* 署名是跨页签共用的身份条,不是本页标题:每个页签页面自己已经渲染唯一的 h1,
+            这里再用标题标签会让文书署每页出现两个 h1。
+            与 docs 管理端骨架的 .docs-admin-title 一致,落在非标题容器上。 */}
+        <div className="page-title">{t('docs.title')}</div>
         <p className="muted-text docs-hero-sub">{t('docs.subtitle', { name })}</p>
       </div>
 

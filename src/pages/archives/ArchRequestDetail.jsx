@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { ArchNav, RequestStatusTag, fmtDateTime, toastArchError } from './shared.jsx';
@@ -30,11 +30,7 @@ export default function ArchRequestDetail() {
     <div className="arch-page">
       <ArchNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="brown">
-            {t('arch.request.detailTitle')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('arch.request.detailTitle')}</h1>
         <div className="table-actions">
           <Button type="text" icon={<ArrowLeftIcon />} onClick={() => navigate('/archives/requests')}>
             {t('arch.detail.back')}
@@ -124,9 +120,7 @@ export default function ArchRequestDetail() {
           )}
 
           <Card>
-            <Title size="small" color="brown">
-              {t('arch.request.timeline')}
-            </Title>
+            <h2 className="block-heading">{t('arch.request.timeline')}</h2>
             <div className="arch-timeline arch-timeline-gap">
               {(request.events ?? []).map((event) => (
                 <div key={event.id} className="arch-timeline-item">

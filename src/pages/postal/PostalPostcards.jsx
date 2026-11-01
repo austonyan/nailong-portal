@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Pagination, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Pagination, Tabs, Tag } from 'animal-island-ui';
 import { InboxIcon, MailIcon, SendIcon, StarIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -201,11 +201,7 @@ export default function PostalPostcards() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-pink">
-            {t('post.postcards.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.postcards.title')}</h1>
         <Button type="primary" icon={<MailIcon />} onClick={() => navigate('/postal/postcards/new')}>
           {t('post.postcards.write')}
         </Button>

@@ -1,8 +1,7 @@
 // 居民审核工作台:待审队列、申请详情(含风控标记)、通过/驳回/补件。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { openResidentMaterial } from '../../../api/resident.js';
@@ -150,9 +149,7 @@ export default function AdminResReview() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('res.admin.workbench.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.admin.workbench.title')}</h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}

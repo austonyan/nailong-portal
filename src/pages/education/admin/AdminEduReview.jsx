@@ -2,7 +2,7 @@
 // 通过/驳回、审核历史。驳回必须填写审核意见,通过时意见可选。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, ThumbsUpIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { CONTENT_TARGETS, StatusTag, TargetTypeTag, TextArea, fmtDateTime, toastEduError } from '../shared.jsx';
@@ -170,11 +170,7 @@ export default function AdminEduReview() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-yellow">
-            {t('edu.admin.review.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('edu.admin.review.title')}</h1>
       </div>
       <p className="muted-text">{t('edu.admin.review.tip')}</p>
 
@@ -219,7 +215,7 @@ export default function AdminEduReview() {
 
       <Card>
         <div className="edu-section-head">
-          <Title size="small">{t('edu.admin.review.historyTitle')}</Title>
+          <h2 className="block-heading">{t('edu.admin.review.historyTitle')}</h2>
           <Select
             value={historyType}
             onChange={setHistoryType}
@@ -278,7 +274,7 @@ export default function AdminEduReview() {
             <div className="edu-body">{detail.body}</div>
             {(detail.reviewHistory ?? []).length > 0 && (
               <>
-                <Title size="small">{t('edu.admin.review.historyTitle')}</Title>
+                <h3 className="block-heading-sm">{t('edu.admin.review.historyTitle')}</h3>
                 {detail.reviewHistory.map((item) => (
                   <div key={item.id} className="edu-info-row">
                     <StatusTag value={item.action} prefix="edu.admin.reviewAction" />

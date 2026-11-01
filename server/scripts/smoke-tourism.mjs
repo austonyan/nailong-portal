@@ -340,13 +340,27 @@ async function main() {
     JSON.stringify(awards.data).slice(0, 240)
   );
 
+  // 回收后再次达标可重发(复活原发放行,UNIQUE 不再吞掉)
+  await api('/tourism/admin/config', { method: 'PATCH', token: admin, body: { dailyLimit: 10 } });
+  const seedIdsAll = seeds.filter((a) => a.name !== '验收灯塔').map((a) => a.id);
+  const reaward = await api(`/tourism/attractions/${seedIdsAll[2]}/checkin`, { method: 'POST', token: user, body: { note: '回归打卡' } });
+  check(
+    '回收徽章再次达标重新发放',
+    reaward.status === 201 && (reaward.data.newBadges ?? []).some((b) => b.code === 'smoke_two'),
+    JSON.stringify(reaward.data).slice(0, 200)
+  );
+  const revivedRow = row('SELECT * FROM tour_badge_awards WHERE badge_id = ? AND user_id = ?', badgeId, userId);
+  check('重发复活原行(revoked_at 清空)', !revivedRow?.revoked_at, JSON.stringify(revivedRow));
+  const afterReaward = await api('/tourism/badges', { token: user });
+  check('徽章墙恢复两枚', afterReaward.data.items?.filter((b) => b.awarded).length === 2, JSON.stringify(afterReaward.data.items?.filter((b) => b.awarded).map((b) => b.code)));
+
   // -------------------------------------------------------------------------
   // 收集册 + 入境纪念章(直插入境署表)
   // -------------------------------------------------------------------------
   const collection = await api('/tourism/collection', { token: user });
   check(
-    '收集册打卡 2 次、去过 2 个景点',
-    collection.status === 200 && collection.data.counts?.checkins === 2 && collection.data.counts?.visited === 2,
+    '收集册打卡 3 次、去过 3 个景点',
+    collection.status === 200 && collection.data.counts?.checkins === 3 && collection.data.counts?.visited === 3,
     JSON.stringify(collection.data.counts)
   );
 
@@ -379,7 +393,7 @@ async function main() {
   const me = await api('/tourism/me', { token: user });
   check(
     '我的旅游聚合正确',
-    me.status === 200 && me.data.stats?.checkins === 2 && me.data.stats?.badges === 1 && me.data.stats?.stamps === 1,
+    me.status === 200 && me.data.stats?.checkins === 3 && me.data.stats?.badges === 2 && me.data.stats?.stamps === 1,
     JSON.stringify(me.data.stats)
   );
 
@@ -390,8 +404,8 @@ async function main() {
     .prepare("SELECT type, COUNT(*) AS n FROM post_messages WHERE source = 'tourism' AND user_id = ? GROUP BY type")
     .all(userId);
   const byType = Object.fromEntries(postalMsgs.map((r) => [r.type, r.n]));
-  check('打卡消息经邮政契约落库', (byType.tour_checkin ?? 0) === 2, JSON.stringify(byType));
-  check('徽章消息经邮政契约落库', (byType.tour_badge ?? 0) === 2, JSON.stringify(byType));
+  check('打卡消息经邮政契约落库', (byType.tour_checkin ?? 0) === 3, JSON.stringify(byType));
+  check('徽章消息经邮政契约落库', (byType.tour_badge ?? 0) === 3, JSON.stringify(byType));
   const outboxLeft = row('SELECT COUNT(*) AS n FROM tour_notify_outbox').n;
   check('本地发件箱为空(邮政署已就位)', outboxLeft === 0, `n=${outboxLeft}`);
 
@@ -401,7 +415,7 @@ async function main() {
   const stats = await api('/tourism/admin/stats', { token: admin });
   check(
     '统计页计数正确',
-    stats.status === 200 && stats.data.checkins?.total === 2 && stats.data.badges?.awards === 1 && stats.data.badges?.revoked === 1 && stats.data.attractions?.total === 4,
+    stats.status === 200 && stats.data.checkins?.total === 3 && stats.data.badges?.awards === 2 && stats.data.badges?.revoked === 0 && stats.data.attractions?.total === 4,
     JSON.stringify({ c: stats.data.checkins, b: stats.data.badges, a: stats.data.attractions })
   );
 

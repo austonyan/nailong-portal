@@ -1,7 +1,7 @@
 // 徽章管理:条件定义(打卡次数阈值)增删改、发放记录查看与回收。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -259,11 +259,7 @@ export default function AdminTourBadges() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-green">
-            {t('tour.admin.badges.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('tour.admin.badges.title')}</h1>
       </div>
 
       <Card>
@@ -286,9 +282,7 @@ export default function AdminTourBadges() {
 
       <Card>
         <div className="tour-section-head">
-          <Title size="small">
-            {t('tour.admin.badges.awardsTitle')}
-          </Title>
+          <h2 className="block-heading">{t('tour.admin.badges.awardsTitle')}</h2>
           <Select
             value={awardBadge}
             onChange={setAwardBadge}

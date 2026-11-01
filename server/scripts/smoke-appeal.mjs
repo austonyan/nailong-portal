@@ -116,6 +116,29 @@ async function main() {
   const dup = await api(`/appeal/appeals/${dupDraft.data.appeal.id}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('重复申诉被拦截', dup.status === 400 && dup.data.code === 'APPEAL_DUPLICATE', JSON.stringify(dup.data));
 
+  // 不可申诉状态拦截:真实签注申请还在待审(VISA_APP_APPEALABLE 不含 pending_review)
+  const visaApp = await api('/visa/applications', { method: 'POST', token: user2Token, body: { typeCode: 'TOURIST' } });
+  check('创建签注申请草稿', visaApp.status === 201 && !!visaApp.data.application?.id, JSON.stringify(visaApp.data).slice(0, 200));
+  const visaAppId = visaApp.data.application.id;
+  const visaForm = new FormData();
+  visaForm.append('applicationId', String(visaAppId));
+  visaForm.append('kind', 'avatar');
+  visaForm.append('file', new Blob([PNG], { type: 'image/png' }), 'avatar.png');
+  const visaUp = await fetch(`${base}/api/visa/materials`, { method: 'POST', headers: { Authorization: `Bearer ${user2Token}` }, body: visaForm });
+  check('签注申请头像上传', visaUp.ok, JSON.stringify(await visaUp.json().catch(() => ({}))).slice(0, 200));
+  const visaPut = await api(`/visa/applications/${visaAppId}`, {
+    method: 'PUT', token: user2Token,
+    body: { nickname: '冒烟入境者', contact: 'visa@example.com', purpose: '旅游观光', itinerary: '环岛三日游', planArrive: '2026-12-01', planLeave: '2026-12-08' },
+  });
+  check('签注申请信息保存', visaPut.status === 200, JSON.stringify(visaPut.data).slice(0, 200));
+  const visaSubmit = await api(`/visa/applications/${visaAppId}/submit`, { method: 'POST', token: user2Token, body: {} });
+  check('签注申请提交待审', visaSubmit.status === 200, JSON.stringify(visaSubmit.data).slice(0, 200));
+  const realAppNo = visaSubmit.data.application?.appNo || visaPut.data.application?.appNo;
+  const naDraft = await api('/appeal/appeals', { method: 'POST', token: user2Token, body: { bizType: 'visa', bizCode: realAppNo } });
+  await api(`/appeal/appeals/${naDraft.data.appeal.id}`, { method: 'PUT', token: user2Token, body: { ...FIELDS, bizCode: realAppNo, reason: '待审中的签注想提前申诉' } });
+  const naSubmit = await api(`/appeal/appeals/${naDraft.data.appeal.id}/submit`, { method: 'POST', token: user2Token, body: {} });
+  check('不可申诉状态提交被拦截', naSubmit.status === 400 && naSubmit.data.code === 'APPEAL_BIZ_NOT_APPEALABLE', JSON.stringify(naSubmit.data).slice(0, 200));
+
   // 管理:队列 → 受理 → 要求补件 → 补件 → 决定(维持)
   const queue = await api('/appeal/admin/appeals/queue?status=pending_accept', { token: adminToken });
   check('申诉受理队列可见', queue.data.items.some((a) => a.code === appealCode));
@@ -260,6 +283,57 @@ async function main() {
   });
   check('合并重复申诉成功', merged2.status === 200 && merged2.data.appeal.mergedInto === m1.data.appeal.code);
 
+  // 合并只允许同一用户的重复件
+  const xUser = await register('x');
+  const xDraft = await api('/appeal/appeals', { method: 'POST', token: xUser.token, body: { bizType: 'immigration', bizCode: `IMM-${stamp}-CCC333` } });
+  const xMerge = await api('/appeal/admin/appeals/merge', {
+    method: 'POST', token: adminToken, body: { sourceId: xDraft.data.appeal.id, targetId: m1.data.appeal.id },
+  });
+  check('跨用户合并被拦截', xMerge.status === 400 && xMerge.data.code === 'APPEAL_MERGE_MISMATCH', JSON.stringify(xMerge.data).slice(0, 200));
+
+  // 已决申诉被关闭后,复核窗口内仍可申请复核;复核维持原判不再出第二份决定书
+  const cFields = { ...FIELDS, bizType: 'immigration', bizCode: `IMM-${stamp}-DDD444`, reason: '入境申报被驳回,请求复核' };
+  const cDraft = await api('/appeal/appeals', { method: 'POST', token: xUser.token, body: { bizType: 'immigration', bizCode: `IMM-${stamp}-DDD444` } });
+  await api(`/appeal/appeals/${cDraft.data.appeal.id}`, { method: 'PUT', token: xUser.token, body: cFields });
+  const cSubmit = await api(`/appeal/appeals/${cDraft.data.appeal.id}/submit`, { method: 'POST', token: xUser.token, body: {} });
+  check('关闭复核流程申诉已提交', cSubmit.status === 200, JSON.stringify(cSubmit.data).slice(0, 200));
+  await api(`/appeal/admin/appeals/${cDraft.data.appeal.id}/accept`, { method: 'POST', token: adminToken, body: {} });
+  const cDecide = await api(`/appeal/admin/appeals/${cDraft.data.appeal.id}/decide`, {
+    method: 'POST', token: adminToken, body: { decisionType: 'maintain', reason: '事实清楚,维持原结果', basis: '申诉处理规程' },
+  });
+  const cDecisionCode = cDecide.data.appeal.decision?.code;
+  const cClose = await api(`/appeal/admin/appeals/${cDraft.data.appeal.id}/close`, { method: 'POST', token: adminToken, body: {} });
+  check('已决申诉可关闭', cClose.status === 200, JSON.stringify(cClose.data).slice(0, 200));
+  const cReview = await api('/appeal/reviews', {
+    method: 'POST', token: xUser.token, body: { appealId: cDraft.data.appeal.id, reason: '关闭后在复核窗口内申请新证据复核' },
+  });
+  check('关闭后窗口内可申请复核', cReview.status === 201 && /^NAR-/.test(cReview.data.review?.code || ''), JSON.stringify(cReview.data).slice(0, 200));
+  const cReviewId = cReview.data.review.id;
+  await api(`/appeal/admin/reviews/${cReviewId}/accept`, { method: 'POST', token: adminToken, body: {} });
+  const docsBefore = (await api('/appeal/decisions', { token: xUser.token })).data.items.filter((d) => d.status === 'valid').length;
+  const cMaintain = await api(`/appeal/admin/reviews/${cReviewId}/decide`, {
+    method: 'POST', token: adminToken, body: { decisionType: 'maintain', reason: '复核维持原判,不再签发新决定书' },
+  });
+  check('复核维持原判完成', cMaintain.status === 200 && cMaintain.data.review.status === 'completed', JSON.stringify(cMaintain.data).slice(0, 200));
+  const docsAfter = (await api('/appeal/decisions', { token: xUser.token })).data.items;
+  check('maintain 不新增决定书', docsAfter.filter((d) => d.status === 'valid').length === docsBefore, JSON.stringify(docsAfter.map((d) => d.code)).slice(0, 200));
+  check('原决定书保持有效', docsAfter.some((d) => d.code === cDecisionCode && d.status === 'valid'));
+
+  // 权限隔离:仅持有 appeal:inspect 的自定义角色可达监察端点,处理端点仍被拒
+  const inspUser = await register('i');
+  const inspRole = await api('/roles', {
+    method: 'POST', token: adminToken,
+    body: { key: `smoke_inspect_${stamp}`, name: '冒烟监察员', permissions: ['appeal:inspect'] },
+  });
+  check('自定义角色可授 appeal:inspect', inspRole.status === 201, JSON.stringify(inspRole.data).slice(0, 200));
+  await api(`/users/${inspUser.id}`, { method: 'PATCH', token: adminToken, body: { roleKeys: [inspRole.data.role?.key] } });
+  const inspSummary = await api('/appeal/admin/inspect/summary', { token: inspUser.token });
+  check('监察角色可达监察端点', inspSummary.status === 200, JSON.stringify(inspSummary.data).slice(0, 160));
+  const inspQueue = await api('/appeal/admin/appeals/queue', { token: inspUser.token });
+  check('监察角色不可达处理队列', inspQueue.status === 403, JSON.stringify(inspQueue.data).slice(0, 160));
+  const inspReviews = await api('/appeal/admin/reviews/queue', { token: inspUser.token });
+  check('监察角色不可达复核端点', inspReviews.status === 403);
+
   // 监察(只读 + 跨署联动核查)
   const inspect = await api('/appeal/admin/inspect/summary', { token: adminToken });
   check('监察汇总与时效', inspect.status === 200 && inspect.data.integration.every((i) => i.integrated === true));
@@ -296,6 +370,8 @@ async function main() {
   check('验真记录', vLogs.data.items.length >= 3);
 
   // 评价申诉 + 队列隔离:监察员(只读)不能处理申诉
+  const evalBad = await api(`/appeal/appeals/${appealId}/evaluate`, { method: 'POST', token: userToken, body: { rating: 0, comment: '非法评分' } });
+  check('非法评分被拒绝', evalBad.status === 400 && evalBad.data.code === 'VALIDATION_ERROR', JSON.stringify(evalBad.data));
   const evalRes = await api(`/appeal/appeals/${appealId}/evaluate`, { method: 'POST', token: userToken, body: { rating: 4, comment: '处理及时' } });
   check('申诉评价', evalRes.status === 200);
 

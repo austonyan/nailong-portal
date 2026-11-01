@@ -29,3 +29,7 @@ server/data
 # Local scratch: agent sessions, screenshots, temporary DBs and pid files
 .tmp-*
 .zcode/
+
+# Impeccable design-detection local state (config.json is tracked)
+.impeccable/config.local.json
+.impeccable/hook.cache.json

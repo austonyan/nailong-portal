@@ -22,12 +22,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .stat-office-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -37,11 +38,14 @@
 
 .stat-office-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .stat-office-sub {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -100,7 +104,9 @@
 
 .stat-sso-name {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .stat-sso-account {
@@ -110,12 +116,15 @@
 
 .stat-hero {
   border-radius: var(--animal-border-radius-lg);
-  padding: 28px 24px;
+  padding: 32px;
 }
 
 .stat-hero-sub {
   margin: 8px 0 18px;
   max-width: 640px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
   color: var(--animal-text-color-secondary);
 }
 
@@ -138,32 +147,35 @@
 
 .stat-metric-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
 }
 
 .stat-metric-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 18px;
+  gap: 8px;
+  padding: 16px 24px;
+  min-width: 0;
 }
 
 .stat-metric-name {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.55;
   color: var(--animal-text-color-secondary);
 }
 
 .stat-metric-value {
-  font-size: 30px;
-  font-weight: 900;
-  line-height: 1.1;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
   color: var(--animal-primary-color);
 }
 
 .stat-metric-value.is-muted {
-  font-size: 22px;
+  font-size: 20px;
   color: var(--animal-text-color-muted);
 }
 
@@ -203,7 +215,9 @@
 .stat-report-head :is(h2, h3) {
   margin: 0;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .stat-report-meta {
@@ -218,15 +232,16 @@
 }
 
 .stat-report-section-head {
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
   color: var(--animal-text-color);
 }
 
 .stat-report-items {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
+  gap: 16px;
 }
 
 .stat-report-item {
@@ -239,8 +254,9 @@
 }
 
 .stat-report-value {
-  font-size: 22px;
-  font-weight: 900;
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
   color: var(--animal-primary-color);
 }
 
@@ -276,7 +292,10 @@
 }
 
 .stat-board-head strong {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .stat-board-metrics {
@@ -314,13 +333,13 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .stat-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 12px;
 }
 
@@ -362,6 +381,20 @@
 
 .stat-required {
   color: var(--animal-error-color);
+}
+
+@media (max-width: 640px) {
+  .stat-hero {
+    padding: 24px 16px;
+  }
+
+  .stat-report-paper {
+    padding: 16px;
+  }
+
+  .stat-report-head {
+    align-items: flex-start;
+  }
 }
 
 @media print {

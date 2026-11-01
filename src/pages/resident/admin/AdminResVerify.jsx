@@ -1,7 +1,7 @@
 // 验真管理:验真记录查询、限流与防枚举配置。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
 import { fmtDateTime, toastResError } from '../shared.jsx';
@@ -77,9 +77,7 @@ export default function AdminResVerify() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('res.admin.verify.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.admin.verify.title')}</h1>
       </div>
 
       <Card className="res-info-card">

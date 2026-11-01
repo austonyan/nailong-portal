@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Modal, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
 import { BanIcon, EyeIcon, FileIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -123,9 +123,7 @@ export default function ProtocolMyRegistrations() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.my.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.my.title')}</h1>
         <p className="muted-text">{t('protocol.my.subtitle')}</p>
       </div>
 

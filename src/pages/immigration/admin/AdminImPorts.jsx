@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
@@ -494,11 +493,7 @@ export default function AdminImPorts() {
     <div className="im-page">
       <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-orange">
-            {t('imm.admin.portsTitle')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.admin.portsTitle')}</h1>
       </div>
       <Card>
         <Tabs

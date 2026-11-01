@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Table, Tag } from 'animal-island-ui';
 import { ClipboardIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -54,11 +54,7 @@ export default function TourismMy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-pink">
-            {t('tour.my.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('tour.my.title')}</h1>
       </div>
       <p className="muted-text">
         {t('tour.my.todayLine', { today: data?.todayCheckins ?? 0, limit: data?.rules?.dailyLimit ?? 10 })}
@@ -85,9 +81,7 @@ export default function TourismMy() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <Title size="small" color="app-yellow">
-            {t('tour.my.badgesTitle')}
-          </Title>
+          <h2 className="block-heading">{t('tour.my.badgesTitle')}</h2>
           <Button size="small" icon={<TrophyIcon />} onClick={() => navigate('/tourism/badges')}>
             {t('tour.my.viewBadges')}
           </Button>
@@ -117,9 +111,7 @@ export default function TourismMy() {
 
       <section className="tour-section">
         <div className="tour-section-head">
-          <Title size="small" color="app-teal">
-            {t('tour.my.stampsTitle')}
-          </Title>
+          <h2 className="block-heading">{t('tour.my.stampsTitle')}</h2>
           <Button size="small" icon={<ClipboardIcon />} onClick={() => navigate('/tourism/collection')}>
             {t('tour.my.viewCollection')}
           </Button>
@@ -147,9 +139,7 @@ export default function TourismMy() {
       </section>
 
       <section className="tour-section">
-        <Title size="small" color="app-orange">
-          {t('tour.my.recentCheckins')}
-        </Title>
+        <h2 className="block-heading">{t('tour.my.recentCheckins')}</h2>
         <Card>
           <Table
             className="table-fit"

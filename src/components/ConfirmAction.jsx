@@ -29,6 +29,11 @@ import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'animal-island-ui';
 import { toastSuccess } from './toast.js';
 
+/**
+ * 不可逆动作的统一确认弹窗:返回 `{ confirm, dialog, busy }`;调用 `confirm(options)`
+ * 打开弹窗,把 `dialog` 渲染到页面任意位置,成功后自动先关窗、再 toast、再 `onDone`。
+ * @returns {{confirm: (options: {title?: string, tip?: string, confirmText?: string, action: () => Promise<unknown>, success?: string, onDone?: () => unknown, onError?: (err: unknown) => void, danger?: boolean}) => boolean, dialog: import('react').ReactElement|null, busy: boolean}}
+ */
 export function useConfirmAction() {
   const { t } = useTranslation();
   const [request, setRequest] = useState(null);

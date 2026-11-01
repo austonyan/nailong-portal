@@ -766,11 +766,41 @@ export function normalizeCompanions(input, max) {
 export function issuePass(registration, { reissuedFrom = '' } = {}) {
   const event = db.prepare('SELECT * FROM pro_events WHERE id = ?').get(registration.event_id);
   if (!event) throw notFound('Event not found');
-  const existing = db.prepare('SELECT * FROM pro_passes WHERE registration_id = ?').get(registration.id);
-  if (existing && existing.status === 'pending') return existing;
-  const passNo = makeUniqueNo('prefix.pass', 'pro_passes', 'pass_no');
   const ts = now();
   const validUntil = event.ends_at || new Date(Date.now() + 30 * 86400000).toISOString();
+  const existing = db.prepare('SELECT * FROM pro_passes WHERE registration_id = ?').get(registration.id);
+  // pro_passes.registration_id 唯一,补发不能另插新行。待用凭证原样复用(不打扰用户);
+  // 已用/作废/过期的凭证复活原行:换验真 token、清作废痕迹、刷新有效期,编号保持稳定。
+  if (existing) {
+    if (existing.status === 'pending') return existing;
+    db.prepare(
+      `UPDATE pro_passes SET status = 'pending', token = ?, issued_at = ?, valid_until = ?,
+         reissued_from = ?, void_reason = '', checked_in_at = NULL, checked_out_at = NULL, updated_at = ?
+       WHERE id = ?`
+    ).run(
+      makeToken(),
+      ts,
+      validUntil,
+      reissuedFrom && reissuedFrom !== existing.pass_no ? reissuedFrom : existing.reissued_from,
+      ts,
+      existing.id
+    );
+    const pass = db.prepare('SELECT * FROM pro_passes WHERE id = ?').get(existing.id);
+    notify(
+      registration.user_id,
+      reissuedFrom ? 'pass_reissued' : 'pass_issued',
+      {
+        passNo: pass.pass_no,
+        event: event.title,
+        startsAt: event.starts_at ? String(event.starts_at).replace('T', ' ').slice(0, 16) : '',
+        venue: event.venue_name || '',
+      },
+      { eventId: event.id, passNo: pass.pass_no }
+    );
+    audit({ name: 'system' }, 'pass_issue', 'pass', pass.pass_no, { regNo: registration.reg_no, reissuedFrom: pass.reissued_from });
+    return pass;
+  }
+  const passNo = makeUniqueNo('prefix.pass', 'pro_passes', 'pass_no');
   db.prepare(
     `INSERT INTO pro_passes (pass_no, registration_id, event_id, user_id, holder_name, status, token,
        issued_at, valid_until, reissued_from, created_at, updated_at)

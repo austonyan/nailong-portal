@@ -1,7 +1,7 @@
 // 审计 — 导出、规则变更与删除申请处理的敏感操作留痕。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ArchAdminNav, exportCsv, fmtDateTime, toastArchError } from '../shared.jsx';
@@ -84,11 +84,7 @@ export default function AdminArchAudit() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="brown">
-            {t('arch.admin.audit.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('arch.admin.audit.title')}</h1>
         <Button type="text" size="small" icon={<DownloadIcon />} onClick={exportAll} disabled={!items?.length}>
           {t('arch.catalog.export')}
         </Button>

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { BellIcon, InboxIcon, MailIcon, RssIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { NOTICE_LEVEL_COLORS, POSTCARD_STATUS_COLORS, fmtDate, fmtDateTime, toastPostError } from './shared.jsx';
@@ -44,12 +44,8 @@ export default function PostalHome() {
 
   return (
     <div className="postal-home">
-      <Card pattern="app-blue" className="postal-hero">
-        <h1 className="page-title">
-          <Title size="large" color="app-yellow">
-            {t('post.officeName')}
-          </Title>
-        </h1>
+      <Card pattern="app-blue" className="nl-hero postal-hero">
+        <h1 className="page-title">{t('post.officeName')}</h1>
         <p className="postal-hero-sub">{t('post.home.tagline')}</p>
         <div className="postal-hero-actions">
           <Button type="primary" icon={<SendIcon />} onClick={() => navigate('/postal/postcards/new')}>
@@ -91,11 +87,7 @@ export default function PostalHome() {
 
       <div className="postal-section">
         <div className="postal-section-head">
-          <h2 className="section-title">
-            <Title size="middle" color="app-teal">
-              {t('post.home.latestNotices')}
-            </Title>
-          </h2>
+          <h2 className="section-title">{t('post.home.latestNotices')}</h2>
           <Button type="text" size="small" onClick={() => navigate('/postal/notices')}>
             {t('post.home.viewAll')}
           </Button>
@@ -148,11 +140,7 @@ export default function PostalHome() {
       {home.recentPostcards.length > 0 && (
         <div className="postal-section">
           <div className="postal-section-head">
-            <h2 className="section-title">
-              <Title size="middle" color="app-pink">
-                {t('post.home.recentCards')}
-              </Title>
-            </h2>
+            <h2 className="section-title">{t('post.home.recentCards')}</h2>
             <Button type="text" size="small" onClick={() => navigate('/postal/postcards')}>
               {t('post.home.viewAll')}
             </Button>
@@ -187,11 +175,7 @@ export default function PostalHome() {
       )}
 
       <div className="postal-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-yellow">
-            {t('post.home.cardHall')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('post.home.cardHall')}</h2>
         <div className="postal-card-grid">
           {home.templates.map((tpl) => (
             <Card key={tpl.id} pattern={tpl.color} className="postal-card-tile" hoverable>

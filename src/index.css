@@ -17,41 +17,91 @@ h3 {
   color: var(--animal-text-color);
 }
 
-/* 标题样式契约:页面同事用这两个类包住库的 Title,统一抹掉库自带的
-   字号/行高/外边距,标题层级与间距由页面自己决定。必须排在 h2/h3 之后。 */
+/* 标题样式契约:标题一律裸文字进语义标签 —— hero/页标题用
+   <h1 className="page-title">,区块用 <h2 className="section-title">,
+   卡片内用 <h2 className="block-heading"> 或 <h3 className="block-heading-sm">。
+   层级 28(hero) → 20(页/区块) → 18(卡片) → 16(小区块) → 14(正文),每级只降一档。
+   必须排在 h2/h3 之后。 */
 .page-title,
 .section-title {
   margin: 0;
-  font: inherit;
-  line-height: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
-/* 提交成功等整屏状态页:语义上仍需要 h1,视觉沿用卡片内标题 */
-.page-title-card {
+/* 区块标题与上文的距离;页面标题紧贴顶栏,不加外边距 */
+.section-title {
+  margin: 24px 0 12px;
+}
+
+/* hero 标题:28px/800,不随页面标题降档 */
+.nl-hero h1.page-title,
+.portal-hero .page-title,
+.visa-hero .page-title,
+.docs-home-hero .page-title,
+.im-hero .page-title,
+.res-hero .page-title,
+.appeal-hero .page-title,
+.arch-hero .page-title,
+.visa-verify-hero .page-title,
+.dip-hero .page-title,
+.protocol-hero .page-title,
+.protocol-verify-hero .page-title,
+.res-verify-hero .page-title,
+.protocol-detail-hero .page-title {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+/* 提交成功等整屏状态页:语义上仍需要 h1,字号落在卡片标题档 */
+.page-title-card,
+.im-status-name {
   margin: 0;
-  font-size: var(--animal-font-size-lg);
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
-/* 标题层级修正后,原本用 h4 视觉的卡片区块标题提升为 h2 时保持原字号/间距 */
+/* 卡片内区块标题(原 h4 视觉) */
 .block-heading {
-  font-size: 1em;
+  font-size: 18px;
   font-weight: 700;
-  margin: 1.33em 0;
+  line-height: 1.35;
+  margin: 16px 0 8px;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
-/* 同上,原 h5 视觉的小区块标题提升为 h3 时保持原字号/间距 */
+/* 卡片内小区块标题(原 h5 视觉),仍然高于正文 14px */
 .block-heading-sm {
-  font-size: 0.83em;
+  font-size: 16px;
   font-weight: 700;
-  margin: 1.67em 0;
+  line-height: 1.4;
+  margin: 12px 0 8px;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 :root {
   --nl-focus-ring: 2px;
   --nl-focus-offset: 2px;
   --nl-focus-scroll-margin: 64px;
+
+  /* 库把这个 token 定义成 #9f927d(对纸面 2.5–2.9:1),自己却在 Collapse 正文、
+     Tabs 内容和 Date 标签里当正文色用;项目侧还有 70 处「未选中页签 / 说明文字」。
+     这里提到棕墨向纸面提亮 8%(4.9–5.5:1):仍比正文浅一档,但可读。
+     DESIGN.md 十二像素底线——层级交给字重与间距,不用淡墨压小字。 */
+  --animal-text-color-secondary: color-mix(
+    in srgb,
+    var(--animal-text-color) 92%,
+    var(--animal-bg-color)
+  );
 }
 
 /* 统一焦点可见:棕色文字色 #794f27 压在奶油底 #f8f8f0 上 6.65:1,
@@ -63,7 +113,8 @@ button:focus-visible,
 [tabindex]:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-select:focus-visible {
+select:focus-visible,
+.docs-textarea:focus {
   outline: var(--nl-focus-ring) solid var(--animal-text-color);
   outline-offset: var(--nl-focus-offset);
 }
@@ -150,7 +201,7 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--animal-text-color);
   text-decoration: none;
@@ -234,7 +285,9 @@ html {
   color: var(--animal-text-color-secondary);
 }
 
-.sider-office {
+.sider-office,
+.res-checklist li,
+.res-info-list div {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -257,12 +310,17 @@ html {
 }
 
 .sider-link:hover,
-.sider-sublink:hover {
+.sider-sublink:hover,
+.visa-nav-link:hover,
+.docs-tab:hover,
+.res-nav-link:hover,
+.appeal-nav-link:hover {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
 
-.sider-link.active {
+.sider-link.active,
+.sider-sublink.active {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
   font-weight: 700;
@@ -273,13 +331,6 @@ html {
   margin-left: 26px;
   padding: 6px 12px;
   font-size: 13px;
-}
-
-.sider-sublink.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 3px 0 0 0 var(--animal-primary-color);
 }
 
 /* 侧栏只在 >=1025px 常驻,窄屏收进抽屉,由这个按钮唤出 */
@@ -322,6 +373,14 @@ html {
   }
 }
 
+/* 账号操作条:基础间距 10px。必须写在下面的 @media 之前 —— 同特异性的后续声明
+   会盖掉媒体查询里的值(.header-right 的窄屏 gap 曾因此长期失效)。 */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* 手机宽度:账号操作独占一行并右对齐,避免顶栏把整页撑出横向滚动 */
 @media (max-width: 640px) {
   .app-header-inner {
@@ -330,24 +389,34 @@ html {
     padding: 10px 16px;
   }
 
+  /* 360px 下铃铛/语言/头像/退出必须落在同一行:不许内部再换行 */
   .header-right {
+    flex-wrap: nowrap;
     gap: 6px;
     margin-left: auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .user-chip-name {
-    display: none;
   }
 
   /* 只留图标:退出登录文字隐藏后顶栏能单行放下,避免三行堆叠 */
+  .user-chip-name,
   .logout-label {
     display: none;
   }
+
+  /* 退出按钮收到图标宽度(库默认左右各 16px),为同一行再腾出 25px */
+  .app-logout {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 
-.header-right {
+.visa-admin-detail-head,
+.docs-cert-title,
+.im-attachment-upload,
+.im-decl-detail-head,
+.dip-verify-head,
+.dip-verify-invalid,
+.res-app-item-side,
+.res-msg-actions {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -355,7 +424,8 @@ html {
 
 /* Select 的根元素自带 min-width: 140px —— 容器必须预留同样宽度,
    否则下拉框会溢出并盖住右侧的用户头像。 */
-.language-select {
+.language-select,
+.auto-approve-delay {
   width: 140px;
 }
 
@@ -374,7 +444,8 @@ html {
   transition: background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.user-chip:hover {
+.user-chip:hover,
+.appeal-ticket-thread li.staff {
   background: var(--animal-primary-color-bg);
 }
 
@@ -403,7 +474,8 @@ html {
 
 /* ---------- inbox (顶栏跨署站内信) ---------- */
 
-.inbox-toolbar {
+.inbox-toolbar,
+.visa-action-form {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -421,37 +493,80 @@ html {
   font-size: 13px;
 }
 
-.inbox-list {
+.inbox-list,
+.visa-verify-found,
+.visa-msg-list,
+.docs-msg-list,
+.im-decl-attachments,
+.dip-notice-list,
+.dip-agreement-list,
+.dip-msg-list,
+.dip-sso-body,
+.res-review-list,
+.res-verify-card,
+.res-verify-found,
+.res-action-form,
+.res-type-switches {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.inbox-item {
+.inbox-item,
+.res-type-card,
+.res-msg-item {
   cursor: pointer;
 }
 
-.inbox-item.unread {
+/* 未读行:4px 薄荷左条 + 浅色底 + 行内「未读」文字 Tag 三件套。
+   4px 薄荷对纸面只有 1.97:1,是装饰不是信号,文字 Tag 才是强制项(DESIGN.md:353)。 */
+.nl-item-unread,
+.inbox-item.unread,
+.visa-msg-card.unread,
+.im-msg-unread,
+.dip-msg-unread,
+.res-msg-item.unread,
+.docs-msg-item.unread,
+.appeal-message-card.unread {
   border-left: 4px solid var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
+  padding-left: 12px;
 }
 
-.inbox-item-head {
+.inbox-item-head,
+.visa-review-head,
+.docs-upload-head,
+.im-ann-head,
+.im-msg-head,
+.dip-notice-head,
+.dip-detail-head,
+.dip-agreement-head,
+.dip-office-head,
+.dip-msg-head,
+.appeal-notice-head,
+.appeal-item-head,
+.appeal-material-list li,
+.appeal-record-timeline li,
+.appeal-message-head {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.inbox-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--animal-error-color);
-}
-
 .inbox-time {
   margin-left: auto;
   font-size: 12px;
+}
+
+/* 未读三件套之一(DESIGN.md:353):圆点负责非颜色线索,墨色保证在薄荷浅底上可见。
+   左边框与"未读"文字分别由 .inbox-item.unread 与调用方渲染。 */
+.inbox-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--animal-text-color);
 }
 
 .inbox-item-title {
@@ -490,7 +605,8 @@ html {
   }
 }
 
-.muted-text {
+.muted-text,
+.setup-summary-row dt {
   color: var(--animal-text-color-muted);
   font-size: 14px;
 }
@@ -504,10 +620,63 @@ html {
   margin-bottom: 16px;
 }
 
+/* 操作列:桌面不换行。换行会让整行高度翻倍(96px),一屏放不下 10 行;
+   列宽不够时由 auto 布局向其它列要空间。窄屏再退回换行。 */
 .table-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
+}
+
+@media (max-width: 900px) {
+  .table-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* 共享多行输入(src/components/TextArea.jsx):库内没有 Textarea 组件,外观统一由
+   `.nl-textarea` 提供令牌化样式;署内需要差异时再在组件上追加自己的类名覆盖。 */
+.nl-textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 18px;
+  border: var(--animal-border-width) solid var(--animal-border-color);
+  border-radius: var(--animal-border-radius-base);
+  background: var(--animal-bg-color-secondary);
+  color: var(--animal-text-color);
+  font-family: var(--animal-font-family);
+  font-size: var(--animal-font-size-base);
+  font-weight: 500;
+  line-height: var(--animal-line-height-base);
+  resize: vertical;
+  transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
+}
+
+/* placeholder 统一取「棕墨 82% + 纸面 18%」(≈4.6:1):够看清,又明显浅于真实输入值。
+   库里 Input 的 placeholder 硬编码 #c4b89e(1.9:1),只能按组件前缀覆盖。 */
+[class*='animal-input-']::placeholder,
+.nl-textarea::placeholder,
+.visa-textarea::placeholder,
+.appeal-textarea::placeholder,
+.docs-textarea::placeholder,
+.res-textarea::placeholder {
+  color: color-mix(in srgb, var(--animal-text-color) 82%, var(--animal-bg-color));
+}
+
+/* 分页「共 N 条」:库里写死 #a09080(2.77:1),换成项目可读的次级墨。 */
+[class*='animal-total-'] {
+  color: var(--animal-text-color-secondary);
+}
+
+.nl-textarea:focus {
+  border-color: var(--animal-text-color);
+}
+
+.nl-textarea:disabled {
+  background: var(--animal-bg-color-disabled);
+  color: var(--animal-text-color-disabled);
+  cursor: not-allowed;
 }
 
 /* ---------- 统一轻提示 ---------- */
@@ -564,7 +733,9 @@ html {
   border-color: var(--animal-warning-color);
 }
 
-.app-toast-info {
+.app-toast-info,
+.docs-type-option:hover,
+.dip-textarea:focus {
   border-color: var(--animal-primary-color);
 }
 
@@ -577,6 +748,22 @@ html {
 .table-fit td {
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+/* 360 验收宽度:卡片里只剩 ~250px。单元格左右各 20px 的库默认内边距在 7 列表里
+   要吃掉 280px,标签的 nowrap 又把每列钉在最小宽度上 —— 窄屏统一收内边距并放开
+   标签换行,把表压回容器内。 */
+@media (max-width: 640px) {
+  .table-fit th,
+  .table-fit td {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .table-fit [class*='animal-tag-'] {
+    white-space: normal;
+    height: auto;
+  }
 }
 
 /* ---------- auth ---------- */
@@ -601,7 +788,10 @@ html {
   text-decoration: underline;
 }
 
-.auth-links a:hover {
+.auth-links a:hover,
+.service-url:hover,
+.im-link:hover,
+.res-link:hover {
   text-decoration: underline;
 }
 
@@ -634,13 +824,13 @@ html {
 .setup-mark {
   width: 48px;
   height: 48px;
-  border-radius: 18px;
+  border-radius: var(--animal-border-radius-base);
 }
 
 .setup-point-icon {
   width: 38px;
   height: 38px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
 }
 
 .setup-progress {
@@ -654,18 +844,21 @@ html {
   margin: 4px 0 22px;
 }
 
-.setup-point {
+.setup-point,
+.dip-scam-card .dip-scam-inner {
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
 
-.setup-point strong {
+.setup-point strong,
+.dip-trend-count {
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
 }
 
-.setup-point p {
+.setup-point p,
+.docs-timeline li p {
   margin: 2px 0 0;
 }
 
@@ -686,13 +879,9 @@ html {
   border-bottom: var(--animal-border-width) solid var(--animal-border-color-light);
 }
 
-.setup-summary-row:last-child {
+.setup-summary-row:last-child,
+.res-change-item:last-child {
   border-bottom: none;
-}
-
-.setup-summary-row dt {
-  color: var(--animal-text-color-muted);
-  font-size: 14px;
 }
 
 .setup-summary-row dd {
@@ -719,12 +908,16 @@ html {
   color: var(--animal-warning-color);
 }
 
-.setup-actions {
+.setup-actions,
+.visa-verify-form,
+.res-confirm-list div {
   display: flex;
   gap: 10px;
 }
 
-.setup-actions > * {
+.setup-actions > *,
+.visa-verify-form > :first-child,
+.dip-id-card-main {
   flex: 1;
 }
 
@@ -745,48 +938,123 @@ html {
   color: var(--animal-success-color);
 }
 
-.setup-success .muted-text {
+.setup-success .muted-text,
+.appeal-item-card {
   margin-bottom: 10px;
 }
 
 /* ---------- portal ---------- */
 
-.portal-hero {
+/* 统一 hero:背景由 <Background type="sprinkles" className="nl-hero"> 提供,
+   这里不自绘背景色,只管排版 */
+.nl-hero,
+.portal-hero,
+.visa-hero,
+.docs-home-hero,
+.im-hero,
+.res-hero,
+.appeal-hero {
+  padding: 32px;
   border-radius: var(--animal-border-radius-lg);
-  padding: 36px 32px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-.portal-hero p {
-  margin: 14px 0 0;
-  color: var(--animal-text-color-secondary);
-  font-size: 16px;
+/* hero 副标题:14px 正文色。档案署的副标题样式表在本文件之后加载,
+   最后一条用父级类提高特异性,把颜色压回正文色 */
+.nl-hero-sub,
+.portal-hero p,
+.visa-hero-sub,
+.docs-hero-sub,
+.docs-home-tagline,
+.im-hero-sub,
+.res-hero-sub,
+.appeal-hero-sub,
+.arch-hero .arch-hero-sub,
+.dip-hero .dip-hero-sub,
+.edu-hero .edu-hero-sub,
+.postal-hero .postal-hero-sub,
+.protocol-hero .protocol-hero-sub,
+.stat-hero .stat-hero-sub,
+.tour-hero .tour-hero-sub {
+  margin: 12px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--animal-text-color);
+  max-width: 640px;
 }
 
-.portal-stats {
+.nl-hero-actions,
+.visa-hero-actions,
+.dip-hero-actions,
+.appeal-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* 统计卡:220px 最小列宽 + 16px 间距;卡片一律 <Card className="stat-card">,
+   这里只改 padding,不自绘底色/圆角/边框/阴影。数值只允许 28px,禁止薄荷文字。
+   教育/邮政/文旅/统计/档案五个署的卡片样式表在自己的 src/pages/<office>/*.css 里、
+   加载顺序在本文件之后,所以这几条用父级类提高特异性,让本文件的规范值胜出。 */
+.nl-stat-grid,
+.portal-stats,
+.im-home-status,
+.res-home-status,
+.dip-stat-grid,
+.appeal-stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 16px;
-  margin-bottom: 20px;
 }
 
-.stat-card {
+.nl-stat-grid,
+.portal-stats,
+.im-home-status,
+.res-home-status {
+  margin-bottom: 24px;
+}
+
+.stat-card,
+.im-status-card,
+.res-status-card,
+.dip-stat-card,
+.edu-stat-grid .edu-stat-card,
+.tour-stat-row .tour-stat-card,
+.stat-metric-grid .stat-metric-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 16px 24px;
+  min-width: 0;
 }
 
-.stat-label {
+.stat-label,
+.appeal-stat-item span,
+.edu-stat-card .edu-stat-label,
+.postal-stat .postal-stat-label,
+.tour-stat-card .tour-stat-label,
+.stat-metric-card .stat-metric-name,
+.arch-stat-card .arch-stat-label {
   font-size: 13px;
   font-weight: 600;
-  color: var(--animal-text-color-muted);
+  line-height: 1.55;
+  color: var(--animal-text-color);
 }
 
-.stat-number {
+.stat-number,
+.dip-stat-value,
+.appeal-stat-item strong,
+.edu-stat-card .edu-stat-value,
+.postal-stat .postal-stat-value,
+.tour-stat-card .tour-stat-number,
+.stat-metric-card .stat-metric-value {
   font-size: 28px;
   font-weight: 800;
-  color: var(--animal-text-color);
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
+  color: var(--animal-text-color);
 }
 
 .stat-value {
@@ -821,10 +1089,12 @@ html {
   font-weight: 700;
 }
 
+/* 服务卡简介:卡片被库染成不同浅色,简介沿用卡片的色相只有 4.2:1,
+   统一回到墨色(各色卡上都 ≥6:1),色相留给图标与描边。 */
 .service-card-desc {
   margin: 0;
   font-size: 13px;
-  opacity: 0.92;
+  color: var(--animal-text-color);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -859,14 +1129,16 @@ html {
   flex-wrap: wrap;
 }
 
-.profile-since {
+.profile-since,
+.visa-scam-inner p {
   margin: 4px 0 0;
   font-size: 13px;
 }
 
 /* ---------- admin tables ---------- */
 
-.service-name-cell {
+.service-name-cell,
+.dip-switch-row {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -878,56 +1150,78 @@ html {
   word-break: break-all;
 }
 
-.service-url:hover {
-  text-decoration: underline;
-}
-
 /* ---------- 奶龍國簽註申請署 (visa service) ---------- */
 
-.visa-office-banner {
+/* 办公横幅:无边框纯排版 —— hero 已是页面唯一色面,横幅再描一层就是卡片套卡片。
+   徽章图标用棕墨(--animal-text-color),薄荷/叶绿对浅底都不到 3:1。 */
+.nl-office-banner,
+.visa-office-banner,
+.res-office-banner,
+.appeal-office-banner {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
-  flex-wrap: wrap;
+  padding: 0;
 }
 
-.visa-office-brand {
+.nl-office-brand,
+.visa-office-brand,
+.res-office-brand,
+.appeal-office-brand {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
-.visa-office-emblem {
+.nl-office-emblem,
+.visa-office-emblem,
+.res-office-emblem,
+.appeal-office-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
-.visa-office-name {
+.nl-office-name,
+.visa-office-name,
+.res-office-name,
+.appeal-office-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
-.visa-office-sub {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
+.nl-office-sub,
+.visa-office-sub,
+.res-office-sub,
+.appeal-office-sub {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--animal-text-color);
 }
 
-.visa-nav {
+.visa-nav,
+.appeal-nav {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
 
-.visa-nav-link {
+.visa-nav-link,
+.res-nav-link,
+.appeal-nav-link {
   padding: 7px 16px;
   border-radius: 999px;
   font-size: 14px;
@@ -940,11 +1234,6 @@ html {
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.visa-nav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-}
-
 .visa-nav-link.active {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
@@ -952,30 +1241,13 @@ html {
   box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
-.visa-hero {
-  border-radius: var(--animal-border-radius-lg);
-  padding: 34px 32px;
-  margin-bottom: 16px;
-}
-
-.visa-hero-sub {
-  margin: 12px 0 0;
-  color: var(--animal-text-color-secondary);
-  font-size: 15px;
-}
-
-.visa-hero-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.visa-section {
+.visa-section,
+.res-fraud-card {
   margin-top: 22px;
 }
 
-.visa-scam-banner {
+.visa-scam-banner,
+.res-type-detail {
   margin-top: 16px;
 }
 
@@ -985,19 +1257,26 @@ html {
   align-items: flex-start;
 }
 
-.visa-scam-inner p {
-  margin: 4px 0 0;
-  font-size: 13px;
-}
-
-.visa-notice-list {
+.visa-notice-list,
+.visa-faq,
+.im-faq,
+.res-app-list,
+.res-msg-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 14px;
 }
 
-.visa-notice-head {
+.visa-notice-head,
+.visa-msg-head,
+.docs-notice-head,
+.dip-material-upload,
+.dip-visa-channel-actions,
+.res-ann-head,
+.res-admin-detail-head,
+.res-material-list li,
+.res-tpl-head {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1008,12 +1287,15 @@ html {
   font-size: 12px;
 }
 
-.visa-notice-body {
+.visa-notice-body,
+.visa-msg-body,
+.docs-band-card p {
   margin: 8px 0 0;
   font-size: 14px;
 }
 
-.visa-type-grid {
+.visa-type-grid,
+.visa-guide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
@@ -1030,7 +1312,7 @@ html {
 
 .visa-type-name {
   margin: 0 0 6px;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -1041,35 +1323,28 @@ html {
   min-height: 36px;
 }
 
-.visa-type-meta {
+.visa-type-meta,
+.docs-subnav,
+.im-status-tags,
+.res-type-reqs {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 
-.visa-guide-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
-  margin-top: 14px;
-}
-
-.visa-guide-card :is(h3, h4) {
+.visa-guide-card :is(h3, h4),
+.appeal-stats-table h4 {
   margin: 0 0 8px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
-.visa-guide-card p {
+.visa-guide-card p,
+.im-timeline-note,
+.dip-guide-card p,
+.appeal-guide-card p {
   margin: 0;
   font-size: 13px;
   color: var(--animal-text-color-secondary);
-}
-
-.visa-faq {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 14px;
 }
 
 .visa-support-card {
@@ -1110,7 +1385,7 @@ html {
 .visa-verify-hero {
   max-width: 720px;
   margin: 24px auto 0;
-  padding: 30px 24px;
+  padding: 32px;
   text-align: center;
 }
 
@@ -1123,21 +1398,6 @@ html {
 .visa-verify-result {
   max-width: 720px;
   margin: 0 auto 20px;
-}
-
-.visa-verify-form {
-  display: flex;
-  gap: 10px;
-}
-
-.visa-verify-form > :first-child {
-  flex: 1;
-}
-
-.visa-verify-found {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .visa-verify-row {
@@ -1160,13 +1420,16 @@ html {
 .visa-detail-page,
 .visa-messages-page,
 .visa-permits-page,
-.visa-stats-page {
+.visa-stats-page,
+.docs-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.visa-guide-type-card :is(h2, h3) {
+.visa-guide-type-card :is(h2, h3),
+.visa-supplement-card :is(h2, h4),
+.visa-detail-card h4 {
   margin: 0 0 8px;
 }
 
@@ -1186,7 +1449,9 @@ html {
   list-style: inherit;
 }
 
-.visa-quiz-item {
+.visa-quiz-item,
+.res-supplement-notice,
+.res-reject-notice {
   margin-top: 14px;
   display: flex;
   flex-direction: column;
@@ -1198,12 +1463,13 @@ html {
   font-weight: 600;
 }
 
+/* 状态色只做填充(DESIGN.md 状态即填充):文字回到墨色,靠图标与文案表达语义。 */
 .visa-quiz-result {
   margin-top: 14px;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--animal-success-color);
+  color: var(--animal-text-color);
   font-weight: 600;
 }
 
@@ -1221,7 +1487,8 @@ html {
   gap: 8px;
 }
 
-.visa-form-grid {
+.visa-form-grid,
+.res-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 0 16px;
@@ -1243,12 +1510,10 @@ html {
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.visa-textarea:focus {
+.visa-textarea:focus,
+.res-textarea:focus,
+.appeal-textarea:focus {
   border-color: var(--animal-text-color);
-}
-
-.visa-textarea::placeholder {
-  color: var(--animal-text-color-muted);
 }
 
 .visa-materials-section {
@@ -1266,7 +1531,14 @@ html {
   gap: 10px;
 }
 
-.visa-materials-block :is(h3, h5) {
+.visa-materials-block :is(h3, h5),
+.im-fraud-card p,
+.dip-confirm-list,
+.dip-hint-card p,
+.res-quick-card h3,
+.res-supplement-notice p,
+.res-reject-notice p,
+.res-notice-card p {
   margin: 0;
   font-size: 14px;
 }
@@ -1296,18 +1568,25 @@ html {
   gap: 8px;
 }
 
-.visa-confirm-list > div {
+.visa-confirm-list > div,
+.im-form-actions,
+.res-field-row {
   display: flex;
   gap: 12px;
 }
 
-.visa-confirm-list dt {
+.visa-confirm-list dt,
+.res-confirm-list dt,
+.res-field-row dt {
   min-width: 90px;
   color: var(--animal-text-color-muted);
   font-size: 13px;
 }
 
-.visa-confirm-list dd {
+.visa-confirm-list dd,
+.visa-field-row dd,
+.res-confirm-list dd,
+.res-field-row dd {
   margin: 0;
   font-size: 14px;
   word-break: break-all;
@@ -1316,7 +1595,8 @@ html {
 /* 提交成功卡已改用 pattern="app-teal",库给花纹卡的深青字 #2a6b5a 压在
    浅青底 #e8faf5 上约 5.8:1;此处不要再覆盖文字色(--animal-primary-color-active
    #50b9ab 只有约 2.2:1),文字颜色跟随 Card 即可。 */
-.visa-submitted-card {
+.visa-submitted-card,
+.res-submitted-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1325,8 +1605,9 @@ html {
   text-align: center;
 }
 
-.visa-submitted-no {
-  font-size: 22px;
+.visa-submitted-no,
+.appeal-submitted-no {
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 1px;
 }
@@ -1351,12 +1632,6 @@ html {
   flex-shrink: 0;
 }
 
-.visa-field-row dd {
-  margin: 0;
-  font-size: 14px;
-  word-break: break-all;
-}
-
 .visa-reject-banner p,
 .visa-permit-banner p {
   margin: 6px 0 0;
@@ -1370,11 +1645,10 @@ html {
   flex-wrap: wrap;
 }
 
-.visa-supplement-card :is(h2, h4) {
-  margin: 0 0 8px;
-}
-
-.visa-supplement-card .visa-textarea {
+.visa-supplement-card .visa-textarea,
+.im-events-card,
+.dip-agree-row,
+.res-type-block {
   margin-top: 12px;
 }
 
@@ -1392,21 +1666,12 @@ html {
   padding-left: 14px;
 }
 
-.visa-review-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .visa-review-head p,
-.visa-review-timeline p {
+.visa-review-timeline p,
+.dip-scam-card .dip-scam-inner p,
+.dip-office-card p {
   margin: 6px 0 0;
   font-size: 13px;
-}
-
-.visa-detail-card h4 {
-  margin: 0 0 8px;
 }
 
 /* 电子签注卡 */
@@ -1428,19 +1693,26 @@ html {
   opacity: 0.75;
 }
 
-.evisa-head {
+.evisa-head,
+.res-card-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
 }
 
-.evisa-issuer {
+.evisa-issuer,
+.dip-banner-name,
+.res-card-issuer {
   font-size: 18px;
   font-weight: 800;
 }
 
-.evisa-kind {
+.evisa-kind,
+.docs-audit-detail,
+.dip-banner-sub,
+.res-info-list dt,
+.res-card-kind {
   font-size: 12px;
   color: var(--animal-text-color-muted);
 }
@@ -1451,31 +1723,36 @@ html {
   gap: 14px;
 }
 
-.evisa-label {
+.evisa-label,
+.res-card-label {
   display: block;
   font-size: 12px;
   color: var(--animal-text-color-muted);
   margin-bottom: 2px;
 }
 
-.evisa-value {
-  font-size: 15px;
+.evisa-value,
+.res-card-value {
+  font-size: 14px;
   font-weight: 600;
 }
 
-.evisa-no {
+.evisa-no,
+.res-card-no {
   letter-spacing: 1px;
-  font-size: 17px;
+  font-size: 16px;
 }
 
-.evisa-footer {
+.evisa-footer,
+.res-card-footer {
   border-top: var(--animal-border-width) dashed var(--animal-border-color);
   padding-top: 10px;
   font-size: 12px;
   color: var(--animal-text-color-muted);
 }
 
-.visa-permit-actions {
+.visa-permit-actions,
+.res-verify-form {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -1485,60 +1762,69 @@ html {
   font-size: 12px;
 }
 
-.visa-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.visa-msg-card.unread {
-  border-left: 4px solid var(--animal-primary-color);
-}
-
-.visa-msg-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.visa-msg-body {
-  margin: 8px 0 0;
-  font-size: 14px;
-}
-
 .visa-pagination {
   margin-top: 14px;
   display: flex;
   justify-content: center;
 }
 
-.visa-filter-bar {
+/* 筛选条:子项允许收缩(min-width:0 是 360px 不溢出的关键),不写固定宽 */
+.nl-filter-bar,
+.visa-filter-bar,
+.docs-filter-row,
+.im-msg-filters,
+.dip-msg-filter,
+.res-filter-bar,
+.appeal-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.visa-filter-bar > :first-child,
-.visa-filter-bar > :nth-child(2) {
-  width: 150px;
+.nl-filter-bar > * {
+  flex: 1 1 180px;
+  min-width: 0;
 }
 
-.visa-admin-detail {
+.nl-filter-actions {
+  flex: 0 0 auto;
+}
+
+.visa-filter-bar > *,
+.docs-filter-row > *,
+.im-msg-filters > *,
+.dip-msg-filter > *,
+.res-filter-bar > *,
+.appeal-filter-bar > * {
+  min-width: 0;
+}
+
+.visa-admin-detail,
+.docs-field-col,
+.docs-detail,
+.docs-cert-detail,
+.docs-verify,
+.im-decl-detail,
+.dip-section,
+.res-confirm-body,
+.res-admin-detail {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.visa-admin-detail-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.visa-admin-detail :is(h2, h4) {
+.visa-admin-detail :is(h2, h4),
+.appeal-complaint-form p,
+.appeal-review-form p,
+.appeal-ticket-form p,
+.appeal-action-form p {
   margin: 6px 0 0;
 }
 
-.visa-admin-actions {
+.visa-admin-actions,
+.appeal-message-actions {
   margin-top: 8px;
 }
 
@@ -1547,13 +1833,6 @@ html {
   align-items: center;
   gap: 8px;
   margin: 8px 0 0;
-}
-
-.visa-action-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
 }
 
 .visa-action-form p {
@@ -1569,13 +1848,24 @@ html {
   max-width: 480px;
 }
 
-.visa-config-row {
+.visa-config-row,
+.docs-field,
+.im-crowd,
+.im-ann-item,
+.im-msg-item,
+.im-fraud-card,
+.im-channel-item,
+.im-reject-card,
+.im-risk-card,
+.im-verify-card-row,
+.dip-visa-channel {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.visa-config-row label {
+.visa-config-row label,
+.docs-field-label {
   font-size: 13px;
   font-weight: 600;
   color: var(--animal-text-color-secondary);
@@ -1594,7 +1884,9 @@ html {
   min-width: 160px;
 }
 
-.visa-tag-cloud {
+.visa-tag-cloud,
+.dip-detail-actions,
+.appeal-admin-counters {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -1611,19 +1903,31 @@ html {
   margin: 0 0 10px;
 }
 
-.visa-sso-body {
+.visa-sso-body,
+.docs-block,
+.auto-approve-panel,
+.dip-detail,
+.res-change-list,
+.res-verify-result {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.visa-sso-identity {
+.visa-sso-identity,
+.dip-banner-brand,
+.dip-sso-identity {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.visa-sso-name {
+.visa-sso-name,
+.docs-mat-kind,
+.im-trend-n,
+.dip-id-card-entity,
+.dip-sso-name,
+.res-trend-n {
   font-weight: 700;
 }
 
@@ -1670,18 +1974,8 @@ html {
 }
 /* ---------- docs service (奶龍國皇家文書與認證署) ---------- */
 
-.docs-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .docs-hero {
   padding: 6px 0;
-}
-
-.docs-hero-sub {
-  margin: 10px 0 0;
 }
 
 .docs-hero-admin {
@@ -1690,14 +1984,8 @@ html {
 
 .docs-admin-title {
   margin: 0;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
-}
-
-.docs-subnav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
 }
 
 .docs-tab {
@@ -1715,11 +2003,6 @@ html {
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.docs-tab:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-}
-
 .docs-tab.active {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
@@ -1734,21 +2017,12 @@ html {
 
 /* home */
 
-.docs-home {
+.docs-home,
+.im-page,
+.dip-page {
   display: flex;
   flex-direction: column;
   gap: 18px;
-}
-
-.docs-home-hero {
-  border-radius: var(--animal-border-radius-lg);
-  padding: 26px 28px;
-}
-
-.docs-home-tagline {
-  margin: 12px 0 0;
-  color: var(--animal-text-color-secondary);
-  font-size: 15px;
 }
 
 .docs-quick-grid {
@@ -1771,35 +2045,32 @@ html {
   gap: 14px;
 }
 
-.docs-band-card p {
-  margin: 8px 0 0;
-  font-size: 14px;
-}
-
-.docs-band-head {
+.docs-band-head,
+.docs-deadline,
+.im-help-fraud-head,
+.res-supplement-head {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.docs-section {
+.docs-section,
+.im-attachment-list,
+.dip-config-guide,
+.res-review-item,
+.res-review-timeline li {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.docs-notice-list {
+.docs-notice-list,
+.res-ann-list,
+.res-faq {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 12px;
-}
-
-.docs-notice-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .docs-notice-date {
@@ -1810,7 +2081,8 @@ html {
   font-size: 12px;
 }
 
-.docs-notice-body {
+.docs-notice-body,
+.res-ann-body {
   margin: 8px 0 0;
   font-size: 14px;
   color: var(--animal-text-color-secondary);
@@ -1818,7 +2090,7 @@ html {
 
 .docs-type-name {
   margin: 0 0 8px;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -1878,26 +2150,23 @@ html {
   list-style: disc;
 }
 
+/* 小标题是正文色:薄荷对纸面 1.97:1,不能承载文字(DESIGN.md 薄荷不作墨)。 */
 .docs-type-detail :is(h2, h4) {
   margin: 14px 0 4px;
   font-size: 14px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
-.docs-type-detail p {
+.docs-type-detail p,
+.im-confirm-list p {
   margin: 4px 0;
   font-size: 14px;
 }
 
 /* apply / forms */
 
-.docs-block {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.docs-block-title {
+.docs-block-title,
+.im-quick-card h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
@@ -1916,7 +2185,7 @@ html {
   gap: 4px;
   padding: 12px 14px;
   border: 2px solid var(--animal-border-color-light);
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
   font-family: var(--animal-font-family);
@@ -1925,10 +2194,6 @@ html {
   transition:
     border-color var(--animal-motion-duration-fast) var(--animal-motion-ease),
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.docs-type-option:hover {
-  border-color: var(--animal-primary-color);
 }
 
 .docs-type-option.active {
@@ -1945,26 +2210,8 @@ html {
   gap: 14px;
 }
 
-.docs-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .docs-field-wide {
   grid-column: 1 / -1;
-}
-
-.docs-field-col {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.docs-field-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--animal-text-color-secondary);
 }
 
 .docs-field-label em {
@@ -1983,13 +2230,6 @@ html {
   padding: 12px;
   border: var(--animal-border-width) dashed var(--animal-border-color);
   border-radius: var(--animal-border-radius-lg);
-}
-
-.docs-upload-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .docs-mat-list {
@@ -2012,7 +2252,7 @@ html {
 .docs-mat-name {
   border: none;
   background: none;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-family: var(--animal-font-family);
   font-weight: 600;
   font-size: 13px;
@@ -2022,11 +2262,9 @@ html {
   word-break: break-all;
 }
 
-.docs-mat-kind {
-  font-weight: 700;
-}
-
-.docs-apply-actions {
+.docs-apply-actions,
+.auto-approve-row,
+.res-app-item-main {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -2050,7 +2288,8 @@ html {
   font-size: 14px;
 }
 
-.docs-kv dt {
+.docs-kv dt,
+.doc-cert-body dt {
   color: var(--animal-text-color-muted);
   font-weight: 600;
 }
@@ -2066,22 +2305,18 @@ html {
   width: 180px;
 }
 
-.docs-filter-card {
+.docs-filter-card,
+.docs-alert,
+.appeal-guide-block,
+.appeal-form-card,
+.appeal-supplement-card,
+.appeal-stats-card {
   margin-bottom: 14px;
 }
 
-.docs-filter-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.docs-filter-row > div {
-  width: 180px;
-}
-
-.docs-pagination {
+.docs-pagination,
+.res-pagination,
+.appeal-pagination {
   display: flex;
   justify-content: center;
   margin-top: 14px;
@@ -2095,14 +2330,6 @@ html {
 }
 
 /* detail page */
-
-.docs-detail,
-.docs-cert-detail,
-.docs-verify {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
 
 .docs-detail-grid {
   display: grid;
@@ -2122,19 +2349,18 @@ html {
   margin: 4px 0 0;
 }
 
-.docs-deadline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.docs-supplement-upload {
+.docs-supplement-upload,
+.docs-verify-bar,
+.im-detail-actions,
+.dip-quick-row,
+.dip-form-actions {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.docs-timeline {
+.docs-timeline,
+.res-checklist ul {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -2149,12 +2375,9 @@ html {
   font-size: 13px;
 }
 
-.docs-timeline li strong {
+.docs-timeline li strong,
+.im-crowd-text {
   font-size: 13px;
-}
-
-.docs-timeline li p {
-  margin: 2px 0 0;
 }
 
 .docs-timeline-dot {
@@ -2200,7 +2423,7 @@ html {
   position: absolute;
   inset: 8px;
   border: 1.5px solid var(--animal-warning-color);
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   pointer-events: none;
 }
 
@@ -2211,7 +2434,7 @@ html {
 
 .doc-cert-issuer {
   margin: 0;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
   letter-spacing: 2px;
 }
@@ -2230,17 +2453,12 @@ html {
   grid-template-columns: 130px 1fr;
   gap: 14px 16px;
   margin: 26px 0 0;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 /* dl 里的 div 包裹层不参与布局,让 dt/dd 直接落在两列网格上 */
 .doc-cert-body > div {
   display: contents;
-}
-
-.doc-cert-body dt {
-  color: var(--animal-text-color-muted);
-  font-weight: 600;
 }
 
 .doc-cert-body dd {
@@ -2316,12 +2534,6 @@ html {
   align-items: flex-start;
 }
 
-.docs-cert-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 @media print {
   body.docs-printing * {
     visibility: hidden !important;
@@ -2341,12 +2553,6 @@ html {
 
 /* verify */
 
-.docs-verify-bar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .docs-verify-bar > :first-child {
   flex: 1;
   min-width: 240px;
@@ -2360,7 +2566,8 @@ html {
   margin: 0;
 }
 
-.docs-verify-result .docs-verify-head {
+.docs-verify-result .docs-verify-head,
+.res-type-detail-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2370,21 +2577,11 @@ html {
 
 /* messages */
 
-.docs-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .docs-msg-item {
   display: flex;
   align-items: flex-start;
   gap: 14px;
   cursor: pointer;
-}
-
-.docs-msg-item.unread {
-  border-color: var(--animal-primary-color);
 }
 
 .docs-msg-icon {
@@ -2399,11 +2596,14 @@ html {
   text-decoration: none;
 }
 
-.docs-msg-body strong {
+.docs-msg-body strong,
+.dip-id-card-holder,
+.res-channel-card b {
   font-size: 14px;
 }
 
-.docs-msg-body p {
+.docs-msg-body p,
+.res-type-card p {
   margin: 4px 0;
   font-size: 13px;
 }
@@ -2422,30 +2622,14 @@ html {
 /* admin shared */
 
 /* 跨署自动审批设置面板 */
-.auto-approve-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
 
 .auto-approve-panel .muted-text {
   margin: 0;
 }
 
-.auto-approve-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
 .auto-approve-label {
   min-width: 88px;
   color: var(--animal-text-color-secondary);
-}
-
-.auto-approve-delay {
-  width: 140px;
 }
 
 .docs-top-list {
@@ -2473,15 +2657,10 @@ html {
   vertical-align: bottom;
 }
 
-.docs-audit-detail {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .docs-review-detail :is(h2, h4) {
   margin: 16px 0 6px;
   font-size: 14px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .docs-review-actions {
@@ -2491,11 +2670,8 @@ html {
   margin-top: 16px;
 }
 
-.docs-alert {
-  margin-bottom: 14px;
-}
-
-.docs-alert p {
+.docs-alert p,
+.dip-id-card-main p {
   margin: 2px 0;
 }
 
@@ -2504,7 +2680,7 @@ html {
 .docs-type-editor :is(h2, h4) {
   margin: 18px 0 8px;
   font-size: 14px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .docs-editor-grid {
@@ -2513,7 +2689,8 @@ html {
   gap: 14px;
 }
 
-.docs-list-editor {
+.docs-list-editor,
+.im-help-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2557,7 +2734,7 @@ html {
   width: 100%;
   padding: 10px 16px;
   border: var(--animal-border-width) solid var(--animal-border-color);
-  border-radius: 20px;
+  border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
   font-family: var(--animal-font-family);
@@ -2568,24 +2745,10 @@ html {
   min-height: 80px;
 }
 
-.docs-textarea:focus {
-  outline: var(--nl-focus-ring) solid var(--animal-text-color);
-  outline-offset: var(--nl-focus-offset);
-}
-
-.docs-textarea::placeholder {
-  color: var(--animal-text-color-disabled);
-}
-
 /* ---------- immigration (皇家口岸入境署) ---------- */
 
-.im-page {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.im-subnav {
+.im-subnav,
+.dip-subnav {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -2594,7 +2757,8 @@ html {
   border-radius: 999px;
 }
 
-.im-subnav-link {
+.im-subnav-link,
+.dip-subnav-link {
   padding: 6px 14px;
   border-radius: 999px;
   color: var(--animal-text-color-secondary);
@@ -2606,7 +2770,8 @@ html {
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.im-subnav-link:hover {
+.im-subnav-link:hover,
+.dip-subnav-link:hover {
   color: var(--animal-text-color);
   background: var(--animal-bg-color);
 }
@@ -2618,29 +2783,6 @@ html {
   box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
-.im-hero {
-  border-radius: var(--animal-border-radius-lg);
-  padding: 30px 28px;
-}
-
-.im-hero-sub {
-  margin: 12px 0 0;
-  color: var(--animal-text-color-secondary);
-  font-size: 15px;
-}
-
-.im-home-status {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.im-status-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .im-status-head {
   display: flex;
   align-items: center;
@@ -2649,33 +2791,12 @@ html {
   font-size: 14px;
 }
 
-.im-status-name {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.im-status-tags {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.im-my-mini {
+.im-my-mini,
+.res-my-mini {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 14px;
-}
-
-.im-crowd {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.im-crowd-text {
-  font-size: 13px;
 }
 
 .im-quick-grid {
@@ -2692,12 +2813,6 @@ html {
   gap: 10px;
 }
 
-.im-quick-card h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-}
-
 .im-ann-list,
 .im-msg-list {
   display: flex;
@@ -2706,43 +2821,11 @@ html {
   margin-top: 14px;
 }
 
-.im-ann-item,
-.im-msg-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.im-ann-head,
-.im-msg-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.im-ann-body {
+.im-ann-body,
+.res-type-block p {
   margin: 0;
   font-size: 14px;
   color: var(--animal-text-color-secondary);
-}
-
-.im-faq {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.im-fraud-card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.im-fraud-card p {
-  margin: 0;
-  font-size: 14px;
 }
 
 .im-fraud-head {
@@ -2759,14 +2842,10 @@ html {
 }
 
 .im-link {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.im-link:hover {
   text-decoration: underline;
+  font-size: 14px;
 }
 
 /* ports */
@@ -2796,18 +2875,12 @@ html {
   padding-top: 14px;
 }
 
-.im-channel-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .im-port-map {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 18px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-primary-color-bg);
 }
 
@@ -2836,11 +2909,7 @@ html {
   border: 2px solid var(--animal-primary-color);
 }
 
-.im-map-lane {
-  flex: 1;
-  background: var(--animal-bg-color);
-}
-
+.im-map-lane,
 .im-map-plaza {
   flex: 1;
   background: var(--animal-bg-color);
@@ -2858,11 +2927,6 @@ html {
   gap: 14px;
 }
 
-.im-form-actions {
-  display: flex;
-  gap: 12px;
-}
-
 .im-visa-result {
   margin: -6px 0 12px;
 }
@@ -2874,15 +2938,11 @@ html {
   margin: -6px 0 12px;
 }
 
-.im-item-qty-row {
+.im-item-qty-row,
+.dip-material-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-}
-
-.im-confirm-list p {
-  margin: 4px 0;
   font-size: 14px;
 }
 
@@ -2890,24 +2950,14 @@ html {
   margin-top: 10px;
 }
 
-.im-decl-attachments {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 /* attachments */
 
-.im-attachments {
+.im-attachments,
+.dip-config-form,
+.res-notice-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.im-attachment-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .im-attachment-row {
@@ -2922,7 +2972,7 @@ html {
   border: none;
   background: none;
   padding: 0;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
   font-size: 14px;
   font-family: inherit;
@@ -2930,25 +2980,7 @@ html {
   text-decoration: underline;
 }
 
-.im-attachment-upload {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 /* declaration detail */
-
-.im-decl-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.im-decl-detail-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 
 .im-info-row {
   display: flex;
@@ -2964,19 +2996,8 @@ html {
   flex-shrink: 0;
 }
 
-.im-reject-card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.im-risk-card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.im-timeline {
+.im-timeline,
+.dip-timeline {
   list-style: none;
   margin: 10px 0 0;
   padding: 0;
@@ -2993,29 +3014,14 @@ html {
   padding-left: 12px;
 }
 
-.im-timeline-action {
+.im-timeline-action,
+.res-field-label {
   font-weight: 600;
   font-size: 14px;
 }
 
 .im-timeline li .muted-text {
   font-size: 12px;
-}
-
-.im-timeline-note {
-  margin: 0;
-  font-size: 13px;
-  color: var(--animal-text-color-secondary);
-}
-
-.im-detail-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.im-events-card {
-  margin-top: 12px;
 }
 
 /* pass code */
@@ -3029,7 +3035,7 @@ html {
 
 .im-pass-qr-wrap {
   padding: 10px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   background: #fffdf2;
   border: 2px solid var(--animal-primary-color);
 }
@@ -3125,17 +3131,8 @@ html {
 
 /* messages */
 
-.im-msg-filters {
-  display: flex;
-  gap: 8px;
-}
-
 .im-msg-item {
   gap: 8px;
-}
-
-.im-msg-unread {
-  border-left: 4px solid var(--animal-warning-color);
 }
 
 .im-msg-actions {
@@ -3153,21 +3150,8 @@ html {
   margin-top: 14px;
 }
 
-.im-help-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-}
-
 .im-help-card h3 {
   margin: 0;
-}
-
-.im-help-fraud-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 /* verify (public) */
@@ -3199,7 +3183,7 @@ html {
 }
 
 .im-verify-code {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   margin: 0;
   letter-spacing: 1px;
@@ -3214,7 +3198,8 @@ html {
   margin-bottom: 12px;
 }
 
-.im-review-toolbar {
+.im-review-toolbar,
+.dip-admin-filter {
   display: flex;
   gap: 10px;
   margin-bottom: 14px;
@@ -3225,7 +3210,8 @@ html {
   width: 240px;
 }
 
-.im-channel-manager {
+.im-channel-manager,
+.dip-eligibility-result {
   margin-top: 14px;
   display: flex;
   flex-direction: column;
@@ -3281,12 +3267,6 @@ html {
   margin-top: 6px;
 }
 
-.im-verify-card-row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .im-verify-card-head {
   display: flex;
   align-items: center;
@@ -3307,7 +3287,8 @@ html {
   gap: 16px;
 }
 
-.im-trend {
+.im-trend,
+.res-trend {
   display: flex;
   align-items: flex-end;
   gap: 14px;
@@ -3315,7 +3296,8 @@ html {
   min-height: 130px;
 }
 
-.im-trend-col {
+.im-trend-col,
+.res-trend-col {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3323,56 +3305,22 @@ html {
   font-size: 12px;
 }
 
-.im-trend-bar {
+.im-trend-bar,
+.res-trend-bar {
   width: 26px;
   border-radius: 8px 8px 3px 3px;
   background: var(--animal-primary-color);
   min-height: 4px;
 }
 
-.im-trend-n {
-  font-weight: 700;
-}
-
-.im-audit-detail {
+.im-audit-detail,
+.res-audit-detail {
   font-size: 12px;
   word-break: break-all;
   color: var(--animal-text-color-muted);
 }
 
 /* ---------- 奶龙国皇家外交事务署 (diplomacy service) ---------- */
-
-.dip-page {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.dip-subnav {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 6px;
-  background: var(--animal-primary-color-bg);
-  border-radius: 999px;
-}
-
-.dip-subnav-link {
-  padding: 6px 14px;
-  border-radius: 999px;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.dip-subnav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-bg-color);
-}
 
 .dip-subnav-link.active {
   color: var(--animal-text-color);
@@ -3389,69 +3337,15 @@ html {
   flex-wrap: wrap;
 }
 
-.dip-banner-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .dip-banner-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--animal-primary-color-bg);
   color: var(--animal-primary-color);
-}
-
-.dip-banner-name {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.dip-banner-sub {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.dip-hero-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.dip-scam-card .dip-scam-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.dip-scam-card .dip-scam-inner p {
-  margin: 6px 0 0;
-  font-size: 13px;
-}
-
-.dip-section {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.dip-notice-list,
-.dip-agreement-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dip-notice-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .dip-notice-time {
@@ -3477,7 +3371,7 @@ html {
   align-items: center;
   gap: 8px;
   padding: 18px 12px;
-  border-radius: 18px;
+  border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
   text-decoration: none;
@@ -3489,7 +3383,7 @@ html {
 
 .dip-service-card:hover {
   transform: translateY(-2px);
-  color: var(--animal-primary-color);
+  background: var(--animal-primary-color-bg);
 }
 
 .dip-guide-grid {
@@ -3498,21 +3392,10 @@ html {
   gap: 12px;
 }
 
-.dip-guide-card :is(h3, h4) {
+.dip-guide-card :is(h3, h4),
+.appeal-guide-card :is(h3, h4) {
   margin: 0 0 6px;
   font-size: 14px;
-}
-
-.dip-guide-card p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--animal-text-color-secondary);
-}
-
-.dip-quick-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .dip-home-stats {
@@ -3532,7 +3415,7 @@ html {
   width: 100%;
   padding: 10px 14px;
   border: var(--animal-border-width) solid var(--animal-border-color-light);
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color);
   font-family: var(--animal-font-family);
@@ -3541,31 +3424,12 @@ html {
   resize: vertical;
 }
 
-.dip-textarea:focus {
-  border-color: var(--animal-primary-color);
-}
-
-.dip-form-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .dip-type-guide {
   margin: 0 0 12px;
   padding: 10px 14px;
   border-radius: 12px;
   background: var(--animal-bg-color-secondary);
   font-size: 13px;
-}
-
-.dip-agree-row {
-  margin-top: 12px;
-}
-
-.dip-confirm-list {
-  margin: 0;
-  font-size: 14px;
 }
 
 .dip-confirm-list p {
@@ -3586,31 +3450,9 @@ html {
   font-size: 13px;
 }
 
-.dip-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.dip-detail-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .dip-reject-card b {
   display: block;
   margin-bottom: 6px;
-}
-
-.dip-timeline {
-  list-style: none;
-  margin: 10px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .dip-timeline li {
@@ -3630,13 +3472,8 @@ html {
   color: var(--animal-text-color-secondary);
 }
 
-.dip-detail-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.dip-materials {
+.dip-materials,
+.dip-faq {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -3653,29 +3490,16 @@ html {
   list-style: none;
 }
 
-.dip-material-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
 .dip-material-name {
   border: none;
   background: none;
   padding: 0;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-family: var(--animal-font-family);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-}
-
-.dip-material-upload {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  text-decoration: underline;
 }
 
 .dip-check-row {
@@ -3690,30 +3514,9 @@ html {
   min-width: 220px;
 }
 
-.dip-eligibility-result {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dip-agreement-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .dip-agreement-parties {
   margin: 6px 0 2px;
   font-weight: 700;
-}
-
-.dip-faq {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 8px;
 }
 
 .dip-courtesy-grid {
@@ -3740,47 +3543,11 @@ html {
   gap: 12px;
 }
 
-.dip-office-card p {
-  margin: 6px 0 0;
-  font-size: 13px;
-}
-
-.dip-office-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .dip-office-notice {
   padding: 12px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-bg-color-secondary);
   margin-top: 10px;
-}
-
-.dip-msg-filter {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.dip-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dip-msg-unread {
-  border: 2px solid var(--animal-warning-color);
-}
-
-.dip-msg-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .dip-msg-head .muted-text {
@@ -3806,13 +3573,8 @@ html {
   gap: 12px;
 }
 
-.dip-verify-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.dip-verify-form {
+.dip-verify-form,
+.res-status-btn {
   margin-top: 4px;
 }
 
@@ -3825,7 +3587,7 @@ html {
   flex-direction: column;
   gap: 8px;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   background: var(--animal-bg-color-secondary);
 }
 
@@ -3846,63 +3608,14 @@ html {
   font-size: 14px;
 }
 
-.dip-verify-invalid {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.dip-visa-channel {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dip-visa-channel-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.dip-hint-card p {
-  margin: 0;
-  font-size: 14px;
-}
-
-.dip-admin-filter {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-
 .dip-admin-filter > :first-child {
   min-width: 220px;
 }
 
 .dip-material-links a {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
-  text-decoration: none;
-}
-
-.dip-stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
-}
-
-.dip-stat-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
-}
-
-.dip-stat-value {
-  font-size: 26px;
-  font-weight: 800;
+  text-decoration: underline;
 }
 
 .dip-stat-cols {
@@ -3925,11 +3638,6 @@ html {
   align-items: center;
 }
 
-.dip-trend-count {
-  font-weight: 700;
-  font-size: 14px;
-}
-
 .dip-settings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -3945,26 +3653,8 @@ html {
   color: var(--animal-text-color-secondary);
 }
 
-.dip-config-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dip-config-guide {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .dip-config-guide .dip-info-label {
   width: auto;
-}
-
-.dip-switch-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .dip-audit-detail {
@@ -3977,7 +3667,7 @@ html {
 .dip-id-card {
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: var(--animal-border-radius-lg);
   border: 2px solid var(--animal-primary-color);
   padding: 16px 18px;
   background: var(--animal-bg-color);
@@ -4014,22 +3704,6 @@ html {
   gap: 14px;
 }
 
-.dip-id-card-main {
-  flex: 1;
-}
-
-.dip-id-card-main p {
-  margin: 2px 0;
-}
-
-.dip-id-card-entity {
-  font-weight: 700;
-}
-
-.dip-id-card-holder {
-  font-size: 15px;
-}
-
 .dip-id-card-no {
   letter-spacing: 0.5px;
   font-weight: 700;
@@ -4037,7 +3711,8 @@ html {
   font-size: 13px;
 }
 
-.dip-id-card-term {
+.dip-id-card-term,
+.dip-sso-account {
   font-size: 13px;
   color: var(--animal-text-color-secondary);
 }
@@ -4049,33 +3724,13 @@ html {
   gap: 4px;
 }
 
-.dip-card-qr {
+.dip-card-qr,
+.res-card-qr {
   border-radius: 8px;
 }
 
 .dip-id-card-scan {
   font-size: 12px;
-  color: var(--animal-text-color-secondary);
-}
-
-.dip-sso-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dip-sso-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.dip-sso-name {
-  font-weight: 700;
-}
-
-.dip-sso-account {
-  font-size: 13px;
   color: var(--animal-text-color-secondary);
 }
 
@@ -4100,45 +3755,12 @@ html {
 
 /* ---------- 奶龙国皇家居民登记署 (resident service) ---------- */
 
-.res-page {
+.res-page,
+.res-form-page,
+.res-app-detail,
+.res-admin-page {
   display: flex;
   flex-direction: column;
-}
-
-.res-office-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.res-office-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.res-office-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--animal-success-color) 18%, var(--animal-bg-color));
-  color: var(--animal-success-color, var(--animal-primary-color));
-}
-
-.res-office-name {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.res-office-sub {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
 }
 
 .res-nav {
@@ -4146,24 +3768,6 @@ html {
   gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 14px;
-}
-
-.res-nav-link {
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  background: var(--animal-bg-color-secondary);
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.res-nav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
 }
 
 .res-nav-link.active {
@@ -4178,25 +3782,6 @@ html {
   border-top: var(--animal-border-width) dashed var(--animal-border-color);
 }
 
-.res-hero {
-  border-radius: var(--animal-border-radius-lg);
-  padding: 34px 32px;
-  margin-bottom: 16px;
-}
-
-.res-hero-sub {
-  margin: 12px 0 0;
-  color: var(--animal-text-color-secondary);
-  font-size: 15px;
-}
-
-.res-home-status {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
 .res-status-head {
   display: flex;
   align-items: center;
@@ -4207,8 +3792,9 @@ html {
 }
 
 .res-status-name {
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
   margin: 0 0 2px;
 }
 
@@ -4216,17 +3802,6 @@ html {
   display: flex;
   gap: 8px;
   margin: 6px 0 10px;
-}
-
-.res-status-btn {
-  margin-top: 4px;
-}
-
-.res-my-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
 }
 
 .res-quick-grid {
@@ -4244,11 +3819,6 @@ html {
   cursor: pointer;
 }
 
-.res-quick-card h3 {
-  margin: 0;
-  font-size: 15px;
-}
-
 .res-type-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -4264,46 +3834,6 @@ html {
   margin-bottom: 6px;
 }
 
-.res-type-card {
-  cursor: pointer;
-}
-
-.res-type-card p {
-  margin: 4px 0;
-  font-size: 13px;
-}
-
-.res-ann-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.res-ann-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.res-ann-body {
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: var(--animal-text-color-secondary);
-}
-
-.res-faq {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.res-fraud-card {
-  margin-top: 22px;
-}
-
 .res-fraud-card p {
   margin: 8px 0;
   font-size: 14px;
@@ -4316,44 +3846,9 @@ html {
 }
 
 .res-link {
-  color: var(--animal-primary-color);
-  text-decoration: none;
-  font-size: 13px;
-}
-
-.res-link:hover {
+  color: var(--animal-text-color);
   text-decoration: underline;
-}
-
-.res-checklist ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.res-checklist li {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.res-type-detail {
-  margin-top: 16px;
-}
-
-.res-type-detail-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.res-type-block {
-  margin-top: 12px;
+  font-size: 13px;
 }
 
 .res-type-block b {
@@ -4361,27 +3856,12 @@ html {
   margin-bottom: 4px;
 }
 
-.res-type-block p {
-  margin: 0;
-  font-size: 14px;
-  color: var(--animal-text-color-secondary);
-}
-
 /* 登记表单 */
 
-.res-form-page {
-  display: flex;
-  flex-direction: column;
-}
-
-.res-form-card {
+.res-form-card,
+.res-info-card,
+.appeal-faq-card {
   margin-top: 14px;
-}
-
-.res-form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0 16px;
 }
 
 .res-purposes-block {
@@ -4391,12 +3871,8 @@ html {
   margin-bottom: 16px;
 }
 
-.res-field-label {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.res-field-required {
+.res-field-required,
+.appeal-stat-item.warn strong {
   color: var(--animal-error-color);
 }
 
@@ -4414,12 +3890,7 @@ html {
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.res-textarea:focus {
-  border-color: var(--animal-text-color);
-}
-
 .res-textarea::placeholder {
-  color: var(--animal-text-color-muted);
   font-weight: 400;
 }
 
@@ -4431,7 +3902,8 @@ html {
   flex-wrap: wrap;
 }
 
-.res-materials-section {
+.res-materials-section,
+.res-tpl-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -4458,59 +3930,21 @@ html {
   word-break: break-all;
 }
 
-.res-submitted-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 40px 24px;
-  text-align: center;
-}
-
 .res-submitted-no {
   font-size: 18px;
   font-weight: 800;
   letter-spacing: 1px;
 }
 
-.res-confirm-body {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.res-confirm-list {
+.res-confirm-list,
+.res-field-list {
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.res-confirm-list div {
-  display: flex;
-  gap: 10px;
-}
-
-.res-confirm-list dt {
-  min-width: 90px;
-  color: var(--animal-text-color-muted);
-  font-size: 13px;
-}
-
-.res-confirm-list dd {
-  margin: 0;
-  font-size: 14px;
-  word-break: break-all;
-}
-
 /* 我的登记列表 */
-
-.res-app-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 14px;
-}
 
 .res-app-item {
   display: flex;
@@ -4521,53 +3955,11 @@ html {
   flex-wrap: wrap;
 }
 
-.res-app-item-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
 .res-app-no {
   letter-spacing: 1px;
 }
 
-.res-app-item-side {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 /* 申请详情 */
-
-.res-app-detail {
-  display: flex;
-  flex-direction: column;
-}
-
-.res-supplement-notice,
-.res-reject-notice {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.res-supplement-notice p,
-.res-reject-notice p {
-  margin: 0;
-  font-size: 14px;
-}
-
-.res-supplement-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.res-info-card {
-  margin-top: 14px;
-}
 
 .res-info-card :is(h2, h4) {
   display: flex;
@@ -4583,34 +3975,11 @@ html {
   gap: 10px 18px;
 }
 
-.res-info-list div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.res-info-list dt {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .res-info-list dd {
   margin: 0;
   font-size: 14px;
   font-weight: 500;
   word-break: break-all;
-}
-
-.res-review-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.res-review-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .res-review-head {
@@ -4642,23 +4011,6 @@ html {
   opacity: 0.75;
 }
 
-.res-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.res-card-issuer {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.res-card-kind {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .res-card-body {
   display: flex;
   gap: 18px;
@@ -4684,7 +4036,7 @@ html {
 .res-card-avatar {
   width: 64px;
   height: 64px;
-  border-radius: 20px;
+  border-radius: var(--animal-border-radius-base);
   object-fit: cover;
   border: 2px solid var(--animal-border-color);
 }
@@ -4699,23 +4051,6 @@ html {
   font-weight: 800;
 }
 
-.res-card-label {
-  display: block;
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-  margin-bottom: 2px;
-}
-
-.res-card-value {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.res-card-no {
-  letter-spacing: 1px;
-  font-size: 17px;
-}
-
 .res-card-qr-box {
   display: flex;
   flex-direction: column;
@@ -4725,17 +4060,6 @@ html {
   font-size: 12px;
 }
 
-.res-card-qr {
-  border-radius: 8px;
-}
-
-.res-card-footer {
-  border-top: var(--animal-border-width) dashed var(--animal-border-color);
-  padding-top: 10px;
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .res-card-actions {
   display: flex;
   gap: 12px;
@@ -4743,20 +4067,10 @@ html {
   margin-top: 14px;
 }
 
-.res-card-meta {
+.res-card-meta,
+.res-mask-tip {
   margin-top: 10px;
   font-size: 12px;
-}
-
-.res-notice-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.res-notice-card p {
-  margin: 0;
-  font-size: 14px;
 }
 
 .res-reissue-body {
@@ -4776,22 +4090,12 @@ html {
   gap: 12px;
 }
 
-.res-change-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .res-change-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding-bottom: 10px;
   border-bottom: var(--animal-border-width) dashed var(--animal-border-color);
-}
-
-.res-change-item:last-child {
-  border-bottom: none;
 }
 
 .res-change-item-head {
@@ -4827,11 +4131,9 @@ html {
   gap: 8px;
 }
 
-.res-channel-card b {
-  font-size: 15px;
-}
-
-.res-channel-card p {
+.res-channel-card p,
+.res-tpl-body,
+.appeal-service-card p {
   margin: 0;
   font-size: 13px;
 }
@@ -4848,21 +4150,6 @@ html {
 
 /* 站内信 */
 
-.res-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.res-msg-item {
-  cursor: pointer;
-}
-
-.res-msg-item.unread {
-  border-left: 4px solid var(--animal-primary-color);
-}
-
 .res-msg-head {
   display: flex;
   justify-content: space-between;
@@ -4875,12 +4162,6 @@ html {
   margin: 8px 0;
   font-size: 14px;
   color: var(--animal-text-color-secondary);
-}
-
-.res-msg-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .res-empty {
@@ -4923,33 +4204,9 @@ html {
   padding: 34px 32px;
 }
 
-.res-verify-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.res-verify-form {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
 .res-verify-form > :first-child {
   flex: 1;
   min-width: 220px;
-}
-
-.res-verify-result {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.res-verify-found {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .res-verify-row {
@@ -4970,65 +4227,6 @@ html {
 
 /* 管理端 */
 
-.res-admin-page {
-  display: flex;
-  flex-direction: column;
-}
-
-.res-filter-bar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.res-filter-bar > *:not(:last-child) {
-  min-width: 150px;
-}
-
-.res-pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 14px;
-}
-
-.res-admin-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.res-admin-detail-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.res-field-list {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.res-field-row {
-  display: flex;
-  gap: 12px;
-}
-
-.res-field-row dt {
-  min-width: 90px;
-  color: var(--animal-text-color-muted);
-  font-size: 13px;
-}
-
-.res-field-row dd {
-  margin: 0;
-  font-size: 14px;
-  word-break: break-all;
-}
-
 .res-material-list,
 .res-review-timeline {
   list-style: none;
@@ -5037,19 +4235,6 @@ html {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-.res-material-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.res-review-timeline li {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .res-review-timeline .res-review-head {
@@ -5068,12 +4253,6 @@ html {
   margin-top: 6px;
 }
 
-.res-action-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .res-action-form p {
   margin: 0;
 }
@@ -5083,11 +4262,6 @@ html {
   font-size: 13px;
 }
 
-.res-mask-tip {
-  margin-top: 10px;
-  font-size: 12px;
-}
-
 .res-config-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -5095,7 +4269,8 @@ html {
   margin-bottom: 12px;
 }
 
-.res-config-grid label {
+.res-config-grid label,
+.res-type-form label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -5110,39 +4285,12 @@ html {
   margin-top: 8px;
 }
 
-.res-type-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--animal-text-color-secondary);
-}
-
-.res-type-reqs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.res-type-switches {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .res-type-switch {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   font-size: 14px;
-}
-
-.res-tpl-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 10px;
 }
 
 .res-tpl-item {
@@ -5154,22 +4302,10 @@ html {
   gap: 6px;
 }
 
-.res-tpl-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .res-tpl-title {
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-}
-
-.res-tpl-body {
-  margin: 0;
-  font-size: 13px;
 }
 
 .res-stats-grid {
@@ -5177,33 +4313,6 @@ html {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
   margin-top: 16px;
-}
-
-.res-trend {
-  display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  margin-top: 16px;
-  min-height: 130px;
-}
-
-.res-trend-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-}
-
-.res-trend-bar {
-  width: 26px;
-  border-radius: 8px 8px 3px 3px;
-  background: var(--animal-primary-color);
-  min-height: 4px;
-}
-
-.res-trend-n {
-  font-weight: 700;
 }
 
 .res-info-row {
@@ -5216,12 +4325,6 @@ html {
 
 .res-info-row b {
   font-variant-numeric: tabular-nums;
-}
-
-.res-audit-detail {
-  font-size: 12px;
-  word-break: break-all;
-  color: var(--animal-text-color-muted);
 }
 
 @media print {
@@ -5242,90 +4345,11 @@ html {
 
 /* ---------- 奶龍國皇家申訴與監察署 (appeal service) ---------- */
 
-.appeal-office-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.appeal-office-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.appeal-office-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
-}
-
-.appeal-office-name {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.appeal-office-sub {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.appeal-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-
-.appeal-nav-link {
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  background: var(--animal-bg-color-secondary);
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.appeal-nav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-}
-
 .appeal-nav-link.active {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
   font-weight: 700;
   box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
-}
-
-.appeal-hero {
-  border-radius: var(--animal-border-radius-lg);
-  padding: 34px 32px;
-  margin-bottom: 16px;
-}
-
-.appeal-hero-sub {
-  margin: 12px 0 0;
-  color: var(--animal-text-color-secondary);
-}
-
-.appeal-hero-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-  flex-wrap: wrap;
 }
 
 .appeal-hero-counts {
@@ -5341,7 +4365,7 @@ html {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  color: var(--animal-warning-color);
+  color: var(--animal-text-color);
 }
 
 .appeal-scam-inner p {
@@ -5362,18 +4386,13 @@ html {
 
 .appeal-service-card :is(h3, h4) {
   margin: 10px 0 4px;
-  font-size: 15px;
-}
-
-.appeal-service-card p {
-  margin: 0;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .appeal-service-icon {
   width: 42px;
   height: 42px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -5381,17 +4400,11 @@ html {
   color: var(--animal-primary-color);
 }
 
-.appeal-notice-list {
+.appeal-notice-list,
+.appeal-faq {
   display: grid;
   gap: 10px;
   margin-top: 12px;
-}
-
-.appeal-notice-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .appeal-notice-time {
@@ -5412,29 +4425,12 @@ html {
   margin-top: 12px;
 }
 
-.appeal-guide-card :is(h3, h4) {
-  margin: 0 0 6px;
-  font-size: 15px;
-}
-
-.appeal-guide-card p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--animal-text-color-secondary);
-}
-
 .appeal-guide-actions {
   display: flex;
   gap: 12px;
   margin-top: 14px;
   flex-wrap: wrap;
   align-items: center;
-}
-
-.appeal-faq {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
 }
 
 .appeal-support-card {
@@ -5458,10 +4454,6 @@ html {
 /* 管理页有多列表格,跟随 .app-main 的 PC 宽度 */
 .appeal-admin-page {
   max-width: none;
-}
-
-.appeal-guide-block {
-  margin-bottom: 14px;
 }
 
 .appeal-guide-block :is(h2, h4) {
@@ -5525,21 +4517,9 @@ html {
     box-shadow var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.appeal-textarea:focus {
-  border-color: var(--animal-text-color);
-}
-
-.appeal-textarea::placeholder {
-  color: var(--animal-text-color-muted);
-}
-
 .appeal-textarea:disabled {
   background: var(--animal-bg-color-secondary);
   color: var(--animal-text-color-disabled);
-}
-
-.appeal-form-card {
-  margin-bottom: 14px;
 }
 
 .appeal-form-card :is(h2, h4) {
@@ -5565,13 +4545,15 @@ html {
   padding: 4px 0;
 }
 
-.appeal-confirm-body {
+.appeal-confirm-body,
+.appeal-eval-body {
   display: grid;
   gap: 12px;
 }
 
 .appeal-confirm-list,
-.appeal-field-list {
+.appeal-field-list,
+.appeal-verify-rows {
   margin: 0;
   display: grid;
   gap: 8px;
@@ -5586,7 +4568,8 @@ html {
 }
 
 .appeal-confirm-list dt,
-.appeal-field-list dt {
+.appeal-field-list dt,
+.appeal-verify-rows dt {
   font-size: 13px;
   color: var(--animal-text-color-muted);
 }
@@ -5603,16 +4586,6 @@ html {
   padding: 40px 24px;
 }
 
-.appeal-submitted-no {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-.appeal-item-card {
-  margin-bottom: 10px;
-}
-
 /* 列表整卡可点:链接沿用卡片文字色,不出现链接蓝/下划线(含已访问态) */
 .appeal-item-link {
   display: block;
@@ -5625,13 +4598,6 @@ html {
 .appeal-item-link:focus-visible {
   color: inherit;
   text-decoration: none;
-}
-
-.appeal-item-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .appeal-item-reason {
@@ -5647,27 +4613,13 @@ html {
 .appeal-item-reply {
   margin: 8px 0 0;
   font-size: 13px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .appeal-item-actions {
   display: flex;
   gap: 4px;
   margin-top: 8px;
-}
-
-.appeal-filter-bar {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.appeal-pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 14px;
 }
 
 .appeal-detail-head {
@@ -5695,23 +4647,12 @@ html {
   white-space: pre-wrap;
 }
 
-.appeal-supplement-card {
-  margin-bottom: 14px;
-}
-
 .appeal-material-list {
   list-style: none;
   margin: 8px 0 14px;
   padding: 0;
   display: grid;
   gap: 6px;
-}
-
-.appeal-material-list li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .appeal-record-timeline {
@@ -5722,22 +4663,10 @@ html {
   gap: 12px;
 }
 
-.appeal-record-timeline li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .appeal-record-timeline p {
   width: 100%;
   margin: 0;
   font-size: 13px;
-}
-
-.appeal-eval-body {
-  display: grid;
-  gap: 12px;
 }
 
 .appeal-review-tip,
@@ -5753,20 +4682,9 @@ html {
   gap: 6px;
 }
 
-.appeal-complaint-form p,
-.appeal-review-form p,
-.appeal-ticket-form p,
-.appeal-action-form p {
-  margin: 6px 0 0;
-}
-
 .appeal-anon-tip {
   font-size: 12px;
-  color: var(--animal-warning-color);
-}
-
-.appeal-faq-card {
-  margin-top: 14px;
+  color: var(--animal-text-color);
 }
 
 .appeal-ticket-thread {
@@ -5783,10 +4701,6 @@ html {
   background: var(--animal-bg-color-secondary);
 }
 
-.appeal-ticket-thread li.staff {
-  background: var(--animal-primary-color-bg);
-}
-
 .appeal-thread-head {
   display: flex;
   align-items: center;
@@ -5800,26 +4714,11 @@ html {
   margin-top: 10px;
 }
 
-.appeal-message-card.unread {
-  border-color: var(--animal-primary-color);
-}
-
-.appeal-message-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .appeal-message-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--animal-primary-color);
-}
-
-.appeal-message-actions {
-  margin-top: 8px;
 }
 
 .appeal-empty-card {
@@ -5832,37 +4731,12 @@ html {
 
 /* 公示与统计 */
 
-.appeal-stats-card {
-  margin-bottom: 14px;
-}
-
-.appeal-stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
-}
-
 .appeal-stat-item {
   display: grid;
   gap: 2px;
   padding: 12px 14px;
   border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
-}
-
-.appeal-stat-item strong {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--animal-primary-color);
-}
-
-.appeal-stat-item span {
-  font-size: 12px;
-  color: var(--animal-text-color-secondary);
-}
-
-.appeal-stat-item.warn strong {
-  color: var(--animal-error-color);
 }
 
 .appeal-dist-row {
@@ -5878,18 +4752,7 @@ html {
   gap: 18px;
 }
 
-.appeal-stats-table h4 {
-  margin: 0 0 8px;
-  font-size: 14px;
-}
-
 /* 管理端 */
-
-.appeal-admin-counters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
 
 .appeal-admin-actions {
   margin-top: 12px;
@@ -5935,8 +4798,8 @@ html {
   margin-bottom: 18px;
 }
 
-/* 文书标题是 h1.page-title,.page-title 的 font: inherit 会把它压成正文大小,
-   按文书排版补回字号字重 */
+/* 文书抬头标题:字号字重与 .page-title 一致,这里显式钉住,避免文书排版
+   跟随页面标题档位调整 */
 .appeal-doc-head .page-title {
   font-size: 20px;
   font-weight: 700;
@@ -6005,21 +4868,10 @@ html {
   margin-bottom: 12px;
 }
 
-.appeal-verify-rows {
-  margin: 0;
-  display: grid;
-  gap: 8px;
-}
-
 .appeal-verify-rows > div {
   display: grid;
   grid-template-columns: 140px 1fr;
   gap: 10px;
-}
-
-.appeal-verify-rows dt {
-  font-size: 13px;
-  color: var(--animal-text-color-muted);
 }
 
 .appeal-verify-rows dd {
@@ -6045,6 +4897,67 @@ html {
     border: none;
     box-shadow: none;
     max-width: none;
+  }
+}
+
+/* ---------- 各署统计卡:容器间距与「不可用」 ----------
+   字号/字重/颜色的收敛规则已并入上面的统计卡一组(父级类选择器保证特异性)。 */
+
+.postal-stat-row .postal-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* 「不可用」是文字不是数值,按 22 -> 20 收敛 */
+.stat-metric-card .stat-metric-value.is-muted {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--animal-text-color-muted);
+}
+
+/* ---------- 窄屏(≤640px) ---------- */
+
+@media (max-width: 640px) {
+  /* 标题:长标题允许任意断行,不再被库 Title 的 white-space:nowrap / 2em 固定高撑出视口 */
+  .page-title,
+  .section-title,
+  .block-heading,
+  .block-heading-sm {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  h1.page-title [class*="animal-ribbon-"],
+  h1.page-title [class*="animal-layer-"],
+  h1.page-title [class*="animal-tab-"] {
+    white-space: normal;
+    height: auto;
+    min-height: 0;
+    padding: 0.25em 0.6em;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  /* 表格:库的 td 是 14px 20px 内边距(th nowrap),6 列光水平留白就 240px */
+  .table-fit th,
+  .table-fit td {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  /* hero 内边距收敛,标题字号不降档 */
+  .nl-hero,
+  .portal-hero,
+  .visa-hero,
+  .docs-home-hero,
+  .im-hero,
+  .res-hero,
+  .appeal-hero,
+  .visa-verify-hero {
+    padding: 24px 16px;
   }
 }
 

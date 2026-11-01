@@ -18,12 +18,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .postal-office-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,11 +34,14 @@
 
 .postal-office-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .postal-office-sub {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -108,7 +112,7 @@
 }
 
 .postal-hero {
-  padding: 26px;
+  padding: 32px;
   border-radius: var(--animal-border-radius-lg);
   display: flex;
   flex-direction: column;
@@ -118,36 +122,43 @@
 
 .postal-hero-sub {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
   /* 横幅是 pattern 花纹卡(浅底深字),直接用卡片自带的文字色,不再覆盖成浅字 */
   max-width: 640px;
 }
 
 .postal-hero-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .postal-stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
 }
 
 .postal-stat {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .postal-stat-value {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
 .postal-stat-label {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -186,6 +197,9 @@
 
 .postal-notice-head b {
   font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .postal-notice-meta {
@@ -207,7 +221,7 @@
 .postal-detail-body {
   white-space: pre-wrap;
   word-break: break-word;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -215,10 +229,19 @@
 
 .postal-filter-bar {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.postal-filter-bar > * {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.postal-filter-bar > button {
+  flex: 0 0 auto;
 }
 
 .postal-form {
@@ -249,7 +272,7 @@
   color: var(--animal-text-color);
   background: var(--animal-bg-color);
   border: var(--animal-border-width) solid var(--animal-border-color);
-  border-radius: var(--animal-border-radius-lg);
+  border-radius: var(--animal-border-radius-base);
   resize: vertical;
 }
 
@@ -266,7 +289,7 @@
 }
 
 .postal-msg-item.unread {
-  border-left: 5px solid var(--animal-primary-color);
+  border-left: 4px solid var(--animal-primary-color);
 }
 
 .postal-msg-head {
@@ -338,7 +361,9 @@
 
 .postal-card-name {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .postal-card-desc {
@@ -404,6 +429,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
   padding: 8px 12px;
   border-radius: var(--animal-border-radius-base);
   background: var(--animal-bg-color-secondary);
@@ -437,8 +463,8 @@
 
 .postal-stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
 }
 
 .postal-kv {
@@ -450,10 +476,19 @@
 }
 
 @media (max-width: 720px) {
-  .postal-nav {
-    overflow-x: auto;
-  }
   .postal-postcard-list {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .postal-hero {
+    padding: 24px 16px;
+  }
+
+  .postal-msg-head,
+  .postal-postcard-head,
+  .postal-section-head {
+    align-items: flex-start;
   }
 }

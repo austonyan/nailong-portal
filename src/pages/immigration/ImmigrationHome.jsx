@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BellIcon, CodeIcon, CompassIcon, FileIcon, ListIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
@@ -48,11 +48,7 @@ export default function ImmigrationHome() {
     <div className="im-page">
       <ImNav />
       <Background type="sprinkles" className="im-hero">
-        <h1 className="page-title">
-          <Title size="large" color="app-orange">
-            {t('imm.home.hero')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.home.hero')}</h1>
         <Typewriter speed={35}>
           <p className="im-hero-sub">{t('imm.home.tagline')}</p>
         </Typewriter>
@@ -110,11 +106,7 @@ export default function ImmigrationHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('imm.home.quickEntries')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('imm.home.quickEntries')}</h2>
         <div className="im-quick-grid">
           {QUICK_ENTRIES.map((entry) => {
             const Icon = entry.icon;
@@ -144,11 +136,7 @@ export default function ImmigrationHome() {
       <Divider type="wave-yellow" />
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">
-            {t('imm.home.announcements')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('imm.home.announcements')}</h2>
         <div className="im-ann-list">
           {(overview?.announcements ?? []).map((a) => (
             <Card key={a.id} className="im-ann-item">
@@ -169,9 +157,7 @@ export default function ImmigrationHome() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle">{t('imm.home.faq')}</Title>
-        </h2>
+        <h2 className="section-title">{t('imm.home.faq')}</h2>
         <div className="im-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`imm.faq.${key}.q`)} answer={t(`imm.faq.${key}.a`)} />

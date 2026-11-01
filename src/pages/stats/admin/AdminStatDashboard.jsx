@@ -1,7 +1,7 @@
 // 平台总看板:各署核心 COUNT(申请量/待处理/通过率/平均处理时长)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { RefreshIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { StatsAdminNav } from '../StatsShell.jsx';
@@ -31,11 +31,7 @@ export default function AdminStatDashboard() {
     <div className="stat-admin-page">
       <StatsAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('stat.admin.dashboard.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('stat.admin.dashboard.title')}</h1>
         <div className="table-actions">
           {data?.asOf && (
             <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(data.asOf) })}</span>

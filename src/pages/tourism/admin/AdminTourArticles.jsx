@@ -1,7 +1,7 @@
 // 文化内容管理:节庆 / 民俗 / 世界观文章的增删改查、上下线与双语字段。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { BookIcon, EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -201,11 +201,7 @@ export default function AdminTourArticles() {
     <div>
       <TourAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('tour.admin.articles.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('tour.admin.articles.title')}</h1>
       </div>
 
       <Card>

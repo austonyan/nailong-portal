@@ -1,7 +1,7 @@
 // 帮助中心:报名、邀请函、活动凭证、礼遇与隐私说明,附防诈骗提示。
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Title } from 'animal-island-ui';
+import { Button, Card, Collapse } from 'animal-island-ui';
 import { AlertTriangleIcon, HelpCircleIcon, MailIcon, ShieldIcon } from 'naive-icons';
 
 const FAQ_KEYS = ['applyTime', 'invitationVisa', 'passUsage', 'waitlist', 'host', 'courtesy', 'privacy', 'deleteData'];
@@ -12,9 +12,7 @@ export default function ProtocolHelp() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.help.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.help.title')}</h1>
         <p className="muted-text">{t('protocol.help.subtitle')}</p>
       </div>
 
@@ -29,9 +27,7 @@ export default function ProtocolHelp() {
       </Card>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-teal">{t('protocol.help.faqTitle')}</Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.help.faqTitle')}</h2>
         <div className="protocol-faq">
           {FAQ_KEYS.map((key) => (
             <Collapse key={key} question={t(`protocol.help.faq.${key}.q`)} answer={t(`protocol.help.faq.${key}.a`)} />

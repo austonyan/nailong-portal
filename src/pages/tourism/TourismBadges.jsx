@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Progress, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Progress, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { BadgeIcon, fmtDateTime, toastTourError } from './shared.jsx';
 
@@ -32,11 +32,7 @@ export default function TourismBadges() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-green">
-            {t('tour.badges.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('tour.badges.title')}</h1>
         <Button size="small" onClick={() => navigate('/tourism/attractions')}>
           {t('tour.badges.goCheckin')}
         </Button>

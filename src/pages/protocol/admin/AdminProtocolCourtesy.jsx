@@ -12,7 +12,6 @@ import {
   Table,
   Tabs,
   Tag,
-  Title,
 } from 'animal-island-ui';
 import { CheckCircleIcon, PlusIcon, SearchIcon, StarIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -187,9 +186,7 @@ export default function AdminProtocolCourtesy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.admin.courtesyTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.admin.courtesyTitle')}</h1>
         <p className="muted-text">{t('protocol.admin.courtesySubtitle')}</p>
       </div>
 

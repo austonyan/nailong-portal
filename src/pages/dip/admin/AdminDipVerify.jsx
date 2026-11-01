@@ -1,7 +1,7 @@
 // 验真管理: 验真记录查询 / 限流配置 / 风控与黑名单。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, TextArea, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
@@ -159,9 +159,7 @@ export default function AdminDipVerify() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.admin.verifyAdmin.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.admin.verifyAdmin.title')}</h1>
         <div className="dip-msg-filter">
           <Button type={tab === 'logs' ? 'primary' : 'default'} size="small" onClick={() => setTab('logs')}>{t('dip.admin.verifyAdmin.tabLogs')}</Button>
           <Button type={tab === 'risk' ? 'primary' : 'default'} size="small" onClick={() => setTab('risk')}>{t('dip.admin.verifyAdmin.tabRisk')}</Button>
@@ -220,7 +218,7 @@ export default function AdminDipVerify() {
       {tab === 'risk' && (
         <Card>
           <div className="page-header">
-            <Title size="small">{t('dip.admin.verifyAdmin.tabRisk')}</Title>
+            <h3 className="block-heading-sm">{t('dip.admin.verifyAdmin.tabRisk')}</h3>
             <Button type="primary" size="small" icon={<PlusIcon />} onClick={() => setAddOpen(true)}>{t('dip.admin.blacklist.add')}</Button>
           </div>
           <Table className="table-fit" columns={blColumns} dataSource={blacklist ?? []} loading={blacklist === null} rowKey="id" pagination={false} emptyText={t('common.empty')} />

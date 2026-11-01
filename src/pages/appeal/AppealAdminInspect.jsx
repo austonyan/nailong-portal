@@ -1,7 +1,7 @@
 // 监察与审核质量(只读):时效监控、异常操作检测、结果一致性、抽查预留、监察报告。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { linkageStatusLabel } from '../../components/linkage/shared.js';
 import { TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
@@ -103,9 +103,7 @@ export default function AppealAdminInspect() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('appeal.inspect.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('appeal.inspect.title')}</h1>
         <div className="table-actions appeal-filter-bar">
           <Button onClick={() => setCreateOpen(true)}>{t('appeal.inspect.createReport')}</Button>
         </div>

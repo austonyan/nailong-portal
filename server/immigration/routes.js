@@ -21,6 +21,7 @@ import {
   makeUniqueNo,
   notify,
   pageParams,
+  sweepExitReminders,
 } from './util.js';
 import { checkVisa, VISA_ERROR_CODE } from './visa.js';
 import { diplomaticCourtesyFor, upcomingProtocolEvents } from '../linkage.js';
@@ -174,6 +175,7 @@ function ownDeclaration(req, id) {
 // ---------------------------------------------------------------------------
 
 router.get('/overview', ...portalOnly, (req, res) => {
+  sweepExitReminders();
   const ports = db.prepare('SELECT * FROM im_ports ORDER BY sort_order, id').all().map(serializePort);
   const announcements = db
     .prepare(

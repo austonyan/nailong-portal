@@ -1,7 +1,7 @@
 // 外交礼遇: 礼遇类型说明 / 凭外交身份编号查资格 / 我的使用记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Table, Tag } from 'animal-island-ui';
 import { SearchIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipNav, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
@@ -52,13 +52,11 @@ export default function DipCourtesies() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.courtesy.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.courtesy.title')}</h1>
       </div>
 
       <Card>
-        <Title size="small">{t('dip.courtesy.typesTitle')}</Title>
+        <h2 className="block-heading">{t('dip.courtesy.typesTitle')}</h2>
         <div className="dip-courtesy-grid">
           {(data?.types ?? []).map((c) => (
             <Card key={c.code} hoverable className="dip-courtesy-card">
@@ -72,7 +70,7 @@ export default function DipCourtesies() {
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.courtesy.checkTitle')}</Title>
+        <h2 className="block-heading">{t('dip.courtesy.checkTitle')}</h2>
         <p className="muted-text">{t('dip.courtesy.checkTip')}</p>
         <div className="dip-check-row">
           <Input
@@ -105,7 +103,7 @@ export default function DipCourtesies() {
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.courtesy.recordsTitle')}</Title>
+        <h2 className="block-heading">{t('dip.courtesy.recordsTitle')}</h2>
         <Table className="table-fit" columns={recordColumns} dataSource={data?.items ?? []} loading={data === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('common.empty')} />
       </Card>
     </div>

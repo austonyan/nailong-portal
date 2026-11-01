@@ -1,7 +1,7 @@
 // 消息与帮助:站内信已读/未读/归档、工单入口与防诈骗提示。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Tabs, Tag } from 'animal-island-ui';
 import { BellIcon, FolderPlusIcon, MailIcon, SendIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TextArea, fmtDateTime, toastProtocolError } from './shared.jsx';
@@ -172,9 +172,7 @@ export default function ProtocolMessages() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.messages.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.messages.title')}</h1>
         <p className="muted-text">{t('protocol.messages.subtitle')}</p>
       </div>
 

@@ -202,6 +202,16 @@ export function ensureEducationSchema() {
   ensureTwColumns(db, 'edu_tasks', ['title', 'description', 'badge_name']);
   ensureTwColumns(db, 'edu_badges', ['name']);
   ensureTwColumns(db, 'edu_read_history', ['title']);
+  // 阅读历史去重:任务引擎按去重目标数统计,历史却曾每次浏览都落一行。
+  // 旧库先清掉重复行(每 user+target 保留首读),再建唯一索引防新增重复。
+  db.prepare(
+    `DELETE FROM edu_read_history WHERE id NOT IN (
+       SELECT MIN(id) FROM edu_read_history GROUP BY user_id, target_type, target_id
+     )`
+  ).run();
+  db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_edu_read_unique ON edu_read_history (user_id, target_type, target_id)'
+  );
   seedEducation();
 }
 

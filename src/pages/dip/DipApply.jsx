@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, useForm } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { DipNav, TextArea, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
@@ -143,11 +142,7 @@ export default function DipApply() {
     <div className="dip-page">
       <DipNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">
-            {decl?.id ? t('dip.apply.editTitle') : t('dip.apply.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{decl?.id ? t('dip.apply.editTitle') : t('dip.apply.title')}</h1>
         {decl?.no && <Tag color="app-blue" variant="soft">{decl.no}</Tag>}
       </div>
 

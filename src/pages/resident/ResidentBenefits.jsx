@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { CompassIcon, FileIcon, MailIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDate, toastResError } from './shared.jsx';
@@ -39,11 +39,7 @@ export default function ResidentBenefits() {
   return (
     <div className="res-benefits-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-green">
-            {t('res.benefits.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('res.benefits.title')}</h1>
         {data.typeName && (
           <Tag color="app-green" variant="soft">
             {data.typeName}
@@ -69,9 +65,7 @@ export default function ResidentBenefits() {
       )}
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle">{t('res.benefits.channels')}</Title>
-        </h2>
+        <h2 className="section-title">{t('res.benefits.channels')}</h2>
         <p className="muted-text">{t('res.benefits.channelsTip')}</p>
         <div className="res-channel-grid">
           {CHANNELS.map(({ key, icon: Icon }) => {
@@ -101,11 +95,7 @@ export default function ResidentBenefits() {
       </section>
 
       <section>
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">
-            {t('res.benefits.announcements')}
-          </Title>
-        </h2>
+        <h2 className="section-title">{t('res.benefits.announcements')}</h2>
         <div className="res-ann-list">
           {data.announcements.map((n) => (
             <Card key={n.id} className="res-ann-item">

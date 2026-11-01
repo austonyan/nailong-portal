@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Form, FormItem, Input, Progress, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Form, FormItem, Input, Progress, Tag, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, KeyIcon, LockIcon, ShieldIcon, SailboatIcon } from 'naive-icons';
 import AuthLayout from '../components/AuthLayout.jsx';
 import LanguageSelect from '../components/LanguageSelect.jsx';
@@ -102,9 +102,7 @@ export default function Setup() {
             {t('setup.badge')}
           </Tag>
         </div>
-        <h1 className="page-title">
-          <Title size="middle">{titles[step]}</Title>
-        </h1>
+        <h1 className="page-title">{titles[step]}</h1>
         <p className="muted-text auth-subtitle">{subtitles[step]}</p>
 
         {step !== 'done' && (

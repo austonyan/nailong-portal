@@ -170,7 +170,12 @@ router.delete('/:id', requirePermission('roles:write'), (req, res) => {
 });
 
 function validatePermissionKeys(keys) {
-  const known = new Set(PERMISSIONS.map((p) => p.key));
+  // 白名单以 permissions 表为准:各署 schema 启动时注册自己的 key(docs:*/imm:*…),
+  // 静态 PERMISSIONS 只覆盖基础与部分署,只按它会拒绝掉管理界面能勾到的权限。
+  const known = new Set([
+    ...PERMISSIONS.map((p) => p.key),
+    ...db.prepare('SELECT key FROM permissions').all().map((r) => r.key),
+  ]);
   for (const key of keys) {
     if (!known.has(key)) throw badRequest('VALIDATION_ERROR', `Unknown permission: ${key}`);
   }

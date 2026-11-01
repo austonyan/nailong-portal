@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, Title, useForm } from 'animal-island-ui';
+import { Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, useForm } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { toastSuccess, toastApiError } from '../components/toast.js';
@@ -49,9 +49,7 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <h1 className="page-title">
-        <Title size="middle">{t('profile.title')}</Title>
-      </h1>
+      <h1 className="page-title">{t('profile.title')}</h1>
 
       <Card className="profile-header">
         <Avatar size={64}>{(user.displayName || user.username || '?').slice(0, 1)}</Avatar>
@@ -72,9 +70,7 @@ export default function Profile() {
       </Card>
 
       <Card>
-        <Title variant="layer" color="app-yellow" size="small">
-          {t('profile.basic')}
-        </Title>
+        <h2 className="block-heading">{t('profile.basic')}</h2>
         <Form form={profileForm} layout="vertical" onFinish={saveProfile} initialValues={{ displayName: user.displayName, email: user.email ?? '' }}>
           <FormItem name="displayName" label={t('auth.displayName')} rules={[{ required: true, message: t('common.required') }]}>
             <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
@@ -93,9 +89,7 @@ export default function Profile() {
       <Divider type="hairline" />
 
       <Card>
-        <Title variant="layer" color="app-blue" size="small">
-          {t('profile.changePassword')}
-        </Title>
+        <h2 className="block-heading">{t('profile.changePassword')}</h2>
         <Form form={passwordForm} layout="vertical" onFinish={changePassword}>
           <FormItem
             name="oldPassword"

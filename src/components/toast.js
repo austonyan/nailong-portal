@@ -20,6 +20,12 @@ function ensureHost() {
   return host;
 }
 
+/**
+ * 显示一条轻提示;kind 决定配色与停留时长(error 5.2s,其余 3.2s)。
+ * @param {'success'|'error'|'info'|'warning'} kind 提示类型
+ * @param {string} message 已翻译好的文案
+ * @returns {void}
+ */
 export function toast(kind, message) {
   if (typeof document === 'undefined' || message === null || message === undefined) return;
   try {
@@ -43,15 +49,26 @@ export function toast(kind, message) {
   }
 }
 
+/** 成功提示(3.2s 自动消失)。 */
 export const toastSuccess = (message) => toast('success', message);
+/** 错误提示(5.2s 自动消失,role=alert)。 */
 export const toastError = (message) => toast('error', message);
+/** 普通信息提示。 */
 export const toastInfo = (message) => toast('info', message);
+/** 警示提示。 */
 export const toastWarning = (message) => toast('warning', message);
 
 // 把 ApiError.code 映射到 api.* 文案。
 // 服务端 message 是英文,绝不能直接展示给用户:未知错误码统一回退到通用错误文案,
 // 原始 message 只留在控制台便于排查。
-export function toastApiError(t, err) {
+/**
+ * 把 ApiError 的 code 映射成已翻译文案(不弹提示);未知错误码回退 `api.INTERNAL_ERROR`,
+ * 原始英文 message 只写控制台。
+ * @param {(key: string) => string} t react-i18next 的翻译函数
+ * @param {{code?: string, message?: string}} err 接口错误
+ * @returns {string} 可直接展示的本地化文案
+ */
+export function apiErrorMessage(t, err) {
   const code = err?.code;
   const key = `api.${code}`;
   const text = code ? t(key) : '';
@@ -59,5 +76,15 @@ export function toastApiError(t, err) {
   if (!known && (code || err?.message)) {
     console.warn('[api] unmapped error', code ?? '(no code)', err?.message ?? '');
   }
-  toastError(known ? text : t('api.INTERNAL_ERROR'));
+  return known ? text : t('api.INTERNAL_ERROR');
+}
+
+/**
+ * 把接口错误映射成 `api.*` 文案并弹一条错误提示;各署 toastXxxError 都应直接委托给它。
+ * @param {(key: string) => string} t react-i18next 的翻译函数
+ * @param {{code?: string, message?: string}} err 接口错误
+ * @returns {void}
+ */
+export function toastApiError(t, err) {
+  toastError(apiErrorMessage(t, err));
 }

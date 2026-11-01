@@ -14,7 +14,6 @@ import {
   Switch,
   Table,
   Tag,
-  Title,
 } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SearchIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -319,9 +318,7 @@ export default function AdminProtocolEvents() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.admin.eventsTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.admin.eventsTitle')}</h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openNew}>
           {t('protocol.admin.createEvent')}
         </Button>

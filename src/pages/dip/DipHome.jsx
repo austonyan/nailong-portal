@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import {
   BadgeCheckIcon,
   BookIcon,
@@ -52,11 +52,7 @@ export default function DipHome() {
     <>
       <DipNav />
       <div className="dip-hero">
-        <h1 className="page-title">
-          <Title size="large" color="purple">
-            {t('dip.home.hero')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('dip.home.hero')}</h1>
         <p className="muted-text">{t('dip.home.heroSub')}</p>
         <div className="dip-hero-actions">
           <Link to="/dip/apply">
@@ -71,9 +67,7 @@ export default function DipHome() {
       </div>
 
       <div className="dip-section">
-        <h2 className="section-title">
-          <Title size="middle">{t('dip.home.notices')}</Title>
-        </h2>
+        <h2 className="section-title">{t('dip.home.notices')}</h2>
         <div className="dip-notice-list">
           {(data?.notices ?? []).map((n) => (
             <Card key={n.id} className="dip-notice-card">
@@ -90,9 +84,7 @@ export default function DipHome() {
       </div>
 
       <div className="dip-section">
-        <h2 className="section-title">
-          <Title size="middle">{t('dip.home.services')}</Title>
-        </h2>
+        <h2 className="section-title">{t('dip.home.services')}</h2>
         <div className="dip-service-grid">
           {SERVICE_CARDS.map(({ to, icon: Icon, key }) => (
             <Link key={key} to={to} className="dip-service-card">
@@ -104,9 +96,7 @@ export default function DipHome() {
       </div>
 
       <div className="dip-section">
-        <h2 className="section-title">
-          <Title size="middle">{t('dip.home.guide')}</Title>
-        </h2>
+        <h2 className="section-title">{t('dip.home.guide')}</h2>
         <div className="dip-guide-grid">
           {GUIDE_CARDS.map((key) => (
             <Card key={key} className="dip-guide-card">
@@ -118,9 +108,7 @@ export default function DipHome() {
       </div>
 
       <div className="dip-section">
-        <h2 className="section-title">
-          <Title size="middle">{t('dip.home.quickTitle')}</Title>
-        </h2>
+        <h2 className="section-title">{t('dip.home.quickTitle')}</h2>
         <div className="dip-quick-row">
           {QUICK_LINKS.map(({ to, key }) => (
             <Link key={key} to={to}>

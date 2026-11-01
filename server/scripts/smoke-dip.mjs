@@ -150,6 +150,14 @@ await upload(userToken, 'identity', idt.id, 'appointment.png');
 const idtSubmitted = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('身份提交进入待审核', idtSubmitted.status === 200 && idtSubmitted.data.identity.status === 'pending_review');
 
+// 待补件不可直接审批(与声明的状态迁移一致)
+const idtSupp = await api(`/dip/admin/identities/${idt.id}/supplement`, { method: 'POST', token: adminToken, body: { note: '请补充任期证明' } });
+check('身份要求补件', idtSupp.status === 200 && idtSupp.data.identity.status === 'supplement_required', JSON.stringify(idtSupp.data).slice(0, 160));
+const idtEarlyApprove = await api(`/dip/admin/identities/${idt.id}/approve`, { method: 'POST', token: adminToken, body: { note: '试图跳过补件直接通过' } });
+check('待补件身份不可直接审批', idtEarlyApprove.status === 409 && idtEarlyApprove.data.code === 'DIP_INVALID_STATE', JSON.stringify(idtEarlyApprove.data).slice(0, 160));
+const idtSuppBack = await api(`/dip/identities/${idt.id}/supplement`, { method: 'POST', token: userToken, body: { content: '任期证明已补' } });
+check('补件后重新送审', idtSuppBack.status === 200 && idtSuppBack.data.identity.status === 'pending_review');
+
 const idtApprove = await api(`/dip/admin/identities/${idt.id}/approve`, { method: 'POST', token: adminToken, body: { note: '任命书齐全' } });
 check('身份通过生效', idtApprove.status === 200 && idtApprove.data.identity.status === 'active');
 
@@ -158,6 +166,16 @@ check('身份通过自动授予礼遇记录', courtesies.data.items.some((c) => 
 
 const card = await api(`/dip/identities/${idt.id}/card`, { token: userToken });
 check('外交身份卡与验真 token', card.status === 200 && /^\/dip\/verify\?token=[0-9a-f]{32}$/.test(card.data.card?.verifyPath || ''));
+
+// --- 暂停建交级联冻结身份,恢复后解冻(与断交级联同一套做法)----------------
+const suspend = await api(`/dip/admin/relations/${rel.id}/suspend`, { method: 'POST', token: adminToken, body: { reason: '例行审查' } });
+check('建交暂停', suspend.status === 200 && suspend.data.relation.status === 'suspended', JSON.stringify(suspend.data).slice(0, 160));
+const idtFrozen = await api(`/dip/identities/${idt.id}`, { token: userToken });
+check('暂停级联冻结外交身份', idtFrozen.status === 200 && idtFrozen.data.identity.status === 'frozen' && idtFrozen.data.identity.inactiveReason === 'relation_suspended', JSON.stringify(idtFrozen.data).slice(0, 160));
+const resume = await api(`/dip/admin/relations/${rel.id}/resume`, { method: 'POST', token: adminToken, body: { note: '审查通过' } });
+check('建交恢复', resume.status === 200 && resume.data.relation.status === 'established');
+const idtResumed = await api(`/dip/identities/${idt.id}`, { token: userToken });
+check('恢复后身份解冻', idtResumed.data.identity.status === 'active', JSON.stringify(idtResumed.data).slice(0, 160));
 
 // --- 验真(公开 + 脱敏) -----------------------------------------------------
 const verifyIdt = await api('/dip/verify', { method: 'POST', body: { code: idt.no } });

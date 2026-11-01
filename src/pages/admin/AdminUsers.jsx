@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Switch, Table, Tag, Title, useForm } from 'animal-island-ui';
+import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Switch, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
@@ -161,9 +161,7 @@ export default function AdminUsers() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('admin.users.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('admin.users.title')}</h1>
         {can('users:write') && (
           <Button type="primary" icon={<UserPlusIcon />} onClick={openCreate}>
             {t('admin.users.create')}

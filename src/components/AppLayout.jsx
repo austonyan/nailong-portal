@@ -81,6 +81,7 @@ export default function AppLayout() {
                 <span className="user-chip-name">{displayName}</span>
               </NavLink>
               <Button
+                className="app-logout"
                 type="text"
                 size="small"
                 icon={<PowerIcon />}

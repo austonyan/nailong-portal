@@ -1,7 +1,7 @@
 // 申诉署统计报表:申诉/复核/投诉/工单量、时效与超时、结果分布、满意度与验真。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { downloadAppealFile } from '../../api/appeal.js';
 import { toastAppealError } from './shared.jsx';
@@ -56,9 +56,7 @@ export default function AppealAdminStats() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('appeal.stats.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('appeal.stats.title')}</h1>
         <div className="table-actions appeal-filter-bar">
           <Button loading={busy} onClick={doExport} disabled={busy}>
             {t('appeal.stats.export')}

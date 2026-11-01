@@ -389,12 +389,17 @@ router.post('/events/:id/status', manager, (req, res) => {
       event.id
     );
     const active = db
-      .prepare("SELECT id, user_id, reg_no FROM pro_registrations WHERE event_id = ? AND status IN ('pending_review','approved','waitlisted','checked_in')")
+      .prepare("SELECT id, user_id, reg_no, status FROM pro_registrations WHERE event_id = ? AND status IN ('pending_review','approved','waitlisted','checked_in')")
       .all(event.id);
     const cancelReasonCn = reason || '活动安排调整';
     const cancelReasonTw = reason || '活動安排調整';
     for (const reg of active) {
-      db.prepare("UPDATE pro_registrations SET status = 'cancelled', updated_at = ? WHERE id = ?").run(ts, reg.id);
+      // 已签到的报名置 finished(合法迁移,与活动结束扫描同构),其余取消;凭证一律作废。
+      db.prepare('UPDATE pro_registrations SET status = ?, updated_at = ? WHERE id = ?').run(
+        reg.status === 'checked_in' ? 'finished' : 'cancelled',
+        ts,
+        reg.id
+      );
       db.prepare("UPDATE pro_passes SET status = 'voided', void_reason = 'event_cancelled', updated_at = ? WHERE registration_id = ?").run(ts, reg.id);
       notify(
         reg.user_id,
@@ -404,12 +409,6 @@ router.post('/events/:id/status', manager, (req, res) => {
         { event: event.title_tw || event.title, reason: cancelReasonTw }
       );
     }
-    notifyEventAttendees(
-      event.id,
-      'event_cancelled',
-      { event: event.title, reason: cancelReasonCn },
-      { event: event.title_tw || event.title, reason: cancelReasonTw }
-    );
     audit(req.user, 'event_cancel', 'event', event.event_no, { reason, affected: active.length });
   } else {
     const publishedAt = to === 'registration' ? ts : event.published_at;
@@ -1177,6 +1176,10 @@ router.post('/checkin', checker, (req, res) => {
   const event = db.prepare('SELECT * FROM pro_events WHERE id = ?').get(pass.event_id);
   if (!event || event.status === 'cancelled') throw conflict('EVT_EVENT_CANCELLED', 'Event cancelled');
   const ts = now();
+  // 活动未开始不可入场(离场/补录不受限)。
+  if (action === 'in' && event.starts_at && ts < String(event.starts_at)) {
+    throw conflict('EVT_CHECKIN_TOO_EARLY', 'Check-in is not open before the event starts');
+  }
   if (action === 'in') {
     if (pass.status !== 'pending') throw conflict('EVT_PASS_INVALID', `Pass is ${pass.status}`);
     db.prepare("UPDATE pro_passes SET status = 'used', checked_in_at = ?, updated_at = ? WHERE id = ?").run(ts, ts, pass.id);

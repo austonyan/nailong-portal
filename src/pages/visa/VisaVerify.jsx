@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Background, Card, Input, Tag, Title, Typewriter } from 'animal-island-ui';
+import { Button, Background, Card, Input, Tag, Typewriter } from 'animal-island-ui';
 import { SailboatIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { PERMIT_STATUS_COLORS, fmtDate, toastVisaError } from './shared.jsx';
 import { request } from '../../api/client.js';
@@ -67,9 +67,7 @@ export default function VisaVerify() {
         <span className="muted-text">{t('visa.officeName')}</span>
       </header>
       <Background type="sprinkles" className="visa-verify-hero">
-        <h1 className="page-title">
-          <Title size="large">{t('visa.verify.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('visa.verify.title')}</h1>
         <Typewriter speed={35}>
           <p className="visa-hero-sub">{t('visa.verify.subtitle')}</p>
         </Typewriter>

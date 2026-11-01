@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Select, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -88,11 +88,7 @@ export default function StatsReports() {
   return (
     <div className="stat-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-blue">
-            {t('stat.reports.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('stat.reports.title')}</h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openGenerate}>
           {t('stat.reports.generate')}
         </Button>

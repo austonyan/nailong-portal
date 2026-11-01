@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Badge, Button, Card, Tag, Title } from 'animal-island-ui';
+import { Badge, Button, Card, Tag } from 'animal-island-ui';
 import { InboxIcon, MailIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -49,11 +49,7 @@ export default function ImmigrationMessages() {
     <div className="im-page">
       <ImNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('imm.msg.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('imm.msg.title')}</h1>
         <Button
           type="text"
           size="small"

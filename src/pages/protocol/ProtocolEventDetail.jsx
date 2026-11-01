@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Divider, Progress, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Divider, Progress, Tag } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   CalendarIcon,
@@ -75,9 +75,7 @@ export default function ProtocolEventDetail() {
             {event.residentOnly && <Tag color="app-green" variant="outlined">{t('protocol.eventDetail.residentOnly')}</Tag>}
             {event.diplomaticOnly && <Tag color="purple" variant="outlined">{t('protocol.eventDetail.diplomaticOnly')}</Tag>}
           </div>
-          <h1 className="page-title">
-            <Title size="large">{event.title}</Title>
-          </h1>
+          <h1 className="page-title">{event.title}</h1>
           <p className="protocol-detail-sub">{event.subtitle}</p>
           <div className="protocol-detail-meta">
             <span>
@@ -143,18 +141,14 @@ export default function ProtocolEventDetail() {
 
       <div className="protocol-detail-columns">
         <section className="protocol-section">
-          <h2 className="section-title">
-            <Title size="middle" color="app-blue">{t('protocol.eventDetail.intro')}</Title>
-          </h2>
+          <h2 className="section-title">{t('protocol.eventDetail.intro')}</h2>
           <Card>
             <p className="protocol-preline">{event.description}</p>
           </Card>
         </section>
 
         <section className="protocol-section">
-          <h2 className="section-title">
-            <Title size="middle" color="app-orange">{t('protocol.eventDetail.schedule')}</Title>
-          </h2>
+          <h2 className="section-title">{t('protocol.eventDetail.schedule')}</h2>
           <Card>
             {event.schedule.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
             <ul className="protocol-schedule">
@@ -169,18 +163,14 @@ export default function ProtocolEventDetail() {
         </section>
 
         <section className="protocol-section">
-          <h2 className="section-title">
-            <Title size="middle" color="app-green">{t('protocol.eventDetail.conditions')}</Title>
-          </h2>
+          <h2 className="section-title">{t('protocol.eventDetail.conditions')}</h2>
           <Card>
             <p className="protocol-preline">{event.conditions || t('protocol.eventDetail.noConditions')}</p>
           </Card>
         </section>
 
         <section className="protocol-section">
-          <h2 className="section-title">
-            <Title size="middle" color="purple">{t('protocol.eventDetail.materials')}</Title>
-          </h2>
+          <h2 className="section-title">{t('protocol.eventDetail.materials')}</h2>
           <Card>
             {materialsRequired.length === 0 && <p className="muted-text">{t('protocol.eventDetail.noMaterials')}</p>}
             <ul className="protocol-material-req">
@@ -201,9 +191,7 @@ export default function ProtocolEventDetail() {
       <Divider type="squiggle" />
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-yellow">{t('protocol.eventDetail.notices')}</Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.eventDetail.notices')}</h2>
         <div className="protocol-notice-list">
           {notices.length === 0 && <Card type="dashed"><p className="muted-text">{t('common.empty')}</p></Card>}
           {notices.map((n) => (

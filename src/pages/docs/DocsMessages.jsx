@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Badge, Button, Card, Pagination, Select, Tag, Title } from 'animal-island-ui';
+import { Badge, Button, Card, Pagination, Select, Tag } from 'animal-island-ui';
 import {
   AlertCircleIcon,
   BellIcon,
@@ -89,9 +89,7 @@ export default function DocsMessages() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('docs.msg.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('docs.msg.title')}</h1>
         <div className="table-actions">
           <Select
             value={box}

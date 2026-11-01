@@ -1,7 +1,7 @@
 // 归档规则配置 — 各记录类型是否纳档 + 保留说明(简繁两份)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, SlidersIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ArchAdminNav, OfficeTag, TextArea, fmtDateTime, toastArchError } from '../shared.jsx';
@@ -119,11 +119,7 @@ export default function AdminArchRules() {
     <div className="arch-page">
       <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="brown">
-            <SlidersIcon size={18} /> {t('arch.admin.rules.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title"><SlidersIcon size={18} /> {t('arch.admin.rules.title')}</h1>
       </div>
 
       <Card>

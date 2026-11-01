@@ -2,7 +2,7 @@
 // (编号规则、补件天数、限流)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
 import { DipAdminNav, TextArea, toastDipError } from '../../../components/dip/shared.jsx';
@@ -177,9 +177,7 @@ export default function AdminDipConfig() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.admin.config.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.admin.config.title')}</h1>
       </div>
 
       <Card>
@@ -187,19 +185,19 @@ export default function AdminDipConfig() {
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.admin.config.objectTypes')}</Title>
+        <h2 className="block-heading">{t('dip.admin.config.objectTypes')}</h2>
         {typeTable('object', data.objectTypes)}
       </Card>
       <Card>
-        <Title size="small">{t('dip.admin.config.relationTypes')}</Title>
+        <h2 className="block-heading">{t('dip.admin.config.relationTypes')}</h2>
         {typeTable('relation', data.relationTypes)}
       </Card>
       <Card>
-        <Title size="small">{t('dip.admin.config.identityTypes')}</Title>
+        <h2 className="block-heading">{t('dip.admin.config.identityTypes')}</h2>
         {typeTable('identity', data.identityTypes)}
       </Card>
       <Card>
-        <Title size="small">{t('dip.admin.config.courtesyTypes')}</Title>
+        <h2 className="block-heading">{t('dip.admin.config.courtesyTypes')}</h2>
         <Table className="table-fit"
           columns={[
             { title: t('common.key'), dataIndex: 'code', width: 160 },
@@ -222,7 +220,7 @@ export default function AdminDipConfig() {
       </Card>
 
       <Card>
-        <Title size="small">{t('dip.admin.config.settings')}</Title>
+        <h2 className="block-heading">{t('dip.admin.config.settings')}</h2>
         <div className="dip-settings-grid">
           {SETTINGS_ROWS.map((r) => (
             <label key={r.key} className="dip-setting-row">

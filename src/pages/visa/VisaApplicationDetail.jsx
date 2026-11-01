@@ -2,8 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Button, Card, Modal, Tag, Title, Upload } from 'animal-island-ui';
+import { Button, Card, Modal, Tag, Upload } from 'animal-island-ui';
 import { EyeIcon, RefreshIcon, PrinterIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial, uploadVisaMaterial } from '../../api/visa.js';
@@ -115,9 +114,7 @@ export default function VisaApplicationDetail() {
   return (
     <div className="visa-detail-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('visa.detail.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('visa.detail.title')}</h1>
         <Tag color={APPLICATION_STATUS_COLORS[app.status] || 'brown'} variant="soft" size="large">
           {t(`visa.status.${app.status}`)}
         </Tag>

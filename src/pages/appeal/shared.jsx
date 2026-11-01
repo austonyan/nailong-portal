@@ -2,7 +2,12 @@
 // formatting and the common error toast mapper.
 /* eslint-disable react/only-export-components */
 import dayjs from 'dayjs';
-import { toastError } from '../../components/toast.js';
+import { toastApiError, apiErrorMessage } from '../../components/toast.js';
+import { TextArea as SharedTextArea } from '../../components/TextArea.jsx';
+
+// 时间格式与空值兜底统一由共享层实现(src/lib/date.js 带 isValid 保护);
+// 这里只再导出,署内调用点不变。
+export { fmtDate, fmtDateTime } from '../../lib/date.js';
 
 
 // 状态标签配色(与全站语义表一致):待受理/待处理/补件/复核 → warm-peach-pink,
@@ -78,20 +83,12 @@ export const TICKET_CATEGORIES = ['consult', 'account', 'bug'];
 export const TICKET_PRIORITIES = ['low', 'normal', 'high'];
 export const MATERIAL_KINDS = ['screenshot', 'proof', 'other'];
 
-export function fmtDateTime(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD HH:mm') : '-';
-}
-
-export function fmtDate(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD') : '-';
-}
-
 export function appealErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
+  return apiErrorMessage(t, err);
 }
 
 export function toastAppealError(t, err) {
-  toastError(appealErrMsg(t, err));
+  toastApiError(t, err);
 }
 
 // 可点击卡片是 div 上的 role="button":键盘 Enter/Space 与卡片点击走同一条路径,
@@ -103,9 +100,9 @@ export function activateByKey(event, action) {
   }
 }
 
-// 库里没有多行输入;按 Input 的视觉语言用 token 自定义(与签注署一致)。
+// 库里没有多行输入;共享组件负责令牌化外观,这里只补署内样式类。
 export function TextArea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`appeal-textarea ${className}`} {...rest} />;
+  return <SharedTextArea rows={rows} className={`appeal-textarea ${className}`} {...rest} />;
 }
 
 // 复核窗口剩余天数(服务端下发 reviewDays,本地只做展示计算)

@@ -151,11 +151,15 @@ async function fullFlow(adminToken, userToken) {
   await upload(user2Token, app2Id, 'avatar', 'a.png');
   await api(`/visa/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS } });
   const reject = await api(`/visa/admin/applications/${app2Id}/reject`, {
-    method: 'POST', token: adminToken, body: { reasonCode: 'info_mismatch', comment: '行程描述与目的不符' },
+    method: 'POST', token: adminToken, body: { reasonCode: 'false_info', comment: '行程描述与目的不符' },
   });
   check('驳回', reject.status === 200 && reject.data.application.status === 'rejected');
+  const badReason = await api(`/visa/admin/applications/${app2Id}/reject`, {
+    method: 'POST', token: adminToken, body: { reasonCode: 'made_up_code' },
+  });
+  check('未知驳回原因码被拒绝', badReason.status === 400, JSON.stringify(badReason.data).slice(0, 160));
   const detail2 = await api(`/visa/applications/${app2Id}`, { token: user2Token });
-  check('驳回原因可见', detail2.data.application.rejectCode === 'info_mismatch');
+  check('驳回原因可见', detail2.data.application.rejectCode === 'false_info');
 
   // 统计 / 审计 / 导出
   const stats = await api('/visa/admin/stats', { token: adminToken });
@@ -164,6 +168,22 @@ async function fullFlow(adminToken, userToken) {
   check('审计日志', auditLog.data.items.some((a) => a.action === 'issue_permit'));
   const csv = await fetch(`${base}/api/visa/admin/export.csv`, { headers: { Authorization: `Bearer ${adminToken}` } });
   check('导出 CSV', csv.status === 200 && (await csv.text()).includes('申请编号'));
+
+  // 配置白名单:未知键与非法值被拒绝,合法键可更新
+  const badKey = await api('/visa/admin/config', { method: 'PUT', token: adminToken, body: { 'visa.evil_key': 'x' } });
+  check('未知配置键被拒绝', badKey.status === 400 && badKey.data.code === 'VALIDATION_ERROR', JSON.stringify(badKey.data).slice(0, 160));
+  const badPrefix = await api('/visa/admin/config', { method: 'PUT', token: adminToken, body: { 'visa.app_no_prefix': 'nl!' } });
+  check('非法编号前缀被拒绝', badPrefix.status === 400, JSON.stringify(badPrefix.data).slice(0, 160));
+  const goodConfig = await api('/visa/admin/config', { method: 'PUT', token: adminToken, body: { 'visa.review_hours_hint': '72' } });
+  check('合法配置可更新', goodConfig.status === 200);
+
+  // 类型 code 锁定:历史申请/签注都按 code 引用,不允许改
+  const types = await api('/visa/admin/types', { token: adminToken });
+  const touristType = types.data.items.find((t) => t.code === 'TOURIST');
+  const codeChange = await api(`/visa/admin/types/${touristType.id}`, { method: 'PATCH', token: adminToken, body: { code: 'TOURIST2' } });
+  check('类型 code 不可修改', codeChange.status === 400, JSON.stringify(codeChange.data).slice(0, 160));
+  const rename = await api(`/visa/admin/types/${touristType.id}`, { method: 'PATCH', token: adminToken, body: { name: '旅游签注' } });
+  check('类型其他字段可更新', rename.status === 200);
 }
 
 const adminToken = await login('admin');

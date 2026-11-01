@@ -278,6 +278,10 @@ processRouter.post('/appeals/merge', (req, res) => {
   else if (req.body?.targetCode) target = db.prepare('SELECT * FROM appeal_appeals WHERE code = ?').get(String(req.body.targetCode).toUpperCase());
   if (!target) throw notFound('Target appeal not found');
   if (source.id === target.id) throw badRequest('VALIDATION_ERROR', 'Cannot merge an appeal into itself');
+  // 合并只允许同一用户的重复件:跨账号合并会把别人的申诉并进别人的档案。
+  if (source.user_id !== target.user_id) {
+    throw badRequest('APPEAL_MERGE_MISMATCH', 'Appeals belong to different accounts and cannot be merged');
+  }
   if (!['resolved', 'rejected'].includes(target.status)) {
     throw badRequest('APPEAL_INVALID_TRANSITION', 'Target appeal should be decided first');
   }
@@ -581,15 +585,20 @@ reviewRouter.post('/reviews/:id/decide', (req, res) => {
       );
     }
   }
-  const doc = createDecisionDoc({
-    appeal,
-    review,
-    decisionType,
-    reason,
-    basis: String(req.body?.basis || '').trim().slice(0, 500),
-    actor: req.user,
-  });
-  const writeback = writebackDecision(appeal, { decisionType, decisionCode: doc.code });
+  // maintain(维持原判)不生成第二份决定书:原决定书保持有效,复核记录与
+  // 审计已构成完整轨迹;undo/change/transfer 才失效原决定并签发新决定书。
+  const doc =
+    decisionType === 'maintain'
+      ? null
+      : createDecisionDoc({
+          appeal,
+          review,
+          decisionType,
+          reason,
+          basis: String(req.body?.basis || '').trim().slice(0, 500),
+          actor: req.user,
+        });
+  const writeback = writebackDecision(appeal, { decisionType, decisionCode: doc ? doc.code : null });
   sendMsg(review.user_id, 'review', review.id, 'review_completed', { code: review.code, decisionType });
   audit(req.user, 'decide_review', 'review', review.code, { decisionType, writeback });
   res.json({
@@ -1079,7 +1088,9 @@ manageRouter.get('/export.csv', (req, res) => {
   res.send(`\ufeff${lines.join('\n')}`);
 });
 
-router.use('/', processRouter, reviewRouter, inspectRouter, manageRouter);
+// 挂载顺序不能把 processRouter 放在首位:requirePermission 缺权会短路整条链,
+// 后面的 review/inspect/manage 子路由将永远不可达(单权限角色全被 403)。
+router.use('/', inspectRouter, reviewRouter, manageRouter, processRouter);
 
 // ---------------------------------------------------------------------------
 // 自动审批:申诉与投诉受理(不自动做决定)。

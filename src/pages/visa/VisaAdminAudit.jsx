@@ -1,7 +1,7 @@
 // 审计与合规:敏感操作审计日志查询。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastVisaError } from './shared.jsx';
@@ -92,9 +92,7 @@ export default function VisaAdminAudit() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('visa.admin.audit.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('visa.admin.audit.title')}</h1>
         <Input
           size="middle"
           allowClear

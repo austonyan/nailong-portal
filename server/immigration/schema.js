@@ -5,7 +5,7 @@
 // additions to the shared permissions / roles / services registries, so the
 // visa-office workstream can evolve independently.
 import { db, now } from '../db.js';
-import { ensureTwColumns } from '../migrate.js';
+import { ensureColumn, ensureTwColumns } from '../migrate.js';
 
 let ensured = false;
 
@@ -251,6 +251,8 @@ export function ensureImmigrationSchema() {
   ensureTwColumns(db, 'im_channels', ['name', 'description']);
   ensureTwColumns(db, 'im_announcements', ['title', 'body']);
   ensureTwColumns(db, 'im_declaration_events', ['note']);
+  // 出境提醒的一次性发送标记(sweepExitReminders 用)。
+  ensureColumn(db, 'im_entry_records', 'remind_sent', 'INTEGER NOT NULL DEFAULT 0');
   seedImmigration();
 }
 
@@ -370,8 +372,8 @@ function seedImmigration() {
 
     // --- service card on the portal home -----------------------------------
     db.prepare(
-      `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, enabled, sort_order, created_at, updated_at)
-       VALUES ('immigration', '皇家口岸入境署', '申报入境、领取通关码、查看出入境记录', '/immigration', 'FlagIcon', 'app-orange', 'imm:portal', 1, 3, ?, ?)`
+      `INSERT OR IGNORE INTO services (key, name, description, url, icon, color, required_permission, entry_mode, enabled, sort_order, created_at, updated_at)
+       VALUES ('immigration', '皇家口岸入境署', '申报入境、领取通关码、查看出入境记录', '/immigration', 'FlagIcon', 'app-orange', 'imm:portal', 'internal_sso', 1, 3, ?, ?)`
     ).run(ts, ts);
 
     // --- ROYAL_PORT + channels ---------------------------------------------

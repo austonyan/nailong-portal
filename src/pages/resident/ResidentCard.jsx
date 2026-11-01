@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Modal, Tag } from 'animal-island-ui';
 import { PrinterIcon, RefreshIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { api, requestBlob } from '../../api/client.js';
 import { CARD_STATUS_COLORS, ResQr, StatusTag, fmtDate, fmtDateTime, resToast, toastResError, toastResSuccess } from './shared.jsx';
@@ -96,11 +96,7 @@ export default function ResidentCard() {
   return (
     <div className="res-card-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-green">
-            {t('res.card.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('res.card.title')}</h1>
       </div>
 
       <div className="res-card" data-status={card.status}>

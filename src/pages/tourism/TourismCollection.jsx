@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Table, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { StampIcon, fmtDateTime, toastTourError } from './shared.jsx';
 
@@ -46,11 +46,7 @@ export default function TourismCollection() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-yellow">
-            {t('tour.collection.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('tour.collection.title')}</h1>
         <Button size="small" onClick={() => navigate('/tourism/attractions')}>
           {t('tour.collection.moreCheckins')}
         </Button>
@@ -72,9 +68,7 @@ export default function TourismCollection() {
       </div>
 
       <section className="tour-section">
-        <Title size="small" color="app-teal">
-          {t('tour.collection.stampsTitle')}
-        </Title>
+        <h2 className="block-heading">{t('tour.collection.stampsTitle')}</h2>
         <p className="muted-text">{t('tour.collection.stampsHint')}</p>
         <div className="tour-stamp-grid">
           {(data?.stamps ?? []).map((stamp) => (
@@ -110,9 +104,7 @@ export default function TourismCollection() {
       </section>
 
       <section className="tour-section">
-        <Title size="small" color="app-orange">
-          {t('tour.collection.checkinsTitle')}
-        </Title>
+        <h2 className="block-heading">{t('tour.collection.checkinsTitle')}</h2>
         <Card>
           <Table
             className="table-fit"

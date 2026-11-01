@@ -62,14 +62,14 @@ export default function ArchShell({ permission = 'arch:portal', admin = false, c
       <Modal
         maskClosable={false}
         open={ssoOpen}
-        title={t('arch.sso.title')}
+        title={t('portal.sso.title')}
         onClose={cancelSso}
         typewriter={false}
         footer={
           <>
             <Button onClick={cancelSso}>{t('common.cancel')}</Button>
             <Button type="primary" onClick={confirmSso}>
-              {t('arch.sso.confirm')}
+              {t('portal.sso.confirm')}
             </Button>
           </>
         }

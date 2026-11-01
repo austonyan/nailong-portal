@@ -157,7 +157,7 @@ const SUPPLEMENT_DEADLINE = () => {
 
 // 建交通过 → established。人工与自动审批共用。
 function approveRelationCore(row, actor, { note = '', auto = false } = {}) {
-  if (!['pending_review', 'supplement_required'].includes(row.status)) {
+  if (row.status !== 'pending_review') {
     throw conflict('DIP_INVALID_STATE', 'Only pending relations can be established');
   }
   const typeRow = db.prepare('SELECT name, name_tw FROM dip_relation_types WHERE code = ?').get(row.relation_type);
@@ -168,7 +168,7 @@ function approveRelationCore(row, actor, { note = '', auto = false } = {}) {
     .prepare(
       `UPDATE dip_relations SET status = 'established', established_at = ?, decided_by = ?, decided_at = ?,
          supplement_note = '', updated_at = ?
-       WHERE id = ? AND status IN ('pending_review', 'supplement_required')`
+       WHERE id = ? AND status = 'pending_review'`
     )
     .run(ts, actor?.id ?? null, ts, ts, row.id);
   if (!info.changes) throw conflict('DIP_INVALID_STATE', 'Only pending relations can be established');
@@ -233,23 +233,57 @@ router.post('/relations/:id/supplement', ...reviewer, (req, res) => {
   res.json({ relation: relationDetail(getRelation(row.id)) });
 });
 
-// 暂停 / 恢复(需原因 + 审计)
+// 暂停 / 恢复(需原因 + 审计)。暂停期间关联身份同步冻结,恢复时解冻,
+// 与断交级联失效同一套做法。
 router.post('/relations/:id/suspend', ...reviewer, (req, res) => {
   const row = getRelation(req.params.id);
   assertTransition('relation', row.status, 'suspended', 'Only established relations can be suspended');
   const reason = readString(req.body?.reason, { name: 'reason', min: 2, max: 300 });
-  db.prepare("UPDATE dip_relations SET status = 'suspended', suspend_reason = ?, updated_at = ? WHERE id = ?").run(reason, now(), row.id);
-  logEvent('relation', row.id, 'suspend', req.user.id, reason);
-  audit(req.user.id, 'dip:relation.suspend', 'relation', row.no, { reason });
+  const ts = now();
+  const affectedUsers = new Set();
+  const suspend = db.transaction(() => {
+    db.prepare("UPDATE dip_relations SET status = 'suspended', suspend_reason = ?, updated_at = ? WHERE id = ?").run(reason, ts, row.id);
+    const linked = db
+      .prepare("SELECT * FROM dip_identities WHERE relation_id = ? AND status = 'active'")
+      .all(row.id);
+    for (const idt of linked) {
+      db.prepare("UPDATE dip_identities SET status = 'frozen', inactive_reason = 'relation_suspended', updated_at = ? WHERE id = ?").run(ts, idt.id);
+      affectedUsers.add(idt.user_id);
+      logEvent('identity', idt.id, 'freeze', req.user.id, `建交关系 ${row.no} 暂停,身份同步冻结`, `建交關係 ${row.no} 暫停,身分同步凍結`);
+      notify(
+        idt.user_id,
+        'identity_frozen',
+        { no: idt.no, reason: `建交关系 ${row.no} 已暂停` },
+        { identityNo: idt.no },
+        { no: idt.no, reason: `建交關係 ${row.no} 已暫停` }
+      );
+    }
+    logEvent('relation', row.id, 'suspend', req.user.id, reason);
+  });
+  suspend();
+  for (const userId of affectedUsers) syncDiplomaticVisa(userId);
+  audit(req.user.id, 'dip:relation.suspend', 'relation', row.no, { reason, cascade: true });
   res.json({ relation: relationDetail(getRelation(row.id)) });
 });
 
 router.post('/relations/:id/resume', ...reviewer, (req, res) => {
   const row = getRelation(req.params.id);
   assertTransition('relation', row.status, 'established', 'Only suspended relations can be resumed');
-  db.prepare("UPDATE dip_relations SET status = 'established', suspend_reason = '', updated_at = ? WHERE id = ?").run(now(), row.id);
-  logEvent('relation', row.id, 'resume', req.user.id, String(req.body?.note || '').slice(0, 200));
-  audit(req.user.id, 'dip:relation.resume', 'relation', row.no, {});
+  const ts = now();
+  const resume = db.transaction(() => {
+    db.prepare("UPDATE dip_relations SET status = 'established', suspend_reason = '', updated_at = ? WHERE id = ?").run(ts, row.id);
+    // 只解冻因暂停而冻结的身份,管理员手工冻结的保持原状。
+    const frozen = db
+      .prepare("SELECT * FROM dip_identities WHERE relation_id = ? AND status = 'frozen' AND inactive_reason = 'relation_suspended'")
+      .all(row.id);
+    for (const idt of frozen) {
+      db.prepare("UPDATE dip_identities SET status = 'active', inactive_reason = '', updated_at = ? WHERE id = ?").run(ts, idt.id);
+      logEvent('identity', idt.id, 'unfreeze', req.user.id, `建交关系 ${row.no} 恢复,身份同步解冻`, `建交關係 ${row.no} 恢復,身分同步解凍`);
+    }
+    logEvent('relation', row.id, 'resume', req.user.id, String(req.body?.note || '').slice(0, 200));
+  });
+  resume();
+  audit(req.user.id, 'dip:relation.resume', 'relation', row.no, { cascade: true });
   res.json({ relation: relationDetail(getRelation(row.id)) });
 });
 
@@ -410,7 +444,7 @@ function assertRelationValidForIdentity(row) {
 
 // 外交身份通过 → active + 验真 token + 自动礼遇记录。人工与自动审批共用。
 function approveIdentityCore(row, actor, { note = '', auto = false } = {}) {
-  if (!['pending_review', 'supplement_required'].includes(row.status)) {
+  if (row.status !== 'pending_review') {
     throw conflict('DIP_INVALID_STATE', 'Only pending identities can be approved');
   }
   assertRelationValidForIdentity(row);
@@ -424,7 +458,7 @@ function approveIdentityCore(row, actor, { note = '', auto = false } = {}) {
       .prepare(
         `UPDATE dip_identities SET status = 'active', verify_token = ?, approved_at = ?, approved_by = ?,
            supplement_note = '', updated_at = ?
-         WHERE id = ? AND status IN ('pending_review', 'supplement_required')`
+         WHERE id = ? AND status = 'pending_review'`
       )
       .run(token, ts, actor?.id ?? null, ts, row.id);
     if (!info.changes) throw conflict('DIP_INVALID_STATE', 'Only pending identities can be approved');

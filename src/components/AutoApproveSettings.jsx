@@ -2,7 +2,7 @@
 // 各署后台把它放在自己的设置区,权限由服务端按署校验。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Select, Title } from 'animal-island-ui';
+import { Button, Input, Select } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { toastSuccess, toastApiError } from './toast.js';
 import { fmtDateTime } from '../lib/date.js';
@@ -57,7 +57,7 @@ export default function AutoApproveSettings({ service }) {
 
   return (
     <div className="auto-approve-panel">
-      <Title size="small">{t('autoApprove.title')}</Title>
+      <h2 className="block-heading">{t('autoApprove.title')}</h2>
       <p className="muted-text">
         {t('autoApprove.scope', {
           flows: t(`autoApprove.flows.${service}`, { defaultValue: t('common.unknown') }),

@@ -1,7 +1,7 @@
 // 学习任务管理(edu:manage):阅读打卡任务的定义/编辑/启停/删除与完成情况。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Pagination, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Drawer, Input, Modal, Pagination, Table, Tag } from 'animal-island-ui';
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ConfirmModal, StatusTag, TextArea, fmtDateTime, pct, toastEduError } from '../shared.jsx';
@@ -220,11 +220,7 @@ export default function AdminEduTasks() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-yellow">
-            {t('edu.admin.tasks.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('edu.admin.tasks.title')}</h1>
       </div>
 
       <Card>

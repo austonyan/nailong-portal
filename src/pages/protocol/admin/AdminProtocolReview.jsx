@@ -11,7 +11,6 @@ import {
   Select,
   Table,
   Tag,
-  Title,
 } from 'animal-island-ui';
 import { CheckCircleIcon, DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -156,9 +155,7 @@ export default function AdminProtocolReview() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.admin.reviewTitle')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.admin.reviewTitle')}</h1>
         <p className="muted-text">{t('protocol.admin.reviewSubtitle')}</p>
       </div>
 

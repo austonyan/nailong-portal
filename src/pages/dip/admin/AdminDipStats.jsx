@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { Button, Card, Progress, Table, Title } from 'animal-island-ui';
+import { Button, Card, Progress, Table } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { DipAdminNav, exportCsv, toastDipError } from '../../../components/dip/shared.jsx';
 
@@ -68,9 +68,7 @@ export default function AdminDipStats() {
     <div className="dip-page">
       <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="purple">{t('dip.admin.stats.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('dip.admin.stats.title')}</h1>
         <Button type="primary" onClick={exportStats}>{t('dip.admin.stats.export')}</Button>
       </div>
 
@@ -89,18 +87,18 @@ export default function AdminDipStats() {
 
       <div className="dip-stat-cols">
         <Card>
-          <Title size="small">{t('dip.admin.stats.objectDistribution')}</Title>
+          <h2 className="block-heading">{t('dip.admin.stats.objectDistribution')}</h2>
           <Table className="table-fit" columns={objectColumns} dataSource={stats.objectDistribution} rowKey="type" pagination={false} emptyText={t('common.empty')} />
         </Card>
         <Card>
-          <Title size="small">{t('dip.admin.stats.identityDistribution')}</Title>
+          <h2 className="block-heading">{t('dip.admin.stats.identityDistribution')}</h2>
           <Table className="table-fit" columns={identityColumns} dataSource={stats.identityTypeDistribution} rowKey="type" pagination={false} emptyText={t('common.empty')} />
         </Card>
       </div>
 
       <div className="dip-stat-cols">
         <Card>
-          <Title size="small">{t('dip.admin.stats.courtesyUsage')}</Title>
+          <h2 className="block-heading">{t('dip.admin.stats.courtesyUsage')}</h2>
           <Table className="table-fit"
             columns={[
               { title: t('dip.courtesy.type'), dataIndex: 'name', render: (v, r) => v || t(`dip.courtesy.${r.code}`, { defaultValue: t('common.unknown') }) },
@@ -113,7 +111,7 @@ export default function AdminDipStats() {
           />
         </Card>
         <Card>
-          <Title size="small">{t('dip.admin.stats.rejectReasons')}</Title>
+          <h2 className="block-heading">{t('dip.admin.stats.rejectReasons')}</h2>
           <Table className="table-fit"
             columns={[
               { title: t('dip.admin.rejectReason'), dataIndex: 'reason', render: (v) => t(`dip.rejectReason.${v}`, { defaultValue: t('common.unknown') }) },
@@ -128,7 +126,7 @@ export default function AdminDipStats() {
       </div>
 
       <Card>
-        <Title size="small">{t('dip.admin.stats.trend7')}</Title>
+        <h2 className="block-heading">{t('dip.admin.stats.trend7')}</h2>
         <div className="dip-trend">
           {stats.trend.map((d) => {
             const max = Math.max(1, ...stats.trend.map((x) => x.relations + x.identities));

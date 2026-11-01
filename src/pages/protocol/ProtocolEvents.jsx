@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Input, Pagination, Progress, Select, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Checkbox, Input, Pagination, Progress, Select, Tag } from 'animal-island-ui';
 import { CalendarIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { StatusTag, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
@@ -76,9 +76,7 @@ export default function ProtocolEvents() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.events.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.events.title')}</h1>
         <p className="muted-text">{t('protocol.events.subtitle')}</p>
       </div>
 

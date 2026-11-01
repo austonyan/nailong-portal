@@ -18,12 +18,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .edu-banner-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,11 +34,14 @@
 
 .edu-banner-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .edu-banner-sub {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -93,7 +97,7 @@
 }
 
 .edu-hero {
-  padding: 28px;
+  padding: 32px;
   border-radius: var(--animal-border-radius-lg);
   display: flex;
   flex-direction: column;
@@ -103,10 +107,11 @@
 
 .edu-hero-sub {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--animal-text-color-secondary);
-  max-width: 680px;
-  line-height: 1.7;
+  max-width: 640px;
+  line-height: 1.6;
 }
 
 .edu-hero-actions {
@@ -137,13 +142,13 @@
 
 .edu-grid {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
 }
 
 .edu-service-grid {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
@@ -190,7 +195,9 @@
 .edu-card-title {
   margin: 0;
   font-size: 16px;
-  line-height: 1.5;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
   color: var(--animal-text-color);
 }
 
@@ -243,12 +250,17 @@
 }
 
 .edu-search-row > :first-child {
-  flex: 1;
-  min-width: 220px;
+  flex: 1 1 180px;
+  min-width: 0;
 }
 
 .edu-search-row .edu-select-slot {
-  min-width: 180px;
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.edu-search-row > button {
+  flex: 0 0 auto;
 }
 
 .edu-list {
@@ -260,7 +272,8 @@
 .edu-body {
   white-space: pre-wrap;
   line-height: 1.9;
-  font-size: 15px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
   color: var(--animal-text-color);
 }
 
@@ -288,7 +301,7 @@
 .edu-form-row {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 /* 库内没有多行输入:按 Input 的视觉语言用令牌自定义 */
@@ -329,6 +342,9 @@
 .edu-task-head :is(h2, h3) {
   margin: 0;
   font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .edu-task-progress {
@@ -372,25 +388,30 @@
 
 .edu-stat-grid {
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
 }
 
 .edu-stat-card {
-  padding: 16px 18px;
+  padding: 16px 24px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .edu-stat-value {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
   color: var(--animal-primary-color);
 }
 
 .edu-stat-label {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -432,4 +453,24 @@
   color: var(--animal-text-color-muted);
   font-size: 14px;
   line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+  .edu-hero {
+    padding: 24px 16px;
+  }
+
+  .edu-info-row {
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+  }
+
+  .edu-info-label {
+    min-width: 0;
+  }
+
+  .edu-task-progress {
+    flex-wrap: wrap;
+  }
 }

@@ -168,10 +168,10 @@ const SEED_METRICS = [
     nameTw: '徽章發放量',
     description: '文化旅游署累计发放的成就徽章数',
     descriptionTw: '文化旅遊署累計發放的成就徽章數',
-    formula: '统计 tour_badges 表的全部发放记录;文化旅游署并入前显示为不可用。',
-    formulaTw: '統計 tour_badges 表的全部發放紀錄;文化旅遊署併入前顯示為不可用。',
+    formula: '统计 tour_badge_awards 表的全部发放记录(不含已回收);文化旅游署并入前显示为不可用。',
+    formulaTw: '統計 tour_badge_awards 表的全部發放紀錄(不含已回收);文化旅遊署併入前顯示為不可用。',
     sourceOffice: 'tourism',
-    tableName: 'tour_badges',
+    tableName: 'tour_badge_awards',
     statusValue: null,
     sortOrder: 4,
   },
@@ -300,6 +300,15 @@ function seedStats() {
        WHERE code = ? AND (name_tw IS NULL OR name_tw = '')`
     );
     for (const m of SEED_METRICS) fillTw.run(m.nameTw, m.descriptionTw, m.formulaTw, m.code);
+
+    // 徽章发放量的来源表曾是徽章目录(tour_badges),旧库一次性纠正为发放记录表。
+    db.prepare(
+      `UPDATE stat_metrics SET table_name = 'tour_badge_awards', formula = ?, formula_tw = ?
+       WHERE code = 'badges_awarded' AND table_name = 'tour_badges'`
+    ).run(
+      '统计 tour_badge_awards 表的全部发放记录(不含已回收);文化旅游署并入前显示为不可用。',
+      '統計 tour_badge_awards 表的全部發放紀錄(不含已回收);文化旅遊署併入前顯示為不可用。'
+    );
 
     const insertConfig = db.prepare('INSERT OR IGNORE INTO stat_config (key, value, updated_at) VALUES (?, ?, ?)');
     for (const [k, v] of Object.entries(DEFAULT_CONFIG)) insertConfig.run(k, v, ts);

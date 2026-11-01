@@ -7,6 +7,10 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import { Progress, Tag } from 'animal-island-ui';
+import { StatusTag as SharedStatusTag } from '../StatusTag.jsx';
+
+// CSV 导出与全站共用一份实现(src/lib/csv.js);这里只再导出,保持署内调用路径不变。
+export { exportCsv, downloadDataUrl } from '../../lib/csv.js';
 
 // 状态标签配色(Foundations §1.4):待处理/补件/维护 → warm-peach-pink,
 // 已通过/有效/开放 → app-green,已入境 → app-teal,已出境/已使用 → app-blue,
@@ -34,14 +38,9 @@ const STATUS_TAG = {
   visa_blocked: { color: 'app-red', variant: 'soft' },
 };
 
+// 状态标签委托给全站共享实现(src/components/StatusTag.jsx),配色表留在本署。
 export function StatusTag({ value, i18nPrefix = 'imm.status' }) {
-  const { t } = useTranslation();
-  const style = STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
-  return (
-    <Tag color={style.color} variant={style.variant}>
-      {t(`${i18nPrefix}.${value}`, { defaultValue: t('common.unknown') })}
-    </Tag>
-  );
+  return <SharedStatusTag value={value} map={STATUS_TAG} i18nPrefix={i18nPrefix} />;
 }
 
 const LEVEL_TAG = {
@@ -99,26 +98,6 @@ export function PassQr({ value, size = 200 }) {
     }).catch(() => {});
   }, [value, size]);
   return <canvas ref={ref} className="im-pass-qr" role="img" aria-label="QR" />;
-}
-
-export function downloadDataUrl(dataUrl, filename) {
-  const a = document.createElement('a');
-  a.href = dataUrl;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-// Client-side CSV (UTF-8 BOM keeps Excel happy with Chinese headers).
-export function exportCsv(filename, columns, rows) {
-  const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const lines = [columns.map((c) => cell(c.label)).join(',')];
-  for (const row of rows) lines.push(columns.map((c) => cell(row[c.key])).join(','));
-  const blob = new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  downloadDataUrl(url, filename);
-  URL.revokeObjectURL(url);
 }
 
 // 服务端已按 X-Nailong-Locale 把 base 字段本地化成当前语言(繁体时还会给出 *Cn 源文)。

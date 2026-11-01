@@ -1,7 +1,7 @@
 // 公告订阅与通知偏好:订阅开关 + 按署逐个开关(关闭后该署消息不再进入信箱)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Switch, Tag, Title } from 'animal-island-ui';
+import { Card, Switch, Tag } from 'animal-island-ui';
 import { BellIcon, BellOffIcon, RssIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -59,11 +59,7 @@ export default function PostalSubscription() {
 
   return (
     <div className="postal-section">
-      <h1 className="page-title">
-        <Title size="middle" color="app-teal">
-          {t('post.subscription.title')}
-        </Title>
-      </h1>
+      <h1 className="page-title">{t('post.subscription.title')}</h1>
 
       <Card pattern="app-yellow">
         <div className="postal-postcard-head">

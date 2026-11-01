@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Tag } from 'animal-island-ui';
 import { InboxIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
@@ -59,10 +59,8 @@ export default function AppealMessages() {
     <div className="appeal-list-page">
       <div className="page-header">
         <h1 className="page-title">
-          <Title size="middle">
-            {t('appeal.messages.title')}
-            {unread > 0 && <Tag color="warm-peach-pink" variant="soft">{t('appeal.messages.unread', { count: unread })}</Tag>}
-          </Title>
+          {t('appeal.messages.title')}
+          {unread > 0 && <Tag color="warm-peach-pink" variant="soft">{t('appeal.messages.unread', { count: unread })}</Tag>}
         </h1>
         <div className="table-actions appeal-filter-bar">
           <Button onClick={() => setArchived(!archived)}>

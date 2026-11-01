@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, Card, Divider, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Divider, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, EyeIcon, HeartIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastEduError } from './shared.jsx';
@@ -114,7 +114,7 @@ export default function EduEntryDetail() {
       {(entry.related ?? []).length > 0 && (
         <div className="edu-section">
           <div className="edu-section-head">
-            <Title size="small">{t('edu.entries.related')}</Title>
+            <h2 className="block-heading">{t('edu.entries.related')}</h2>
           </div>
           <div className="edu-related-list">
             {entry.related.map((item) => (

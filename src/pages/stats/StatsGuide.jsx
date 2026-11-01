@@ -1,7 +1,7 @@
 // 数据说明:统计口径、来源、更新方式与功能性提示。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Divider, Tag, Title } from 'animal-island-ui';
+import { Card, Divider, Tag } from 'animal-island-ui';
 import { InfoIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastStatError } from './shared.jsx';
@@ -37,11 +37,7 @@ export default function StatsGuide() {
   return (
     <div className="stat-page">
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-teal">
-            {t('stat.guide.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('stat.guide.title')}</h1>
         <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(data.asOf) })}</span>
       </div>
       <p className="muted-text">{t('stat.guide.tip')}</p>
@@ -63,11 +59,7 @@ export default function StatsGuide() {
 
       <Divider type="wave-yellow" />
 
-      <h2 className="section-title">
-        <Title size="middle" color="app-orange">
-          {t('stat.guide.metricsTitle')}
-        </Title>
-      </h2>
+      <h2 className="section-title">{t('stat.guide.metricsTitle')}</h2>
       <div className="stat-metric-grid">
         {data.items.map((metric) => (
           <Card key={metric.code} className="stat-metric-card">

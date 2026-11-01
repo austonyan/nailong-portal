@@ -259,18 +259,28 @@ export async function evaluateBadges(userId) {
   const awarded = [];
   for (const badge of badges) {
     const existing = db
-      .prepare('SELECT id FROM tour_badge_awards WHERE badge_id = ? AND user_id = ?')
+      .prepare('SELECT id, revoked_at FROM tour_badge_awards WHERE badge_id = ? AND user_id = ?')
       .get(badge.id, userId);
-    if (existing) continue;
+    // 只跳过仍有效的发放;被回收的徽章再次达标时复活原行
+    // (UNIQUE(badge_id, user_id) 不允许新插一行)。
+    if (existing && !existing.revoked_at) continue;
     const ts = now();
-    try {
+    if (existing) {
       db.prepare(
-        `INSERT INTO tour_badge_awards (badge_id, user_id, checkin_count, awarded_at, created_at)
-         VALUES (?, ?, ?, ?, ?)`
-      ).run(badge.id, userId, total, ts, ts);
-    } catch {
-      // UNIQUE(badge_id, user_id) — a concurrent request awarded it first.
-      continue;
+        `UPDATE tour_badge_awards SET revoked_at = NULL, revoked_by = NULL, revoke_reason = '',
+           checkin_count = ?, awarded_at = ?, created_at = ?
+         WHERE id = ?`
+      ).run(total, ts, ts, existing.id);
+    } else {
+      try {
+        db.prepare(
+          `INSERT INTO tour_badge_awards (badge_id, user_id, checkin_count, awarded_at, created_at)
+           VALUES (?, ?, ?, ?, ?)`
+        ).run(badge.id, userId, total, ts, ts);
+      } catch {
+        // UNIQUE(badge_id, user_id) — a concurrent request awarded it first.
+        continue;
+      }
     }
     audit(userId, 'tour:badge_award', 'badge', badge.no, {
       badgeCode: badge.code,

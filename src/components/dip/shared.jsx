@@ -4,10 +4,15 @@
 import { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
 import QRCode from 'qrcode';
 import { Tag } from 'animal-island-ui';
-import { toastError } from '../toast.js';
+import { StatusTag as SharedStatusTag } from '../StatusTag.jsx';
+import { TextArea as SharedTextArea } from '../TextArea.jsx';
+import { apiErrorMessage, toastApiError } from '../toast.js';
+
+// 时间格式化与 CSV 导出都用全站共享实现,这里只再导出,保持署内调用路径不变。
+export { fmtDate, fmtDateTime } from '../../lib/date.js';
+export { exportCsv, downloadDataUrl } from '../../lib/csv.js';
 
 // 状态标签配色(Foundations §1.4):待处理/补件/暂停 → warm-peach-pink,
 // 进行中 → app-blue,已生效/开放 → app-green,签发/在册 → app-teal,
@@ -35,14 +40,9 @@ const STATUS_TAG = {
   invalid: { color: 'app-red', variant: 'soft' },
 };
 
+// 状态标签委托给全站共享实现(src/components/StatusTag.jsx),配色表留在本署。
 export function StatusTag({ value, i18nPrefix = 'dip.status' }) {
-  const { t } = useTranslation();
-  const style = STATUS_TAG[value] ?? { color: 'brown', variant: 'soft' };
-  return (
-    <Tag color={style.color} variant={style.variant}>
-      {t(`${i18nPrefix}.${value}`, { defaultValue: t('common.unknown') })}
-    </Tag>
-  );
+  return <SharedStatusTag value={value} map={STATUS_TAG} i18nPrefix={i18nPrefix} />;
 }
 
 const LEVEL_TAG = {
@@ -61,41 +61,10 @@ export function DipLevelTag({ level }) {
   );
 }
 
-export function fmtDateTime(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD HH:mm') : '-';
-}
+// 错误文案映射与提示都委托给共享实现(src/components/toast.js),行为与原先一致。
+export const dipErrMsg = apiErrorMessage;
 
-export function fmtDate(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD') : '-';
-}
-
-export function dipErrMsg(t, err) {
-  return t(`api.${err?.code}`, { defaultValue: t('api.INTERNAL_ERROR') });
-}
-
-export function toastDipError(t, err) {
-  toastError(dipErrMsg(t, err));
-}
-
-export function downloadDataUrl(dataUrl, filename) {
-  const a = document.createElement('a');
-  a.href = dataUrl;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-// Client-side CSV (UTF-8 BOM keeps Excel happy with Chinese headers).
-export function exportCsv(filename, columns, rows) {
-  const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const lines = [columns.map((c) => cell(c.label)).join(',')];
-  for (const row of rows) lines.push(columns.map((c) => cell(row[c.key])).join(','));
-  const blob = new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  downloadDataUrl(url, filename);
-  URL.revokeObjectURL(url);
-}
+export const toastDipError = toastApiError;
 
 // 二维码画布:内容只有验真 URL(不可猜测 token),不含个人信息。
 export function DipQr({ value, size = 180 }) {
@@ -112,10 +81,10 @@ export function DipQr({ value, size = 180 }) {
   return <canvas ref={ref} className="dip-card-qr" role="img" aria-label="QR" />;
 }
 
-// 库里没有多行输入;按 Input 的视觉语言用 token 自定义,FormItem 直接注入
-// value/onChange 也能工作(原生受控)。
-export function TextArea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`dip-textarea ${className}`} {...rest} />;
+// 多行输入委托给全站共享实现(src/components/TextArea.jsx);dip-textarea 只用于
+// 保留本署既有样式钩子,不重新实现控件。
+export function TextArea({ className = '', ...rest }) {
+  return <SharedTextArea className={`dip-textarea ${className}`} {...rest} />;
 }
 
 const USER_TABS = [

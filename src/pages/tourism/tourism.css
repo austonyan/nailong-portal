@@ -18,12 +18,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .tour-office-emblem {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,11 +34,14 @@
 
 .tour-office-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .tour-office-sub {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -84,13 +88,15 @@
 
 .tour-hero {
   border-radius: var(--animal-border-radius-lg);
-  padding: 28px 24px;
+  padding: 32px;
   margin-bottom: 20px;
 }
 
 .tour-hero-sub {
   margin: 12px 0 0;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
   color: var(--animal-text-color-secondary);
 }
 
@@ -110,7 +116,7 @@
 .tour-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 14px;
+  gap: 16px;
   margin-top: 12px;
 }
 
@@ -131,7 +137,7 @@
 .tour-card-icon {
   width: 40px;
   height: 40px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -141,8 +147,10 @@
 }
 
 .tour-card-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
   margin: 0;
 }
 
@@ -167,32 +175,38 @@
 
 .tour-stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
   margin-top: 12px;
 }
 
 .tour-stat-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  padding: 16px 24px;
+  min-width: 0;
 }
 
 .tour-stat-label {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
 .tour-stat-number {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
   color: var(--animal-primary-color);
 }
 
 .tour-quick-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 14px;
+  gap: 16px;
   margin-top: 12px;
 }
 
@@ -206,7 +220,10 @@
 
 .tour-quick-card h3 {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .tour-ann-list {
@@ -273,13 +290,17 @@
 .tour-detail-head .tour-card-icon {
   width: 52px;
   height: 52px;
-  border-radius: 18px;
+  border-radius: var(--animal-border-radius-base);
 }
 
 .tour-detail-title {
   margin: 0 0 6px;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .tour-detail-text {
@@ -345,7 +366,7 @@
 .tour-badge-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 14px;
+  gap: 16px;
   margin-top: 12px;
 }
 
@@ -380,8 +401,10 @@
 }
 
 .tour-badge-name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .tour-badge-progress {
@@ -398,13 +421,18 @@
 
 .tour-filter-bar {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.tour-filter-bar > *:not(:last-child) {
-  min-width: 160px;
+.tour-filter-bar > * {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.tour-filter-bar > button {
+  flex: 0 0 auto;
 }
 
 .tour-form {
@@ -443,7 +471,7 @@
 .tour-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
+  gap: 16px;
   margin-top: 14px;
 }
 
@@ -526,8 +554,10 @@
   .tour-office-banner {
     align-items: flex-start;
   }
+}
 
+@media (max-width: 640px) {
   .tour-hero {
-    padding: 20px 16px;
+    padding: 24px 16px;
   }
 }

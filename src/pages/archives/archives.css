@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
   padding: 16px 20px;
   border-radius: var(--animal-border-radius-lg);
@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .arch-emblem {
@@ -30,19 +31,22 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: var(--animal-border-radius-sm);
   color: var(--animal-primary-color);
   background: var(--animal-primary-color-bg);
 }
 
 .arch-name {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
   color: var(--animal-text-color);
 }
 
 .arch-sub {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--animal-text-color-muted);
 }
 
@@ -125,26 +129,30 @@
 
 .arch-hero {
   border-radius: var(--animal-border-radius-lg);
-  padding: 30px 28px;
+  padding: 32px;
 }
 
 .arch-hero-sub {
   margin: 12px 0 0;
   color: var(--animal-text-color-secondary);
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  max-width: 640px;
 }
 
 .arch-stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
 }
 
 .arch-stat-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 16px 18px;
+  gap: 8px;
+  padding: 16px 24px;
+  min-width: 0;
   border-radius: var(--animal-border-radius-lg);
   background: var(--animal-bg-color-secondary);
   border: var(--animal-border-width) solid var(--animal-border-color-light);
@@ -152,19 +160,23 @@
 
 .arch-stat-label {
   font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
   color: var(--animal-text-color-secondary);
 }
 
 .arch-stat-value {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
   color: var(--animal-text-color);
 }
 
 .arch-quick-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .arch-quick-card {
@@ -176,13 +188,16 @@
 
 .arch-quick-card h3 {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .arch-type-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .arch-type-card {
@@ -201,7 +216,10 @@
 
 .arch-type-head :is(h2, h3) {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .arch-type-desc {
@@ -219,12 +237,17 @@
 .arch-toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .arch-toolbar > * {
-  min-width: 150px;
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.arch-toolbar > button {
+  flex: 0 0 auto;
 }
 
 .arch-field-label {
@@ -276,7 +299,7 @@
 .arch-detail-value {
   font-size: 14px;
   color: var(--animal-text-color);
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .arch-timeline {
@@ -417,9 +440,19 @@
   .arch-banner {
     padding: 14px;
   }
+}
 
-  .arch-toolbar > * {
-    min-width: 0;
-    flex: 1 1 150px;
+@media (max-width: 640px) {
+  .arch-hero {
+    padding: 24px 16px;
+  }
+
+  .arch-summary-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .arch-summary-row > span:first-child {
+    flex: 0 0 auto;
   }
 }

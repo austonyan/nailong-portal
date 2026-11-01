@@ -1,7 +1,7 @@
 // 居民类型与规则配置:类型 CRUD、材料要求、有效期与开放状态。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Input, Modal, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Checkbox, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ResAdminNav } from '../ResidentShell.jsx';
@@ -147,9 +147,7 @@ export default function AdminResTypes() {
     <div className="res-admin-page">
       <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('res.admin.types.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('res.admin.types.title')}</h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('res.admin.types.create')}
         </Button>

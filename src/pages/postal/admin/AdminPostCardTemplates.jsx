@@ -3,7 +3,7 @@
 // 支持新建、编辑、启停与删除;已被明信片引用的模板由服务端拒绝删除。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -182,11 +182,7 @@ export default function AdminPostCardTemplates() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">
-          <Title size="middle" color="app-orange">
-            {t('post.admin.cardTemplates.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('post.admin.cardTemplates.title')}</h1>
       </div>
 
       <Card>

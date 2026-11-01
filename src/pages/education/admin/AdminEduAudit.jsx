@@ -1,7 +1,7 @@
 // 审计日志(edu:manage):内容/任务/徽章敏感操作留痕,支持动作与对象类型过滤。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Pagination, Select, Table, Title } from 'animal-island-ui';
+import { Card, Pagination, Select, Table } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { TargetTypeTag, fmtDateTime, toastEduError } from '../shared.jsx';
 
@@ -74,11 +74,7 @@ export default function AdminEduAudit() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle" color="app-orange">
-            {t('edu.admin.audit.title')}
-          </Title>
-        </h1>
+        <h1 className="page-title">{t('edu.admin.audit.title')}</h1>
       </div>
 
       <Card>

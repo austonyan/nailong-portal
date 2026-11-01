@@ -113,12 +113,16 @@ const BOARDS = [
     table: 'tour_checkins',
     extras: [
       { key: 'spots', table: 'tour_attractions' },
-      { key: 'badges', table: 'tour_badges' },
+      // 发放记录表,不是徽章目录 tour_badges。
+      { key: 'badges', table: 'tour_badge_awards' },
     ],
   },
   {
+    // post_messages 是全平台契约信箱(visa/immigration/tourism/education 等
+    // 都写入),加 scope 只统计邮政署自己的消息;明信片与公告作为附加项。
     key: 'postal',
     table: 'post_messages',
+    scope: "source = 'postal'",
     extras: [
       { key: 'postcards', table: 'post_postcards' },
       { key: 'notices', table: 'post_notices' },
@@ -139,7 +143,8 @@ const BOARDS = [
     table: 'edu_entries',
     pending: ['draft', 'pending_review'],
     approved: ['published'],
-    rejected: ['offline'],
+    // offline 是运营下架,不是驳回;教育内容没有 rejected 终态,不设该桶。
+    rejected: null,
     start: 'submitted_at',
     end: 'published_at',
     extras: [{ key: 'articles', table: 'edu_articles' }],
@@ -156,7 +161,12 @@ const BOARDS = [
 
 function boardStats(def) {
   if (!tableExists(def.table)) return { key: def.key, available: false, extras: [] };
-  const deleted = hasColumn(def.table, 'deleted_at') ? ['deleted_at IS NULL'] : [];
+  // def.scope:主表需要常驻过滤时使用(如邮政署的 post_messages 是全平台
+  // 契约信箱,只统计 source='postal' 的本署消息)。
+  const deleted = [
+    ...(hasColumn(def.table, 'deleted_at') ? ['deleted_at IS NULL'] : []),
+    ...(def.scope ? [def.scope] : []),
+  ];
   const select = (extra = [], params = []) => {
     const where = [...deleted, ...extra];
     return safeCount(

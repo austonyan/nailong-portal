@@ -42,7 +42,7 @@
     "markAll": "全部标为已读",
     "markAllOffice": "把「{{office}}」全部标为已读",
     "nothingToMark": "没有需要标记的未读消息",
-    "markedCount": "已将 {{count}} 条标为已读",
+    "markedCount": "已将{{count}}条标为已读",
     "filterStatus": "按读取状态筛选",
     "filterOffice": "按署别筛选",
     "loadFailed": "站内信加载失败",
@@ -61,7 +61,7 @@
     "deleted": "已删除",
     "confirm": "确认",
     "confirmDeleteTitle": "确认删除",
-    "deleteTip": "此操作不可撤销,确定要删除吗?",
+    "deleteTip": "此操作不可撤销，确定要删除吗？",
     "search": "搜索",
     "loading": "加载中…",
     "enabled": "启用",
@@ -82,17 +82,17 @@
     "required": "必填",
     "refresh": "刷新",
     "confirmActionTitle": "确认操作",
-    "irreversibleTip": "该操作不可撤销,请确认后继续。",
-    "userId": "账号 ID",
+    "irreversibleTip": "该操作不可撤销，请确认后继续。",
+    "userId": "账号ID",
     "retry": "重试",
-    "recentOnly": "仅显示最近 {{count}} 条",
-    "loadFailed": "加载失败,请稍后重试",
+    "recentOnly": "仅显示最近{{count}}条",
+    "loadFailed": "加载失败，请稍后重试",
     "readState": "已读",
     "unreadState": "未读",
     "skipToContent": "跳到主内容",
     "unknown": "未知",
-    "unitHours": "{{hours}} 小时",
-    "unitDays": "{{days}} 天",
+    "unitHours": "{{hours}}小时",
+    "unitDays": "{{days}}天",
     "erased": "已抹除",
     "simplified": "简体",
     "listSeparator": "、"
@@ -105,7 +105,7 @@
     "mode_immediate": "立即审批",
     "mode_delayed": "延时审批",
     "delayMinutes": "延时（分钟）",
-    "delayHint": "提交后经过该时长自动通过，范围 1–10080 分钟。",
+    "delayHint": "提交后经过该时长自动通过，范围1–10080分钟。",
     "hint_off": "保持人工审核，所有待审事项不变。",
     "hint_immediate": "提交后数秒内自动通过；开关开启后现有待审件也会按规则处理。",
     "hint_delayed": "提交后达到设定时长自动通过；达到时长的现有待审件也会被处理。",
@@ -128,21 +128,21 @@
     "registerTitle": "注册",
     "registerSubtitle": "创建你的岛屿通行证",
     "username": "用户名",
-    "usernamePlaceholder": "3-32 位字母、数字、_ 或 -",
+    "usernamePlaceholder": "3-32位字母、数字、_ 或 -",
     "password": "密码",
-    "passwordPlaceholder": "至少 8 位字符",
+    "passwordPlaceholder": "至少8位字符",
     "confirmPassword": "确认密码",
     "displayName": "显示名称",
     "displayNamePlaceholder": "大家怎么称呼你",
     "email": "邮箱",
     "login": "登录",
     "register": "注册",
-    "toRegister": "还没有账号?去注册",
-    "toLogin": "已有账号?去登录",
-    "welcomeBack": "欢迎回来,{{name}}!",
-    "registerSuccess": "注册成功,欢迎上岛!",
-    "usernameRule": "用户名为 3-32 位字母、数字、_ 或 -",
-    "passwordRule": "密码为 8-72 位字符",
+    "toRegister": "还没有账号？去注册",
+    "toLogin": "已有账号？去登录",
+    "welcomeBack": "欢迎回来，{{name}}！",
+    "registerSuccess": "注册成功，欢迎上岛！",
+    "usernameRule": "用户名为3-32位字母、数字、_ 或 -",
+    "passwordRule": "密码为8-72位字符",
     "emailRule": "请填写有效的邮箱地址",
     "confirmRule": "两次输入的密码不一致",
     "emailPlaceholder": "请输入邮箱地址"
@@ -159,15 +159,15 @@
     "pointCloseTitle": "引导随即关闭",
     "pointCloseBody": "管理员创建成功后，本引导入口将永久关闭且无法再次访问。",
     "start": "开始配置",
-    "stepOf": "第 {{current}} / {{total}} 步",
+    "stepOf": "第{{current}} / {{total}}步",
     "adminTitle": "创建首位管理员",
     "adminSubtitle": "该账号拥有系统全部权限，请使用真实可用的邮箱并妥善保管密码。",
-    "usernameRule": "用户名为 3-32 位字母、数字、_ 或 -",
+    "usernameRule": "用户名为3-32位字母、数字、_ 或 -",
     "displayNameHint": "显示在门户右上角的名称",
-    "displayNameRule": "请填写 40 个字符以内的显示名称",
+    "displayNameRule": "请填写40个字符以内的显示名称",
     "emailRule": "请填写有效的邮箱地址",
-    "passwordHint": "8-72 位，需同时包含字母与数字",
-    "passwordRule": "密码需为 8-72 位，且同时包含字母与数字",
+    "passwordHint": "8-72位，需同时包含字母与数字",
+    "passwordRule": "密码需为8-72位，且同时包含字母与数字",
     "confirmHint": "再次输入密码",
     "confirmRule": "两次输入的密码不一致",
     "next": "下一步",
@@ -176,7 +176,7 @@
     "reviewSubtitle": "请核对以下信息，提交后将创建管理员并永久关闭引导入口。",
     "roleLabel": "账号角色",
     "roleAdmin": "系统管理员",
-    "passwordSet": "已设置（8-72 位）",
+    "passwordSet": "已设置（8-72位）",
     "closeWarning": "提交后引导入口将永久关闭，无法再次访问。",
     "confirmSubmit": "创建管理员并关闭引导",
     "submitting": "正在创建…",
@@ -217,29 +217,29 @@
     },
     "consent": {
       "title": "授权获取本人信息",
-      "body": "是否授权{{consumer}}从{{source}}获取您的{{credential}}?",
-      "identityResident": "您将以居民证{{cardNo}}({{holder}})的身份授权",
-      "identitySso": "您将以门户账户 @{{username}} 的身份授权",
-      "tip": "授权仅在当前浏览器会话内有效。对方服务只能读取与您账户关联的记录,无法查看他人信息。",
+      "body": "是否授权{{consumer}}从{{source}}获取你的{{credential}}？",
+      "identityResident": "你将以居民证{{cardNo}}（{{holder}}）的身份授权",
+      "identitySso": "你将以门户账户@{{username}}的身份授权",
+      "tip": "授权仅在当前浏览器会话内有效。对方服务只能读取与你账户关联的记录，无法查看他人信息。",
       "confirm": "授权并获取"
     },
     "picker": {
       "title": "选择我的{{credential}}",
-      "subtitle": "以下记录均与您的账户绑定,选择后自动填入编号。",
+      "subtitle": "以下记录均与你的账户绑定，选择后自动填入编号。",
       "fetch": "获取我的{{credential}}",
       "manual": "手动填写编号",
-      "manualHint": "也可以手动填写编号,提交时同样会校验是否属于本人。",
-      "empty": "暂未查到 {{source}} 与您账户关联的记录,请先到来源办理,或手动填写编号。",
-      "failed": "获取记录失败,请稍后重试。",
+      "manualHint": "也可以手动填写编号，提交时同样会校验是否属于本人。",
+      "empty": "暂未查到{{source}}与你账户关联的记录，请先到来源办理，或手动填写编号。",
+      "failed": "获取记录失败，请稍后重试。",
       "retry": "重试",
       "pick": "使用此记录",
       "change": "更换记录",
       "clear": "清除",
       "owned": "本人记录",
       "appealable": "可申诉",
-      "holder": "持有人 {{name}}",
-      "issuedAt": "签发于 {{date}}",
-      "validUntil": "有效期至 {{date}}"
+      "holder": "持有人{{name}}",
+      "issuedAt": "签发于{{date}}",
+      "validUntil": "有效期至{{date}}"
     },
     "kind": {
       "permit": "签注",
@@ -259,92 +259,98 @@
     "verify": {
       "action": "校验",
       "owned": "本人记录 · {{status}}",
-      "notOwned": "非本人记录,无法关联",
+      "notOwned": "非本人记录，无法关联",
       "notPersonal": "该记录不属于个人账户",
       "notFound": "未找到该编号",
-      "referenced": "已被 {{count}} 份文书引用"
+      "referenced": "已被{{count}}份文书引用"
     }
   },
   "api": {
     "UNAUTHORIZED": "请先登录",
     "INVALID_CREDENTIALS": "用户名或密码错误",
-    "SESSION_EXPIRED": "登录已过期,请重新登录",
+    "SESSION_EXPIRED": "登录已过期，请重新登录",
     "FORBIDDEN": "权限不足",
-    "ACCOUNT_DISABLED": "账号已被停用,请联系管理员",
+    "ACCOUNT_DISABLED": "账号已被停用，请联系管理员",
     "USERNAME_TAKEN": "用户名已被占用",
     "EMAIL_TAKEN": "邮箱已被使用",
-    "WEAK_PASSWORD": "密码需要 8-72 位字符",
+    "WEAK_PASSWORD": "密码需要8-72位字符",
     "WRONG_PASSWORD": "当前密码不正确",
-    "VALIDATION_ERROR": "输入有误,请检查后重试",
+    "VALIDATION_ERROR": "输入有误，请检查后重试",
     "SELF_LOCKOUT": "不能对自己的账号执行该操作",
     "LAST_ADMIN": "至少需要保留一位活跃的管理员",
-    "SYSTEM_ROLE_LOCKED": "系统角色受保护,无法这样修改",
-    "ROLE_IN_USE": "该角色仍被用户使用,请先移除用户",
+    "SYSTEM_ROLE_LOCKED": "系统角色受保护，无法这样修改",
+    "ROLE_IN_USE": "该角色仍被用户使用，请先移除用户",
     "ROLE_KEY_TAKEN": "角色标识已存在",
     "NOT_FOUND": "资源不存在",
-    "INTERNAL_ERROR": "服务器开小差了,请稍后重试",
-    "NETWORK_ERROR": "网络连接失败,请确认服务端已启动",
+    "INTERNAL_ERROR": "服务器开小差了，请稍后重试",
+    "NETWORK_ERROR": "网络连接失败，请确认服务端已启动",
     "VISA_FIELD_REQUIRED": "还有必填信息没有填写",
     "VISA_DATES_INVALID": "离开日期需要晚于抵达日期",
     "VISA_TYPE_UNAVAILABLE": "该签注类型暂未开放",
     "VISA_NOT_EDITABLE": "当前状态不能再修改",
-    "VISA_RATE_LIMITED": "操作太频繁,请稍等一分钟再试",
+    "VISA_RATE_LIMITED": "操作太频繁，请稍等一分钟再试",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在审核中的申请",
     "VISA_AVATAR_REQUIRED": "需要至少上传一张头像",
-    "VISA_DRAFT_NOT_READY": "草稿还没建好,请稍候再上传材料",
+    "VISA_DRAFT_NOT_READY": "草稿还没建好，请稍候再上传材料",
     "VISA_INVALID_TRANSITION": "当前状态无法执行该操作",
     "VISA_SUPPLEMENT_EXPIRED": "补件期限已过",
+    "DOC_SUPPLEMENT_EXPIRED": "补件期限已过，无法再补交",
+    "DIP_SUPPLEMENT_EXPIRED": "补件期限已过，无法再补交",
+    "APPEAL_BIZ_NOT_APPEALABLE": "该业务件当前状态不可申诉",
+    "APPEAL_MERGE_MISMATCH": "两件申诉不属于同一用户，不能合并",
+    "RES_CARD_EXISTS": "该用户已有有效居民卡，请先驳回重复的申请",
+    "EVT_CHECKIN_TOO_EARLY": "活动尚未开始，暂不能签到入场",
     "VISA_SUPPLEMENT_EMPTY": "请先上传补件材料或填写说明",
-    "VISA_FILE_TOO_LARGE": "文件太大,单个不超过 5MB",
-    "VISA_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或 PDF",
-    "VISA_TOO_MANY_FILES": "材料数量已达上限(6 个)",
+    "VISA_FILE_TOO_LARGE": "文件太大，单个不超过5MB",
+    "VISA_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或PDF",
+    "VISA_TOO_MANY_FILES": "材料数量已达上限（6个）",
     "VISA_BLACKLISTED": "该账号已被限制申请",
-    "VISA_VERIFY_LIMITED": "验真请求太频繁,请稍后再试",
+    "VISA_VERIFY_LIMITED": "验真请求太频繁，请稍后再试",
     "VISA_REASON_REQUIRED": "请选择驳回原因",
     "VISA_ALREADY_ISSUED": "该申请已签发过签注",
     "VISA_ERASE_BLOCKED": "请先撤销进行中的申请",
     "SERVICE_DISABLED": "服务间接口未启用",
     "SERVICE_FORBIDDEN": "服务令牌无效",
     "DOC_TYPE_UNAVAILABLE": "该文书类型暂不可申请",
-    "DOC_RATE_LIMITED": "操作太频繁了,请明天再试",
+    "DOC_RATE_LIMITED": "操作太频繁了，请明天再试",
     "DOC_DUPLICATE": "存在重复的在途申请或有效文书",
-    "DOC_BLACKLISTED": "账号已被限制申请认证,请联系管理员",
+    "DOC_BLACKLISTED": "账号已被限制申请认证，请联系管理员",
     "DOC_NOT_EDITABLE": "当前状态不可编辑",
     "DOC_INVALID_STATE": "当前状态不允许此操作",
     "DOC_MATERIAL_REQUIRED": "还有必传材料未上传",
-    "DOC_FILE_TOO_LARGE": "文件太大,超出大小限制",
+    "DOC_FILE_TOO_LARGE": "文件太大，超出大小限制",
     "DOC_FILE_TYPE_REJECTED": "文件类型不被支持",
     "DOC_FILE_COUNT_EXCEEDED": "材料数量超出上限",
-    "DOC_VERIFY_LIMIT": "查询太频繁,请稍后再试",
+    "DOC_VERIFY_LIMIT": "查询太频繁，请稍后再试",
     "DOC_TYPE_CODE_TAKEN": "类型编码已存在",
-    "IMM_PORT_CLOSED": "口岸当前不开放申报,请稍后再来",
-    "IMM_DUPLICATE": "你已有一份进行中的申报,请勿重复提交",
-    "IMM_RATE_LIMITED": "操作太频繁啦,休息一下再试",
-    "IMM_BLACKLISTED": "该账号目前被限制申报,请联系管理员",
+    "IMM_PORT_CLOSED": "口岸当前不开放申报，请稍后再来",
+    "IMM_DUPLICATE": "你已有一份进行中的申报，请勿重复提交",
+    "IMM_RATE_LIMITED": "操作太频繁啦，休息一下再试",
+    "IMM_BLACKLISTED": "该账号目前被限制申报，请联系管理员",
     "IMM_INVALID_STATE": "当前状态无法执行此操作",
-    "IMM_VISA_INVALID": "签注无效,请检查编号或重新办理",
-    "IMM_VISA_EXPIRED": "签注已过期,请先续签",
-    "IMM_VISA_REVOKED": "签注已被注销,无法用于入境",
-    "IMM_VISA_USED": "该签注已使用过,不能重复使用",
+    "IMM_VISA_INVALID": "签注无效，请检查编号或重新办理",
+    "IMM_VISA_EXPIRED": "签注已过期，请先续签",
+    "IMM_VISA_REVOKED": "签注已被注销，无法用于入境",
+    "IMM_VISA_USED": "该签注已使用过，不能重复使用",
     "IMM_VISA_NOT_FOUND": "签注署暂无此签注记录",
     "IMM_VISA_REQUIRED": "请先关联有效签注",
-    "IMM_INCOMPLETE": "申报信息不完整,请补全后再提交",
-    "IMM_FILE_TOO_LARGE": "文件超过 5MB 上限",
-    "IMM_FILE_TYPE": "仅支持图片与 PDF 文件",
-    "DIP_RATE_LIMITED": "操作太频繁,请稍后再试",
+    "IMM_INCOMPLETE": "申报信息不完整，请补全后再提交",
+    "IMM_FILE_TOO_LARGE": "文件超过5MB上限",
+    "IMM_FILE_TYPE": "仅支持图片与PDF文件",
+    "DIP_RATE_LIMITED": "操作太频繁，请稍后再试",
     "DIP_INVALID_STATE": "当前状态不允许该操作",
     "DIP_INCOMPLETE": "申请信息不完整",
     "DIP_MATERIAL_REQUIRED": "请至少上传一份材料",
     "DIP_TYPE_CLOSED": "该类型暂未开放申请",
-    "DIP_DUPLICATE": "已有进行中的申请,请勿重复提交",
+    "DIP_DUPLICATE": "已有进行中的申请，请勿重复提交",
     "DIP_BLACKLISTED": "该账号当前被限制提交申请",
     "DIP_RELATION_REQUIRED": "请先关联已建交关系",
     "DIP_RELATION_NOT_ESTABLISHED": "关联的建交关系尚未生效",
     "DIP_TERM_REQUIRED": "请填写任期起止",
-    "DIP_TERM_TOO_LONG": "任期最长 365 天",
+    "DIP_TERM_TOO_LONG": "任期最长365天",
     "DIP_IDENTITY_LIMIT": "同时持有的外交身份已达上限",
-    "DIP_FILE_TOO_LARGE": "文件超过 5MB",
-    "DIP_FILE_TYPE": "仅支持图片与 PDF",
+    "DIP_FILE_TOO_LARGE": "文件超过5MB",
+    "DIP_FILE_TYPE": "仅支持图片与PDF",
     "DIP_NOT_ELIGIBLE": "当前编号不具备资格",
     "RES_FIELD_REQUIRED": "还有必填信息没有填写",
     "RES_PURPOSE_REQUIRED": "请至少选择一个登记用途",
@@ -355,23 +361,23 @@
     "RES_TOO_MANY_ACTIVE": "你有太多进行中的申请",
     "RES_AVATAR_REQUIRED": "需要至少上传一张头像",
     "RES_PROOF_REQUIRED": "该类型需要上传地址证明",
-    "RES_RATE_LIMITED": "操作太频繁,请稍等一分钟再试",
+    "RES_RATE_LIMITED": "操作太频繁，请稍等一分钟再试",
     "RES_INVALID_TRANSITION": "当前状态无法执行该操作",
     "RES_SUPPLEMENT_EXPIRED": "补件期限已过",
     "RES_SUPPLEMENT_EMPTY": "请先上传补件材料或填写说明",
-    "RES_FILE_TOO_LARGE": "文件太大,单个不超过 5MB",
-    "RES_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或 PDF",
-    "RES_TOO_MANY_FILES": "材料数量已达上限(6 个)",
-    "RES_VERIFY_LIMITED": "验真请求太频繁,请稍后再试",
+    "RES_FILE_TOO_LARGE": "文件太大，单个不超过5MB",
+    "RES_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或PDF",
+    "RES_TOO_MANY_FILES": "材料数量已达上限（6个）",
+    "RES_VERIFY_LIMITED": "验真请求太频繁，请稍后再试",
     "RES_REASON_REQUIRED": "请填写原因",
     "RES_ERASE_BLOCKED": "请先撤销进行中的申请",
     "RES_CARD_REQUIRED": "需要先持有居民卡",
     "RES_CHANGE_EMPTY": "没有需要变更的内容",
     "RES_UPGRADE_SAME_TYPE": "已经是该居民类型",
     "RES_TOO_MANY_CHANGES": "待审核的变更申请太多",
-    "EVT_FILE_TOO_LARGE": "文件超过 5 MB 限制",
+    "EVT_FILE_TOO_LARGE": "文件超过5 MB限制",
     "EVT_TOO_MANY_FILES": "材料数量超过上限",
-    "EVT_FILE_TYPE": "不支持的文件类型(仅 PNG/JPG/WebP/PDF)",
+    "EVT_FILE_TYPE": "不支持的文件类型（仅PNG/JPG/WebP/PDF）",
     "EVT_NOT_EDITABLE": "当前状态不可修改",
     "EVT_EVENT_CLOSED": "活动不在报名时间内",
     "EVT_EVENT_FULL": "活动名额已满",
@@ -385,53 +391,53 @@
     "EVT_INVITATION_EVENT": "邀请函不属于该活动",
     "EVT_INVITATION_TYPE": "邀请函类型与活动不匹配",
     "EVT_MATERIAL_REQUIRED": "缺少活动要求的材料",
-    "EVT_EVENT_NOT_FOUND": "活动不存在或已被删除,请刷新后重试",
-    "EVT_INVITEE_NOT_FOUND": "被邀请人的门户账号不存在,请核对用户名",
+    "EVT_EVENT_NOT_FOUND": "活动不存在或已被删除，请刷新后重试",
+    "EVT_INVITEE_NOT_FOUND": "被邀请人的门户账号不存在，请核对用户名",
     "EVT_DUPLICATE": "已存在进行中的记录",
     "EVT_TOO_MANY_ACTIVE": "进行中的报名过多",
     "EVT_INVALID_STATE": "当前状态不允许该操作",
     "EVT_BASIS_INVALID": "资格依据校验未通过",
-    "EVT_RATE_LIMITED": "操作过于频繁,请稍后再试",
+    "EVT_RATE_LIMITED": "操作过于频繁，请稍后再试",
     "EVT_BLACKLISTED": "当前账号已被限制使用本署服务",
     "EVT_PASS_INVALID": "活动凭证状态不允许该操作",
     "EVT_EVENT_CANCELLED": "活动已取消",
-    "EVT_ERASE_BLOCKED": "存在进行中的报名或认证,无法注销",
+    "EVT_ERASE_BLOCKED": "存在进行中的报名或认证，无法注销",
     "EVT_HOST_DUPLICATE": "已有进行中的接待方申请",
     "EVT_TIME_RANGE": "结束时间必须晚于开始时间",
     "VISA_DIP_IDENTITY_REQUIRED": "申请外交签注需持有有效外交身份",
-    "VISA_DIP_IDENTITY_INACTIVE": "申请人当前没有有效外交身份,无法继续",
-    "DOC_BIZ_INVALID": "关联业务编号未通过核验,请确认编号与归属",
-    "DOC_BIZ_NOT_OWNED": "该编号不属于当前账户,无法关联",
+    "VISA_DIP_IDENTITY_INACTIVE": "申请人当前没有有效外交身份，无法继续",
+    "DOC_BIZ_INVALID": "关联业务编号未通过核验，请确认编号与归属",
+    "DOC_BIZ_NOT_OWNED": "该编号不属于当前账户，无法关联",
     "LINKAGE_SOURCE_INVALID": "联动来源无效",
     "LINKAGE_CONSUMER_INVALID": "联动调用方无效",
-    "APPEAL_BIZ_NOT_OWNED": "该业务编号属于其他账号,不能代为申诉",
-    "APPEAL_ALREADY_EVALUATED": "该申诉已评价,不能重复评价。",
+    "APPEAL_BIZ_NOT_OWNED": "该业务编号属于其他账号，不能代为申诉",
+    "APPEAL_ALREADY_EVALUATED": "该申诉已评价，不能重复评价。",
     "APPEAL_ASSIGNEE_INVALID": "分派对象无效或不可用。",
     "APPEAL_BIZ_CODE": "请填写有效的业务编号。",
     "APPEAL_BIZ_TYPE": "业务类型无效。",
     "APPEAL_BLACKLISTED": "你的账号已被限制提交申诉或投诉。",
     "APPEAL_COMPLAINT_CATEGORY": "投诉分类无效。",
     "APPEAL_DUPLICATE": "该业务编号已有在办或已办申诉。",
-    "APPEAL_ERASE_BLOCKED": "存在未完成的申诉或工单,暂不能注销或擦除数据。",
+    "APPEAL_ERASE_BLOCKED": "存在未完成的申诉或工单，暂不能注销或擦除数据。",
     "APPEAL_FIELD_REQUIRED": "请填写必填项。",
     "APPEAL_FILE_TOO_LARGE": "文件超过大小限制。",
     "APPEAL_FILE_TYPE": "文件类型不支持。",
     "APPEAL_INVALID_TRANSITION": "当前状态不允许该操作。",
     "APPEAL_NOT_EDITABLE": "仅草稿可编辑。",
-    "APPEAL_RATE_LIMITED": "操作过于频繁,请稍后再试。",
+    "APPEAL_RATE_LIMITED": "操作过于频繁，请稍后再试。",
     "APPEAL_REASON_REQUIRED": "请填写申诉理由。",
     "APPEAL_REVIEW_EXISTS": "该申诉已申请过复核。",
-    "APPEAL_REVIEW_EXPIRED": "已超过复核窗口,无法申请复核。",
+    "APPEAL_REVIEW_EXPIRED": "已超过复核窗口，无法申请复核。",
     "APPEAL_REVIEW_NOT_ALLOWED": "该申诉状态不允许申请复核。",
     "APPEAL_SUPPLEMENT_EMPTY": "请填写补件说明。",
     "APPEAL_SUPPLEMENT_EXPIRED": "补件期限已过。",
     "APPEAL_TICKET_CATEGORY": "工单分类无效。",
-    "APPEAL_TOO_MANY_ACTIVE": "在办申诉过多,请先完成现有申诉。",
+    "APPEAL_TOO_MANY_ACTIVE": "在办申诉过多，请先完成现有申诉。",
     "APPEAL_TOO_MANY_FILES": "材料数量超过限制。",
-    "APPEAL_VERIFY_LIMITED": "查询过于频繁,请稍后再试。",
+    "APPEAL_VERIFY_LIMITED": "查询过于频繁，请稍后再试。",
     "SETUP_COMPLETE": "首次启动引导已完成，入口已关闭。",
     "ARCH_CONFIRM_REQUIRED": "该操作需要二次确认",
-    "ARCH_EXPORT_LIMIT": "今日导出次数已达上限(每天 3 次),请明天再试",
+    "ARCH_EXPORT_LIMIT": "今日导出次数已达上限（每天3次），请明天再试",
     "ARCH_FIELD_REQUIRED": "必填字段未填写",
     "ARCH_INVALID_STATE": "当前状态不允许该操作",
     "ARCH_REASON_REQUIRED": "请填写不予处理的理由",
@@ -439,48 +445,48 @@
     "ARCH_RULE_UNKNOWN": "未知的记录类型",
     "ARCH_SCOPE_EMPTY": "请至少选择一个记录类型",
     "ARCH_SCOPE_INVALID": "包含未纳档或未知的记录类型",
-    "POST_DAILY_LIMIT": "今日的明信片额度已用完,请明天再试",
+    "POST_DAILY_LIMIT": "今日的明信片额度已用完，请明天再试",
     "POST_RECIPIENT_INVALID": "收件人不存在或已被停用",
     "POST_SELF_SEND": "不能给自己寄明信片哦",
     "POST_INVALID_STATE": "当前状态不允许该操作",
     "POST_CARD_TEMPLATE_UNAVAILABLE": "明信片模板不存在或已停用",
     "POST_CARD_TAKEN_DOWN": "该明信片已被管理员下架",
     "POST_CARD_TEMPLATE_DUPLICATE": "已存在相同编码的明信片模板",
-    "POST_CARD_TEMPLATE_IN_USE": "该明信片模板已被明信片使用,无法删除",
+    "POST_CARD_TEMPLATE_IN_USE": "该明信片模板已被明信片使用，无法删除",
     "POST_TEMPLATE_DUPLICATE": "该来源与类型的通知模板已存在",
     "TOUR_ATTRACTION_NOT_FOUND": "景点不存在或已下线",
     "TOUR_ARTICLE_NOT_FOUND": "文章不存在或已下线",
-    "TOUR_ATTRACTION_CLOSED": "景点关闭中,暂不能打卡",
+    "TOUR_ATTRACTION_CLOSED": "景点关闭中，暂不能打卡",
     "TOUR_ALREADY_CHECKED_IN": "这个景点今天已经打卡过了",
-    "TOUR_DAILY_LIMIT": "今天的打卡次数已达上限,明天再来吧",
-    "TOUR_SITE_LIMIT": "全站今日打卡已达上限,明天再来吧",
+    "TOUR_DAILY_LIMIT": "今天的打卡次数已达上限，明天再来吧",
+    "TOUR_SITE_LIMIT": "全站今日打卡已达上限，明天再来吧",
     "TOUR_DUPLICATE_BADGE_CODE": "已有使用这个识别码的徽章",
     "TOUR_BADGE_NOT_AWARDED": "该用户未获得过这枚徽章",
     "TOUR_BADGE_ALREADY_REVOKED": "这枚徽章已经被回收过了",
     "STAT_REPORT_NOT_FOUND": "年度报告不存在",
-    "STAT_YEAR_INVALID": "年度无效:请填写 2000 至今年之间的整数",
-    "STAT_RATE_LIMITED": "生成太频繁了,请稍后再试(每小时最多 6 次)",
-    "STAT_STATUS_INVALID": "状态筛选值不合法,或来源表没有 status 列",
+    "STAT_YEAR_INVALID": "年度无效：请填写2000至今年之间的整数",
+    "STAT_RATE_LIMITED": "生成太频繁了，请稍后再试（每小时最多6次）",
+    "STAT_STATUS_INVALID": "状态筛选值不合法，或来源表没有status列",
     "STAT_METRIC_TABLE_INVALID": "来源表不在业务表白名单内",
     "STAT_METRIC_CODE_EXISTS": "指标代码已存在",
     "STAT_METRIC_NOT_FOUND": "统计口径不存在",
-    "STAT_EXPORT_EMPTY": "没有可导出的指标,请先勾选",
+    "STAT_EXPORT_EMPTY": "没有可导出的指标，请先勾选",
     "EDU_UNKNOWN_TARGET": "未知的内容类型",
-    "EDU_INVALID_STATE": "当前状态不允许该操作,请刷新后重试",
+    "EDU_INVALID_STATE": "当前状态不允许该操作，请刷新后重试",
     "EDU_NOT_PUBLISHED": "内容不存在或尚未发布",
     "EDU_UNKNOWN_CATEGORY": "分类不存在或已停用",
-    "EDU_RELATED_LIMIT": "关联词条最多 6 个",
+    "EDU_RELATED_LIMIT": "关联词条最多6个",
     "EDU_RELATED_INVALID": "关联的词条不存在",
     "EDU_INCOMPLETE": "标题和正文填写完整后才能提交审核",
     "EDU_REVIEW_NOTE_REQUIRED": "驳回时必须填写审核意见",
-    "EDU_TASK_CODE_TAKEN": "任务代码已被使用,请换一个",
-    "DOC_BIZ_ALREADY_CERTIFIED": "该关联业务已出具有效文书,不能重复认证"
+    "EDU_TASK_CODE_TAKEN": "任务代码已被使用，请换一个",
+    "DOC_BIZ_ALREADY_CERTIFIED": "该关联业务已出具有效文书，不能重复认证"
   },
   "portal": {
-    "tagline": "这里是奶龙统一门户,所有服务从这里出发",
+    "tagline": "这里是奶龙统一门户，所有服务从这里出发",
     "services": "服务入口",
-    "servicesEmpty": "还没有可用的服务,请联系管理员",
-    "servicesLoadFailed": "服务列表加载失败,请检查网络后重试",
+    "servicesEmpty": "还没有可用的服务，请联系管理员",
+    "servicesLoadFailed": "服务列表加载失败，请检查网络后重试",
     "myRoles": "我的角色",
     "serviceCount": "可用服务",
     "permissionCount": "我的权限",
@@ -488,7 +494,7 @@
       "title": "单点登录身份确认",
       "confirm": "确认并进入",
       "service": "即将以当前门户身份进入「{{name}}」。",
-      "tip": "确认进入后,该服务会读取你的门户账号身份用于办理业务与投递站内通知;你可以随时在个人资料页退出登录。"
+      "tip": "确认进入后，该服务会读取你的门户账号身份用于办理业务与投递站内通知；你可以随时在个人资料页退出登录。"
     }
   },
   "profile": {
@@ -513,7 +519,7 @@
       "roles": "角色",
       "resetPassword": "重置密码",
       "newPasswordTip": "留空表示不修改密码",
-      "deleteConfirm": "确定要删除用户 {{name}} 吗?",
+      "deleteConfirm": "确定要删除用户{{name}}吗？",
       "keepStatus": "账号状态"
     },
     "roles": {
@@ -525,7 +531,7 @@
       "name": "角色名称",
       "permissions": "权限",
       "userCount": "用户数",
-      "deleteConfirm": "确定要删除角色 {{name}} 吗?",
+      "deleteConfirm": "确定要删除角色{{name}}吗？",
       "adminLockedTip": "管理员角色始终拥有全部权限",
       "group": {
         "portal": "门户",
@@ -552,21 +558,21 @@
       "create": "注册服务",
       "edit": "编辑服务",
       "url": "服务地址",
-      "urlTip": "内置服务填站内路径(如 /visa),外部服务填完整链接。",
+      "urlTip": "内置服务填站内路径（如 /visa），外部服务填完整链接。",
       "urlPlaceholder": "https://example.com 或 /visa",
-      "urlInvalid": "请填写以 / 开头的站内路径,或 http(s):// 开头的完整链接",
+      "urlInvalid": "请填写以 / 开头的站内路径，或http(s):// 开头的完整链接",
       "icon": "图标",
       "color": "颜色",
       "requiredPermission": "所需权限",
       "requiredPermissionTip": "留空表示所有登录用户可见",
       "entryMode": "进入方式",
-      "entryModeTip": "决定门户卡片如何打开该服务:外链在新标签页打开,站内直接进入,单点登录先确认身份",
+      "entryModeTip": "决定门户卡片如何打开该服务：外链在新标签页打开，站内直接进入，单点登录先确认身份",
       "entryModeType": {
         "external": "外链新开",
         "internal": "站内直接进入",
         "internal_sso": "站内单点登录"
       },
-      "deleteConfirm": "确定要删除服务 {{name}} 吗?",
+      "deleteConfirm": "确定要删除服务{{name}}吗？",
       "iconName": {
         "RocketIcon": "火箭",
         "BookIcon": "书本",
@@ -623,8 +629,8 @@
       "holderSource": "持有证件署",
       "holderKind": "证件种类",
       "effect": "互认方式",
-      "benefit": "权益说明(简体)",
-      "benefitTw": "权益说明(繁体)",
+      "benefit": "权益说明（简体）",
+      "benefitTw": "权益说明（繁体）",
       "empty": "暂无互认规则",
       "created": "规则已创建",
       "updated": "规则已更新",
@@ -645,7 +651,7 @@
         "priority": "优先办理"
       },
       "holderKindPlaceholder": "留空表示不限证件种类",
-      "holderKindTip": "常用值:card(居民证)、permit(签注)、identity(外交身份)"
+      "holderKindTip": "常用值：card（居民证）、permit（签注）、identity（外交身份）"
     }
   },
   "visa": {
@@ -654,10 +660,7 @@
     "back": "返回",
     "backHome": "回首页",
     "sso": {
-      "title": "单点登录身份确认",
-      "confirm": "确认并进入",
-      "tip": "进入服务后,你的门户身份将用于签注申请与站内通知。你可以随时在个人资料页退出登录。",
-      "portalTip": "奶龙统一门户将以当前身份单点登录进入该服务。"
+      "tip": "进入服务后，你的门户身份将用于签注申请与站内通知。你可以随时在个人资料页退出登录。"
     },
     "nav": {
       "home": "署内首页",
@@ -674,27 +677,27 @@
     },
     "home": {
       "heroTitle": "欢迎来到签注申请署",
-      "heroSub": "办好虚拟签注,奶龙岛说走就走。当前开放:旅游签注",
+      "heroSub": "办好虚拟签注，奶龙岛说走就走。当前开放：旅游签注",
       "applyEntry": "开始申请",
       "progressEntry": "我的申请",
       "verifyEntry": "验真中心",
       "scamTitle": "防诈骗提示",
-      "scamBody": "本署办证完全免费。任何\"收费办证\"\"承诺签注有现实效力\"的行为都是诈骗,请立即举报。",
+      "scamBody": "本署办证完全免费。任何\"收费办证\"\"承诺签注有现实效力\"的行为都是诈骗，请立即举报。",
       "notices": "署内公告",
       "types": "签注类型",
       "guide": "办事指南",
       "guideCondition": "申请条件",
-      "guideConditionBody": "凡奶龙统一门户注册用户均可申请。本平台不核验真实身份,请用昵称与虚构信息填写。",
+      "guideConditionBody": "持奶龙统一门户账号即可申请。本平台不核验真实身份，请用昵称与虚构信息填写。",
       "guideMaterials": "所需材料",
-      "guideMaterialsBody": "头像照片(必传)、行程说明(必填)、邀请函或活动凭证(选填,图片或 PDF)。",
+      "guideMaterialsBody": "头像照片（必传）、行程说明（必填）、邀请函或活动凭证（选填，图片或PDF）。",
       "guideDuration": "审核时长",
-      "guideDurationBody": "提交后约 {{hours}} 小时内完成审核,请留意站内信通知。",
+      "guideDurationBody": "提交后约{{hours}}小时内完成审核，请留意站内信通知。",
       "guideValidity": "有效期说明",
-      "guideValidityBody": "签发后 {{days}} 天内有效,单次最长停留 {{stay}} 天,过期自动失效。",
+      "guideValidityBody": "签发后{{days}}天内有效，单次最长停留{{stay}}天，过期自动失效。",
       "faq": "常见问题",
-      "supportTip": "还有疑问?给署里发一封站内信吧:",
+      "supportTip": "还有疑问？给署里发一封站内信吧：",
       "tourismTitle": "岛上游玩推荐",
-      "tourismSub": "与文化旅游署联动:办签注之余,看看这些正在开放的景点。",
+      "tourismSub": "与文化旅游署联动：办签注之余，看看这些正在开放的景点。",
       "tourismAll": "去文化旅游署看看"
     },
     "typeAvail": {
@@ -708,8 +711,8 @@
       "food": "美食"
     },
     "typeMeta": {
-      "stay": "单次停留 {{days}} 天",
-      "valid": "有效期 {{days}} 天",
+      "stay": "单次停留{{days}}天",
+      "valid": "有效期{{days}}天",
       "stayShort": "停留天数",
       "validShort": "有效天数",
       "renewable": {
@@ -720,37 +723,37 @@
     },
     "faq": {
       "reject": {
-        "q": "为什么会被驳回?",
-        "a": "常见原因:材料不全、行程说明太含糊、信息前后矛盾。按驳回原因补齐后可以重新申请。"
+        "q": "为什么会被驳回？",
+        "a": "常见原因：材料不全、行程说明太含糊、信息前后矛盾。按驳回原因补齐后可以重新申请。"
       },
       "fee": {
-        "q": "办签注要收费吗?",
-        "a": "完全免费。奶龙国签证费用由奶龙本龙承担(它很有钱)。任何收费办证都是诈骗。"
+        "q": "办签注要收费吗？",
+        "a": "完全免费。奶龙国签证费用由奶龙本龙承担（它很有钱）。任何收费办证都是诈骗。"
       },
       "real": {
-        "q": "签注可以在现实中使用吗?",
-        "a": "不可以。本签注是虚构娱乐作品,不具任何现实效力,不能用于任何现实口岸、机场或场合。"
+        "q": "签注可以在现实中使用吗？",
+        "a": "不可以。本签注是虚构娱乐作品，不具任何现实效力，不能用于任何现实口岸、机场或场合。"
       },
       "duration": {
-        "q": "审核要多久?",
-        "a": "一般 72 小时内完成。补件期间需在截止时间前补交,超时申请会自动关闭。"
+        "q": "审核要多久？",
+        "a": "一般72小时内完成。补件期间需在截止时间前补交，超时申请会自动关闭。"
       },
       "port": {
-        "q": "到达皇家口岸时怎么通关?",
-        "a": "皇家口岸入境署(建设中)将直接在线校验你的签注编号,通关后签注会自动标记为已使用。"
+        "q": "到达皇家口岸时怎么通关？",
+        "a": "皇家口岸入境署（建设中）将直接在线校验你的签注编号，通关后签注会自动标记为已使用。"
       }
     },
     "applyGuide": {
       "title": "{{name}} · 申请前引导",
-      "typeUnavailable": "该签注类型暂未开放,先看看其他类型吧",
+      "typeUnavailable": "该签注类型暂未开放，先看看其他类型吧",
       "materialsTitle": "材料清单",
-      "materialAvatar": "头像照片 1 张(必传,图片格式)",
-      "materialItinerary": "行程说明(必填,写清楚打算去哪玩)",
-      "materialInvitation": "邀请函 / 活动凭证(选填,后续开放邀请方功能)",
-      "materialFormat": "支持 PNG / JPG / WebP / PDF,单个不超过 5MB,最多 6 个文件",
+      "materialAvatar": "头像照片1张（必传，图片格式）",
+      "materialItinerary": "行程说明（必填，写清楚打算去哪玩）",
+      "materialInvitation": "邀请函 / 活动凭证（选填，后续开放邀请方功能）",
+      "materialFormat": "支持PNG / JPG / WebP / PDF，单个不超过5MB，最多6个文件",
       "quizTitle": "申请资格自检",
-      "quizHint": "趣味三连问,答完就能出发(本平台不核验真实身份)",
-      "quizDone": "自检完成,看起来你很适合来奶龙岛!",
+      "quizHint": "趣味三连问，答完就能出发（本平台不核验真实身份）",
+      "quizDone": "自检完成，看起来你很适合来奶龙岛！",
       "agreementTitle": "隐私政策与用户协议",
       "agreePrivacy": "我已阅读并同意《隐私政策》",
       "agreeTerms": "我已阅读并同意《用户协议》",
@@ -758,30 +761,30 @@
     },
     "quiz": {
       "identity": {
-        "q": "你准备以什么身份来到奶龙国?",
+        "q": "你准备以什么身份来到奶龙国？",
         "yes": "一个可爱的虚构角色",
         "no": "我就是现实中的我"
       },
       "verification": {
-        "q": "你了解本平台不核验真实身份吗?",
-        "yes": "了解,这是娱乐平台",
+        "q": "你了解本平台不核验真实身份吗？",
+        "yes": "了解，这是娱乐平台",
         "no": "以为要查户口"
       },
       "usage": {
-        "q": "你承诺不会把签注用于现实用途吗?",
-        "yes": "承诺,只在奶龙国玩",
+        "q": "你承诺不会把签注用于现实用途吗？",
+        "yes": "承诺，只在奶龙国玩",
         "no": "想拿去机场试试"
       }
     },
     "form": {
       "title": "在线申请表",
-      "draftNo": "草稿编号:{{no}}",
+      "draftNo": "草稿编号：{{no}}",
       "nickname": "昵称",
       "nicknamePlaceholder": "在奶龙国怎么称呼你",
       "contact": "联系方式",
       "contactPlaceholder": "站内信或邮箱",
       "virtualId": "虚拟身份信息",
-      "virtualIdPlaceholder": "例如:NL-8888(选填)",
+      "virtualIdPlaceholder": "例如：NL-8888（选填）",
       "purpose": "访问目的",
       "purposePlaceholder": "观光 / 度假 / 打卡奶龙雕像…",
       "planArrive": "计划抵达",
@@ -789,28 +792,28 @@
       "datePlaceholder": "选择日期",
       "datesInvalid": "离开日期要晚于抵达日期",
       "itinerary": "行程说明",
-      "itineraryPlaceholder": "D1 海滩晒太阳;D2 图鉴馆;D3 看流星雨…",
+      "itineraryPlaceholder": "D1海滩晒太阳；D2图鉴馆；D3看流星雨…",
       "inviterName": "邀请人 / 接待方",
       "inviterContact": "邀请人联系方式",
       "companions": "随行人员",
-      "companionsPlaceholder": "例如:奶龙宝宝 ×2(选填)",
+      "companionsPlaceholder": "例如：奶龙宝宝 ×2（选填）",
       "materialsTitle": "材料上传",
-      "materialsTip": "头像必传;其余材料可选。支持图片与 PDF,单个不超过 5MB。",
-      "avatarRequired": "请先上传头像材料,再提交申请",
-      "draftPreparing": "草稿准备中,稍候即可上传材料…",
+      "materialsTip": "头像必传；其余材料可选。支持图片与PDF，单个不超过5MB。",
+      "avatarRequired": "请先上传头像材料，再提交申请",
+      "draftPreparing": "草稿准备中，稍候即可上传材料…",
       "materialAvatar": "头像",
-      "materialOther": "其他材料(邀请函、活动凭证等)",
+      "materialOther": "其他材料（邀请函、活动凭证等）",
       "uploadAvatar": "上传头像",
-      "uploadOther": "点击或拖拽上传,支持多份",
+      "uploadOther": "点击或拖拽上传，支持多份",
       "saveDraft": "保存草稿",
       "draftSaved": "草稿已保存",
       "submit": "提交申请",
       "submitSuccess": "申请已提交",
       "confirmTitle": "提交前确认",
-      "materialsCount": "已上传 {{count}} 份材料",
-      "submittedTitle": "提交成功!",
-      "submittedNo": "申请编号:{{no}}",
-      "submittedHint": "预计 {{hours}} 小时内完成审核,结果将通过站内信通知。请保存好申请编号,可在验真中心查询进度。",
+      "materialsCount": "已上传{{count}}份材料",
+      "submittedTitle": "提交成功！",
+      "submittedNo": "申请编号：{{no}}",
+      "submittedHint": "预计{{hours}}小时内完成审核，结果将通过站内信通知。请保存好申请编号，可在验真中心查询进度。",
       "viewMyApplications": "查看我的申请"
     },
     "materialKind": {
@@ -864,55 +867,55 @@
       "withdraw": "撤销申请",
       "withdrawn": "已撤销",
       "withdrawConfirmTitle": "撤销申请",
-      "withdrawConfirmBody": "确定要撤销申请 {{no}} 吗?撤销后不能恢复。",
+      "withdrawConfirmBody": "确定要撤销申请{{no}}吗？撤销后不能恢复。",
       "draftDeleted": "草稿已删除",
       "export": "导出记录",
-      "empty": "还没有申请,去办一张旅游签注吧",
+      "empty": "还没有申请，去办一张旅游签注吧",
       "preview": "预览"
     },
     "detail": {
       "title": "申请详情",
-      "rejectTitle": "很遗憾,申请被驳回了",
+      "rejectTitle": "很遗憾，申请被驳回了",
       "closedTitle": "申请已关闭",
-      "closedBody": "补件期限已过,申请自动关闭。可以按原类型重新申请。",
+      "closedBody": "补件期限已过，申请自动关闭。可以按原类型重新申请。",
       "permitReady": "电子签注已签发",
       "materials": "材料",
       "reviews": "审核记录",
       "noReviews": "还没有审核记录",
       "supplementTitle": "补件",
-      "supplementDeadline": "补件截止:{{time}}",
-      "supplementAsk": "审核员要求:",
+      "supplementDeadline": "补件截止：{{time}}",
+      "supplementAsk": "审核员要求：",
       "uploadSupplement": "点击或拖拽上传补件材料",
-      "supplementNotePlaceholder": "补件说明(选填)",
+      "supplementNotePlaceholder": "补件说明（选填）",
       "submitSupplement": "提交补件",
-      "supplementSent": "补件已提交,重新进入审核",
+      "supplementSent": "补件已提交，重新进入审核",
       "reapply": "重新申请",
-      "print": "打印 / 导出 PDF"
+      "print": "打印 / 导出PDF"
     },
     "permit": {
       "title": "我的签注",
-      "empty": "还没有签注。申请通过并签发后,电子签注会出现在这里。",
-      "electronic": "电子签注 Electronic Endorsement",
+      "empty": "还没有签注。申请通过并签发后，电子签注会出现在这里。",
+      "electronic": "电子签注Electronic Endorsement",
       "noLabel": "签注编号",
-      "no": "签注编号:{{no}}",
+      "no": "签注编号：{{no}}",
       "holder": "持有人",
       "issuedAt": "签发日期",
       "validUntil": "有效期至",
       "issuer": "签发机构",
-      "print": "打印 / 保存 PDF",
+      "print": "打印 / 保存PDF",
       "verifyLink": "打开验真链接",
       "copyLink": "复制验真链接",
       "toImmigration": "去入境申报",
       "linkCopied": "验真链接已复制",
-      "meta": "本签注由奶龍國簽註申請署于 {{time}} 签发,验真请前往验真中心。"
+      "meta": "本签注由奶龍國簽註申請署于{{time}}签发，验真请前往验真中心。"
     },
     "verify": {
       "title": "签注验真中心",
-      "subtitle": "输入签注编号或申请编号,即时校验签注状态(结果已脱敏,不含个人信息)",
-      "placeholder": "例如:NLT-261025-XXXXXXXX",
+      "subtitle": "输入签注编号或申请编号，即时校验签注状态（结果已脱敏，不含个人信息）",
+      "placeholder": "例如：NLT-261025-XXXXXXXX",
       "action": "验真",
-      "limitTip": "为防枚举,同一来源每 5 分钟最多查询 30 次",
-      "notFound": "没有查到对应签注。请核对编号,或联系持有人确认。"
+      "limitTip": "为防枚举，同一来源每5分钟最多查询30次",
+      "notFound": "没有查到对应签注。请核对编号，或联系持有人确认。"
     },
     "msgType": {
       "submitted": "提交成功",
@@ -932,60 +935,60 @@
     },
     "msg": {
       "submitted": {
-        "title": "申请 {{appNo}} 已提交",
-        "body": "你的签注申请已进入审核队列,预计 {{hours}} 小时内完成。"
+        "title": "申请{{appNo}}已提交",
+        "body": "你的签注申请已进入审核队列，预计{{hours}}小时内完成。"
       },
       "supplement_required": {
-        "title": "申请 {{appNo}} 需要补件",
-        "body": "审核员留言:{{comment}}。请在 {{deadline}} 前补交材料,超时申请将自动关闭。"
+        "title": "申请{{appNo}}需要补件",
+        "body": "审核员留言：{{comment}}。请在{{deadline}}前补交材料，超时申请将自动关闭。"
       },
       "approved": {
-        "title": "申请 {{appNo}} 审核通过",
-        "body": "恭喜!申请已通过审核,等待签发电子签注。"
+        "title": "申请{{appNo}}审核通过",
+        "body": "恭喜！申请已通过审核，等待签发电子签注。"
       },
       "rejected": {
-        "title": "申请 {{appNo}} 被驳回",
-        "body": "驳回原因:{{reason}}。查看详情了解说明,可以重新申请。"
+        "title": "申请{{appNo}}被驳回",
+        "body": "驳回原因：{{reason}}。查看详情了解说明，可以重新申请。"
       },
       "issued": {
         "title": "电子签注已签发",
-        "body": "签注编号 {{visaNo}}(申请 {{appNo}}),有效期至 {{validUntil}}。到我的签注查看或下载。"
+        "body": "签注编号{{visaNo}}（申请{{appNo}}），有效期至{{validUntil}}。到我的签注查看或下载。"
       },
       "used": {
-        "title": "签注 {{visaNo}} 已使用",
-        "body": "该签注已在皇家口岸通关时核销,不能再次使用。"
+        "title": "签注{{visaNo}}已使用",
+        "body": "该签注已在皇家口岸通关时核销，不能再次使用。"
       },
       "voided": {
-        "title": "签注 {{visaNo}} 已注销",
-        "body": "签注已被签发机构注销,如有疑问请联系署里。"
+        "title": "签注{{visaNo}}已注销",
+        "body": "签注已被签发机构注销，如有疑问请联系署里。"
       },
       "expired": {
-        "title": "签注 {{visaNo}} 已过期",
-        "body": "签注超过有效期,自动失效。需要的话可以重新申请。"
+        "title": "签注{{visaNo}}已过期",
+        "body": "签注超过有效期，自动失效。需要的话可以重新申请。"
       },
       "closed": {
-        "title": "申请 {{appNo}} 已关闭",
-        "body": "补件期限已过,申请自动关闭。可以重新申请。"
+        "title": "申请{{appNo}}已关闭",
+        "body": "补件期限已过，申请自动关闭。可以重新申请。"
       },
       "withdrawn": {
-        "title": "申请 {{appNo}} 已撤销",
+        "title": "申请{{appNo}}已撤销",
         "body": "你已撤销该申请。"
       },
       "expiry_reminder": {
-        "title": "签注 {{visaNo}} 即将到期",
-        "body": "签注将在 72 小时内到期,注意安排行程。"
+        "title": "签注{{visaNo}}即将到期",
+        "body": "签注将在72小时内到期，注意安排行程。"
       },
       "system": {
         "title": "系统通知",
-        "body": "你有一条新的站内消息,请登录门户查看。"
+        "body": "你有一条新的站内消息，请登录门户查看。"
       },
       "appeal_reopened": {
-        "title": "申诉复核:申请 {{appNo}} 重新审核",
-        "body": "皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),申请 {{appNo}} 已重新进入审核队列。"
+        "title": "申诉复核：申请{{appNo}}重新审核",
+        "body": "皇家申诉与监察署已撤销原驳回决定（决定书{{decisionCode}}），申请{{appNo}}已重新进入审核队列。"
       },
       "diplomatic_voided": {
-        "title": "签注 {{visaNo}} 已随外交身份失效注销",
-        "body": "你的外交身份已失效,关联的外交签注 {{visaNo}} 已同步注销。如需继续使用请重新登记外交身份并申请签注。"
+        "title": "签注{{visaNo}}已随外交身份失效注销",
+        "body": "你的外交身份已失效，关联的外交签注{{visaNo}}已同步注销。如需继续使用请重新登记外交身份并申请签注。"
       }
     },
     "msgs": {
@@ -998,11 +1001,11 @@
       "allStatus": "全部状态",
       "allTypes": "全部类型",
       "searchPlaceholder": "搜索编号 / 昵称",
-      "queueEmpty": "队列为空,去喝杯椰子汁吧",
-      "commentLabel": "审核意见(选填)",
+      "queueEmpty": "队列为空，去喝杯椰子汁吧",
+      "commentLabel": "审核意见（选填）",
       "rejectReasonLabel": "驳回原因",
-      "supplementDaysLabel": "补件期限(天)",
-      "validDaysLabel": "签注有效期(天,留空用类型默认)",
+      "supplementDaysLabel": "补件期限（天）",
+      "validDaysLabel": "签注有效期（天，留空用类型默认）",
       "actions": {
         "approve": "通过",
         "reject": "驳回",
@@ -1011,7 +1014,7 @@
         "void": "注销签注",
         "markUsed": "标记已使用"
       },
-      "typesTip": "签注类型决定有效期与停留天数;新类型默认开放,可手动停用",
+      "typesTip": "签注类型决定有效期与停留天数；新类型默认开放，可手动停用",
       "typesCreate": "新建签注类型",
       "typesEdit": "编辑签注类型",
       "typesGuide": "申请指南",
@@ -1022,10 +1025,10 @@
       "noticeLevel": "公告级别",
       "configAppNoPrefix": "申请编号前缀",
       "configVisaNoPrefix": "签注编号前缀",
-      "configSupplementDays": "默认补件期限(天)",
-      "configReviewHours": "预计审核时长(小时,展示用)",
-      "configVerifyLimit": "验真限流(次 / 5 分钟 / IP)",
-      "userId": "用户 ID",
+      "configSupplementDays": "默认补件期限（天）",
+      "configReviewHours": "预计审核时长（小时，展示用）",
+      "configVerifyLimit": "验真限流（次 / 5分钟 / IP）",
+      "userId": "用户ID",
       "blacklistReason": "限制原因",
       "blacklistAdd": "加入限制名单",
       "workbench": {
@@ -1040,14 +1043,14 @@
       },
       "stats": {
         "title": "统计与报表",
-        "export": "导出申请 CSV",
+        "export": "导出申请CSV",
         "submitted": "累计提交",
         "approvalRate": "通过率",
         "rejectRate": "驳回率",
         "supplementRate": "补件率",
         "avgReviewHours": "平均审核时长",
         "verifyToday": "今日验真",
-        "verifyTotal": "累计验真 {{total}} 次",
+        "verifyTotal": "累计验真{{total}}次",
         "byStatus": "申请状态分布",
         "byType": "签注类型分布",
         "rejectReasons": "常见驳回原因",
@@ -1055,7 +1058,7 @@
         "verifyLogs": "验真记录"
       },
       "verifyQuery": "查询内容",
-      "verifyIp": "来源 IP",
+      "verifyIp": "来源IP",
       "verifyResult": "结果",
       "verifyResult_valid": "命中 · 有效",
       "verifyResult_used": "命中 · 已使用",
@@ -1099,11 +1102,11 @@
         "detailValidUntil": "有效期至",
         "detailEnabled": "公告状态"
       },
-      "noticeDeleteConfirm": "确定删除公告「{{title}}」吗?",
+      "noticeDeleteConfirm": "确定删除公告「{{title}}」吗？",
       "blacklistRemove": "移出限制名单",
-      "blacklistRemoveConfirm": "确定将 {{user}} 移出限制名单吗?",
+      "blacklistRemoveConfirm": "确定将{{user}}移出限制名单吗？",
       "blacklistRemoved": "已移出限制名单",
-      "typesCodePh": "类型编码,如 TOURIST"
+      "typesCodePh": "类型编码，如TOURIST"
     }
   },
   "errors": {
@@ -1115,7 +1118,7 @@
   },
   "docs": {
     "title": "奶龙国皇家文书与认证署",
-    "subtitle": "欢迎来到皇家文书与认证署,{{name}}!在这里为你的冒险出具认证。",
+    "subtitle": "欢迎来到皇家文书与认证署，{{name}}！在这里为你的冒险出具认证。",
     "tab": {
       "home": "署内首页",
       "types": "文书类型",
@@ -1171,7 +1174,8 @@
       "cert_revoked": "撤销文书",
       "cert_marked_used": "标注已使用",
       "cert_regenerated": "补发文书",
-      "auto_expired": "到期自动失效"
+      "auto_expired": "到期自动失效",
+      "auto_closed": "补件超时自动关闭"
     },
     "filter": {
       "all": "全部",
@@ -1185,7 +1189,7 @@
     },
     "home": {
       "welcome": "皇家文书与认证署",
-      "tagline": "邀请函、签注、居民卡、活动凭证……你的每一段冒险,都值得一份盖章的纪念。",
+      "tagline": "邀请函、签注、居民卡、活动凭证……你的每一段冒险，都值得一份盖章的纪念。",
       "quick": {
         "apply": "申请认证",
         "certificates": "我的文书",
@@ -1193,52 +1197,52 @@
         "faq": "常见问题"
       },
       "antifraudTitle": "防诈骗提示",
-      "antifraudBody": "本署认证完全免费:不收取任何费用、不承诺任何现实效力。任何自称\"收费代办认证\"的行为都是诈骗。",
+      "antifraudBody": "本署认证完全免费：不收取任何费用、不承诺任何现实效力。任何自称\"收费代办认证\"的行为都是诈骗。",
       "notices": "署内公告",
       "catalog": "服务目录",
       "guide": "办事指南与常见问题",
-      "faq1q": "哪些文书可以认证?",
-      "faq1a": "目前开放七类:签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书与申诉决定书。进入\"文书类型\"页可以查看每类的适用场景、所需材料与有效期。",
-      "faq2q": "认证需要准备什么材料?",
-      "faq2a": "通常需要对应业务的凭证截图(如签注详情页、活动门票),部分类型需要邀请函扫描件。全部材料仅支持图片或 PDF,单个不超过 10MB。",
-      "faq3q": "认证通过后有什么用?",
-      "faq3a": "你会获得一份带唯一编号与电子印章的认证文书,可以在验真中心被任何人查验,用于展示、收藏或作为其他活动的报名凭证(娱乐用途)。",
-      "faq4q": "认证大概需要多久?",
-      "faq4a": "提交后进入待认证队列,材料齐全通常 72 小时内完成;如需补件会发送站内信,请在 7 天内补交,逾期申请将自动关闭。"
+      "faq1q": "哪些文书可以认证？",
+      "faq1a": "目前开放七类：签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书与申诉决定书。进入\"文书类型\"页可以查看每类的适用场景、所需材料与有效期。",
+      "faq2q": "认证需要准备什么材料？",
+      "faq2a": "通常需要对应业务的凭证截图（如签注详情页、活动门票），部分类型需要邀请函扫描件。全部材料仅支持图片或PDF，单个不超过10MB。",
+      "faq3q": "认证通过后有什么用？",
+      "faq3a": "你会获得一份带唯一编号与电子印章的认证文书，可以在验真中心被任何人查验，用于展示、收藏或作为其他活动的报名凭证（娱乐用途）。",
+      "faq4q": "认证大概需要多久？",
+      "faq4a": "提交后进入待认证队列，材料齐全通常72小时内完成；如需补件会发送站内信，请在7天内补交，逾期申请将自动关闭。"
     },
     "types": {
       "title": "文书类型",
-      "validityDays": "{{days}} 天内有效",
+      "validityDays": "{{days}}天内有效",
       "bizLabel": "关联{{label}}",
       "guideTitle": "办事指南",
       "guideEmpty": "该类型指南整理中。",
       "materialsTitle": "材料清单",
-      "materialRule": "最多 {{count}} 个,单个 ≤ {{mb}}MB,图片或 PDF",
+      "materialRule": "最多{{count}}个，单个 ≤ {{mb}}MB，图片或PDF",
       "materialsEmpty": "该类型无需上传材料。",
       "formTitle": "需要填写的信息",
       "noBiz": "无需关联业务编号",
       "shownTitle": "认证后展示的字段",
-      "shownBody": "认证文书会展示:文书编号、文书类型、持有人昵称、关联业务编号、认证机构、认证日期与有效期。验真查询只返回脱敏信息,不含昵称与业务编号。",
+      "shownBody": "认证文书会展示：文书编号、文书类型、持有人昵称、关联业务编号、认证机构、认证日期与有效期。验真查询只返回脱敏信息，不含昵称与业务编号。",
       "faqTitle": "常见问题",
-      "faq1q": "认证文书具有现实效力吗?",
-      "faq1a": "没有。所有文书都是虚构娱乐设定,仅代表奶龙国虚拟世界内的成就,不能用于任何现实证明。",
-      "faq2q": "关联业务编号填错了怎么办?",
-      "faq2a": "草稿阶段可以随时修改;已提交的申请如被驳回,可以按驳回原因重新申请。请在提交前仔细核对编号。",
-      "faq3q": "我可以同时有多份同类文书吗?",
-      "faq3a": "同一类型+同一关联业务编号只会有一份在途或有效的文书;不同业务编号可以分别认证。"
+      "faq1q": "认证文书具有现实效力吗？",
+      "faq1a": "没有。所有文书都是虚构娱乐设定，仅代表奶龙国虚拟世界内的成就，不能用于任何现实证明。",
+      "faq2q": "关联业务编号填错了怎么办？",
+      "faq2a": "草稿阶段可以随时修改；已提交的申请如被驳回，可以按驳回原因重新申请。请在提交前仔细核对编号。",
+      "faq3q": "我可以同时有多份同类文书吗？",
+      "faq3a": "同一类型+同一关联业务编号只会有一份在途或有效的文书；不同业务编号可以分别认证。"
     },
     "apply": {
       "title": "申请文书认证",
       "start": "去申请认证",
-      "step1": "第 1 步 · 选择文书类型",
-      "step2": "第 2 步 · 填写申请信息",
-      "step3": "第 3 步 · 上传材料",
+      "step1": "第1步 · 选择文书类型",
+      "step2": "第2步 · 填写申请信息",
+      "step3": "第3步 · 上传材料",
       "nickname": "申请人昵称",
       "nicknamePh": "将展示在认证文书上",
       "contact": "联系方式",
-      "contactPh": "选填,仅认证员可见",
+      "contactPh": "选填，仅认证员可见",
       "bizPh": "填写关联业务编号",
-      "bizHint": "可在对应业务署的详情页找到;提交时会与对应业务署实时校验。",
+      "bizHint": "可在对应业务署的详情页找到；提交时会与对应业务署实时校验。",
       "purpose": "认证用途",
       "required": "必填",
       "upload": "上传材料",
@@ -1246,20 +1250,20 @@
       "saveDraft": "保存草稿",
       "submit": "提交认证",
       "draftSaved": "草稿已保存",
-      "submitted": "已提交!认证申请编号:{{no}}",
-      "draftNo": "当前草稿编号:{{no}}",
+      "submitted": "已提交！认证申请编号：{{no}}",
+      "draftNo": "当前草稿编号：{{no}}",
       "needType": "请先选择文书类型",
       "nicknameRequired": "请填写申请人昵称",
       "bizRequired": "请填写{{label}}",
       "fieldRequired": "请填写「{{label}}」",
       "materialRequired": "请上传「{{label}}」",
-      "typeLocked": "草稿已创建,类型不可更改;如需其他类型请新建申请。",
+      "typeLocked": "草稿已创建，类型不可更改；如需其他类型请新建申请。",
       "confirmTitle": "提交前确认",
-      "confirmTip": "请核对以下信息;提交后将进入认证队列,草稿信息将被锁定。",
+      "confirmTip": "请核对以下信息；提交后将进入认证队列，草稿信息将被锁定。",
       "confirmSubmit": "确认提交",
       "type": "文书类型",
-      "fileTypeBad": "文件类型不符,仅支持:{{accept}}",
-      "fileTooLarge": "文件超过 {{mb}}MB 限制",
+      "fileTypeBad": "文件类型不符，仅支持：{{accept}}",
+      "fileTooLarge": "文件超过{{mb}}MB限制",
       "supplementOrigin": "补件"
     },
     "appList": {
@@ -1267,26 +1271,26 @@
       "appNo": "申请编号",
       "type": "文书类型",
       "submittedAt": "提交时间",
-      "deleteConfirm": "确定删除草稿 {{no}} 吗?",
+      "deleteConfirm": "确定删除草稿{{no}}吗？",
       "deleted": "草稿已删除"
     },
     "detail": {
-      "title": "认证申请 {{no}}",
+      "title": "认证申请{{no}}",
       "infoTitle": "申请信息",
       "recordsTitle": "认证记录",
       "materialsTitle": "申请材料",
-      "certReady": "认证已通过,文书编号 {{no}}",
+      "certReady": "认证已通过，文书编号{{no}}",
       "certReadyTip": "点击查看并下载你的认证文书。",
       "rejectedTitle": "申请被驳回",
       "reapply": "按此类型重新申请",
       "supplementTitle": "认证员要求补件",
-      "supplementDeadline": "补件截止:",
-      "uploadFor": "补交:{{label}}",
-      "resubmit": "补交完成,重新提交",
+      "supplementDeadline": "补件截止：",
+      "uploadFor": "补交：{{label}}",
+      "resubmit": "补交完成，重新提交",
       "resubmitted": "已重新进入认证队列",
       "withdraw": "撤销申请",
       "withdrawConfirmTitle": "撤销认证申请",
-      "withdrawConfirmBody": "确定撤销申请 {{no}} 吗?撤销后不可恢复,如需认证请重新申请。",
+      "withdrawConfirmBody": "确定撤销申请{{no}}吗？撤销后不可恢复，如需认证请重新申请。",
       "withdrawn": "申请已撤销",
       "bizReserved": "历史记录未校验",
       "uploaded": "材料已上传",
@@ -1294,7 +1298,7 @@
       "bizNotOwned": "编号非本人业务",
       "bizNotFound": "未查询到该业务编号",
       "bizUnavailable": "该业务署暂不支持在线核验",
-      "countdownFormat": "DD 天 HH:mm:ss"
+      "countdownFormat": "DD天HH:mm:ss"
     },
     "materials": {
       "empty": "暂无材料",
@@ -1310,42 +1314,42 @@
       "expiringSoon": "即将到期",
       "copyNo": "复制编号",
       "copied": "编号已复制",
-      "copyFailed": "复制失败,请手动选择复制",
+      "copyFailed": "复制失败，请手动选择复制",
       "downloadPng": "下载图片",
-      "downloadPdf": "下载 PDF",
+      "downloadPdf": "下载PDF",
       "verifyEntry": "去验真",
-      "exportFailed": "导出失败,请重试",
+      "exportFailed": "导出失败，请重试",
       "seal1": "皇家文书与",
       "seal2": "认证署",
       "seal3": "认证专用章",
-      "ariaLabel": "认证文书 {{no}}",
+      "ariaLabel": "认证文书{{no}}",
       "titleEn": "认证证书"
     },
     "certList": {
       "title": "我的认证文书",
-      "empty": "还没有认证文书,通过认证后会在这里展示。"
+      "empty": "还没有认证文书，通过认证后会在这里展示。"
     },
     "certDetail": {
       "title": "认证文书",
       "certStatus": "文书状态",
       "revokedTitle": "文书已被撤销",
       "tipsTitle": "使用须知",
-      "tip1": "任何人可凭文书编号在验真中心查验真伪,查询结果不包含个人信息。",
-      "tip2": "\"下载 PDF\"会打开系统打印对话框,选择\"另存为 PDF\"即可保存。"
+      "tip1": "任何人可凭文书编号在验真中心查验真伪，查询结果不包含个人信息。",
+      "tip2": "\"下载PDF\"会打开系统打印对话框，选择\"另存为PDF\"即可保存。"
     },
     "verify": {
       "title": "文书验真中心",
-      "tip": "输入认证文书编号或认证申请编号,查询其真实状态。",
-      "placeholder": "例如 NLDC-261025-AB12CDEFG",
+      "tip": "输入认证文书编号或认证申请编号，查询其真实状态。",
+      "placeholder": "例如NLDC-261025-AB12CDEFG",
       "query": "查询",
       "inputRequired": "请输入要查询的编号",
-      "limitTip": "为防止恶意枚举,查询有频率限制;结果不含任何个人信息。",
+      "limitTip": "为防止恶意枚举，查询有频率限制；结果不含任何个人信息。",
       "notFoundTitle": "未查询到对应文书",
-      "notFoundBody": "请核对编号是否输入正确。若编号来自他人转述,请警惕伪造风险。",
+      "notFoundBody": "请核对编号是否输入正确。若编号来自他人转述，请警惕伪造风险。",
       "foundTitle": "已查到认证文书",
       "validYes": "当前有效",
       "validNo": "当前无效",
-      "selfTitle": "这是你自己的申请 {{no}}",
+      "selfTitle": "这是你自己的申请{{no}}",
       "selfNoCert": "该申请尚未签发文书。",
       "issuer": "认证机构",
       "historyTitle": "我的验真记录",
@@ -1368,7 +1372,7 @@
       "archive": "归档",
       "unarchive": "取消归档",
       "tipTag": "小贴士",
-      "tip": "点击站内信可以跳转对应申请;所有状态变更(补件、通过、驳回、到期)都会在这里通知。"
+      "tip": "点击站内信可以跳转对应申请；所有状态变更（补件、通过、驳回、到期）都会在这里通知。"
     },
     "admin": {
       "title": "文书与认证署 · 管理端",
@@ -1384,8 +1388,8 @@
       },
       "review": {
         "title": "认证审核工作台",
-        "active": "待处理(pending+补件)",
-        "queueEmpty": "队列为空,喝杯椰子休息一下吧!",
+        "active": "待处理（pending+补件）",
+        "queueEmpty": "队列为空，喝杯椰子休息一下吧！",
         "review": "审核",
         "detailTitle": "申请详情",
         "applicant": "申请人",
@@ -1395,32 +1399,32 @@
         "approve": "通过并签发",
         "approveConfirmTitle": "通过认证",
         "approveAndIssue": "确认通过并签发文书",
-        "approveTip": "通过后将立即生成带编号的认证文书,请确认材料与信息无误。",
+        "approveTip": "通过后将立即生成带编号的认证文书，请确认材料与信息无误。",
         "reject": "驳回",
         "rejectTitle": "驳回申请",
-        "rejectTip": "请选择驳回原因,用户将看到原因并可重新申请。",
+        "rejectTip": "请选择驳回原因，用户将看到原因并可重新申请。",
         "rejectReason": "驳回原因",
         "supplement": "要求补件",
         "supplementTitle": "要求补件",
-        "supplementTip": "请写明需要补充的材料与要求;系统会按署设置给用户补件期限。",
+        "supplementTip": "请写明需要补充的材料与要求；系统会按署设置给用户补件期限。",
         "supplementSend": "发送补件要求",
-        "supplementPh": "例如:邀请函扫描件不清晰,请重新上传",
-        "commentPh": "认证意见(选填)",
+        "supplementPh": "例如：邀请函扫描件不清晰，请重新上传",
+        "commentPh": "认证意见（选填）",
         "done": "操作成功",
         "waitingResubmit": "等待用户补件并重新提交。"
       },
       "types": {
         "title": "文书类型管理",
         "create": "新建类型",
-        "editTitle": "编辑类型:{{name}}",
+        "editTitle": "编辑类型：{{name}}",
         "code": "类型编码",
-        "validity": "有效期(天)",
+        "validity": "有效期（天）",
         "fields": "表单字段",
         "materialsCol": "材料要求",
         "guide": "办事指南",
         "guidePh": "用途、材料、注意事项……",
         "bizLabel": "关联业务编号名称",
-        "bizLabelPh": "如:签注编号",
+        "bizLabelPh": "如：签注编号",
         "bizSource": "关联业务署",
         "bizRequired": "业务编号必填",
         "sort": "排序",
@@ -1428,34 +1432,34 @@
         "addField": "添加表单字段",
         "materialLabel": "材料名称",
         "fieldLabel": "字段名称",
-        "codePh": "类型编码,如 INVITE",
-        "materialKeyPh": "材料标识,如 photo",
-        "fieldKeyPh": "字段标识,如 full_name",
-        "acceptPh": "文件类型,如 image/*,application/pdf",
+        "codePh": "类型编码，如INVITE",
+        "materialKeyPh": "材料标识，如photo",
+        "fieldKeyPh": "字段标识，如full_name",
+        "acceptPh": "文件类型，如image/*,application/pdf",
         "placeholderPh": "输入框提示文案",
-        "bizSourcePh": "业务署,如 visa / resident / appeal"
+        "bizSourcePh": "业务署，如visa / resident / appeal"
       },
       "certs": {
         "title": "文书管理",
         "searchPh": "搜索文书编号/持有人/业务编号",
         "markUsed": "标注已使用",
         "revoke": "撤销",
-        "revokeTitle": "撤销文书 {{no}}",
-        "revokeTip": "撤销后文书立即失效且不可恢复,请填写撤销原因(将记入审计日志并通知持有人)。",
-        "revokeReasonPh": "撤销原因(必填)",
+        "revokeTitle": "撤销文书{{no}}",
+        "revokeTip": "撤销后文书立即失效且不可恢复，请填写撤销原因（将记入审计日志并通知持有人）。",
+        "revokeReasonPh": "撤销原因（必填）",
         "regenerate": "补发",
-        "regenerateTitle": "补发文书 {{no}}",
-        "regenerateTip": "将为同一申请签发一份新编号的文书,原文书保持当前状态。",
+        "regenerateTitle": "补发文书{{no}}",
+        "regenerateTip": "将为同一申请签发一份新编号的文书，原文书保持当前状态。",
         "regenerated": "已补发新文书"
       },
       "verify": {
         "title": "验真管理",
-        "alertTitle": "验真异常告警(24 小时)",
+        "alertTitle": "验真异常告警（24小时）",
         "alert": {
-          "high_failure_rate": "未命中比例异常偏高,可能存在枚举扫描。",
-          "high_frequency_query": "存在高频重复查询,建议关注来源 IP。"
+          "high_failure_rate": "未命中比例异常偏高，可能存在枚举扫描。",
+          "high_frequency_query": "存在高频重复查询，建议关注来源IP。"
         },
-        "last24h": "24 小时查询量",
+        "last24h": "24小时查询量",
         "failureRate": "未命中比例",
         "topQueries": "高频查询",
         "searchPh": "搜索查询编号"
@@ -1466,10 +1470,10 @@
         "approvalRate": "通过率",
         "rejectRate": "驳回率",
         "supplementRate": "补件率",
-        "avgHours": "平均认证时长(小时)",
+        "avgHours": "平均认证时长（小时）",
         "certTotal": "累计签发文书",
         "verifyTotal": "累计验真查询",
-        "verify24h": "近 24 小时 {{n}} 次",
+        "verify24h": "近24小时{{n}}次",
         "verifyValidRate": "验真命中率",
         "appByStatus": "申请状态分布",
         "certByStatus": "文书状态分布",
@@ -1483,14 +1487,14 @@
         "edit": "编辑公告",
         "titleCol": "标题",
         "level": "级别",
-        "deleteConfirm": "确定删除公告「{{title}}」吗?"
+        "deleteConfirm": "确定删除公告「{{title}}」吗？"
       },
       "audit": {
         "title": "审计日志",
         "time": "时间",
         "actor": "操作人",
         "action": "操作",
-        "actionPh": "按操作筛选,如 certify",
+        "actionPh": "按操作筛选，如certify",
         "target": "目标",
         "targetPh": "搜索目标/操作人",
         "detail": "详情",
@@ -1527,7 +1531,7 @@
           "material": "材料",
           "doc_type": "文书类型",
           "notice": "公告",
-          "ip": "IP 地址"
+          "ip": "IP地址"
         }
       },
       "settings": {
@@ -1535,82 +1539,82 @@
         "numbering": "编号与流程",
         "appPrefix": "申请编号前缀",
         "certPrefix": "文书编号前缀",
-        "prefixTip": "2-8 位字母或数字",
-        "supplementDays": "补件期限(天)",
-        "reviewHours": "审核时长提示(小时)",
+        "prefixTip": "2-8位字母或数字",
+        "supplementDays": "补件期限（天）",
+        "reviewHours": "审核时长提示（小时）",
         "applyDailyLimit": "每人每日提交上限",
         "uploadMaxMb": "单文件上限(MB)",
         "verifySection": "验真与展示",
-        "verifyLimit": "验真限流(次/5分钟/IP)",
+        "verifyLimit": "验真限流（次/5分钟/IP）",
         "verifyLimitTip": "防止枚举扫描的查询频率上限",
         "seal": "电子印章",
         "issuer": "认证机构名称",
         "riskTitle": "风控与黑名单",
-        "riskTip": "黑名单用户无法创建或提交认证申请;重复申请与频率限制始终生效。",
+        "riskTip": "黑名单用户无法创建或提交认证申请；重复申请与频率限制始终生效。",
         "blacklistAdd": "加入黑名单",
         "blacklistUser": "用户",
-        "blacklistUserId": "用户 ID",
+        "blacklistUserId": "用户ID",
         "blacklistReason": "原因",
         "blacklistBy": "操作人",
         "blacklistRemove": "移出",
         "blacklistEmpty": "黑名单为空",
         "blacklistEffectTag": "生效范围",
-        "blacklistEffect": "仅影响文书认证申请,不影响门户其他功能。"
+        "blacklistEffect": "仅影响文书认证申请，不影响门户其他功能。"
       }
     }
   },
   "docMsg": {
     "submitted": {
       "title": "认证申请已提交",
-      "body": "申请 {{appNo}} 已进入认证队列,预计 72 小时内完成。"
+      "body": "申请{{appNo}}已进入认证队列，预计72小时内完成。"
     },
     "supplement_request": {
       "title": "认证需要补件",
-      "body": "申请 {{appNo}} 需要补件:{{note}}。请在 {{days}} 天内补交,逾期将自动关闭。"
+      "body": "申请{{appNo}}需要补件：{{note}}。请在{{days}}天内补交，逾期将自动关闭。"
     },
     "supplemented": {
       "title": "补件已提交",
-      "body": "申请 {{appNo}} 已重新进入认证队列。"
+      "body": "申请{{appNo}}已重新进入认证队列。"
     },
     "approved": {
-      "title": "认证通过!",
-      "body": "申请 {{appNo}} 已通过认证,文书编号 {{certNo}},快去查看吧。"
+      "title": "认证通过！",
+      "body": "申请{{appNo}}已通过认证，文书编号{{certNo}}，快去查看吧。"
     },
     "rejected": {
       "title": "认证申请被驳回",
-      "body": "申请 {{appNo}} 未通过认证(原因:{{reason}})。你可以按原因补充后重新申请。"
+      "body": "申请{{appNo}}未通过认证（原因：{{reason}}）。你可以按原因补充后重新申请。"
     },
     "withdrawn": {
       "title": "认证申请已撤销",
-      "body": "申请 {{appNo}} 已由你撤销。"
+      "body": "申请{{appNo}}已由你撤销。"
     },
     "closed": {
-      "title": "补件超时,申请已关闭",
-      "body": "申请 {{appNo}} 因未在期限内补件而自动关闭,如需认证请重新申请。"
+      "title": "补件超时，申请已关闭",
+      "body": "申请{{appNo}}因未在期限内补件而自动关闭，如需认证请重新申请。"
     },
     "expired": {
       "title": "文书已过期",
-      "body": "文书 {{certNo}} 已过有效期。如仍需使用,可重新申请认证。"
+      "body": "文书{{certNo}}已过有效期。如仍需使用，可重新申请认证。"
     },
     "expiry_reminder": {
       "title": "文书即将到期",
-      "body": "文书 {{certNo}} 将在 72 小时内到期,请注意查看有效期。"
+      "body": "文书{{certNo}}将在72小时内到期，请注意查看有效期。"
     },
     "revoked": {
       "title": "文书已被撤销",
-      "body": "文书 {{certNo}} 已被认证署撤销,原因:{{reason}}。如有疑问请联系管理员。"
+      "body": "文书{{certNo}}已被认证署撤销，原因：{{reason}}。如有疑问请联系管理员。"
     },
     "regenerated": {
       "title": "文书已补发",
-      "body": "原文书 {{oldCertNo}} 已补发为新文书 {{certNo}},请以新编号为准。"
+      "body": "原文书{{oldCertNo}}已补发为新文书{{certNo}}，请以新编号为准。"
     },
     "system": {
       "title": "系统通知",
       "body": "你有一条新的系统通知。"
     },
     "appeal_reopened": {
-      "title": "申诉复核:申请 {{appNo}} 重新认证",
-      "body": "皇家申诉与监察署已撤销原驳回决定(决定书 {{decisionCode}}),认证申请 {{appNo}} 已重新进入认证队列。"
+      "title": "申诉复核：申请{{appNo}}重新认证",
+      "body": "皇家申诉与监察署已撤销原驳回决定（决定书{{decisionCode}}），认证申请{{appNo}}已重新进入认证队列。"
     }
   },
   "imm": {
@@ -1622,12 +1626,12 @@
       "myDeclarations": "我的申报",
       "passCodes": "通关码",
       "records": "出入境记录",
-      "messages": "消息",
+      "messages": "站内信",
       "help": "帮助"
     },
     "home": {
       "hero": "皇家口岸入境署",
-      "tagline": "欢迎来到奶龙岛唯一官方(自封)入境口岸,盖章啦!",
+      "tagline": "欢迎来到奶龙岛唯一官方（自封）入境口岸，盖章啦！",
       "portStatus": "口岸状态",
       "crowding": "趣味拥挤度",
       "crowdingTip": "根据待检申报数量估算",
@@ -1635,18 +1639,18 @@
       "inReview": "审核中",
       "passReady": "待通关",
       "unread": "未读消息",
-      "expiring": "有 {{count}} 条入境记录即将到期,记得办出境",
+      "expiring": "有{{count}}条入境记录即将到期，记得办出境",
       "quickEntries": "快速入口",
       "announcements": "署内公告",
-      "noAnnouncements": "最近没有公告,口岸一切正常",
+      "noAnnouncements": "最近没有公告，口岸一切正常",
       "faq": "常见问题",
       "startDeclare": "开始入境申报"
     },
     "crowd": {
-      "smooth": "通畅,滑梯都是空的",
-      "normal": "适中,可以慢慢逛",
-      "busy": "有点热闹,奶龙们排起了小队",
-      "pending": "{{count}} 份申报待检"
+      "smooth": "通畅，滑梯都是空的",
+      "normal": "适中，可以慢慢逛",
+      "busy": "有点热闹，奶龙们排起了小队",
+      "pending": "{{count}}份申报待检"
     },
     "portType": {
       "land": "陆路口岸",
@@ -1670,45 +1674,45 @@
     },
     "fraud": {
       "title": "防诈骗提示",
-      "body": "皇家口岸通关不收取任何费用。凡是自称\"边检人员\"要求转账、缴费、提供密码的,都是伪装的嗅嗅,请立即举报。",
+      "body": "皇家口岸通关不收取任何费用。凡是自称\"边检人员\"要求转账、缴费、提供密码的，都是伪装的嗅嗅，请立即举报。",
       "more": "查看更多防骗知识"
     },
     "faq": {
       "visaInvalid": {
-        "q": "签注无效或过期怎么办?",
-        "a": "请先到奶龍國簽註申請署办理或续签签注,拿到有效签注编号后再回来提交入境申报。"
+        "q": "签注无效或过期怎么办？",
+        "a": "请先到奶龍國簽註申請署办理或续签签注，拿到有效签注编号后再回来提交入境申报。"
       },
       "passUsage": {
-        "q": "通关码怎么用?",
-        "a": "申报通过审核后会生成通关码。到访口岸时向边检员出示二维码或报出通关码编号,核验通过即可盖章入境。二维码只能使用一次。"
+        "q": "通关码怎么用？",
+        "a": "申报通过审核后会生成通关码。到访口岸时向边检员出示二维码或报出通关码编号，核验通过即可盖章入境。二维码只能使用一次。"
       },
       "recordsWhere": {
-        "q": "出入境记录在哪查?",
-        "a": "在\"出入境记录\"页面可以查看全部入境与出境记录,支持导出。"
+        "q": "出入境记录在哪查？",
+        "a": "在\"出入境记录\"页面可以查看全部入境与出境记录，支持导出。"
       },
       "fee": {
-        "q": "通关要收费吗?",
-        "a": "不要!皇家口岸全程免费。任何收费要求都是诈骗。"
+        "q": "通关要收费吗？",
+        "a": "不要！皇家口岸全程免费。任何收费要求都是诈骗。"
       },
       "privacy": {
-        "q": "我的申报信息安全吗?",
-        "a": "申报与附件仅本人和边检员可见;通关码二维码只包含随机验真令牌,不含个人信息。"
+        "q": "我的申报信息安全吗？",
+        "a": "申报与附件仅本人和边检员可见；通关码二维码只包含随机验真令牌，不含个人信息。"
       },
       "realEffect": {
-        "q": "这些记录有现实效力吗?",
+        "q": "这些记录有现实效力吗？",
         "a": "没有。皇家口岸、签注、通关码与出入境记录全部为娱乐设定"
       }
     },
     "ports": {
       "title": "口岸列表",
-      "subtitle": "目前开放中的口岸(MVP 仅皇家口岸,未来扩展航空/海港)",
+      "subtitle": "目前开放中的口岸（MVP仅皇家口岸，未来扩展航空/海港）",
       "empty": "暂无口岸",
       "notFound": "没有找到这个口岸",
       "tabOverview": "口岸概览",
       "tabChannels": "通道类型",
       "tabAnnouncements": "口岸公告",
       "notice": "通关须知",
-      "mapAria": "口岸布局示意图(虚构)",
+      "mapAria": "口岸布局示意图（虚构）",
       "mapGate": "大门",
       "mapHall": "盖章大厅",
       "mapLane": "长颈鹿滑梯查验区",
@@ -1719,9 +1723,9 @@
       "startDeclare": "在此口岸申报入境",
       "declareBlocked": "口岸未开放申报",
       "eventHints": "近期活动提示",
-      "eventHintsTip": "活动期间口岸人流可能增加,建议错峰通关。",
+      "eventHintsTip": "活动期间口岸人流可能增加，建议错峰通关。",
       "courtesyTitle": "外交礼遇通道",
-      "courtesyTip": "凭有效外交身份 {{no}} 可使用以下礼遇通道。"
+      "courtesyTip": "凭有效外交身份{{no}}可使用以下礼遇通道。"
     },
     "declare": {
       "title": "入境申报",
@@ -1734,29 +1738,29 @@
       "contactPlaceholder": "邮箱或奶龙电报号",
       "purpose": "入境目的",
       "purposeNote": "补充说明",
-      "purposeNotePlaceholder": "例如:参加一年一度的奶龙节",
-      "stayDays": "计划停留(天)",
-      "companions": "随行人员(位)",
+      "purposeNotePlaceholder": "例如：参加一年一度的奶龙节",
+      "stayDays": "计划停留（天）",
+      "companions": "随行人员（位）",
       "address": "虚拟停留地址",
-      "addressPlaceholder": "例如:奶龙湾 3 号沙滩",
+      "addressPlaceholder": "例如：奶龙湾3号沙滩",
       "visaNo": "关联签注编号",
-      "visaTip": "支持签注署真实编号 NLT-日期-编号,以及演示编号 NL-1234-ABCD",
+      "visaTip": "支持签注署真实编号NLT-日期-编号，以及演示编号NL-1234-ABCD",
       "checkVisa": "校验",
       "visaFirst": "请先输入签注编号",
-      "visaOk": "签注有效,放心提交",
-      "items": "随身物品申报(趣味)",
-      "itemsTip": "如实体积,选你随身携带的奶龙周边",
+      "visaOk": "签注有效，放心提交",
+      "items": "随身物品申报（趣味）",
+      "itemsTip": "如实体积，选你随身携带的奶龙周边",
       "itemsRequired": "至少申报一件随身物品",
       "saveDraft": "保存草稿",
       "draftSaved": "草稿已保存",
-      "nextConfirm": "下一步:确认提交",
+      "nextConfirm": "下一步：确认提交",
       "confirmTitle": "提交前确认",
       "submit": "确认提交",
-      "submitted": "申报 {{no}} 已提交,请等待边检审核",
+      "submitted": "申报{{no}}已提交，请等待边检审核",
       "required": "请填写此字段"
     },
     "purpose": {
-      "fun": "来玩!",
+      "fun": "来玩！",
       "visit": "探亲访友",
       "business": "商务考察",
       "show": "演出巡游",
@@ -1778,28 +1782,28 @@
       "revoked": "签注已注销",
       "used": "签注已使用",
       "not_found": "未查到该签注",
-      "validUntil": "有效期至 {{date}}"
+      "validUntil": "有效期至{{date}}"
     },
     "attachments": {
       "title": "附件材料",
       "empty": "暂无附件",
       "upload": "上传附件",
-      "limit": "仅图片/PDF,单个 ≤5MB"
+      "limit": "仅图片/PDF，单个 ≤5MB"
     },
     "mydecl": {
       "title": "我的申报",
       "no": "申报编号",
       "submittedAt": "提交时间",
       "view": "查看",
-      "deleteConfirm": "确定删除草稿 {{no}} 吗?",
+      "deleteConfirm": "确定删除草稿{{no}}吗？",
       "detailTitle": "申报详情",
-      "rejected": "很遗憾,申报未通过",
+      "rejected": "很遗憾，申报未通过",
       "redeclare": "重新申报",
       "supplementRequired": "边检要求补件",
       "supplementSubmitted": "已补交",
       "supplementPlaceholder": "填写补件说明…",
       "submitSupplement": "提交补件",
-      "supplementSent": "补件已提交,重新进入待检队列",
+      "supplementSent": "补件已提交，重新进入待检队列",
       "timeline": "进度记录",
       "withdraw": "撤销申报",
       "withdrawn": "申报已撤销",
@@ -1824,14 +1828,14 @@
     },
     "pass": {
       "title": "我的通关码",
-      "empty": "还没有通关码,先去提交一份入境申报吧",
+      "empty": "还没有通关码，先去提交一份入境申报吧",
       "codeNo": "通关码编号",
       "validUntil": "有效期至",
       "status": "状态",
       "view": "查看",
       "detailTitle": "通关码",
       "download": "下载二维码",
-      "qrTip": "二维码内容仅为随机验真令牌,不含个人信息;核验通过后立即失效。"
+      "qrTip": "二维码内容仅为随机验真令牌，不含个人信息；核验通过后立即失效。"
     },
     "records": {
       "title": "我的出入境记录",
@@ -1846,26 +1850,26 @@
       "entryStamp": "入境纪念章",
       "stampAria": "虚构入境章",
       "registerExit": "出境登记",
-      "exitTitle": "出境登记 {{no}}",
+      "exitTitle": "出境登记{{no}}",
       "confirmExit": "确认出境",
-      "exitTip": "选择出境口岸,盖一个出境章(趣味)",
-      "exitDone": "出境完成,记录编号 {{no}}",
+      "exitTip": "选择出境口岸，盖一个出境章（趣味）",
+      "exitDone": "出境完成，记录编号{{no}}",
       "expiring": "停留即将到期",
-      "expiringTip": "有 {{count}} 条入境记录的趣味停留期即将结束,记得办理出境登记,不然嗅嗅巡逻队会来找你聊天。",
-      "export": "导出 CSV",
+      "expiringTip": "有{{count}}条入境记录的趣味停留期即将结束，记得办理出境登记，不然嗅嗅巡逻队会来找你聊天。",
+      "export": "导出CSV",
       "empty": "还没有入境记录",
       "exitEmpty": "还没有出境记录",
-      "note": "入境章样式纯属虚构,与任何现实边检无关。",
+      "note": "入境章样式纯属虚构，与任何现实边检无关。",
       "traveler": "旅客",
       "correct": "更正",
       "markInvalid": "标记失效",
-      "correctTitle": "更正入境记录 {{no}}",
+      "correctTitle": "更正入境记录{{no}}",
       "markInvalidTitle": "确认标记为无效",
-      "markInvalidConfirm": "将入境记录 {{no}} 标记为无效后,该记录的法律效力终止,且无法撤销,确定吗?",
-      "correctTip": "仅更正入境日期与备注,操作会记入审计日志。"
+      "markInvalidConfirm": "将入境记录{{no}}标记为无效后，该记录的法律效力终止，且无法撤销，确定吗？",
+      "correctTip": "仅更正入境日期与备注，操作会记入审计日志。"
     },
     "msg": {
-      "title": "站内消息",
+      "title": "站内信",
       "filter": {
         "all": "全部",
         "unread": "未读",
@@ -1875,7 +1879,7 @@
       "markRead": "标记已读",
       "archive": "归档",
       "unarchive": "取消归档",
-      "empty": "没有消息,口岸很安静",
+      "empty": "没有消息，口岸很安静",
       "read": "已读",
       "unread": "未读",
       "template": {
@@ -1895,7 +1899,7 @@
       "faqTitle": "常见问题",
       "contactTitle": "联系我们",
       "ticketTitle": "工单 / 客服",
-      "ticketBody": "有问题可以通过站内信联系口岸管理员,管理员会尽快回复。",
+      "ticketBody": "有问题可以通过站内信联系口岸管理员，管理员会尽快回复。",
       "ticketLink": "去站内信",
       "noticeTitle": "口岸公告",
       "noticeBody": "临时关闭、开放时间调整都会在署内公告中第一时间发布。",
@@ -1906,7 +1910,7 @@
       "noToken": "链接里没有验真令牌",
       "invalid": "未查到该通关码",
       "failed": "验真请求失败",
-      "failedTip": "通关码验真暂时不可用,请稍后重试",
+      "failedTip": "通关码验真暂时不可用，请稍后重试",
       "retry": "重新验真",
       "toLogin": "去登录"
     },
@@ -1942,7 +1946,7 @@
         "records": "记录管理",
         "stats": "统计报表",
         "settings": "设置",
-        "audit": "审计与合规"
+        "audit": "审计日志"
       },
       "portsTitle": "口岸与通道管理",
       "tabPorts": "口岸与通道",
@@ -1954,18 +1958,18 @@
       "channelManager": "通道启停",
       "createPort": "新建口岸",
       "editPort": "编辑口岸",
-      "portCodeTip": "3-20 位大写字母、数字或下划线",
+      "portCodeTip": "3-20位大写字母、数字或下划线",
       "portStatus": "口岸状态",
       "portStatusUpdated": "口岸状态已改为「{{status}}」",
-      "mapDesc": "地图/示意图描述(虚构)",
+      "mapDesc": "地图/示意图描述（虚构）",
       "level": "级别",
       "annBody": "公告正文",
       "offlineTitle": "确认下线公告",
-      "offlineConfirm": "下线「{{title}}」后不再对旅客展示,且无法重新发布,确定吗?",
+      "offlineConfirm": "下线「{{title}}」后不再对旅客展示，且无法重新发布，确定吗？",
       "offlineDone": "公告已下线",
-      "annDeleteConfirm": "确定删除公告「{{title}}」吗?",
+      "annDeleteConfirm": "确定删除公告「{{title}}」吗？",
       "annPort": "关联口岸",
-      "globalAnn": "署级公告(全口岸)",
+      "globalAnn": "署级公告（全口岸）",
       "createAnn": "发布公告",
       "editAnn": "编辑公告",
       "published": "已发布",
@@ -1974,28 +1978,28 @@
       "portTypeLabel": "口岸类型",
       "review": {
         "title": "边检审核工作台",
-        "queueNote": "边检员只处理入境申报队列,与签注审核队列相互隔离。",
+        "queueNote": "边检员只处理入境申报队列，与签注审核队列相互隔离。",
         "allStatuses": "全部状态",
         "searchPlaceholder": "按编号 / 昵称 / 签注号搜索",
         "inspect": "审核",
         "detailTitle": "申报审核",
         "approve": "通过",
-        "approved": "已通过,通关码已生成",
+        "approved": "已通过，通关码已生成",
         "reject": "拒绝",
         "rejected": "已拒绝",
-        "rejectTitle": "拒绝申报 {{no}}",
+        "rejectTitle": "拒绝申报{{no}}",
         "rejectConfirm": "确认拒绝",
         "rejectReason": "拒绝原因",
         "opinion": "审核意见",
-        "opinionPlaceholder": "选填,会随通知发给旅客",
+        "opinionPlaceholder": "选填，会随通知发给旅客",
         "supplement": "要求补件",
-        "supplementTitle": "要求补件 {{no}}",
+        "supplementTitle": "要求补件{{no}}",
         "supplementNote": "补件要求",
-        "supplementPlaceholder": "例如:请补充随行玩偶的检疫证明(趣味)",
+        "supplementPlaceholder": "例如：请补充随行玩偶的检疫证明（趣味）",
         "supplementSent": "补件请求已发送",
         "risk": "风险",
         "riskFlags": "风险标记",
-        "rejectedCount": "该旅客历史被拒 {{count}} 次",
+        "rejectedCount": "该旅客历史被拒{{count}}次",
         "visaDetail": "签注信息"
       },
       "risk": {
@@ -2005,19 +2009,19 @@
       },
       "verify": {
         "workbenchTitle": "通关码核验",
-        "queryPlaceholder": "输入通关码编号,如 PC20261025-XXXXXX",
+        "queryPlaceholder": "输入通关码编号，如PC20261025-XXXXXX",
         "query": "查询",
         "inputFirst": "请输入通关码编号",
         "notFound": "未查到通关码",
         "accept": "核验通过",
-        "accepted": "核验通过,已生成入境记录 {{no}}",
+        "accepted": "核验通过，已生成入境记录{{no}}",
         "void": "作废",
-        "voidTitle": "作废通关码 {{no}}",
+        "voidTitle": "作废通关码{{no}}",
         "voidReason": "作废原因",
-        "voidReasonPlaceholder": "例如:旅客申请撤销",
-        "confirmTitle": "核验通关码 {{no}}",
-        "confirmTip": "核验通过将立即生成入境记录并盖章,通关码随之失效。",
-        "confirmTip2": "请确认旅客本人与申报信息一致(趣味流程,请配合盖章仪式)。",
+        "voidReasonPlaceholder": "例如：旅客申请撤销",
+        "confirmTitle": "核验通关码{{no}}",
+        "confirmTip": "核验通过将立即生成入境记录并盖章，通关码随之失效。",
+        "confirmTip2": "请确认旅客本人与申报信息一致（趣味流程，请配合盖章仪式）。",
         "resultTitle": "核验结果",
         "result": {
           "accepted": "核验通过",
@@ -2045,12 +2049,12 @@
         "activePassCodes": "有效通关码",
         "entryRecords": "入境记录数",
         "exitRecords": "出境记录数",
-        "trend7": "近 7 日申报量",
+        "trend7": "近7日申报量",
         "portTraffic": "各口岸流量",
         "rejectReasons": "常见拒绝原因"
       },
       "audit": {
-        "title": "审计与合规",
+        "title": "审计日志",
         "tabLog": "审计日志",
         "tabBlacklist": "风控与黑名单",
         "tabTemplates": "消息模板",
@@ -2121,8 +2125,8 @@
         "body": "模板正文",
         "variables": "可用变量",
         "code": "模板编码",
-        "editTitle": "编辑模板 {{code}}",
-        "varTip": "正文支持用双大括号包裹的变量名(如编号、日期),保存后立即生效。",
+        "editTitle": "编辑模板{{code}}",
+        "varTip": "正文支持用双大括号包裹的变量名（如编号、日期），保存后立即生效。",
         "updatedAt": "更新时间"
       }
     }
@@ -2146,23 +2150,21 @@
       "manage": "署内管理"
     },
     "sso": {
-      "title": "居民署身份确认",
-      "confirm": "确认进入",
-      "tip": "进入即表示你同意以当前账号身份使用皇家居民登记署。居民身份与账号一一对应,登记信息仅用于奶龙国虚构世界。"
+      "tip": "进入即表示你同意以当前账号身份使用皇家居民登记署。居民身份与账号一一对应，登记信息仅用于奶龙国虚构世界。"
     },
     "nav_label": "居民署导航",
     "home": {
       "hero": "欢迎来到皇家居民登记署",
-      "tagline": "登记成为奶龙国居民,领取你的专属电子居民卡",
+      "tagline": "登记成为奶龙国居民，领取你的专属电子居民卡",
       "myResidency": "我的居民身份",
       "viewCard": "查看居民卡",
-      "notResidentYet": "还没有居民身份,先去登记吧",
+      "notResidentYet": "还没有居民身份，先去登记吧",
       "myApplication": "我的登记申请",
       "trackProgress": "查看进度",
       "noApplication": "没有进行中的申请",
       "messages": "站内信",
       "unread": "未读消息",
-      "reviewHint": "审核预计 {{hours}} 小时内完成",
+      "reviewHint": "审核预计{{hours}}小时内完成",
       "quickEntries": "快速入口",
       "types": "居民类型",
       "noTypes": "暂无开放的居民类型",
@@ -2173,34 +2175,34 @@
       "startApply": "开始居民登记",
       "guideItems": {
         "conditions": {
-          "q": "登记条件是什么?",
-          "a": "年满 0 岁的奶龙爱好者即可登记临时居民;遵守《奶龙岛居民友好公约》,保持快乐。"
+          "q": "登记条件是什么？",
+          "a": "年满0岁的奶龙爱好者即可登记临时居民；遵守《奶龙岛居民友好公约》，保持快乐。"
         },
         "materials": {
-          "q": "需要准备哪些信息与材料?",
-          "a": "必填:昵称、联系方式、奶龙国虚构地址;选填:个人简介。材料:头像(必传)、虚拟地址证明(趣味化,选填)。"
+          "q": "需要准备哪些信息与材料？",
+          "a": "必填：昵称、联系方式、奶龙国虚构地址；选填：个人简介。材料：头像（必传）、虚拟地址证明（趣味化，选填）。"
         },
         "duration": {
-          "q": "审核要多久?",
-          "a": "提交后预计 72 小时内完成审核,结果会通过站内信通知。"
+          "q": "审核要多久？",
+          "a": "提交后预计72小时内完成审核，结果会通过站内信通知。"
         },
         "rights": {
-          "q": "居民有什么权益?",
-          "a": "专属居民公告、居民编号验真;签注快捷通道、入境居民通道、活动优先报名等权益陆续开放。"
+          "q": "居民有什么权益？",
+          "a": "专属居民公告、居民编号验真；签注快捷通道、入境居民通道、活动优先报名等权益陆续开放。"
         }
       }
     },
     "type": {
       "open": "开放登记",
       "closed": "未开放",
-      "code": "类型编码 {{code}}",
-      "validYears": "有效期 {{years}} 年",
+      "code": "类型编码{{code}}",
+      "validYears": "有效期{{years}}年",
       "sampleCard": "样例居民卡",
       "guide": "办理指南",
       "benefits": "居民权益",
       "duties": "居民义务",
       "benefitsPlaceholder": "权益说明将在该类型开放时公布。",
-      "dutiesPlaceholder": "遵守《奶龙岛居民友好公约》,保持快乐。"
+      "dutiesPlaceholder": "遵守《奶龙岛居民友好公约》，保持快乐。"
     },
     "guide": {
       "title": "办事指南",
@@ -2213,49 +2215,49 @@
     "checklist": {
       "nickname": {
         "label": "昵称",
-        "desc": "居民卡上展示的名字,必填"
+        "desc": "居民卡上展示的名字，必填"
       },
       "contact": {
         "label": "联系方式",
-        "desc": "站内联系方式(邮箱等),必填,验真时不展示"
+        "desc": "站内联系方式（邮箱等），必填，验真时不展示"
       },
       "address": {
         "label": "奶龙国虚构地址",
-        "desc": "例如“奶龙大道 1 号贝壳屋”,必填,仅趣味用途"
+        "desc": "例如“奶龙大道1号贝壳屋”，必填，仅趣味用途"
       },
       "bio": {
         "label": "个人简介",
-        "desc": "介绍一下你和奶龙的故事,选填"
+        "desc": "介绍一下你和奶龙的故事，选填"
       },
       "purposes": {
         "label": "登记用途",
-        "desc": "收藏、活动报名、签注快捷通道等,可多选"
+        "desc": "收藏、活动报名、签注快捷通道等，可多选"
       },
       "avatar": {
         "label": "头像",
-        "desc": "图片(PNG/JPG/WebP)或 PDF,不超过 5MB,必传"
+        "desc": "图片(PNG/JPG/WebP)或PDF，不超过5MB，必传"
       },
       "proof": {
         "label": "虚拟地址证明",
-        "desc": "趣味化即可(手绘地图也行),选填"
+        "desc": "趣味化即可（手绘地图也行），选填"
       }
     },
     "faq": {
       "realWorld": {
-        "q": "居民身份能用于现实吗?",
-        "a": "不能。居民身份仅存在于奶龙国虚构世界中,是纯粹的娱乐设定,不产生任何现实法律效力。"
+        "q": "居民身份能用于现实吗？",
+        "a": "不能。居民身份仅存在于奶龙国虚构世界中，是纯粹的娱乐设定，不产生任何现实法律效力。"
       },
       "fee": {
-        "q": "登记收费吗?",
-        "a": "完全免费。任何收费登记、代办升级的行为均为诈骗,请勿相信。"
+        "q": "登记收费吗？",
+        "a": "完全免费。任何收费登记、代办升级的行为均为诈骗，请勿相信。"
       },
       "howLong": {
-        "q": "登记要多久?",
-        "a": "预计 72 小时内完成审核;如需补件,请在截止时间前在线补交。"
+        "q": "登记要多久？",
+        "a": "预计72小时内完成审核；如需补件，请在截止时间前在线补交。"
       },
       "rejected": {
-        "q": "被驳回了怎么办?",
-        "a": "在申请详情查看驳回原因,补充或修改信息后可以重新申请。"
+        "q": "被驳回了怎么办？",
+        "a": "在申请详情查看驳回原因，补充或修改信息后可以重新申请。"
       }
     },
     "purpose": {
@@ -2266,30 +2268,30 @@
     },
     "apply": {
       "pickType": "选择居民类型",
-      "pickTypeTip": "MVP 阶段先开放临时居民,其他类型陆续开放"
+      "pickTypeTip": "MVP阶段先开放临时居民，其他类型陆续开放"
     },
     "form": {
       "title": "居民登记申请",
-      "draftNo": "申请编号 {{no}}",
+      "draftNo": "申请编号{{no}}",
       "draftSaved": "草稿已保存",
       "saveDraft": "保存草稿",
       "submit": "提交申请",
       "submitSuccess": "提交成功",
-      "submittedTitle": "登记申请已提交!",
-      "submittedNo": "申请编号:{{no}}",
-      "submittedHint": "预计 {{hours}} 小时内完成审核,结果将通过站内信通知。",
+      "submittedTitle": "登记申请已提交！",
+      "submittedNo": "申请编号：{{no}}",
+      "submittedHint": "预计{{hours}}小时内完成审核，结果将通过站内信通知。",
       "viewMyApplications": "查看我的登记",
       "nickname": "昵称",
       "nicknamePlaceholder": "居民卡上的名字",
       "contact": "联系方式",
       "contactPlaceholder": "邮箱等站内联系方式",
       "virtualAddress": "奶龙国虚构地址",
-      "virtualAddressPlaceholder": "例如:奶龙大道 1 号贝壳屋",
+      "virtualAddressPlaceholder": "例如：奶龙大道1号贝壳屋",
       "purposes": "登记用途",
       "bio": "个人简介",
       "bioPlaceholder": "介绍一下你和奶龙的故事",
       "materialsTitle": "登记材料",
-      "materialsTip": "支持图片(PNG/JPG/WebP)或 PDF,单个不超过 5MB,最多 6 个文件。",
+      "materialsTip": "支持图片(PNG/JPG/WebP)或PDF，单个不超过5MB，最多6个文件。",
       "materialAvatar": "头像",
       "materialProof": "虚拟地址证明",
       "materialOther": "其他材料",
@@ -2297,27 +2299,27 @@
       "uploadProof": "上传地址证明",
       "uploadOther": "点击或拖拽上传其他材料",
       "confirmTitle": "提交前确认",
-      "materialsCount": "共 {{count}} 个材料",
+      "materialsCount": "共{{count}}个材料",
       "purposesRequired": "请至少选择一项登记用途。"
     },
     "myApps": {
       "title": "我的登记申请",
       "new": "发起新申请",
-      "empty": "还没有登记申请,点击右上角开始登记",
-      "cardNo": "居民卡 {{no}}"
+      "empty": "还没有登记申请，点击右上角开始登记",
+      "cardNo": "居民卡{{no}}"
     },
     "detail": {
       "notFound": "申请不存在或无权查看",
-      "submittedAt": "提交于 {{time}}",
+      "submittedAt": "提交于{{time}}",
       "supplementRequired": "需要补件",
-      "supplementNoNote": "审核员没有留言,请尽量补齐材料。",
-      "supplementDeadline": "补件截止:{{time}},逾期申请将自动关闭",
+      "supplementNoNote": "审核员没有留言，请尽量补齐材料。",
+      "supplementDeadline": "补件截止：{{time}}，逾期申请将自动关闭",
       "supplementNow": "在线补件",
-      "supplementSent": "补件已提交,重新进入待审核",
+      "supplementSent": "补件已提交，重新进入待审核",
       "supplementModalTitle": "在线补件",
       "supplementSubmit": "提交补件",
-      "supplementTip": "上传补件材料或填写说明(至少一项)。",
-      "supplementNotePlaceholder": "给审核员留言,说明补件情况",
+      "supplementTip": "上传补件材料或填写说明（至少一项）。",
+      "supplementNotePlaceholder": "给审核员留言，说明补件情况",
       "rejectedTitle": "申请未通过",
       "rejectReason": "驳回原因",
       "infoTitle": "登记信息",
@@ -2328,8 +2330,8 @@
       "withdrawn": "申请已撤销",
       "reapply": "重新申请",
       "withdrawTitle": "撤回申请",
-      "withdrawConfirm": "撤回后本次申请作废,如需办理需重新提交。确定撤回 {{no}} 吗?",
-      "supplementMaterialConfirm": "确定删除补件材料「{{name}}」吗?删除后需重新上传。"
+      "withdrawConfirm": "撤回后本次申请作废，如需办理需重新提交。确定撤回{{no}}吗？",
+      "supplementMaterialConfirm": "确定删除补件材料「{{name}}」吗？删除后需重新上传。"
     },
     "reviewAction": {
       "approve": "通过",
@@ -2359,7 +2361,7 @@
     },
     "card": {
       "title": "我的居民卡",
-      "empty": "还没有电子居民卡,先完成居民登记吧",
+      "empty": "还没有电子居民卡，先完成居民登记吧",
       "goApply": "去登记",
       "electronic": "电子居民卡",
       "noLabel": "居民编号",
@@ -2373,21 +2375,21 @@
       "issuer": "登记机构",
       "qrTip": "扫码验真",
       "linkCopied": "验真链接已复制",
-      "print": "下载 PDF / 打印",
+      "print": "下载PDF / 打印",
       "verifyLink": "打开验真页",
       "copyLink": "复制验真链接",
       "reissue": "补发 / 重新生成",
       "reissueTitle": "补发居民卡",
       "reissueConfirm": "确认补发",
-      "reissueTip": "补发会生成新的验真二维码,旧二维码立即失效;居民编号保持不变。适用于二维码泄露等情况。",
-      "reissued": "已补发,请使用新的验真链接",
+      "reissueTip": "补发会生成新的验真二维码，旧二维码立即失效；居民编号保持不变。适用于二维码泄露等情况。",
+      "reissued": "已补发，请使用新的验真链接",
       "frozenReason": "冻结原因",
-      "expiredTip": "居民卡已过期,居民编号保留,可发起续期申请。",
+      "expiredTip": "居民卡已过期，居民编号保留，可发起续期申请。",
       "renewNow": "去续期",
       "infoTitle": "居民信息",
       "since": "成为居民时间",
       "editInfo": "申请变更信息",
-      "meta": "签发时间:{{time}}"
+      "meta": "签发时间：{{time}}"
     },
     "cardStatus": {
       "valid": "有效",
@@ -2419,16 +2421,16 @@
       "title": "变更与续期",
       "newTitle": "发起变更 / 升级 / 续期",
       "needCard": "需要先持有居民卡才能发起变更或续期",
-      "infoTip": "修改联系方式、虚拟地址或个人简介,审核通过后居民档案同步更新。",
-      "upgradeTip": "申请升级居民类型(如临时 → 永久),审核通过后居民卡类型同步变更。",
-      "renewalTip": "居民卡到期或即将到期时,发起续期让居民身份延续,居民编号保持不变。",
+      "infoTip": "修改联系方式、虚拟地址或个人简介，审核通过后居民档案同步更新。",
+      "upgradeTip": "申请升级居民类型（如临时 → 永久），审核通过后居民卡类型同步变更。",
+      "renewalTip": "居民卡到期或即将到期时，发起续期让居民身份延续，居民编号保持不变。",
       "keepIfEmpty": "留空表示不修改",
       "targetType": "目标居民类型",
       "targetTypePlaceholder": "选择要升级到的类型",
       "upgradeNote": "升级理由",
       "upgradeNotePlaceholder": "说说为什么想升级",
-      "renewalExplain": "当前有效期至 {{until}},通过后自动延长一个有效期周期。",
-      "renewalExplainShort": "续期居民卡,延长一个有效期周期",
+      "renewalExplain": "当前有效期至{{until}}，通过后自动延长一个有效期周期。",
+      "renewalExplainShort": "续期居民卡，延长一个有效期周期",
       "submit": "提交申请",
       "submitted": "变更申请已提交",
       "cancelled": "已取消",
@@ -2437,12 +2439,12 @@
       "empty": "暂无变更记录",
       "rejectReason": "驳回原因",
       "confirmTitle": "提交确认",
-      "infoConfirm": "确认提交信息变更申请?",
-      "upgradeConfirm": "确认提交类型升级申请?",
-      "renewalConfirm": "确认提交续期申请?",
+      "infoConfirm": "确认提交信息变更申请？",
+      "upgradeConfirm": "确认提交类型升级申请？",
+      "renewalConfirm": "确认提交续期申请？",
       "confirmAudit": "变更申请会记录在审计日志中。",
       "cancelTitle": "取消变更申请",
-      "cancelConfirm": "取消后本次变更申请作废,如需变更需重新提交。确定取消 {{no}} 吗?"
+      "cancelConfirm": "取消后本次变更申请作废，如需变更需重新提交。确定取消{{no}}吗？"
     },
     "benefits": {
       "title": "居民权益",
@@ -2452,7 +2454,7 @@
       "channelsTip": "已根据你的居民身份与各署配置开通可用通道。",
       "announcements": "居民专属公告",
       "achievements": "成就 / 徽章",
-      "achievementsTip": "成就系统规划中:连续签到、活动全勤、奶龙学者等徽章陆续上线。",
+      "achievementsTip": "成就系统规划中：连续签到、活动全勤、奶龙学者等徽章陆续上线。",
       "openChannel": "前往办理"
     },
     "channel": {
@@ -2479,7 +2481,7 @@
     },
     "messages": {
       "title": "站内信",
-      "unread": "未读 {{count}} 条",
+      "unread": "未读{{count}}条",
       "inbox": "收件箱",
       "archivedTab": "已归档",
       "empty": "暂无消息",
@@ -2489,11 +2491,11 @@
     },
     "verify": {
       "title": "居民卡验真",
-      "subtitle": "输入居民编号或登记申请编号,核验居民卡真伪",
-      "placeholder": "居民编号 / 申请编号,如 NRC-… 或 NRR-…",
+      "subtitle": "输入居民编号或登记申请编号，核验居民卡真伪",
+      "placeholder": "居民编号 / 申请编号，如NRC-… 或NRR-…",
       "action": "验真",
-      "limitTip": "为防枚举,验真有频率限制;结果仅展示脱敏信息。",
-      "notFound": "未找到对应的居民卡,请检查编号"
+      "limitTip": "为防枚举，验真有频率限制；结果仅展示脱敏信息。",
+      "notFound": "未找到对应的居民卡，请检查编号"
     },
     "admin": {
       "navLabel": "居民署管理导航",
@@ -2513,13 +2515,13 @@
       "allStatus": "全部状态",
       "allTypes": "全部类型",
       "searchPlaceholder": "搜索编号 / 昵称 / 账号",
-      "queueEmpty": "队列为空,去喝杯奶茶吧",
+      "queueEmpty": "队列为空，去喝杯奶茶吧",
       "view": "查看",
       "preview": "预览",
-      "pastApps": "历史申请 {{count}} 次",
+      "pastApps": "历史申请{{count}}次",
       "blacklisted": "黑名单",
-      "rejectReasonLabel": "驳回原因(必选)",
-      "supplementDaysLabel": "补件期限(天)",
+      "rejectReasonLabel": "驳回原因（必选）",
+      "supplementDaysLabel": "补件期限（天）",
       "commentLabel": "审核意见",
       "actions": {
         "approve": "通过",
@@ -2542,9 +2544,9 @@
         "batchRemind": "到期批量提醒",
         "remindDaysLabel": "提前提醒天数",
         "remindTip": "对该天数内到期的有效居民卡各发送一次到期提醒。",
-        "remindSent": "已提醒 {{count}} 位居民",
-        "reasonRequired": "原因(必填,会记录审计)",
-        "voidWarning": "注销后居民身份同步失效,持卡人需重新登记才能再次获得居民卡。",
+        "remindSent": "已提醒{{count}}位居民",
+        "reasonRequired": "原因（必填，会记录审计）",
+        "voidWarning": "注销后居民身份同步失效，持卡人需重新登记才能再次获得居民卡。",
         "freezeDone": "居民卡已冻结",
         "unfreezeDone": "居民卡已解冻",
         "voidDone": "居民卡已注销",
@@ -2552,16 +2554,16 @@
       },
       "residents": {
         "title": "居民信息管理",
-        "maskTip": "联系方式与地址已脱敏展示;数据导出会记录审计日志。",
+        "maskTip": "联系方式与地址已脱敏展示；数据导出会记录审计日志。",
         "changes": "变更记录",
         "related": "关联业务",
-        "relatedSummary": "签注申请 {{visa}} 份 · 入境申报 {{immigration}} 份(实时统计)"
+        "relatedSummary": "签注申请{{visa}}份 · 入境申报{{immigration}}份（实时统计）"
       },
       "verify": {
         "title": "验真管理",
         "configTitle": "限流与防枚举配置",
-        "configTip": "控制公开验真接口的频率限制;所有验真查询都会记录日志。",
-        "limitLabel": "每 5 分钟每 IP 验真上限",
+        "configTip": "控制公开验真接口的频率限制；所有验真查询都会记录日志。",
+        "limitLabel": "每5分钟每IP验真上限",
         "logsTitle": "验真记录",
         "query": "查询内容",
         "source": "来源",
@@ -2582,11 +2584,11 @@
         "title": "居民类型与规则配置",
         "create": "新增类型",
         "edit": "编辑类型",
-        "tip": "配置类型开放状态、有效期与材料要求;表单字段说明会展示在办事指南。",
+        "tip": "配置类型开放状态、有效期与材料要求；表单字段说明会展示在办事指南。",
         "code": "类型编码",
         "name": "类型名称",
         "description": "适用场景",
-        "validYears": "有效期(年)",
+        "validYears": "有效期（年）",
         "materials": "材料要求",
         "enabled": "是否开放",
         "requireAvatar": "头像必传",
@@ -2603,7 +2605,7 @@
         "level": "级别",
         "body": "正文",
         "enabled": "上线",
-        "templatesTip": "站内信模板支持用双大括号包裹的变量名,修改后立即生效。",
+        "templatesTip": "站内信模板支持用双大括号包裹的变量名，修改后立即生效。",
         "tplTitle": "标题模板",
         "tplBody": "正文模板",
         "tplVars": "可用变量",
@@ -2613,7 +2615,7 @@
           "template": "模板",
           "read": "已读"
         },
-        "deleteConfirm": "确定删除公告「{{title}}」吗?",
+        "deleteConfirm": "确定删除公告「{{title}}」吗？",
         "published": "公告已上线",
         "offlined": "公告已下线"
       },
@@ -2624,13 +2626,13 @@
         "rateLimited": "验真限流触发",
         "blacklisted": "黑名单数量",
         "duplicateTitle": "重复登记识别",
-        "duplicateTip": "同一账号发起过多次登记申请的账号(含草稿与已关闭)。",
+        "duplicateTip": "同一账号发起过多次登记申请的账号（含草稿与已关闭）。",
         "blacklistTitle": "黑名单",
         "reason": "原因",
         "remove": "移出",
         "applications": "申请次数",
         "removeTitle": "移出黑名单",
-        "removeConfirm": "确定将 {{username}}（#{{userId}}）移出黑名单吗?移出后该用户可重新申请居民服务。"
+        "removeConfirm": "确定将{{username}}（#{{userId}}）移出黑名单吗？移出后该用户可重新申请居民服务。"
       },
       "stats": {
         "title": "统计与报表",
@@ -2648,15 +2650,15 @@
         "verifyToday": "今日验真",
         "verifyTotal": "累计验真",
         "changesTotal": "变更/续期申请",
-        "trend7": "近 7 日提交趋势",
+        "trend7": "近7日提交趋势",
         "typeDistribution": "申请类型分布",
         "residentDistribution": "居民类型分布",
         "rejectReasons": "常见驳回原因"
       },
       "audit": {
         "title": "审计日志",
-        "actionPlaceholder": "按动作过滤,如 approve / void",
-        "export": "导出 CSV",
+        "actionPlaceholder": "按动作过滤，如approve / void",
+        "export": "导出CSV",
         "actor": "操作人",
         "action": "动作",
         "target": "对象",
@@ -2700,14 +2702,14 @@
       "settings": {
         "title": "署内设置",
         "numberingTitle": "编号规则与流程参数",
-        "numberingTip": "编号前缀 + 日期 + 随机码,不可猜测;改前缀只影响新编号。",
+        "numberingTip": "编号前缀 + 日期 + 随机码，不可猜测；改前缀只影响新编号。",
         "appPrefix": "申请编号前缀",
         "cardPrefix": "居民卡编号前缀",
         "changePrefix": "变更编号前缀",
-        "supplementDays": "补件期限(天)",
-        "reviewHours": "审核时长提示(小时)",
+        "supplementDays": "补件期限（天）",
+        "reviewHours": "审核时长提示（小时）",
         "maxActive": "同时在审申请上限",
-        "oneIdentity": "一号一身份(1 开启 / 0 关闭)"
+        "oneIdentity": "一号一身份（1开启 / 0关闭）"
       },
       "msgTpl": {
         "submitted": "提交成功",
@@ -2744,9 +2746,7 @@
     "officeName": "奶龙国皇家外交事务署",
     "officeSub": "虚构建交 · 外交身份 · 互免协议 · 验真",
     "sso": {
-      "title": "进入皇家外交事务署",
-      "confirm": "确认进入",
-      "tip": "为保护账号安全,进入各署前请确认当前登录身份。外交身份为业务身份,与登录账号相互独立。"
+      "tip": "为保护账号安全，进入各署前请确认当前登录身份。外交身份为业务身份，与登录账号相互独立。"
     },
     "nav": {
       "label": "外交事务署导航",
@@ -2813,7 +2813,7 @@
       "title": "外交礼遇",
       "typesTitle": "礼遇类型",
       "checkTitle": "礼遇资格查询",
-      "checkTip": "输入你的外交身份编号,查询当前可享受的虚拟礼遇。",
+      "checkTip": "输入你的外交身份编号，查询当前可享受的虚拟礼遇。",
       "eligible": "资格有效",
       "type": "礼遇类型",
       "source": "来源",
@@ -2836,7 +2836,7 @@
     },
     "material": {
       "title": "申请材料",
-      "tip": "支持图片与 PDF,单个文件不超过 5MB;材料仅审核人员可见。",
+      "tip": "支持图片与PDF，单个文件不超过5MB；材料仅审核人员可见。",
       "upload": "上传材料",
       "empty": "暂无材料",
       "limit": "图片 / PDF · ≤5MB",
@@ -2850,55 +2850,55 @@
       "relationType": "建交类型",
       "relationTypePlaceholder": "选择建交类型",
       "open": "开放中",
-      "entityName": "申请方名称(虚构)",
-      "entityNamePlaceholder": "例如:喵星联合王国",
+      "entityName": "申请方名称（虚构）",
+      "entityNamePlaceholder": "例如：喵星联合王国",
       "repNickname": "代表昵称",
       "repNicknamePlaceholder": "大家怎么称呼你的代表",
       "contact": "联系方式",
       "contactPlaceholder": "虚构联系方式即可",
       "reason": "建交理由",
-      "reasonPlaceholder": "说说你想和奶龙国建交的理由(虚构世界观)",
+      "reasonPlaceholder": "说说你想和奶龙国建交的理由（虚构世界观）",
       "purpose": "建交用途",
       "courtesies": "拟享受礼遇",
-      "courtesiesTip": "选填,可多选;审核通过后按资格生效",
+      "courtesiesTip": "选填，可多选；审核通过后按资格生效",
       "saveDraft": "保存草稿",
       "draftSaved": "草稿已保存",
-      "nextConfirm": "下一步:确认提交",
+      "nextConfirm": "下一步：确认提交",
       "confirmTitle": "提交前确认",
       "submit": "提交申请",
-      "submitted": "已提交,建交申请编号 {{no}}",
+      "submitted": "已提交，建交申请编号{{no}}",
       "required": "必填",
-      "materialCount": "{{count}} 份"
+      "materialCount": "{{count}}份"
     },
     "relation": {
       "title": "我的建交",
       "no": "建交编号",
       "detailTitle": "建交详情",
       "view": "查看",
-      "deleteConfirm": "确定删除草稿 {{no}} 吗?",
+      "deleteConfirm": "确定删除草稿{{no}}吗？",
       "submittedAt": "提交时间",
       "establishedAt": "建交时间",
       "rejected": "建交申请未通过",
       "suspendedTitle": "关系已暂停",
       "supplementRequired": "需要补件",
-      "supplementDeadline": "请在 {{date}} 前补交",
+      "supplementDeadline": "请在{{date}}前补交",
       "supplementSubmitted": "已补交",
-      "supplementPlaceholder": "填写补充说明,并可上传补件材料",
+      "supplementPlaceholder": "填写补充说明，并可上传补件材料",
       "supplementSent": "补件已提交",
       "submitSupplement": "提交补件",
       "withdraw": "撤销申请",
       "withdrawn": "已撤销",
       "severRequest": "申请断交",
-      "severRequested": "断交申请已受理,待复核",
+      "severRequested": "断交申请已受理，待复核",
       "severReasonFirst": "请先填写断交原因",
-      "severReasonPlaceholder": "断交原因(将进入复核)",
+      "severReasonPlaceholder": "断交原因（将进入复核）",
       "reapply": "重新申请",
       "timeline": "审核记录与进度",
-      "submitConfirmBody": "提交后建交申请将进入审核队列,审核期间不可修改。",
+      "submitConfirmBody": "提交后建交申请将进入审核队列，审核期间不可修改。",
       "withdrawConfirmTitle": "撤回建交申请",
-      "withdrawConfirmBody": "撤回后本次申请作废,如需建交需重新提交。确定撤回 {{no}} 吗?",
+      "withdrawConfirmBody": "撤回后本次申请作废，如需建交需重新提交。确定撤回{{no}}吗？",
       "severConfirmTitle": "申请断交",
-      "severConfirmBody": "断交申请提交后进入复核,复核期间关系暂停。确定对 {{no}} 申请断交吗?原因:{{reason}}"
+      "severConfirmBody": "断交申请提交后进入复核，复核期间关系暂停。确定对{{no}}申请断交吗？原因：{{reason}}"
     },
     "identity": {
       "pageTitle": "外交身份",
@@ -2915,8 +2915,8 @@
       "holderPlaceholder": "外交身份上的名字",
       "contact": "联系方式",
       "contactPlaceholder": "虚构联系方式即可",
-      "title": "职务(虚构)",
-      "titlePlaceholder": "例如:驻奶龙国非常驻使节",
+      "title": "职务（虚构）",
+      "titlePlaceholder": "例如：驻奶龙国非常驻使节",
       "termStart": "任期开始",
       "termEnd": "任期结束",
       "termOrderError": "任期结束日期不能早于开始日期",
@@ -2924,23 +2924,23 @@
       "termRange": "{{start}} ~ {{end}}",
       "inactiveReason": "失效原因",
       "rejected": "外交身份申请未通过",
-      "submitted": "已提交,外交身份申请编号 {{no}}",
+      "submitted": "已提交，外交身份申请编号{{no}}",
       "detailTitle": "外交身份详情",
       "viewCard": "查看外交身份卡",
       "cardTitle": "外交身份卡",
       "print": "下载 / 打印",
       "scanVerify": "扫码验真",
       "no": "身份编号",
-      "materialTip": "需上传任命书(虚构)或介绍信等材料,图片/PDF,≤5MB。",
-      "confirmTip": "提交后将进入外交审核队列,审核时将校验关联建交关系的有效性。",
+      "materialTip": "需上传任命书（虚构）或介绍信等材料，图片/PDF,≤5MB。",
+      "confirmTip": "提交后将进入外交审核队列，审核时将校验关联建交关系的有效性。",
       "visaChannelTitle": "外交签注通道",
-      "visaChannelTip": "外交身份用户可申请虚拟外交签注:申请与提交时会校验外交身份有效性;身份失效后已签发的外交签注将同步注销。",
+      "visaChannelTip": "持外交身份者可申请虚拟外交签注：申请与提交时会校验外交身份有效性；身份失效后已签发的外交签注将同步注销。",
       "goVisa": "前往签注申请署",
-      "carryNo": "将自动带出 {{no}}",
+      "carryNo": "将自动带出{{no}}",
       "visaNeedActive": "需持有有效外交身份后开放",
-      "submitConfirmBody": "提交后外交身份申请将进入审核队列,审核期间不可修改。",
+      "submitConfirmBody": "提交后外交身份申请将进入审核队列，审核期间不可修改。",
       "withdrawConfirmTitle": "撤回外交身份申请",
-      "withdrawConfirmBody": "撤回后本次申请作废,如需登记需重新提交。确定撤回 {{no}} 吗?"
+      "withdrawConfirmBody": "撤回后本次申请作废，如需登记需重新提交。确定撤回{{no}}吗？"
     },
     "inactiveReason": {
       "term_ended": "任期届满",
@@ -2979,10 +2979,10 @@
       "no": "协议编号",
       "listTitle": "互免协议公示",
       "checkTitle": "我的互免资格查询",
-      "checkTip": "输入建交编号或外交身份编号,查询命中的生效互免协议。",
+      "checkTip": "输入建交编号或外交身份编号，查询命中的生效互免协议。",
       "check": "查询",
       "codeFirst": "请先输入编号",
-      "hit": "命中 {{count}} 条互免协议",
+      "hit": "命中{{count}}条互免协议",
       "noHit": "暂无命中的互免协议",
       "sourceIdentity": "外交身份",
       "sourceRelation": "建交关系",
@@ -2990,16 +2990,16 @@
       "validRange": "有效期",
       "scope": "适用人员",
       "courtesies": "礼遇内容",
-      "partyA": "甲方(虚构实体)",
-      "partyB": "乙方(虚构实体)",
+      "partyA": "甲方（虚构实体）",
+      "partyB": "乙方（虚构实体）",
       "parties": "双方实体",
       "type": "互免类型",
       "partyPlaceholder": "虚构实体名称",
-      "courtesiesTip": "例如:互相免除虚拟入境手续",
-      "scopeTip": "例如:持有效外交身份的使团成员",
+      "courtesiesTip": "例如：互相免除虚拟入境手续",
+      "scopeTip": "例如：持有效外交身份的使团成员",
       "create": "新建协议",
       "createTitle": "创建互免协议",
-      "editTitle": "编辑互免协议 {{no}}",
+      "editTitle": "编辑互免协议{{no}}",
       "adminTitle": "互免协议管理",
       "effect": "生效",
       "terminate": "终止",
@@ -3017,22 +3017,22 @@
     },
     "faq": {
       "title": "常见问题",
-      "effectQ": "建交有现实效力吗?",
-      "effectA": "没有。建交、外交身份与互免协议全部是虚构娱乐内容,不产生任何现实外交、法律或出入境效力。",
-      "feeQ": "建交收费吗?",
-      "feeA": "完全免费。任何以\"建交费\"\"代办费\"\"保证金\"等名义索取费用的行为均为诈骗,请勿转账。",
-      "realityQ": "外交身份能用于现实吗?",
-      "realityA": "不能。外交身份卡仅供娱乐展示与站内验真,不能作为任何现实证件使用。"
+      "effectQ": "建交有现实效力吗？",
+      "effectA": "没有。建交、外交身份与互免协议全部是虚构娱乐内容，不产生任何现实外交、法律或出入境效力。",
+      "feeQ": "建交收费吗？",
+      "feeA": "完全免费。任何以\"建交费\"\"代办费\"\"保证金\"等名义索取费用的行为均为诈骗，请勿转账。",
+      "realityQ": "外交身份能用于现实吗？",
+      "realityA": "不能。外交身份卡仅供娱乐展示与站内验真，不能作为任何现实证件使用。"
     },
     "verify": {
       "title": "外交验真中心",
-      "tip": "输入建交编号 / 外交身份编号 / 互免协议编号验真,或扫描外交身份卡二维码。结果已脱敏,不含联系方式等敏感信息。",
+      "tip": "输入建交编号 / 外交身份编号 / 互免协议编号验真，或扫描外交身份卡二维码。结果已脱敏，不含联系方式等敏感信息。",
       "check": "验真",
       "notFound": "未查询到对应编号",
       "valid": "当前有效",
       "notValid": "当前无效",
-      "rateLimited": "查询太频繁,请稍后再试",
-      "antiEnum": "为防枚举,连续查询受限;编号请从官方卡片或公报获取",
+      "rateLimited": "查询太频繁，请稍后再试",
+      "antiEnum": "为防枚举，连续查询受限；编号请从官方卡片或公报获取",
       "issuedBy": "签发机构",
       "kindRelation": "建交关系",
       "kindIdentity": "外交身份",
@@ -3041,7 +3041,7 @@
     },
     "messages": {
       "title": "站内信",
-      "unreadCount": "{{count}} 条未读",
+      "unreadCount": "{{count}}条未读",
       "readAll": "全部已读",
       "filter_all": "全部",
       "filter_unread": "未读",
@@ -3056,10 +3056,10 @@
       "pageTitle": "使领馆 / 代表处",
       "name": "代表处名称",
       "detailTitle": "代表处详情",
-      "location": "所在地点(虚构)",
+      "location": "所在地点（虚构）",
       "hours": "开放时间",
       "intro": "简介",
-      "contact": "联系方式(虚构)",
+      "contact": "联系方式（虚构）",
       "services": "服务事项",
       "notices": "代表处公告",
       "adminTitle": "虚构代表处管理",
@@ -3067,17 +3067,17 @@
       "createTitle": "创建代表处",
       "editTitle": "编辑代表处 · {{name}}",
       "code": "代表处编码",
-      "codeTip": "3-20 位大写字母、数字或下划线",
-      "namePlaceholder": "例如:中央大街代表处",
+      "codeTip": "3-20位大写字母、数字或下划线",
+      "namePlaceholder": "例如：中央大街代表处",
       "locationPlaceholder": "虚构地点",
-      "hoursPlaceholder": "例如:每周二至周日 10:00 - 18:00",
-      "contactPlaceholder": "虚构信箱等,请勿填写真实联系方式",
+      "hoursPlaceholder": "例如：每周二至周日10:00 - 18:00",
+      "contactPlaceholder": "虚构信箱等，请勿填写真实联系方式",
       "open": "开放",
       "close": "关闭",
       "maintenance": "维护"
     },
     "home": {
-      "hero": "以趣味与友谊之名,与世界建立虚构外交关系",
+      "hero": "以趣味与友谊之名，与世界建立虚构外交关系",
       "heroSub": "建交申请 · 外交身份登记 · 互免协议 · 验真查询",
       "notices": "署内公告",
       "services": "服务目录",
@@ -3098,10 +3098,10 @@
         "courtesy": "虚拟礼遇说明"
       },
       "guideBody": {
-        "conditions": "拥有虚构世界观的国家、城邦、社区、组织或活动团体均可申请;当前开放「虚构国家 × 正式建交」。",
-        "materials": "虚构介绍、活动凭证或社区证明等,图片/PDF,单个不超过 5MB。",
-        "duration": "预计 {{hours}} 小时内完成审核;如需补件将站内信通知。",
-        "courtesy": "入境礼遇通道、活动优先邀请、优先审核均为趣味化礼遇,不承诺现实礼遇。"
+        "conditions": "拥有虚构世界观的国家、城邦、社区、组织或活动团体均可申请；当前开放「虚构国家 × 正式建交」。",
+        "materials": "虚构介绍、活动凭证或社区证明等，图片/PDF，单个不超过5MB。",
+        "duration": "预计{{hours}}小时内完成审核；如需补件将站内信通知。",
+        "courtesy": "入境礼遇通道、活动优先邀请、优先审核均为趣味化礼遇，不承诺现实礼遇。"
       },
       "quickTitle": "快速入口",
       "quick": {
@@ -3111,8 +3111,8 @@
         "verify": "验真查询",
         "faq": "常见问题"
       },
-      "myStats": "我的建交关系 {{relations}} 条 · 有效外交身份 {{identities}} 个 · 未读消息 {{unread}} 条",
-      "agreementsActive": "生效中互免协议 {{count}} 份"
+      "myStats": "我的建交关系{{relations}}条 · 有效外交身份{{identities}}个 · 未读消息{{unread}}条",
+      "agreementsActive": "生效中互免协议{{count}}份"
     },
     "admin": {
       "navLabel": "外交署管理导航",
@@ -3126,7 +3126,7 @@
         "verify": "验真与风控",
         "config": "类型与配置",
         "stats": "统计报表",
-        "audit": "审计与合规"
+        "audit": "审计日志"
       },
       "allStatuses": "全部状态",
       "searchPlaceholder": "编号 / 实体名 / 昵称",
@@ -3141,15 +3141,15 @@
       "supplementSent": "补件通知已发送",
       "noteFirst": "请先填写审核意见 / 补件说明",
       "reasonFirst": "请先填写原因",
-      "notePlaceholder": "审核意见 / 原因(用于记录与通知)",
-      "commentPlaceholder": "驳回补充说明(选填)",
+      "notePlaceholder": "审核意见 / 原因（用于记录与通知）",
+      "commentPlaceholder": "驳回补充说明（选填）",
       "suspend": "暂停关系",
       "suspended": "已暂停",
       "resume": "恢复关系",
       "resumed": "已恢复",
       "confirmSever": "确认断交",
       "dismissSever": "驳回断交",
-      "severed": "已断交,关联身份同步失效",
+      "severed": "已断交，关联身份同步失效",
       "severDismissed": "断交申请已驳回",
       "approveIdentity": "身份通过",
       "identityApproved": "外交身份已通过并生效",
@@ -3165,22 +3165,22 @@
       "risk_blacklisted": "黑名单",
       "risk_watched": "观察名单",
       "submitted": "提交时间",
-      "establishConfirm": "确定通过与 {{no}} 的建交申请吗?通过后关系立即生效。",
-      "suspendConfirm": "确定暂停与 {{no}} 的建交关系吗?暂停期间该关系下的外交身份将失效。",
-      "resumeConfirm": "确定恢复与 {{no}} 的建交关系吗?",
-      "confirmSeverConfirm": "确定与 {{no}} 断交吗?断交后关系终止且不可恢复。",
-      "dismissSeverConfirm": "确定驳回 {{no}} 的断交申请吗?关系将保持正常。",
-      "approveIdentityConfirm": "确定通过 {{no}} 的外交身份申请吗?通过后身份立即生效。",
-      "freezeConfirm": "确定冻结 {{no}} 吗?冻结期间该身份不可用于外交签注。",
-      "unfreezeConfirm": "确定解冻 {{no}} 吗?解冻后身份恢复有效。",
-      "revokeConfirm": "确定注销 {{no}} 吗?注销后不可恢复,已签发的外交签注将同步注销。",
+      "establishConfirm": "确定通过与{{no}}的建交申请吗？通过后关系立即生效。",
+      "suspendConfirm": "确定暂停与{{no}}的建交关系吗？暂停期间该关系下的外交身份将失效。",
+      "resumeConfirm": "确定恢复与{{no}}的建交关系吗？",
+      "confirmSeverConfirm": "确定与{{no}}断交吗？断交后关系终止且不可恢复。",
+      "dismissSeverConfirm": "确定驳回{{no}}的断交申请吗？关系将保持正常。",
+      "approveIdentityConfirm": "确定通过{{no}}的外交身份申请吗？通过后身份立即生效。",
+      "freezeConfirm": "确定冻结{{no}}吗？冻结期间该身份不可用于外交签注。",
+      "unfreezeConfirm": "确定解冻{{no}}吗？解冻后身份恢复有效。",
+      "revokeConfirm": "确定注销{{no}}吗？注销后不可恢复，已签发的外交签注将同步注销。",
       "audit": {
-        "title": "审计与合规",
+        "title": "审计日志",
         "tabLog": "审计日志",
         "tabTemplates": "消息模板",
         "tabSendLog": "发送记录",
         "action": "操作",
-        "actionPrefix": "按操作前缀筛选,如 dip:relation",
+        "actionPrefix": "按操作前缀筛选，如dip:relation",
         "actor": "操作人",
         "targetType": "对象类型",
         "targetId": "对象标识",
@@ -3246,7 +3246,7 @@
       },
       "stats": {
         "title": "统计与报表",
-        "export": "导出 CSV",
+        "export": "导出CSV",
         "submitted": "建交申请量",
         "established": "已建交",
         "rejected": "驳回量",
@@ -3262,7 +3262,7 @@
         "identityDistribution": "外交身份类型分布",
         "courtesyUsage": "礼遇使用量",
         "rejectReasons": "常见驳回原因",
-        "trend7": "近 7 日提交量",
+        "trend7": "近7日提交量",
         "type": "类型",
         "count": "数量"
       },
@@ -3276,16 +3276,16 @@
         "editType": "编辑类型",
         "guide": "类型说明页文案",
         "guideTip": "适用场景、虚拟礼遇、样例建交公报等说明",
-        "validityDays": "有效期(天)",
+        "validityDays": "有效期（天）",
         "open": "开放",
         "closed": "关闭",
         "prefixRelation": "建交编号前缀",
         "prefixIdentity": "外交身份编号前缀",
         "prefixAgreement": "协议编号前缀",
-        "supplementDays": "补件期限(天)",
-        "reviewHours": "审核时长提示(小时)",
-        "verifyLimit": "验真限流(次/5分钟)",
-        "maxIdentities": "单人 concurrent 身份上限"
+        "supplementDays": "补件期限（天）",
+        "reviewHours": "审核时长提示（小时）",
+        "verifyLimit": "验真限流（次/5分钟）",
+        "maxIdentities": "单人concurrent身份上限"
       },
       "notice": {
         "adminTitle": "公告管理",
@@ -3297,7 +3297,7 @@
         "level": "级别",
         "office": "关联代表处",
         "officeAll": "署级公告",
-        "officeTip": "署级公告全署可见,代表处公告仅在该代表处展示",
+        "officeTip": "署级公告全署可见，代表处公告仅在该代表处展示",
         "published": "已发布",
         "publishedAt": "发布时间",
         "offline": "已下线",
@@ -3305,13 +3305,13 @@
       },
       "blacklist": {
         "add": "添加名单",
-        "userId": "用户 ID",
+        "userId": "用户ID",
         "level": "级别",
         "warn": "观察",
         "block": "限制",
         "reason": "原因",
         "lift": "移出名单",
-        "liftConfirm": "确定将 {{user}} 移出限制名单吗?",
+        "liftConfirm": "确定将{{user}}移出限制名单吗？",
         "lifted": "已移出限制名单",
         "user": "用户",
         "since": "加入时间"
@@ -3323,9 +3323,9 @@
         "allKinds": "全部类型",
         "allResults": "全部结果",
         "limitTitle": "验真限流配置",
-        "limitTip": "每 IP 每 5 分钟验真次数上限(防枚举);保存后立即生效。",
-        "limitConfirm": "确定把验真限流改为每 5 分钟 {{count}} 次吗?",
-        "limitSaved": "验真限流已更新为每 5 分钟 {{count}} 次"
+        "limitTip": "每IP每5分钟验真次数上限（防枚举）；保存后立即生效。",
+        "limitConfirm": "确定把验真限流改为每5分钟{{count}}次吗？",
+        "limitSaved": "验真限流已更新为每5分钟{{count}}次"
       },
       "verifyLog": {
         "query": "查询内容",
@@ -3355,8 +3355,8 @@
         "body": "模板正文",
         "variables": "可用变量",
         "code": "模板编码",
-        "editTitle": "编辑模板 {{code}}",
-        "varTip": "正文支持用双大括号包裹的变量名(如编号、日期),保存后立即生效。"
+        "editTitle": "编辑模板{{code}}",
+        "varTip": "正文支持用双大括号包裹的变量名（如编号、日期），保存后立即生效。"
       }
     }
   },
@@ -3364,7 +3364,7 @@
     "officeName": "奶龙国皇家礼宾与活动署",
     "officeSub": "活动 · 邀请函 · 活动凭证 · 礼宾服务",
     "scamTitle": "防诈骗提示",
-    "scamBody": "本署活动报名与认证完全免费。任何“收费报名”“内部名额”“承诺现实入场或礼遇”的说法都是诈骗,请勿相信。",
+    "scamBody": "本署活动报名与认证完全免费。任何“收费报名”“内部名额”“承诺现实入场或礼遇”的说法都是诈骗，请勿相信。",
     "nav": {
       "home": "首页",
       "events": "活动列表",
@@ -3373,7 +3373,7 @@
       "passes": "我的活动凭证",
       "hosts": "接待方认证",
       "courtesy": "礼宾服务",
-      "messages": "消息",
+      "messages": "站内信",
       "help": "帮助",
       "verify": "验真查询",
       "workbench": "管理台",
@@ -3386,12 +3386,10 @@
       "checkin": "签到",
       "manage": "署内配置",
       "stats": "统计",
-      "audit": "审计"
+      "audit": "审计日志"
     },
     "sso": {
-      "title": "确认以门户身份进入",
-      "tip": "礼宾与活动署使用统一门户账号。报名、邀请函与礼遇记录都关联到当前账号,请在确认前核对身份。",
-      "confirm": "确认进入"
+      "tip": "礼宾与活动署使用统一门户账号。报名、邀请函与礼遇记录都关联到当前账号，请在确认前核对身份。"
     },
     "action": {
       "accept": "接受邀请",
@@ -3408,7 +3406,7 @@
       "edit": "编辑",
       "export": "导出",
       "issue": "生成邀请函",
-      "nextConfirm": "下一步:确认",
+      "nextConfirm": "下一步：确认",
       "preview": "预览",
       "reissue": "补发",
       "revoke": "撤销",
@@ -3453,7 +3451,7 @@
     "identityCheck": {
       "not_required": "无需校验",
       "missing": "缺少编号",
-      "reserved": "联动已关闭(仅登记编号)",
+      "reserved": "联动已关闭（仅登记编号）",
       "verified": "已校验",
       "invalid": "校验未通过",
       "unavailable": "对方服务未开放"
@@ -3576,23 +3574,23 @@
     },
     "home": {
       "heroTitle": "欢迎来到礼宾与活动署",
-      "heroSub": "在奶龙岛参加一场虚构活动,领取邀请函、活动凭证与礼宾礼遇。",
+      "heroSub": "在奶龙岛参加一场虚构活动，领取邀请函、活动凭证与礼宾礼遇。",
       "browseEvents": "浏览活动",
       "myRegistrations": "我的报名",
       "verifyEntry": "验真中心",
-      "statOpen": "{{count}} 场活动开放报名",
-      "statTypes": "{{count}} 个活动分类",
-      "statHours": "审核约 {{hours}} 小时",
+      "statOpen": "{{count}}场活动开放报名",
+      "statTypes": "{{count}}个活动分类",
+      "statHours": "审核约{{hours}}小时",
       "notices": "署内公告",
       "categories": "活动分类",
       "categoriesSub": "文化交流、庆典、展览、社区活动、外交活动与居民专属活动。",
-      "typeCapacity": "默认 {{count}} 个名额",
+      "typeCapacity": "默认{{count}}个名额",
       "hot": "热门活动",
       "viewAll": "查看全部",
       "upcoming": "即将开始",
-      "seatsLeft": "余 {{count}} 席",
+      "seatsLeft": "余{{count}}席",
       "full": "名额已满",
-      "deadline": "截止 {{date}}",
+      "deadline": "截止{{date}}",
       "services": "服务目录",
       "service": {
         "apply": "活动报名",
@@ -3614,14 +3612,14 @@
       "guide_apply": "如何报名",
       "guide_apply_body": "选择活动 → 填写信息与随行人员 → 上传材料 → 提交确认。名额已满时可进入候补。",
       "guide_invitation": "邀请函怎么用",
-      "guide_invitation_body": "收到邀请后可接受或拒绝,下载打印版;报名时填写邀请函编号,亦可作为签注材料。",
+      "guide_invitation_body": "收到邀请后可接受或拒绝，下载打印版；报名时填写邀请函编号，亦可作为签注材料。",
       "guide_pass": "活动凭证怎么验",
-      "guide_pass_body": "报名通过后自动生成活动凭证。凭编号或二维码签到,也可在验真中心查询状态。",
+      "guide_pass_body": "报名通过后自动生成活动凭证。凭编号或二维码签到，也可在验真中心查询状态。",
       "guide_rules": "报名与礼遇规则",
-      "guide_rules_body": "报名免费、信息虚构、禁止重复占名额;礼遇仅为趣味记录,不承诺现实接待。",
+      "guide_rules_body": "报名免费、信息虚构、禁止重复占名额；礼遇仅为趣味记录，不承诺现实接待。",
       "learnMore": "了解更多",
       "faq": "常见问题",
-      "supportTip": "还有疑问?提交工单或查看帮助中心。",
+      "supportTip": "还有疑问？提交工单或查看帮助中心。",
       "helpCenter": "帮助中心"
     },
     "events": {
@@ -3632,61 +3630,61 @@
       "residentOnly": "居民专属",
       "diplomaticOnly": "外交礼遇",
       "empty": "没有符合条件的活动",
-      "capacityInfo": "{{used}}/{{total}} 席"
+      "capacityInfo": "{{used}}/{{total}}席"
     },
     "eventDetail": {
       "notFound": "活动不存在或尚未公开",
       "residentOnly": "居民专属",
       "diplomaticOnly": "外交礼遇",
       "deadlineLabel": "报名截止",
-      "myRegistration": "我的报名:{{status}}",
+      "myRegistration": "我的报名：{{status}}",
       "joinWaitlist": "名额已满 · 加入候补",
       "inviteEntry": "我的邀请函",
-      "waitlistTip": "名额已满,提交报名后将进入候补,有空位时自动转正。",
-      "fullTip": "名额已满且未开放候补,请关注后续活动。",
+      "waitlistTip": "名额已满，提交报名后将进入候补，有空位时自动转正。",
+      "fullTip": "名额已满且未开放候补，请关注后续活动。",
       "closedTip": "当前不在报名时间内。",
-      "hasInvitation": "你持有一张本活动的邀请函 {{no}}",
+      "hasInvitation": "你持有一张本活动的邀请函{{no}}",
       "intro": "活动介绍",
       "schedule": "活动日程",
       "conditions": "报名条件",
-      "noConditions": "无额外条件,所有门户注册用户均可报名。",
+      "noConditions": "无额外条件，持门户账号即可报名。",
       "materials": "所需材料",
       "noMaterials": "本活动无需上传材料。",
       "notices": "活动公告与变更通知",
       "venue": "虚构地点示意图",
-      "venueMock": "示意图仅为虚构设定,不指向真实地点"
+      "venueMock": "示意图仅为虚构设定，不指向真实地点"
     },
     "apply": {
       "title": "活动报名",
       "editTitle": "编辑报名",
-      "editLocked": "当前状态为“{{status}}”,报名信息不可修改。",
+      "editLocked": "当前状态为“{{status}}”，报名信息不可修改。",
       "infoSection": "报名信息",
       "nicknamePlaceholder": "请填写虚构昵称",
       "contactPlaceholder": "邮箱或虚构联系方式",
-      "partySizeHint": "参加人数包含你本人,最多 {{max}} 人",
+      "partySizeHint": "参加人数包含你本人，最多{{max}}人",
       "companionsSection": "随行人员",
-      "companionsHint": "最多可添加 {{max}} 位随行人员,昵称与关系均为虚构。",
+      "companionsHint": "最多可添加{{max}}位随行人员，昵称与关系均为虚构。",
       "addCompanion": "添加随行人员",
       "identitySection": "身份类型",
-      "identityHint": "居民 / 外交身份将与对应署实时校验,编号无效将无法提交报名。",
-      "identityNoPlaceholder_resident": "居民编号(如 NRC…)",
-      "identityNoPlaceholder_diplomatic": "外交身份编号(如 NLE…)",
-      "invitationNoPlaceholder": "选填,填写邀请函编号",
+      "identityHint": "居民 / 外交身份将与对应署实时校验，编号无效将无法提交报名。",
+      "identityNoPlaceholder_resident": "居民编号（如NRC…）",
+      "identityNoPlaceholder_diplomatic": "外交身份编号（如NLE…）",
+      "invitationNoPlaceholder": "选填，填写邀请函编号",
       "noteSection": "备注",
-      "notePlaceholder": "可选:饮食偏好、无障碍需求或其他虚构说明",
+      "notePlaceholder": "可选：饮食偏好、无障碍需求或其他虚构说明",
       "materialsSection": "报名材料",
-      "materialsHint": "支持 PNG / JPG / WebP / PDF,单个文件不超过 5 MB,最多 6 个。",
-      "saveFirstForUpload": "请先保存草稿,再上传材料。",
+      "materialsHint": "支持PNG / JPG / WebP / PDF，单个文件不超过5 MB，最多6个。",
+      "saveFirstForUpload": "请先保存草稿，再上传材料。",
       "uploadMaterial": "上传材料",
       "materialKind": "材料类型",
       "uploadDone": "材料已上传",
       "noMaterials": "尚未上传材料",
       "summary": "报名摘要",
-      "summaryTip": "提交前请核对信息;提交后将进入待审核队列。",
+      "summaryTip": "提交前请核对信息；提交后将进入待审核队列。",
       "requiredHint": "请填写昵称与联系方式",
       "confirmTitle": "提交前确认",
       "draftSaved": "草稿已保存",
-      "submitSuccess": "报名已提交:{{no}}"
+      "submitSuccess": "报名已提交：{{no}}"
     },
     "my": {
       "title": "我的报名",
@@ -3698,22 +3696,22 @@
       "timeline": "状态轨迹",
       "viewPass": "查看凭证",
       "cancelTitle": "取消报名",
-      "cancelTip": "取消后将释放名额;若你已通过审核,活动凭证会同步作废。",
+      "cancelTip": "取消后将释放名额；若你已通过审核，活动凭证会同步作废。",
       "cancelled": "报名已取消"
     },
     "invitations": {
       "title": "我的邀请函",
-      "subtitle": "定向邀请的活动邀请函,可接受、拒绝、下载与验真。",
+      "subtitle": "定向邀请的活动邀请函，可接受、拒绝、下载与验真。",
       "empty": "暂未收到邀请函",
       "inviter": "邀请人 / 接待方",
-      "validUntil": "有效期至 {{date}}",
-      "usage": "邀请函可用于活动报名,也可作为签注申请材料(签注署可实时校验)。",
+      "validUntil": "有效期至{{date}}",
+      "usage": "邀请函可用于活动报名，也可作为签注申请材料（签注署可实时校验）。",
       "usedTip": "该邀请函已在报名中核销使用。",
       "acceptTitle": "接受邀请",
-      "acceptTip": "接受后邀请函状态保持有效,可在报名时填写邀请函编号。",
+      "acceptTip": "接受后邀请函状态保持有效，可在报名时填写邀请函编号。",
       "accepted": "已接受邀请",
       "declineTitle": "拒绝邀请",
-      "declineTip": "拒绝后邀请函将被撤销,不可再次使用。",
+      "declineTip": "拒绝后邀请函将被撤销，不可再次使用。",
       "declined": "已拒绝邀请",
       "response_pending": "待回应",
       "response_accepted": "已接受",
@@ -3721,12 +3719,12 @@
     },
     "passes": {
       "title": "我的活动凭证",
-      "subtitle": "报名通过后生成电子票,凭编号或二维码签到。",
+      "subtitle": "报名通过后生成电子票，凭编号或二维码签到。",
       "empty": "暂无活动凭证",
       "holder": "持票人",
       "kind": "活动凭证 · 电子票",
-      "qrTip": "扫码验真(仅含编号,不含个人信息)",
-      "checkinTip": "活动当日请出示凭证编号或二维码;凭证不可转让,作废后无法签到。",
+      "qrTip": "扫码验真（仅含编号，不含个人信息）",
+      "checkinTip": "活动当日请出示凭证编号或二维码；凭证不可转让，作废后无法签到。",
       "statusNote_pending": "待使用 · 活动当日可签到",
       "statusNote_used": "已使用 · 已签到",
       "statusNote_expired": "已过期 · 活动已结束",
@@ -3735,37 +3733,37 @@
     "hosts": {
       "title": "接待方认证",
       "subtitle": "活动组织方、社区团体、外交接待方与居民团体的虚构认证。",
-      "intro": "认证通过后可获得接待方编号与认证证书,并可按权限发起邀请函、发布活动。",
+      "intro": "认证通过后可获得接待方编号与认证证书，并可按权限发起邀请函、发布活动。",
       "applyTitle": "申请接待方认证",
       "empty": "还没有接待方申请",
       "unnamed": "未命名接待方",
-      "namePlaceholder": "虚构名称,如“海风社区”",
+      "namePlaceholder": "虚构名称，如“海风社区”",
       "contactNicknamePlaceholder": "联系人昵称",
       "contactPlaceholder": "邮箱或虚构联系方式",
-      "introPlaceholder": "介绍你的团体、活动计划与社区证明(虚构)",
-      "materialTip": "请至少上传 1 份介绍信、活动计划或社区证明。",
-      "saveFirst": "请先保存草稿,再上传材料并提交审核。",
+      "introPlaceholder": "介绍你的团体、活动计划与社区证明（虚构）",
+      "materialTip": "请至少上传1份介绍信、活动计划或社区证明。",
+      "saveFirst": "请先保存草稿，再上传材料并提交审核。",
       "draftSaved": "草稿已保存",
       "submitted": "已提交审核",
-      "deleteConfirm": "确定删除这份接待方草稿吗?",
-      "supplementTip": "补件:{{note}},截止 {{date}}",
+      "deleteConfirm": "确定删除这份接待方草稿吗？",
+      "supplementTip": "补件：{{note}}，截止{{date}}",
       "certTitle": "接待方认证证书",
       "certBody": "兹证明“{{name}}”已完成奶龙国皇家礼宾与活动署接待方认证。",
       "certLink": "认证证书与文书认证署联动签发",
       "canPublish": "可发布活动",
       "canInvite": "可发起邀请函",
       "rulesTitle": "认证规则",
-      "rules": "认证免费,材料仅用于虚构审核;认证后如违反规则可被冻结或撤销。接待方编号与证书可在验真中心查询。"
+      "rules": "认证免费，材料仅用于虚构审核；认证后如违反规则可被冻结或撤销。接待方编号与证书可在验真中心查询。"
     },
     "courtesy": {
       "title": "礼宾服务",
       "subtitle": "外宾接待、居民礼遇、外交礼遇与活动礼宾通道。",
       "eligibility": "礼遇资格查询",
-      "eligibilityTip": "凭居民编号、外交身份编号或邀请函编号查询,系统会实时校验对应署台账。",
+      "eligibilityTip": "凭居民编号、外交身份编号或邀请函编号查询，系统会实时校验对应署台账。",
       "query": "查询资格",
       "eligible": "符合申请条件",
       "notEligible": "暂不符合条件",
-      "eligibilityStatus": "校验结果:{{status}}",
+      "eligibilityStatus": "校验结果：{{status}}",
       "status": {
         "verified": "已与对应署核验",
         "invalid": "编号已失效或状态不符",
@@ -3775,35 +3773,35 @@
         "unavailable": "对方服务未开放",
         "invalid_basis": "依据类型不支持"
       },
-      "reserved": "跨署联动已关闭,当前仅做编号登记",
-      "basisPlaceholder_resident": "居民编号(如 NRC…)",
-      "basisPlaceholder_diplomatic": "外交身份编号(如 NLE…)",
-      "basisPlaceholder_invitation": "邀请函编号(如 NJI…)",
+      "reserved": "跨署联动已关闭，当前仅做编号登记",
+      "basisPlaceholder_resident": "居民编号（如NRC…）",
+      "basisPlaceholder_diplomatic": "外交身份编号（如NLE…）",
+      "basisPlaceholder_invitation": "邀请函编号（如NJI…）",
       "types": "礼遇类型",
       "applyTitle": "申请礼遇",
       "applyEntry": "申请礼遇",
       "applySuccess": "礼遇申请已提交",
-      "notePlaceholder": "说明用途或补充信息(虚构)",
+      "notePlaceholder": "说明用途或补充信息（虚构）",
       "myTitle": "我的礼遇申请",
       "empty": "暂无礼遇申请",
       "validUntil": "有效期至",
       "rules": "礼遇规则",
-      "rulesBody": "礼遇仅面向外宾接待、居民礼遇、外交礼遇与活动礼宾通道等虚构场景,以趣味记录形式呈现。",
+      "rulesBody": "礼遇仅面向外宾接待、居民礼遇、外交礼遇与活动礼宾通道等虚构场景，以趣味记录形式呈现。",
       "notPromise": "不承诺任何现实接待、通关便利或礼遇。",
       "cancelTitle": "取消礼遇申请",
       "cancelTip": "取消后如需礼遇请重新申请。",
       "cancelled": "礼遇申请已取消"
     },
     "messages": {
-      "title": "消息与帮助",
+      "title": "站内信",
       "subtitle": "报名、审核、候补转正、活动变更、邀请函与凭证通知。",
-      "inbox": "收件箱({{count}})",
+      "inbox": "收件箱（{{count}}）",
       "archivedTab": "已归档",
       "archive": "归档",
       "markRead": "标为已读",
       "empty": "暂无消息",
       "supportTitle": "提交工单",
-      "supportTip": "报名、邀请函、凭证或礼遇遇到问题,可以在这里留言。",
+      "supportTip": "报名、邀请函、凭证或礼遇遇到问题，可以在这里留言。",
       "supportTab": "工单 / 客服",
       "subjectPlaceholder": "一句话描述问题",
       "bodyPlaceholder": "补充活动名称、编号或具体情况",
@@ -3818,94 +3816,94 @@
       "privacyTip": "联系方式、随行人员与材料仅用于本次活动流程。你可以申请匿名化个人报名数据。",
       "eraseData": "申请删除个人数据",
       "eraseTitle": "确认删除个人数据",
-      "eraseTip": "删除后昵称、联系方式、随行人员、身份编号与材料将被清空,编号与状态轨迹保留用于审计。存在进行中的报名或认证时无法删除。",
+      "eraseTip": "删除后昵称、联系方式、随行人员、身份编号与材料将被清空，编号与状态轨迹保留用于审计。存在进行中的报名或认证时无法删除。",
       "eraseDone": "个人数据已匿名化"
     },
     "help": {
       "title": "帮助中心",
       "subtitle": "报名、邀请函、活动凭证、礼遇与隐私的常见问题。",
       "scamTitle": "防诈骗提示",
-      "scamBody": "活动报名、接待方认证与礼遇申请全部免费。不要向任何人支付“名额费”“内部通道费”,也不要相信“保证现实入场”。",
+      "scamBody": "活动报名、接待方认证与礼遇申请全部免费。不要向任何人支付“名额费”“内部通道费”，也不要相信“保证现实入场”。",
       "faqTitle": "常见问题",
       "browseTitle": "浏览活动",
-      "browseBody": "按类型、时间与身份要求查找活动,查看日程、地点与所需材料。",
+      "browseBody": "按类型、时间与身份要求查找活动，查看日程、地点与所需材料。",
       "supportTitle": "联系客服",
-      "supportBody": "提交工单后,礼宾与活动署会在虚构工作时间内回复。",
+      "supportBody": "提交工单后，礼宾与活动署会在虚构工作时间内回复。",
       "supportEntry": "去提交工单",
       "privacyTitle": "隐私与数据",
-      "privacyBody": "联系方式与随行人员仅用于本次活动通知,不在验真页展示;可申请注销并删除个人报名数据。",
+      "privacyBody": "联系方式与随行人员仅用于本次活动通知，不在验真页展示；可申请注销并删除个人报名数据。",
       "faq": {
         "applyTime": {
-          "q": "报名要审核多久?",
-          "a": "通常在 48 小时内完成审核;高峰期可能延长,请留意站内信。"
+          "q": "报名要审核多久？",
+          "a": "通常在48小时内完成审核；高峰期可能延长，请留意站内信。"
         },
         "invitationVisa": {
-          "q": "邀请函能否用于签注?",
-          "a": "可以。邀请函编号可作为签注申请材料,签注署会实时校验。"
+          "q": "邀请函能否用于签注？",
+          "a": "可以。邀请函编号可作为签注申请材料，签注署会实时校验。"
         },
         "passUsage": {
-          "q": "活动凭证怎么用?",
-          "a": "报名通过后自动生成。活动当日出示凭证编号或二维码签到,凭证不可转让。"
+          "q": "活动凭证怎么用？",
+          "a": "报名通过后自动生成。活动当日出示凭证编号或二维码签到，凭证不可转让。"
         },
         "waitlist": {
-          "q": "名额满了怎么办?",
-          "a": "若活动开放候补,提交后会进入候补队列;有报名取消时系统按顺序自动转正并通知。"
+          "q": "名额满了怎么办？",
+          "a": "若活动开放候补，提交后会进入候补队列；有报名取消时系统按顺序自动转正并通知。"
         },
         "host": {
-          "q": "接待方认证有什么用?",
-          "a": "认证后可获得接待方编号与证书,并可按权限发起邀请函或发布活动。"
+          "q": "接待方认证有什么用？",
+          "a": "认证后可获得接待方编号与证书，并可按权限发起邀请函或发布活动。"
         },
         "courtesy": {
-          "q": "礼遇有现实效力吗?",
-          "a": "没有。礼遇为虚构趣味记录,不承诺现实接待、通关便利或任何现实礼遇。"
+          "q": "礼遇有现实效力吗？",
+          "a": "没有。礼遇为虚构趣味记录，不承诺现实接待、通关便利或任何现实礼遇。"
         },
         "privacy": {
-          "q": "验真页会显示我的信息吗?",
-          "a": "不会。验真结果只显示编号、类型、状态、活动名称、有效期与签发机构,不展示联系方式或随行人员。"
+          "q": "验真页会显示我的信息吗？",
+          "a": "不会。验真结果只显示编号、类型、状态、活动名称、有效期与签发机构，不展示联系方式或随行人员。"
         },
         "deleteData": {
-          "q": "如何注销并删除数据?",
-          "a": "在个人中心或本署隐私入口申请注销;存在进行中的报名/认证时需先取消,随后个人数据将被匿名化。"
+          "q": "如何注销并删除数据？",
+          "a": "在个人中心或本署隐私入口申请注销；存在进行中的报名/认证时需先取消，随后个人数据将被匿名化。"
         }
       }
     },
     "verify": {
       "title": "礼宾与活动验真中心",
-      "subtitle": "输入邀请函编号、活动凭证编号或接待方编号,或扫描二维码验真。",
+      "subtitle": "输入邀请函编号、活动凭证编号或接待方编号，或扫描二维码验真。",
       "placeholder": "邀请函 / 活动凭证 / 接待方编号",
       "action": "验真",
-      "limitTip": "验真接口有频率限制;请勿批量枚举编号。",
+      "limitTip": "验真接口有频率限制；请勿批量枚举编号。",
       "valid": "有效",
       "invalid": "无效",
-      "notFound": "未查询到该编号,请核对后重试。",
-      "visaUsable": "该邀请函有效,可作为签注申请材料。",
-      "antiEnum": "防枚举提示:系统会记录验真来源并对高频查询限流;编号不可猜测,请勿尝试遍历。"
+      "notFound": "未查询到该编号，请核对后重试。",
+      "visaUsable": "该邀请函有效，可作为签注申请材料。",
+      "antiEnum": "防枚举提示：系统会记录验真来源并对高频查询限流；编号不可猜测，请勿尝试遍历。"
     },
     "faq": {
       "fee": {
-        "q": "活动报名收费吗?",
+        "q": "活动报名收费吗？",
         "a": "完全免费。任何收费报名、售卖名额的行为都是诈骗。"
       },
       "real": {
-        "q": "活动有现实效力吗?",
+        "q": "活动有现实效力吗？",
         "a": "没有。全部活动、邀请函、活动凭证与礼遇均为虚构娱乐设定。"
       },
       "deadline": {
-        "q": "报名截止后还能补报吗?",
-        "a": "不能。请在截止前提交;如名额已满可进入候补。"
+        "q": "报名截止后还能补报吗？",
+        "a": "不能。请在截止前提交；如名额已满可进入候补。"
       },
       "waitlist": {
-        "q": "候补如何转正?",
-        "a": "有已通过报名取消时,系统按候补顺序自动转正并通过站内信通知。"
+        "q": "候补如何转正？",
+        "a": "有已通过报名取消时，系统按候补顺序自动转正并通过站内信通知。"
       },
       "identity": {
-        "q": "居民 / 外交身份如何校验?",
-        "a": "报名时填写居民或外交身份编号,系统会与居民登记署/外交署实时校验。"
+        "q": "居民 / 外交身份如何校验？",
+        "a": "报名时填写居民或外交身份编号，系统会与居民登记署/外交署实时校验。"
       }
     },
     "admin": {
       "reviewTitle": "报名审核工作台",
-      "reviewSubtitle": "队列隔离:活动审核员只能看到报名、接待方与礼遇队列。",
+      "reviewSubtitle": "队列隔离：活动审核员只能看到报名、接待方与礼遇队列。",
       "eventsTitle": "活动发布与管理",
       "createEvent": "新建活动",
       "eventsEmpty": "暂无活动",
@@ -3936,28 +3934,28 @@
       "startEvent": "开始活动",
       "endEvent": "结束活动",
       "cancelEvent": "取消活动",
-      "cancelReason": "取消原因(活动取消通知将发送给报名者)",
+      "cancelReason": "取消原因（活动取消通知将发送给报名者）",
       "deleteEventTitle": "删除活动",
-      "deleteEventTip": "仅草稿或已取消活动可删除;删除后不在列表中显示。",
+      "deleteEventTip": "仅草稿或已取消活动可删除；删除后不在列表中显示。",
       "notices": "活动公告",
       "addNotice": "发布公告",
       "noticeAdded": "公告已发布",
       "eventCreated": "活动已创建",
       "eventDeleted": "活动已删除",
-      "statusChangeTip": "状态变更将立即生效,并可能触发站内信通知。",
+      "statusChangeTip": "状态变更将立即生效，并可能触发站内信通知。",
       "formAndIdentity": "报名信息与身份校验",
-      "passIssued": "活动凭证 {{no}} · {{status}}",
-      "approveTip": "通过后自动生成活动凭证并通知报名者;名额已满时会自动转入候补。",
-      "becameWaitlist": "名额已满,已自动转入候补",
+      "passIssued": "活动凭证{{no}} · {{status}}",
+      "approveTip": "通过后自动生成活动凭证并通知报名者；名额已满时会自动转入候补。",
+      "becameWaitlist": "名额已满，已自动转入候补",
       "issuanceTitle": "邀请函与活动凭证",
       "issuanceSubtitle": "定向邀请、撤销、凭证作废与补发。",
       "invitationsTab": "邀请函",
       "passesTab": "活动凭证",
       "issueInvitation": "发起邀请函",
-      "inviteePlaceholder": "被邀请人门户账号(用户名)",
-      "inviteeTip": "按门户用户名精确匹配,账号不存在时无法生成邀请函。",
+      "inviteePlaceholder": "被邀请人门户账号（用户名）",
+      "inviteeTip": "按门户用户名精确匹配，账号不存在时无法生成邀请函。",
       "invitationIssued": "邀请函已生成并通知被邀请人",
-      "inviteTypeTip": "居民专属邀请函需居民专属活动,外交礼遇邀请函需外交活动;普通活动邀请函无此限制。",
+      "inviteTypeTip": "居民专属邀请函需居民专属活动，外交礼遇邀请函需外交活动；普通活动邀请函无此限制。",
       "revokeTitle": "撤销邀请函",
       "voidTitle": "作废活动凭证",
       "reissueTitle": "补发活动凭证",
@@ -3972,15 +3970,15 @@
       "recordsTab": "使用记录",
       "addType": "新建类型",
       "editType": "编辑类型",
-      "validDays": "有效期(天)",
-      "supplementDays": "补件期限(天)",
+      "validDays": "有效期（天）",
+      "supplementDays": "补件期限（天）",
       "checkinTitle": "活动签到",
-      "checkinSubtitle": "输入凭证编号核销,支持签到与签退。",
-      "passNoPlaceholder": "凭证编号(如 NJP…)",
+      "checkinSubtitle": "输入凭证编号核销，支持签到与签退。",
+      "passNoPlaceholder": "凭证编号（如NJP…）",
       "doCheckin": "确认核销",
       "checkIn": "签到",
       "checkOut": "签退",
-      "checkinTip": "签到会将凭证标记为已使用并生成签到记录;签退仅记录离场时间。",
+      "checkinTip": "签到会将凭证标记为已使用并生成签到记录；签退仅记录离场时间。",
       "checkinSuccess": "签到成功",
       "checkoutSuccess": "签退成功",
       "manageTitle": "署内配置",
@@ -3990,13 +3988,13 @@
       "noticesTab": "署内公告",
       "templatesTab": "消息模板",
       "riskTab": "验真与风控",
-      "configHint": "修改后立即生效;编号前缀变更只影响新生成的编号。",
+      "configHint": "修改后立即生效；编号前缀变更只影响新生成的编号。",
       "requiredFields": "报名必填字段",
       "materialsConfig": "材料要求",
       "allowCompanions": "允许随行人员",
       "waitlistEnabled": "开放候补",
-      "templateHint": "模板中的 {{变量}} 会在发送站内信时替换。",
-      "templateVars": "可用变量:{{vars}}",
+      "templateHint": "模板中的{{变量}}会在发送站内信时替换。",
+      "templateVars": "可用变量：{{vars}}",
       "verifyLogs": "验真记录",
       "saveLimit": "保存限流",
       "verifyQuery": "查询内容",
@@ -4015,8 +4013,8 @@
         "status_draft": "草稿",
         "status_rejected": "已拒绝"
       },
-      "verifyIp": "来源 IP",
-      "verifyKindHint": "验真类型:{{kinds}}",
+      "verifyIp": "来源IP",
+      "verifyKindHint": "验真类型：{{kinds}}",
       "blacklistTitle": "黑名单 / 风险标记",
       "blacklistAdd": "添加黑名单",
       "blacklist_warn": "关注",
@@ -4027,7 +4025,7 @@
       "reply": "回复",
       "replyTicket": "回复工单",
       "closeTicket": "回复并关闭",
-      "closeTicketTip": "回复后工单将关闭,并通过站内信通知用户。",
+      "closeTicketTip": "回复后工单将关闭，并通过站内信通知用户。",
       "exports": "数据导出",
       "exportRegistrations": "导出报名",
       "exportEvents": "导出活动",
@@ -4042,7 +4040,7 @@
       "metricHosts": "接待方数量",
       "metricCourtesy": "礼遇申请",
       "metricVerify": "验真查询",
-      "metricVerifyValid": "其中有效 {{count}}",
+      "metricVerifyValid": "其中有效{{count}}",
       "metricCheckins": "签到人次",
       "rates": "关键比率",
       "approvalRate": "通过率",
@@ -4073,14 +4071,14 @@
       "hostAction_freeze": "冻结接待方",
       "hostAction_unfreeze": "解冻接待方",
       "hostAction_revoke": "撤销接待方认证",
-      "scheduleTime": "时间(如 第1天 10:00)",
+      "scheduleTime": "时间（如 第1天10:00）",
       "scheduleTitle": "环节标题",
       "addSchedule": "添加日程环节",
-      "limitRange": "限流值需为 1–1000 的整数",
-      "saveLimitConfirm": "确定将每 5 分钟验真上限调整为 {{value}} 次吗?",
-      "limitSaved": "限流上限已更新为 {{value}}",
+      "limitRange": "限流值需为1–1000的整数",
+      "saveLimitConfirm": "确定将每5分钟验真上限调整为{{value}}次吗？",
+      "limitSaved": "限流上限已更新为{{value}}",
       "blacklistAdded": "已加入黑名单",
-      "liftConfirm": "确定将 {{user}} 移出黑名单吗?移出后该账号可继续验真。",
+      "liftConfirm": "确定将{{user}}移出黑名单吗？移出后该账号可继续验真。",
       "lifted": "已移出黑名单",
       "ticketClosed": "工单已回复并关闭",
       "coverColor": {
@@ -4092,7 +4090,7 @@
         "app-green": "绿色",
         "app-yellow": "黄色"
       },
-      "templateEditTitle": "编辑消息模板 {{code}}",
+      "templateEditTitle": "编辑消息模板{{code}}",
       "audit": {
         "action": {
           "pass_issue": "签发凭证",
@@ -4155,7 +4153,7 @@
           "notice_update": "更新公告",
           "notice_delete": "删除公告",
           "template_update": "更新消息模板",
-          "export_csv": "导出 CSV"
+          "export_csv": "导出CSV"
         },
         "targetType": {
           "event_type": "活动类型",
@@ -4177,12 +4175,12 @@
         }
       },
       "config": {
-        "review_hours_hint": "审核时长提示(小时)",
-        "supplement_days": "补件期限(天)",
-        "verify_limit_per_5min": "验真限流(次/5分钟)",
+        "review_hours_hint": "审核时长提示（小时）",
+        "supplement_days": "补件期限（天）",
+        "verify_limit_per_5min": "验真限流（次/5分钟）",
         "max_companions": "最大随行人数",
         "max_active_registrations": "每人最多进行中报名",
-        "linkage_enabled": "跨署联动校验(0 关闭 / 1 开启,默认开启)"
+        "linkage_enabled": "跨署联动校验（0关闭 / 1开启，默认开启）"
       },
       "rejectReason": {
         "info_missing": "信息不全",
@@ -4239,19 +4237,17 @@
       "inspect": "监察与审核",
       "manage": "署务管理",
       "stats": "统计报表",
-      "audit": "审计与合规"
+      "audit": "审计日志"
     },
     "sso": {
-      "title": "统一身份确认",
-      "tip": "进入申诉与监察署前,请确认当前登录身份;该确认每个浏览器会话仅需一次。",
-      "confirm": "确认并进入"
+      "tip": "进入申诉与监察署前，请确认当前登录身份；该确认每个浏览器会话仅需一次。"
     },
     "status": {
       "draft": "草稿",
       "pending_accept": "待受理",
       "accepted": "已受理",
       "processing": "处理中",
-      "supplement_required": "待补件",
+      "supplement_required": "补件中",
       "resolved": "已处理",
       "rejected": "已驳回",
       "withdrawn": "已撤回",
@@ -4391,16 +4387,16 @@
       "escalated": "已升级"
     },
     "home": {
-      "heroTitle": "有异议,请依法申诉",
-      "heroSub": "对签注、入境、居民登记、外交事务、文书认证、档案与礼宾活动的处理结果有异议,可在此提交结果申诉;也可提出投诉建议或联系客服。",
+      "heroTitle": "有异议，请依法申诉",
+      "heroSub": "对签注、入境、居民登记、外交事务、文书认证、档案与礼宾活动的处理结果有异议，可在此提交结果申诉；也可提出投诉建议或联系客服。",
       "entryApply": "我要申诉",
       "entryMy": "我的申诉",
       "entryVerify": "验真查询",
-      "openAppeals": "在办申诉 {{count}} 件",
-      "validDecisions": "有效决定书 {{count}} 份",
-      "unread": "未读站内信 {{count}} 条",
+      "openAppeals": "在办申诉{{count}}件",
+      "validDecisions": "有效决定书{{count}}份",
+      "unread": "未读站内信{{count}}条",
       "scamTitle": "谨防假冒申诉中介",
-      "scamBody": "本署不收取任何申诉费用,也不会索取账号密码或验证码;请只通过本门户提交申诉并自行查询进度。",
+      "scamBody": "本署不收取任何申诉费用，也不会索取账号密码或验证码；请只通过本门户提交申诉并自行查询进度。",
       "services": "服务目录",
       "service": {
         "apply": "结果申诉",
@@ -4421,85 +4417,85 @@
       "notices": "署内公告",
       "guide": "办事指南",
       "guideScope": "可申诉范围",
-      "guideScopeBody": "签注、入境、居民登记、外交事务、文书认证、档案与礼宾活动的处理结果,均可在规定时效内申诉。",
+      "guideScopeBody": "签注、入境、居民登记、外交事务、文书认证、档案与礼宾活动的处理结果，均可在规定时效内申诉。",
       "guideMaterials": "所需材料",
-      "guideMaterialsBody": "业务编号、申诉理由、期望结果与联系方式;截图或证明材料可选传。",
+      "guideMaterialsBody": "业务编号、申诉理由、期望结果与联系方式；截图或证明材料可选传。",
       "guideSla": "受理与处理时限",
-      "guideSlaBody": "受理时限 {{accept}} 小时,处理时限 {{resolve}} 小时,超时将进入监察关注。",
+      "guideSlaBody": "受理时限{{accept}}小时，处理时限{{resolve}}小时，超时将进入监察关注。",
       "guideReview": "复核窗口",
-      "guideReviewBody": "收到处理决定后 {{days}} 天内可申请复核,复核为一次终局。",
+      "guideReviewBody": "收到处理决定后{{days}}天内可申请复核，复核为一次终局。",
       "guideMore": "查看完整指南",
       "faq": "常见问题",
-      "supportTip": "找不到答案?提交工单,我们会尽快回复。"
+      "supportTip": "找不到答案？提交工单，我们会尽快回复。"
     },
     "faq": {
       "duration": {
-        "q": "申诉处理需要多久?",
-        "a": "受理时限为 48 小时,处理时限为 120 小时;补件时间不计入处理时限。"
+        "q": "申诉处理需要多久？",
+        "a": "受理时限为48小时，处理时限为120小时；补件时间不计入处理时限。"
       },
       "effect": {
-        "q": "申诉成功会改变原结果吗?",
-        "a": "处理决定为撤销或变更时,申诉署会联动业务署重新处理该业务,并以新决定书为准。"
+        "q": "申诉成功会改变原结果吗？",
+        "a": "处理决定为撤销或变更时，申诉署会联动业务署重新处理该业务，并以新决定书为准。"
       },
       "fee": {
-        "q": "提交申诉需要费用吗?",
+        "q": "提交申诉需要费用吗？",
         "a": "不需要。本署所有申诉、复核、投诉建议与工单服务均免费。"
       },
       "review": {
-        "q": "申诉和复核有什么区别?",
-        "a": "申诉针对业务处理结果;复核针对申诉处理决定,须在复核窗口内提出,且为一次终局。"
+        "q": "申诉和复核有什么区别？",
+        "a": "申诉针对业务处理结果；复核针对申诉处理决定，须在复核窗口内提出，且为一次终局。"
       },
       "anonymous": {
-        "q": "可以匿名提交吗?",
-        "a": "投诉建议支持匿名;结果申诉需实名并关联本人业务编号。"
+        "q": "可以匿名提交吗？",
+        "a": "投诉建议支持匿名；结果申诉需实名并关联本人业务编号。"
       }
     },
     "apply": {
       "title": "提交结果申诉",
-      "bizTitle": "第一步:选择业务并关联编号",
-      "bizTip": "请选择业务类型并填写本人业务编号,系统会直接向对应业务署核验。",
+      "bizTitle": "第一步：选择业务并关联编号",
+      "bizTip": "请选择业务类型并填写本人业务编号，系统会直接向对应业务署核验。",
       "bizType": "业务类型",
       "bizCode": "业务编号",
       "bizCodePlaceholder": "请输入业务编号",
       "createDraft": "创建申诉草稿",
-      "draftNo": "申诉草稿 {{no}}",
+      "draftNo": "申诉草稿{{no}}",
       "draftNoLabel": "草稿创建时间",
       "reason": "申诉理由",
-      "reasonPlaceholder": "请说明对哪项处理结果有异议,以及事实与依据",
+      "reasonPlaceholder": "请说明对哪项处理结果有异议，以及事实与依据",
       "expected": "期望结果",
       "expectedPlaceholder": "请说明你希望得到的处理结果",
       "contact": "联系方式",
       "contactPlaceholder": "手机号或邮箱",
       "materialsTitle": "证明材料",
-      "materialsTip": "支持图片或 PDF,每类最多 6 份;补件时可再上传。",
+      "materialsTip": "支持图片或PDF，每类最多6份；补件时可再上传。",
       "uploadScreenshot": "上传截图",
       "uploadProof": "上传证明",
-      "materialsCount": "共 {{count}} 份材料",
+      "materialsCount": "共{{count}}份材料",
       "saveDraft": "保存草稿",
       "submit": "提交申诉",
       "confirmTitle": "请确认申诉信息",
       "submitSuccess": "申诉已提交",
       "submittedTitle": "申诉提交成功",
-      "submittedNo": "申诉编号:{{no}}",
-      "submittedHint": "我们将在 {{hours}} 小时内完成受理,请留意站内信。",
+      "submittedNo": "申诉编号：{{no}}",
+      "submittedHint": "我们将在{{hours}}小时内完成受理，请留意站内信。",
       "viewMy": "查看我的申诉"
     },
     "my": {
       "title": "我的申诉",
       "allStatus": "全部状态",
-      "submittedAt": "提交于 {{time}}",
+      "submittedAt": "提交于{{time}}",
       "submittedAtLabel": "提交时间",
       "view": "查看详情",
       "preview": "预览",
       "deleteTitle": "删除申诉草稿",
-      "deleteTip": "确定要删除草稿 {{no}} 吗?删除后不可恢复。"
+      "deleteTip": "确定要删除草稿{{no}}吗？删除后不可恢复。"
     },
     "detail": {
       "records": "处理记录",
       "systemActor": "系统",
       "materials": "材料",
       "supplementTitle": "补件通知",
-      "supplementTip": "请在补件截止前提交说明并上传材料;逾期申诉将自动关闭。",
+      "supplementTip": "请在补件截止前提交说明并上传材料；逾期申诉将自动关闭。",
       "supplementPlaceholder": "请说明补交内容",
       "uploadSupplement": "上传补件材料",
       "submitSupplement": "提交补件",
@@ -4510,7 +4506,7 @@
       "withdrawDone": "申诉已撤回",
       "evaluate": "评价处理结果",
       "evaluateTitle": "服务评价",
-      "evalPlaceholder": "请填写评价内容(选填)",
+      "evalPlaceholder": "请填写评价内容（选填）",
       "evalDone": "评价已提交",
       "decisionTitle": "处理决定",
       "decisionReason": "决定理由",
@@ -4518,22 +4514,22 @@
       "viewDecisionDoc": "查看决定书",
       "viewReview": "查看复核",
       "applyReview": "申请复核",
-      "reviewWindow": "复核窗口至 {{date}}",
+      "reviewWindow": "复核窗口至{{date}}",
       "mergedInto": "已合并至",
       "withdrawTitle": "撤回申诉",
-      "withdrawConfirm": "撤回后将停止受理,且不可恢复。确定撤回这条申诉吗?"
+      "withdrawConfirm": "撤回后将停止受理，且不可恢复。确定撤回这条申诉吗？"
     },
     "review": {
       "title": "我的复核",
       "create": "申请复核",
       "createTitle": "提交复核申请",
-      "finalTip": "复核为一次终局,复核决定将生成新的决定书。",
+      "finalTip": "复核为一次终局，复核决定将生成新的决定书。",
       "pickAppeal": "选择要复核的申诉",
-      "noCandidates": "暂无可复核的申诉(仅已处理或已驳回且未复核的申诉可申请)。",
+      "noCandidates": "暂无可复核的申诉（仅已处理或已驳回且未复核的申诉可申请）。",
       "reasonLabel": "复核理由",
       "reasonPlaceholder": "请说明对处理决定的具体异议与依据",
       "submitDone": "复核申请已提交",
-      "forAppeal": "关联申诉 {{no}}",
+      "forAppeal": "关联申诉{{no}}",
       "appealLabel": "关联申诉",
       "decision": "复核决定",
       "decidedAt": "决定时间"
@@ -4545,15 +4541,15 @@
       "kindLabel": "类型",
       "categoryLabel": "分类",
       "contentLabel": "内容",
-      "contentPlaceholder": "请具体描述问题或建议(至少 10 字)",
-      "anonymousOption": "匿名提交(不记录联系方式)",
-      "anonymousTip": "已选择匿名,处理人员将看不到你的身份与联系方式。",
+      "contentPlaceholder": "请具体描述问题或建议（至少10字）",
+      "anonymousOption": "匿名提交（不记录联系方式）",
+      "anonymousTip": "已选择匿名，处理人员将看不到你的身份与联系方式。",
       "anonymousTag": "匿名",
       "contactLabel": "联系方式",
-      "contactPlaceholder": "手机号或邮箱,便于回复",
+      "contactPlaceholder": "手机号或邮箱，便于回复",
       "replyLabel": "回复",
       "submit": "提交",
-      "submitDone": "投诉建议 {{no}} 已提交"
+      "submitDone": "投诉建议{{no}}已提交"
     },
     "ticket": {
       "title": "我的工单",
@@ -4566,7 +4562,7 @@
       "contentLabel": "问题描述",
       "contentPlaceholder": "请描述问题现象、出现时间与已尝试的操作",
       "submit": "提交",
-      "submitDone": "工单 {{no}} 已提交",
+      "submitDone": "工单{{no}}已提交",
       "threadTitle": "沟通记录",
       "staffRole": "客服",
       "userRole": "我",
@@ -4580,35 +4576,35 @@
       "faqSearch": "搜索常见问题",
       "faq": {
         "reset": {
-          "q": "忘记密码怎么办?",
-          "a": "在登录页使用\"忘记密码\"通过邮箱重置,或提交工单由客服协助。"
+          "q": "忘记密码怎么办？",
+          "a": "在登录页使用\"忘记密码\"通过邮箱重置，或提交工单由客服协助。"
         },
         "unbind": {
-          "q": "如何更换绑定的邮箱或手机?",
-          "a": "请联系客服提交工单,完成身份核验后可更换绑定信息。"
+          "q": "如何更换绑定的邮箱或手机？",
+          "a": "请联系客服提交工单，完成身份核验后可更换绑定信息。"
         },
         "slow": {
-          "q": "页面加载很慢怎么办?",
-          "a": "请先刷新页面并检查网络;若持续出现,请提交\"故障报修\"工单并附上截图。"
+          "q": "页面加载很慢怎么办？",
+          "a": "请先刷新页面并检查网络；若持续出现，请提交\"故障报修\"工单并附上截图。"
         },
         "display": {
-          "q": "页面显示异常怎么办?",
-          "a": "尝试清除浏览器缓存或更换浏览器;仍异常请提交工单。"
+          "q": "页面显示异常怎么办？",
+          "a": "尝试清除浏览器缓存或更换浏览器；仍异常请提交工单。"
         },
         "contact": {
-          "q": "如何联系人工客服?",
-          "a": "在本页提交工单即可,客服会在工作时间内回复。"
+          "q": "如何联系人工客服？",
+          "a": "在本页提交工单即可，客服会在工作时间内回复。"
         }
       },
-      "closeConfirm": "关闭后不能再继续回复,如有未解决的问题请先补充说明。确定关闭工单吗?"
+      "closeConfirm": "关闭后不能再继续回复，如有未解决的问题请先补充说明。确定关闭工单吗？"
     },
     "decision": {
       "title": "我的决定书",
       "view": "查看决定书",
       "verify": "去验真",
-      "forAppeal": "关联申诉 {{no}}",
-      "fromReview": "复核 {{no}}",
-      "effectiveAt": "生效于 {{time}}"
+      "forAppeal": "关联申诉{{no}}",
+      "fromReview": "复核{{no}}",
+      "effectiveAt": "生效于{{time}}"
     },
     "doc": {
       "title": "处理决定书",
@@ -4622,11 +4618,11 @@
       "reviewLabel": "关联复核",
       "print": "打印",
       "qrAlt": "验真二维码",
-      "verifyTip": "可扫描二维码或到验真中心输入编号 {{no}} 核验本决定书。"
+      "verifyTip": "可扫描二维码或到验真中心输入编号{{no}}核验本决定书。"
     },
     "publicity": {
       "title": "处理公示",
-      "maskTip": "以下统计与案例均已脱敏,不含申诉人身份信息与敏感细节。",
+      "maskTip": "以下统计与案例均已脱敏，不含申诉人身份信息与敏感细节。",
       "statsTitle": "本期处理统计",
       "submitted": "申诉提交量",
       "acceptRate": "受理率",
@@ -4636,7 +4632,7 @@
     },
     "messages": {
       "title": "站内信",
-      "unread": "未读 {{count}} 条",
+      "unread": "未读{{count}}条",
       "showArchived": "查看归档",
       "backToInbox": "返回收件箱",
       "view": "查看",
@@ -4649,94 +4645,94 @@
         "body": "系统通知"
       },
       "appeal_submitted": {
-        "title": "申诉 {{code}} 已提交",
-        "body": "你的申诉已进入待受理队列,请耐心等待受理通知。"
+        "title": "申诉{{code}}已提交",
+        "body": "你的申诉已进入待受理队列，请耐心等待受理通知。"
       },
       "appeal_accepted": {
-        "title": "申诉 {{code}} 已受理",
-        "body": "你的申诉已被受理,将按处理时限推进,处理结果将以决定书形式通知。"
+        "title": "申诉{{code}}已受理",
+        "body": "你的申诉已被受理，将按处理时限推进，处理结果将以决定书形式通知。"
       },
       "appeal_accept_rejected": {
-        "title": "申诉 {{code}} 不予受理",
-        "body": "受理说明:{{reason}}。可在复核时效内对处理结果申请复核。"
+        "title": "申诉{{code}}不予受理",
+        "body": "受理说明：{{reason}}。可在复核时效内对处理结果申请复核。"
       },
       "appeal_supplement_required": {
-        "title": "申诉 {{code}} 需要补件",
-        "body": "补件说明:{{comment}}。请在 {{deadline}} 前在线补交,逾期申诉将自动关闭。"
+        "title": "申诉{{code}}需要补件",
+        "body": "补件说明：{{comment}}。请在{{deadline}}前在线补交，逾期申诉将自动关闭。"
       },
       "appeal_supplemented": {
-        "title": "申诉 {{code}} 补件已提交",
+        "title": "申诉{{code}}补件已提交",
         "body": "你补交的材料已随申诉重新进入处理流程。"
       },
       "appeal_resolved": {
-        "title": "申诉 {{code}} 已有处理决定",
-        "body": "处理决定已生成决定书,可到\"我的决定书\"查看、下载或验真。"
+        "title": "申诉{{code}}已有处理决定",
+        "body": "处理决定已生成决定书，可到\"我的决定书\"查看、下载或验真。"
       },
       "appeal_withdrawn": {
-        "title": "申诉 {{code}} 已撤回",
+        "title": "申诉{{code}}已撤回",
         "body": "你已撤回该申诉。"
       },
       "appeal_closed": {
-        "title": "申诉 {{code}} 已关闭",
-        "body": "补件期限已过,申诉自动关闭。"
+        "title": "申诉{{code}}已关闭",
+        "body": "补件期限已过，申诉自动关闭。"
       },
       "appeal_merged": {
-        "title": "申诉 {{code}} 已合并",
-        "body": "该申诉与 {{targetCode}} 属重复申诉,已合并处理,请以目标申诉为准。"
+        "title": "申诉{{code}}已合并",
+        "body": "该申诉与{{targetCode}}属重复申诉，已合并处理，请以目标申诉为准。"
       },
       "appeal_reopened": {
-        "title": "申诉 {{code}} 经复核重新处理",
-        "body": "复核 {{reviewCode}} 撤销了原不予受理决定,申诉已重新进入处理流程。"
+        "title": "申诉{{code}}经复核重新处理",
+        "body": "复核{{reviewCode}}撤销了原不予受理决定，申诉已重新进入处理流程。"
       },
       "review_submitted": {
-        "title": "复核 {{code}} 已提交",
-        "body": "对申诉 {{appealCode}} 的复核申请已提交,复核为一次终局。"
+        "title": "复核{{code}}已提交",
+        "body": "对申诉{{appealCode}}的复核申请已提交，复核为一次终局。"
       },
       "review_accepted": {
-        "title": "复核 {{code}} 已受理",
-        "body": "复核进入复核中,复核决定将生成新的决定书。"
+        "title": "复核{{code}}已受理",
+        "body": "复核进入复核中，复核决定将生成新的决定书。"
       },
       "review_completed": {
-        "title": "复核 {{code}} 已完成",
-        "body": "复核决定已生成,可到\"我的决定书\"查看。复核为一次终局。"
+        "title": "复核{{code}}已完成",
+        "body": "复核决定已生成，可到\"我的决定书\"查看。复核为一次终局。"
       },
       "decision_issued": {
-        "title": "处理决定书 {{code}} 已生成",
-        "body": "关联申诉 {{appealCode}}。可在\"我的决定书\"查看、下载或验真。"
+        "title": "处理决定书{{code}}已生成",
+        "body": "关联申诉{{appealCode}}。可在\"我的决定书\"查看、下载或验真。"
       },
       "complaint_submitted": {
-        "title": "投诉建议 {{code}} 已提交",
-        "body": "你的投诉或建议已提交,处理完成后将回复通知。"
+        "title": "投诉建议{{code}}已提交",
+        "body": "你的投诉或建议已提交，处理完成后将回复通知。"
       },
       "complaint_replied": {
-        "title": "投诉建议 {{code}} 已回复",
-        "body": "处理人员已回复,请到详情页查看回复内容并评价。"
+        "title": "投诉建议{{code}}已回复",
+        "body": "处理人员已回复，请到详情页查看回复内容并评价。"
       },
       "complaint_closed": {
-        "title": "投诉建议 {{code}} 已关闭",
+        "title": "投诉建议{{code}}已关闭",
         "body": "该投诉建议已办结归档。"
       },
       "complaint_escalated": {
-        "title": "投诉建议 {{code}} 转申诉指引",
-        "body": "该事项适合走结果申诉流程,请准备关联业务编号后到\"我要申诉\"提交。"
+        "title": "投诉建议{{code}}转申诉指引",
+        "body": "该事项适合走结果申诉流程，请准备关联业务编号后到\"我要申诉\"提交。"
       },
       "ticket_replied": {
-        "title": "工单 {{code}} 有新回复",
-        "body": "客服已回复你的工单,请到工单详情查看。"
+        "title": "工单{{code}}有新回复",
+        "body": "客服已回复你的工单，请到工单详情查看。"
       },
       "ticket_escalated": {
-        "title": "工单 {{code}} 已升级",
-        "body": "你的工单已升级处理,请留意后续回复。"
+        "title": "工单{{code}}已升级",
+        "body": "你的工单已升级处理，请留意后续回复。"
       },
       "ticket_closed": {
-        "title": "工单 {{code}} 已关闭",
+        "title": "工单{{code}}已关闭",
         "body": "工单已办结。如仍有问题可重新提交。"
       }
     },
     "guide": {
       "title": "办事指南",
       "scopeTitle": "可申诉范围",
-      "scopeIntro": "对以下七类业务的处理结果有异议,可在规定时效内提交结果申诉。",
+      "scopeIntro": "对以下七类业务的处理结果有异议，可在规定时效内提交结果申诉。",
       "scope": {
         "visa": "签注拒签、批注条件或有效期异议",
         "immigration": "入境查验、拒绝入境或记录异议",
@@ -4785,61 +4781,61 @@
         },
         "screenshot": {
           "t": "截图",
-          "d": "能反映处理结果的页面截图(选填)。"
+          "d": "能反映处理结果的页面截图（选填）。"
         },
         "proof": {
           "t": "证明材料",
-          "d": "支持申诉理由的证明文件(选填)。"
+          "d": "支持申诉理由的证明文件（选填）。"
         }
       },
       "slaTitle": "时效说明",
-      "slaBody": "受理时限 48 小时,处理时限 120 小时;需补件时补件期限为 7 天,逾期自动关闭。受理与处理超时会进入监察统计。",
+      "slaBody": "受理时限48小时，处理时限120小时；需补件时补件期限为7天，逾期自动关闭。受理与处理超时会进入监察统计。",
       "diffTitle": "申诉与复核的区别",
       "diffAppeal": {
         "t": "结果申诉",
-        "d": "针对七类业务署的处理结果,向申诉署提出;可要求撤销、变更或转交。"
+        "d": "针对七类业务署的处理结果，向申诉署提出；可要求撤销、变更或转交。"
       },
       "diffReview": {
         "t": "处理复核",
-        "d": "针对申诉署已作出的处理决定,在复核窗口内提出;复核为一次终局。"
+        "d": "针对申诉署已作出的处理决定，在复核窗口内提出；复核为一次终局。"
       },
       "faq": "常见问题",
       "faqItem": {
         "how": {
-          "q": "如何提交申诉?",
-          "a": "先选择业务类型并填写业务编号,系统核验通过后填写理由与期望结果,上传材料并提交。"
+          "q": "如何提交申诉？",
+          "a": "先选择业务类型并填写业务编号，系统核验通过后填写理由与期望结果，上传材料并提交。"
         },
         "change": {
-          "q": "申诉过程中可以修改内容吗?",
-          "a": "草稿阶段可随时修改;提交后如需补充,请按补件通知在线补交。"
+          "q": "申诉过程中可以修改内容吗？",
+          "a": "草稿阶段可随时修改；提交后如需补充，请按补件通知在线补交。"
         },
         "fee": {
-          "q": "申诉收费吗?",
+          "q": "申诉收费吗？",
           "a": "不收费。请勿向任何个人或中介支付\"申诉费\"。"
         },
         "who": {
-          "q": "谁可以提交申诉?",
-          "a": "业务编号对应的本人账号;他人业务需由本人提交。"
+          "q": "谁可以提交申诉？",
+          "a": "业务编号对应的本人账号；他人业务需由本人提交。"
         },
         "docs": {
-          "q": "需要哪些材料?",
-          "a": "业务编号、申诉理由、期望结果与联系方式为必填;截图与证明可选。"
+          "q": "需要哪些材料？",
+          "a": "业务编号、申诉理由、期望结果与联系方式为必填；截图与证明可选。"
         }
       }
     },
     "verify": {
       "title": "验真中心",
       "headerSub": "申诉 · 复核 · 决定书验真",
-      "tip": "输入申诉、复核或决定书编号,或扫描决定书二维码,核验记录真实性与状态。",
+      "tip": "输入申诉、复核或决定书编号，或扫描决定书二维码，核验记录真实性与状态。",
       "placeholder": "请输入编号",
       "action": "查询",
       "appealNo": "关联申诉",
       "decisionType": "处理决定",
       "handledAt": "处理时间",
       "office": "出具机构",
-      "maskTip": "为保护隐私,验真结果仅展示状态与必要信息,不含申诉内容与个人联系方式。",
+      "maskTip": "为保护隐私，验真结果仅展示状态与必要信息，不含申诉内容与个人联系方式。",
       "notFound": "未查询到该编号",
-      "notFoundTip": "请核对编号是否完整、大小写是否正确;多次查询失败请稍后再试。"
+      "notFoundTip": "请核对编号是否完整、大小写是否正确；多次查询失败请稍后再试。"
     },
     "admin": {
       "workbenchTitle": "申诉处理工作台",
@@ -4850,10 +4846,10 @@
       "allStatus": "全部状态",
       "allBiz": "全部业务",
       "searchPlaceholder": "搜索编号或业务编号",
-      "counterPending": "待受理 {{count}}",
-      "counterProcessing": "处理中 {{count}}",
-      "counterSupplement": "待补件 {{count}}",
-      "counterOverdue": "超时 {{count}}",
+      "counterPending": "待受理{{count}}",
+      "counterProcessing": "处理中{{count}}",
+      "counterSupplement": "补件中{{count}}",
+      "counterOverdue": "超时{{count}}",
       "colCode": "申诉编号",
       "colApplicant": "申诉人",
       "colPriority": "优先级",
@@ -4869,12 +4865,12 @@
       "handler": "处理人",
       "refuseReason": "不予受理原因",
       "anonymousUser": "匿名用户",
-      "contactHidden": "匿名提交,不展示联系方式",
+      "contactHidden": "匿名提交，不展示联系方式",
       "bizLink": "关联业务",
       "bizLinkMissing": "未查询到关联业务记录",
       "originalDecision": "原处理决定",
-      "templateTip": "站内信模板控制各类通知是否发送;正文变量由服务端填充。",
-      "publicityTip": "公示内容会脱敏后展示在处理公示页;下线后不再对外展示。",
+      "templateTip": "站内信模板控制各类通知是否发送；正文变量由服务端填充。",
+      "publicityTip": "公示内容会脱敏后展示在处理公示页；下线后不再对外展示。",
       "publicityPlaceholder": "可填写脱敏统计、典型案例或质量报告内容",
       "createNotice": "发布公告",
       "createPublicity": "新建公示",
@@ -4887,15 +4883,15 @@
       "disabled": "已停用",
       "addBlacklist": "加入黑名单",
       "unblacklist": "移出黑名单",
-      "blacklistUserLabel": "用户 ID",
-      "blacklistUserPlaceholder": "请输入用户 ID",
-      "dupTip": "同一用户对同一业务编号的重复申诉会在此列出,可在工作台合并。",
+      "blacklistUserLabel": "用户ID",
+      "blacklistUserPlaceholder": "请输入用户ID",
+      "dupTip": "同一用户对同一业务编号的重复申诉会在此列出，可在工作台合并。",
       "dupCount": "次数",
       "dupCodes": "申诉编号列表",
-      "reviewFinalTip": "复核为一次终局;决定作出后将生成新的决定书并通知申诉人。",
-      "acceptTip": "确认受理该申诉?受理后将按处理时限推进。",
-      "startProcessTip": "开始处理该工单?状态将变更为处理中。",
-      "escalateTicketTip": "升级该工单?升级后将由上级客服跟进。",
+      "reviewFinalTip": "复核为一次终局；决定作出后将生成新的决定书并通知申诉人。",
+      "acceptTip": "确认受理该申诉？受理后将按处理时限推进。",
+      "startProcessTip": "开始处理该工单？状态将变更为处理中。",
+      "escalateTicketTip": "升级该工单？升级后将由上级客服跟进。",
       "escalateTip": "转申诉指引说明",
       "replyLabel": "回复内容",
       "closeCommentLabel": "关闭说明",
@@ -4904,12 +4900,12 @@
       "decisionTypeLabel": "处理决定",
       "decisionReasonLabel": "决定理由",
       "reviewDecisionLabel": "复核决定",
-      "supplementDaysLabel": "补件期限(天)",
+      "supplementDaysLabel": "补件期限（天）",
       "assigneeLabel": "分派给",
       "assigneePlaceholder": "选择处理人",
       "priorityLabel": "优先级",
       "mergeTargetLabel": "目标申诉编号",
-      "mergeTargetTip": "合并后源申诉将关闭,并以目标申诉为准。",
+      "mergeTargetTip": "合并后源申诉将关闭，并以目标申诉为准。",
       "tabNotices": "公告",
       "tabPublicity": "公示",
       "tabTemplates": "站内信模板",
@@ -4935,24 +4931,24 @@
         "startProcess": "开始处理"
       },
       "decideHint": {
-        "maintain": "维持原处理结果,申诉人可在复核时效内申请复核。",
-        "undo": "撤销原决定,由业务署按联动规则重新处理该业务。",
-        "change": "变更原决定,以本次决定书为准。",
-        "transfer": "转交其他署办理,处理结果由承接署反馈。"
+        "maintain": "维持原处理结果，申诉人可在复核时效内申请复核。",
+        "undo": "撤销原决定，由业务署按联动规则重新处理该业务。",
+        "change": "变更原决定，以本次决定书为准。",
+        "transfer": "转交其他署办理，处理结果由承接署反馈。"
       },
       "acceptDone": "已受理",
       "replyDone": "回复已发送",
       "closeDone": "已关闭",
       "escalateDone": "已升级",
       "startProcessDone": "已开始处理",
-      "noticeDeleteConfirm": "确定删除公告「{{title}}」吗?",
-      "unblacklistConfirm": "确定将 {{user}} 移出黑名单吗?移出后该用户可再次提交申诉。",
+      "noticeDeleteConfirm": "确定删除公告「{{title}}」吗？",
+      "unblacklistConfirm": "确定将{{user}}移出黑名单吗？移出后该用户可再次提交申诉。",
       "unblacklisted": "已移出黑名单",
-      "publishConfirm": "确定发布「{{title}}」吗?发布后将在门户公开可见。",
+      "publishConfirm": "确定发布「{{title}}」吗？发布后将在门户公开可见。",
       "published": "已发布",
-      "offlineConfirm": "确定下线「{{title}}」吗?下线后门户不再展示该内容。",
+      "offlineConfirm": "确定下线「{{title}}」吗？下线后门户不再展示该内容。",
       "offlined": "已下线",
-      "backToDraftConfirm": "确定将「{{title}}」退回草稿吗?",
+      "backToDraftConfirm": "确定将「{{title}}」退回草稿吗？",
       "backToDraftDone": "已退回草稿",
       "config": {
         "appeal_prefix": "申诉编号前缀",
@@ -4960,11 +4956,11 @@
         "complaint_prefix": "投诉建议编号前缀",
         "ticket_prefix": "工单编号前缀",
         "decision_prefix": "决定书编号前缀",
-        "supplement_days": "补件期限(天)",
-        "review_days": "复核期限(天)",
-        "accept_sla_hours": "受理时限(小时)",
-        "resolve_sla_hours": "处理时限(小时)",
-        "verify_limit_per_5min": "验真限流(次/5分钟)"
+        "supplement_days": "补件期限（天）",
+        "review_days": "复核期限（天）",
+        "accept_sla_hours": "受理时限（小时）",
+        "resolve_sla_hours": "处理时限（小时）",
+        "verify_limit_per_5min": "验真限流（次/5分钟）"
       }
     },
     "inspect": {
@@ -4975,19 +4971,19 @@
       "acceptOverdue": "受理超时",
       "resolveOverdue": "处理超时",
       "satisfaction": "平均满意度",
-      "slaHint": "受理时限 {{accept}} 小时,处理时限 {{resolve}} 小时;超时记录计入监察报告。",
+      "slaHint": "受理时限{{accept}}小时，处理时限{{resolve}}小时；超时记录计入监察报告。",
       "anomalyTitle": "异常操作检测",
-      "highFrequency": "高频操作 {{count}} 次",
+      "highFrequency": "高频操作{{count}}次",
       "noHighFrequency": "未发现高频操作异常",
-      "nightOps": "夜间操作 {{count}} 次",
+      "nightOps": "夜间操作{{count}}次",
       "consistencyTitle": "结果一致性",
       "integrationTitle": "业务联动与抽查",
       "integrationLive": "七类业务已全部接入实时校验与抽查。",
       "integrated": "已接入",
       "reserved": "预留",
       "sample": "抽查",
-      "sampleSummary": "{{office}}:库内 {{total}} 条,本次抽查 {{count}} 条",
-      "sampleDone": "已抽查 {{count}} 条记录并生成监察报告",
+      "sampleSummary": "{{office}}：库内{{total}}条，本次抽查{{count}}条",
+      "sampleDone": "已抽查{{count}}条记录并生成监察报告",
       "reportsTitle": "监察报告",
       "createReport": "新建报告",
       "createReportTitle": "新建监察报告",
@@ -5006,13 +5002,13 @@
         "consistency": "一致性报告"
       },
       "reportTitle": "{{office}}审核抽查",
-      "reportSummary": "抽查 {{office}}:共 {{total}} 条,抽样 {{sampled}} 条",
-      "reportStatusLine": "状态分布:{{list}}",
-      "reportNote": "说明:{{note}}"
+      "reportSummary": "抽查{{office}}：共{{total}}条，抽样{{sampled}}条",
+      "reportStatusLine": "状态分布：{{list}}",
+      "reportNote": "说明：{{note}}"
     },
     "stats": {
       "title": "统计报表",
-      "export": "导出 CSV",
+      "export": "导出CSV",
       "appealTitle": "申诉概况",
       "submitted": "申诉提交量",
       "acceptRate": "受理率",
@@ -5035,7 +5031,7 @@
       "ticketStatus": "工单状态分布"
     },
     "audit": {
-      "title": "审计与合规",
+      "title": "审计日志",
       "tabAudit": "操作审计",
       "tabVerify": "验真记录",
       "searchPlaceholder": "按操作类型筛选",
@@ -5046,9 +5042,9 @@
       "colDetail": "详情",
       "colTime": "时间",
       "colQuery": "查询内容",
-      "colIp": "IP 地址",
+      "colIp": "IP地址",
       "colResult": "结果",
-      "verifyTip": "验真查询均已留痕;限流与未命中记录同样保留。",
+      "verifyTip": "验真查询均已留痕；限流与未命中记录同样保留。",
       "target": {
         "appeal": "申诉",
         "review": "复核",
@@ -5100,7 +5096,7 @@
         "blacklist_user": "加入黑名单",
         "unblacklist_user": "移出黑名单",
         "update_appeal_config": "更新署务配置",
-        "export_appeals_csv": "导出申诉 CSV",
+        "export_appeals_csv": "导出申诉CSV",
         "create_appeal_draft": "创建申诉草稿",
         "submit_appeal": "提交申诉",
         "withdraw_appeal": "撤回申诉",
@@ -5180,9 +5176,7 @@
     "bannerPublic": "本人档案查询",
     "bannerAdmin": "档案管理台",
     "sso": {
-      "title": "以当前身份进入档案署",
-      "tip": "皇家档案与记录署将以你当前登录的身份展示本人在各署的归档记录,只读查看,不会修改任何业务数据。",
-      "confirm": "确认并进入"
+      "tip": "皇家档案与记录署将以你当前登录的身份展示本人在各署的归档记录，只读查看，不会修改任何业务数据。"
     },
     "nav": {
       "label": "档案署导航",
@@ -5190,29 +5184,29 @@
       "home": "首页",
       "records": "我的档案",
       "requests": "删除申请",
-      "messages": "消息",
+      "messages": "站内信",
       "help": "办事指南",
       "rules": "归档规则",
       "access": "访问日志",
-      "audit": "审计",
+      "audit": "审计日志",
       "admin": "档案管理台",
       "settings": "设置"
     },
     "home": {
-      "hero": "你的记录,好好归档",
-      "tagline": "皇家档案与记录署统一归档你在签注署与入境署产生的记录,本人随时查询。",
+      "hero": "你的记录，好好归档",
+      "tagline": "皇家档案与记录署统一归档你在签注署与入境署产生的记录，本人随时查询。",
       "totalArchived": "归档记录总数",
       "exportQuota": "今日导出余量",
       "quickEntries": "快捷入口",
       "activeRequest": "有一个删除申请正在处理中",
       "viewProgress": "查看进度",
-      "unreadTip": "你有 {{count}} 条未读档案消息",
+      "unreadTip": "你有{{count}}条未读档案消息",
       "catalog": "服务目录",
       "noTypes": "当前没有纳入归档的记录类型",
       "guides": "办事指南",
       "noGuides": "暂无办事指南",
       "noteTitle": "温馨提示",
-      "noteBody": "本署不复制业务主数据:档案详情与导出一律脱敏展示,如需办理业务请前往原署页面。"
+      "noteBody": "本署不复制业务主数据：档案详情与导出一律脱敏展示，如需办理业务请前往原署页面。"
     },
     "catalog": {
       "title": "我的档案",
@@ -5224,26 +5218,26 @@
       "reset": "重置",
       "typeName": "记录类型",
       "office": "所属署",
-      "no": "编号(脱敏)",
+      "no": "编号（脱敏）",
       "date": "记录日期",
-      "contact": "联系方式(脱敏)",
+      "contact": "联系方式（脱敏）",
       "view": "查看详情",
       "empty": "没有符合条件的归档记录",
-      "maskedTip": "证件号与联系方式类字段已打码;每次查看目录都会写入访问日志。",
-      "readOnlyTip": "本署只读展示,办理业务请前往原署",
+      "maskedTip": "证件号与联系方式类字段已打码；每次查看目录都会写入访问日志。",
+      "readOnlyTip": "本署只读展示，办理业务请前往原署",
       "export": "导出档案汇总(CSV)",
       "exportTitle": "导出档案汇总",
-      "exportTip": "将按当前筛选条件导出脱敏后的档案汇总 CSV,并写入访问与审计日志。",
-      "exportNote": "每人每天最多导出 3 次,导出内容不含未脱敏信息。",
+      "exportTip": "将按当前筛选条件导出脱敏后的档案汇总CSV，并写入访问与审计日志。",
+      "exportNote": "每人每天最多导出3次，导出内容不含未脱敏信息。",
       "exportConfirm": "开始导出",
-      "exportDone": "已导出 {{count}} 条记录"
+      "exportDone": "已导出{{count}}条记录"
     },
     "detail": {
       "title": "档案详情",
       "back": "返回目录",
-      "notFound": "记录不存在,或已随删除申请隐藏。",
-      "maskedTip": "详情字段与目录同样脱敏,原始数据仅原署可见。",
-      "sourceTip": "需要办理业务或查看原始记录?前往原署页面。",
+      "notFound": "记录不存在，或已随删除申请隐藏。",
+      "maskedTip": "详情字段与目录同样脱敏，原始数据仅原署可见。",
+      "sourceTip": "需要办理业务或查看原始记录？前往原署页面。",
       "openSource": "前往原署查看"
     },
     "request": {
@@ -5251,38 +5245,38 @@
       "new": "新建删除申请",
       "no": "申请编号",
       "scope": "删除范围",
-      "scopeTip": "勾选需要隐藏的记录类型,执行完成后这些归档记录将不再对你展示。",
+      "scopeTip": "勾选需要隐藏的记录类型，执行完成后这些归档记录将不再对你展示。",
       "scopeRequired": "请至少选择一个记录类型",
       "impact": "影响说明",
-      "impactPlaceholder": "请说明申请删除的原因与预期影响(至少 5 个字)",
-      "impactRequired": "请填写影响说明(至少 5 个字)",
+      "impactPlaceholder": "请说明申请删除的原因与预期影响（至少5个字）",
+      "impactRequired": "请填写影响说明（至少5个字）",
       "reason": "补充说明",
-      "reasonPlaceholder": "选填:需要让处理人员了解的其他信息",
-      "next": "下一步:确认",
+      "reasonPlaceholder": "选填：需要让处理人员了解的其他信息",
+      "next": "下一步：确认",
       "back": "返回修改",
       "confirmTitle": "二次确认",
-      "confirmBody": "请确认以下申请内容。提交后将进入「待处理」队列,由档案署管理员受理。",
-      "confirmNote": "执行完成只隐藏本署归档映射,不会删除原署业务数据。",
+      "confirmBody": "请确认以下申请内容。提交后将进入「待处理」队列，由档案署管理员受理。",
+      "confirmNote": "执行完成只隐藏本署归档映射，不会删除原署业务数据。",
       "confirmSubmit": "确认提交",
       "submitted": "删除申请已提交",
-      "activeTip": "已有一个申请正在处理,处理完成前不能再次提交。",
-      "processTip": "处理流程:待处理 → 受理中 → 执行中 → 已完成;不予处理时会写明理由。",
+      "activeTip": "已有一个申请正在处理，处理完成前不能再次提交。",
+      "processTip": "处理流程：待处理 → 受理中 → 执行中 → 已完成；不予处理时会写明理由。",
       "empty": "还没有提交过删除申请",
       "progress": "查看进度",
       "detailTitle": "申请详情",
-      "notFound": "申请不存在,或已被清理。",
+      "notFound": "申请不存在，或已被清理。",
       "reviewNote": "受理意见",
       "rejectReason": "不予处理理由",
       "receipt": "执行回执",
       "affected": "隐藏记录数",
-      "affectedValue": "{{count}} 条",
+      "affectedValue": "{{count}}条",
       "completedAt": "完成时间",
-      "appealHint": "对不予处理的理由有异议?你可以向皇家申诉与监察署提出申诉。",
+      "appealHint": "对不予处理的理由有异议？你可以向皇家申诉与监察署提出申诉。",
       "goAppeal": "前往申诉署",
       "timeline": "处理进度"
     },
     "messages": {
-      "title": "档案消息",
+      "title": "站内信",
       "markAll": "全部标为已读",
       "empty": "暂无消息"
     },
@@ -5296,28 +5290,28 @@
     },
     "msg": {
       "submitted": {
-        "title": "删除申请 {{no}} 已提交",
-        "body": "你的数据删除申请已进入待处理队列,可随时在「删除申请」页查看进度。"
+        "title": "删除申请{{no}}已提交",
+        "body": "你的数据删除申请已进入待处理队列，可随时在「删除申请」页查看进度。"
       },
       "reviewing": {
-        "title": "删除申请 {{no}} 已受理",
-        "body": "档案署管理员已受理你的申请,即将进入审核。"
+        "title": "删除申请{{no}}已受理",
+        "body": "档案署管理员已受理你的申请，即将进入审核。"
       },
       "executing": {
-        "title": "删除申请 {{no}} 已通过",
-        "body": "申请已通过审核,正在执行隐藏操作,完成后将出具回执。"
+        "title": "删除申请{{no}}已通过",
+        "body": "申请已通过审核，正在执行隐藏操作，完成后将出具回执。"
       },
       "completed": {
-        "title": "删除申请 {{no}} 已完成",
-        "body": "已隐藏 {{total}} 条归档记录,回执编号 {{receiptNo}}。原署业务数据不受影响。"
+        "title": "删除申请{{no}}已完成",
+        "body": "已隐藏{{total}}条归档记录，回执编号{{receiptNo}}。原署业务数据不受影响。"
       },
       "rejected": {
-        "title": "删除申请 {{no}} 不予处理",
-        "body": "理由:{{reason}}。如有异议,可向皇家申诉与监察署提出申诉。"
+        "title": "删除申请{{no}}不予处理",
+        "body": "理由：{{reason}}。如有异议，可向皇家申诉与监察署提出申诉。"
       },
       "appeal_reopened": {
-        "title": "申诉复核重开:{{no}}",
-        "body": "申诉 {{appealCode}} 的复核撤销了原不予处理决定,申请已退回待处理队列。"
+        "title": "申诉复核重开：{{no}}",
+        "body": "申诉{{appealCode}}的复核撤销了原不予处理决定，申请已退回待处理队列。"
       }
     },
     "status": {
@@ -5343,8 +5337,8 @@
       "draft": "草稿",
       "pending": "待审核",
       "pending_review": "待审核",
-      "supplement": "待补件",
-      "supplement_required": "待补件",
+      "supplement": "补件中",
+      "supplement_required": "补件中",
       "approved": "已通过",
       "issued": "已签发",
       "valid": "有效",
@@ -5380,76 +5374,76 @@
     },
     "help": {
       "title": "办事指南",
-      "introTitle": "皇家档案与记录署是做什么的?",
-      "intro": "本署归档你在签注署与入境署产生的业务记录,提供本人查询、档案汇总导出与数据删除申请。归档范围由管理员在归档规则中配置。",
+      "introTitle": "皇家档案与记录署是做什么的？",
+      "intro": "本署归档你在签注署与入境署产生的业务记录，提供本人查询、档案汇总导出与数据删除申请。归档范围由管理员在归档规则中配置。",
       "tagReadonly": "只读归档",
       "tagMasked": "全程脱敏",
       "tagLogged": "访问留痕",
       "guides": "办事指南",
       "faq": "常见问题",
       "whatArchived": {
-        "q": "哪些记录会被归档?",
-        "a": "目前归档两类业务:签注署的签注申请与电子签注,入境署的入境申报与出入境记录。管理员可以随时调整是否纳档。"
+        "q": "哪些记录会被归档？",
+        "a": "目前归档两类业务：签注署的签注申请与电子签注，入境署的入境申报与出入境记录。管理员可以随时调整是否纳档。"
       },
       "masked": {
-        "q": "为什么编号和联系方式是打码的?",
-        "a": "档案目录、详情与导出一律脱敏,防止截图外泄。原始数据仅保存在原署,如需完整信息请前往原署页面查看。"
+        "q": "为什么编号和联系方式是打码的？",
+        "a": "档案目录、详情与导出一律脱敏，防止截图外泄。原始数据仅保存在原署，如需完整信息请前往原署页面查看。"
       },
       "exportLimit": {
-        "q": "档案汇总每天能导出几次?",
-        "a": "每人每天最多 3 次,每次导出都会写入审计日志。额度在次日重置。"
+        "q": "档案汇总每天能导出几次？",
+        "a": "每人每天最多3次，每次导出都会写入审计日志。额度在次日重置。"
       },
       "deleteFlow": {
-        "q": "删除申请是怎么处理的?",
-        "a": "提交后流程为:待处理 → 受理中 → 执行中 → 已完成。执行完成只在本署隐藏归档映射并出具回执,不会删除原署业务数据。"
+        "q": "删除申请是怎么处理的？",
+        "a": "提交后流程为：待处理 → 受理中 → 执行中 → 已完成。执行完成只在本署隐藏归档映射并出具回执，不会删除原署业务数据。"
       },
       "rejectedAppeal": {
-        "q": "申请被驳回怎么办?",
-        "a": "不予处理时会写明理由;对理由有异议,可以在申请详情页一键前往皇家申诉与监察署提出申诉。"
+        "q": "申请被驳回怎么办？",
+        "a": "不予处理时会写明理由；对理由有异议，可以在申请详情页一键前往皇家申诉与监察署提出申诉。"
       }
     },
     "admin": {
       "rules": {
         "title": "归档规则配置",
-        "tip": "决定每种记录类型是否纳入归档;关闭后该类型不再出现在用户目录中,已归档数据不受影响。",
+        "tip": "决定每种记录类型是否纳入归档；关闭后该类型不再出现在用户目录中，已归档数据不受影响。",
         "type": "记录类型",
         "included": "是否纳档",
         "includedOn": "纳档中",
         "includedOff": "已停用",
-        "retention": "保留说明(简体)",
-        "retentionTw": "保留说明(繁体)",
+        "retention": "保留说明（简体）",
+        "retentionTw": "保留说明（繁体）",
         "retentionRequired": "请填写保留说明",
         "updatedAt": "更新时间",
-        "editTitle": "编辑归档规则:{{name}}"
+        "editTitle": "编辑归档规则：{{name}}"
       },
       "records": {
         "title": "档案查询",
-        "userId": "用户 ID",
+        "userId": "用户ID",
         "no": "编号",
         "applicant": "档案归属",
         "hidden": "隐藏标记",
         "hiddenYes": "已隐藏",
-        "maskedTip": "管理端同样只展示脱敏后的档案;每次查询都会写入审计。",
+        "maskedTip": "管理端同样只展示脱敏后的档案；每次查询都会写入审计。",
         "export": "导出(CSV)",
-        "exportTitle": "导出档案(管理端)",
-        "exportTip": "将按当前筛选条件导出脱敏档案汇总,并写入审计日志。确认继续?",
+        "exportTitle": "导出档案（管理端）",
+        "exportTip": "将按当前筛选条件导出脱敏档案汇总，并写入审计日志。确认继续？",
         "exportConfirm": "确认导出",
-        "exportDone": "已导出 {{count}} 条记录"
+        "exportDone": "已导出{{count}}条记录"
       },
       "requests": {
         "title": "删除申请处理",
         "allStatuses": "全部状态",
         "applicant": "申请人",
         "detail": "详情",
-        "detailTitle": "处理申请:{{no}}",
+        "detailTitle": "处理申请：{{no}}",
         "accept": "受理",
         "approve": "通过",
         "execute": "执行并出回执",
         "reject": "驳回",
-        "rejectTitle": "驳回申请:{{no}}",
+        "rejectTitle": "驳回申请：{{no}}",
         "rejectConfirm": "确认驳回",
-        "rejectTip": "驳回必须写明理由,理由会通知申请人;被驳回后申请人可向申诉署提出申诉。",
-        "reasonPlaceholder": "请填写不予处理的理由(至少 2 个字)"
+        "rejectTip": "驳回必须写明理由，理由会通知申请人；被驳回后申请人可向申诉署提出申诉。",
+        "reasonPlaceholder": "请填写不予处理的理由（至少2个字）"
       },
       "access": {
         "title": "访问日志",
@@ -5460,7 +5454,7 @@
         "detail": "详情"
       },
       "audit": {
-        "title": "审计",
+        "title": "审计日志",
         "allActions": "全部操作",
         "actor": "操作人",
         "action": "操作",
@@ -5501,14 +5495,12 @@
     "officeName": "奶龙国皇家邮政与通信署",
     "officeSub": "站内消息 · 公告订阅 · 虚拟明信片",
     "sso": {
-      "title": "身份确认",
-      "confirm": "进入邮政与通信署",
       "tip": "将以当前登录身份使用消息中心、公告订阅与虚拟明信片。"
     },
     "nav": {
       "home": "邮政首页",
       "notices": "公告",
-      "messages": "消息中心",
+      "messages": "站内信",
       "postcards": "明信片",
       "subscription": "订阅与偏好",
       "adminNotices": "公告管理",
@@ -5516,10 +5508,10 @@
       "adminCardTemplates": "明信片模板",
       "adminPostcards": "明信片管理",
       "adminStats": "统计",
-      "adminAudit": "审计"
+      "adminAudit": "审计日志"
     },
     "home": {
-      "tagline": "全站消息都在这里汇总:订阅你关心的公告,给岛上的朋友寄一张虚拟明信片,再也不会漏看任何署的通知。",
+      "tagline": "全站消息都在这里汇总：订阅你关心的公告，给岛上的朋友寄一张虚拟明信片，再也不会漏看任何署的通知。",
       "writeCard": "写一张明信片",
       "openMessages": "进入消息中心",
       "openSubscription": "订阅与偏好",
@@ -5548,11 +5540,11 @@
       "notFound": "公告不存在或已下线"
     },
     "messages": {
-      "title": "消息中心",
-      "unread": "未读 {{count}} 条",
+      "title": "站内信",
+      "unread": "未读{{count}}条",
       "inbox": "收件箱",
       "archivedTab": "已归档",
-      "empty": "没有消息,去逛逛其他署吧",
+      "empty": "没有消息，去逛逛其他署吧",
       "unreadTag": "未读",
       "statusAll": "全部状态",
       "statusUnread": "未读",
@@ -5561,9 +5553,9 @@
       "searchPlaceholder": "搜索消息内容、类型或来源",
       "select": "选择",
       "selected": "已选",
-      "bulkRead": "标记已读 ({{count}})",
-      "bulkArchive": "归档所选 ({{count}})",
-      "bulkDone": "已处理 {{count}} 条消息",
+      "bulkRead": "标记已读 （{{count}}）",
+      "bulkArchive": "归档所选 （{{count}}）",
+      "bulkDone": "已处理{{count}}条消息",
       "readAll": "全部标为已读",
       "readAllDone": "已全部标为已读",
       "archiveAll": "归档全部已读",
@@ -5576,27 +5568,27 @@
     "subscription": {
       "title": "订阅与通知偏好",
       "noticeTitle": "订阅邮政署公告",
-      "noticeTip": "订阅后,新公告发布时会自动收到一条站内消息。",
+      "noticeTip": "订阅后，新公告发布时会自动收到一条站内消息。",
       "prefTitle": "按署开关通知",
-      "prefTip": "每个署的消息可以单独关闭;关闭后该署的新消息不再进入你的信箱。",
-      "sourcesCount": "共 {{count}} 个来源",
+      "prefTip": "每个署的消息可以单独关闭；关闭后该署的新消息不再进入你的信箱。",
+      "sourcesCount": "共{{count}}个来源",
       "sourceOnHint": "接收该署的消息",
-      "sourceOffHint": "已关闭,该署消息将被跳过",
+      "sourceOffHint": "已关闭，该署消息将被跳过",
       "subscribedDone": "已订阅邮政署公告",
       "unsubscribedDone": "已退订邮政署公告",
-      "privacyTip": "邮政署只做站内消息与趣味体验,不会发送真实短信或邮件。"
+      "privacyTip": "邮政署只做站内消息与趣味体验，不会发送真实短信或邮件。"
     },
     "postcards": {
       "title": "我的明信片",
       "write": "写一张",
-      "quota": "今日已寄 {{used}} / {{limit}} 张",
-      "quotaTip": "每用户每天最多寄出 10 张明信片。",
+      "quota": "今日已寄{{used}} / {{limit}}张",
+      "quotaTip": "每人每天最多寄出10张明信片。",
       "inbox": "收件箱",
       "sent": "寄件记录",
       "favorites": "收藏夹",
       "empty": "这里还空空如也",
-      "fromWhom": "来自 {{name}}",
-      "toWhom": "寄给 {{name}}",
+      "fromWhom": "来自{{name}}",
+      "toWhom": "寄给{{name}}",
       "from": "寄件人",
       "to": "收件人",
       "receive": "签收",
@@ -5607,8 +5599,8 @@
       "sentDone": "明信片已寄出",
       "sentAt": "寄出时间",
       "receivedAt": "签收时间",
-      "takedownReason": "下架原因:{{reason}}",
-      "deleteTip": "明信片会从你的列表中隐藏,另一侧仍保留记录;此操作不可恢复。"
+      "takedownReason": "下架原因：{{reason}}",
+      "deleteTip": "明信片会从你的列表中隐藏，另一侧仍保留记录；此操作不可恢复。"
     },
     "compose": {
       "title": "写一张明信片",
@@ -5616,84 +5608,84 @@
       "pickTemplate": "挑选模板",
       "noTemplates": "暂时没有可用的明信片模板",
       "blessing": "祝福语",
-      "blessingPlaceholder": "写下你想对 TA 说的话(200 字以内)",
-      "blessingTip": "已输入 {{count}} / 200 字。祝福语按原文展示,不做翻译。",
+      "blessingPlaceholder": "写下你想对TA说的话（200字以内）",
+      "blessingTip": "已输入{{count}} / 200字。祝福语按原文展示，不做翻译。",
       "pickRecipient": "选择收件人",
       "searchPlaceholder": "输入用户名或昵称搜索",
-      "searchHint": "输入关键词搜索站内用户,然后点击「选择」。",
-      "searchEmpty": "没有找到可寄送的收件人:明信片不能寄给自己,搜自己的账号不会有结果。",
+      "searchHint": "输入关键词搜索站内用户，然后点击「选择」。",
+      "searchEmpty": "没有找到可寄送的收件人：明信片不能寄给自己，搜自己的账号不会有结果。",
       "pick": "选择",
       "selected": "已选中",
       "sendNow": "立即寄出",
       "saveDraft": "存为草稿",
-      "sentDone": "明信片已寄出,等 TA 签收吧",
-      "draftDone": "草稿已保存,可稍后寄出",
-      "quotaReached": "今日的明信片额度已用完,明天再来吧"
+      "sentDone": "明信片已寄出，等TA签收吧",
+      "draftDone": "草稿已保存，可稍后寄出",
+      "quotaReached": "今日的明信片额度已用完，明天再来吧"
     },
     "msg": {
       "notice_published": {
-        "title": "新公告:{{title}}",
-        "body": "《{{title}}》已发布,编号 {{no}}。前往公告列表即可查看全文。"
+        "title": "新公告：{{title}}",
+        "body": "《{{title}}》已发布，编号{{no}}。前往公告列表即可查看全文。"
       },
       "postcard_received": {
         "title": "你收到一张明信片",
-        "body": "{{from}} 寄来一张明信片(编号 {{no}}),祝福语:{{blessing}}"
+        "body": "{{from}}寄来一张明信片（编号{{no}}），祝福语：{{blessing}}"
       },
       "postcard_taken_down": {
-        "title": "明信片 {{no}} 已被下架",
-        "body": "下架原因:{{reason}}。明信片已从收件箱移除。"
+        "title": "明信片{{no}}已被下架",
+        "body": "下架原因：{{reason}}。明信片已从收件箱移除。"
       },
       "subscription_confirmed": {
         "title": "公告订阅已开启",
-        "body": "订阅成功!邮政署发布新公告时会第一时间通知你。"
+        "body": "订阅成功！邮政署发布新公告时会第一时间通知你。"
       },
       "subscription_cancelled": {
         "title": "公告订阅已关闭",
-        "body": "已停止接收公告通知,随时可以在「订阅与偏好」里重新打开。"
+        "body": "已停止接收公告通知，随时可以在「订阅与偏好」里重新打开。"
       },
       "fallback": {
         "title": "你有一条新消息",
-        "body": "这是一条系统消息,请前往消息中心查看详情。"
+        "body": "这是一条系统消息，请前往消息中心查看详情。"
       },
       "tour_checkin": {
         "title": "打卡成功",
-        "body": "你在「{{attractionName}}」完成打卡(编号 {{checkinNo}}),继续逛逛收集更多徽章吧。"
+        "body": "你在「{{attractionName}}」完成打卡（编号{{checkinNo}}），继续逛逛收集更多徽章吧。"
       },
       "tour_badge": {
-        "title": "获得新徽章:{{badgeName}}",
-        "body": "累计打卡 {{checkinCount}} 次,达成「{{badgeName}}」,快去徽章墙看看吧。"
+        "title": "获得新徽章：{{badgeName}}",
+        "body": "累计打卡{{checkinCount}}次，达成「{{badgeName}}」，快去徽章墙看看吧。"
       },
       "task_completed": {
-        "title": "阅读任务完成:{{taskTitle}}",
-        "body": "你已读满目标篇数,获得徽章「{{badgeName}}」。快去教育与科学署「我的学习」看看吧。"
+        "title": "阅读任务完成：{{taskTitle}}",
+        "body": "你已读满目标篇数，获得徽章「{{badgeName}}」。快去教育与科学署「我的学习」看看吧。"
       },
       "archives_submitted": {
-        "title": "删除申请已提交:{{no}}",
-        "body": "你的数据删除申请 {{no}} 已提交,档案与记录署将按流程处理。"
+        "title": "删除申请{{no}}已提交",
+        "body": "你的数据删除申请{{no}}已提交，档案与记录署将按流程处理。"
       },
       "archives_reviewing": {
-        "title": "删除申请已受理:{{no}}",
-        "body": "你的数据删除申请 {{no}} 已受理,请留意后续进度通知。"
+        "title": "删除申请{{no}}已受理",
+        "body": "你的数据删除申请{{no}}已受理，请留意后续进度通知。"
       },
       "archives_executing": {
-        "title": "删除申请执行中:{{no}}",
-        "body": "你的数据删除申请 {{no}} 已通过审核,正在执行隐藏操作,完成后将出具回执。"
+        "title": "删除申请{{no}}已通过",
+        "body": "你的数据删除申请{{no}}已通过审核，正在执行隐藏操作，完成后将出具回执。"
       },
       "archives_completed": {
-        "title": "删除申请已完成:{{no}}",
-        "body": "你的数据删除申请 {{no}} 已执行完成,回执 {{receiptNo}},共隐藏 {{count}} 条记录。"
+        "title": "删除申请{{no}}已完成",
+        "body": "你的数据删除申请{{no}}已执行完成，回执{{receiptNo}}，共隐藏{{count}}条记录。"
       },
       "archives_rejected": {
-        "title": "删除申请未通过:{{no}}",
-        "body": "你的数据删除申请 {{no}} 未通过。理由:{{reason}}。如有异议,可到申诉与监察署提交申诉。"
+        "title": "删除申请{{no}}不予处理",
+        "body": "你的数据删除申请{{no}}不予处理。理由：{{reason}}。如有异议，可到申诉与监察署提交申诉。"
       },
       "archives_appeal_reopened": {
-        "title": "申诉复核重开删除申请:{{no}}",
-        "body": "你的数据删除申请 {{no}} 经申诉复核重新进入处理流程,请留意进度更新。"
+        "title": "申诉复核重开：{{no}}",
+        "body": "你的数据删除申请{{no}}经申诉复核重新进入处理流程，请留意进度更新。"
       },
       "annual_report_ready": {
-        "title": "年度报告 {{year}} 已生成",
-        "body": "你的 {{year}} 年度报告(编号 {{no}})已生成,可到统计署「我的报告」查看、下载或重新生成。"
+        "title": "年度报告{{year}}已生成",
+        "body": "你的{{year}}年度报告（编号{{no}}）已生成，可到统计署「我的报告」查看、下载或重新生成。"
       }
     },
     "postcardStatus": {
@@ -5728,10 +5720,10 @@
         "body": "正文",
         "notified": "通知数",
         "publish": "发布",
-        "published": "公告已发布,订阅者将收到通知",
+        "published": "公告已发布，订阅者将收到通知",
         "offline": "下线",
         "offlineDone": "公告已下线",
-        "deleteTip": "公告《{{title}}》将被软删除,不再对外展示。确定删除吗?"
+        "deleteTip": "公告《{{title}}》将被软删除，不再对外展示。确定删除吗？"
       },
       "noticeStatus": {
         "draft": "草稿",
@@ -5740,7 +5732,7 @@
       },
       "templates": {
         "title": "通知模板管理",
-        "tip": "模板命中「来源 + 类型」后,sendPostalMessage 会用 {{变量}} 渲染标题与正文并随消息存储;未命中的消息由前端按消息类型渲染。",
+        "tip": "模板命中「来源 + 类型」后，sendPostalMessage会用{{变量}}渲染标题与正文并随消息存储；未命中的消息由前端按消息类型渲染。",
         "create": "新建模板",
         "edit": "编辑模板",
         "source": "来源署",
@@ -5750,25 +5742,25 @@
         "titleTemplate": "标题模板",
         "bodyTemplate": "正文模板",
         "variables": "变量清单",
-        "varTip": "变量用双花括号包裹,如 {{no}}、{{title}};发送时用 params 里同名字段替换,缺省为空。",
+        "varTip": "变量用双花括号包裹，如{{no}}、{{title}}；发送时用params里同名字段替换，缺省为空。",
         "updatedAt": "更新时间",
-        "deleteTip": "模板 {{type}} 将被软删除,不再参与渲染。确定删除吗?",
+        "deleteTip": "模板{{type}}将被软删除，不再参与渲染。确定删除吗？",
         "typePlaceholder": "小写字母、数字与下划线",
-        "variablesPlaceholder": "变量名,用逗号分隔"
+        "variablesPlaceholder": "变量名，用逗号分隔"
       },
       "postcards": {
         "title": "明信片管理",
         "searchPlaceholder": "搜索编号、祝福语或收发件人",
         "template": "模板",
         "takedown": "下架",
-        "takedownTitle": "下架明信片 {{no}}",
-        "takedownTip": "下架后明信片从用户端隐藏,寄件人会收到一条通知。",
+        "takedownTitle": "下架明信片{{no}}",
+        "takedownTip": "下架后明信片从用户端隐藏，寄件人会收到一条通知。",
         "reason": "下架原因",
         "takedownDone": "明信片已下架"
       },
       "cardTemplates": {
         "title": "明信片模板管理",
-        "tip": "用户写明信片时挑选的卡片款式;停用后不再出现在挑选列表,已寄出的明信片不受影响。",
+        "tip": "用户写明信片时挑选的卡片款式；停用后不再出现在挑选列表，已寄出的明信片不受影响。",
         "create": "新建模板",
         "edit": "编辑模板",
         "code": "模板编码",
@@ -5781,7 +5773,7 @@
         "color": "卡片配色",
         "description": "模板描述",
         "sortOrder": "排序",
-        "deleteTip": "模板 {{code}} 将被删除;已有明信片使用过的模板会被拒绝删除。确定删除吗?",
+        "deleteTip": "模板{{code}}将被删除；已有明信片使用过的模板会被拒绝删除。确定删除吗？",
         "color_app-teal": "蓝绿",
         "color_app-yellow": "明黄",
         "color_app-orange": "橙色",
@@ -5806,7 +5798,7 @@
         "postcardToday": "今日寄出",
         "postcardReceived": "已签收",
         "postcardTaken": "已下架",
-        "noticesPublished": "公告(已发布)",
+        "noticesPublished": "公告（已发布）",
         "noticesDraft": "草稿",
         "noticesOffline": "已下线",
         "subscribers": "公告订阅数",
@@ -5867,8 +5859,6 @@
     "officeName": "奶龙国皇家文化旅游署",
     "officeSub": "景点导览 · 文化内容 · 打卡收集",
     "sso": {
-      "title": "身份确认",
-      "confirm": "进入文化旅游署",
       "tip": "将以当前登录身份使用景点导览、文化内容与打卡收集。"
     },
     "nav": {
@@ -5888,7 +5878,7 @@
         "rules": "打卡规则",
         "badges": "徽章管理",
         "stats": "统计",
-        "audit": "审计"
+        "audit": "审计日志"
       },
       "allStatus": "全部状态",
       "status": {
@@ -5909,47 +5899,47 @@
       },
       "attractions": {
         "title": "景点管理",
-        "tip": "只有「已上线」的景点会出现在用户端;下线不会删除打卡记录。",
+        "tip": "只有「已上线」的景点会出现在用户端；下线不会删除打卡记录。",
         "create": "新建景点",
         "edit": "编辑景点",
         "searchPlaceholder": "搜索名称或编号",
-        "empty": "还没有景点,先建一个吧",
+        "empty": "还没有景点，先建一个吧",
         "namePlaceholder": "景点的简体名称",
         "pointsPlaceholder": "一行一个打卡点",
-        "pointsTip": "打卡点按行拆分展示;繁体留空时用户端回退显示简体。",
-        "deleteTip": "景点「{{name}}」将被软删除,不再对用户展示。确定删除吗?"
+        "pointsTip": "打卡点按行拆分展示；繁体留空时用户端回退显示简体。",
+        "deleteTip": "景点「{{name}}」将被软删除，不再对用户展示。确定删除吗？"
       },
       "articles": {
         "title": "文化内容管理",
-        "tip": "「已发布」的文章会出现在用户端;下线只是隐藏,随时可再发布。",
+        "tip": "「已发布」的文章会出现在用户端；下线只是隐藏，随时可再发布。",
         "create": "新建文章",
         "edit": "编辑文章",
         "searchPlaceholder": "搜索标题或编号",
-        "empty": "还没有文章,先写一篇吧",
+        "empty": "还没有文章，先写一篇吧",
         "titlePlaceholder": "文章的简体标题",
-        "deleteTip": "文章《{{title}}》将被软删除,不再对用户展示。确定删除吗?"
+        "deleteTip": "文章《{{title}}》将被软删除，不再对用户展示。确定删除吗？"
       },
       "rules": {
         "title": "打卡规则",
-        "tip": "规则保存后立即对新的打卡生效,不影响已成功的打卡。",
-        "dailyLimit": "每用户每日打卡上限(1-100)",
-        "siteDailyLimit": "全站每日打卡上限(0 = 不限)",
-        "siteTip": "全站上限用于节日活动限流;达到上限后当天全站不能再打卡。",
-        "invalidDaily": "每用户每日上限必须是 1-100 的整数",
-        "invalidSite": "全站每日上限必须是 0-100000 的整数"
+        "tip": "规则保存后立即对新的打卡生效，不影响已成功的打卡。",
+        "dailyLimit": "每人每日打卡上限(1-100)",
+        "siteDailyLimit": "全站每日打卡上限（0 = 不限）",
+        "siteTip": "全站上限用于节日活动限流；达到上限后当天全站不能再打卡。",
+        "invalidDaily": "每人每日上限必须是1-100的整数",
+        "invalidSite": "全站每日上限必须是0-100000的整数"
       },
       "badges": {
         "title": "徽章管理",
-        "tip": "用户累计打卡次数达到阈值即自动发放;停用后不再发放,已发放的不收回。",
+        "tip": "累计打卡次数达到阈值即自动发放；停用后不再发放，已发放的不收回。",
         "create": "新建徽章",
         "edit": "编辑徽章",
         "code": "识别码",
-        "codeTip": "识别码创建后不可修改,用小写字母、数字与下划线。",
+        "codeTip": "识别码创建后不可修改，用小写字母、数字与下划线。",
         "threshold": "打卡次数阈值",
-        "invalidThreshold": "打卡次数阈值必须是 1-1000 的整数",
+        "invalidThreshold": "打卡次数阈值必须是1-1000的整数",
         "awardCount": "发放数",
         "empty": "还没有徽章定义",
-        "deleteTip": "徽章「{{name}}」将被软删除;已发放的记录保留。确定删除吗?",
+        "deleteTip": "徽章「{{name}}」将被软删除；已发放的记录保留。确定删除吗？",
         "awardsTitle": "发放记录",
         "allBadges": "全部徽章",
         "badge": "徽章",
@@ -5960,9 +5950,9 @@
         "holding": "持有中",
         "revoked": "已回收",
         "revoke": "回收",
-        "revokeTitle": "回收徽章:{{name}}",
-        "revokeTip": "回收后 {{user}} 的这枚徽章立即失效;若之后重新达标也不会自动补发。",
-        "revokeReasonPlaceholder": "回收原因(可选,200 字以内)",
+        "revokeTitle": "回收徽章：{{name}}",
+        "revokeTip": "回收后{{user}}的这枚徽章立即失效；若之后重新达标也不会自动补发。",
+        "revokeReasonPlaceholder": "回收原因（可选，200字以内）",
         "revokeDone": "徽章已回收",
         "icon": {
           "TrophyIcon": "奖杯",
@@ -5973,25 +5963,25 @@
           "HeartIcon": "爱心",
           "FlagIcon": "旗帜"
         },
-        "codePlaceholder": "以小写字母开头,可含数字与下划线"
+        "codePlaceholder": "以小写字母开头，可含数字与下划线"
       },
       "stats": {
         "title": "基础统计",
         "attractions": "景点总数",
-        "onlineAttractions": "其中上线 {{count}} 个",
+        "onlineAttractions": "其中上线{{count}}个",
         "articles": "文章总数",
-        "publishedArticles": "其中发布 {{count}} 篇",
+        "publishedArticles": "其中发布{{count}}篇",
         "checkinsTotal": "打卡总量",
-        "checkinsToday": "今日 {{count}} 次",
-        "checkinUsers": "打卡用户数",
+        "checkinsToday": "今日{{count}}次",
+        "checkinUsers": "打卡人数",
         "distinctCheckinUsers": "去重后",
         "badgeDefinitions": "徽章定义",
-        "badgeAwards": "有效发放 {{count}} 枚",
+        "badgeAwards": "有效发放{{count}}枚",
         "badgeRevoked": "已回收徽章",
         "badgeRevokedHint": "回收不改打卡记录",
-        "trendTitle": "近 7 日打卡趋势",
+        "trendTitle": "近7日打卡趋势",
         "topAttractions": "热门景点",
-        "top5": "前 5 名",
+        "top5": "前5名",
         "checkins": "打卡量",
         "noData": "暂无数据"
       },
@@ -6003,7 +5993,7 @@
         "action": "动作",
         "target": "对象",
         "detail": "详情",
-        "searchPlaceholder": "按动作关键字筛选,如 badge",
+        "searchPlaceholder": "按动作关键字筛选，如badge",
         "empty": "没有符合条件的审计记录",
         "actionName": {
           "attraction_create": "新增景点",
@@ -6078,7 +6068,7 @@
     },
     "home": {
       "hero": "欢迎来到奶龙岛",
-      "tagline": "走走看看,随处打卡,把奶龙岛一点点收进你的收集册。",
+      "tagline": "走走看看，随处打卡，把奶龙岛一点点收进你的收集册。",
       "statCheckins": "我的打卡",
       "statBadges": "我的徽章",
       "statStamps": "入境纪念章",
@@ -6091,13 +6081,13 @@
       "viewAllArticles": "全部内容",
       "noFestivals": "最近没有节庆公告",
       "rulesTitle": "打卡小规则",
-      "rulePerAttraction": "每个景点每人每天可以打卡 1 次。",
-      "ruleDaily": "每天最多打卡 {{limit}} 次,好风景要慢慢逛。",
+      "rulePerAttraction": "每个景点每人每天可以打卡1次。",
+      "ruleDaily": "每天最多打卡{{limit}}次，好风景要慢慢逛。",
       "startCheckin": "出发打卡"
     },
     "attractions": {
       "title": "景点列表",
-      "tip": "筛选类型或搜索名称,点开景点卡片即可查看详情与打卡。",
+      "tip": "筛选类型或搜索名称，点开景点卡片即可查看详情与打卡。",
       "searchPlaceholder": "搜索景点名称或简介",
       "empty": "没有符合条件的景点",
       "points": "打卡点",
@@ -6107,14 +6097,14 @@
     },
     "checkin": {
       "title": "在这里打卡",
-      "rule": "同一景点每天可打卡 1 次,打卡会记入收集册并累积成就徽章。",
-      "notePlaceholder": "写一句打卡心情(可选,200 字以内)",
+      "rule": "同一景点每天可打卡1次，打卡会记入收集册并累积成就徽章。",
+      "notePlaceholder": "写一句打卡心情（可选，200字以内）",
       "button": "打卡",
-      "success": "在「{{name}}」打卡成功!",
-      "newBadge": "获得新徽章:{{name}}",
+      "success": "在「{{name}}」打卡成功！",
+      "newBadge": "获得新徽章：{{name}}",
       "doneToday": "今天已打卡",
       "comeBackTomorrow": "明天再来吧",
-      "closed": "景点关闭中,暂不能打卡"
+      "closed": "景点关闭中，暂不能打卡"
     },
     "articles": {
       "title": "文化内容",
@@ -6131,7 +6121,7 @@
       "statVisited": "去过的景点",
       "statStamps": "入境纪念章",
       "stampsTitle": "入境纪念章",
-      "stampsHint": "每次从口岸入境奶龙国,这里会自动盖一枚纪念章(来自入境署通关记录)。",
+      "stampsHint": "每次从口岸入境奶龙国，这里会自动盖一枚纪念章（来自入境署通关记录）。",
       "unknownPort": "未知口岸",
       "noStamps": "还没有入境纪念章",
       "goImmigration": "去入境署通关",
@@ -6141,36 +6131,36 @@
       "date": "打卡日期",
       "note": "心情",
       "time": "打卡时间",
-      "noCheckins": "还没有打卡记录,去景点页面转转吧",
-      "footnote": "纪念章只作收集展示,不是通关凭证;真实出入境请以入境署记录为准。"
+      "noCheckins": "还没有打卡记录，去景点页面转转吧",
+      "footnote": "纪念章只作收集展示，不是通关凭证；真实出入境请以入境署记录为准。"
     },
     "badges": {
       "title": "成就徽章",
-      "tip": "累计打卡 {{total}} 次,达成条件即可自动获得徽章。",
+      "tip": "累计打卡{{total}}次，达成条件即可自动获得徽章。",
       "goCheckin": "继续打卡",
-      "awardedAt": "{{time}} 获得",
+      "awardedAt": "{{time}}获得",
       "inProgress": "收集中",
       "empty": "暂时没有可收集的徽章"
     },
     "my": {
       "title": "我的旅游",
-      "todayLine": "今天已打卡 {{today}} / {{limit}} 次。",
+      "todayLine": "今天已打卡{{today}} / {{limit}}次。",
       "statCheckins": "打卡次数",
       "statVisited": "去过的景点",
       "statBadges": "徽章",
       "statStamps": "纪念章",
       "badgesTitle": "我的徽章",
       "viewBadges": "徽章墙",
-      "noBadges": "还没有徽章,打一次卡就能拿到第一枚",
+      "noBadges": "还没有徽章，打一次卡就能拿到第一枚",
       "stampsTitle": "最近纪念章",
       "viewCollection": "打开收集册",
       "noStamps": "还没有入境纪念章",
       "recentCheckins": "最近打卡",
       "goCheckin": "去打卡",
-      "badgeCount": "已收集 {{count}} 枚徽章"
+      "badgeCount": "已收集{{count}}枚徽章"
     },
     "error": {
-      "loadFailed": "加载失败,请稍后重试"
+      "loadFailed": "加载失败，请稍后重试"
     }
   },
   "stat": {
@@ -6186,52 +6176,50 @@
       "audit": "审计日志"
     },
     "sso": {
-      "title": "身份确认",
-      "confirm": "确认进入",
-      "tip": "进入皇家统计署即代表你同意以当前身份查看聚合数据;所有数字均为跨署只读统计,不含任何个人明细。"
+      "tip": "进入皇家统计署即代表你同意以当前身份查看聚合数据；所有数字均为跨署只读统计，不含任何个人明细。"
     },
     "home": {
       "heroTitle": "奶龙岛年度数字地图",
-      "heroSub": "签注、通关、打卡、徽章……每一枚数字都是岛上生活的脚印。所有数据只做聚合展示,口径随时可查。",
+      "heroSub": "签注、通关、打卡、徽章……每一枚数字都是岛上生活的脚印。所有数据只做聚合展示，口径随时可查。",
       "entryReports": "生成我的年度报告",
       "entryGuide": "先看数据说明",
       "metricsTitle": "全岛趣味统计",
-      "metricsTip": "以下数字由各署业务表实时 COUNT 而来,仅作趣味展示,不构成任何官方统计。",
-      "updatedAt": "数据更新时间:{{time}}",
+      "metricsTip": "以下数字由各署业务表实时COUNT而来，仅作趣味展示，不构成任何官方统计。",
+      "updatedAt": "数据更新时间：{{time}}",
       "unavailable": "暂不可用",
       "latestTitle": "最近一份年度报告",
-      "latestYear": "{{year}} 年度报告",
-      "latestGenerated": "生成于 {{time}}",
+      "latestYear": "{{year}}年度报告",
+      "latestGenerated": "生成于{{time}}",
       "openLatest": "打开报告",
-      "latestEmpty": "还没有生成过年度报告。生成一份,看看你在奶龙岛留下了多少脚印。"
+      "latestEmpty": "还没有生成过年度报告。生成一份，看看你在奶龙岛留下了多少脚印。"
     },
     "reports": {
       "title": "我的年度报告",
-      "tip": "按年度汇总你自己的签注、入境、打卡、徽章、活动报名等数据;生成后保存快照,可随时回看与打印。",
+      "tip": "按年度汇总你自己的签注、入境、打卡、徽章、活动报名等数据；生成后保存快照，可随时回看与打印。",
       "generate": "生成年度报告",
       "generateTitle": "生成年度报告",
-      "generateTip": "同一年度可重复生成,新快照会覆盖旧版;每小时最多生成 6 次。",
+      "generateTip": "同一年度可重复生成，新快照会覆盖旧版；每小时最多生成6次。",
       "year": "年度",
-      "yearOption": "{{year}} 年",
+      "yearOption": "{{year}}年",
       "yearPlaceholder": "选择要汇总的年度",
       "reportNo": "报告编号",
       "generatedAt": "生成时间",
-      "generatedToast": "{{year}} 年度报告已生成",
-      "regeneratedToast": "{{year}} 年度报告已更新",
-      "empty": "还没有年度报告,点右上角生成一份。",
+      "generatedToast": "{{year}}年度报告已生成",
+      "regeneratedToast": "{{year}}年度报告已更新",
+      "empty": "还没有年度报告，点右上角生成一份。",
       "view": "查看"
     },
     "report": {
-      "title": "{{year}} 年度报告",
-      "paperTitle": "奶龙国皇家统计署 · {{year}} 年度个人报告",
-      "paperSub": "本报告由你自己的业务记录聚合而成,仅供趣味留念,不含他人数据。",
-      "generatedAt": "生成时间:{{time}}",
+      "title": "{{year}}年度报告",
+      "paperTitle": "奶龙国皇家统计署 · {{year}}年度个人报告",
+      "paperSub": "本报告由你自己的业务记录聚合而成，仅供趣味留念，不含他人数据。",
+      "generatedAt": "生成时间：{{time}}",
       "print": "打印报告",
       "regenerate": "重新生成",
       "back": "返回列表",
       "notFound": "报告不存在或已被删除。",
       "empty": "这一年还没有可汇总的记录。",
-      "footnote": "数据截至报告生成时刻 · 皇家统计署只做聚合展示,不发布真实统计",
+      "footnote": "数据截至报告生成时刻 · 皇家统计署只做聚合展示，不发布真实统计",
       "section": {
         "visa": "签注足迹",
         "immigration": "口岸通关",
@@ -6271,13 +6259,13 @@
     },
     "guide": {
       "title": "数据说明",
-      "tip": "统计署是全岛的后台账房:这里解释每个数字怎么来、多久更新、能看到什么、看不到什么。",
+      "tip": "统计署是全岛的后台账房：这里解释每个数字怎么来、多久更新、能看到什么、看不到什么。",
       "frequencyTitle": "更新方式",
-      "frequencyBody": "所有指标在页面打开时从各署业务表实时 COUNT,没有缓存、没有预估值;页面顶部的时间即本次统计时刻。",
+      "frequencyBody": "所有指标在页面打开时从各署业务表实时COUNT，没有缓存、没有预估值；页面顶部的时间即本次统计时刻。",
       "privacyTitle": "隐私边界",
-      "privacyBody": "全站数字只做跨署聚合,不展示任何可识别个人的数据;你的年度报告仅本人可见,由你自己的业务记录聚合而成。",
+      "privacyBody": "全站数字只做跨署聚合，不展示任何可识别个人的数据；你的年度报告仅本人可见，由你自己的业务记录聚合而成。",
       "scopeTitle": "功能边界",
-      "scopeBody": "本署只做聚合展示,不发布真实统计、不参与任何署的审核流程;数字口径由管理端统一维护,口径变化不影响各署业务数据。",
+      "scopeBody": "本署只做聚合展示，不发布真实统计、不参与任何署的审核流程；数字口径由管理端统一维护，口径变化不影响各署业务数据。",
       "metricsTitle": "指标口径一览",
       "formula": "口径说明",
       "source": "来源表"
@@ -6319,15 +6307,15 @@
       },
       "dashboard": {
         "title": "平台总看板",
-        "tip": "分署卡片只展示申请量、通过率、平均处理时长等聚合 COUNT;署的业务表尚未并入时整卡显示为暂不可用。",
+        "tip": "分署卡片只展示申请量、通过率、平均处理时长等聚合COUNT；署的业务表尚未并入时整卡显示为暂不可用。",
         "refresh": "刷新看板",
         "total": "累计件量",
         "pending": "待处理",
         "approvalRate": "通过率",
-        "avgHours": "平均处理时长(小时)",
+        "avgHours": "平均处理时长（小时）",
         "live": "数据正常",
         "unavailable": "暂不可用",
-        "unavailableTip": "该署的业务表尚未并入本库,并表后此处会自动亮起。"
+        "unavailableTip": "该署的业务表尚未并入本库，并表后此处会自动亮起。"
       },
       "extra": {
         "issued": "已签发",
@@ -6351,34 +6339,34 @@
       },
       "metrics": {
         "title": "统计口径管理",
-        "tip": "口径决定首页与说明页展示哪些数字:名称双语、来源署与来源表、可选状态筛选;数值在读取时实时计算。",
+        "tip": "口径决定首页与说明页展示哪些数字：名称双语、来源署与来源表、可选状态筛选；数值在读取时实时计算。",
         "create": "新增口径",
         "edit": "编辑口径",
         "code": "指标代码",
         "name": "指标名称",
         "sourceOffice": "来源署",
         "sourceTable": "来源表",
-        "tablePlaceholder": "先选来源署,再选业务表",
+        "tablePlaceholder": "先选来源署，再选业务表",
         "statusValue": "状态筛选",
-        "statusTip": "状态筛选只在来源表带 status 列时生效;留空表示统计全部记录。",
+        "statusTip": "状态筛选只在来源表带status列时生效；留空表示统计全部记录。",
         "value": "当前数值",
         "sortOrder": "排序",
         "description": "指标说明",
         "formula": "口径定义",
-        "deleteConfirm": "确定删除口径「{{name}}」吗?删除后前台立即不再展示。",
-        "codePlaceholder": "以小写字母开头,可含数字与下划线",
-        "statusValuePlaceholder": "来源表状态列的取值,留空表示全部"
+        "deleteConfirm": "确定删除口径「{{name}}」吗？删除后前台立即不再展示。",
+        "codePlaceholder": "以小写字母开头，可含数字与下划线",
+        "statusValuePlaceholder": "来源表状态列的取值，留空表示全部"
       },
       "export": {
         "title": "数据导出",
-        "tip": "勾选指标导出 CSV;每次导出都会写入导出日志(操作人、时间、指标与行数)。",
+        "tip": "勾选指标导出CSV；每次导出都会写入导出日志（操作人、时间、指标与行数）。",
         "refresh": "刷新",
         "selectAll": "全选",
         "clearAll": "清空",
-        "selected": "已选 {{count}} 项",
-        "download": "导出 CSV",
+        "selected": "已选{{count}}项",
+        "download": "导出CSV",
         "noSelection": "先勾选至少一项指标",
-        "done": "CSV 已导出",
+        "done": "CSV已导出",
         "logsTitle": "导出记录",
         "logsEmpty": "还没有导出记录。",
         "actor": "操作人",
@@ -6388,7 +6376,7 @@
       },
       "audit": {
         "title": "审计日志",
-        "tip": "口径增删改、数据导出与年度报告生成全部留痕;按动作过滤可快速定位。",
+        "tip": "口径增删改、数据导出与年度报告生成全部留痕；按动作过滤可快速定位。",
         "refresh": "刷新",
         "allActions": "全部动作",
         "time": "时间",
@@ -6404,9 +6392,7 @@
     "officeName": "奶龙国皇家教育与科学署",
     "officeSub": "世界观知识 · 科普内容 · 学习任务",
     "sso": {
-      "title": "进入教育与科学署",
-      "confirm": "确认进入",
-      "tip": "皇家教育与科学署负责奶龙国的世界观百科、科普专题与阅读学习任务,内容仅用于趣味学习,不涉及真实学历与科研认证。"
+      "tip": "皇家教育与科学署负责奶龙国的世界观百科、科普专题与阅读学习任务，内容仅用于趣味学习，不涉及真实学历与科研认证。"
     },
     "nav": {
       "home": "首页",
@@ -6419,7 +6405,7 @@
       "adminArticles": "文章管理",
       "adminTasks": "任务管理",
       "adminStats": "基础统计",
-      "adminAudit": "稽核日志",
+      "adminAudit": "审计日志",
       "adminSettings": "设置"
     },
     "status": {
@@ -6447,7 +6433,7 @@
       "category": "分类",
       "type": "类型",
       "related": "关联词条",
-      "viewCount": "阅读 {{count}} 次",
+      "viewCount": "阅读{{count}}次",
       "viewCountCol": "阅读次数",
       "favoriteCount": "收藏数",
       "submitter": "提交人",
@@ -6468,14 +6454,14 @@
     },
     "home": {
       "hero": "欢迎来到皇家教育与科学署",
-      "heroSub": "在这里了解奶龙国的世界观百科、读一读有趣的科普专题,再用阅读打卡任务给自己攒几枚徽章。",
+      "heroSub": "在这里了解奶龙国的世界观百科、读一读有趣的科普专题，再用阅读打卡任务给自己攒几枚徽章。",
       "entryCta": "去逛百科",
       "articleCta": "读科普专题",
       "taskCta": "做打卡任务",
-      "countEntries": "已发布词条 {{count}} 条",
-      "countArticles": "科普文章 {{count}} 篇",
-      "countReads": "我的阅读 {{count}} 次",
-      "countBadges": "我的徽章 {{count}} 枚",
+      "countEntries": "已发布词条{{count}}条",
+      "countArticles": "科普文章{{count}}篇",
+      "countReads": "我的阅读{{count}}次",
+      "countBadges": "我的徽章{{count}}枚",
       "services": "快捷入口",
       "viewAll": "查看全部",
       "featuredEntries": "最新词条",
@@ -6499,7 +6485,7 @@
     },
     "entries": {
       "title": "百科词条",
-      "tip": "搜索或按分类浏览已发布的词条,点开详情即可收藏。",
+      "tip": "搜索或按分类浏览已发布的词条，点开详情即可收藏。",
       "searchPlaceholder": "搜索词条标题、正文或标签",
       "allCategories": "全部分类",
       "empty": "暂无已发布的词条",
@@ -6523,22 +6509,22 @@
       "removed": "已取消收藏"
     },
     "task": {
-      "badgeLabel": "完成徽章:{{name}}",
+      "badgeLabel": "完成徽章：{{name}}",
       "noBadge": "无徽章",
-      "progressLabel": "已读 {{progress}} / {{target}} 篇",
+      "progressLabel": "已读{{progress}} / {{target}}篇",
       "progressLabelShort": "阅读进度",
-      "completedToast": "任务「{{title}}」完成!获得徽章「{{badge}}」",
-      "completedAt": "完成于 {{time}}"
+      "completedToast": "任务「{{title}}」完成！获得徽章「{{badge}}」",
+      "completedAt": "完成于{{time}}"
     },
     "tasks": {
       "title": "学习任务",
-      "tip": "读满任务要求的篇数(词条或文章都算),即可点亮徽章,通知会送到邮政消息中心。",
+      "tip": "读满任务要求的篇数（词条或文章都算），即可点亮徽章，通知会送到邮政消息中心。",
       "empty": "暂无进行中的学习任务"
     },
     "badges": {
       "title": "我的成就徽章",
       "viewAll": "在我的学习里查看",
-      "empty": "还没有徽章,去读一篇词条或文章吧"
+      "empty": "还没有徽章，去读一篇词条或文章吧"
     },
     "my": {
       "title": "我的学习",
@@ -6546,8 +6532,8 @@
       "favorites": "我的收藏",
       "readable": "可再读",
       "unavailable": "暂不可读",
-      "historyEmpty": "还没有阅读记录,打开一篇词条或文章就会出现在这里。",
-      "favoritesEmpty": "还没有收藏,详情页里点「收藏」即可保存。",
+      "historyEmpty": "还没有阅读记录，打开一篇词条或文章就会出现在这里。",
+      "favoritesEmpty": "还没有收藏，详情页里点「收藏」即可保存。",
       "continueReading": "继续阅读"
     },
     "admin": {
@@ -6555,68 +6541,68 @@
       "allTypes": "全部类型",
       "review": {
         "title": "内容审核",
-        "tip": "本队列只服务内容审核员(edu:review),与内容管理相互隔离;驳回必须填写审核意见。",
+        "tip": "本队列只服务内容审核员(edu:review)，与内容管理相互隔离；驳回必须填写审核意见。",
         "view": "查看",
         "approve": "通过",
         "reject": "驳回",
-        "approved": "已通过,内容已发布",
-        "rejected": "已驳回,内容退回草稿",
+        "approved": "已通过，内容已发布",
+        "rejected": "已驳回，内容退回草稿",
         "approveTitle": "通过「{{title}}」",
         "rejectTitle": "驳回「{{title}}」",
         "approveTip": "通过后内容立即对全体居民可见。",
-        "rejectTip": "驳回后内容退回草稿,提交人可修改后重新提交。",
+        "rejectTip": "驳回后内容退回草稿，提交人可修改后重新提交。",
         "note": "审核意见",
         "searchPlaceholder": "搜索待审内容",
-        "pendingEntries": "待审词条 {{count}} 条",
-        "pendingArticles": "待审文章 {{count}} 篇",
+        "pendingEntries": "待审词条{{count}}条",
+        "pendingArticles": "待审文章{{count}}篇",
         "queueEmpty": "队列里没有待审内容",
         "historyTitle": "审核历史",
         "action": "结论"
       },
       "entries": {
         "title": "百科词条管理",
-        "tip": "新建或编辑词条后提交审核,审核通过即发布;待审核期间不可编辑与删除。",
+        "tip": "新建或编辑词条后提交审核，审核通过即发布；待审核期间不可编辑与删除。",
         "searchPlaceholder": "搜索编号、标题或摘要",
         "create": "新建词条",
         "edit": "编辑词条",
-        "empty": "暂无词条,点「新建词条」开始",
+        "empty": "暂无词条，点「新建词条」开始",
         "submit": "提交审核",
         "submitted": "已提交审核",
         "offline": "下架",
         "republish": "重新上线",
         "offlineDone": "内容已下架",
         "publishedDone": "内容已上线",
-        "deleteTip": "确定删除词条「{{title}}」吗?删除后前台不再展示。",
+        "deleteTip": "确定删除词条「{{title}}」吗？删除后前台不再展示。",
         "titlePlaceholder": "给词条起个标题",
-        "tagsPlaceholder": "用逗号分隔,最多 12 个",
+        "tagsPlaceholder": "用逗号分隔，最多12个",
         "relatedPick": "选择要关联的词条",
         "relatedAdd": "添加关联",
         "relatedEmpty": "暂无关联词条"
       },
       "articles": {
         "title": "科普文章管理",
-        "tip": "文章与词条共用同一套状态机:草稿 → 待审核 → 已发布 → 已下架。",
+        "tip": "文章与词条共用同一套状态机：草稿 → 待审核 → 已发布 → 已下架。",
         "searchPlaceholder": "搜索编号、标题或摘要",
         "create": "新建文章",
         "edit": "编辑文章",
-        "empty": "暂无文章,点「新建文章」开始"
+        "empty": "暂无文章，点「新建文章」开始"
       },
       "tasks": {
         "title": "学习任务管理",
-        "tip": "阅读打卡任务:居民读满目标篇数即完成并获得徽章;停用后不再推进新进度。",
+        "tip": "阅读打卡任务：居民读满目标篇数即完成并获得徽章；停用后不再推进新进度。",
         "create": "新建任务",
         "edit": "编辑任务",
-        "empty": "暂无任务,点「新建任务」开始",
+        "empty": "暂无任务，点「新建任务」开始",
         "records": "完成情况",
         "recordsTitle": "「{{title}}」完成情况",
         "recordsEmpty": "还没有居民参与这个任务",
-        "deleteTip": "确定删除任务「{{title}}」吗?居民的完成记录将一并隐藏。",
+        "deleteTip": "确定删除任务「{{title}}」吗？居民的完成记录将一并隐藏。",
         "activate": "启用",
         "deactivate": "停用",
         "participants": "参与人数",
         "completionRate": "完成率",
         "completedCol": "已完成人数",
-        "codePlaceholder": "唯一代码,如 READ3",
+        "codePlaceholder": "唯一代码，如READ3",
         "badgeCodePlaceholder": "留空则不发放徽章"
       },
       "stats": {
@@ -6633,7 +6619,7 @@
         "articlesCol": "文章"
       },
       "audit": {
-        "title": "稽核日志",
+        "title": "审计日志",
         "actor": "操作人",
         "action": "操作",
         "target": "对象",
@@ -6673,8 +6659,8 @@
   },
   "certificates": {
     "title": "我的证件库",
-    "subtitle": "与您账户关联的有效证件与记录,跨署统一查看与到期提醒。",
-    "empty": "暂无证件记录,先到各署办理业务后会自动出现在这里。",
+    "subtitle": "与你账户关联的有效证件与记录，跨署统一查看与到期提醒。",
+    "empty": "暂无证件记录，先到各署办理业务后会自动出现在这里。",
     "refresh": "刷新",
     "expiringSoon": "即将到期",
     "column": {
@@ -6701,8 +6687,8 @@
     },
     "alert": {
       "title": "跨署提醒",
-      "residentCardInvalid": "您的居民证{{status}}，有 {{count}} 份关联证件可能受影响",
-      "diplomaticOrphaned": "您的外交身份已失效，仍有 {{count}} 份外交签注处于有效状态"
+      "residentCardInvalid": "你的居民证{{status}}，有{{count}}份关联证件可能受影响",
+      "diplomaticOrphaned": "你的外交身份已失效，仍有{{count}}份外交签注处于有效状态"
     },
     "benefits": {
       "title": "我的互认权益"
@@ -6710,13 +6696,13 @@
   },
   "residentPrefill": {
     "title": "使用居民证信息",
-    "body": "检测到您持有有效居民证 {{cardNo}}，是否用居民证持卡人信息预填本表单？",
-    "holder": "持卡人 {{name}}",
-    "type": "类型 {{type}}",
-    "validUntil": "有效期至 {{date}}",
+    "body": "检测到你持有有效居民证{{cardNo}}，是否用居民证持卡人信息预填本表单？",
+    "holder": "持卡人{{name}}",
+    "type": "类型{{type}}",
+    "validUntil": "有效期至{{date}}",
     "fill": "使用居民证信息",
     "skip": "暂不使用",
-    "nothing": "居民证没有可直接预填的字段,请手动填写",
+    "nothing": "居民证没有可直接预填的字段，请手动填写",
     "filled": "已从居民证预填"
   }
 }

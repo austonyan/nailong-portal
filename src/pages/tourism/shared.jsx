@@ -1,7 +1,6 @@
-// 文化旅游署页面的共享片段:类型/状态颜色、日期格式化、错误提示、图标映射
-// 与令牌化多行输入框。
+// 文化旅游署页面的共享片段:类型/状态颜色与图标映射;日期格式化、多行输入框与
+// 错误提示统一由共享模块提供,这里只转出/转发,署内调用点保持不变。
 /* eslint-disable react/only-export-components */
-import dayjs from 'dayjs';
 import {
   BookIcon,
   CameraIcon,
@@ -16,7 +15,12 @@ import {
   StarIcon,
   TrophyIcon,
 } from 'naive-icons';
-import { toast } from '../../components/toast.js';
+import { toastApiError } from '../../components/toast.js';
+
+// 全站唯一的时间格式化实现(src/lib/date.js,带 isValid() 保护)。
+export { fmtDate, fmtDateTime } from '../../lib/date.js';
+// 全站唯一的多行输入框(src/components/TextArea.jsx)。
+export { TextArea } from '../../components/TextArea.jsx';
 
 export const ATTRACTION_TYPES = ['landmark', 'nature', 'culture', 'food'];
 
@@ -91,23 +95,9 @@ export function StampIcon({ style, size = 22 }) {
   return <Icon size={size} />;
 }
 
-export function fmtDateTime(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD HH:mm') : '-';
-}
-
-export function fmtDate(iso) {
-  return iso ? dayjs(iso).format('YYYY-MM-DD') : '-';
-}
-
-export function tourErrMsg(t, err) {
-  const key = `api.${err?.code}`;
-  const text = err?.code ? t(key) : '';
-  return text && text !== key ? text : t('api.INTERNAL_ERROR');
-}
-
-// 统一走全站 toast(库的通知 API 在 React 19 下会抛异常,不能用于关键流程)
+// 错误提示委托全站统一的 api.<code> 映射(未知码回退通用文案,不展示服务端英文)。
 export function toastTourError(t, err) {
-  toast('error', tourErrMsg(t, err));
+  toastApiError(t, err);
 }
 
 export function splitLines(text) {
@@ -115,9 +105,4 @@ export function splitLines(text) {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
-}
-
-// 库里没有多行输入组件:按 Input 的视觉语言用令牌自定义。
-export function TextArea({ rows = 4, className = '', ...rest }) {
-  return <textarea rows={rows} className={`tour-textarea ${className}`} {...rest} />;
 }

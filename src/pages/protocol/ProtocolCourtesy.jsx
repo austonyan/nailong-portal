@@ -1,7 +1,7 @@
 // 礼宾服务:礼遇类型、资格查询(居民/外交/邀请函)、礼遇申请与使用记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Title } from 'animal-island-ui';
+import { Button, Card, Input, Modal, Select } from 'animal-island-ui';
 import { BanIcon, SearchIcon, ShieldIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
@@ -96,9 +96,7 @@ export default function ProtocolCourtesy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">
-          <Title size="middle">{t('protocol.courtesy.title')}</Title>
-        </h1>
+        <h1 className="page-title">{t('protocol.courtesy.title')}</h1>
         <p className="muted-text">{t('protocol.courtesy.subtitle')}</p>
       </div>
 
@@ -161,9 +159,7 @@ export default function ProtocolCourtesy() {
       </div>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-orange">{t('protocol.courtesy.types')}</Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.courtesy.types')}</h2>
         <div className="protocol-courtesy-grid">
           {types.map((tp) => (
             <Card key={tp.code} className="protocol-courtesy-card">
@@ -180,9 +176,7 @@ export default function ProtocolCourtesy() {
       </section>
 
       <section className="protocol-section">
-        <h2 className="section-title">
-          <Title size="middle" color="app-blue">{t('protocol.courtesy.myTitle')}</Title>
-        </h2>
+        <h2 className="section-title">{t('protocol.courtesy.myTitle')}</h2>
         <Card>
           {apps && apps.length === 0 && <p className="muted-text">{t('protocol.courtesy.empty')}</p>}
           <div className="protocol-courtesy-apps">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Divider, Tabs, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Divider, Tabs, Tag } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
@@ -72,11 +72,7 @@ export default function ImmigrationPortDetail() {
       {port ? (
         <>
           <div className="page-header">
-            <h1 className="page-title">
-              <Title size="middle" color="app-orange">
-                {port.name}
-              </Title>
-            </h1>
+            <h1 className="page-title">{port.name}</h1>
             <StatusTag value={port.status} i18nPrefix="imm.portStatus" />
           </div>
           <p className="muted-text">

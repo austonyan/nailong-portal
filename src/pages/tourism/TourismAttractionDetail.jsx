@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Divider, Input, Tag, Title } from 'animal-island-ui';
+import { Button, Card, Divider, Input, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, CheckCircleIcon, LocationIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastInfo, toastSuccess } from '../../components/toast.js';
@@ -110,9 +110,7 @@ export default function TourismAttractionDetail() {
       </Card>
 
       <Card>
-        <Title size="small" color="app-teal">
-          {t('tour.attractions.points')}
-        </Title>
+        <h2 className="block-heading">{t('tour.attractions.points')}</h2>
         <div className="tour-points">
           {points.map((point) => (
             <Tag key={point} color="app-teal" variant="outlined">
