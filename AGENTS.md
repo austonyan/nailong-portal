@@ -55,10 +55,14 @@ hosts **12 business offices (署)** as in-SPA services: visa (签注), immigrati
 `docs/work.md` (2026-11-01 full-repo audit on this branch) is the single source for how the
 system actually works: per-office endpoints, state machines, permission codes, number prefixes,
 message types, cross-office chains, the auto-approval matrix, and exact smoke-run commands.
-Its §8 lists **known defects that were reviewed but deliberately not fixed** — if you hit one,
-don't rediscover it and don't "fix" it as a drive-by unless the user asks; §8.4 lists behavior
-that is intentional-by-design. §9.1 is the checklist for adding a new office — follow it in
-order (schema/routes/mount/linkage/auto-approve/nav/locales/smoke).
+Its §8 lists the defects the audit found. **§8.1 (P1) and most of §8.2 (P2) have since been
+fixed** in the same branch, with smoke assertions added for each; what is still open is P3,
+§8.4 (intentional-by-design behavior), and the §8.2 sub-items the fix round did not cover
+(protocol `required_fields` enforcement, `dip_relation_types.validity_days` relation expiry,
+archives hiding staying office-local, postal `post_settings` admin API, education article
+drafts). Don't rediscover the fixed ones, and don't "fix" an open one as a drive-by unless the
+user asks. §9.1 is the checklist for adding a new office — follow it in order
+(schema/routes/mount/linkage/auto-approve/nav/locales/smoke).
 
 ## Commands
 
@@ -117,8 +121,9 @@ Shared shape across the 12 offices (per-office detail lives in `docs/work.md` §
 - **SSO entry** — office cards are `internal_sso`: entering shows the portal identity-confirm
   dialog once per browser tab (`sessionStorage 'nailong.<office>.sso'`), and the office's
   `*Shell.jsx` re-enforces it for direct URLs. When seeding a service row **always write
-  `entry_mode`** — the column defaults to `external` (this is a live defect for immigration,
-  work.md 8.1.5).
+  `entry_mode`** — the column defaults to `external`, and a missed value silently opens the
+  card as an external service (immigration shipped this way; `server/db.js` now corrects it on
+  boot, but new offices must get it right in the seed).
 - **Pages** in `src/pages/<office>/`, per-office helpers in `shared.jsx`; the portal shell and
   immigration use the shared `src/lib/date.js` dayjs formatters (invalid dates render `-`).
 - **站内信 — two schemes coexist; new message types must follow their office's scheme.**
