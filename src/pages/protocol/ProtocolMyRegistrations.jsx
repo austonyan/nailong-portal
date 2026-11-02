@@ -101,7 +101,7 @@ export default function ProtocolMyRegistrations() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openDetail(record.id)}>
             {t('protocol.action.view')}
           </Button>

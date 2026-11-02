@@ -143,7 +143,7 @@ export default function AdminProtocolCourtesy() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           {row.status === 'pending_review' && (
             <>
               <Button type="text" size="small" icon={<CheckCircleIcon />} onClick={() => { setAction({ kind: 'approve', app: row }); setValidDays('14'); setComment(''); }}>

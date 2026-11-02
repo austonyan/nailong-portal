@@ -166,9 +166,11 @@ export default function AppealAdminWorkbench() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_v, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
-          {t('appeal.my.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
+            {t('appeal.my.view')}
+          </Button>
+        </div>
       ),
     },
   ];

@@ -146,9 +146,11 @@ export default function VisaAdminWorkbench() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
-          {t('visa.my.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
+            {t('visa.my.view')}
+          </Button>
+        </div>
       ),
     },
   ];

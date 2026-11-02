@@ -256,7 +256,7 @@ export default function AdminTourAttractions() {
           </Button>
         </div>
         <Table
-          className="table-fit"
+          className="table-fit tour-attractions-table"
           columns={columns}
           dataSource={items ?? []}
           loading={items === null}

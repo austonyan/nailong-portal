@@ -82,9 +82,11 @@ function EntryTab({ onReload }) {
       width: 160,
       render: (_, record) =>
         record.status === 'entered' ? (
-          <Button type="default" size="small" icon={<SendIcon />} onClick={() => setExitTarget(record)}>
-            {t('imm.records.registerExit')}
-          </Button>
+          <div className="table-actions">
+            <Button type="default" size="small" icon={<SendIcon />} onClick={() => setExitTarget(record)}>
+              {t('imm.records.registerExit')}
+            </Button>
+          </div>
         ) : (
           <span className="muted-text">-</span>
         ),

@@ -1,10 +1,3 @@
-/* ---------- archives (奶龙国皇家档案与记录署) ---------- */
-
-.arch-page {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
 
 .arch-hero {
   border-radius: var(--animal-border-radius-lg);
@@ -18,12 +11,6 @@
   font-weight: 500;
   line-height: 1.6;
   max-width: 640px;
-}
-
-.arch-stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-  gap: 16px;
 }
 
 .arch-stat-card {
@@ -42,14 +29,6 @@
   font-weight: 600;
   line-height: 1.55;
   color: var(--animal-text-color-secondary);
-}
-
-.arch-stat-value {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-  color: var(--animal-text-color);
 }
 
 .arch-quick-grid {
@@ -77,12 +56,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
-}
-
-.arch-type-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .arch-type-head {
@@ -120,15 +93,6 @@
   flex-wrap: wrap;
 }
 
-.arch-toolbar > * {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.arch-toolbar > button {
-  flex: 0 0 auto;
-}
-
 .arch-field-label {
   margin: 14px 0 6px;
   font-size: 13px;
@@ -154,12 +118,6 @@
 
 .arch-textarea::placeholder {
   color: var(--animal-text-color-disabled);
-}
-
-.arch-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
 }
 
 .arch-detail-item {
@@ -223,28 +181,10 @@
   word-break: break-word;
 }
 
-.arch-timeline-time {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.arch-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .arch-msg-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.arch-msg-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .arch-msg-body {
@@ -263,20 +203,6 @@
   padding: 18px;
   text-align: center;
   color: var(--animal-text-color-muted);
-}
-
-.arch-tag-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.arch-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .arch-summary {
@@ -305,11 +231,7 @@
   font-weight: 600;
 }
 
-.arch-guide-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}@media (max-width: 640px) {
+@media (max-width: 640px) {
 .arch-hero {
     padding: 24px 16px;
   }

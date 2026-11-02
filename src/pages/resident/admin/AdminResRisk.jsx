@@ -91,9 +91,11 @@ export default function AdminResRisk() {
       dataIndex: 'actions',
       width: 100,
       render: (_, record) => (
-        <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => askRemove(record)}>
-          {t('res.admin.risk.remove')}
-        </Button>
+        <div className="table-actions">
+          <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => askRemove(record)}>
+            {t('res.admin.risk.remove')}
+          </Button>
+        </div>
       ),
     },
   ];

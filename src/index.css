@@ -341,7 +341,8 @@ html {
 
 .sider-office,
 .res-checklist li,
-.res-info-list div {
+.res-info-list div,
+  .edu-service-card span {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -423,7 +424,11 @@ html {
 
 /* 账号操作条:基础间距 10px。必须写在下面的 @media 之前 —— 同特异性的后续声明
    会盖掉媒体查询里的值(.header-right 的窄屏 gap 曾因此长期失效)。 */
-.header-right {
+.header-right,
+  .tour-card-head,
+  .tour-stamp-card,
+  .tour-badge-head,
+  .tour-inline-switch {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -525,7 +530,8 @@ html {
   margin-bottom: 12px;
 }
 
-.inbox-filters {
+.inbox-filters,
+  .stat-board-extras {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -548,7 +554,13 @@ html {
 .res-verify-card,
 .res-verify-found,
 .res-action-form,
-.res-type-switches {
+.res-type-switches,
+  .postal-notice-list,
+  .postal-msg-list,
+  .protocol-confirm-body,
+  .protocol-courtesy-apps,
+  .protocol-msg-list,
+  .tour-badge-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -556,7 +568,8 @@ html {
 
 .inbox-item,
 .res-type-card,
-.res-msg-item {
+.res-msg-item,
+  .postal-notice-item {
   cursor: pointer;
 }
 
@@ -590,14 +603,21 @@ html {
 .appeal-item-head,
 .appeal-material-list li,
 .appeal-record-timeline li,
-.appeal-message-head {
+.appeal-message-head,
+  .arch-tag-row,
+  .arch-actions,
+  .postal-msg-actions,
+  .protocol-detail-status,
+  .protocol-inline-gap {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.inbox-time {
+.inbox-time,
+  .protocol-notice-time,
+  .protocol-msg-head span {
   margin-left: auto;
   font-size: 12px;
 }
@@ -707,7 +727,8 @@ html {
 }
 
 /* 分页「共 N 条」:库里写死 #a09080(2.77:1),换成项目可读的次级墨。 */
-[class*='animal-total-'] {
+[class*='animal-total-'],
+  .edu-card-title a:hover {
   color: var(--animal-text-color-secondary);
 }
 
@@ -800,6 +821,50 @@ html {
 .table-fit [class*='animal-tag-'] {
     white-space: normal;
     height: auto;
+  }
+}
+
+/* 480px 以下(360px 为最小验收宽度):表格进一步压缩,保证任何多列表格都不横向滚动。
+   措施按 PRODUCT.md「任何宽度不出现横向滚动」硬承诺设计:单元格与状态标签再收一档,
+   操作列按钮去图标、收窄水平 padding——按钮文字承载语义,图标在 360px 属可牺牲装饰;
+   标签内文字允许断词(完整显示优先于词边界),标签内图标一并让位。 */
+@media (max-width: 480px) {
+  .table-fit th,
+  .table-fit td {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .table-fit [class*='animal-tag-'] {
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 12px;
+  }
+
+  .table-fit [class*='animal-tag-'] svg,
+  .table-actions [class*='animal-btn-icon'] {
+    display: none;
+  }
+
+  .table-fit [class*='animal-tag-'] [class*='animal-text-'] {
+    overflow-wrap: anywhere;
+  }
+
+  .service-name-cell {
+    flex-wrap: wrap;
+  }
+
+  .table-actions {
+    gap: 2px;
+  }
+
+  .table-actions [class*='animal-btn-'] {
+    height: auto;
+    min-height: 32px;
+    padding: 0 6px;
+    font-size: 12px;
+    gap: 4px;
+    white-space: normal;
   }
 }
 
@@ -955,7 +1020,8 @@ html {
 
 .setup-actions > *,
 .visa-verify-form > :first-child,
-.dip-id-card-main {
+.dip-id-card-main,
+  .edu-task-progress > :first-child {
   flex: 1;
 }
 
@@ -968,7 +1034,8 @@ html {
   text-align: center;
 }
 
-.setup-success p {
+.setup-success p,
+  .protocol-host-cert h3 {
   margin: 0;
 }
 
@@ -1040,7 +1107,9 @@ html {
 .im-home-status,
 .res-home-status,
 .dip-stat-grid,
-.appeal-stat-grid {
+.appeal-stat-grid,
+  .arch-stat-grid,
+  .postal-stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 16px;
@@ -1086,7 +1155,9 @@ html {
 .edu-stat-card .edu-stat-value,
 .postal-stat .postal-stat-value,
 .tour-stat-card .tour-stat-number,
-.stat-metric-card .stat-metric-value {
+.stat-metric-card .stat-metric-value,
+  .arch-stat-value,
+  .protocol-metric-card strong {
   font-size: 28px;
   font-weight: 800;
   line-height: 1.2;
@@ -1279,7 +1350,9 @@ html {
 }
 
 .visa-scam-banner,
-.res-type-detail {
+.res-type-detail,
+  .protocol-event-grid-lg,
+  .protocol-mt {
   margin-top: 16px;
 }
 
@@ -1308,14 +1381,18 @@ html {
 .res-ann-head,
 .res-admin-detail-head,
 .res-material-list li,
-.res-tpl-head {
+.res-tpl-head,
+  .arch-msg-head,
+  .protocol-notice-head,
+  .tour-ann-head {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.visa-notice-time {
+.visa-notice-time,
+  .protocol-upcoming-date span {
   font-size: 12px;
 }
 
@@ -1355,7 +1432,11 @@ html {
   min-height: 36px;
 }.visa-type-meta,
 .im-status-tags,
-.res-type-reqs {
+.res-type-reqs,
+  .protocol-event-tags,
+  .protocol-invitation-meta,
+  .protocol-msg-actions,
+  .tour-card-meta {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
@@ -1451,7 +1532,8 @@ html {
 .visa-messages-page,
 .visa-permits-page,
 .visa-stats-page,
-.docs-page {
+.docs-page,
+  .postal-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1724,20 +1806,30 @@ html {
 }
 
 .evisa-head,
-.res-card-head {
+.res-card-head,
+  .protocol-pass-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
 }.evisa-issuer,
-.res-card-issuer {
+.res-card-issuer,
+  .stat-board-metric strong {
   font-size: 18px;
   font-weight: 800;
 }
 .evisa-kind,
 .docs-audit-detail,
 .res-info-list dt,
-.res-card-kind {
+.res-card-kind,
+  .arch-timeline-time,
+  .postal-recipient-account,
+  .protocol-venue-label span,
+  .protocol-pass-kind,
+  .stat-updated,
+  .stat-report-meta,
+  .stat-report-label,
+  .stat-board-metric span {
   font-size: 12px;
   color: var(--animal-text-color-muted);
 }
@@ -1778,7 +1870,10 @@ html {
 }
 
 .visa-permit-actions,
-.res-verify-form {
+.res-verify-form,
+  .edu-hero-actions,
+  .postal-hero-actions,
+  .protocol-hero-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -1801,7 +1896,8 @@ html {
 .im-msg-filters,
 .dip-msg-filter,
 .res-filter-bar,
-.appeal-filter-bar {
+.appeal-filter-bar,
+  .stat-filter-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1809,12 +1905,27 @@ html {
   margin-bottom: 16px;
 }
 
-.nl-filter-bar > * {
+.nl-filter-bar > *,
+  .arch-toolbar > *,
+  .edu-search-row > :first-child,
+  .edu-search-row .edu-select-slot,
+  .postal-filter-bar > *,
+  .protocol-filter-bar > *,
+  .protocol-eligibility-form > *,
+  .protocol-verify-form > *:first-child,
+  .protocol-checkin-form > *:first-child,
+  .tour-filter-bar > * {
   flex: 1 1 180px;
   min-width: 0;
 }
 
-.nl-filter-actions {
+.nl-filter-actions,
+  .arch-toolbar > button,
+  .edu-search-row > button,
+  .postal-filter-bar > button,
+  .protocol-filter-bar > button,
+  .protocol-eligibility-form > button,
+  .tour-filter-bar > button {
   flex: 0 0 auto;
 }
 
@@ -1835,7 +1946,8 @@ html {
 .im-decl-detail,
 .dip-section,
 .res-confirm-body,
-.res-admin-detail {
+.res-admin-detail,
+  .stat-admin-page {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1845,7 +1957,8 @@ html {
 .appeal-complaint-form p,
 .appeal-review-form p,
 .appeal-ticket-form p,
-.appeal-action-form p {
+.appeal-action-form p,
+  .protocol-tip-card p {
   margin: 6px 0 0;
 }
 
@@ -1912,7 +2025,9 @@ html {
 
 .visa-tag-cloud,
 .dip-detail-actions,
-.appeal-admin-counters {
+.appeal-admin-counters,
+  .edu-hero-stats,
+  .protocol-hero-stats {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -1933,7 +2048,15 @@ html {
 .auto-approve-panel,
 .dip-detail,
 .res-change-list,
-.res-verify-result {
+.res-verify-result,
+  .arch-msg-list,
+  .arch-guide-list,
+  .edu-list,
+  .protocol-detail-body,
+  .protocol-modal-form,
+  .protocol-verify-found,
+  .protocol-config-list,
+  .stat-section {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -2008,7 +2131,10 @@ body {
 
 .docs-home,
 .im-page,
-.dip-page {
+.dip-page,
+  .arch-page,
+  .protocol-risk-panel,
+  .stat-page {
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -2047,7 +2173,8 @@ body {
 .im-attachment-list,
 .dip-config-guide,
 .res-review-item,
-.res-review-timeline li {
+.res-review-timeline li,
+  .tour-badge-progress {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -2055,7 +2182,9 @@ body {
 
 .docs-notice-list,
 .res-ann-list,
-.res-faq {
+.res-faq,
+  .tour-ann-list,
+  .tour-checkin-box {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2199,7 +2328,8 @@ body {
   gap: 14px;
 }
 
-.docs-field-wide {
+.docs-field-wide,
+  .postal-field-wide {
   grid-column: 1 / -1;
 }
 
@@ -2342,7 +2472,10 @@ body {
 .docs-verify-bar,
 .im-detail-actions,
 .dip-quick-row,
-.dip-form-actions {
+.dip-form-actions,
+  .edu-badge-grid,
+  .protocol-detail-actions,
+  .protocol-export-grid {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -2898,7 +3031,8 @@ body.docs-printing .doc-cert {
   font-size: 14px;
 }
 
-.im-agree-row {
+.im-agree-row,
+  .protocol-field-spaced {
   margin-top: 10px;
 }
 
@@ -2906,7 +3040,10 @@ body.docs-printing .doc-cert {
 
 .im-attachments,
 .dip-config-form,
-.res-notice-card {
+.res-notice-card,
+  .arch-type-card,
+  .edu-related-list,
+  .protocol-faq {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -3182,7 +3319,10 @@ body.docs-printing .doc-cert {
   min-width: 90px;
 }
 
-.im-channel-switch {
+.im-channel-switch,
+  .protocol-event-meta span,
+  .protocol-detail-meta span,
+  .protocol-pass-meta span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -3266,7 +3406,8 @@ body.docs-printing .doc-cert {
 }
 
 .im-audit-detail,
-.res-audit-detail {
+.res-audit-detail,
+  .tour-audit-detail {
   font-size: 12px;
   word-break: break-all;
   color: var(--animal-text-color-muted);
@@ -3310,7 +3451,9 @@ body.docs-printing .doc-cert {
   background: var(--animal-primary-color-bg);
 }
 
-.dip-guide-grid {
+.dip-guide-grid,
+  .arch-detail-grid,
+  .protocol-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
@@ -3322,7 +3465,9 @@ body.docs-printing .doc-cert {
   font-size: 14px;
 }
 
-.dip-home-stats {
+.dip-home-stats,
+  .protocol-material-req li,
+  .protocol-switch-grid label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -3635,7 +3780,8 @@ body.docs-printing .doc-cert {
   font-size: 13px;
 }
 
-.dip-id-card-term {
+.dip-id-card-term,
+  .postal-postcard-from {
   font-size: 13px;
   color: var(--animal-text-color-secondary);
 }
@@ -3676,7 +3822,9 @@ body.docs-printing .doc-cert {
 .res-page,
 .res-form-page,
 .res-app-detail,
-.res-admin-page {
+.res-admin-page,
+  .tour-page,
+  .tour-admin-page {
   display: flex;
   flex-direction: column;
 }
@@ -3743,7 +3891,8 @@ body.docs-printing .doc-cert {
   font-size: 14px;
 }
 
-.res-center-btn {
+.res-center-btn,
+  .tour-center-btn {
   display: flex;
   justify-content: center;
   margin-top: 24px;
@@ -3776,7 +3925,8 @@ body.docs-printing .doc-cert {
 }
 
 .res-field-required,
-.appeal-stat-item.warn strong {
+.appeal-stat-item.warn strong,
+  .stat-required {
   color: var(--animal-error-color);
 }
 
@@ -3794,7 +3944,8 @@ body.docs-printing .doc-cert {
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.res-textarea::placeholder {
+.res-textarea::placeholder,
+  .protocol-field small {
   font-weight: 400;
 }
 
@@ -4174,7 +4325,8 @@ body.docs-printing .doc-cert {
 }
 
 .res-config-grid label,
-.res-type-form label {
+.res-type-form label,
+  .tour-form label {
   display: flex;
   flex-direction: column;
   gap: 6px;

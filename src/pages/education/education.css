@@ -24,18 +24,6 @@
   line-height: 1.6;
 }
 
-.edu-hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.edu-hero-stats {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .edu-section {
   display: flex;
   flex-direction: column;
@@ -83,12 +71,6 @@
   transform: translateY(-2px);
 }
 
-.edu-service-card span {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .edu-service-card small {
   font-size: 12px;
   font-weight: 500;
@@ -116,10 +98,6 @@
   text-decoration: none;
 }
 
-.edu-card-title a:hover {
-  color: var(--animal-primary-color);
-}
-
 .edu-card-summary {
   margin: 0;
   font-size: 13px;
@@ -141,7 +119,7 @@
 }
 
 .edu-link {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
   font-size: 13px;
   text-decoration: none;
@@ -159,26 +137,6 @@
   align-items: center;
 }
 
-.edu-search-row > :first-child {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.edu-search-row .edu-select-slot {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.edu-search-row > button {
-  flex: 0 0 auto;
-}
-
-.edu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .edu-body {
   white-space: pre-wrap;
   line-height: 1.9;
@@ -192,12 +150,6 @@
   gap: 10px;
   flex-wrap: wrap;
   align-items: center;
-}
-
-.edu-related-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .edu-related-item {
@@ -269,16 +221,6 @@
   color: var(--animal-text-color-muted);
 }
 
-.edu-task-progress > :first-child {
-  flex: 1;
-}
-
-.edu-badge-grid {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .edu-badge-card {
   display: inline-flex;
   align-items: center;
@@ -315,7 +257,7 @@
   font-weight: 800;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .edu-stat-label {

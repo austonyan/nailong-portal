@@ -30,18 +30,6 @@
   max-width: 640px;
 }
 
-.protocol-hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.protocol-hero-stats {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .protocol-scam-banner {
   border-radius: var(--animal-border-radius-lg);
 }
@@ -78,7 +66,7 @@
 }
 
 .protocol-link {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
   text-decoration: none;
   font-size: 13px;
@@ -94,18 +82,6 @@
 
 .protocol-notice-card {
   padding: 14px 16px;
-}
-
-.protocol-notice-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.protocol-notice-time {
-  margin-left: auto;
-  font-size: 12px;
 }
 
 .protocol-notice-body {
@@ -157,10 +133,6 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
-.protocol-event-grid-lg {
-  margin-top: 16px;
-}
-
 .protocol-event-card {
   padding: 16px;
   display: flex;
@@ -198,18 +170,6 @@
   color: var(--animal-text-color-secondary);
 }
 
-.protocol-event-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.protocol-event-tags {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
 .protocol-upcoming-row {
   display: flex;
   align-items: center;
@@ -226,17 +186,13 @@
   padding: 6px 10px;
   border-radius: var(--animal-border-radius-sm);
   background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .protocol-upcoming-date strong {
   font-size: 16px;
   font-weight: 700;
   line-height: 1.35;
-}
-
-.protocol-upcoming-date span {
-  font-size: 12px;
 }
 
 .protocol-upcoming-main {
@@ -319,12 +275,6 @@
   color: var(--animal-text-color-secondary);
 }
 
-.protocol-faq {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .protocol-support-card,
 .protocol-info-card {
   display: flex;
@@ -348,10 +298,6 @@
   color: var(--animal-text-color-muted);
 }
 
-.protocol-tip-card p {
-  margin: 6px 0 0;
-}
-
 .protocol-filter-card {
   margin: 16px 0;
   display: flex;
@@ -365,15 +311,6 @@
   flex-wrap: wrap;
   align-items: center;
   margin: 0 0 16px;
-}
-
-.protocol-filter-bar > * {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.protocol-filter-bar > button {
-  flex: 0 0 auto;
 }
 
 .protocol-pagination {
@@ -423,18 +360,6 @@
   gap: 6px;
   font-size: 13px;
   color: var(--animal-text-color-secondary);
-}
-
-.protocol-detail-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.protocol-detail-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .protocol-detail-tip {
@@ -493,11 +418,6 @@
   gap: 2px;
 }
 
-.protocol-venue-label span {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .protocol-venue-map em {
   position: relative;
   font-size: 12px;
@@ -536,7 +456,7 @@
 .protocol-schedule-time {
   min-width: 110px;
   font-weight: 700;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .protocol-material-req {
@@ -546,13 +466,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.protocol-material-req li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
 }
 
 .protocol-apply-layout {
@@ -583,26 +496,12 @@
   margin-top: 0;
 }
 
-.protocol-form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
 .protocol-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-}
-
-.protocol-field small {
-  font-weight: 400;
-}
-
-.protocol-field-spaced {
-  margin-top: 10px;
 }
 
 .protocol-companion-row {
@@ -664,12 +563,6 @@
   margin-top: 12px;
 }
 
-.protocol-confirm-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .protocol-status-note {
   display: flex;
   align-items: center;
@@ -680,19 +573,6 @@
   color: var(--animal-text-color-secondary);
   font-size: 12px;
   line-height: 1.6;
-}
-
-.protocol-detail-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.protocol-detail-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .protocol-field-list {
@@ -759,20 +639,6 @@
   flex-wrap: wrap;
 }
 
-.protocol-inline-gap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.protocol-row-actions {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
 .protocol-invitation-grid {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   margin-top: 14px;
@@ -815,12 +681,6 @@
   color: var(--animal-text-color-muted);
 }
 
-.protocol-invitation-meta {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
 .protocol-invitation-actions {
   display: flex;
   gap: 6px;
@@ -853,23 +713,11 @@
   opacity: 0.78;
 }
 
-.protocol-pass-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
 .protocol-pass-issuer {
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
   overflow-wrap: anywhere;
-}
-
-.protocol-pass-kind {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
 }
 
 .protocol-pass-body {
@@ -909,12 +757,6 @@
   gap: 4px;
   font-size: 12px;
   color: var(--animal-text-color-secondary);
-}
-
-.protocol-pass-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .protocol-pass-qr {
@@ -1001,7 +843,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .protocol-host-cert {
@@ -1015,10 +857,6 @@
   align-items: center;
   gap: 8px;
   text-align: center;
-}
-
-.protocol-host-cert h3 {
-  margin: 0;
 }
 
 .protocol-host-cert p {
@@ -1055,15 +893,6 @@
   margin: 12px 0;
 }
 
-.protocol-eligibility-form > * {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.protocol-eligibility-form > button {
-  flex: 0 0 auto;
-}
-
 .protocol-courtesy-rules p {
   font-size: 13px;
   line-height: 1.7;
@@ -1095,12 +924,6 @@
   line-height: 1.6;
 }
 
-.protocol-courtesy-apps {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .protocol-courtesy-app {
   padding: 12px 14px;
 }
@@ -1108,18 +931,6 @@
 .protocol-reject-text {
   color: var(--animal-error-color, var(--animal-text-color));
   font-size: 12px;
-}
-
-.protocol-modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.protocol-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .protocol-msg-card.unread {
@@ -1133,21 +944,10 @@
   flex-wrap: wrap;
 }
 
-.protocol-msg-head span {
-  margin-left: auto;
-  font-size: 12px;
-}
-
 .protocol-msg-card p {
   margin: 8px 0;
   font-size: 13px;
   line-height: 1.7;
-}
-
-.protocol-msg-actions {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
 }
 
 .protocol-support-layout {
@@ -1213,19 +1013,8 @@
   flex-wrap: wrap;
 }
 
-.protocol-verify-form > *:first-child {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
 .protocol-verify-result {
   padding: 20px;
-}
-
-.protocol-verify-found {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .protocol-verify-head {
@@ -1272,14 +1061,6 @@
   min-width: 0;
 }
 
-.protocol-metric-card strong {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-  color: var(--animal-primary-color);
-}
-
 .protocol-metric-card small {
   font-size: 13px;
   font-weight: 600;
@@ -1299,12 +1080,6 @@
   gap: 4px;
   margin-bottom: 10px;
   font-size: 13px;
-}
-
-.protocol-config-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .protocol-config-row {
@@ -1329,12 +1104,6 @@
   font-family: inherit;
 }
 
-.protocol-export-grid {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .protocol-checkin-card {
   display: flex;
   flex-direction: column;
@@ -1349,28 +1118,10 @@
   align-items: center;
 }
 
-.protocol-checkin-form > *:first-child {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.protocol-risk-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
 .protocol-switch-grid {
   display: flex;
   gap: 18px;
   flex-wrap: wrap;
-}
-
-.protocol-switch-grid label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
 }
 
 .protocol-schedule-edit {
@@ -1412,9 +1163,7 @@
   word-break: break-all;
 }
 
-.protocol-mt {
-  margin-top: 16px;
-}@media (max-width: 900px) {
+@media (max-width: 900px) {
 .protocol-detail-hero,
   .protocol-detail-columns,
   .protocol-apply-layout,

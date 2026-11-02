@@ -216,7 +216,7 @@ export default function AdminProtocolManage() {
       title: t('common.actions'),
       width: 140,
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           <Button type="text" size="small" onClick={() => { setNoticeForm({ title: row.titleCn ?? row.title, titleTw: row.titleTw ?? '', body: row.bodyCn ?? row.body, bodyTw: row.bodyTw ?? '', level: row.level, enabled: !!row.enabled }); setNoticeEdit(row); }}>
             {t('protocol.action.edit')}
           </Button>

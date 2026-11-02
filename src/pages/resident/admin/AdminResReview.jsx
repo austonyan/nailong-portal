@@ -132,9 +132,11 @@ export default function AdminResReview() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
-          {t('res.admin.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
+            {t('res.admin.view')}
+          </Button>
+        </div>
       ),
     },
   ];

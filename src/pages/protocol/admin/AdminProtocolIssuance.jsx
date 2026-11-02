@@ -175,7 +175,7 @@ export default function AdminProtocolIssuance() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           {['pending', 'used'].includes(row.status) && (
             <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => setPassTarget({ kind: 'void', pass: row })}>
               {t('protocol.action.void')}

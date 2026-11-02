@@ -128,7 +128,7 @@ export default function AdminProtocolReview() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openDetail(row)}>
             {t('protocol.action.view')}
           </Button>

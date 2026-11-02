@@ -285,7 +285,7 @@ export default function AdminProtocolEvents() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           <Button type="text" size="small" icon={<EditIcon />} onClick={() => openEdit(row)}>
             {t('protocol.action.edit')}
           </Button>

@@ -103,9 +103,11 @@ export default function PassCodes() {
       dataIndex: 'actions',
       width: 140,
       render: (_, record) => (
-        <Button type="default" size="small" onClick={() => openDetail(record)}>
-          {t('imm.pass.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" onClick={() => openDetail(record)}>
+            {t('imm.pass.view')}
+          </Button>
+        </div>
       ),
     },
   ];

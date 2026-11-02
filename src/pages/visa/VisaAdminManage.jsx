@@ -86,23 +86,25 @@ function TypesTab() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <Button
-          type="default"
-          size="small"
-          icon={<EditIcon />}
-          onClick={() => {
-            setEditing(record);
-            form.resetFields();
-            form.setFieldsValue({
-              ...record,
-              name: record.nameCn ?? record.name,
-              description: record.descriptionCn ?? record.description,
-              guide: record.guideCn ?? record.guide,
-            });
-          }}
-        >
-          {t('common.edit')}
-        </Button>
+        <div className="table-actions">
+          <Button
+            type="default"
+            size="small"
+            icon={<EditIcon />}
+            onClick={() => {
+              setEditing(record);
+              form.resetFields();
+              form.setFieldsValue({
+                ...record,
+                name: record.nameCn ?? record.name,
+                description: record.descriptionCn ?? record.description,
+                guide: record.guideCn ?? record.guide,
+              });
+            }}
+          >
+            {t('common.edit')}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -480,9 +482,11 @@ function BlacklistTab() {
       dataIndex: 'actions',
       width: 120,
       render: (_, record) => (
-        <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => askRemove(record)}>
-          {t('common.delete')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" danger icon={<TrashIcon />} onClick={() => askRemove(record)}>
+            {t('common.delete')}
+          </Button>
+        </div>
       ),
     },
   ];

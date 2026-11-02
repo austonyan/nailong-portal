@@ -136,9 +136,11 @@ export default function AdminResTypes() {
       dataIndex: 'actions',
       width: 90,
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EditIcon />} onClick={() => openEdit(record)}>
-          {t('common.edit')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EditIcon />} onClick={() => openEdit(record)}>
+            {t('common.edit')}
+          </Button>
+        </div>
       ),
     },
   ];
