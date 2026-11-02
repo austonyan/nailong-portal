@@ -13,8 +13,8 @@ const CARD_STATUS_OPTIONS = ['valid', 'frozen', 'expired', 'voided'];
 
 export default function AdminResCards() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [status, setStatus] = useState('');
   const [q, setQ] = useState('');
   const [query, setQuery] = useState('');
@@ -33,7 +33,6 @@ export default function AdminResCards() {
       const data = await api.get(`/resident/admin/cards?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

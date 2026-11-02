@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
   username      TEXT NOT NULL UNIQUE,
   display_name  TEXT NOT NULL DEFAULT '',
   email         TEXT UNIQUE,
+  address       TEXT NOT NULL DEFAULT '',
   password_hash TEXT NOT NULL,
   status        TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'disabled')),
   created_at    TEXT NOT NULL,
@@ -518,6 +519,9 @@ function migrate() {
   // 入境署服务卡种子曾漏 entry_mode,默认落成 external(按外部服务新开标签页);
   // 一次性纠正为站内 SSO 入口,与其余 11 个业务署一致。
   db.prepare("UPDATE services SET entry_mode = 'internal_sso' WHERE key = 'immigration' AND entry_mode = 'external'").run();
+  // 门户身份档案:地址用于各署申请表单自动填充(真实姓名走 display_name,
+  // 邮箱走 email,二者都是既有列)。
+  ensureColumn(db, 'users', 'address', "TEXT NOT NULL DEFAULT ''");
   ensureTwColumns(db, 'services', ['name', 'description']);
   ensureTwColumns(db, 'roles', ['name', 'description']);
   ensureTwColumns(db, 'permissions', ['name', 'description']);

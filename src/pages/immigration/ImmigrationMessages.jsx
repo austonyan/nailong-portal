@@ -26,7 +26,10 @@ export default function ImmigrationMessages() {
       });
   }, [filter]);
 
-  useEffect(load, [load]);
+  // load 返回 Promise,不能直接作为 effect 回调(cleanup 必须是函数)。
+  useEffect(() => {
+    load();
+  }, [load]);
 
   // 标记已读/归档都是写操作:没有 busy 的话连点会重复请求,
   // 而且前一次的 load() 回来后列表会闪回旧状态。

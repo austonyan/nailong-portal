@@ -10,9 +10,9 @@ import { fmtDateTime } from '../../lib/date.js';
 
 export default function AdminUsers() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const { user: me, can } = useAuth();
   const [users, setUsers] = useState(null);
+  const loadError = useLoadError((users ?? []).length > 0);
   const [roles, setRoles] = useState([]);
   const [editing, setEditing] = useState(null); // null | {} (create) | user (edit)
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -29,7 +29,6 @@ export default function AdminUsers() {
     try {
       await Promise.all([loadUsers(), api.get('/roles').then((d) => setRoles(d.items))]);
     } catch (err) {
-      toastApiError(t, err);
       loadError.report(err, loadPageFn);
       setUsers((prev) => prev ?? []);
     }
@@ -52,6 +51,7 @@ export default function AdminUsers() {
       username: record.username,
       displayName: record.displayName,
       email: record.email ?? '',
+      address: record.address ?? '',
       roleKeys: record.roles.map((r) => r.key),
       status: record.status === 'active',
       password: '',
@@ -70,6 +70,7 @@ export default function AdminUsers() {
         const payload = {
           displayName: values.displayName?.trim(),
           email: values.email?.trim() || '',
+          address: values.address?.trim() || '',
         };
         if (!isSelf) {
           payload.roleKeys = values.roleKeys ?? [];
@@ -83,6 +84,7 @@ export default function AdminUsers() {
           password: values.password,
           displayName: values.displayName?.trim() || undefined,
           email: values.email?.trim() || undefined,
+          address: values.address?.trim() || undefined,
           roleKeys: values.roleKeys ?? [],
         });
       }
@@ -194,11 +196,18 @@ export default function AdminUsers() {
           <FormItem name="username" label={t('admin.users.username')} rules={[{ required: true, message: t('auth.usernamePlaceholder') }]}>
             <Input size="large" disabled={!!editing?.id} placeholder={t('auth.usernamePlaceholder')} />
           </FormItem>
-          <FormItem name="displayName" label={t('admin.users.displayName')}>
-            <Input size="large" allowClear />
+          <FormItem
+            name="displayName"
+            label={t('admin.users.displayName')}
+            rules={[{ required: true, message: t('common.required') }]}
+          >
+            <Input size="large" allowClear maxLength={40} placeholder={t('auth.displayNamePlaceholder')} />
           </FormItem>
           <FormItem name="email" label={`${t('admin.users.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('api.VALIDATION_ERROR') }]}>
             <Input size="large" type="email" allowClear />
+          </FormItem>
+          <FormItem name="address" label={`${t('profile.address')}(${t('common.optional')})`}>
+            <Input size="large" allowClear maxLength={200} placeholder={t('profile.addressPlaceholder')} />
           </FormItem>
           <FormItem name="password" label={editing?.id ? t('admin.users.resetPassword') : t('auth.password')} rules={editing?.id ? [] : [{ required: true, message: t('auth.passwordPlaceholder') }, { min: 8, message: t('auth.passwordPlaceholder') }]}>
             <Input size="large" type="password" placeholder={editing?.id ? t('admin.users.newPasswordTip') : t('auth.passwordPlaceholder')} />

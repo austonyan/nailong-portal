@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Card, Pagination, Select, Table } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
-import { TargetTypeTag, fmtDateTime, toastEduError } from '../shared.jsx';
+import { TargetTypeTag, fmtDateTime } from '../shared.jsx';
 
 const AUDIT_ACTIONS = [
   '',
@@ -31,8 +31,8 @@ const AUDIT_ACTIONS = [
 
 export default function AdminEduAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [action, setAction] = useState('');
   const [targetType, setTargetType] = useState('');
@@ -51,7 +51,6 @@ export default function AdminEduAudit() {
       setItems(data.items ?? []);
       setTotal(data.total ?? 0);
     } catch (err) {
-      toastEduError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

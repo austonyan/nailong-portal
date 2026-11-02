@@ -8,8 +8,8 @@ import { toastSuccess, toastApiError } from '../../components/toast.js';
 
 export default function AdminRoles() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [roles, setRoles] = useState(null);
+  const loadError = useLoadError((roles ?? []).length > 0);
   const [permissionGroups, setPermissionGroups] = useState({});
   const [editing, setEditing] = useState(null); // {} | role | null
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -26,7 +26,6 @@ export default function AdminRoles() {
     try {
       await Promise.all([loadRoles(), api.get('/roles/permissions').then((d) => setPermissionGroups(d.groups))]);
     } catch (err) {
-      toastApiError(t, err);
       loadError.report(err, loadPageFn);
       setRoles((prev) => prev ?? []);
     }

@@ -13,8 +13,8 @@ const DECIDE_TYPES = ['maintain', 'undo', 'change'];
 
 export default function AppealAdminReviews() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [status, setStatus] = useState('pending');
   const [page, setPage] = useState(1);
   const [detail, setDetail] = useState(null);
@@ -30,7 +30,6 @@ export default function AppealAdminReviews() {
       const data = await api.get(`/appeal/admin/reviews/queue${status ? `?status=${status}` : ''}`);
       setItems(data.items ?? []);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

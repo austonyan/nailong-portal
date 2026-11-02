@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Input, Modal, Radio } from 'animal-island-ui';
 import { PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import { TextArea, fmtDateTime, toastProtocolError } from './shared.jsx';
 import { toastSuccess, toastError } from './shared.jsx';
@@ -35,10 +37,17 @@ export default function ProtocolApply() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { no, id } = useParams();
+  const { user } = useAuth();
+  // 报名人姓名与联系方式跟门户身份档案保持一致。
+  const profile = profileIdentity(user);
   const [event, setEvent] = useState(null);
   const [type, setType] = useState(null);
   const [draft, setDraft] = useState(null);
-  const [form, setForm] = useState(EMPTY_FORM);
+const [form, setForm] = useState(() => ({
+    ...EMPTY_FORM,
+    nickname: profile.realName,
+    contact: profile.email,
+  }));
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loadError, setLoadError] = useState('');
@@ -61,7 +70,12 @@ export default function ProtocolApply() {
           const full = await api.get(`/protocol/events/${reg.event.eventNo}`);
           if (cancelled) return;
           setDraft(reg);
-          setForm(formFromRegistration(reg));
+const saved = formFromRegistration(reg);
+          setForm({
+            ...saved,
+            nickname: profile.realName || saved.nickname,
+            contact: profile.email || saved.contact,
+          });
           applyEventData(full);
         } else {
           const data = await api.get(`/protocol/events/${encodeURIComponent(no)}`);
@@ -194,7 +208,13 @@ export default function ProtocolApply() {
             <div className="protocol-form-grid">
               <label className="protocol-field">
                 <span>{t('protocol.field.nickname')} *</span>
-                <Input value={form.nickname} onChange={(e) => update({ nickname: e.target.value })} placeholder={t('protocol.apply.nicknamePlaceholder')} disabled={readOnly} />
+                <Input
+                  value={form.nickname}
+                  onChange={(e) => update({ nickname: e.target.value })}
+                  placeholder={t('protocol.apply.nicknamePlaceholder')}
+                  disabled={readOnly || !!profile.realName}
+                />
+                {profile.realName && <small className="muted-text">{t('profile.fromProfile')}</small>}
               </label>
               <label className="protocol-field">
                 <span>{t('protocol.field.contact')} *</span>

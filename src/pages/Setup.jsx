@@ -151,7 +151,7 @@ export default function Setup() {
             </FormItem>
             <FormItem
               name="displayName"
-              label={t('auth.displayName')}
+              label={t('profile.realName')}
               required
               rules={[
                 { required: true, message: t('setup.displayNameRule') },

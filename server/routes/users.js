@@ -66,15 +66,16 @@ router.post('/', requirePermission('users:write'), (req, res) => {
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw badRequest('VALIDATION_ERROR', 'Invalid email');
   }
+  const address = String(body.address ?? '').trim().slice(0, 200);
   const roleIds = resolveRoleIds(body.roleKeys) ?? [db.prepare('SELECT id FROM roles WHERE key = ?').get('user').id];
 
   const create = db.transaction(() => {
     const ts = now();
     const info = db
       .prepare(
-        'INSERT INTO users (username, display_name, email, password_hash, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        'INSERT INTO users (username, display_name, email, address, password_hash, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
       )
-      .run(body.username, displayName, email, hashPassword(body.password), 'active', ts, ts);
+      .run(body.username, displayName, email, address, hashPassword(body.password), 'active', ts, ts);
     for (const id of roleIds) {
       db.prepare('INSERT OR IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)').run(info.lastInsertRowid, id);
     }
@@ -110,6 +111,10 @@ router.patch('/:id', requirePermission('users:write'), (req, res) => {
     }
     updates.push('email = ?');
     params.push(email || null);
+  }
+  if (body.address !== undefined) {
+    updates.push('address = ?');
+    params.push(String(body.address ?? '').trim().slice(0, 200));
   }
   if (body.password !== undefined) {
     assertPassword(body.password);

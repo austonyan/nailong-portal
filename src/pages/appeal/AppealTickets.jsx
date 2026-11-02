@@ -13,8 +13,8 @@ const FAQ_KEYS = ['reset', 'unbind', 'slow', 'display', 'contact'];
 
 export default function AppealTickets() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [createOpen, setCreateOpen] = useState(false);
   const [category, setCategory] = useState('consult');
   const [priority, setPriority] = useState('normal');
@@ -33,7 +33,6 @@ export default function AppealTickets() {
       const data = await api.get('/appeal/tickets');
       setItems(data.items);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

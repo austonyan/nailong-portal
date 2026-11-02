@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card } from 'animal-island-ui';
 import { api } from '../../api/client.js';
-import { APPLICATION_STATUS_COLORS, StatusTag, fmtDateTime, toastResError } from './shared.jsx';
+import { APPLICATION_STATUS_COLORS, StatusTag, fmtDateTime } from './shared.jsx';
 
 // Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
 function cardKeyDown(handler) {
@@ -19,9 +19,9 @@ function cardKeyDown(handler) {
 
 export default function ResidentMyApplications() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
 
   const load = useCallback(async function loadFn() {
     loadError.clear();
@@ -29,7 +29,6 @@ export default function ResidentMyApplications() {
       const data = await api.get('/resident/applications');
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

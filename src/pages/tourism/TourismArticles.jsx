@@ -6,13 +6,13 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Select, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ARTICLE_TYPES, ARTICLE_TYPE_COLORS, fmtDate, toastTourError } from './shared.jsx';
+import { ARTICLE_TYPES, ARTICLE_TYPE_COLORS, fmtDate } from './shared.jsx';
 
 export default function TourismArticles() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [q, setQ] = useState('');
   const [type, setType] = useState('');
 
@@ -27,7 +27,6 @@ export default function TourismArticles() {
       const data = await api.get(`/tourism/articles?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
-      toastTourError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

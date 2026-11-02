@@ -209,18 +209,16 @@ function RelationDetail({ id, onClose, onChanged }) {
 
 export default function DipRelations() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [openId, setOpenId] = useState(null);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
-    loadError.clear();
-
   const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/dip/relations?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastDipError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

@@ -14,8 +14,8 @@ const TYPE_FILTERS = ['', ...CONTENT_TARGETS];
 
 export default function AdminEduReview() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [stats, setStats] = useState({ entry: 0, article: 0 });
   const [typeFilter, setTypeFilter] = useState('');
   const [q, setQ] = useState('');
@@ -40,7 +40,6 @@ export default function AdminEduReview() {
       setItems(data.items ?? []);
       setStats(data.stats ?? { entry: 0, article: 0 });
     } catch (err) {
-      toastEduError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

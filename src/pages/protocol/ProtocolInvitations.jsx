@@ -11,9 +11,9 @@ import { toastSuccess } from './shared.jsx';
 
 export default function ProtocolInvitations() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [action, setAction] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -23,7 +23,6 @@ export default function ProtocolInvitations() {
       const data = await api.get('/protocol/invitations');
       setItems(data.items);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

@@ -10,8 +10,8 @@ import { toastSuccess } from '../../../components/toast.js';
 
 function EntryRecordsTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState(null);
@@ -30,13 +30,15 @@ function EntryRecordsTab() {
         setTotal(data.total);
       })
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
   }, [page, loadError]);
 
-  useEffect(load, [load]);
+  // load 返回 Promise,不能直接作为 effect 回调(cleanup 必须是函数)。
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const closeEdit = () => {
     if (busy) return;
@@ -186,8 +188,8 @@ function EntryRecordsTab() {
 
 function ExitRecordsTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -201,11 +203,10 @@ function ExitRecordsTab() {
         setTotal(data.total);
       })
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
-  }, [page, t, loadError]);
+  }, [page, loadError]);
 
   useEffect(load, [load]);
 

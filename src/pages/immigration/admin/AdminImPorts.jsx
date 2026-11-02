@@ -36,7 +36,11 @@ function PortsTab() {
       });
   }, []);
 
-  useEffect(load, [load]);
+  // load 返回 Promise,直接当 effect 回调时会被 React 当成 cleanup 调用
+  // (StrictMode 下立即执行 → "destroy is not a function" 整页白屏)。
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const savePort = async (values) => {
     if (busy) return; // 双击会创建两个同码口岸
@@ -283,29 +287,31 @@ function PortsTab() {
 
 function AnnouncementsTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [ports, setPorts] = useState([]);
   const [editing, setEditing] = useState(null);
   const [offlineTarget, setOfflineTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [busy, setBusy] = useState(false); // 公告弹窗提交中
   const [rowBusy, setRowBusy] = useState(false); // 下线/删除确认弹窗执行中
-    loadError.clear();
   const [form] = useForm();
 
   const load = useCallback(function loadFn() {
+    loadError.clear();
     return api
       .get('/immigration/admin/announcements')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
   }, [loadError]);
 
-  useEffect(load, [load]);
+  // load 返回 Promise,不能直接作为 effect 回调(cleanup 必须是函数)。
+  useEffect(() => {
+    load();
+  }, [load]);
   useEffect(() => {
     api.get('/immigration/admin/ports').then((d) => setPorts(d.items)).catch(() => {});
   }, []);

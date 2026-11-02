@@ -71,8 +71,8 @@ function PassCodeModal({ passCode, onClose }) {
 
 export default function PassCodes() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [openCode, setOpenCode] = useState(null);
 
   const load = useCallback(function loadFn() {
@@ -81,11 +81,10 @@ export default function PassCodes() {
       .get('/immigration/pass-codes')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
-  }, [t, loadError]);
+  }, [loadError]);
 
   useEffect(load, [load]);
 

@@ -7,7 +7,7 @@ import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { LinkIcon } from 'naive-icons';
 import { fmtDate } from '../../lib/date.js';
 import { api } from '../../api/client.js';
-import { toastApiError } from '../../components/toast.js';
+
 
 const OFFICE_ROUTE = {
   visa: '/visa/permits',
@@ -36,11 +36,13 @@ const STATUS_COLOR = {
 
 export default function Certificates() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [benefits, setBenefits] = useState([]);
+  const loadError = useLoadError(
+    (items ?? []).length > 0 || alerts.length > 0 || benefits.length > 0
+  );
   const [loading, setLoading] = useState(false);
 
   const load = useCallback(async function loadFn() {
@@ -57,7 +59,6 @@ export default function Certificates() {
       setAlerts(alertData.alerts ?? []);
       setBenefits(recs.flatMap((r) => r.items ?? []).filter((i) => i.eligible));
     } catch (err) {
-      toastApiError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     } finally {

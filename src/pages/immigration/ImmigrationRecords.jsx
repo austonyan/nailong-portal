@@ -15,8 +15,8 @@ function daysLeft(entry) {
 
 function EntryTab({ onReload }) {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [exitTarget, setExitTarget] = useState(null);
   const [ports, setPorts] = useState([]);
   const [exitPort, setExitPort] = useState('ROYAL_PORT');
@@ -28,7 +28,6 @@ function EntryTab({ onReload }) {
       .get('/immigration/records/entry')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
@@ -139,8 +138,8 @@ function EntryTab({ onReload }) {
 
 function ExitTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
 
   const load = useCallback(function loadFn() {
     loadError.clear();
@@ -148,11 +147,10 @@ function ExitTab() {
       .get('/immigration/records/exit')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
-  }, [t, loadError]);
+  }, [loadError]);
 
   useEffect(load, [load]);
 

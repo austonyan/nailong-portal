@@ -43,8 +43,8 @@ const EMPTY_FORM = {
 
 export default function AdminStatMetrics() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [sources, setSources] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -59,7 +59,6 @@ export default function AdminStatMetrics() {
       setItems(data.items);
       setSources(data.sources ?? []);
     } catch (err) {
-      toastStatError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

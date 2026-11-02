@@ -30,6 +30,10 @@ server/data
 .tmp-*
 .critique-tmp/
 .zcode/
+.openchamber/
+
+# Agent tool local config: .codex/hooks.json holds machine-absolute launcher paths
+.codex/
 
 # Impeccable design-detection local state (config.json is tracked)
 .impeccable/config.local.json

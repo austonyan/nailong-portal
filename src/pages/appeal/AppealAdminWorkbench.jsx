@@ -26,8 +26,8 @@ const PAGE_SIZE = 10;
 
 export default function AppealAdminWorkbench() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
@@ -59,7 +59,6 @@ export default function AppealAdminWorkbench() {
       setTotal(data.total);
       setCounters({ pending: data.pending, processing: data.processing, supplementing: data.supplementing, overdue: data.overdue });
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

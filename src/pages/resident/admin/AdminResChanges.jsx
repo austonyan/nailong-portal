@@ -18,8 +18,8 @@ const CHANGE_STATUS_COLORS = {
 
 export default function AdminResChanges() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [status, setStatus] = useState('pending_review');
   const [action, setAction] = useState(null); // { kind, change }
   const [note, setNote] = useState('');
@@ -32,7 +32,6 @@ export default function AdminResChanges() {
       const data = await api.get(`/resident/admin/changes?status=${status}`);
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

@@ -7,6 +7,8 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../components/toast.js';
@@ -234,6 +236,9 @@ function IdentityDetail({ id, onClose, onChanged }) {
 function IdentityForm({ catalog, relations, editing, onSaved }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  // 外交身份持有人就是账号本人:姓名与联系方式跟门户身份档案一致。
+  const profile = profileIdentity(user);
   const [form] = useForm();
   const [decl, setDecl] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -251,15 +256,24 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
         form.setFieldsValue({
           identityType: d.identityType,
           relationId: d.relationId ? String(d.relationId) : undefined,
-          nickname: d.nickname,
-          contact: d.contact,
+          nickname: profile.realName || d.nickname,
+          contact: profile.email || d.contact,
           title: d.title,
           termStart: d.termStart,
           termEnd: d.termEnd,
         });
       })
       .catch((err) => toastDipError(t, err));
-  }, [editing, form, t]);
+  }, [editing, form, t, profile.realName, profile.email]);
+
+  // 新建外交身份时先用门户身份档案预填。
+  useEffect(() => {
+    if (editing) return;
+    const patch = {};
+    if (profile.realName) patch.nickname = profile.realName;
+    if (profile.email) patch.contact = profile.email;
+    if (Object.keys(patch).length) form.setFieldsValue(patch);
+  }, [editing, form, profile.realName, profile.email]);
 
   const persistDraft = async () => {
     const values = await form.validateFields();
@@ -324,8 +338,13 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
           </FormItem>
         </div>
         <div className="dip-form-row">
-          <FormItem name="nickname" label={t('dip.identity.holder')} rules={[{ required: true, message: t('dip.apply.required') }]}>
-            <Input size="large" placeholder={t('dip.identity.holderPlaceholder')} allowClear maxLength={40} />
+          <FormItem
+            name="nickname"
+            label={t('dip.identity.holder')}
+            help={profile.realName ? t('profile.fromProfile') : undefined}
+            rules={[{ required: true, message: t('dip.apply.required') }]}
+          >
+            <Input size="large" placeholder={t('dip.identity.holderPlaceholder')} allowClear maxLength={40} disabled={!!profile.realName} />
           </FormItem>
           <FormItem name="contact" label={t('dip.identity.contact')} rules={[{ required: true, message: t('dip.apply.required') }]}>
             <Input size="large" placeholder={t('dip.identity.contactPlaceholder')} allowClear maxLength={60} />
@@ -409,16 +428,15 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
 
 export default function DipIdentity() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const { id: editing } = useParams();
   const [catalog, setCatalog] = useState({ identityTypes: [] });
   const [relations, setRelations] = useState([]);
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [openId, setOpenId] = useState(null);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
-    loadError.clear();
-
   const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/dip/types')
       .then((data) => setCatalog({ identityTypes: data.identityTypes ?? [] }))
@@ -431,7 +449,6 @@ export default function DipIdentity() {
       .get('/dip/identities?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastDipError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

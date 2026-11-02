@@ -34,7 +34,6 @@ function ReviewDrawer({ id, onClose, onChanged }) {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(function loadFn() {
-    loadError.clear();
     api
       .get(`/immigration/admin/declarations/${id}`)
       .then((data) => setDecl(data.declaration))
@@ -190,8 +189,8 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
 export default function AdminImReview() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [counts, setCounts] = useState({});
   const [status, setStatus] = useState('pending');
   const [q, setQ] = useState('');
@@ -210,7 +209,6 @@ export default function AdminImReview() {
         setCounts(data.counts ?? {});
       })
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

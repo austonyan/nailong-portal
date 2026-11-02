@@ -18,10 +18,10 @@ const CHANGE_STATUS_COLORS = {
 
 export default function ResidentChanges() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [searchParams] = useSearchParams();
   const [form] = useForm();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [card, setCard] = useState(null);
   const [types, setTypes] = useState([]);
   const [changeType, setChangeType] = useState(searchParams.get('type') || 'info');
@@ -43,7 +43,6 @@ export default function ResidentChanges() {
       const data = await api.get('/resident/changes');
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

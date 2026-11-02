@@ -32,8 +32,8 @@ const QUEUE_STATUS_OPTIONS = [
 
 export default function VisaAdminWorkbench() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
@@ -59,7 +59,6 @@ export default function VisaAdminWorkbench() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

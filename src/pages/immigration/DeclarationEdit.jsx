@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, useForm } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { pickLocalized } from '../../components/immigration/shared.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
@@ -17,6 +19,9 @@ export default function DeclarationEdit() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams(); // draft id when editing
+  const { user } = useAuth();
+  // 申报人姓名、联系方式与地址跟门户身份档案保持一致。
+  const profile = profileIdentity(user);
   const [searchParams] = useSearchParams();
   const fromId = searchParams.get('from');
   const visaNoParam = searchParams.get('visaNo');
@@ -41,17 +46,17 @@ export default function DeclarationEdit() {
       setItemKeys((d.items ?? []).map((i) => i.key));
       form.setFieldsValue({
         portCode: d.portCode,
-        nickname: d.nickname,
-        contact: d.contact,
+        nickname: profile.realName || d.nickname,
+        contact: profile.email || d.contact,
         purpose: d.purpose,
         purposeNote: d.purposeNote,
         stayDays: String(d.stayDays),
         companions: String(d.companions),
-        address: d.address,
+        address: profile.address || d.address,
         visaNo: d.visaNo ?? '',
       });
     },
-    [form]
+    [form, profile.realName, profile.email, profile.address]
   );
 
   useEffect(() => {
@@ -64,6 +69,16 @@ export default function DeclarationEdit() {
       })
       .catch(toastApiError);
   }, [id, fromId, form]);
+
+  // 新建申报时先用门户身份档案预填;档案里为空的字段保持空白,由申请人手动填写。
+  useEffect(() => {
+    if (id || fromId) return;
+    const patch = {};
+    if (profile.realName) patch.nickname = profile.realName;
+    if (profile.email) patch.contact = profile.email;
+    if (profile.address) patch.address = profile.address;
+    if (Object.keys(patch).length) form.setFieldsValue(patch);
+  }, [id, fromId, form, profile.realName, profile.email, profile.address]);
 
   useEffect(() => {
     if (id) {
@@ -175,6 +190,7 @@ export default function DeclarationEdit() {
     const patch = {};
     if (data.nickname) patch.nickname = data.nickname;
     if (data.contact) patch.contact = data.contact;
+    if (data.address) patch.address = data.address;
     if (!Object.keys(patch).length) {
       toastError(t('residentPrefill.nothing'));
       return;
@@ -193,6 +209,8 @@ export default function DeclarationEdit() {
   };
 
   const preview = form.getFieldsValue();
+  // 确认页只给中文口岸名,不把内部口岸代码(如 ROYAL_PORT)摆到用户面前。
+  const previewPortName = ports.find((p) => p.code === preview.portCode)?.name ?? preview.portCode;
   const selectedQtyItems = itemKeys.map((key) => ({ key, qty: quantities[key] ?? 1 }));
 
   return (
@@ -203,17 +221,22 @@ export default function DeclarationEdit() {
       </div>
 
       <Card>
-        <ResidentPrefill onFill={fillFromResident} fields={['nickname', 'contact']} />
+        <ResidentPrefill onFill={fillFromResident} fields={['nickname', 'contact', 'address']} />
         <Form form={form} layout="vertical" onFinish={openConfirm}>
           <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true, message: t('common.required') }]}>
             <Select
-              options={ports.map((p) => ({ key: p.code, label: `${p.name} (${p.code})` }))}
+              options={ports.map((p) => ({ key: p.code, label: p.name }))}
               placeholder={t('imm.declare.portPlaceholder')}
               disabled={!!decl?.id}
             />
           </FormItem>
-          <FormItem name="nickname" label={t('imm.declare.nickname')} rules={[{ required: true, message: t('imm.declare.required') }]}>
-            <Input size="large" placeholder={t('imm.declare.nicknamePlaceholder')} allowClear maxLength={40} />
+          <FormItem
+            name="nickname"
+            label={t('imm.declare.nickname')}
+            help={profile.realName ? t('profile.fromProfile') : undefined}
+            rules={[{ required: true, message: t('imm.declare.required') }]}
+          >
+            <Input size="large" placeholder={t('imm.declare.nicknamePlaceholder')} allowClear maxLength={40} disabled={!!profile.realName} />
           </FormItem>
           <FormItem name="contact" label={t('imm.declare.contact')} rules={[{ required: true, message: t('imm.declare.required') }]}>
             <Input size="large" placeholder={t('imm.declare.contactPlaceholder')} allowClear maxLength={60} />
@@ -324,7 +347,7 @@ export default function DeclarationEdit() {
         typewriter={false}
       >
         <div className="im-confirm-list">
-          <p><b>{t('imm.declare.port')}:</b> {preview.portCode}</p>
+          <p><b>{t('imm.declare.port')}:</b> {previewPortName}</p>
           <p><b>{t('imm.declare.nickname')}:</b> {preview.nickname}</p>
           <p><b>{t('imm.declare.contact')}:</b> {preview.contact}</p>
           <p><b>{t('imm.declare.purpose')}:</b> {t(`imm.purpose.${preview.purpose ?? 'fun'}`)}{preview.purposeNote ? ` (${preview.purposeNote})` : ''}</p>

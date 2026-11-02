@@ -1938,6 +1938,11 @@ html {
   min-width: 0;
 }
 
+/* 审核台筛选条与签注台一致,并进页头右侧,不再单独占一张卡。 */
+.page-header .docs-filter-row {
+  margin-bottom: 0;
+}
+
 .visa-admin-detail,
 .docs-field-col,
 .docs-detail,
@@ -2424,7 +2429,6 @@ body {
   width: 180px;
 }
 
-.docs-filter-card,
 .docs-alert,
 .appeal-guide-block,
 .appeal-form-card,
@@ -5036,4 +5040,8 @@ h1.page-title [class*="animal-ribbon-"],
   margin: 0;
   color: var(--animal-text-color);
   font-weight: 600;
+}
+
+.load-error-hidden {
+  display: none;
 }

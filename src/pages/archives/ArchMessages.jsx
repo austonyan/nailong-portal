@@ -17,8 +17,8 @@ const MESSAGE_COLORS = {
 
 export default function ArchMessages() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [unread, setUnread] = useState(0);
 
   const load = useCallback(function loadFn() {
@@ -30,7 +30,6 @@ export default function ArchMessages() {
         setUnread(data.unread);
       })
       .catch((err) => {
-        toastArchError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

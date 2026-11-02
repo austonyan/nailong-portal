@@ -207,7 +207,7 @@ export default function AdminResNotices() {
   return (
     <div className="res-admin-page">
       <div className="page-header">
-        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.notices.title')}</Title></h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.notices.pageTitle')}</Title></h1>
       </div>
 
       <Tabs

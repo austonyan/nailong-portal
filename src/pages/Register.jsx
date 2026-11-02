@@ -24,7 +24,7 @@ export default function Register() {
       await register({
         username: values.username.trim(),
         password: values.password,
-        displayName: values.displayName?.trim() || undefined,
+        displayName: values.displayName?.trim(),
         email: values.email?.trim() || undefined,
       });
       toastSuccess(t('auth.registerSuccess'));
@@ -56,8 +56,12 @@ export default function Register() {
           >
             <Input size="large" placeholder={t('auth.usernamePlaceholder')} allowClear autoComplete="username" />
           </FormItem>
-          <FormItem name="displayName" label={`${t('auth.displayName')}(${t('common.optional')})`}>
-            <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
+          <FormItem
+            name="displayName"
+            label={t('profile.realName')}
+            rules={[{ required: true, message: t('common.required') }]}
+          >
+            <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear maxLength={40} />
           </FormItem>
           <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('api.VALIDATION_ERROR') }]}>
             <Input size="large" type="email" placeholder={t('auth.emailPlaceholder')} allowClear />

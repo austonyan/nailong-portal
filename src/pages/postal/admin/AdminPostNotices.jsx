@@ -22,8 +22,8 @@ const EMPTY_NOTICE = { id: null, title: '', titleTw: '', body: '', bodyTw: '', l
 
 export default function AdminPostNotices() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
@@ -46,7 +46,6 @@ export default function AdminPostNotices() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastPostError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
       setTotal(0);
@@ -186,7 +185,7 @@ export default function AdminPostNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.notices.title')}</Title></h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.notices.pageTitle')}</Title></h1>
       </div>
 
       <Card>

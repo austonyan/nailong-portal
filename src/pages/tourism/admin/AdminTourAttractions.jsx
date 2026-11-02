@@ -2,8 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
-import { EditIcon, MapIcon, PlusIcon, TrashIcon } from 'naive-icons';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { EditIcon, EyeIcon, MapIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
 import {
@@ -50,12 +50,9 @@ function statusOptions(t) {
 }
 
 export default function AdminTourAttractions() {
-  const { t, i18n } = useTranslation();
-  const loadError = useLoadError();
-  const isTw = String(i18n.language || '').startsWith('zh-TW');
-  // 第二列永远显示「另一种语言」:繁中界面显示简体源(nameCn),简中界面显示繁体(nameTw)。
-  const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
+  const { t } = useTranslation();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
   const dq = useDebouncedValue(q, 300);
@@ -63,11 +60,12 @@ export default function AdminTourAttractions() {
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
+  const [detail, setDetail] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
-    loadError.clear();
 
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -75,7 +73,6 @@ export default function AdminTourAttractions() {
       const data = await api.get(`/tourism/admin/attractions?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
-      toastTourError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -173,11 +170,21 @@ export default function AdminTourAttractions() {
 
   const columns = [
     { title: t('tour.admin.field.no'), dataIndex: 'no', width: 180 },
-    { title: t('common.name'), dataIndex: 'name' },
     {
-      title: t('common.name') + ' · ' + otherLangLabel,
+      title: t('common.name'),
       dataIndex: 'name',
-      render: (v, row) => (isTw ? (row.nameCn ?? row.nameTw ?? row.name) : row.nameTw) || '-',
+      render: (v, row) => (
+        <Button
+          type="text"
+          size="small"
+          icon={<EyeIcon />}
+          title={t('tour.admin.attractions.detail')}
+          aria-label={`${t('tour.admin.attractions.detail')} ${row.name}`}
+          onClick={() => setDetail(row)}
+        >
+          {row.name}
+        </Button>
+      ),
     },
     {
       title: t('tour.admin.field.type'),
@@ -209,7 +216,6 @@ export default function AdminTourAttractions() {
         </Tag>
       ),
     },
-    { title: t('tour.admin.field.sortOrder'), dataIndex: 'sortOrder', width: 70 },
     { title: t('tour.admin.field.updatedAt'), dataIndex: 'updatedAt', width: 150, render: fmtDateTime },
     {
       title: t('common.actions'),
@@ -374,6 +380,105 @@ export default function AdminTourAttractions() {
           <p className="muted-text tour-config-tip">{t('tour.admin.attractions.pointsTip')}</p>
         </div>
       </Modal>
+
+      <Drawer
+        open={!!detail}
+        title={detail?.name || t('tour.admin.attractions.detail')}
+        width={560}
+        maskClosable={false}
+        onClose={() => setDetail(null)}
+        footer={
+          <>
+            <Button onClick={() => setDetail(null)}>{t('common.close')}</Button>
+            <Button
+              type="primary"
+              icon={<EditIcon />}
+              onClick={() => {
+                const row = detail;
+                setDetail(null);
+                openEdit(row);
+              }}
+            >
+              {t('common.edit')}
+            </Button>
+          </>
+        }
+      >
+        {detail && (
+          <div className="tour-detail-sheet">
+            <dl className="tour-detail-list">
+              <div>
+                <dt>{t('tour.admin.field.no')}</dt>
+                <dd>{detail.no}</dd>
+              </div>
+              <div>
+                <dt>{t('tour.admin.field.type')}</dt>
+                <dd>
+                  <Tag size="small" color={ATTRACTION_TYPE_COLORS[detail.type] || 'brown'} variant="soft">
+                    {t(`tour.type.${detail.type}`)}
+                  </Tag>
+                </dd>
+              </div>
+              <div>
+                <dt>{t('tour.admin.field.openState')}</dt>
+                <dd>
+                  <Tag size="small" color={OPEN_STATE_COLORS[detail.openState] || 'brown'} variant="soft">
+                    {t(`tour.openState.${detail.openState}`)}
+                  </Tag>
+                </dd>
+              </div>
+              <div>
+                <dt>{t('common.status')}</dt>
+                <dd>
+                  <Tag size="small" color={detail.status === 'online' ? 'app-green' : 'brown'} variant="soft">
+                    {t(detail.status === 'online' ? 'tour.admin.status.online' : 'tour.admin.status.offline')}
+                  </Tag>
+                </dd>
+              </div>
+              <div>
+                <dt>{t('tour.admin.field.sortOrder')}</dt>
+                <dd>{detail.sortOrder}</dd>
+              </div>
+              <div>
+                <dt>{t('tour.admin.field.updatedAt')}</dt>
+                <dd>{fmtDateTime(detail.updatedAt)}</dd>
+              </div>
+            </dl>
+
+            <section className="tour-detail-section">
+              <h3>{t('common.name')}</h3>
+              <div className="tour-detail-pair">
+                <p><span className="tour-detail-lang">{t('common.simplified')}</span>{detail.nameCn ?? detail.name ?? '-'}</p>
+                <p><span className="tour-detail-lang">{t('common.traditional')}</span>{detail.nameTw ?? detail.name ?? '-'}</p>
+              </div>
+            </section>
+
+            <section className="tour-detail-section">
+              <h3>{t('tour.admin.field.summary')}</h3>
+              <div className="tour-detail-pair">
+                <p><span className="tour-detail-lang">{t('common.simplified')}</span>{detail.summaryCn ?? detail.summary ?? '-'}</p>
+                <p><span className="tour-detail-lang">{t('common.traditional')}</span>{detail.summaryTw ?? detail.summary ?? '-'}</p>
+              </div>
+            </section>
+
+            <section className="tour-detail-section">
+              <h3>{t('tour.admin.field.checkinPoints')}</h3>
+              <div className="tour-detail-pair">
+                <p><span className="tour-detail-lang">{t('common.simplified')}</span>{detail.checkinPointsCn ?? detail.checkinPoints ?? '-'}</p>
+                <p><span className="tour-detail-lang">{t('common.traditional')}</span>{detail.checkinPointsTw ?? detail.checkinPoints ?? '-'}</p>
+              </div>
+            </section>
+
+            <section className="tour-detail-section">
+              <h3>{t('tour.admin.field.description')}</h3>
+              <div className="tour-detail-pair">
+                <p><span className="tour-detail-lang">{t('common.simplified')}</span>{detail.descriptionCn ?? detail.description ?? '-'}</p>
+                <p><span className="tour-detail-lang">{t('common.traditional')}</span>{detail.descriptionTw ?? detail.description ?? '-'}</p>
+              </div>
+            </section>
+          </div>
+        )}
+      </Drawer>
 
       <Modal
         maskClosable={false}

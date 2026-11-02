@@ -5,6 +5,8 @@ import { Title, Button, Card, Input, Modal, Radio } from 'animal-island-ui';
 import { SaveIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { PURPOSE_KEYS } from '../../api/docs.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 import { DOC_BIZ_SOURCE } from '../../components/linkage/shared.js';
@@ -28,10 +30,13 @@ const DOC_BIZ_KIND = {
 export default function DocsApply() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  // 申请人姓名与联系方式跟门户身份档案保持一致。
+  const profile = profileIdentity(user);
   const [searchParams, setSearchParams] = useSearchParams();
   const [types, setTypes] = useState(null);
   const [typeCode, setTypeCode] = useState(searchParams.get('type') || '');
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState(() => ({ ...emptyForm, nickname: profile.realName, contact: profile.email }));
   const [appId, setAppId] = useState(null);
   const [appNo, setAppNo] = useState('');
   const [confirming, setConfirming] = useState(false);
@@ -76,8 +81,8 @@ export default function DocsApply() {
         setAppId(item.id);
         setAppNo(item.appNo);
         setForm({
-          nickname: item.nickname || '',
-          contact: item.contact || '',
+          nickname: profile.realName || item.nickname || '',
+          contact: profile.email || item.contact || '',
           bizNo: item.bizNo || '',
           purpose: item.purpose || 'display',
           formData: item.formData || {},
@@ -87,7 +92,7 @@ export default function DocsApply() {
     return () => {
       cancelled = true;
     };
-  }, [draftParam, navigate, t]);
+  }, [draftParam, navigate, t, profile.realName, profile.email]);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
   const setFormField = (key, value) => setForm((f) => ({ ...f, formData: { ...f.formData, [key]: value } }));
@@ -227,7 +232,15 @@ export default function DocsApply() {
                 <span className="docs-field-label">
                   {t('docs.apply.nickname')} <em>*</em>
                 </span>
-                <Input value={form.nickname} onChange={(e) => setField('nickname', e.target.value)} placeholder={t('docs.apply.nicknamePh')} allowClear maxLength={60} />
+                <Input
+                  value={form.nickname}
+                  onChange={(e) => setField('nickname', e.target.value)}
+                  placeholder={t('docs.apply.nicknamePh')}
+                  allowClear
+                  maxLength={60}
+                  disabled={!!profile.realName}
+                />
+                {profile.realName && <small className="muted-text">{t('profile.fromProfile')}</small>}
               </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.apply.contact')}</span>

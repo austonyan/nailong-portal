@@ -5,13 +5,12 @@ import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Table } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { fmtDateTime, toastTourError } from '../shared.jsx';
-
+import { fmtDateTime } from '../shared.jsx';
 
 export default function AdminTourAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [action, setAction] = useState('');
   const [query, setQuery] = useState('');
 
@@ -22,7 +21,6 @@ export default function AdminTourAudit() {
       const data = await api.get(`/tourism/admin/audit${params}`);
       setItems(data.items);
     } catch (err) {
-      toastTourError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

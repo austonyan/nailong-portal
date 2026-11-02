@@ -293,6 +293,29 @@ function applyChangeToCard(change, card) {
         resident.id
       );
     }
+    // 变更审批通过后回写门户身份档案,保证居民记录与其他署的预填信息一致。
+    // contact 是自由文本,只有确实像邮箱时才写 users.email(唯一约束冲突则跳过)。
+    const profileUpdates = [];
+    const profileParams = [];
+    if (typeof payload.virtualAddress === 'string' && payload.virtualAddress.trim()) {
+      profileUpdates.push('address = ?');
+      profileParams.push(payload.virtualAddress.trim().slice(0, 200));
+    }
+    const contact = typeof payload.contact === 'string' ? payload.contact.trim() : '';
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) {
+      const taken = db.prepare('SELECT id FROM users WHERE email = ? AND id != ?').get(contact, change.user_id);
+      if (!taken) {
+        profileUpdates.push('email = ?');
+        profileParams.push(contact);
+      }
+    }
+    if (profileUpdates.length) {
+      db.prepare(`UPDATE users SET ${profileUpdates.join(', ')}, updated_at = ? WHERE id = ?`).run(
+        ...profileParams,
+        ts,
+        change.user_id
+      );
+    }
   } else if (change.type === 'upgrade') {
     const targetCode = payload.targetTypeCode;
     db.prepare('UPDATE res_residents SET type_code = ?, updated_at = ? WHERE user_id = ?').run(targetCode, ts, change.user_id);

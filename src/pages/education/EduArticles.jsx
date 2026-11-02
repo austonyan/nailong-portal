@@ -6,12 +6,12 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Pagination } from 'animal-island-ui';
 import { FileIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { toastEduError } from './shared.jsx';
+
 
 export default function EduArticles() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
@@ -29,7 +29,6 @@ export default function EduArticles() {
       setItems(data.items);
       setTotal(data.total ?? 0);
     } catch (err) {
-      toastEduError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

@@ -25,8 +25,8 @@ const TYPE_RE = /^[a-z0-9_]+$/;
 
 export default function AdminPostTemplates() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_TPL);
   const [busy, setBusy] = useState(false);
@@ -39,7 +39,6 @@ export default function AdminPostTemplates() {
       const data = await api.get('/postal/admin/templates');
       setItems(data.items);
     } catch (err) {
-      toastPostError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

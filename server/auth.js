@@ -43,6 +43,7 @@ export function publicUser(user) {
     username: user.username,
     displayName: user.display_name,
     email: user.email,
+    address: user.address ?? '',
     status: user.status,
     // nameTw 必须一起下发:localeMiddleware 靠成对的 *Tw 字段才能把 name 换成繁体,
     // 只给 name 时繁中界面里的角色名会一直是简体。

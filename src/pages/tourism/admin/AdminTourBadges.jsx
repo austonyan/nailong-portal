@@ -31,11 +31,11 @@ function iconOptions(t) {
 
 export default function AdminTourBadges() {
   const { t, i18n } = useTranslation();
-  const loadError = useLoadError();
   const isTw = String(i18n.language || '').startsWith('zh-TW');
   // 第二列永远显示「另一种语言」:繁中界面显示简体源(nameCn),简中界面显示繁体(nameTw)。
   const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [awards, setAwards] = useState(null);
   const [awardBadge, setAwardBadge] = useState('');
   const [formOpen, setFormOpen] = useState(false);
@@ -46,14 +46,12 @@ export default function AdminTourBadges() {
   const [revokeTarget, setRevokeTarget] = useState(null);
   const [revokeReason, setRevokeReason] = useState('');
   const [revokeBusy, setRevokeBusy] = useState(false);
-    loadError.clear();
-
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/tourism/admin/badges');
       setItems(data.items);
     } catch (err) {
-      toastTourError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

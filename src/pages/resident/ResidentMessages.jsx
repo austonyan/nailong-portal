@@ -19,8 +19,8 @@ function cardKeyDown(handler) {
 
 export default function ResidentMessages() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [unread, setUnread] = useState(0);
   const [archived, setArchived] = useState('0');
 
@@ -31,7 +31,6 @@ export default function ResidentMessages() {
       setItems(data.items);
       setUnread(data.unread);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

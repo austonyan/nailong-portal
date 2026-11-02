@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Tag, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import { BIZ_TYPES, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
@@ -14,6 +16,9 @@ export default function AppealApply() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
+  const { user } = useAuth();
+  // 联系方式默认取门户身份档案邮箱。
+  const profile = profileIdentity(user);
   const draftId = params.id ? Number(params.id) : null;
   const [form] = useForm();
   const [appeal, setAppeal] = useState(null);
@@ -40,14 +45,14 @@ export default function AppealApply() {
         form.setFieldsValue({
           reason: data.appeal.reason,
           expected: data.appeal.expected,
-          contact: data.appeal.contact,
+          contact: profile.email || data.appeal.contact,
         });
       })
       .catch((err) => {
         toastAppealError(t, err);
         navigate('/appeal/apply');
       });
-  }, [draftId, form, t, navigate]);
+  }, [draftId, form, t, navigate, profile.email]);
 
   const createDraft = async () => {
     if (creatingRef.current) return;

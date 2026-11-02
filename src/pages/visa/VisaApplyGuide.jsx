@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Checkbox, Radio, Tag } from 'animal-island-ui';
-import { CheckCircleIcon, HelpCircleIcon } from 'naive-icons';
+import { CheckCircleIcon, HelpCircleIcon, AirplaneIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastVisaError } from './shared.jsx';
 
@@ -13,7 +13,7 @@ export default function VisaApplyGuide() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { typeCode } = useParams();
-  const [type, setType] = useState(null);
+  const [types, setTypes] = useState(null);
   const [quiz, setQuiz] = useState({});
   const [agreed, setAgreed] = useState([]);
 
@@ -22,22 +22,83 @@ export default function VisaApplyGuide() {
     api
       .get('/visa/types')
       .then((data) => {
-        if (!cancelled) setType(data.items.find((item) => item.code === typeCode) || null);
+        if (!cancelled) setTypes(data.items);
       })
       .catch((err) => {
         toastVisaError(t, err);
-        if (!cancelled) setType(null);
+        if (!cancelled) setTypes([]);
       });
     return () => {
       cancelled = true;
     };
-  }, [typeCode, t]);
+  }, [t]);
+
+  // 没有类型参数时是「选类型」入口(/visa/apply)。必须列出开放中的类型:
+  // 以前直接把缺参数当成类型不存在,点「开始申请」永远看到「暂未开放」。
+  if (!typeCode) {
+    return (
+      <div className="visa-guide-page">
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.applyGuide.pickType')}</Title></h1>
+        <p className="muted-text">{t('visa.applyGuide.pickTypeTip')}</p>
+        <div className="visa-type-grid">
+          {(types ?? []).map((item) => (
+            <Card
+              key={item.code}
+              hoverable
+              className="visa-type-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/visa/apply/${item.code}`)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(`/visa/apply/${item.code}`);
+                }
+              }}
+            >
+              <div className="visa-type-top">
+                <AirplaneIcon size={30} />
+                <Tag color="app-green" variant="soft">{t('visa.typeAvail.open')}</Tag>
+              </div>
+              <h3 className="visa-type-name">{item.name}</h3>
+              <p className="visa-type-desc">{item.description}</p>
+              <div className="visa-type-meta">
+                <Tag variant="outlined">{t('visa.typeMeta.stay', { days: item.stayDays })}</Tag>
+                <Tag variant="outlined">{t('visa.typeMeta.valid', { days: item.validDays })}</Tag>
+              </div>
+            </Card>
+          ))}
+          {types === null && (
+            <Card type="dashed">
+              <p className="muted-text">{t('common.loading')}</p>
+            </Card>
+          )}
+          {types !== null && types.length === 0 && (
+            <Card type="dashed">
+              <p className="muted-text">{t('common.empty')}</p>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const type = (types ?? []).find((item) => item.code === String(typeCode).toUpperCase()) || null;
+
+  // 类型列表回来后才能判断类型是否存在,先显示加载,避免闪一下「暂未开放」。
+  if (types === null) {
+    return (
+      <Card type="dashed">
+        <p className="muted-text">{t('common.loading')}</p>
+      </Card>
+    );
+  }
 
   if (!type) {
     return (
       <Card type="dashed">
         <p className="muted-text">{t('visa.applyGuide.typeUnavailable')}</p>
-        <Button onClick={() => navigate('/visa/apply')}>{t('visa.backHome')}</Button>
+        <Button onClick={() => navigate('/visa')}>{t('visa.backHome')}</Button>
       </Card>
     );
   }

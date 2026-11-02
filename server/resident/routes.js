@@ -93,6 +93,29 @@ function validateApplicationFields(body) {
   return out;
 }
 
+// 门户身份档案是各署个人信息的唯一来源:真实姓名(users.display_name)、
+// 邮箱、地址。居民登记表单的持卡人信息必须与门户一致,档案里为空的字段
+// 才允许申请人在表单里手动填写;服务端在保存/提交时再兜底覆盖一次,
+// 防止绕过界面写入不一致的身份信息。
+function profileIdentity(userId) {
+  const row = db.prepare('SELECT display_name, email, address FROM users WHERE id = ?').get(userId);
+  return {
+    nickname: String(row?.display_name || '').trim(),
+    contact: String(row?.email || '').trim(),
+    virtualAddress: String(row?.address || '').trim(),
+  };
+}
+
+function applyProfileIdentity(userId, fields) {
+  const profile = profileIdentity(userId);
+  return {
+    ...fields,
+    nickname: profile.nickname || fields.nickname,
+    contact: profile.contact || fields.contact,
+    virtualAddress: profile.virtualAddress || fields.virtualAddress,
+  };
+}
+
 function assertCanApply(userId, { excludeDrafts = false } = {}) {
   if (isBlacklisted(userId)) throw forbidden('RES_BLACKLISTED', 'Account is restricted from applying');
   if (getConfig('res.one_identity_per_account', '1') === '1' && db.prepare('SELECT 1 FROM res_residents WHERE user_id = ?').get(userId)) {
@@ -219,11 +242,13 @@ router.post('/applications', (req, res) => {
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ? AND enabled = 1').get(typeCode);
   if (!typeRow) throw badRequest('RES_TYPE_UNAVAILABLE', 'Resident type not available');
   const ts = now();
+  const profile = profileIdentity(req.user.id);
   const info = db
     .prepare(
-      `INSERT INTO res_applications (app_no, user_id, type_code, status, created_at, updated_at) VALUES (?, ?, ?, 'draft', ?, ?)`
+      `INSERT INTO res_applications (app_no, user_id, type_code, status, nickname, contact, virtual_address, created_at, updated_at)
+       VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, ?)`
     )
-    .run(nextApplicationNo(), req.user.id, typeCode, ts, ts);
+    .run(nextApplicationNo(), req.user.id, typeCode, profile.nickname, profile.contact, profile.virtualAddress, ts, ts);
   audit(req.user, 'create_application', 'application', nextAppNo(info.lastInsertRowid));
   res.status(201).json({
     application: serializeApplication(db.prepare('SELECT * FROM res_applications WHERE id = ?').get(info.lastInsertRowid)),
@@ -237,7 +262,9 @@ function nextAppNo(id) {
 router.put('/applications/:id', (req, res) => {
   const app = loadOwnApplication(req);
   if (app.status !== 'draft') throw badRequest('RES_NOT_EDITABLE', 'Only drafts can be edited');
-  const fields = validateApplicationFields({ ...serializeApplication(app), ...req.body });
+  const fields = validateApplicationFields(
+    applyProfileIdentity(req.user.id, { ...serializeApplication(app), ...req.body })
+  );
   db.prepare(
     `UPDATE res_applications SET nickname=@nickname, contact=@contact, virtual_address=@virtualAddress, bio=@bio,
      purposes=@purposes, updated_at=@ts WHERE id=@id`
@@ -265,7 +292,9 @@ router.post('/applications/:id/submit', (req, res) => {
   const app = loadOwnApplication(req);
   if (app.status !== 'draft') throw badRequest('RES_NOT_EDITABLE', 'Application already submitted');
   assertCanApply(req.user.id, { excludeDrafts: true });
-  const fields = validateApplicationFields({ ...serializeApplication(app), ...req.body });
+const fields = validateApplicationFields(
+    applyProfileIdentity(req.user.id, { ...serializeApplication(app), ...req.body })
+  );
   const purposes = fields.purposes ?? JSON.parse(app.purposes || '[]');
   if (!purposes.length) throw badRequest('RES_PURPOSE_REQUIRED', 'Pick at least one purpose');
   if (!fields.virtualAddress && !app.virtual_address) {

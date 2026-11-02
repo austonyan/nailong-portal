@@ -130,17 +130,15 @@ function AgreementModal({ initial, onClose, onSaved }) {
 
 export default function AdminDipAgreements() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [modal, setModal] = useState(null); // null | {} | row
-    loadError.clear();
-
   const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/dip/admin/agreements?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastDipError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
