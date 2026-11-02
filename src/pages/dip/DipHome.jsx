@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import {
   BadgeCheckIcon,
   BookIcon,
@@ -15,7 +15,7 @@ import {
   UsersIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, DipLevelTag, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { DipLevelTag, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 
 const SERVICE_CARDS = [
   { to: '/dip/apply', icon: FlagIcon, key: 'establish' },
@@ -50,9 +50,8 @@ export default function DipHome() {
 
   return (
     <>
-      <DipNav />
       <div className="dip-hero">
-        <h1 className="page-title">{t('dip.home.hero')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.home.hero')}</Title></h1>
         <p className="muted-text">{t('dip.home.heroSub')}</p>
         <div className="dip-hero-actions">
           <Link to="/dip/apply">

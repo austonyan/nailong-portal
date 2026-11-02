@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Link } from 'react-router-dom';
-import { Badge, Button, Card, Pagination, Select, Tag } from 'animal-island-ui';
+import { Title, Badge, Button, Card, Pagination, Select, Tag } from 'animal-island-ui';
 import {
   AlertCircleIcon,
   BellIcon,
@@ -32,22 +33,25 @@ const MSG_ICONS = {
 
 export default function DocsMessages() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [box, setBox] = useState('inbox');
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const d = await api.get(`/docs/messages?box=${box}&page=${page}&pageSize=${pageSize}`);
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [box, page, t]);
+  }, [box, page, t, loadError]);
 
   useEffect(() => {
     load();
@@ -89,7 +93,7 @@ export default function DocsMessages() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.msg.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.msg.title')}</Title></h1>
         <div className="table-actions">
           <Select
             value={box}

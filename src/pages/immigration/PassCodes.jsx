@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Table } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Modal, Table } from 'animal-island-ui';
 import { ClockIcon, DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImNav, PassQr, StatusTag, downloadDataUrl } from '../../components/immigration/shared.jsx';
+import { PassQr, StatusTag, downloadDataUrl } from '../../components/immigration/shared.jsx';
 import { fmtDateTime } from '../../lib/date.js';
 
 function PassCodeModal({ passCode, onClose }) {
@@ -70,18 +71,23 @@ function PassCodeModal({ passCode, onClose }) {
 
 export default function PassCodes() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [openCode, setOpenCode] = useState(null);
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/pass-codes')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
 
   const openDetail = async (record) => {
     try {
@@ -103,18 +109,19 @@ export default function PassCodes() {
       dataIndex: 'actions',
       width: 140,
       render: (_, record) => (
-        <Button type="default" size="small" onClick={() => openDetail(record)}>
-          {t('imm.pass.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" onClick={() => openDetail(record)}>
+            {t('imm.pass.view')}
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="im-page">
-      <ImNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.pass.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.pass.title')}</Title></h1>
       </div>
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items ?? []} loading={items === null} rowKey="id" pagination={{ defaultPageSize: 10, showTotal: true }} emptyText={t('imm.pass.empty')} />

@@ -1,18 +1,8 @@
 // 接待方认证管理:队列、材料、通过/驳回/补件、冻结/撤销与权限配置。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-  Switch,
-  Table,
-  Tag,
-} from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, LockIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { useAuth } from '../../../auth/AuthContext.jsx';
@@ -32,6 +22,7 @@ const REASONS = ['info_missing', 'material_invalid', 'qualification', 'duplicate
 
 export default function AdminProtocolHosts() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const { can } = useAuth();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
@@ -49,7 +40,8 @@ export default function AdminProtocolHosts() {
   const [canInvite, setCanInvite] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -59,9 +51,10 @@ export default function AdminProtocolHosts() {
       setTotal(data.total);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, dq, t]);
+  }, [page, status, dq, t, loadError]);
 
   useEffect(() => {
     load();
@@ -153,7 +146,7 @@ export default function AdminProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.hostsTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.hostsTitle')}</Title></h1>
         <p className="muted-text">{t('protocol.admin.hostsSubtitle')}</p>
       </div>
 

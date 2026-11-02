@@ -1,17 +1,7 @@
 // 投诉建议与工单处理台:两个队列 Tab,回复/受理/关闭/升级/转申诉指引,匿名保护。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Select,
-  Table,
-  Tabs,
-  Tag,
-} from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial } from '../../api/appeal.js';
@@ -147,9 +137,11 @@ export default function AppealAdminDesk() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_v, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openComplaint(record)}>
-          {t('appeal.my.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openComplaint(record)}>
+            {t('appeal.my.view')}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -179,9 +171,11 @@ export default function AppealAdminDesk() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_v, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openTicket(record)}>
-          {t('appeal.my.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openTicket(record)}>
+            {t('appeal.my.view')}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -194,7 +188,7 @@ export default function AppealAdminDesk() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.admin.deskTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.admin.deskTitle')}</Title></h1>
       </div>
 
       <Card>

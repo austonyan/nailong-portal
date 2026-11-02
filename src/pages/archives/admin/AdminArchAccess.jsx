@@ -1,10 +1,11 @@
 // 访问日志 — 谁、何时、看了哪一类档案(含导出行为)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Select, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ArchAdminNav, fmtDateTime, toastArchError } from '../shared.jsx';
+import { fmtDateTime, toastArchError } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const ACTION_OPTIONS = [
@@ -28,6 +29,7 @@ const ACTION_TAG = {
 
 export default function AdminArchAccess() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -38,7 +40,8 @@ export default function AdminArchAccess() {
   const [office, setOffice] = useState('');
   const pageSize = 15;
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
     if (userIdDebounced) params.set('userId', userIdDebounced);
     if (action) params.set('action', action);
@@ -54,9 +57,10 @@ export default function AdminArchAccess() {
       })
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [page, userIdDebounced, action, office]);
+  }, [page, userIdDebounced, action, office, loadError]);
 
   useEffect(load, [load]);
 
@@ -91,9 +95,8 @@ export default function AdminArchAccess() {
 
   return (
     <div className="arch-page">
-      <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('arch.admin.access.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.admin.access.title')}</Title></h1>
       </div>
 
       <Card>

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Divider, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Collapse, Divider, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { fmtDate, toastResError } from './shared.jsx';
 
@@ -35,7 +35,7 @@ export default function ResidentGuide() {
   return (
     <div className="res-guide">
       <div className="page-header">
-        <h1 className="page-title">{t('res.guide.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.guide.title')}</Title></h1>
         <p className="muted-text">{t('res.guide.subtitle')}</p>
       </div>
 

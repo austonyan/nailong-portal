@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Progress, Tag } from 'animal-island-ui';
+import { Title, Background, Button, Card, Progress, Tag } from 'animal-island-ui';
 import { BookIcon, BulbIcon, FileIcon, StarIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { pct, toastEduError } from './shared.jsx';
@@ -47,7 +47,7 @@ export default function EduHome() {
   return (
     <div className="edu-section">
       <Background type="sprinkles" className="nl-hero edu-hero">
-        <h1 className="page-title">{t('edu.home.hero')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.home.hero')}</Title></h1>
         <p className="edu-hero-sub">{t('edu.home.heroSub')}</p>
         <div className="edu-hero-actions">
           <Button type="primary" size="large" icon={<BookIcon />} onClick={() => navigate('/education/entries')}>

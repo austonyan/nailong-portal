@@ -1,10 +1,10 @@
 // 署内设置:编号规则、审核/补件参数。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input } from 'animal-island-ui';
+import { Title, Button, Card, Input } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import AutoApproveSettings from '../../../components/AutoApproveSettings.jsx';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { toastResError } from '../shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
@@ -58,9 +58,8 @@ export default function AdminResSettings() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.settings.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.settings.title')}</Title></h1>
       </div>
 
       <Card className="res-info-card">

@@ -1,10 +1,10 @@
 // 公告与消息模板:公告发布/编辑/下线,站内信模板编辑与发送记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Select, Switch, Table, Tabs, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { NOTICE_LEVEL_COLORS, TextArea, fmtDateTime, toastResError } from '../shared.jsx';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
@@ -206,9 +206,8 @@ export default function AdminResNotices() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.notices.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.notices.title')}</Title></h1>
       </div>
 
       <Tabs

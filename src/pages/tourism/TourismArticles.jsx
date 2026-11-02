@@ -2,19 +2,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Select, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Select, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { ARTICLE_TYPES, ARTICLE_TYPE_COLORS, fmtDate, toastTourError } from './shared.jsx';
 
 export default function TourismArticles() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
   const [type, setType] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     setItems(null);
     const params = new URLSearchParams();
     if (type) params.set('type', type);
@@ -25,9 +28,10 @@ export default function TourismArticles() {
       setItems(data.items);
     } catch (err) {
       toastTourError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [q, type, t]);
+  }, [q, type, t, loadError]);
 
   useEffect(() => {
     load();
@@ -48,7 +52,7 @@ export default function TourismArticles() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('tour.articles.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.articles.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('tour.articles.tip')}</p>
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
@@ -11,22 +12,25 @@ const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-blue' };
 
 export default function DocsNotices() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null); // null | {} | notice
   const [form, setForm] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       // 管理端要看全部(含已下线的公告)
       const d = await api.get('/docs/admin/notices');
       setItems(d.items);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -128,7 +132,7 @@ export default function DocsNotices() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.notices.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.notices.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('docs.admin.notices.create')}
         </Button>

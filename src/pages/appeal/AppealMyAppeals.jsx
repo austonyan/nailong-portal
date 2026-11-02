@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Pagination, Select, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Modal, Pagination, Select, Tag } from 'animal-island-ui';
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPEAL_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
@@ -12,6 +13,7 @@ const STATUS_FILTERS = ['', 'draft', 'pending_accept', 'accepted', 'processing',
 
 export default function AppealMyAppeals() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [status, setStatus] = useState('');
@@ -20,15 +22,17 @@ export default function AppealMyAppeals() {
   const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(status ? `/appeal/appeals?status=${status}` : '/appeal/appeals');
       setItems(data.items);
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [status, t]);
+  }, [status, t, loadError]);
 
   useEffect(() => {
     load();
@@ -62,7 +66,7 @@ export default function AppealMyAppeals() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.my.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.my.title')}</Title></h1>
         <div className="table-actions appeal-filter-bar">
           <Select
             value={status}

@@ -1,16 +1,8 @@
 // 接待方认证:登记、材料上传、状态追踪、认证证书与权限展示。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Select,
-  Tag,
-  Upload,
-} from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Tag, Upload } from 'animal-island-ui';
 import { BadgeCheckIcon, EyeIcon, PlusIcon, SendIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -39,6 +31,7 @@ function cardKeyDown(handler) {
 
 export default function ProtocolHosts() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -47,15 +40,17 @@ export default function ProtocolHosts() {
   const [busy, setBusy] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/protocol/hosts');
       setItems(data.items);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -167,7 +162,7 @@ export default function ProtocolHosts() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.hosts.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.hosts.title')}</Title></h1>
         <p className="muted-text">{t('protocol.hosts.subtitle')}</p>
       </div>
 

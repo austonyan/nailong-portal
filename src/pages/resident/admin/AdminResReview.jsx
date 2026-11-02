@@ -1,11 +1,12 @@
 // 居民审核工作台:待审队列、申请详情(含风控标记)、通过/驳回/补件。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { openResidentMaterial } from '../../../api/resident.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import {
   APPLICATION_STATUS_COLORS,
   REJECT_REASONS,
@@ -25,6 +26,7 @@ const REVIEW_ACTION_I18N = {
 
 export default function AdminResReview() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -40,7 +42,8 @@ export default function AdminResReview() {
   const [supplementDays, setSupplementDays] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -54,9 +57,10 @@ export default function AdminResReview() {
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, typeFilter, query, t]);
+  }, [page, status, typeFilter, query, t, loadError]);
 
   useEffect(() => {
     load();
@@ -132,9 +136,11 @@ export default function AdminResReview() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
-          {t('res.admin.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
+            {t('res.admin.view')}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -147,9 +153,8 @@ export default function AdminResReview() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.workbench.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.workbench.title')}</Title></h1>
         <div className="table-actions res-filter-bar">
           <Select
             value={status}

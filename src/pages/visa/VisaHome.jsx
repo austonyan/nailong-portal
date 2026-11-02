@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import {
   AirplaneIcon,
   AlertTriangleIcon,
@@ -76,7 +76,7 @@ export default function VisaHome() {
   return (
     <div className="visa-home">
       <Background type="sprinkles" className="visa-hero">
-        <h1 className="page-title">{t('visa.home.heroTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.home.heroTitle')}</Title></h1>
         <Typewriter speed={30}>
           <p className="visa-hero-sub">{t('visa.home.heroSub')}</p>
         </Typewriter>

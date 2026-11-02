@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { LinkIcon } from 'naive-icons';
 import { fmtDate } from '../../lib/date.js';
 import { api } from '../../api/client.js';
@@ -35,13 +36,15 @@ const STATUS_COLOR = {
 
 export default function Certificates() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [benefits, setBenefits] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     setLoading(true);
     try {
       const safeRec = (service) => api.get(`/recognize/me/${service}`).catch(() => ({ items: [] }));
@@ -55,13 +58,12 @@ export default function Certificates() {
       setBenefits(recs.flatMap((r) => r.items ?? []).filter((i) => i.eligible));
     } catch (err) {
       toastApiError(t, err);
-      setItems([]);
-      setAlerts([]);
-      setBenefits([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -117,7 +119,7 @@ export default function Certificates() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('certificates.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('certificates.title')}</Title></h1>
         <p className="muted-text">{t('certificates.subtitle')}</p>
         {expiringCount > 0 && (
           <Card type="dashed" className="certificates-expiring">

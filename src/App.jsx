@@ -43,7 +43,6 @@ const DocsCertificates = lazy(() => import('./pages/docs/DocsCertificates.jsx'))
 const DocsCertificateDetail = lazy(() => import('./pages/docs/DocsCertificateDetail.jsx'));
 const DocsVerify = lazy(() => import('./pages/docs/DocsVerify.jsx'));
 const DocsMessages = lazy(() => import('./pages/docs/DocsMessages.jsx'));
-const DocsAdminLayout = lazy(() => import('./pages/admin/docs/DocsAdminLayout.jsx'));
 const DocsReview = lazy(() => import('./pages/admin/docs/DocsReview.jsx'));
 const DocsTypesAdmin = lazy(() => import('./pages/admin/docs/DocsTypesAdmin.jsx'));
 const DocsCertsAdmin = lazy(() => import('./pages/admin/docs/DocsCertsAdmin.jsx'));
@@ -52,6 +51,7 @@ const DocsStats = lazy(() => import('./pages/admin/docs/DocsStats.jsx'));
 const DocsNotices = lazy(() => import('./pages/admin/docs/DocsNotices.jsx'));
 const DocsAudit = lazy(() => import('./pages/admin/docs/DocsAudit.jsx'));
 const DocsSettings = lazy(() => import('./pages/admin/docs/DocsSettings.jsx'));
+const ImmShell = lazy(() => import('./pages/immigration/ImmShell.jsx'));
 const ImmigrationHome = lazy(() => import('./pages/immigration/ImmigrationHome.jsx'));
 const ImmigrationPorts = lazy(() => import('./pages/immigration/ImmigrationPorts.jsx'));
 const ImmigrationPortDetail = lazy(() => import('./pages/immigration/ImmigrationPortDetail.jsx'));
@@ -450,7 +450,7 @@ export default function App() {
             path="/admin/docs/review"
             element={
               <RequirePermission permission="docs:certify">
-                <DocsAdminLayout />
+                <DocsLayout permission="docs:certify" />
               </RequirePermission>
             }
           >
@@ -460,7 +460,7 @@ export default function App() {
             path="/admin/docs"
             element={
               <RequirePermission permission="docs:manage">
-                <DocsAdminLayout />
+                <DocsLayout permission="docs:manage" />
               </RequirePermission>
             }
           >
@@ -477,7 +477,9 @@ export default function App() {
             path="/immigration"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationHome />
+                <ImmShell>
+                  <ImmigrationHome />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -485,7 +487,9 @@ export default function App() {
             path="/immigration/ports"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationPorts />
+                <ImmShell>
+                  <ImmigrationPorts />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -493,7 +497,9 @@ export default function App() {
             path="/immigration/ports/:code"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationPortDetail />
+                <ImmShell>
+                  <ImmigrationPortDetail />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -501,7 +507,9 @@ export default function App() {
             path="/immigration/declare"
             element={
               <RequirePermission permission="imm:portal">
-                <DeclarationEdit />
+                <ImmShell>
+                  <DeclarationEdit />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -509,7 +517,9 @@ export default function App() {
             path="/immigration/declare/:id"
             element={
               <RequirePermission permission="imm:portal">
-                <DeclarationEdit />
+                <ImmShell>
+                  <DeclarationEdit />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -517,7 +527,9 @@ export default function App() {
             path="/immigration/declarations"
             element={
               <RequirePermission permission="imm:portal">
-                <MyDeclarations />
+                <ImmShell>
+                  <MyDeclarations />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -525,7 +537,9 @@ export default function App() {
             path="/immigration/pass-codes"
             element={
               <RequirePermission permission="imm:portal">
-                <PassCodes />
+                <ImmShell>
+                  <PassCodes />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -533,7 +547,9 @@ export default function App() {
             path="/immigration/records"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationRecords />
+                <ImmShell>
+                  <ImmigrationRecords />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -541,7 +557,9 @@ export default function App() {
             path="/immigration/messages"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationMessages />
+                <ImmShell>
+                  <ImmigrationMessages />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -549,7 +567,9 @@ export default function App() {
             path="/immigration/help"
             element={
               <RequirePermission permission="imm:portal">
-                <ImmigrationHelp />
+                <ImmShell>
+                  <ImmigrationHelp />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -558,7 +578,9 @@ export default function App() {
             path="/admin/immigration/ports"
             element={
               <RequirePermission permission="imm:admin">
-                <AdminImPorts />
+                <ImmShell permission="imm:admin">
+                  <AdminImPorts />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -566,7 +588,9 @@ export default function App() {
             path="/admin/immigration/review"
             element={
               <RequirePermission permission="imm:inspect">
-                <AdminImReview />
+                <ImmShell permission="imm:inspect">
+                  <AdminImReview />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -574,7 +598,9 @@ export default function App() {
             path="/admin/immigration/verify"
             element={
               <RequirePermission permission="imm:verify">
-                <AdminImVerify />
+                <ImmShell permission="imm:verify">
+                  <AdminImVerify />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -582,7 +608,9 @@ export default function App() {
             path="/admin/immigration/records"
             element={
               <RequirePermission permission="imm:admin">
-                <AdminImRecords />
+                <ImmShell permission="imm:admin">
+                  <AdminImRecords />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -590,7 +618,9 @@ export default function App() {
             path="/admin/immigration/stats"
             element={
               <RequirePermission permission="imm:admin">
-                <AdminImStats />
+                <ImmShell permission="imm:admin">
+                  <AdminImStats />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -598,7 +628,9 @@ export default function App() {
             path="/admin/immigration/settings"
             element={
               <RequirePermission permission="imm:admin">
-                <AdminImSettings />
+                <ImmShell permission="imm:admin">
+                  <AdminImSettings />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -606,7 +638,9 @@ export default function App() {
             path="/admin/immigration/audit"
             element={
               <RequirePermission permission="imm:admin">
-                <AdminImAudit />
+                <ImmShell permission="imm:admin">
+                  <AdminImAudit />
+                </ImmShell>
               </RequirePermission>
             }
           />
@@ -974,15 +1008,15 @@ export default function App() {
           <Route path="/protocol/courtesy" element={<ProtocolShell><ProtocolCourtesy /></ProtocolShell>} />
           <Route path="/protocol/messages" element={<ProtocolShell><ProtocolMessages /></ProtocolShell>} />
           <Route path="/protocol/help" element={<ProtocolShell><ProtocolHelp /></ProtocolShell>} />
-          <Route path="/protocol/admin/review" element={<ProtocolShell variant="admin" permission="evt:review"><AdminProtocolReview /></ProtocolShell>} />
-          <Route path="/protocol/admin/events" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolEvents /></ProtocolShell>} />
-          <Route path="/protocol/admin/issuance" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolIssuance /></ProtocolShell>} />
-          <Route path="/protocol/admin/hosts" element={<ProtocolShell variant="admin" permission="evt:review"><AdminProtocolHosts /></ProtocolShell>} />
-          <Route path="/protocol/admin/courtesy" element={<ProtocolShell variant="admin" permission="evt:review"><AdminProtocolCourtesy /></ProtocolShell>} />
-          <Route path="/protocol/admin/checkin" element={<ProtocolShell variant="admin" permission="evt:checkin"><AdminProtocolCheckin /></ProtocolShell>} />
-          <Route path="/protocol/admin/manage" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolManage /></ProtocolShell>} />
-          <Route path="/protocol/admin/stats" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolStats /></ProtocolShell>} />
-          <Route path="/protocol/admin/audit" element={<ProtocolShell variant="admin" permission="evt:manage"><AdminProtocolAudit /></ProtocolShell>} />
+          <Route path="/protocol/admin/review" element={<ProtocolShell permission="evt:review"><AdminProtocolReview /></ProtocolShell>} />
+          <Route path="/protocol/admin/events" element={<ProtocolShell permission="evt:manage"><AdminProtocolEvents /></ProtocolShell>} />
+          <Route path="/protocol/admin/issuance" element={<ProtocolShell permission="evt:manage"><AdminProtocolIssuance /></ProtocolShell>} />
+          <Route path="/protocol/admin/hosts" element={<ProtocolShell permission="evt:review"><AdminProtocolHosts /></ProtocolShell>} />
+          <Route path="/protocol/admin/courtesy" element={<ProtocolShell permission="evt:review"><AdminProtocolCourtesy /></ProtocolShell>} />
+          <Route path="/protocol/admin/checkin" element={<ProtocolShell permission="evt:checkin"><AdminProtocolCheckin /></ProtocolShell>} />
+          <Route path="/protocol/admin/manage" element={<ProtocolShell permission="evt:manage"><AdminProtocolManage /></ProtocolShell>} />
+          <Route path="/protocol/admin/stats" element={<ProtocolShell permission="evt:manage"><AdminProtocolStats /></ProtocolShell>} />
+          <Route path="/protocol/admin/audit" element={<ProtocolShell permission="evt:manage"><AdminProtocolAudit /></ProtocolShell>} />
           {/* 奶龙国皇家申诉与监察署:前台 */}
           <Route path="/appeal" element={<AppealShell><AppealHome /></AppealShell>} />
           <Route path="/appeal/guide" element={<AppealShell><AppealGuide /></AppealShell>} />

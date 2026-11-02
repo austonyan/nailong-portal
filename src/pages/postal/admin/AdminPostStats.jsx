@@ -1,7 +1,7 @@
 // 基础统计:消息量与已读率、明信片发送量、公告与订阅概览。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Table, Tag } from 'animal-island-ui';
+import { Title, Card, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { sourceLabel, toastPostError } from '../shared.jsx';
 
@@ -57,7 +57,7 @@ export default function AdminPostStats() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">{t('post.admin.stats.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.stats.title')}</Title></h1>
       </div>
 
       <div className="postal-stat-grid">

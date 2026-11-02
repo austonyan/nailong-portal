@@ -6,96 +6,6 @@
   gap: 16px;
 }
 
-.edu-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.edu-banner-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.edu-banner-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--animal-border-radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
-}
-
-.edu-banner-name {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.edu-banner-sub {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--animal-text-color-muted);
-}
-
-.edu-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.edu-nav-link {
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  background: var(--animal-bg-color-secondary);
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.edu-nav-link:hover {
-  color: var(--animal-text-color);
-}
-
-.edu-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
-}
-
-.edu-sso-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.edu-sso-identity {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.edu-sso-name {
-  font-weight: 700;
-}
-
-.edu-sso-account {
-  font-size: 12px;
-  opacity: 0.85;
-}
-
 .edu-hero {
   padding: 32px;
   border-radius: var(--animal-border-radius-lg);
@@ -112,18 +22,6 @@
   color: var(--animal-text-color-secondary);
   max-width: 640px;
   line-height: 1.6;
-}
-
-.edu-hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.edu-hero-stats {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .edu-section {
@@ -173,12 +71,6 @@
   transform: translateY(-2px);
 }
 
-.edu-service-card span {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .edu-service-card small {
   font-size: 12px;
   font-weight: 500;
@@ -206,10 +98,6 @@
   text-decoration: none;
 }
 
-.edu-card-title a:hover {
-  color: var(--animal-primary-color);
-}
-
 .edu-card-summary {
   margin: 0;
   font-size: 13px;
@@ -231,7 +119,7 @@
 }
 
 .edu-link {
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
   font-weight: 600;
   font-size: 13px;
   text-decoration: none;
@@ -249,26 +137,6 @@
   align-items: center;
 }
 
-.edu-search-row > :first-child {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.edu-search-row .edu-select-slot {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.edu-search-row > button {
-  flex: 0 0 auto;
-}
-
-.edu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .edu-body {
   white-space: pre-wrap;
   line-height: 1.9;
@@ -282,12 +150,6 @@
   gap: 10px;
   flex-wrap: wrap;
   align-items: center;
-}
-
-.edu-related-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .edu-related-item {
@@ -359,16 +221,6 @@
   color: var(--animal-text-color-muted);
 }
 
-.edu-task-progress > :first-child {
-  flex: 1;
-}
-
-.edu-badge-grid {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .edu-badge-card {
   display: inline-flex;
   align-items: center;
@@ -405,7 +257,7 @@
   font-weight: 800;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .edu-stat-label {
@@ -453,24 +305,22 @@
   color: var(--animal-text-color-muted);
   font-size: 14px;
   line-height: 1.7;
-}
-
-@media (max-width: 640px) {
-  .edu-hero {
+}@media (max-width: 640px) {
+.edu-hero {
     padding: 24px 16px;
   }
 
-  .edu-info-row {
+.edu-info-row {
     flex-direction: column;
     gap: 2px;
     align-items: flex-start;
   }
 
-  .edu-info-label {
+.edu-info-label {
     min-width: 0;
   }
 
-  .edu-task-progress {
+.edu-task-progress {
     flex-wrap: wrap;
   }
 }

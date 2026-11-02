@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { ClipboardIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -54,7 +54,7 @@ export default function TourismMy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('tour.my.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('tour.my.title')}</Title></h1>
       </div>
       <p className="muted-text">
         {t('tour.my.todayLine', { today: data?.todayCheckins ?? 0, limit: data?.rules?.dailyLimit ?? 10 })}

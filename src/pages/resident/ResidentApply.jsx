@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
@@ -197,7 +197,7 @@ function ResidentApplyScreen() {
 
   return (
     <div className="res-form-page">
-      <h1 className="page-title">{t('res.form.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.form.title')}</Title></h1>
       {appNo && (
         <p className="muted-text">
           {t('res.form.draftNo', { no: appNo })}
@@ -374,7 +374,7 @@ function TypePicker() {
 
   return (
     <div className="res-form-page">
-      <h1 className="page-title">{t('res.apply.pickType')}</h1>
+      <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.apply.pickType')}</Title></h1>
       <p className="muted-text">{t('res.apply.pickTypeTip')}</p>
       <div className="res-type-grid">
         {(types ?? []).map((type) => (

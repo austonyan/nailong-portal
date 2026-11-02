@@ -2,10 +2,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, ExternalLinkIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, OfficeTag, RecordStatusTag, fmtDate, fmtDateTime, toastArchError } from './shared.jsx';
+import { OfficeTag, RecordStatusTag, fmtDate, fmtDateTime, toastArchError } from './shared.jsx';
 
 // 详情字段是服务端按 [key, value, mask] 组成的;status 是状态码、date 是 ISO 时间,
 // 直接 String(value) 会把 `pending_review` 和完整 ISO 串显示给用户。
@@ -48,9 +48,8 @@ export default function ArchRecordDetail() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
-        <h1 className="page-title">{t('arch.detail.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.detail.title')}</Title></h1>
         <div className="table-actions">
           <Button type="text" icon={<ArrowLeftIcon />} onClick={() => navigate('/archives/records')}>
             {t('arch.detail.back')}

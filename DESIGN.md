@@ -38,6 +38,11 @@ typography:
     fontWeight: 800
     lineHeight: 1.2
     letterSpacing: "0.01em"
+  display-sm:
+    fontFamily: "Nunito, Noto Sans SC, sans-serif"
+    fontSize: "24px"
+    fontWeight: 800
+    lineHeight: 1.2
   headline:
     fontFamily: "Nunito, Noto Sans SC, sans-serif"
     fontSize: "20px"
@@ -49,6 +54,17 @@ typography:
     fontSize: "18px"
     fontWeight: 700
     lineHeight: 1.35
+  subsection:
+    fontFamily: "Nunito, Noto Sans SC, sans-serif"
+    fontSize: "16px"
+    fontWeight: 700
+    lineHeight: 1.5
+  body-large:
+    fontFamily: "Nunito, Noto Sans SC, sans-serif"
+    fontSize: "16px"
+    fontWeight: 500
+    lineHeight: 1.6
+    letterSpacing: "0.01em"
   body:
     fontFamily: "Nunito, Noto Sans SC, sans-serif"
     fontSize: "14px"
@@ -163,6 +179,7 @@ components:
 - 药丸控件（50px）、20px 卡片、12px 交互圆角下限。
 - 只有 primary / danger-primary 按钮有 3D 厚度阴影，其余表面一律平放。
 - 状态永远"颜色 + 文字（+ 图标）"，没有只靠颜色的状态。
+- 飘带只用 `brown` / `app-yellow` / `lime-green` / `yellow-green` 四色，一个页面 ≤3 种，按署固定。
 - 简繁双语同构：同一版式必须同时容下 zh-CN 与 zh-TW 的最长文案。
 - 表格靠换行压缩进容器，任何页面都不出现横向滚动。
 
@@ -187,6 +204,18 @@ components:
 | 中性 / 草稿 / 已归档 | `status-neutral-ink` | `status-neutral-wash` | 9.56:1 |
 | 强调 / 已签发 | `status-accent-ink` | `status-accent-wash` | 5.71:1 |
 
+### Ribbon Palette
+飘带（`Title`）在 20–28px 属于大号文字，只要 3:1；但库的调色板里只有四色过线，它们是**项目内唯一允许的标题彩色**：
+
+| 库色名（`color=`） | 色值 | 对纸白 | 署 |
+| --- | --- | --- | --- |
+| `brown` | #9a835a | 3.64:1 | visa / docs / archives |
+| `app-yellow` | #f7cd67 | 4.13:1 | postal / tourism / education |
+| `lime-green` | #d1da49 | 5.17:1 | immigration / resident / stats |
+| `yellow-green` | #ecdf52 | 4.54:1 | dip / protocol / appeal |
+
+门户级页面用 `brown`。映射写在 `src/components/office/OfficeChrome.jsx` 的 `OFFICE_RIBBON_COLOR`，按署固定、同一署所有页面一致，不在页面里逐块挑色。`default` / `app-teal` / `app-green` / `app-blue` / `app-red` / `app-orange` / `purple` / `app-pink` 的飘带白字只有 1.7–2.9:1，**不得承载标题文字**（可做纯装饰底，但仍不如不用）。
+
 ### Neutral
 - **纸白 (Paper)** (`paper`): 页面底、顶栏、按钮默认底。全站最大面积的颜色。
 - **次级纸 (Paper Secondary)** (`paper-secondary`): 管理侧栏、输入区、提示条。
@@ -209,11 +238,13 @@ components:
 
 ## Typography
 
-**Display Font:** Nunito（拉丁与数字），with Noto Sans SC（中文）
+**Display Font:** Nunito（拉丁与数字），with Noto Sans SC（中文，zh-CN 基线）
 **Body Font:** 同一族（`--animal-font-family`）
 **Label/Mono Font:** 无独立标签字体；编号用 `tabular-nums`，不用等宽字做 UI
 
-**Character:** 一个字体族、两套字形——Nunito 的圆润几何负责拉丁与数字，Noto Sans SC 负责中文。两者都以 woff2 打进组件库，不引入第二套字体，也不在中文里用斜体强调（中文斜体是伪斜体）。字重不低于 400；标题 700，Title 飘带与统计大数字用 800–900。
+**Character:** 一个字体族、两套字形——Nunito 的圆润几何负责拉丁与数字，Noto Sans SC 负责中文。两者都以 woff2 打进组件库，也不在中文里用斜体强调（中文斜体是伪斜体）。字重不低于 400；标题 700，Title 飘带与统计大数字用 800–900。
+
+**zh-TW 宋体层（2026-11-02，用户指定）：** 语言为繁体中文时，中文字形换成宋体以区分正简体语境——正文与界面字（font-weight ≤600）用教育部标准宋体，标题与展示字（≥700）用粗宋体；拉丁与数字仍是 Nunito。两个字重段在 `src/index.css` 注册为同一家族 `NL TW Serif`，靠字重自动分流，任何元素无需单独指定；字号/行高/字距与简体完全一致，简繁同构不破版。web 产物是 `font/edusong-web.woff2` 与 `font/MTRSungBold-web.woff2`（源文件 `edusong_Unicode.ttf` / `MTRSungBold.otf` 保留在 `font/`；粗宋必须经 `pyftsubset --desubroutinize` 重写，FontForge 子例程化 CFF 会被浏览器 OTS 拒收）。字体只在 `html[lang=zh-TW]` 时被引用：zh-CN 模式零下载，首次切繁体一次性拉取后走缓存。
 
 ### Hierarchy
 - **Display** (800, 28px/1.2, `tabular-nums`): 统计数字、关键计数。数字本身用棕墨，薄荷只做旁边的装饰条或图标。
@@ -232,7 +263,7 @@ components:
 
 **The Two-Ink Rule.** 可读的字只有两档墨：正文墨（6.65:1）与次级墨（≥4.5:1）。链接、表头小标题、状态说明一律用墨色，颜色只出现在填充、描边和图标里；`#9f927d` 的淡墨不再承载任何文字。
 
-**The Ribbon-Is-Visual Rule.** `Title` 渲染的是 `<span>`，不产生标题层级。每个页面自己补 `<h1>`/`<h2>`/`<h3>`；飘带颜色一个页面不超过三种。
+**The Ribbon-Is-Visual Rule.** `Title` 渲染的是 `<span>`，不产生标题层级。每个页面自己补 `<h1>`/`<h2>`/`<h3>`。飘带色只从上方 Ribbon Palette 的四色里取（`brown` / `app-yellow` / `lime-green` / `yellow-green`）；一个页面不超过三种，署级标题色按署固定，不在页内换色。
 
 ## Layout
 
@@ -252,7 +283,7 @@ components:
 
 栅格不是像素还原，是排列关系：卡片 240px 是最小值，统计卡 220px，表单列 220px；gap 一律 16px。表单两列用 `repeat(auto-fit, minmax(220px, 1fr))`，行间距交给 FormItem。详情字段标签列固定 `min-width: 110px`，值列 `flex: 1`。
 
-断点只用五档：640 / 720 / 900 / 1024 / 1440，360 是最小验收宽度。1024 及以下侧栏收进 280px 抽屉；640 及以下顶栏换行、顶栏 padding 收到 16px、卡片单列、详情的标签移到值上方——但页面主 padding 仍是 24px。
+断点只用六档：480 / 640 / 720 / 900 / 1024 / 1440，360 是最小验收宽度。1024 及以下侧栏收进 280px 抽屉；640 及以下顶栏换行、顶栏 padding 收到 16px、卡片单列、详情的标签移到值上方——但页面主 padding 仍是 24px。480 及以下是表格的紧急压缩层：单元格与状态标签再收一档，操作列按钮去图标、文字允许换行，个别塞不下的多列表整列隐藏次要列（如景点表的「另一语言名称」列）——目的是让 360px 也守住「任何宽度不出现横向滚动」的硬承诺。
 
 密度由数据决定：列表页一屏至少 10 行；12 个署的服务卡在 1440px 下不滚动就能看到大部分；任何宽度下都不出现横向滚动条，长编号换行完整显示。
 
@@ -319,6 +350,7 @@ components:
 - **Type:** 表头 14px/700、正文 14px/500、单元格上下 14px；数字列右对齐 + `tabular-nums`；状态列左对齐；操作列右对齐并用 `.table-actions`。`.table-actions` 在 ≥901px 不换行（换行会把行高从 60 撑到 96px，一屏读不满 10 行），≤900px 才退回换行。
 - **States:** 加载保留表头与容器高度；空态用 `emptyText`；**失败不能渲染成空列表**——表格外给错误说明和重试。
 - **No ellipsis.** 申请号、证件号、姓名、状态必须换行完整显示。
+- **操作列一律 `.table-actions` 包裹**（哪怕只有一枚按钮）：它承载换行与 ≤480px 的按钮压缩（去图标、收窄、文字换行），裸 `<Button>` 会绕过这套响应式并撑爆 360px。
 
 ### Tags / Badges
 - 状态标签统一 `variant="soft"`：深字 + 浅底，只有标签墨色表里的六组颜色可用。
@@ -327,10 +359,19 @@ components:
 - Badge 只用于未读数：0 不显示，99+ 封顶，未读必须同时有文字或圆点。
 
 ### Navigation
-- **Admin sidebar:** 260px、次级纸底、右侧发丝边；条目是 999px 药丸，默认淡墨，hover 变薄荷浅底 + 棕墨，active 再加 `inset 3px 0 0 0` 的薄荷内条与 700 字重。分组标题是 12px/700/0.08em 的 eyebrow。
+- **Admin sidebar:** 260px、次级纸底、右侧发丝边；条目是 999px 药丸，默认次级墨，hover 变薄荷浅底 + 棕墨，active 再加 `inset 3px 0 0 0` 的薄荷内条与 700 字重。分组标题是 12px/700/0.08em 的 eyebrow。
 - **Everyone else:** 没有侧栏；门户卡片是入口，署内是横向 Tab 栏。侧栏层级只到"署 → 管理台"，不在侧栏复制署内 Tab。
 - **Breadcrumb:** 14px，用 `›` 分隔（来自 `naive-icons`），当前项棕墨 600。
 - **Tabs:** 传了 `activeKey` 就必须传 `onChange`；≤6 个页签，超出改左侧导航。
+
+### Office Chrome（署级骨架）
+十二个署共用 `src/components/office/OfficeChrome.jsx`：`OfficeShell` = 权限门 + 标题条 + **唯一一条页签栏** + 一次性 SSO 身份确认。每个署的 `*Shell.jsx` 只是一份配置（署名、`userTabs` / `adminTabs`、SSO 文案），不自己维护横幅与页签标记。
+
+- **标题条（OfficeBanner）：** 44px 署徽方块（16px 圆角、薄荷浅底、棕墨图标，图标由 `navConfig` 的 `office.icon` 自取）+ 18px/700 署名 + 13px 副名，`margin-bottom: 16px`，永远在页签之上。管理路由下右上角出现「管理台」角标：12px 虚线药丸、次级墨字、不加底色。
+- **页签栏（OfficeTabs）：** 999px 药丸、14px/500、次级纸底、次级墨字；hover 变薄荷浅底 + 棕墨；active 换 700 字重并压一条 `inset 0 -3px 0 0` 的薄荷内条。`flex-wrap: wrap`，360px 换行、绝不横滚。
+- **单栏铁律：** 市民页签与管理页签共用同一套样式，任何时刻只出现一条；进入管理路由时 `OfficeShell` 按 `navConfig.admin.base` 自动换成管理页签，两者不并排、不叠加。
+- **入口分工：** 市民页签只放办理功能；管理功能一律从侧栏「管理台」进入，不在署内页签里复制。
+- **SSO：** 首次进入某署时用 blob 弹窗确认一次门户身份（每个浏览器标签页一次），弹窗沿用 Modal 的签名形状与 `maskClosable={false}`。
 
 ### Modals & Drawers
 - 必须 `maskClosable={false}`：点遮罩不关闭。关闭入口是取消/关闭按钮、抽屉右上角 ×、或 Esc。
@@ -342,6 +383,13 @@ components:
 - 顶部居中、药丸形、`z-index: 4000`；成功用薄荷浅底 + 薄荷边，错误只换红边、底色不变（文字始终是棕墨）。
 - 只用 `src/components/toast.js` 的 `toastSuccess / toastError / toastInfo / toastWarning / toastApiError`——不要用库的 `Notification`（React 19 下从 `react-dom` 主入口取 `createRoot` 会抛异常）。
 - 一个动作只发一条；校验错误留在字段旁，不 toast。
+
+### Print Surfaces（打印面）
+打印不是截图：`@media print` 下隐藏顶栏、侧栏、页脚、标题条、页签栏与所有工具栏（`.app-header` / `.app-footer` / `.app-sider` / `.no-print` / `.nl-office-banner` / `.nl-tabs`），只留白纸内容。纸张规格集中在 `src/index.css` 的 `@page { size: A4; margin: 16mm }`，各署的打印块只调显隐与去边框。
+
+- 各署的打印块只做两件事：藏界面（顶栏、侧栏、页脚、标题条、页签栏、工具栏）与露凭证。文书证书 `.doc-cert`、外交身份函 `.dip-print-area` 固定到纸面并去边框，申诉决定书 `.appeal-doc-paper` 去边框去阴影，居民卡只留 1px 薄荷描边，签注凭证直接走浏览器打印。
+- 打印面的例外只在 `@media print` 内成立：纯白纸底、4–8px 小圆角（印章 / 二维码 / 趋势柱）、11px 装饰字——它们不回流到屏幕样式，也不新增 `--animal-*` token。
+- 打印必须有明确的语义入口（`window.print()` 挂在「打印 / 下载」按钮上），不做打开即打印、不做自动打印。
 
 ### 项目组合组件
 `ConfirmAction`、`LinkageField`（跨署证件字段，必须先走身份同意弹窗）、`InboxDrawer`（跨署站内信）、`AutoApproveSettings`（off / immediate / delayed 三态）是项目的"签名组合"。它们沿用同一套纸面与药丸语言，但状态更多：未选 → 校验中 → 已归属 / 非本人 / 未找到 / 已被引用，每一种都必须有文字说明，不只换 Tag 颜色。
@@ -359,9 +407,11 @@ components:
 - **Do** 让每个 `<Table>` 带 `className="table-fit"`，长文本换行、操作列用 `.table-actions`。
 - **Do** 每页只放一个 `<h1>`、一个主操作；标题层级不跳级。
 - **Do** 用 `src/lib/date.js` 的 `fmtDate` / `fmtDateTime` 输出日期，用 `tabular-nums` 输出统计数字。
+- **Do** 把署级骨架交给 `OfficeShell`：标题条在上、唯一一条页签栏在下；新建署只写薄配置，并在 `OFFICE_RIBBON_COLOR` 里登记飘带色。
 
 ### Don't:
 - **Don't** 用薄荷做文字色、链接色或 12–14px 的语义文字（1.97:1）；也不要薄荷字压薄荷底。
+- **Don't** 用 Ribbon Palette 之外的颜色做飘带文字（白字 1.7–2.9:1），也不要在页内逐块换飘带色。
 - **Don't** 用纯黑 `#000`、冷灰 `#fafafa` 背景或冷蓝焦点环。
 - **Don't** 做暗色模式或 `prefers-color-scheme` 局部反色；组件库没有暗色 token 集。
 - **Don't** 用 `border-radius: 0` 做"高级感"，也不要改 Modal 的 blob 或 Title 的燕尾飘带。

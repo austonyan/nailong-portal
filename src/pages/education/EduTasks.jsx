@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Progress, Tag } from 'animal-island-ui';
+import { Title, Card, Progress, Tag } from 'animal-island-ui';
 import { BulbIcon, StarIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, pct, toastEduError } from './shared.jsx';
@@ -36,7 +36,7 @@ export default function EduTasks() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.tasks.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.tasks.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('edu.tasks.tip')}</p>
 

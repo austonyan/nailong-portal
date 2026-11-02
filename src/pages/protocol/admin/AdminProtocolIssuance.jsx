@@ -1,18 +1,7 @@
 // 邀请函与活动凭证管理:定向邀请、撤销、凭证作废与补发。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  DatePicker,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-  Table,
-  Tag,
-  Tabs,
-} from 'animal-island-ui';
+import { Title, Button, Card, DatePicker, Input, Modal, Pagination, Select, Table, Tag, Tabs } from 'animal-island-ui';
 import { BanIcon, PlusIcon, RefreshIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { StatusTag, TextArea, fmtDateTime, toastProtocolError } from '../shared.jsx';
@@ -186,7 +175,7 @@ export default function AdminProtocolIssuance() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           {['pending', 'used'].includes(row.status) && (
             <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => setPassTarget({ kind: 'void', pass: row })}>
               {t('protocol.action.void')}
@@ -299,7 +288,7 @@ export default function AdminProtocolIssuance() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.issuanceTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.issuanceTitle')}</Title></h1>
         <p className="muted-text">{t('protocol.admin.issuanceSubtitle')}</p>
       </div>
 

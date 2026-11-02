@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { Button, Card, Progress, Table } from 'animal-island-ui';
+import { Title, Button, Card, Progress, Table } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
-import { DipAdminNav, exportCsv, toastDipError } from '../../../components/dip/shared.jsx';
+import { exportCsv, toastDipError } from '../../../components/dip/shared.jsx';
 
 function StatCard({ label, value }) {
   return (
@@ -48,7 +48,6 @@ export default function AdminDipStats() {
   if (!stats) {
     return (
       <div className="dip-page">
-        <DipAdminNav />
         <p className="muted-text">{t('common.loading')}</p>
       </div>
     );
@@ -66,9 +65,8 @@ export default function AdminDipStats() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.admin.stats.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.admin.stats.title')}</Title></h1>
         <Button type="primary" onClick={exportStats}>{t('dip.admin.stats.export')}</Button>
       </div>
 

@@ -2,12 +2,10 @@
 // 支持:通过 / 驳回(原因+意见) / 补件 / 暂停恢复 / 断交复核 / 冻结解冻注销。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { api, getAccessToken } from '../../../api/client.js';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
-import {
-  DipAdminNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError,
-} from '../../../components/dip/shared.jsx';
+import { StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastWarning } from '../../../components/toast.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
@@ -564,9 +562,8 @@ export default function AdminDipReview() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.admin.reviewTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.admin.reviewTitle')}</Title></h1>
         <div className="dip-msg-filter">
           <Button type={kind === 'relation' ? 'primary' : 'default'} size="small" onClick={() => { setKind('relation'); setStatus('pending_review'); }}>
             {t('dip.admin.tabRelations')}

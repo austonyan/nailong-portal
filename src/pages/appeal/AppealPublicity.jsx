@@ -1,8 +1,9 @@
 // 处理公示:脱敏统计(申诉量/受理率/时长/结果分布)、典型案例与质量报告,
 // 不含申诉人信息与敏感细节。
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Card, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
 
@@ -10,17 +11,25 @@ const PCT = (v) => `${Math.round((v || 0) * 100)}%`;
 
 export default function AppealPublicity() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [stats, setStats] = useState(null);
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/appeal/publicity')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastAppealError(t, err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
+
+  useEffect(() => {
     api
       .get('/appeal/publicity/stats')
       .then((data) => setStats(data))
@@ -31,7 +40,7 @@ export default function AppealPublicity() {
 
   return (
     <div className="appeal-publicity-page">
-      <h1 className="page-title">{t('appeal.publicity.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.publicity.title')}</Title></h1>
       <p className="muted-text">{t('appeal.publicity.maskTip')}</p>
 
       {stats && (

@@ -1,7 +1,7 @@
 // 统计与报表:活动/报名/邀请函/接待方/礼遇/验真/签到指标与导出。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Progress, Table } from 'animal-island-ui';
+import { Title, Button, Card, Progress, Table } from 'animal-island-ui';
 import { DownloadIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { StatusTag, exportProtocolCsv, toastProtocolError } from '../shared.jsx';
@@ -54,7 +54,7 @@ export default function AdminProtocolStats() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.statsTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.statsTitle')}</Title></h1>
         <div className="protocol-inline-gap">
           <Button type="dashed" icon={<DownloadIcon />} onClick={() => exportFile('events', 'protocol-events.csv')}>{t('protocol.admin.exportEvents')}</Button>
           <Button type="dashed" icon={<DownloadIcon />} onClick={() => exportFile('registrations', 'protocol-registrations.csv')}>{t('protocol.admin.exportRegistrations')}</Button>

@@ -1,7 +1,7 @@
 // 数据说明:统计口径、来源、更新方式与功能性提示。
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Divider, Tag } from 'animal-island-ui';
+import { Title, Card, Divider, Tag } from 'animal-island-ui';
 import { InfoIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastStatError } from './shared.jsx';
@@ -37,7 +37,7 @@ export default function StatsGuide() {
   return (
     <div className="stat-page">
       <div className="page-header">
-        <h1 className="page-title">{t('stat.guide.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('stat.guide.title')}</Title></h1>
         <span className="stat-updated">{t('stat.home.updatedAt', { time: fmtDateTime(data.asOf) })}</span>
       </div>
       <p className="muted-text">{t('stat.guide.tip')}</p>

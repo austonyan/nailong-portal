@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { DownloadIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
-import { ImNav, StampView, StatusTag, exportCsv } from '../../components/immigration/shared.jsx';
+import { StampView, StatusTag, exportCsv } from '../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 function daysLeft(entry) {
@@ -14,21 +15,24 @@ function daysLeft(entry) {
 
 function EntryTab({ onReload }) {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [exitTarget, setExitTarget] = useState(null);
   const [ports, setPorts] = useState([]);
   const [exitPort, setExitPort] = useState('ROYAL_PORT');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/records/entry')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 
@@ -82,9 +86,11 @@ function EntryTab({ onReload }) {
       width: 160,
       render: (_, record) =>
         record.status === 'entered' ? (
-          <Button type="default" size="small" icon={<SendIcon />} onClick={() => setExitTarget(record)}>
-            {t('imm.records.registerExit')}
-          </Button>
+          <div className="table-actions">
+            <Button type="default" size="small" icon={<SendIcon />} onClick={() => setExitTarget(record)}>
+              {t('imm.records.registerExit')}
+            </Button>
+          </div>
         ) : (
           <span className="muted-text">-</span>
         ),
@@ -133,17 +139,22 @@ function EntryTab({ onReload }) {
 
 function ExitTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/records/exit')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
 
   const columns = [
     { title: t('imm.records.recordNo'), dataIndex: 'no', width: 190 },
@@ -161,9 +172,8 @@ export default function ImmigrationRecords() {
   const { t } = useTranslation();
   return (
     <div className="im-page">
-      <ImNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.records.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.records.title')}</Title></h1>
       </div>
       <Card>
         <Tabs

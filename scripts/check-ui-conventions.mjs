@@ -93,7 +93,8 @@ for (const file of walk(src)) {
   }
 
   const tables = content.match(/<Table\b/g) ?? [];
-  const fitted = content.match(/<Table\s+className="table-fit"/g) ?? [];
+  // className 里允许并附加页面级类,但必须含 table-fit(如 "table-fit tour-attractions-table")
+  const fitted = content.match(/<Table\s+className="[^"]*\btable-fit\b[^"]*"/g) ?? [];
   tableCount += tables.length;
   if (tables.length !== fitted.length) {
     errors.push(`${rel}: 有 ${tables.length - fitted.length} 个 <Table> 缺少 className="table-fit"`);

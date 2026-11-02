@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
@@ -28,22 +29,25 @@ function ListEditor({ labelKey, rows, setRows, makeEmpty, columns }) {
 
 export default function DocsTypesAdmin() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null); // null | {} create | type object
   const [form, setForm] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [fields, setFields] = useState([]);
   const [busy, setBusy] = useState(false);
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     try {
       const d = await api.get('/docs/admin/types');
       setItems(d.items);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -131,7 +135,7 @@ export default function DocsTypesAdmin() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.types.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.types.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('docs.admin.types.create')}
         </Button>

@@ -1,12 +1,14 @@
 // 审计与合规:敏感操作审计日志、验真记录、导出留痕查询。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Table, Tabs, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { linkageStatusLabel } from '../../components/linkage/shared.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
 
-// 验真记录里的 result 形如 `decision:valid` / `appeal:resolved` / `not_found`。
+// 验真记录里的 result 旧格式为 `decision:valid` / `appeal:resolved` / `not_found`,
+// 统一验真后跨署记录为 `office:kind:status`(如 `tourism:attraction:online`)。
 // 不能再用 includes('valid')(会把 invalid 也染成绿色),按枚举直查。
 const VERIFY_RESULT_COLORS = {
   valid: 'app-green',
@@ -22,10 +24,23 @@ const VERIFY_RESULT_COLORS = {
 function VerifyResultTag({ value }) {
   const { t } = useTranslation();
   const raw = String(value ?? '');
-  const [kind, status] = raw.includes(':') ? raw.split(':') : [null, raw];
-  const label = kind
-    ? `${t(`appeal.audit.kind.${kind}`, { defaultValue: t('common.unknown') })} · ${t(`appeal.audit.result.${status}`, { defaultValue: t('common.unknown') })}`
-    : t(`appeal.audit.result.${raw}`, { defaultValue: t('common.unknown') });
+  const parts = raw.split(':');
+  let status = raw;
+  let label;
+  if (parts.length >= 3) {
+    const [office, kind, ...rest] = parts;
+    status = rest.join(':');
+    const officeText = t(`appeal.verifyOffice.${office}`, { defaultValue: t('common.unknown') });
+    const kindText = t(`appeal.verifyKind.${kind}`, { defaultValue: t('common.unknown') });
+    const statusText = linkageStatusLabel(t, office, kind, status);
+    label = [officeText, kindText, statusText].filter(Boolean).join(' · ');
+  } else if (parts.length === 2) {
+    const [kind, kindStatus] = parts;
+    status = kindStatus;
+    label = `${t(`appeal.audit.kind.${kind}`, { defaultValue: t('common.unknown') })} · ${t(`appeal.audit.result.${status}`, { defaultValue: t('common.unknown') })}`;
+  } else {
+    label = t(`appeal.audit.result.${raw}`, { defaultValue: t('common.unknown') });
+  }
   return (
     <Tag variant="soft" color={VERIFY_RESULT_COLORS[status] || 'brown'}>
       {label}
@@ -84,7 +99,7 @@ export default function AppealAdminAudit() {
   return (
     <div className="appeal-admin-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.audit.title')}</Title></h1>
       </div>
 
       <Card>

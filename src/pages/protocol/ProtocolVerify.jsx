@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Input, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Input, Tag, Typewriter } from 'animal-island-ui';
 import { SailboatIcon, SearchIcon, ShieldIcon } from 'naive-icons';
 import { StatusTag, fmtDateTime } from './shared.jsx';
 import { toastError } from './shared.jsx';
@@ -60,7 +60,7 @@ export default function ProtocolVerify() {
         <span className="muted-text">{t('protocol.officeName')}</span>
       </header>
       <Background type="sprinkles" className="protocol-verify-hero">
-        <h1 className="page-title">{t('protocol.verify.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.verify.title')}</Title></h1>
         <Typewriter speed={35}>
           <p className="protocol-hero-sub">{t('protocol.verify.subtitle')}</p>
         </Typewriter>

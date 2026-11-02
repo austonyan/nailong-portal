@@ -1,30 +1,34 @@
 // 审计与合规:敏感操作审计日志查询与导出。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Table } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Table } from 'animal-island-ui';
 import { DownloadIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { downloadResidentFile } from '../../../api/resident.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { fmtDateTime, toastResError } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminResAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
   // 动作检索 300ms 防抖:避免逐键打接口。
   const actionDebounced = useDebouncedValue(action, 300);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/resident/admin/audit${actionDebounced.trim() ? `?action=${encodeURIComponent(actionDebounced.trim())}` : ''}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [actionDebounced, t]);
+  }, [actionDebounced, t, loadError]);
 
   useEffect(() => {
     load();
@@ -40,9 +44,8 @@ export default function AdminResAudit() {
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.audit.title')}</Title></h1>
         <div className="table-actions res-filter-bar">
           <Input size="middle" allowClear prefix={<SearchIcon size={14} />} placeholder={t('res.admin.audit.actionPlaceholder')} value={action} onChange={(e) => setAction(e.target.value)} />
           <Button icon={<DownloadIcon />} onClick={() => downloadResidentFile('/resident/admin/audit.csv', 'resident-audit.csv').catch((err) => toastResError(t, err))}>

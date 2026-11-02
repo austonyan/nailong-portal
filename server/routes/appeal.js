@@ -37,6 +37,7 @@ import {
   sweepAll,
   writebackDecision,
 } from '../appeal.js';
+import { lookupBusinessNumber } from '../appealVerify.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data');
@@ -162,11 +163,18 @@ router.get('/verify', (req, res) => {
   const no = String(req.query.no || '').trim().toUpperCase();
   if (!token && !no) throw badRequest('VALIDATION_ERROR', 'Provide ?no= or ?token=');
   sweepAll();
-  const result = maskVerifyResult(token, no);
+  // 先查申诉本署（含决定书 token / 投诉 / 工单），未命中再查跨署统一注册表。
+  let result;
+  if (token) {
+    result = maskVerifyResult(token, '');
+  } else {
+    result = maskVerifyResult('', no);
+    if (!result.found) result = lookupBusinessNumber(no);
+  }
   db.prepare('INSERT INTO appeal_verify_logs (query, ip, result, created_at) VALUES (?, ?, ?, ?)').run(
     (token ? `token:${token.slice(0, 8)}…` : no).slice(0, 64),
     ip,
-    result.found ? `${result.kind}:${result.status}` : 'not_found',
+    result.found ? `${result.office || 'appeal'}:${result.kind}:${result.status ?? 'none'}` : 'not_found',
     now()
   );
   res.json(result);

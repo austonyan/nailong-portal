@@ -1117,6 +1117,9 @@
     "notFoundTip": "這片海域什麼都沒有"
   },
   "docs": {
+    "sso": {
+      "tip": "進入服務後，你的門戶身分將用於文書辦理、認證申請與站內通知。你可以隨時在個人資料頁登出。"
+    },
     "title": "奶龍國皇家文書與認證署",
     "subtitle": "歡迎來到皇家文書與認證署，{{name}}！在這裡為你的冒險出具認證。",
     "tab": {
@@ -1375,7 +1378,6 @@
       "tip": "點擊站內訊息可以跳轉對應申請；所有狀態變更（補件、通過、駁回、到期）都會在這裡通知。"
     },
     "admin": {
-      "title": "文書與認證署 · 管理端",
       "tab": {
         "review": "審核工作台",
         "types": "類型管理",
@@ -1618,8 +1620,12 @@
     }
   },
   "imm": {
+    "officeName": "皇家口岸入境署",
+    "officeSub": "入境申報 · 通關碼 · 出入境記錄",
+    "sso": {
+      "tip": "進入服務後，你的門戶身分將用於出入境申報、通關查詢與站內通知。你可以隨時在個人資料頁登出。"
+    },
     "nav": {
-      "label": "入境署導覽",
       "home": "署內首頁",
       "ports": "口岸",
       "declare": "入境申報",
@@ -2498,7 +2504,6 @@
       "notFound": "未找到對應的居民卡，請檢查編號"
     },
     "admin": {
-      "navLabel": "居民署管理導覽",
       "tabs": {
         "review": "登記審核",
         "changes": "變更審批",
@@ -2749,7 +2754,6 @@
       "tip": "為保護帳號安全，進入各署前請確認目前登入身分。外交身分為業務身分，與登入帳號相互獨立。"
     },
     "nav": {
-      "label": "外交事務署導覽",
       "home": "署務首頁",
       "apply": "建交申請",
       "relations": "我的建交",
@@ -3376,8 +3380,6 @@
       "messages": "站內信",
       "help": "幫助",
       "verify": "驗真查詢",
-      "workbench": "管理台",
-      "frontDesk": "返回前台",
       "review": "報名審核",
       "adminEvents": "活動管理",
       "issuance": "邀請函與憑證",
@@ -4344,9 +4346,55 @@
       "complaint": "僅投訴建議"
     },
     "verifyKind": {
+      "application": "申請",
+      "permit": "簽註",
+      "declaration": "入境申報",
+      "pass_code": "通關碼",
+      "entry": "入境紀錄",
+      "exit": "出境紀錄",
+      "certificate": "認證文書",
+      "relation": "建交關係",
+      "identity": "外交身分",
+      "agreement": "互免協議",
+      "card": "居民證",
+      "change": "變更申請",
+      "event": "活動",
+      "registration": "活動報名",
+      "invitation": "邀請函",
+      "pass": "活動憑證",
+      "host": "接待方",
+      "host_cert": "接待方證書",
+      "courtesy": "禮遇申請",
       "appeal": "申訴",
       "review": "複核",
-      "decision": "決定書"
+      "complaint": "投訴建議",
+      "ticket": "工單",
+      "decision": "決定書",
+      "deletion": "刪除申請",
+      "receipt": "執行回執",
+      "postcard": "明信片",
+      "notice": "公告",
+      "attraction": "景點",
+      "article": "文章",
+      "badge": "徽章",
+      "checkin": "打卡",
+      "report": "統計報告",
+      "edu_entry": "教育詞條",
+      "task": "閱讀任務"
+    },
+    "verifyOffice": {
+      "visa": "簽註申請署",
+      "immigration": "皇家口岸入境署",
+      "docs": "皇家文書與認證署",
+      "diplomacy": "皇家外交事務署",
+      "resident": "皇家居民登記署",
+      "protocol": "皇家禮賓與活動署",
+      "appeal": "皇家申訴與監察署",
+      "archives": "皇家檔案與紀錄署",
+      "postal": "皇家郵政與通信署",
+      "tourism": "皇家文化旅遊署",
+      "stats": "皇家統計署",
+      "education": "皇家教育與科學署"
     },
     "complaintKind": {
       "complaint": "投訴",
@@ -4825,17 +4873,24 @@
     },
     "verify": {
       "title": "驗真中心",
-      "headerSub": "申訴 · 複核 · 決定書驗真",
-      "tip": "輸入申訴、複核或決定書編號，或掃描決定書QR Code，核驗紀錄真實性與狀態。",
-      "placeholder": "請輸入編號",
+      "headerSub": "十二署業務編號統一核驗",
+      "tip": "輸入任一業務署簽發的編號，或掃描決定書QR Code，核驗紀錄真實性與目前狀態。",
+      "placeholder": "請輸入編號，如NLA-…、NLT-…、NLD…",
       "action": "查詢",
+      "number": "編號",
+      "office": "所屬署",
+      "status": "狀態",
+      "valid": "有效",
+      "notEffective": "未生效",
+      "issuedAt": "紀錄時間",
+      "validUntil": "有效期至",
+      "checkedAt": "查詢時間",
       "appealNo": "關聯申訴",
       "decisionType": "處理決定",
       "handledAt": "處理時間",
-      "office": "出具機關",
-      "maskTip": "為保護隱私，驗真結果僅顯示狀態與必要資訊，不含申訴內容與個人聯絡方式。",
+      "maskTip": "為保護隱私，驗真結果僅顯示編號所屬署、業務類型、狀態與必要日期，不含姓名、聯絡方式與業務內容。",
       "notFound": "未查詢到該編號",
-      "notFoundTip": "請核對編號是否完整、大小寫是否正確；多次查詢失敗請稍後再試。"
+      "notFoundTip": "請核對編號是否完整、大小寫是否正確；已刪除或已補發的歷史編號可能無法查到。"
     },
     "admin": {
       "workbenchTitle": "申訴處理工作台",
@@ -5173,14 +5228,10 @@
   "arch": {
     "officeName": "奶龍國皇家檔案與紀錄署",
     "officeSub": "各署業務紀錄的歸檔與本人查詢出口",
-    "bannerPublic": "本人檔案查詢",
-    "bannerAdmin": "檔案管理台",
     "sso": {
       "tip": "皇家檔案與紀錄署將以你目前登入的身分展示本人在各署的歸檔紀錄，唯讀查看，不會修改任何業務資料。"
     },
     "nav": {
-      "label": "檔案署導覽",
-      "adminLabel": "檔案管理台導覽",
       "home": "首頁",
       "records": "我的檔案",
       "requests": "刪除申請",
@@ -5189,7 +5240,6 @@
       "rules": "歸檔規則",
       "access": "存取日誌",
       "audit": "稽核日誌",
-      "admin": "檔案管理台",
       "settings": "設定"
     },
     "home": {
@@ -5867,11 +5917,9 @@
       "articles": "文化內容",
       "collection": "收集冊",
       "badges": "成就徽章",
-      "my": "我的旅遊",
-      "manage": "管理入口"
+      "my": "我的旅遊"
     },
     "admin": {
-      "navLabel": "文化旅遊署管理",
       "tabs": {
         "attractions": "景點管理",
         "articles": "內容管理",
@@ -5896,6 +5944,10 @@
       "articleStatus": {
         "published": "已發布",
         "offline": "已下線"
+      },
+      "badgeStatus": {
+        "active": "啟用",
+        "inactive": "停用"
       },
       "attractions": {
         "title": "景點管理",
@@ -6286,7 +6338,6 @@
       "education": "教育科學署"
     },
     "admin": {
-      "navLabel": "統計署管理導覽",
       "tabs": {
         "dashboard": "平台總看板",
         "metrics": "統計口徑",

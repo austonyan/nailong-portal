@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Tag, Upload } from 'animal-island-ui';
+import { Title, Button, Card, Modal, Tag, Upload } from 'animal-island-ui';
 import { AlertTriangleIcon, PaperclipIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
@@ -121,7 +121,7 @@ export default function ResidentApplicationDetail() {
   return (
     <div className="res-app-detail">
       <div className="page-header">
-        <h1 className="page-title">{app.appNo}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{app.appNo}</Title></h1>
         <StatusTag value={app.status} map={APPLICATION_STATUS_COLORS} i18nPrefix="res.appStatus" />
       </div>
       <p className="muted-text">

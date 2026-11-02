@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   BadgeCheckIcon,
@@ -69,7 +69,7 @@ export default function DocsHome() {
   return (
     <div className="docs-home">
       <Background type="sprinkles" className="docs-home-hero">
-        <h1 className="page-title">{t('docs.home.welcome')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.home.welcome')}</Title></h1>
         <Typewriter speed={35}>
           <p className="docs-home-tagline">{t('docs.home.tagline')}</p>
         </Typewriter>

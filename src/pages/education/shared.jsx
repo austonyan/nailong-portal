@@ -2,12 +2,10 @@
 // office status palette. Status tags, date formatting, the textarea and the
 // error-toast mapper are the shared implementations re-exported below.
 /* eslint-disable react/only-export-components */
-import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, Tag } from 'animal-island-ui';
 import { toastApiError } from '../../components/toast.js';
 import { StatusTag as SharedStatusTag } from '../../components/StatusTag.jsx';
-import { useAuth } from '../../auth/AuthContext.jsx';
 
 // 全站唯一的时间格式化实现(src/lib/date.js,带 isValid() 保护)。
 export { fmtDateTime } from '../../lib/date.js';
@@ -48,44 +46,9 @@ export function TargetTypeTag({ value }) {
   );
 }
 
-const USER_TABS = [
-  { to: '/education', key: 'home', end: true },
-  { to: '/education/entries', key: 'entries' },
-  { to: '/education/articles', key: 'articles' },
-  { to: '/education/tasks', key: 'tasks' },
-  { to: '/education/my', key: 'my' },
-];
 
-const ADMIN_TABS = [
-  { to: '/education/admin/review', key: 'adminReview', permission: 'edu:review' },
-  { to: '/education/admin/entries', key: 'adminEntries', permission: 'edu:manage' },
-  { to: '/education/admin/articles', key: 'adminArticles', permission: 'edu:manage' },
-  { to: '/education/admin/tasks', key: 'adminTasks', permission: 'edu:manage' },
-  { to: '/education/admin/stats', key: 'adminStats', permission: 'edu:manage' },
-  { to: '/education/admin/audit', key: 'adminAudit', permission: 'edu:manage' },
-  { to: '/education/admin/settings', key: 'adminSettings', permission: 'edu:manage' },
-];
 
-export function EduNav() {
-  const { t } = useTranslation();
-  const { can } = useAuth();
-  const navClass = ({ isActive }) => (isActive ? 'edu-nav-link active' : 'edu-nav-link');
-  const adminTabs = ADMIN_TABS.filter((tab) => can(tab.permission));
-  return (
-    <nav className="edu-nav" aria-label={t('edu.officeName')}>
-      {USER_TABS.map((tab) => (
-        <NavLink key={tab.key} to={tab.to} end={tab.end} className={navClass}>
-          {t(`edu.nav.${tab.key}`)}
-        </NavLink>
-      ))}
-      {adminTabs.map((tab) => (
-        <NavLink key={tab.key} to={tab.to} className={navClass}>
-          {t(`edu.nav.${tab.key}`)}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
+
 
 // 错误提示委托全站统一的 api.<code> 映射(未知码回退通用文案,不展示服务端英文)。
 export function toastEduError(t, err) {

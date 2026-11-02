@@ -2,13 +2,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
 import { BookIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastEduError } from './shared.jsx';
 
 export default function EduEntries() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [q, setQ] = useState('');
@@ -17,7 +19,8 @@ export default function EduEntries() {
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     setItems(null);
     const params = new URLSearchParams();
     params.set('page', String(page));
@@ -30,9 +33,10 @@ export default function EduEntries() {
       setTotal(data.total ?? 0);
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [category, page, q, t]);
+  }, [category, page, q, t, loadError]);
 
   useEffect(() => {
     load();
@@ -53,7 +57,7 @@ export default function EduEntries() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.entries.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.entries.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('edu.entries.tip')}</p>
 

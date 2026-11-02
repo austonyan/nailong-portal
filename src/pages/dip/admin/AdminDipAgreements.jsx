@@ -1,11 +1,12 @@
 // 互免协议管理: 创建 / 编辑 / 生效 / 终止 / 公示开关。协议变更全部审计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import dayjs from 'dayjs';
 import { api } from '../../../api/client.js';
-import { DipAdminNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
+import { StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
 const TYPES = ['entry_courtesy', 'visa_waiver', 'event_pass'];
@@ -129,18 +130,21 @@ function AgreementModal({ initial, onClose, onSaved }) {
 
 export default function AdminDipAgreements() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [modal, setModal] = useState(null); // null | {} | row
+    loadError.clear();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get('/dip/admin/agreements?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastDipError(t, err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(load, [load]);
 
@@ -192,9 +196,8 @@ export default function AdminDipAgreements() {
 
   return (
     <div className="dip-page">
-      <DipAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.agreement.adminTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.agreement.adminTitle')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => setModal({ effectiveFrom: dayjs().format('YYYY-MM-DD') })}>
           {t('dip.agreement.create')}
         </Button>

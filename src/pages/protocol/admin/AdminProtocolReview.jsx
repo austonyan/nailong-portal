@@ -1,17 +1,8 @@
 // 报名审核工作台:待审队列、详情、身份校验结果、通过/候补/拒绝与导出。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-  Table,
-  Tag,
-} from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { useAuth } from '../../../auth/AuthContext.jsx';
@@ -33,6 +24,7 @@ const IDENTITY_OPTIONS = ['ordinary', 'resident', 'diplomatic', 'foreign'];
 
 export default function AdminProtocolReview() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const { can } = useAuth();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
@@ -48,7 +40,8 @@ export default function AdminProtocolReview() {
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -59,9 +52,10 @@ export default function AdminProtocolReview() {
       setTotal(data.total);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, identity, dq, t]);
+  }, [page, status, identity, dq, t, loadError]);
 
   useEffect(() => {
     load();
@@ -138,7 +132,7 @@ export default function AdminProtocolReview() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openDetail(row)}>
             {t('protocol.action.view')}
           </Button>
@@ -155,7 +149,7 @@ export default function AdminProtocolReview() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.reviewTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.reviewTitle')}</Title></h1>
         <p className="muted-text">{t('protocol.admin.reviewSubtitle')}</p>
       </div>
 

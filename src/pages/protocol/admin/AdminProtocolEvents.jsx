@@ -1,20 +1,8 @@
 // 活动发布与管理:创建/编辑、状态机(发布/截止/开始/结束/取消)、公告与删除。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Checkbox,
-  DatePicker,
-  Drawer,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-  Switch,
-  Table,
-  Tag,
-} from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Checkbox, DatePicker, Drawer, Input, Modal, Pagination, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SearchIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import {
@@ -93,6 +81,7 @@ function dateAt(date, hour) {
 
 export default function AdminProtocolEvents() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -111,7 +100,8 @@ export default function AdminProtocolEvents() {
   const [notices, setNotices] = useState([]);
   const [noticeForm, setNoticeForm] = useState({ title: '', body: '', level: 'info' });
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -125,9 +115,10 @@ export default function AdminProtocolEvents() {
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, typeCode, query, t]);
+  }, [page, status, typeCode, query, t, loadError]);
 
   useEffect(() => {
     load();
@@ -298,7 +289,7 @@ export default function AdminProtocolEvents() {
     {
       title: t('common.actions'),
       render: (_, row) => (
-        <div className="protocol-row-actions">
+        <div className="table-actions">
           <Button type="text" size="small" icon={<EditIcon />} onClick={() => openEdit(row)}>
             {t('protocol.action.edit')}
           </Button>
@@ -318,7 +309,7 @@ export default function AdminProtocolEvents() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.admin.eventsTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.admin.eventsTitle')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openNew}>
           {t('protocol.admin.createEvent')}
         </Button>

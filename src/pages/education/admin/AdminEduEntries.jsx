@@ -2,7 +2,8 @@
 // 提交审核后进入 edu:review 的独立队列,管理端此时锁定编辑与删除。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ConfirmModal, StatusTag, TextArea, fmtDateTime, toastEduError } from '../shared.jsx';
@@ -26,6 +27,7 @@ const STATUS_FILTERS = ['', 'draft', 'pending_review', 'published', 'offline'];
 
 export default function AdminEduEntries() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [categories, setCategories] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
@@ -40,7 +42,8 @@ export default function AdminEduEntries() {
   const [relatedPool, setRelatedPool] = useState([]);
   const [relatedPick, setRelatedPick] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -49,9 +52,10 @@ export default function AdminEduEntries() {
       setItems(data.items ?? []);
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [dq, statusFilter, t]);
+  }, [dq, statusFilter, t, loadError]);
 
   useEffect(() => {
     load();
@@ -235,7 +239,7 @@ export default function AdminEduEntries() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.admin.entries.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.admin.entries.title')}</Title></h1>
       </div>
 
       <Card>

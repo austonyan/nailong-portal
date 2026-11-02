@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, useForm } from 'animal-island-ui';
+import { Title, Avatar, Button, Card, Divider, Form, FormItem, Input, Tag, useForm } from 'animal-island-ui';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { toastSuccess, toastApiError } from '../components/toast.js';
@@ -49,7 +49,7 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <h1 className="page-title">{t('profile.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="brown">{t('profile.title')}</Title></h1>
 
       <Card className="profile-header">
         <Avatar size={64}>{(user.displayName || user.username || '?').slice(0, 1)}</Avatar>

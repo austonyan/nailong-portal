@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Divider, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Divider, Tabs, Tag } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { fmtDate, fmtDateTime } from '../../lib/date.js';
-import { AnnouncementLevelTag, ImNav, StatusTag } from '../../components/immigration/shared.jsx';
+import { AnnouncementLevelTag, StatusTag } from '../../components/immigration/shared.jsx';
 
 // 虚构口岸平面示意 — 用装饰性色块拼出通关动线,不涉及真实地图。
 function PortMap({ mapDesc }) {
@@ -56,7 +56,6 @@ export default function ImmigrationPortDetail() {
   if (!data) {
     return (
       <div className="im-page">
-        <ImNav />
         <Card type="dashed">
           <p className="muted-text">{failed ? t('common.loadFailed') : t('common.loading')}</p>
         </Card>
@@ -68,11 +67,10 @@ export default function ImmigrationPortDetail() {
 
   return (
     <div className="im-page">
-      <ImNav />
       {port ? (
         <>
           <div className="page-header">
-            <h1 className="page-title">{port.name}</h1>
+            <h1 className="page-title"><Title size="middle" color="lime-green">{port.name}</Title></h1>
             <StatusTag value={port.status} i18nPrefix="imm.portStatus" />
           </div>
           <p className="muted-text">

@@ -1,7 +1,8 @@
 // 公告管理:CRUD、发布/下线、双语编辑与通知统计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError, toastSuccess } from '../../../components/toast.js';
@@ -21,6 +22,7 @@ const EMPTY_NOTICE = { id: null, title: '', titleTw: '', body: '', bodyTw: '', l
 
 export default function AdminPostNotices() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -34,7 +36,8 @@ export default function AdminPostNotices() {
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [rowBusyId, setRowBusyId] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE_SIZE) });
       if (status) params.set('status', status);
@@ -44,10 +47,11 @@ export default function AdminPostNotices() {
       setTotal(data.total);
     } catch (err) {
       toastPostError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
       setTotal(0);
     }
-  }, [page, query, status, t]);
+  }, [page, query, status, t, loadError]);
 
   useEffect(() => {
     load();
@@ -182,7 +186,7 @@ export default function AdminPostNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">{t('post.admin.notices.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.notices.title')}</Title></h1>
       </div>
 
       <Card>

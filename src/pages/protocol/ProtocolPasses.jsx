@@ -1,30 +1,32 @@
 // 我的活动凭证:电子票、二维码、状态、下载与验真。
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { CalendarIcon, CreditCardIcon, DownloadIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { PASS_STATUS_COLORS, ProtocolQr, StatusTag, downloadProtocolFile, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 export default function ProtocolPasses() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/protocol/passes')
-      .then((data) => !cancelled && setItems(data.items))
+      .then((data) => setItems(data.items))
       .catch((err) => {
         toastProtocolError(t, err);
-        if (!cancelled) setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-    return () => {
-      cancelled = true;
-    };
-  }, [t]);
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
 
   const download = async (pass) => {
     try {
@@ -37,7 +39,7 @@ export default function ProtocolPasses() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.passes.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.passes.title')}</Title></h1>
         <p className="muted-text">{t('protocol.passes.subtitle')}</p>
       </div>
 

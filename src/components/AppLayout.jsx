@@ -10,6 +10,7 @@ import { useAuth } from '../auth/AuthContext.jsx';
 import LanguageSelect from './LanguageSelect.jsx';
 import Sidebar from './Sidebar.jsx';
 import InboxDrawer from './InboxDrawer.jsx';
+import { LoadErrorProvider, PageLoadError } from './LoadErrorBanner.jsx';
 import { breadcrumbKeys, isPortalAdmin } from '../nav/navConfig.js';
 
 export default function AppLayout() {
@@ -95,7 +96,10 @@ export default function AppLayout() {
         </header>
 
         <main id="main" className="app-main" tabIndex={-1}>
-          <Outlet />
+          <LoadErrorProvider resetKey={pathname}>
+            <PageLoadError />
+            <Outlet />
+          </LoadErrorProvider>
         </main>
 
         <footer className="app-footer muted-text">

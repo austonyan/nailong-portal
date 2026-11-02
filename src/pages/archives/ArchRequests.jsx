@@ -2,16 +2,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Modal, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Checkbox, Modal, Table, Tag } from 'animal-island-ui';
 import { ShieldIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, RequestStatusTag, TextArea, fmtDateTime, toastArchError } from './shared.jsx';
+import { RequestStatusTag, TextArea, fmtDateTime, toastArchError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 const ACTIVE_STATUSES = ['pending', 'reviewing', 'executing'];
 
 export default function ArchRequests() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [types, setTypes] = useState([]);
   const [open, setOpen] = useState(false);
@@ -22,19 +24,21 @@ export default function ArchRequests() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/archives/deletion-requests')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
     api
       .get('/archives/overview')
       .then((data) => setTypes((data.recordTypes ?? []).filter((type) => type.included)))
       .catch(() => setTypes([]));
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 
@@ -119,9 +123,8 @@ export default function ArchRequests() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
-        <h1 className="page-title">{t('arch.request.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.request.title')}</Title></h1>
         <Button type="primary" icon={<TrashIcon />} onClick={openForm} disabled={!!active}>
           {t('arch.request.new')}
         </Button>

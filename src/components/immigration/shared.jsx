@@ -3,7 +3,6 @@
 // (Non-component exports are intentional helpers, not a components-file slip.)
 /* eslint-disable react/only-export-components */
 import { useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import { Progress, Tag } from 'animal-island-ui';
@@ -109,50 +108,10 @@ export function pickLocalized(item, baseKey, language) {
   return item[baseKey] ?? tw ?? '';
 }
 
-const USER_TABS = [
-  { to: '/immigration', key: 'home', end: true },
-  { to: '/immigration/ports', key: 'ports' },
-  { to: '/immigration/declarations', key: 'myDeclarations' },
-  { to: '/immigration/pass-codes', key: 'passCodes' },
-  { to: '/immigration/records', key: 'records' },
-  { to: '/immigration/messages', key: 'messages' },
-  { to: '/immigration/help', key: 'help' },
-];
 
-export function ImNav() {
-  const { t } = useTranslation();
-  return (
-    <nav className="im-subnav" aria-label={t('imm.nav.label')}>
-      {USER_TABS.map((tab) => (
-        <NavLink key={tab.key} to={tab.to} end={tab.end} className={({ isActive }) => (isActive ? 'im-subnav-link active' : 'im-subnav-link')}>
-          {t(`imm.nav.${tab.key}`)}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
 
-const ADMIN_TABS = [
-  { to: '/admin/immigration/ports', key: 'ports' },
-  { to: '/admin/immigration/review', key: 'review' },
-  { to: '/admin/immigration/verify', key: 'verify' },
-  { to: '/admin/immigration/records', key: 'records' },
-  { to: '/admin/immigration/stats', key: 'stats' },
-  { to: '/admin/immigration/settings', key: 'settings' },
-  { to: '/admin/immigration/audit', key: 'audit' },
-];
 
-export function ImAdminNav() {
-  const { t } = useTranslation();
-  return (
-    <nav className="im-subnav" aria-label={t('imm.admin.navLabel')}>
-      {ADMIN_TABS.map((tab) => (
-        <NavLink key={tab.key} to={tab.to} className={({ isActive }) => (isActive ? 'im-subnav-link active' : 'im-subnav-link')}>
-          {t(`imm.admin.tabs.${tab.key}`)}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
+
+
 
 

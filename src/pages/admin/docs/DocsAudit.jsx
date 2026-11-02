@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastError } from '../../../components/toast.js';
@@ -40,6 +41,7 @@ const DETAIL_FIELDS = {
 
 export default function DocsAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -83,7 +85,8 @@ export default function DocsAudit() {
     );
   };
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page, pageSize, action, q: dq });
       const d = await api.get(`/docs/admin/audit?${params.toString()}`);
@@ -91,9 +94,10 @@ export default function DocsAudit() {
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, action, dq, t]);
+  }, [page, action, dq, t, loadError]);
 
   useEffect(() => {
     load();
@@ -128,7 +132,7 @@ export default function DocsAudit() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.audit.title')}</Title></h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">

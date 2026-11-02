@@ -1,22 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { DownloadIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
-import { ImAdminNav, exportCsv } from '../../../components/immigration/shared.jsx';
+import { exportCsv } from '../../../components/immigration/shared.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 import { fmtDate, fmtDateTime } from '../../../lib/date.js';
 
 function AuditTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [actionFilter, setActionFilter] = useState('');
   const pageSize = 10;
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
     if (actionFilter) params.set('action', actionFilter);
     api
@@ -30,9 +33,10 @@ function AuditTab() {
       })
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [page, actionFilter]);
+  }, [page, actionFilter, loadError]);
 
   useEffect(load, [load]);
 
@@ -120,6 +124,7 @@ function AuditTab() {
 
 function BlacklistTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [adding, setAdding] = useState(false);
   const [userId, setUserId] = useState('');
@@ -127,15 +132,17 @@ function BlacklistTab() {
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/admin/blacklist')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 
@@ -219,6 +226,7 @@ function BlacklistTab() {
 
 function TemplatesTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null);
   const [title, setTitle] = useState('');
@@ -228,15 +236,17 @@ function TemplatesTab() {
   const [enabled, setEnabled] = useState(true);
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/admin/templates')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 
@@ -327,12 +337,14 @@ function TemplatesTab() {
 
 function SendLogTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get(`/immigration/admin/messages?page=${page}&pageSize=${pageSize}`)
       .then((data) => {
@@ -341,9 +353,12 @@ function SendLogTab() {
       })
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [page]);
+  }, [page, t, loadError]);
+
+  useEffect(load, [load]);
 
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 70 },
@@ -370,9 +385,8 @@ export default function AdminImAudit() {
   const { t } = useTranslation();
   return (
     <div className="im-page">
-      <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.admin.audit.title')}</Title></h1>
       </div>
       <Card>
         <Tabs

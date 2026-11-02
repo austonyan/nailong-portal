@@ -1,7 +1,8 @@
 // 站内信:提交/补件/审核/签发/到期等通知,已读与归档。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { FolderIcon, InboxIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastVisaError } from './shared.jsx';
@@ -23,20 +24,23 @@ const MESSAGE_COLORS = {
 
 export default function VisaMessages() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [archivedView, setArchivedView] = useState(false);
   const [items, setItems] = useState(null);
   const [unread, setUnread] = useState(0);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/visa/messages?archived=${archivedView ? '1' : '0'}`);
       setItems(data.items);
       setUnread(data.unread);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [archivedView, t]);
+  }, [archivedView, t, loadError]);
 
   useEffect(() => {
     load();
@@ -85,7 +89,7 @@ export default function VisaMessages() {
   return (
     <div className="visa-messages-page">
       <div className="page-header">
-        <h1 className="page-title">{t('visa.msgs.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.msgs.title')}</Title></h1>
         <div className="table-actions">
           <Button type={archivedView ? 'default' : 'primary'} icon={<InboxIcon />} onClick={() => setArchivedView(false)}>
             {t('visa.msgs.inbox')}

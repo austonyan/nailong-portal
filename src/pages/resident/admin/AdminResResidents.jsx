@@ -1,10 +1,11 @@
 // 居民信息管理:居民列表与详情(敏感字段服务端脱敏,关联业务预留)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { CARD_STATUS_COLORS, fmtDate, toastResError } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
@@ -18,13 +19,15 @@ const CHANGE_STATUS_COLORS = {
 
 export default function AdminResResidents() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:避免每敲一个字都打一次接口。
   const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams();
       if (dq.trim()) params.set('q', dq.trim());
@@ -32,9 +35,10 @@ export default function AdminResResidents() {
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [dq, t]);
+  }, [dq, t, loadError]);
 
   useEffect(() => {
     load();
@@ -73,18 +77,19 @@ export default function AdminResResidents() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
-          {t('res.admin.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
+            {t('res.admin.view')}
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.residents.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.residents.title')}</Title></h1>
         <div className="table-actions res-filter-bar">
           <Input size="middle" allowClear prefix={<SearchIcon size={14} />} placeholder={t('res.admin.searchPlaceholder')} value={q} onChange={(e) => setQ(e.target.value)} />
         </div>

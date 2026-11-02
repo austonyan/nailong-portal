@@ -1,24 +1,16 @@
+// 文书署 Layout:改用共享 OfficeShell 骨架,并按路由前缀自动区分前台与管理端(/admin/docs):
+// 前台页签带站内信未读角标,管理页签按权限过滤;署名两个模式都用 docs.title,模式由「管理台」角标表达。
 import { useCallback, useEffect, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge } from 'animal-island-ui';
-import { ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
-
-const TABS = [
-  { to: '/docs', key: 'home', end: true },
-  { to: '/docs/types', key: 'types' },
-  { to: '/docs/apply', key: 'apply' },
-  { to: '/docs/applications', key: 'applications' },
-  { to: '/docs/certificates', key: 'certificates' },
-  { to: '/docs/verify', key: 'verify' },
-  { to: '/docs/messages', key: 'messages', badge: true },
-];
+import OfficeShell from '../../components/office/OfficeChrome.jsx';
 
 export const DOCS_MSG_REFRESH = 'docs:msg-refresh';
 
-export default function DocsLayout() {
+export default function DocsLayout({ permission, children }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const location = useLocation();
@@ -41,29 +33,40 @@ export default function DocsLayout() {
   const name = user?.displayName || user?.username || '';
 
   return (
-    <div className="docs-page">
-      <div className="docs-hero">
-        {/* 署名是跨页签共用的身份条,不是本页标题:每个页签页面自己已经渲染唯一的 h1,
-            这里再用标题标签会让文书署每页出现两个 h1。
-            与 docs 管理端骨架的 .docs-admin-title 一致,落在非标题容器上。 */}
-        <div className="page-title">{t('docs.title')}</div>
-        <p className="muted-text docs-hero-sub">{t('docs.subtitle', { name })}</p>
-      </div>
-
-      <nav className="docs-subnav" aria-label={t('docs.title')}>
-        {TABS.map((tab) => (
-          <NavLink key={tab.key} to={tab.to} end={tab.end} className={({ isActive }) => (isActive ? 'docs-tab active' : 'docs-tab')}>
-            {t(`docs.tab.${tab.key}`)}
-            {tab.badge && unread > 0 && (
-              <span className="docs-tab-badge">
-                <Badge count={unread} size="small" />
-              </span>
-            )}
-          </NavLink>
-        ))}
-      </nav>
-
-      <Outlet />
-    </div>
+    <OfficeShell
+      officeKey="docs"
+      permission={permission}
+      pageClassName="docs-page"
+      name={t('docs.title')}
+      sub={t('docs.subtitle', { name })}
+      ssoFlag="nailong.docs.sso"
+      ssoTip={t('docs.sso.tip')}
+      ssoPattern="app-teal"
+      userTabs={[
+        { to: '/docs', end: true, label: t('docs.tab.home') },
+        { to: '/docs/types', label: t('docs.tab.types') },
+        { to: '/docs/apply', label: t('docs.tab.apply') },
+        { to: '/docs/applications', label: t('docs.tab.applications') },
+        { to: '/docs/certificates', label: t('docs.tab.certificates') },
+        { to: '/docs/verify', label: t('docs.tab.verify') },
+        {
+          to: '/docs/messages',
+          label: t('docs.tab.messages'),
+          badge: unread > 0 ? <Badge count={unread} size="small" /> : null,
+        },
+      ]}
+      adminTabs={[
+        { to: '/admin/docs/review', label: t('docs.admin.tab.review'), permission: 'docs:certify' },
+        { to: '/admin/docs/types', label: t('docs.admin.tab.types'), permission: 'docs:manage' },
+        { to: '/admin/docs/certs', label: t('docs.admin.tab.certs'), permission: 'docs:manage' },
+        { to: '/admin/docs/verify', label: t('docs.admin.tab.verify'), permission: 'docs:manage' },
+        { to: '/admin/docs/stats', label: t('docs.admin.tab.stats'), permission: 'docs:manage' },
+        { to: '/admin/docs/notices', label: t('docs.admin.tab.notices'), permission: 'docs:manage' },
+        { to: '/admin/docs/audit', label: t('docs.admin.tab.audit'), permission: 'docs:manage' },
+        { to: '/admin/docs/settings', label: t('docs.admin.tab.settings'), permission: 'docs:manage' },
+      ]}
+    >
+      {children ?? <Outlet />}
+    </OfficeShell>
   );
 }

@@ -1,10 +1,10 @@
 // 风控与黑名单:重复登记识别、验真限流概况与黑名单管理。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Table, Tag } from 'animal-island-ui';
 import { BanIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { TextArea, fmtDateTime, toastResError } from '../shared.jsx';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../../components/toast.js';
@@ -91,18 +91,19 @@ export default function AdminResRisk() {
       dataIndex: 'actions',
       width: 100,
       render: (_, record) => (
-        <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => askRemove(record)}>
-          {t('res.admin.risk.remove')}
-        </Button>
+        <div className="table-actions">
+          <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => askRemove(record)}>
+            {t('res.admin.risk.remove')}
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.risk.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.risk.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={() => { setUserId(''); setReason(''); setAddOpen(true); }}>
           {t('res.admin.risk.add')}
         </Button>

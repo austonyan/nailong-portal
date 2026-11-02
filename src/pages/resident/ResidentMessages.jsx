@@ -1,7 +1,8 @@
 // 站内信:已读/未读、归档与消息列表(服务端模板渲染)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tabs, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Tabs, Tag } from 'animal-island-ui';
 import { InboxIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastResError } from './shared.jsx';
@@ -18,20 +19,23 @@ function cardKeyDown(handler) {
 
 export default function ResidentMessages() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [unread, setUnread] = useState(0);
   const [archived, setArchived] = useState('0');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/resident/messages?archived=${archived}`);
       setItems(data.items);
       setUnread(data.unread);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [archived, t]);
+  }, [archived, t, loadError]);
 
   useEffect(() => {
     load();
@@ -59,7 +63,7 @@ export default function ResidentMessages() {
   return (
     <div className="res-messages-page">
       <div className="page-header">
-        <h1 className="page-title">{t('res.messages.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.messages.title')}</Title></h1>
         <Tag color="app-blue" variant="soft">
           {t('res.messages.unread', { count: unread })}
         </Tag>

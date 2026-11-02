@@ -1,118 +1,3 @@
-/* 奶龙国皇家统计署 — local page styles.
-   只使用 --animal-* 令牌,不覆盖库组件自身的颜色/圆角/阴影。 */
-
-.stat-page {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.stat-office-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  background: var(--animal-bg-color-secondary);
-  border: var(--animal-border-width) solid var(--animal-border-color-light);
-  border-radius: var(--animal-border-radius-lg);
-}
-
-.stat-office-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.stat-office-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--animal-border-radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
-}
-
-.stat-office-name {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.stat-office-sub {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--animal-text-color-muted);
-}
-
-.stat-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px;
-  background: var(--animal-bg-color-secondary);
-  border-radius: 999px;
-  border: var(--animal-border-width) solid var(--animal-border-color-light);
-}
-
-.stat-nav-link {
-  padding: 8px 16px;
-  border-radius: 999px;
-  color: var(--animal-text-color-secondary);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.stat-nav-link:hover {
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-text-color);
-}
-
-.stat-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
-}
-
-.stat-admin-nav {
-  margin-bottom: 4px;
-}
-
-.stat-sso-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.stat-sso-card {
-  padding: 16px;
-}
-
-.stat-sso-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.stat-sso-name {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
-.stat-sso-account {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
 
 .stat-hero {
   border-radius: var(--animal-border-radius-lg);
@@ -132,17 +17,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-}
-
-.stat-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.stat-updated {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
 }
 
 .stat-metric-grid {
@@ -171,7 +45,7 @@
   font-weight: 800;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
-  color: var(--animal-primary-color);
+  color: var(--animal-text-color);
 }
 
 .stat-metric-value.is-muted {
@@ -220,11 +94,6 @@
   overflow-wrap: anywhere;
 }
 
-.stat-report-meta {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
 .stat-report-section {
   display: flex;
   flex-direction: column;
@@ -257,18 +126,7 @@
   font-size: 20px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  color: var(--animal-primary-color);
-}
-
-.stat-report-label {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.stat-admin-page {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  color: var(--animal-text-color);
 }
 
 .stat-board-grid {
@@ -313,30 +171,6 @@
   gap: 2px;
 }
 
-.stat-board-metric strong {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.stat-board-metric span {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.stat-board-extras {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.stat-filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
 .stat-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -379,38 +213,31 @@
   margin-top: 14px;
 }
 
-.stat-required {
-  color: var(--animal-error-color);
-}
-
 @media (max-width: 640px) {
-  .stat-hero {
+.stat-hero {
     padding: 24px 16px;
   }
 
-  .stat-report-paper {
+.stat-report-paper {
     padding: 16px;
   }
 
-  .stat-report-head {
+.stat-report-head {
     align-items: flex-start;
   }
 }
-
 @media print {
-  .app-header,
+.app-header,
   .app-footer,
-  .stat-office-banner,
-  .stat-nav,
   .no-print {
     display: none !important;
   }
 
-  body.stat-printing .app-main {
+body.stat-printing .app-main {
     padding: 0;
   }
 
-  body.stat-printing .stat-report-paper {
+body.stat-printing .stat-report-paper {
     border: none;
     box-shadow: none;
     max-width: none;

@@ -1,7 +1,8 @@
 // 学习任务管理(edu:manage):阅读打卡任务的定义/编辑/启停/删除与完成情况。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Pagination, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Table, Tag } from 'animal-island-ui';
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { ConfirmModal, StatusTag, TextArea, fmtDateTime, pct, toastEduError } from '../shared.jsx';
@@ -23,6 +24,7 @@ const EMPTY_FORM = {
 
 export default function AdminEduTasks() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -33,15 +35,17 @@ export default function AdminEduTasks() {
   const [recordsPage, setRecordsPage] = useState(1);
   const recordsPageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/education/admin/tasks');
       setItems(data.items ?? []);
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -220,7 +224,7 @@ export default function AdminEduTasks() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.admin.tasks.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.admin.tasks.title')}</Title></h1>
       </div>
 
       <Card>

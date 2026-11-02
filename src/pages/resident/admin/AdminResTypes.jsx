@@ -1,10 +1,11 @@
 // 居民类型与规则配置:类型 CRUD、材料要求、有效期与开放状态。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Checkbox, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Checkbox, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ResAdminNav } from '../ResidentShell.jsx';
+
 import { TextArea, toastResError } from '../shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 
@@ -25,20 +26,23 @@ const EMPTY_FORM = {
 
 export default function AdminResTypes() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/resident/admin/types');
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -136,18 +140,19 @@ export default function AdminResTypes() {
       dataIndex: 'actions',
       width: 90,
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EditIcon />} onClick={() => openEdit(record)}>
-          {t('common.edit')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EditIcon />} onClick={() => openEdit(record)}>
+            {t('common.edit')}
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="res-admin-page">
-      <ResAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('res.admin.types.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.admin.types.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openCreate}>
           {t('res.admin.types.create')}
         </Button>

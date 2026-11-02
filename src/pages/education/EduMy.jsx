@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Tag } from 'animal-island-ui';
+import { Title, Card, Tag } from 'animal-island-ui';
 import { BookIcon, FileIcon, HeartIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TargetTypeTag, fmtDateTime, toastEduError } from './shared.jsx';
@@ -38,7 +38,7 @@ export default function EduMy() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.my.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.my.title')}</Title></h1>
       </div>
 
       <div className="edu-stat-grid">

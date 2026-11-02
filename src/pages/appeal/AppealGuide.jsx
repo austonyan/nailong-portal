@@ -1,7 +1,7 @@
 // 可申诉事项说明:范围、不可申诉情形、材料清单、时效与复核区别、常见问题。
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Collapse, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Collapse, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, ClockIcon, FileIcon } from 'naive-icons';
 import { BIZ_TYPES, activateByKey } from './shared.jsx';
 
@@ -11,7 +11,7 @@ export default function AppealGuide() {
 
   return (
     <div className="appeal-guide-page">
-      <h1 className="page-title">{t('appeal.guide.title')}</h1>
+      <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.guide.title')}</Title></h1>
 
       <Card className="appeal-guide-block">
         <h2><CheckCircleIcon size={18} /> {t('appeal.guide.scopeTitle')}</h2>

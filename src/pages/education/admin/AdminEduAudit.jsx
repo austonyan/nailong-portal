@@ -1,7 +1,8 @@
 // 审计日志(edu:manage):内容/任务/徽章敏感操作留痕,支持动作与对象类型过滤。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Pagination, Select, Table } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Card, Pagination, Select, Table } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
 import { TargetTypeTag, fmtDateTime, toastEduError } from '../shared.jsx';
 
@@ -30,6 +31,7 @@ const AUDIT_ACTIONS = [
 
 export default function AdminEduAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [action, setAction] = useState('');
@@ -37,7 +39,8 @@ export default function AdminEduAudit() {
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams();
     params.set('page', String(page));
     params.set('pageSize', String(pageSize));
@@ -49,9 +52,10 @@ export default function AdminEduAudit() {
       setTotal(data.total ?? 0);
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [action, page, targetType, t]);
+  }, [action, page, targetType, t, loadError]);
 
   useEffect(() => {
     load();
@@ -74,7 +78,7 @@ export default function AdminEduAudit() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('edu.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('edu.admin.audit.title')}</Title></h1>
       </div>
 
       <Card>

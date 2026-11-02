@@ -2,25 +2,29 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DECISION_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 
 export default function AppealDecisions() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/appeal/decisions');
       setItems(data.items);
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -29,7 +33,7 @@ export default function AppealDecisions() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.decision.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.decision.title')}</Title></h1>
       </div>
 
       {items === null && (

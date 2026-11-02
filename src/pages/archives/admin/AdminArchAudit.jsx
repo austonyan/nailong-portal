@@ -1,10 +1,11 @@
 // 审计 — 导出、规则变更与删除申请处理的敏感操作留痕。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { ArchAdminNav, exportCsv, fmtDateTime, toastArchError } from '../shared.jsx';
+import { exportCsv, fmtDateTime, toastArchError } from '../shared.jsx';
 
 const ACTION_KEYS = [
   'export.user',
@@ -20,13 +21,15 @@ const ACTION_KEYS = [
 
 export default function AdminArchAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [action, setAction] = useState('');
   const pageSize = 15;
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
     if (action) params.set('action', action);
     api
@@ -37,9 +40,10 @@ export default function AdminArchAudit() {
       })
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [page, action]);
+  }, [page, action, loadError]);
 
   useEffect(load, [load]);
 
@@ -82,9 +86,8 @@ export default function AdminArchAudit() {
 
   return (
     <div className="arch-page">
-      <ArchAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('arch.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.admin.audit.title')}</Title></h1>
         <Button type="text" size="small" icon={<DownloadIcon />} onClick={exportAll} disabled={!items?.length}>
           {t('arch.catalog.export')}
         </Button>

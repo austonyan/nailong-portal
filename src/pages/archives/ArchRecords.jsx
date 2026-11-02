@@ -2,10 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { ArchNav, OfficeTag, RecordStatusTag, exportCsv, toastArchError } from './shared.jsx';
+import { OfficeTag, RecordStatusTag, exportCsv, toastArchError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 const OFFICES = [
@@ -16,6 +17,7 @@ const OFFICES = [
 
 export default function ArchRecords() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [items, setItems] = useState(null);
@@ -31,7 +33,8 @@ export default function ArchRecords() {
   const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
     if (office) params.set('office', office);
     if (type) params.set('type', type);
@@ -46,9 +49,10 @@ export default function ArchRecords() {
       })
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [page, office, type, from, to, keyword]);
+  }, [page, office, type, from, to, keyword, loadError]);
 
   useEffect(load, [load]);
 
@@ -122,9 +126,8 @@ export default function ArchRecords() {
 
   return (
     <div className="arch-page">
-      <ArchNav />
       <div className="page-header">
-        <h1 className="page-title">{t('arch.catalog.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('arch.catalog.title')}</Title></h1>
       </div>
 
       <Card>

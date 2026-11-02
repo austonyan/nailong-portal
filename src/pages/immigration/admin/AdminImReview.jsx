@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, ClockIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { toastApiError } from '../../../components/immigration/apiError.js';
-import { ImAdminNav, StatusTag, pickLocalized } from '../../../components/immigration/shared.jsx';
+import { StatusTag, pickLocalized } from '../../../components/immigration/shared.jsx';
 import { toastSuccess } from '../../../components/toast.js';
 import { fmtDateTime } from '../../../lib/date.js';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
@@ -40,7 +41,8 @@ function ReviewDrawer({ id, onClose, onChanged }) {
   const [supplementNote, setSupplementNote] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get(`/immigration/admin/declarations/${id}`)
       .then((data) => setDecl(data.declaration))
@@ -207,6 +209,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
 export default function AdminImReview() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [counts, setCounts] = useState({});
   const [status, setStatus] = useState('pending');
@@ -215,7 +218,7 @@ export default function AdminImReview() {
   const dq = useDebouncedValue(q, 300);
   const [openId, setOpenId] = useState(null);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     const params = new URLSearchParams({ pageSize: '50' });
     if (status) params.set('status', status);
     if (dq.trim()) params.set('q', dq.trim());
@@ -227,9 +230,10 @@ export default function AdminImReview() {
       })
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [status, dq]);
+  }, [status, dq, loadError]);
 
   useEffect(load, [load]);
 
@@ -266,9 +270,8 @@ export default function AdminImReview() {
 
   return (
     <div className="im-page">
-      <ImAdminNav />
       <div className="page-header">
-        <h1 className="page-title">{t('imm.admin.review.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('imm.admin.review.title')}</Title></h1>
       </div>
       <p className="muted-text">{t('imm.admin.review.queueNote')}</p>
 

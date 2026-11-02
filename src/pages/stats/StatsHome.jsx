@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { FileIcon, PrinterIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastStatError } from './shared.jsx';
@@ -39,7 +39,7 @@ export default function StatsHome() {
   return (
     <div className="stat-page">
       <Background type="sprinkles" className="nl-hero stat-hero">
-        <h1 className="page-title">{t('stat.home.heroTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('stat.home.heroTitle')}</Title></h1>
         <Typewriter speed={30}>
           <p className="stat-hero-sub">{t('stat.home.heroSub')}</p>
         </Typewriter>

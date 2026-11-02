@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { BellIcon, InboxIcon, MailIcon, RssIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { NOTICE_LEVEL_COLORS, POSTCARD_STATUS_COLORS, fmtDate, fmtDateTime, toastPostError } from './shared.jsx';
@@ -45,7 +45,7 @@ export default function PostalHome() {
   return (
     <div className="postal-home">
       <Card pattern="app-blue" className="nl-hero postal-hero">
-        <h1 className="page-title">{t('post.officeName')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.officeName')}</Title></h1>
         <p className="postal-hero-sub">{t('post.home.tagline')}</p>
         <div className="postal-hero-actions">
           <Button type="primary" icon={<SendIcon />} onClick={() => navigate('/postal/postcards/new')}>

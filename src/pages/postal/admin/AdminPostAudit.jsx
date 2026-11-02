@@ -1,7 +1,8 @@
 // 审计:敏感操作的留痕查询(操作人、动作、对象、详情与时间)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { fmtDateTime, toastPostError } from '../shared.jsx';
@@ -10,13 +11,15 @@ const PAGE_SIZE = 30;
 
 export default function AdminPostAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState('');
   const [query, setQuery] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE_SIZE) });
       if (query) params.set('action', query);
@@ -25,10 +28,11 @@ export default function AdminPostAudit() {
       setTotal(data.total);
     } catch (err) {
       toastPostError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
       setTotal(0);
     }
-  }, [page, query, t]);
+  }, [page, query, t, loadError]);
 
   useEffect(() => {
     load();
@@ -67,7 +71,7 @@ export default function AdminPostAudit() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">{t('post.admin.audit.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.admin.audit.title')}</Title></h1>
       </div>
 
       <Card>

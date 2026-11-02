@@ -2,28 +2,32 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { InboxIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
 
 export default function AppealMessages() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [archived, setArchived] = useState(false);
   const [unread, setUnread] = useState(0);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/appeal/messages${archived ? '?archived=1' : ''}`);
       setItems(data.items);
       setUnread(data.unread);
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [archived, t]);
+  }, [archived, t, loadError]);
 
   useEffect(() => {
     load();
@@ -58,10 +62,8 @@ export default function AppealMessages() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">
-          {t('appeal.messages.title')}
-          {unread > 0 && <Tag color="warm-peach-pink" variant="soft">{t('appeal.messages.unread', { count: unread })}</Tag>}
-        </h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.messages.title')}
+          {unread > 0 && <Tag color="warm-peach-pink" variant="soft">{t('appeal.messages.unread', { count: unread })}</Tag>}</Title></h1>
         <div className="table-actions appeal-filter-bar">
           <Button onClick={() => setArchived(!archived)}>
             {archived ? t('appeal.messages.backToInbox') : t('appeal.messages.showArchived')}

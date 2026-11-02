@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BellIcon, EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../api/docs.js';
@@ -15,6 +16,7 @@ const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
 
 export default function DocsCertificates() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
@@ -22,16 +24,18 @@ export default function DocsCertificates() {
   const [status, setStatus] = useState('all');
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const d = await api.get(`/docs/certificates?page=${page}&pageSize=${pageSize}&status=${status}`);
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, t]);
+  }, [page, status, t, loadError]);
 
   useEffect(() => {
     load();
@@ -80,7 +84,7 @@ export default function DocsCertificates() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.certList.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.certList.title')}</Title></h1>
         <div className="docs-filter">
           <Select
             value={status}

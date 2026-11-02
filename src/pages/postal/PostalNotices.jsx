@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Pagination, Select, Tag } from 'animal-island-ui';
 import { ArrowLeftIcon, RssIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { NOTICE_LEVELS, NOTICE_LEVEL_COLORS, fmtDateTime, toastPostError } from './shared.jsx';
@@ -11,6 +12,7 @@ const PAGE_SIZE = 10;
 
 export default function PostalNotices() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const { id } = useParams();
   const [items, setItems] = useState(null);
@@ -22,7 +24,8 @@ export default function PostalNotices() {
   const [detail, setDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  const loadList = useCallback(async () => {
+  const loadList = useCallback(async function loadListFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE_SIZE) });
       if (level) params.set('level', level);
@@ -32,10 +35,11 @@ export default function PostalNotices() {
       setTotal(data.total);
     } catch (err) {
       toastPostError(t, err);
-      setItems([]);
-      setTotal(0);
+      loadError.report(err, loadListFn);
+      setItems((prev) => prev ?? []);
+      setTotal((prev) => prev ?? 0);
     }
-  }, [level, page, query, t]);
+  }, [level, page, query, t, loadError]);
 
   useEffect(() => {
     if (!id) loadList();
@@ -83,7 +87,7 @@ export default function PostalNotices() {
               <Tag color={NOTICE_LEVEL_COLORS[detail.level] || 'brown'} variant="soft">
                 {t(`post.level.${detail.level}`)}
               </Tag>
-              <h1 className="page-title">{detail.title}</h1>
+              <h1 className="page-title"><Title size="middle" color="app-yellow">{detail.title}</Title></h1>
             </div>
             <div className="postal-notice-meta">
               <span>{detail.no}</span>
@@ -99,7 +103,7 @@ export default function PostalNotices() {
   return (
     <div className="postal-section">
       <div className="postal-section-head">
-        <h1 className="page-title">{t('post.notices.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="app-yellow">{t('post.notices.title')}</Title></h1>
         <div className="postal-filter-bar">
           <Input
             size="middle"

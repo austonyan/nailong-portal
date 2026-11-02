@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { CompassIcon, FileIcon, MailIcon, StarIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDate, toastResError } from './shared.jsx';
@@ -39,7 +39,7 @@ export default function ResidentBenefits() {
   return (
     <div className="res-benefits-page">
       <div className="page-header">
-        <h1 className="page-title">{t('res.benefits.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('res.benefits.title')}</Title></h1>
         {data.typeName && (
           <Tag color="app-green" variant="soft">
             {data.typeName}

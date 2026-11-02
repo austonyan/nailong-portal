@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Background, Button, Card, Collapse, Divider, Progress, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Collapse, Divider, Progress, Tag, Typewriter } from 'animal-island-ui';
 import {
   AlertTriangleIcon,
   CalendarIcon,
@@ -83,7 +83,7 @@ export default function ProtocolHome() {
   return (
     <div className="protocol-home">
       <Background type="sprinkles" className="protocol-hero">
-        <h1 className="page-title">{t('protocol.home.heroTitle')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.home.heroTitle')}</Title></h1>
         <Typewriter speed={30}>
           <p className="protocol-hero-sub">{t('protocol.home.heroSub')}</p>
         </Typewriter>

@@ -421,12 +421,14 @@ export const MATERIAL_ORIGINS = new Set(['initial', 'supplement']);
 
 // ---------------------------------------------------------------------------
 // 验真(公开、脱敏):绝不包含申诉人身份/理由/材料内容。
-// 支持:决定书编号或二维码 token、复核编号、申诉编号。
+// 支持:决定书编号或二维码 token、复核、申诉、投诉建议、工单。
+// 其余 11 个署的编号由 server/appealVerify.js 的统一注册表处理。
 // ---------------------------------------------------------------------------
 
 function decisionVerify(dec) {
   return {
     found: true,
+    office: 'appeal',
     kind: 'decision',
     code: dec.code,
     appealCode: dec.appeal_code,
@@ -435,6 +437,7 @@ function decisionVerify(dec) {
     status: dec.status,
     effectiveAt: dec.effective_at,
     valid: dec.status === 'valid',
+    checkedAt: now(),
   };
 }
 
@@ -450,6 +453,7 @@ export function maskVerifyResult(token, no) {
   if (review) {
     return {
       found: true,
+      office: 'appeal',
       kind: 'review',
       code: review.code,
       appealCode: review.appeal_code,
@@ -457,12 +461,14 @@ export function maskVerifyResult(token, no) {
       decisionType: review.decision_type ?? null,
       decidedAt: review.decided_at ?? null,
       valid: review.status === 'completed',
+      checkedAt: now(),
     };
   }
   const appeal = db.prepare('SELECT * FROM appeal_appeals WHERE code = ?').get(no);
   if (appeal) {
     return {
       found: true,
+      office: 'appeal',
       kind: 'appeal',
       code: appeal.code,
       bizType: appeal.biz_type,
@@ -470,6 +476,33 @@ export function maskVerifyResult(token, no) {
       decisionType: appeal.decision_type ?? null,
       resolvedAt: appeal.resolved_at ?? null,
       valid: appeal.status === 'resolved',
+      checkedAt: now(),
+    };
+  }
+  const complaint = db.prepare('SELECT * FROM appeal_complaints WHERE code = ?').get(no);
+  if (complaint) {
+    return {
+      found: true,
+      office: 'appeal',
+      kind: 'complaint',
+      code: complaint.code,
+      status: complaint.status,
+      createdAt: complaint.created_at,
+      valid: complaint.status === 'replied' || complaint.status === 'closed',
+      checkedAt: now(),
+    };
+  }
+  const ticket = db.prepare('SELECT * FROM appeal_tickets WHERE code = ?').get(no);
+  if (ticket) {
+    return {
+      found: true,
+      office: 'appeal',
+      kind: 'ticket',
+      code: ticket.code,
+      status: ticket.status,
+      createdAt: ticket.created_at,
+      valid: ticket.status === 'replied' || ticket.status === 'closed' || ticket.status === 'escalated',
+      checkedAt: now(),
     };
   }
   return { found: false };

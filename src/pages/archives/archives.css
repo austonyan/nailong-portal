@@ -1,131 +1,3 @@
-/* ---------- archives (奶龙国皇家档案与记录署) ---------- */
-
-.arch-page {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.arch-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 16px 20px;
-  border-radius: var(--animal-border-radius-lg);
-  background: var(--animal-bg-color-secondary);
-  border: var(--animal-border-width) solid var(--animal-border-color-light);
-}
-
-.arch-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.arch-emblem {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--animal-border-radius-sm);
-  color: var(--animal-primary-color);
-  background: var(--animal-primary-color-bg);
-}
-
-.arch-name {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-  color: var(--animal-text-color);
-}
-
-.arch-sub {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--animal-text-color-muted);
-}
-
-.arch-banner-tag {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--animal-text-color-secondary);
-  background: var(--animal-primary-color-bg);
-  border-radius: 999px;
-  padding: 4px 12px;
-}
-
-.arch-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.arch-nav-link {
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  background: var(--animal-bg-color-secondary);
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.arch-nav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-}
-
-.arch-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
-}
-
-.arch-nav-admin {
-  border: var(--animal-border-width) dashed var(--animal-border-color);
-}
-
-.arch-subnav {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 6px;
-  background: var(--animal-primary-color-bg);
-  border-radius: 999px;
-}
-
-.arch-subnav-link {
-  padding: 6px 14px;
-  border-radius: 999px;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.arch-subnav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-bg-color);
-}
-
-.arch-subnav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -2px 0 0 var(--animal-text-color);
-}
 
 .arch-hero {
   border-radius: var(--animal-border-radius-lg);
@@ -139,12 +11,6 @@
   font-weight: 500;
   line-height: 1.6;
   max-width: 640px;
-}
-
-.arch-stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-  gap: 16px;
 }
 
 .arch-stat-card {
@@ -163,14 +29,6 @@
   font-weight: 600;
   line-height: 1.55;
   color: var(--animal-text-color-secondary);
-}
-
-.arch-stat-value {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-  color: var(--animal-text-color);
 }
 
 .arch-quick-grid {
@@ -198,12 +56,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
-}
-
-.arch-type-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .arch-type-head {
@@ -241,15 +93,6 @@
   flex-wrap: wrap;
 }
 
-.arch-toolbar > * {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.arch-toolbar > button {
-  flex: 0 0 auto;
-}
-
 .arch-field-label {
   margin: 14px 0 6px;
   font-size: 13px;
@@ -275,12 +118,6 @@
 
 .arch-textarea::placeholder {
   color: var(--animal-text-color-disabled);
-}
-
-.arch-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
 }
 
 .arch-detail-item {
@@ -344,32 +181,10 @@
   word-break: break-word;
 }
 
-.arch-timeline-time {
-  font-size: 12px;
-  color: var(--animal-text-color-muted);
-}
-
-.arch-msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .arch-msg-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.arch-msg-card.unread {
-  border-left: 4px solid var(--animal-primary-color);
-}
-
-.arch-msg-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .arch-msg-body {
@@ -388,20 +203,6 @@
   padding: 18px;
   text-align: center;
   color: var(--animal-text-color-muted);
-}
-
-.arch-tag-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.arch-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .arch-summary {
@@ -430,29 +231,17 @@
   font-weight: 600;
 }
 
-.arch-guide-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-@media (max-width: 720px) {
-  .arch-banner {
-    padding: 14px;
-  }
-}
-
 @media (max-width: 640px) {
-  .arch-hero {
+.arch-hero {
     padding: 24px 16px;
   }
 
-  .arch-summary-row {
+.arch-summary-row {
     flex-direction: column;
     gap: 2px;
   }
 
-  .arch-summary-row > span:first-child {
+.arch-summary-row > span:first-child {
     flex: 0 0 auto;
   }
 }

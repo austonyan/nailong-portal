@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -10,21 +11,24 @@ import { fmtDateTime, toastStatError } from './shared.jsx';
 
 export default function StatsReports() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [year, setYear] = useState(String(new Date().getFullYear()));
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/stats/reports');
       setItems(data.items);
     } catch (err) {
       toastStatError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -88,7 +92,7 @@ export default function StatsReports() {
   return (
     <div className="stat-page">
       <div className="page-header">
-        <h1 className="page-title">{t('stat.reports.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="lime-green">{t('stat.reports.title')}</Title></h1>
         <Button type="primary" icon={<PlusIcon />} onClick={openGenerate}>
           {t('stat.reports.generate')}
         </Button>

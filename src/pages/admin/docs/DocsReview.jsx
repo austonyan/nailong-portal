@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, REJECT_REASON_KEYS } from '../../../api/docs.js';
@@ -21,6 +22,7 @@ const STATUS_COLORS = {
 // 认证审核工作台: 队列隔离,认证员只处理文书认证队列。
 export default function DocsReview() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -48,7 +50,8 @@ export default function DocsReview() {
       .catch(() => setTypes([]));
   }, []);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page, pageSize, status, typeCode, q: dq });
       const d = await api.get(`/docs/admin/queue?${params.toString()}`);
@@ -56,9 +59,10 @@ export default function DocsReview() {
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, typeCode, dq, t]);
+  }, [page, status, typeCode, dq, t, loadError]);
 
   useEffect(() => {
     loadTypes();
@@ -130,7 +134,7 @@ export default function DocsReview() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('docs.admin.review.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.review.title')}</Title></h1>
       </div>
       <Card className="docs-filter-card">
         <div className="docs-filter-row">

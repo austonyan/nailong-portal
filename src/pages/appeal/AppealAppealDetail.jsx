@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Rate, Tag, Upload } from 'animal-island-ui';
+import { Title, Button, Card, Modal, Rate, Tag, Upload } from 'animal-island-ui';
 import { EyeIcon, PaperclipIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
@@ -124,7 +124,7 @@ export default function AppealAppealDetail() {
   return (
     <div className="appeal-detail-page">
       <div className="page-header">
-        <h1 className="page-title">{appeal.code}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{appeal.code}</Title></h1>
         <Tag color={APPEAL_STATUS_COLORS[appeal.status] || 'brown'} variant="soft">
           {t(`appeal.status.${appeal.status}`)}
         </Tag>

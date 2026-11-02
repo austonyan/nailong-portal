@@ -1,7 +1,8 @@
 // 消息与帮助:站内信已读/未读/归档、工单入口与防诈骗提示。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input, Modal, Tabs, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Input, Modal, Tabs, Tag } from 'animal-island-ui';
 import { BellIcon, FolderPlusIcon, MailIcon, SendIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TextArea, fmtDateTime, toastProtocolError } from './shared.jsx';
@@ -45,6 +46,7 @@ function MessageList({ items, t, onRead, onArchive }) {
 
 export default function ProtocolMessages() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [tab, setTab] = useState('inbox');
   const [items, setItems] = useState(null);
   const [archived, setArchived] = useState(null);
@@ -55,7 +57,8 @@ export default function ProtocolMessages() {
   const [busy, setBusy] = useState(false);
   const [eraseOpen, setEraseOpen] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const [inbox, arch, support] = await Promise.all([
         api.get('/protocol/messages'),
@@ -68,9 +71,10 @@ export default function ProtocolMessages() {
       setTickets(support.items);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -172,7 +176,7 @@ export default function ProtocolMessages() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('protocol.messages.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('protocol.messages.title')}</Title></h1>
         <p className="muted-text">{t('protocol.messages.subtitle')}</p>
       </div>
 

@@ -1,6 +1,60 @@
 /* Nailong portal — app-specific layout styles.
    All colors/radii come from animal-island-ui runtime tokens (--animal-*). */
 
+/* ---------------------------------------------------------------------------
+   繁体中文(zh-TW)字体层。
+   语言切到 zh-TW(html[lang=zh-TW],由 src/i18n/index.js 写入)时,中文换宋体:
+   正文/界面字(font-weight ≤600)用教育部标准宋体(源文件 font/edusong_Unicode.ttf
+   → web 产物 font/edusong-web.woff2),标题/展示字(≥700)用粗宋体(源文件
+   font/MTRSungBold.otf → font/MTRSungBold-web.woff2,FontForge 子例程化 CFF 会被
+   Chromium OTS 拒收,必须 pyftsubset --desubroutinize 重写)。两个文件注册成同一
+   家族「NL TW Serif」,靠字重自动分流——元素无需单独指定;字号/行高/字距全部
+   维持既有版式,保证简繁同构不破版。@font-face 只声明不下载:zh-CN 模式零下载,
+   首次切到 zh-TW 时一次性拉取,之后走浏览器缓存。
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "NL TW Serif";
+  src: url("../font/edusong-web.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NL TW Serif";
+  src: url("../font/MTRSungBold-web.woff2") format("woff2");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 库的 --animal-font-family 定义自带 !important,覆盖必须同为 important;
+   :root:lang(zh-TW) 特异性更高,important 之间按特异性取胜。
+   拉丁与数字仍由 Nunito 承担,繁体宋体只接中文字形。 */
+:root:lang(zh-TW) {
+  --nl-font-family-tw: Nunito, "NL TW Serif", "Noto Sans SC", -apple-system,
+    "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --animal-font-family: var(--nl-font-family-tw) !important;
+}
+
+/* 库里把字体栈硬编码进类选择器、不走变量的组件(Title 飘带、Tabs、Table、
+   Checkbox/Radio 组、Tooltip、Modal blob、分页等)要按类名前缀逐组压回;
+   类名带构建哈希,用 [class*=] 前缀匹配抗库升级。 */
+html:lang(zh-TW) [class*="animal-title-"],
+html:lang(zh-TW) [class*="animal-tabItem-"],
+html:lang(zh-TW) [class*="animal-checkboxGroup-"],
+html:lang(zh-TW) [class*="animal-radioGroup-"],
+html:lang(zh-TW) [class*="animal-tooltipWrapper-"],
+html:lang(zh-TW) [class*="animal-wrapper-"],
+html:lang(zh-TW) [class*="animal-panel-"],
+html:lang(zh-TW) [class*="animal-modalClipped-"],
+html:lang(zh-TW) [class*="animal-footer-btn-"],
+html:lang(zh-TW) [class*="animal-notification-"],
+html:lang(zh-TW) [class*="animal-pagination-"],
+html:lang(zh-TW) [class*="animal-table-"] {
+  font-family: var(--nl-font-family-tw) !important;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -287,7 +341,8 @@ html {
 
 .sider-office,
 .res-checklist li,
-.res-info-list div {
+.res-info-list div,
+  .edu-service-card span {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -307,17 +362,12 @@ html {
   transition:
     color var(--animal-motion-duration-fast) var(--animal-motion-ease),
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.sider-link:hover,
-.sider-sublink:hover,
-.visa-nav-link:hover,
-.docs-tab:hover,
-.res-nav-link:hover,
-.appeal-nav-link:hover {
+}.sider-link:hover,
+.sider-sublink:hover {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
 }
+
 
 .sider-link.active,
 .sider-sublink.active {
@@ -361,53 +411,51 @@ html {
 .app-crumbs .crumb.current {
   color: var(--animal-text-color);
   font-weight: 600;
-}
-
-@media (max-width: 1024px) {
-  .app-sider:not(.app-sider-embedded) {
+}@media (max-width: 1024px) {
+.app-sider:not(.app-sider-embedded) {
     display: none;
   }
 
-  .app-menu-btn {
+.app-menu-btn {
     display: inline-flex;
   }
 }
 
+
 /* 账号操作条:基础间距 10px。必须写在下面的 @media 之前 —— 同特异性的后续声明
    会盖掉媒体查询里的值(.header-right 的窄屏 gap 曾因此长期失效)。 */
-.header-right {
+.header-right,
+  .tour-card-head,
+  .tour-stamp-card,
+  .tour-badge-head,
+  .tour-inline-switch {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-/* 手机宽度:账号操作独占一行并右对齐,避免顶栏把整页撑出横向滚动 */
-@media (max-width: 640px) {
-  .app-header-inner {
+}@media (max-width: 640px) {
+.app-header-inner {
     flex-wrap: wrap;
     row-gap: 8px;
     padding: 10px 16px;
   }
 
-  /* 360px 下铃铛/语言/头像/退出必须落在同一行:不许内部再换行 */
-  .header-right {
+.header-right {
     flex-wrap: nowrap;
     gap: 6px;
     margin-left: auto;
   }
 
-  /* 只留图标:退出登录文字隐藏后顶栏能单行放下,避免三行堆叠 */
-  .user-chip-name,
+.user-chip-name,
   .logout-label {
     display: none;
   }
 
-  /* 退出按钮收到图标宽度(库默认左右各 16px),为同一行再腾出 25px */
-  .app-logout {
+.app-logout {
     padding-left: 8px;
     padding-right: 8px;
   }
 }
+
 
 .visa-admin-detail-head,
 .docs-cert-title,
@@ -482,7 +530,8 @@ html {
   margin-bottom: 12px;
 }
 
-.inbox-filters {
+.inbox-filters,
+  .stat-board-extras {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -501,12 +550,17 @@ html {
 .dip-notice-list,
 .dip-agreement-list,
 .dip-msg-list,
-.dip-sso-body,
 .res-review-list,
 .res-verify-card,
 .res-verify-found,
 .res-action-form,
-.res-type-switches {
+.res-type-switches,
+  .postal-notice-list,
+  .postal-msg-list,
+  .protocol-confirm-body,
+  .protocol-courtesy-apps,
+  .protocol-msg-list,
+  .tour-badge-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -514,12 +568,13 @@ html {
 
 .inbox-item,
 .res-type-card,
-.res-msg-item {
+.res-msg-item,
+  .postal-notice-item {
   cursor: pointer;
 }
 
-/* 未读行:4px 薄荷左条 + 浅色底 + 行内「未读」文字 Tag 三件套。
-   4px 薄荷对纸面只有 1.97:1,是装饰不是信号,文字 Tag 才是强制项(DESIGN.md:353)。 */
+/* 未读行:2px 薄荷左条 + 浅色底 + 行内「未读」文字 Tag 三件套。
+   左条只做弱装饰(薄荷对纸面对比不足),文字 Tag 才是强制项(DESIGN.md:353)。 */
 .nl-item-unread,
 .inbox-item.unread,
 .visa-msg-card.unread,
@@ -527,8 +582,9 @@ html {
 .dip-msg-unread,
 .res-msg-item.unread,
 .docs-msg-item.unread,
-.appeal-message-card.unread {
-  border-left: 4px solid var(--animal-primary-color);
+.appeal-message-card.unread,
+.arch-msg-card.unread {
+  border-left: 2px solid var(--animal-primary-color);
   background: var(--animal-primary-color-bg);
   padding-left: 12px;
 }
@@ -547,14 +603,21 @@ html {
 .appeal-item-head,
 .appeal-material-list li,
 .appeal-record-timeline li,
-.appeal-message-head {
+.appeal-message-head,
+  .arch-tag-row,
+  .arch-actions,
+  .postal-msg-actions,
+  .protocol-detail-status,
+  .protocol-inline-gap {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.inbox-time {
+.inbox-time,
+  .protocol-notice-time,
+  .protocol-msg-head span {
   margin-left: auto;
   font-size: 12px;
 }
@@ -626,13 +689,12 @@ html {
   display: flex;
   flex-wrap: nowrap;
   gap: 4px;
-}
-
-@media (max-width: 900px) {
-  .table-actions {
+}@media (max-width: 900px) {
+.table-actions {
     flex-wrap: wrap;
   }
 }
+
 
 /* 共享多行输入(src/components/TextArea.jsx):库内没有 Textarea 组件,外观统一由
    `.nl-textarea` 提供令牌化样式;署内需要差异时再在组件上追加自己的类名覆盖。 */
@@ -665,7 +727,8 @@ html {
 }
 
 /* 分页「共 N 条」:库里写死 #a09080(2.77:1),换成项目可读的次级墨。 */
-[class*='animal-total-'] {
+[class*='animal-total-'],
+  .edu-card-title a:hover {
   color: var(--animal-text-color-secondary);
 }
 
@@ -748,23 +811,63 @@ html {
 .table-fit td {
   overflow-wrap: anywhere;
   word-break: break-word;
-}
-
-/* 360 验收宽度:卡片里只剩 ~250px。单元格左右各 20px 的库默认内边距在 7 列表里
-   要吃掉 280px,标签的 nowrap 又把每列钉在最小宽度上 —— 窄屏统一收内边距并放开
-   标签换行,把表压回容器内。 */
-@media (max-width: 640px) {
-  .table-fit th,
+}@media (max-width: 640px) {
+.table-fit th,
   .table-fit td {
     padding-left: 8px;
     padding-right: 8px;
   }
 
-  .table-fit [class*='animal-tag-'] {
+.table-fit [class*='animal-tag-'] {
     white-space: normal;
     height: auto;
   }
 }
+
+/* 480px 以下(360px 为最小验收宽度):表格进一步压缩,保证任何多列表格都不横向滚动。
+   措施按 PRODUCT.md「任何宽度不出现横向滚动」硬承诺设计:单元格与状态标签再收一档,
+   操作列按钮去图标、收窄水平 padding——按钮文字承载语义,图标在 360px 属可牺牲装饰;
+   标签内文字允许断词(完整显示优先于词边界),标签内图标一并让位。 */
+@media (max-width: 480px) {
+  .table-fit th,
+  .table-fit td {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .table-fit [class*='animal-tag-'] {
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 12px;
+  }
+
+  .table-fit [class*='animal-tag-'] svg,
+  .table-actions [class*='animal-btn-icon'] {
+    display: none;
+  }
+
+  .table-fit [class*='animal-tag-'] [class*='animal-text-'] {
+    overflow-wrap: anywhere;
+  }
+
+  .service-name-cell {
+    flex-wrap: wrap;
+  }
+
+  .table-actions {
+    gap: 2px;
+  }
+
+  .table-actions [class*='animal-btn-'] {
+    height: auto;
+    min-height: 32px;
+    padding: 0 6px;
+    font-size: 12px;
+    gap: 4px;
+    white-space: normal;
+  }
+}
+
 
 /* ---------- auth ---------- */
 
@@ -917,7 +1020,8 @@ html {
 
 .setup-actions > *,
 .visa-verify-form > :first-child,
-.dip-id-card-main {
+.dip-id-card-main,
+  .edu-task-progress > :first-child {
   flex: 1;
 }
 
@@ -930,7 +1034,8 @@ html {
   text-align: center;
 }
 
-.setup-success p {
+.setup-success p,
+  .protocol-host-cert h3 {
   margin: 0;
 }
 
@@ -964,7 +1069,6 @@ html {
 .nl-hero-sub,
 .portal-hero p,
 .visa-hero-sub,
-.docs-hero-sub,
 .docs-home-tagline,
 .im-hero-sub,
 .res-hero-sub,
@@ -1003,7 +1107,9 @@ html {
 .im-home-status,
 .res-home-status,
 .dip-stat-grid,
-.appeal-stat-grid {
+.appeal-stat-grid,
+  .arch-stat-grid,
+  .postal-stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 16px;
@@ -1049,7 +1155,9 @@ html {
 .edu-stat-card .edu-stat-value,
 .postal-stat .postal-stat-value,
 .tour-stat-card .tour-stat-number,
-.stat-metric-card .stat-metric-value {
+.stat-metric-card .stat-metric-value,
+  .arch-stat-value,
+  .protocol-metric-card strong {
   font-size: 28px;
   font-weight: 800;
   line-height: 1.2;
@@ -1148,16 +1256,7 @@ html {
   color: var(--animal-text-color);
   text-decoration: underline;
   word-break: break-all;
-}
-
-/* ---------- 奶龍國簽註申請署 (visa service) ---------- */
-
-/* 办公横幅:无边框纯排版 —— hero 已是页面唯一色面,横幅再描一层就是卡片套卡片。
-   徽章图标用棕墨(--animal-text-color),薄荷/叶绿对浅底都不到 3:1。 */
-.nl-office-banner,
-.visa-office-banner,
-.res-office-banner,
-.appeal-office-banner {
+}.nl-office-banner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1166,21 +1265,13 @@ html {
   margin-bottom: 16px;
   padding: 0;
 }
-
-.nl-office-brand,
-.visa-office-brand,
-.res-office-brand,
-.appeal-office-brand {
+.nl-office-brand {
   display: flex;
   align-items: center;
   gap: 12px;
   min-width: 0;
 }
-
-.nl-office-emblem,
-.visa-office-emblem,
-.res-office-emblem,
-.appeal-office-emblem {
+.nl-office-emblem {
   width: 44px;
   height: 44px;
   flex: 0 0 auto;
@@ -1191,37 +1282,39 @@ html {
   background: var(--animal-primary-color-bg);
   color: var(--animal-text-color);
 }
-
-.nl-office-name,
-.visa-office-name,
-.res-office-name,
-.appeal-office-name {
+.nl-office-name {
   font-size: 18px;
   font-weight: 700;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
-
-.nl-office-sub,
-.visa-office-sub,
-.res-office-sub,
-.appeal-office-sub {
+.nl-office-sub {
   font-size: 13px;
   line-height: 1.55;
   color: var(--animal-text-color);
 }
 
-.visa-nav,
-.appeal-nav {
+/* 管理路由下的「管理台」角标:与横幅纯排版一致,只用虚线框,不再加底色。 */
+.nl-office-tag {
+  padding: 3px 12px;
+  border: 1px dashed var(--animal-border-color);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+  white-space: nowrap;
+}
+
+/* 署内页签:全站唯一的一条页签栏(OfficeTabs)。用户页签与管理页签共用同一
+   样式,永远不并排出现;360px 下换行,不横滚。 */
+.nl-tabs {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
 
-.visa-nav-link,
-.res-nav-link,
-.appeal-nav-link {
+.nl-tab {
   padding: 7px 16px;
   border-radius: 999px;
   font-size: 14px;
@@ -1234,12 +1327,22 @@ html {
     background var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.visa-nav-link.active {
+.nl-tab:hover {
+  color: var(--animal-text-color);
+  background: var(--animal-primary-color-bg);
+}
+
+.nl-tab.active {
   color: var(--animal-text-color);
   background: var(--animal-primary-color-bg);
   font-weight: 700;
   box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
+
+.nl-tab-badge {
+  margin-left: 6px;
+}
+
 
 .visa-section,
 .res-fraud-card {
@@ -1247,7 +1350,9 @@ html {
 }
 
 .visa-scam-banner,
-.res-type-detail {
+.res-type-detail,
+  .protocol-event-grid-lg,
+  .protocol-mt {
   margin-top: 16px;
 }
 
@@ -1276,14 +1381,18 @@ html {
 .res-ann-head,
 .res-admin-detail-head,
 .res-material-list li,
-.res-tpl-head {
+.res-tpl-head,
+  .arch-msg-head,
+  .protocol-notice-head,
+  .tour-ann-head {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.visa-notice-time {
+.visa-notice-time,
+  .protocol-upcoming-date span {
   font-size: 12px;
 }
 
@@ -1321,16 +1430,18 @@ html {
   font-size: 13px;
   color: var(--animal-text-color-secondary);
   min-height: 36px;
-}
-
-.visa-type-meta,
-.docs-subnav,
+}.visa-type-meta,
 .im-status-tags,
-.res-type-reqs {
+.res-type-reqs,
+  .protocol-event-tags,
+  .protocol-invitation-meta,
+  .protocol-msg-actions,
+  .tour-card-meta {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
+
 
 .visa-guide-card :is(h3, h4),
 .appeal-stats-table h4 {
@@ -1421,7 +1532,8 @@ html {
 .visa-messages-page,
 .visa-permits-page,
 .visa-stats-page,
-.docs-page {
+.docs-page,
+  .postal-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1662,9 +1774,9 @@ html {
 }
 
 .visa-review-timeline li {
-  border-left: 3px solid var(--animal-primary-color-bg);
-  padding-left: 14px;
-}
+  border-left: 2px solid var(--animal-primary-color-bg);
+      padding-left: 14px;
+    }
 
 .visa-review-head p,
 .visa-review-timeline p,
@@ -1694,28 +1806,34 @@ html {
 }
 
 .evisa-head,
-.res-card-head {
+.res-card-head,
+  .protocol-pass-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-}
-
-.evisa-issuer,
-.dip-banner-name,
-.res-card-issuer {
+}.evisa-issuer,
+.res-card-issuer,
+  .stat-board-metric strong {
   font-size: 18px;
   font-weight: 800;
 }
-
 .evisa-kind,
 .docs-audit-detail,
-.dip-banner-sub,
 .res-info-list dt,
-.res-card-kind {
+.res-card-kind,
+  .arch-timeline-time,
+  .postal-recipient-account,
+  .protocol-venue-label span,
+  .protocol-pass-kind,
+  .stat-updated,
+  .stat-report-meta,
+  .stat-report-label,
+  .stat-board-metric span {
   font-size: 12px;
   color: var(--animal-text-color-muted);
 }
+
 
 .evisa-grid {
   display: grid;
@@ -1752,7 +1870,10 @@ html {
 }
 
 .visa-permit-actions,
-.res-verify-form {
+.res-verify-form,
+  .edu-hero-actions,
+  .postal-hero-actions,
+  .protocol-hero-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -1775,7 +1896,8 @@ html {
 .im-msg-filters,
 .dip-msg-filter,
 .res-filter-bar,
-.appeal-filter-bar {
+.appeal-filter-bar,
+  .stat-filter-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1783,12 +1905,27 @@ html {
   margin-bottom: 16px;
 }
 
-.nl-filter-bar > * {
+.nl-filter-bar > *,
+  .arch-toolbar > *,
+  .edu-search-row > :first-child,
+  .edu-search-row .edu-select-slot,
+  .postal-filter-bar > *,
+  .protocol-filter-bar > *,
+  .protocol-eligibility-form > *,
+  .protocol-verify-form > *:first-child,
+  .protocol-checkin-form > *:first-child,
+  .tour-filter-bar > * {
   flex: 1 1 180px;
   min-width: 0;
 }
 
-.nl-filter-actions {
+.nl-filter-actions,
+  .arch-toolbar > button,
+  .edu-search-row > button,
+  .postal-filter-bar > button,
+  .protocol-filter-bar > button,
+  .protocol-eligibility-form > button,
+  .tour-filter-bar > button {
   flex: 0 0 auto;
 }
 
@@ -1809,7 +1946,8 @@ html {
 .im-decl-detail,
 .dip-section,
 .res-confirm-body,
-.res-admin-detail {
+.res-admin-detail,
+  .stat-admin-page {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1819,7 +1957,8 @@ html {
 .appeal-complaint-form p,
 .appeal-review-form p,
 .appeal-ticket-form p,
-.appeal-action-form p {
+.appeal-action-form p,
+  .protocol-tip-card p {
   margin: 6px 0 0;
 }
 
@@ -1886,7 +2025,9 @@ html {
 
 .visa-tag-cloud,
 .dip-detail-actions,
-.appeal-admin-counters {
+.appeal-admin-counters,
+  .edu-hero-stats,
+  .protocol-hero-stats {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -1903,51 +2044,56 @@ html {
   margin: 0 0 10px;
 }
 
-.visa-sso-body,
 .docs-block,
 .auto-approve-panel,
 .dip-detail,
 .res-change-list,
-.res-verify-result {
+.res-verify-result,
+  .arch-msg-list,
+  .arch-guide-list,
+  .edu-list,
+  .protocol-detail-body,
+  .protocol-modal-form,
+  .protocol-verify-found,
+  .protocol-config-list,
+  .stat-section {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.visa-sso-identity,
-.dip-banner-brand,
-.dip-sso-identity {
+.docs-mat-kind,
+.im-trend-n,
+.dip-id-card-entity,
+.res-trend-n {
+  font-weight: 700;
+}
+
+/* SSO 身份确认弹窗(共享:门户服务卡入口 + 各署 Shell,见 SsoConfirmModal) */
+.sso-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sso-identity {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.visa-sso-name,
-.docs-mat-kind,
-.im-trend-n,
-.dip-id-card-entity,
-.dip-sso-name,
-.res-trend-n {
+.sso-name {
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
-.visa-sso-account {
+.sso-account {
   font-size: 12px;
   opacity: 0.85;
-}
-
-.visa-sso-card p {
-  margin: 0;
-}
-
-/* ---------- print (电子签注 / 申请详情导出) ---------- */
-
-@media print {
-  .app-header,
+}@media print {
+.app-header,
   .app-footer,
   .app-sider,
-  .visa-nav,
-  .visa-office-banner,
   .page-header,
   .visa-guide-actions,
   .visa-permit-actions,
@@ -1958,68 +2104,37 @@ html {
     display: none !important;
   }
 
-  body {
+.nl-office-banner,
+.nl-tabs {
+  print-color-adjust: exact;
+  display: none !important;
+}
+
+body {
     background: #fff;
   }
 
-  .app-main {
+.app-main {
     max-width: none;
     padding: 0;
   }
 
-  .evisa-card {
+.evisa-card {
     border-color: var(--animal-primary-color);
     opacity: 1;
   }
 }
+
 /* ---------- docs service (奶龍國皇家文書與認證署) ---------- */
-
-.docs-hero {
-  padding: 6px 0;
-}
-
-.docs-hero-admin {
-  padding: 12px 0 0;
-}
-
-.docs-admin-title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.docs-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 7px 16px;
-  border-radius: 999px;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.docs-tab.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
-}
-
-.docs-tab-badge {
-  display: inline-flex;
-  margin-left: 2px;
-}
 
 /* home */
 
 .docs-home,
 .im-page,
-.dip-page {
+.dip-page,
+  .arch-page,
+  .protocol-risk-panel,
+  .stat-page {
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -2058,7 +2173,8 @@ html {
 .im-attachment-list,
 .dip-config-guide,
 .res-review-item,
-.res-review-timeline li {
+.res-review-timeline li,
+  .tour-badge-progress {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -2066,7 +2182,9 @@ html {
 
 .docs-notice-list,
 .res-ann-list,
-.res-faq {
+.res-faq,
+  .tour-ann-list,
+  .tour-checkin-box {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2210,7 +2328,8 @@ html {
   gap: 14px;
 }
 
-.docs-field-wide {
+.docs-field-wide,
+  .postal-field-wide {
   grid-column: 1 / -1;
 }
 
@@ -2353,7 +2472,10 @@ html {
 .docs-verify-bar,
 .im-detail-actions,
 .dip-quick-row,
-.dip-form-actions {
+.dip-form-actions,
+  .edu-badge-grid,
+  .protocol-detail-actions,
+  .protocol-export-grid {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -2512,7 +2634,7 @@ html {
 }
 
 .doc-cert-seal-sub {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -2532,17 +2654,17 @@ html {
 
 .docs-cert-header {
   align-items: flex-start;
-}
-
-@media print {
-  body.docs-printing * {
+}@media print {
+body.docs-printing * {
     visibility: hidden !important;
   }
-  body.docs-printing .doc-cert,
+
+body.docs-printing .doc-cert,
   body.docs-printing .doc-cert * {
     visibility: visible !important;
   }
-  body.docs-printing .doc-cert {
+
+body.docs-printing .doc-cert {
     position: fixed;
     left: 0;
     top: 0;
@@ -2550,6 +2672,7 @@ html {
     box-shadow: none;
   }
 }
+
 
 /* verify */
 
@@ -2745,44 +2868,6 @@ html {
   min-height: 80px;
 }
 
-/* ---------- immigration (皇家口岸入境署) ---------- */
-
-.im-subnav,
-.dip-subnav {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 6px;
-  background: var(--animal-primary-color-bg);
-  border-radius: 999px;
-}
-
-.im-subnav-link,
-.dip-subnav-link {
-  padding: 6px 14px;
-  border-radius: 999px;
-  color: var(--animal-text-color-secondary);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition:
-    color var(--animal-motion-duration-fast) var(--animal-motion-ease),
-    background var(--animal-motion-duration-fast) var(--animal-motion-ease);
-}
-
-.im-subnav-link:hover,
-.dip-subnav-link:hover {
-  color: var(--animal-text-color);
-  background: var(--animal-bg-color);
-}
-
-.im-subnav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
-}
-
 .im-status-head {
   display: flex;
   align-items: center;
@@ -2946,7 +3031,8 @@ html {
   font-size: 14px;
 }
 
-.im-agree-row {
+.im-agree-row,
+  .protocol-field-spaced {
   margin-top: 10px;
 }
 
@@ -2954,7 +3040,10 @@ html {
 
 .im-attachments,
 .dip-config-form,
-.res-notice-card {
+.res-notice-card,
+  .arch-type-card,
+  .edu-related-list,
+  .protocol-faq {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -3010,7 +3099,7 @@ html {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  border-left: 3px solid var(--animal-primary-color);
+  border-left: 2px solid var(--animal-primary-color);
   padding-left: 12px;
 }
 
@@ -3122,7 +3211,7 @@ html {
 
 .im-stamp-date,
 .im-stamp-no {
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .im-records-note {
@@ -3230,7 +3319,10 @@ html {
   min-width: 90px;
 }
 
-.im-channel-switch {
+.im-channel-switch,
+  .protocol-event-meta span,
+  .protocol-detail-meta span,
+  .protocol-pass-meta span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -3308,44 +3400,17 @@ html {
 .im-trend-bar,
 .res-trend-bar {
   width: 26px;
-  border-radius: 8px 8px 3px 3px;
+  border-radius: 8px;
   background: var(--animal-primary-color);
   min-height: 4px;
 }
 
 .im-audit-detail,
-.res-audit-detail {
+.res-audit-detail,
+  .tour-audit-detail {
   font-size: 12px;
   word-break: break-all;
   color: var(--animal-text-color-muted);
-}
-
-/* ---------- 奶龙国皇家外交事务署 (diplomacy service) ---------- */
-
-.dip-subnav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
-}
-
-.dip-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.dip-banner-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--animal-border-radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-primary-color);
 }
 
 .dip-notice-time {
@@ -3386,7 +3451,9 @@ html {
   background: var(--animal-primary-color-bg);
 }
 
-.dip-guide-grid {
+.dip-guide-grid,
+  .arch-detail-grid,
+  .protocol-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
@@ -3398,7 +3465,9 @@ html {
   font-size: 14px;
 }
 
-.dip-home-stats {
+.dip-home-stats,
+  .protocol-material-req li,
+  .protocol-switch-grid label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -3455,10 +3524,10 @@ html {
   margin-bottom: 6px;
 }
 
-.dip-timeline li {
-  padding-left: 14px;
-  border-left: 3px solid var(--animal-primary-color-bg);
-}
+    .dip-timeline li {
+      padding-left: 14px;
+      border-left: 2px solid var(--animal-primary-color-bg);
+    }
 
 .dip-timeline-action {
   font-weight: 600;
@@ -3712,7 +3781,7 @@ html {
 }
 
 .dip-id-card-term,
-.dip-sso-account {
+  .postal-postcard-from {
   font-size: 13px;
   color: var(--animal-text-color-secondary);
 }
@@ -3732,16 +3801,10 @@ html {
 .dip-id-card-scan {
   font-size: 12px;
   color: var(--animal-text-color-secondary);
-}
-
-@media print {
-  .app-header,
+}@media print {
+.app-header,
   .app-footer,
   .app-nav,
-  .dip-banner,
-  .dip-subnav,
-  
-
   .dip-print-area {
     position: fixed;
     inset: 0;
@@ -3753,28 +3816,17 @@ html {
   }
 }
 
+
 /* ---------- 奶龙国皇家居民登记署 (resident service) ---------- */
 
 .res-page,
 .res-form-page,
 .res-app-detail,
-.res-admin-page {
+.res-admin-page,
+  .tour-page,
+  .tour-admin-page {
   display: flex;
   flex-direction: column;
-}
-
-.res-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.res-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
 }
 
 .res-admin-nav {
@@ -3839,7 +3891,8 @@ html {
   font-size: 14px;
 }
 
-.res-center-btn {
+.res-center-btn,
+  .tour-center-btn {
   display: flex;
   justify-content: center;
   margin-top: 24px;
@@ -3872,7 +3925,8 @@ html {
 }
 
 .res-field-required,
-.appeal-stat-item.warn strong {
+.appeal-stat-item.warn strong,
+  .stat-required {
   color: var(--animal-error-color);
 }
 
@@ -3890,7 +3944,8 @@ html {
   transition: border-color var(--animal-motion-duration-fast) var(--animal-motion-ease);
 }
 
-.res-textarea::placeholder {
+.res-textarea::placeholder,
+  .protocol-field small {
   font-weight: 400;
 }
 
@@ -4270,7 +4325,8 @@ html {
 }
 
 .res-config-grid label,
-.res-type-form label {
+.res-type-form label,
+  .tour-form label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -4325,32 +4381,19 @@ html {
 
 .res-info-row b {
   font-variant-numeric: tabular-nums;
-}
-
-@media print {
-  .res-nav,
-  .res-admin-nav,
-  .res-office-banner,
-  .res-card-actions,
+}@media print {
+.res-card-actions,
   .page-header,
   .res-card-meta,
   .res-notice-card {
     display: none !important;
   }
 
-  .res-card {
+.res-card {
     border-color: var(--animal-primary-color);
   }
 }
 
-/* ---------- 奶龍國皇家申訴與監察署 (appeal service) ---------- */
-
-.appeal-nav-link.active {
-  color: var(--animal-text-color);
-  background: var(--animal-primary-color-bg);
-  font-weight: 700;
-  box-shadow: inset 0 -3px 0 0 var(--animal-primary-color);
-}
 
 .appeal-hero-counts {
   margin-top: 14px;
@@ -4477,13 +4520,12 @@ html {
   gap: 10px;
   align-items: center;
   margin: 12px 0;
-}
-
-@media (max-width: 720px) {
-  .appeal-biz-row {
+}@media (max-width: 720px) {
+.appeal-biz-row {
     grid-template-columns: 1fr;
   }
 }
+
 
 .appeal-list {
   list-style: none;
@@ -4881,24 +4923,21 @@ html {
 .appeal-verify-missing {
   text-align: center;
   padding: 12px 0;
-}
-
-@media print {
-  .app-header,
+}@media print {
+.app-header,
   .app-footer,
-  .appeal-office-banner,
-  .appeal-nav,
   .appeal-doc-toolbar,
   .no-print {
     display: none !important;
   }
 
-  .appeal-doc-paper {
+.appeal-doc-paper {
     border: none;
     box-shadow: none;
     max-width: none;
   }
 }
+
 
 /* ---------- 各署统计卡:容器间距与「不可用」 ----------
    字号/字重/颜色的收敛规则已并入上面的统计卡一组(父级类选择器保证特异性)。 */
@@ -4915,13 +4954,8 @@ html {
   font-size: 20px;
   font-weight: 700;
   color: var(--animal-text-color-muted);
-}
-
-/* ---------- 窄屏(≤640px) ---------- */
-
-@media (max-width: 640px) {
-  /* 标题:长标题允许任意断行,不再被库 Title 的 white-space:nowrap / 2em 固定高撑出视口 */
-  .page-title,
+}@media (max-width: 640px) {
+.page-title,
   .section-title,
   .block-heading,
   .block-heading-sm {
@@ -4930,7 +4964,7 @@ html {
     text-wrap: balance;
   }
 
-  h1.page-title [class*="animal-ribbon-"],
+h1.page-title [class*="animal-ribbon-"],
   h1.page-title [class*="animal-layer-"],
   h1.page-title [class*="animal-tab-"] {
     white-space: normal;
@@ -4941,15 +4975,13 @@ html {
     text-wrap: balance;
   }
 
-  /* 表格:库的 td 是 14px 20px 内边距(th nowrap),6 列光水平留白就 240px */
-  .table-fit th,
+.table-fit th,
   .table-fit td {
     padding: 8px;
     font-size: 13px;
   }
 
-  /* hero 内边距收敛,标题字号不降档 */
-  .nl-hero,
+.nl-hero,
   .portal-hero,
   .visa-hero,
   .docs-home-hero,
@@ -4960,6 +4992,7 @@ html {
     padding: 24px 16px;
   }
 }
+
 
 /* ---------- dialog actions ---------- */
 
@@ -4977,4 +5010,30 @@ html {
 @page {
   size: A4;
   margin: 16mm;
+}
+
+/* ---------- page load error ---------- */
+
+/* 加载失败常驻条:sticky 在吸顶顶栏下方,长表格滚动后仍可见。
+   只用虚线卡 + 错误色图标,文字保持棕墨(错误色不承载正文)。 */
+.load-error {
+  position: sticky;
+  top: 64px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.load-error-icon {
+  flex: none;
+  color: var(--animal-error-color);
+}
+
+.load-error-text {
+  flex: 1;
+  margin: 0;
+  color: var(--animal-text-color);
+  font-weight: 600;
 }

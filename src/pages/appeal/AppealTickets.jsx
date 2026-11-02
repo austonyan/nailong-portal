@@ -1,16 +1,8 @@
 // 工单客服:一般咨询/账号问题/故障报修,分类与优先级、进度与回复记录、常见问题自助。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Card,
-  Collapse,
-  Drawer,
-  Input,
-  Modal,
-  Select,
-  Tag,
-} from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Collapse, Drawer, Input, Modal, Select, Tag } from 'animal-island-ui';
 import { PlusIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { TextArea, TICKET_CATEGORIES, TICKET_PRIORITIES, TICKET_STATUS_COLORS, PRIORITY_COLORS, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
@@ -21,6 +13,7 @@ const FAQ_KEYS = ['reset', 'unbind', 'slow', 'display', 'contact'];
 
 export default function AppealTickets() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [category, setCategory] = useState('consult');
@@ -34,15 +27,17 @@ export default function AppealTickets() {
   const [faqQuery, setFaqQuery] = useState('');
   const { confirm, dialog: confirmDialog } = useConfirmAction();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/appeal/tickets');
       setItems(data.items);
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -116,7 +111,7 @@ export default function AppealTickets() {
   return (
     <div className="appeal-list-page">
       <div className="page-header">
-        <h1 className="page-title">{t('appeal.ticket.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.ticket.title')}</Title></h1>
         <div className="table-actions appeal-filter-bar">
           <Button type="primary" icon={<PlusIcon />} onClick={() => setCreateOpen(true)}>
             {t('appeal.ticket.create')}

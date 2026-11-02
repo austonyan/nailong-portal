@@ -2,10 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DipNav, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
+import { StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
@@ -27,7 +28,7 @@ function RelationDetail({ id, onClose, onChanged }) {
   const [busy, setBusy] = useState(false);
   const { confirm, dialog } = useConfirmAction();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get(`/dip/relations/${id}`)
       .then((data) => setRel(data.relation))
@@ -221,19 +222,22 @@ function RelationDetail({ id, onClose, onChanged }) {
 
 export default function DipRelations() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [openId, setOpenId] = useState(null);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
+    loadError.clear();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get('/dip/relations?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastDipError(t, err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(load, [load]);
 
@@ -292,9 +296,8 @@ export default function DipRelations() {
 
   return (
     <div className="dip-page">
-      <DipNav />
       <div className="page-header">
-        <h1 className="page-title">{t('dip.relation.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="yellow-green">{t('dip.relation.title')}</Title></h1>
         <Link to="/dip/apply">
           <Button type="primary" icon={<PlusIcon />}>{t('dip.nav.apply')}</Button>
         </Link>

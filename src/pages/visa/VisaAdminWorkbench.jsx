@@ -1,7 +1,8 @@
 // 审核工作台:待审队列、申请详情、通过/驳回/补件、签发与签注状态管理。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openVisaMaterial } from '../../api/visa.js';
@@ -32,6 +33,7 @@ const QUEUE_STATUS_OPTIONS = [
 
 export default function VisaAdminWorkbench() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -47,7 +49,8 @@ export default function VisaAdminWorkbench() {
   const [validDays, setValidDays] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -58,9 +61,10 @@ export default function VisaAdminWorkbench() {
       setTotal(data.total);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, typeFilter, q, t]);
+  }, [page, status, typeFilter, q, t, loadError]);
 
   useEffect(() => {
     load();
@@ -146,9 +150,11 @@ export default function VisaAdminWorkbench() {
       title: t('common.actions'),
       dataIndex: 'actions',
       render: (_, record) => (
-        <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
-          {t('visa.my.view')}
-        </Button>
+        <div className="table-actions">
+          <Button type="default" size="small" icon={<EyeIcon />} onClick={() => openDetail(record)}>
+            {t('visa.my.view')}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -165,7 +171,7 @@ export default function VisaAdminWorkbench() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('visa.admin.workbench.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.admin.workbench.title')}</Title></h1>
         <div className="table-actions visa-filter-bar">
           <Select
             value={status}

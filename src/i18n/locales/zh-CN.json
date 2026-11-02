@@ -655,7 +655,7 @@
     }
   },
   "visa": {
-    "officeName": "奶龍國簽註申請署",
+    "officeName": "奶龙国签注申请署",
     "officeSub": "虚拟签注 · 电子签注 · 在线验真",
     "back": "返回",
     "backHome": "回首页",
@@ -1117,6 +1117,9 @@
     "notFoundTip": "这片海域什么都没有"
   },
   "docs": {
+    "sso": {
+      "tip": "进入服务后，你的门户身份将用于文书办理、认证申请与站内通知。你可以随时在个人资料页退出登录。"
+    },
     "title": "奶龙国皇家文书与认证署",
     "subtitle": "欢迎来到皇家文书与认证署，{{name}}！在这里为你的冒险出具认证。",
     "tab": {
@@ -1375,7 +1378,6 @@
       "tip": "点击站内信可以跳转对应申请；所有状态变更（补件、通过、驳回、到期）都会在这里通知。"
     },
     "admin": {
-      "title": "文书与认证署 · 管理端",
       "tab": {
         "review": "审核工作台",
         "types": "类型管理",
@@ -1618,8 +1620,12 @@
     }
   },
   "imm": {
+    "officeName": "皇家口岸入境署",
+    "officeSub": "入境申报 · 通关码 · 出入境记录",
+    "sso": {
+      "tip": "进入服务后，你的门户身份将用于出入境申报、通关查询与站内通知。你可以随时在个人资料页退出登录。"
+    },
     "nav": {
-      "label": "入境署导航",
       "home": "署内首页",
       "ports": "口岸",
       "declare": "入境申报",
@@ -2498,7 +2504,6 @@
       "notFound": "未找到对应的居民卡，请检查编号"
     },
     "admin": {
-      "navLabel": "居民署管理导航",
       "tabs": {
         "review": "登记审核",
         "changes": "变更审批",
@@ -2749,7 +2754,6 @@
       "tip": "为保护账号安全，进入各署前请确认当前登录身份。外交身份为业务身份，与登录账号相互独立。"
     },
     "nav": {
-      "label": "外交事务署导航",
       "home": "署务首页",
       "apply": "建交申请",
       "relations": "我的建交",
@@ -3376,8 +3380,6 @@
       "messages": "站内信",
       "help": "帮助",
       "verify": "验真查询",
-      "workbench": "管理台",
-      "frontDesk": "返回前台",
       "review": "报名审核",
       "adminEvents": "活动管理",
       "issuance": "邀请函与凭证",
@@ -4344,9 +4346,55 @@
       "complaint": "仅投诉建议"
     },
     "verifyKind": {
+      "application": "申请",
+      "permit": "签注",
+      "declaration": "入境申报",
+      "pass_code": "通关码",
+      "entry": "入境记录",
+      "exit": "出境记录",
+      "certificate": "认证文书",
+      "relation": "建交关系",
+      "identity": "外交身份",
+      "agreement": "互免协议",
+      "card": "居民证",
+      "change": "变更申请",
+      "event": "活动",
+      "registration": "活动报名",
+      "invitation": "邀请函",
+      "pass": "活动凭证",
+      "host": "接待方",
+      "host_cert": "接待方证书",
+      "courtesy": "礼遇申请",
       "appeal": "申诉",
       "review": "复核",
-      "decision": "决定书"
+      "complaint": "投诉建议",
+      "ticket": "工单",
+      "decision": "决定书",
+      "deletion": "删除申请",
+      "receipt": "执行回执",
+      "postcard": "明信片",
+      "notice": "公告",
+      "attraction": "景点",
+      "article": "文章",
+      "badge": "徽章",
+      "checkin": "打卡",
+      "report": "统计报告",
+      "edu_entry": "教育词条",
+      "task": "阅读任务"
+    },
+    "verifyOffice": {
+      "visa": "签注申请署",
+      "immigration": "皇家口岸入境署",
+      "docs": "皇家文书与认证署",
+      "diplomacy": "皇家外交事务署",
+      "resident": "皇家居民登记署",
+      "protocol": "皇家礼宾与活动署",
+      "appeal": "皇家申诉与监察署",
+      "archives": "皇家档案与记录署",
+      "postal": "皇家邮政与通信署",
+      "tourism": "皇家文化旅游署",
+      "stats": "皇家统计署",
+      "education": "皇家教育与科学署"
     },
     "complaintKind": {
       "complaint": "投诉",
@@ -4825,17 +4873,24 @@
     },
     "verify": {
       "title": "验真中心",
-      "headerSub": "申诉 · 复核 · 决定书验真",
-      "tip": "输入申诉、复核或决定书编号，或扫描决定书二维码，核验记录真实性与状态。",
-      "placeholder": "请输入编号",
+      "headerSub": "十二署业务编号统一核验",
+      "tip": "输入任一业务署签发的编号，或扫描决定书二维码，核验记录真实性与当前状态。",
+      "placeholder": "请输入编号，如NLA-…、NLT-…、NLD…",
       "action": "查询",
+      "number": "编号",
+      "office": "所属署",
+      "status": "状态",
+      "valid": "有效",
+      "notEffective": "未生效",
+      "issuedAt": "记录时间",
+      "validUntil": "有效期至",
+      "checkedAt": "查询时间",
       "appealNo": "关联申诉",
       "decisionType": "处理决定",
       "handledAt": "处理时间",
-      "office": "出具机构",
-      "maskTip": "为保护隐私，验真结果仅展示状态与必要信息，不含申诉内容与个人联系方式。",
+      "maskTip": "为保护隐私，验真结果仅展示编号所属署、业务类型、状态与必要日期，不含姓名、联系方式与业务内容。",
       "notFound": "未查询到该编号",
-      "notFoundTip": "请核对编号是否完整、大小写是否正确；多次查询失败请稍后再试。"
+      "notFoundTip": "请核对编号是否完整、大小写是否正确；已删除或已补发的历史编号可能无法查到。"
     },
     "admin": {
       "workbenchTitle": "申诉处理工作台",
@@ -5173,14 +5228,10 @@
   "arch": {
     "officeName": "奶龙国皇家档案与记录署",
     "officeSub": "各署业务记录的归档与本人查询出口",
-    "bannerPublic": "本人档案查询",
-    "bannerAdmin": "档案管理台",
     "sso": {
       "tip": "皇家档案与记录署将以你当前登录的身份展示本人在各署的归档记录，只读查看，不会修改任何业务数据。"
     },
     "nav": {
-      "label": "档案署导航",
-      "adminLabel": "档案管理台导航",
       "home": "首页",
       "records": "我的档案",
       "requests": "删除申请",
@@ -5189,7 +5240,6 @@
       "rules": "归档规则",
       "access": "访问日志",
       "audit": "审计日志",
-      "admin": "档案管理台",
       "settings": "设置"
     },
     "home": {
@@ -5867,11 +5917,9 @@
       "articles": "文化内容",
       "collection": "收集册",
       "badges": "成就徽章",
-      "my": "我的旅游",
-      "manage": "管理入口"
+      "my": "我的旅游"
     },
     "admin": {
-      "navLabel": "文化旅游署管理",
       "tabs": {
         "attractions": "景点管理",
         "articles": "内容管理",
@@ -5896,6 +5944,10 @@
       "articleStatus": {
         "published": "已发布",
         "offline": "已下线"
+      },
+      "badgeStatus": {
+        "active": "启用",
+        "inactive": "停用"
       },
       "attractions": {
         "title": "景点管理",
@@ -6286,7 +6338,6 @@
       "education": "教育科学署"
     },
     "admin": {
-      "navLabel": "统计署管理导航",
       "tabs": {
         "dashboard": "平台总看板",
         "metrics": "统计口径",

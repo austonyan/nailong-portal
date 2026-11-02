@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Background, Button, Card, Divider, Modal, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Button, Card, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { ArrowUpRightIcon } from 'naive-icons';
 import { api } from '../api/client.js';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { serviceIcon } from '../components/icons.js';
+import SsoConfirmModal from '../components/SsoConfirmModal.jsx';
 
 export default function Portal() {
   const { t } = useTranslation();
@@ -70,7 +71,7 @@ export default function Portal() {
   return (
     <div className="portal-page">
       <Background type="sprinkles" className="portal-hero">
-        <h1 className="page-title">{t('auth.welcomeBack', { name: displayName })}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('auth.welcomeBack', { name: displayName })}</Title></h1>
         <Typewriter speed={40}>
           <p className="portal-tagline">{t('portal.tagline')}</p>
         </Typewriter>
@@ -154,57 +155,27 @@ export default function Portal() {
         )}
       </section>
 
-      <Modal
-        maskClosable={false}
+      <SsoConfirmModal
+        flag={ssoService ? `nailong.${ssoService.key}.sso` : null}
         open={ssoService !== null}
-        title={t('portal.sso.title')}
-        onClose={() => {
-          if (!ssoBusy) setSsoService(null);
+        busy={ssoBusy}
+        service={ssoService?.name}
+        pattern="app-teal"
+        tip={t('portal.sso.tip')}
+        onCancel={() => setSsoService(null)}
+        onConfirm={(flagKey) => {
+          if (!ssoService) return;
+          setSsoBusy(true);
+          // 通用站内服务 SSO 标志:签注署(nailong.visa.sso)等沿用既有键
+          try {
+            sessionStorage.setItem(flagKey, '1');
+            setSsoService(null);
+            navigate(ssoService.url || '/');
+          } finally {
+            setSsoBusy(false);
+          }
         }}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={() => setSsoService(null)} disabled={ssoBusy}>
-              {t('common.cancel')}
-            </Button>
-            <Button
-              type="primary"
-              loading={ssoBusy}
-              disabled={ssoBusy}
-              onClick={() => {
-                if (ssoBusy) return;
-                const target = ssoService;
-                if (!target) return;
-                setSsoBusy(true);
-                // 通用站内服务 SSO 标志:签注署(nailong.visa.sso)等沿用既有键
-                try {
-                  sessionStorage.setItem(`nailong.${target.key}.sso`, '1');
-                  setSsoService(null);
-                  navigate(target.url || '/');
-                } finally {
-                  setSsoBusy(false);
-                }
-              }}
-            >
-              {t('portal.sso.confirm')}
-            </Button>
-          </>
-        }
-      >
-        <div className="visa-sso-body">
-          <p className="muted-text">{t('portal.sso.service', { name: ssoService?.name || '' })}</p>
-          <Card pattern="app-teal" className="visa-sso-card">
-            <div className="visa-sso-identity">
-              <Avatar size="large">{displayName.slice(0, 1)}</Avatar>
-              <div>
-                <div className="visa-sso-name">{displayName}</div>
-                <div className="visa-sso-account">@{user?.username}</div>
-              </div>
-            </div>
-          </Card>
-          <p className="muted-text">{t('portal.sso.tip')}</p>
-        </div>
-      </Modal>
+      />
     </div>
   );
 }

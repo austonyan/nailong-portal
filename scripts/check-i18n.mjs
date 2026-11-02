@@ -137,6 +137,17 @@ const ENUMS = {
     'escalate_appeal', 'mark_processing', 'mark_closed', 'mark_escalated',
     'review_accept', 'review_decide',
   ],
+  'appeal.verifyKind': [
+    'application', 'permit', 'declaration', 'pass_code', 'entry', 'exit', 'certificate',
+    'relation', 'identity', 'agreement', 'card', 'change', 'event', 'registration',
+    'invitation', 'pass', 'host', 'host_cert', 'courtesy', 'appeal', 'review', 'complaint',
+    'ticket', 'decision', 'deletion', 'receipt', 'postcard', 'notice', 'attraction',
+    'article', 'badge', 'checkin', 'report', 'edu_entry', 'task',
+  ],
+  'appeal.verifyOffice': [
+    'visa', 'immigration', 'docs', 'diplomacy', 'resident', 'protocol', 'appeal',
+    'archives', 'postal', 'tourism', 'stats', 'education',
+  ],
   'admin.roles.group': [
     'portal', 'users', 'roles', 'services', 'visa', 'appeal', 'immigration', 'diplomacy',
     'docs', 'protocol', 'resident', 'archives', 'postal', 'tourism', 'stats', 'education',
@@ -178,8 +189,9 @@ const ENUMS = {
   'tour.type': ['landmark', 'nature', 'culture', 'food'],
   'tour.openState': ['open', 'limited', 'closed'],
   'tour.articleType': ['festival', 'folk', 'world'],
-  'tour.nav': ['home', 'attractions', 'articles', 'collection', 'badges', 'my', 'manage'],
+  'tour.nav': ['home', 'attractions', 'articles', 'collection', 'badges', 'my'],
   'tour.admin.tabs': ['attractions', 'articles', 'rules', 'badges', 'stats', 'audit'],
+  'tour.admin.badgeStatus': ['active', 'inactive'],
   'tour.stamp.style': ['wave', 'star', 'claw'],
   'tour.stamp.status': ['entered', 'exited', 'invalid'],
   'stat.office': [

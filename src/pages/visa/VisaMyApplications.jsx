@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Modal, Table, Tag } from 'animal-island-ui';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
+import { Title, Button, Card, Modal, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, FileIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { downloadVisaFile } from '../../api/visa.js';
@@ -13,20 +14,23 @@ const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
 export default function VisaMyApplications() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [withdrawTarget, setWithdrawTarget] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/visa/applications');
       setItems(data.items);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -111,7 +115,7 @@ export default function VisaMyApplications() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">{t('visa.my.title')}</h1>
+        <h1 className="page-title"><Title size="middle" color="brown">{t('visa.my.title')}</Title></h1>
         <div className="table-actions">
           <Button icon={<DownloadIcon />} onClick={exportCsv}>
             {t('visa.my.export')}
