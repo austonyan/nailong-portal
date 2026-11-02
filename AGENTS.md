@@ -128,6 +128,19 @@ user asks. §9.1 is the checklist for adding a new office — follow it in order
   and per-office `VISA_/DIP_/RESIDENT_/PROTOCOL_INTER_SERVICE_TOKEN` (inter routes return
   `SERVICE_DISABLED` when unset).
 
+## 门户身份档案(个人资料)与跨署预填
+
+`users` 上的三列是全门户唯一的身份来源:`display_name`(真实姓名)、`email`、`address`
+(旧库由 `server/db.js` 的 `ensureColumn` 补列)。注册必须填写真实姓名;个人资料页
+`PATCH /api/auth/profile` 只接受 `email` / `address`,`displayName` 一律返回
+`PROFILE_NAME_IMMUTABLE`(只有管理员能在用户管理里更正)。邮箱与地址在个人资料页必填。
+
+各署申请表单必须从这里预填,而不是让用户重复录入:`src/lib/profileIdentity.js` 提供
+`{ realName, email, address }`;姓名输入框在档案有值时禁用并显示「来自个人资料」,邮箱与
+地址按需预填。档案里没有的字段才允许手动填写。居民登记是强约束:服务端在创建草稿、
+保存和提交时用 `applyProfileIdentity` 覆盖 `nickname` / `contact` / `virtualAddress`,
+变更审批通过后把地址(以及形如邮箱的 contact)回写 `users`。新增署/新表单按同一约定接入。
+
 ## Office (署) service pattern
 
 Shared shape across the 12 offices (per-office detail lives in `docs/work.md` §3):

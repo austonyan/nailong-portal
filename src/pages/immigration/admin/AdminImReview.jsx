@@ -42,7 +42,6 @@ function ReviewDrawer({ id, onClose, onChanged }) {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(function loadFn() {
-    loadError.clear();
     api
       .get(`/immigration/admin/declarations/${id}`)
       .then((data) => setDecl(data.declaration))

@@ -1,11 +1,13 @@
 // 居民登记申请:选择类型 → 填写信息(草稿/材料)→ 提交前确认(预览)。
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { uploadResidentMaterial } from '../../api/resident.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { PURPOSES, TextArea, resToast, toastResError, toastResSuccess } from './shared.jsx';
 
 // Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
@@ -35,6 +37,9 @@ function ResidentApplyScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
+  const { user } = useAuth();
+  // 门户身份档案:持卡人信息必须与个人资料一致,只有档案里为空的字段才让申请人手动填。
+  const profile = profileIdentity(user);
   // 新申请:/resident/apply/:typeCode;编辑草稿:/resident/applications/:id/edit
   const draftId = params.id ? Number(params.id) : null;
   const [form] = useForm();
@@ -67,9 +72,9 @@ function ResidentApplyScreen() {
           setAppNo(app.appNo);
           setTypeCode(app.typeCode);
           form.setFieldsValue({
-            nickname: app.nickname,
-            contact: app.contact,
-            virtualAddress: app.virtualAddress,
+            nickname: profile.realName || app.nickname,
+            contact: profile.email || app.contact,
+            virtualAddress: profile.address || app.virtualAddress,
             bio: app.bio,
           });
           setPurposes(app.purposes || []);
@@ -83,13 +88,20 @@ function ResidentApplyScreen() {
         .then((data) => {
           setAppId(data.application.id);
           setAppNo(data.application.appNo);
+          const app = data.application;
+          form.setFieldsValue({
+            nickname: profile.realName || app.nickname,
+            contact: profile.email || app.contact,
+            virtualAddress: profile.address || app.virtualAddress,
+          });
         })
         .catch((err) => {
           toastResError(t, err);
           navigate('/resident/apply');
         });
     }
-  }, [draftId, typeCode, form, t, navigate]);
+    // profile 每次渲染都是新对象,依赖拆成原始值,避免重复触发建档请求。
+  }, [draftId, typeCode, form, t, navigate, profile.realName, profile.email, profile.address]);
 
   // 类型说明
   useEffect(() => {
@@ -206,18 +218,42 @@ function ResidentApplyScreen() {
       )}
       {typeInfo && <p className="muted-text">{typeInfo.description}</p>}
 
+      {(profile.realName || profile.email || profile.address) && (
+        <Card type="dashed">
+          <p>{t('res.form.profilePrefill')}</p>
+          <p className="muted-text">
+            {t('res.form.profilePrefillIncomplete')} <Link to="/profile">{t('profile.openProfile')}</Link>
+          </p>
+        </Card>
+      )}
+
       <Card className="res-form-card">
         <Form form={form} layout="vertical" requiredMark>
           <div className="res-form-grid">
-            <FormItem name="nickname" label={t('res.form.nickname')} rules={[{ required: true, message: t('res.form.nickname') }]}>
-              <Input size="large" allowClear maxLength={40} placeholder={t('res.form.nicknamePlaceholder')} />
+            <FormItem
+              name="nickname"
+              label={t('res.form.nickname')}
+              help={profile.realName ? t('profile.fromProfile') : undefined}
+              rules={[{ required: true, message: t('res.form.nickname') }]}
+            >
+              <Input size="large" allowClear maxLength={40} disabled={!!profile.realName} placeholder={t('res.form.nicknamePlaceholder')} />
             </FormItem>
-            <FormItem name="contact" label={t('res.form.contact')} rules={[{ required: true, message: t('res.form.contact') }]}>
-              <Input size="large" allowClear maxLength={100} placeholder={t('res.form.contactPlaceholder')} />
+            <FormItem
+              name="contact"
+              label={t('res.form.contact')}
+              help={profile.email ? t('profile.fromProfile') : undefined}
+              rules={[{ required: true, message: t('res.form.contact') }]}
+            >
+              <Input size="large" allowClear maxLength={100} disabled={!!profile.email} placeholder={t('res.form.contactPlaceholder')} />
             </FormItem>
           </div>
-          <FormItem name="virtualAddress" label={t('res.form.virtualAddress')} rules={[{ required: true, message: t('res.form.virtualAddress') }]}>
-            <Input size="large" allowClear maxLength={200} placeholder={t('res.form.virtualAddressPlaceholder')} />
+          <FormItem
+            name="virtualAddress"
+            label={t('res.form.virtualAddress')}
+            help={profile.address ? t('profile.fromProfile') : undefined}
+            rules={[{ required: true, message: t('res.form.virtualAddress') }]}
+          >
+            <Input size="large" allowClear maxLength={200} disabled={!!profile.address} placeholder={t('res.form.virtualAddressPlaceholder')} />
           </FormItem>
           <div className="res-purposes-block">
             <label className="res-field-label">

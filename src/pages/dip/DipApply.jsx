@@ -5,6 +5,8 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, useForm } from 'animal-island-ui';
 import { api } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { TextArea, toastDipError } from '../../components/dip/shared.jsx';
 import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { toastSuccess } from '../../components/toast.js';
@@ -15,6 +17,9 @@ export default function DipApply() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams(); // draft id when editing
+  const { user } = useAuth();
+  // 代表人与联系方式默认取门户身份档案(可改,代表人可能不是账号本人)。
+  const profile = profileIdentity(user);
   const [searchParams] = useSearchParams();
   const fromId = searchParams.get('from');
   const [form] = useForm();
@@ -50,13 +55,13 @@ export default function DipApply() {
         objectType: r.objectType,
         relationType: r.relationType,
         entityName: r.entityName,
-        repNickname: r.repNickname,
-        contact: r.contact,
+        repNickname: profile.realName || r.repNickname,
+        contact: profile.email || r.contact,
         reason: r.reason,
         purpose: r.purpose,
       });
     },
-    [form]
+    [form, profile.realName, profile.email]
   );
 
   useEffect(() => {
@@ -75,9 +80,13 @@ export default function DipApply() {
         })
         .catch((err) => toastDipError(t, err));
     } else {
-      form.setFieldValue('purpose', 'display');
+      form.setFieldsValue({
+        purpose: 'display',
+        repNickname: profile.realName,
+        contact: profile.email,
+      });
     }
-  }, [id, fromId, applyRelation, form, t]);
+  }, [id, fromId, applyRelation, form, t, profile.realName, profile.email]);
 
   const gatherPayload = (values) => ({
     objectType: values.objectType,

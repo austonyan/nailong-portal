@@ -35,7 +35,10 @@ function EntryRecordsTab() {
       });
   }, [page, loadError]);
 
-  useEffect(load, [load]);
+  // load 返回 Promise,不能直接作为 effect 回调(cleanup 必须是函数)。
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const closeEdit = () => {
     if (busy) return;

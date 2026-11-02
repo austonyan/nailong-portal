@@ -16,10 +16,10 @@ function TypesTab() {
   const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null); // {} | type | null
   const [busy, setBusy] = useState(false);
-    loadError.clear();
   const [form] = useForm();
 
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/visa/admin/types');
       setItems(data.items);
