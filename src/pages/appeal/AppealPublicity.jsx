@@ -1,7 +1,8 @@
 // 处理公示:脱敏统计(申诉量/受理率/时长/结果分布)、典型案例与质量报告,
 // 不含申诉人信息与敏感细节。
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Card, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { fmtDateTime, toastAppealError } from './shared.jsx';
@@ -10,17 +11,25 @@ const PCT = (v) => `${Math.round((v || 0) * 100)}%`;
 
 export default function AppealPublicity() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [stats, setStats] = useState(null);
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/appeal/publicity')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastAppealError(t, err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
+
+  useEffect(() => {
     api
       .get('/appeal/publicity/stats')
       .then((data) => setStats(data))

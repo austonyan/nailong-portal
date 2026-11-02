@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
 import { BanIcon, EyeIcon, FileIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -27,6 +28,7 @@ function cardKeyDown(handler) {
 
 export default function ProtocolMyRegistrations() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const { id } = useParams();
   const [items, setItems] = useState(null);
@@ -35,15 +37,17 @@ export default function ProtocolMyRegistrations() {
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/protocol/registrations');
       setItems(data.items);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   const openDetail = useCallback(
     async (regId) => {

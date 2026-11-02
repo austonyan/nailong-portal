@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Table } from 'animal-island-ui';
 import { ClockIcon, DownloadIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -70,18 +71,23 @@ function PassCodeModal({ passCode, onClose }) {
 
 export default function PassCodes() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [openCode, setOpenCode] = useState(null);
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/pass-codes')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
 
   const openDetail = async (record) => {
     try {

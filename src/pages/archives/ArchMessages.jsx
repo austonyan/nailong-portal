@@ -1,6 +1,7 @@
 // 站内信 — 删除申请状态变化的通知(source=archives,经邮政契约落库)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { InboxIcon, MailIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -16,10 +17,12 @@ const MESSAGE_COLORS = {
 
 export default function ArchMessages() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [unread, setUnread] = useState(0);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/archives/messages')
       .then((data) => {
@@ -28,9 +31,10 @@ export default function ArchMessages() {
       })
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 

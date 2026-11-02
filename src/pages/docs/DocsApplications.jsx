@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { useNavigate } from 'react-router-dom';
 import { Title, Button, Card, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, PencilIcon, TrashIcon } from 'naive-icons';
@@ -20,6 +21,7 @@ const STATUS_COLORS = {
 
 export default function DocsApplications() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
@@ -28,16 +30,18 @@ export default function DocsApplications() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const d = await api.get(`/docs/applications?page=${page}&pageSize=${pageSize}&status=${status}`);
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, t]);
+  }, [page, status, t, loadError]);
 
   useEffect(() => {
     load();

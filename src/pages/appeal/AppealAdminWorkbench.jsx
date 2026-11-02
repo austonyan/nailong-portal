@@ -2,6 +2,7 @@
 // 分派/要求补件/处理决定(维持/撤销/变更/转交)/关闭/合并重复申诉。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -26,6 +27,7 @@ const PAGE_SIZE = 10;
 
 export default function AppealAdminWorkbench() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -46,7 +48,8 @@ export default function AppealAdminWorkbench() {
   const [busy, setBusy] = useState(false);
   const [counters, setCounters] = useState({});
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -58,9 +61,10 @@ export default function AppealAdminWorkbench() {
       setCounters({ pending: data.pending, processing: data.processing, supplementing: data.supplementing, overdue: data.overdue });
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, bizType, dq, t]);
+  }, [page, status, bizType, dq, t, loadError]);
 
   useEffect(() => {
     load();

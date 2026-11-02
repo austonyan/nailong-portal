@@ -1,6 +1,7 @@
 // 文化内容管理:节庆 / 民俗 / 世界观文章的增删改查、上下线与双语字段。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { BookIcon, EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -40,6 +41,7 @@ function statusOptions(t) {
 
 export default function AdminTourArticles() {
   const { t, i18n } = useTranslation();
+  const loadError = useLoadError();
   const isTw = String(i18n.language || '').startsWith('zh-TW');
   // 第二列永远显示「另一种语言」:繁中界面显示简体源(titleCn),简中界面显示繁体(titleTw)。
   const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
@@ -53,8 +55,9 @@ export default function AdminTourArticles() {
   const [busy, setBusy] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -63,9 +66,10 @@ export default function AdminTourArticles() {
       setItems(data.items);
     } catch (err) {
       toastTourError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [dq, statusFilter, t]);
+  }, [dq, statusFilter, t, loadError]);
 
   useEffect(() => {
     load();

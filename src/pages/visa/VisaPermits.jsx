@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Tabs, Tag } from 'animal-island-ui';
 import { DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -10,20 +11,23 @@ import { toastSuccess, toastInfo } from '../../components/toast.js';
 
 export default function VisaPermits() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [selected, setSelected] = useState(null);
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     try {
       const data = await api.get('/visa/permits');
       setItems(data.items);
       setSelected((prev) => data.items.find((p) => p.visaNo === prev?.visaNo) || data.items[0] || null);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

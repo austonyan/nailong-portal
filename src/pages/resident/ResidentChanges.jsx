@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, useForm } from 'animal-island-ui';
 import { SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -17,6 +18,7 @@ const CHANGE_STATUS_COLORS = {
 
 export default function ResidentChanges() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [searchParams] = useSearchParams();
   const [form] = useForm();
   const [items, setItems] = useState(null);
@@ -28,7 +30,8 @@ export default function ResidentChanges() {
   const [cardMissing, setCardMissing] = useState(false);
   const { confirm, dialog } = useConfirmAction();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/resident/card');
       setCard(data.card);
@@ -41,9 +44,10 @@ export default function ResidentChanges() {
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

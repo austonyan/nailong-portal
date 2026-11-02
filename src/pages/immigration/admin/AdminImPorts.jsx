@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -25,7 +26,7 @@ function PortsTab() {
   const [form] = useForm();
   const [channelForm] = useForm();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     return api
       .get('/immigration/admin/ports')
       .then((data) => setPorts(data.items))
@@ -282,6 +283,7 @@ function PortsTab() {
 
 function AnnouncementsTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [ports, setPorts] = useState([]);
   const [editing, setEditing] = useState(null);
@@ -289,17 +291,19 @@ function AnnouncementsTab() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [busy, setBusy] = useState(false); // 公告弹窗提交中
   const [rowBusy, setRowBusy] = useState(false); // 下线/删除确认弹窗执行中
+    loadError.clear();
   const [form] = useForm();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     return api
       .get('/immigration/admin/announcements')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
   useEffect(() => {

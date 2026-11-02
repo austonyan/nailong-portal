@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -7,6 +8,7 @@ import { toastSuccess, toastApiError } from '../../components/toast.js';
 
 export default function AdminRoles() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [roles, setRoles] = useState(null);
   const [permissionGroups, setPermissionGroups] = useState({});
   const [editing, setEditing] = useState(null); // {} | role | null
@@ -19,12 +21,20 @@ export default function AdminRoles() {
     setRoles(data.items.map((r) => ({ ...r, key: r.key })));
   }, []);
 
-  useEffect(() => {
-    Promise.all([loadRoles(), api.get('/roles/permissions').then((d) => setPermissionGroups(d.groups))]).catch((err) => {
+  const loadPage = useCallback(async function loadPageFn() {
+    loadError.clear();
+    try {
+      await Promise.all([loadRoles(), api.get('/roles/permissions').then((d) => setPermissionGroups(d.groups))]);
+    } catch (err) {
       toastApiError(t, err);
-      setRoles([]);
-    });
-  }, [loadRoles, t]);
+      loadError.report(err, loadPageFn);
+      setRoles((prev) => prev ?? []);
+    }
+  }, [loadRoles, t, loadError]);
+
+  useEffect(() => {
+    loadPage();
+  }, [loadPage]);
 
   const openCreate = () => {
     setEditing({});

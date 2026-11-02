@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, ClockIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -40,7 +41,8 @@ function ReviewDrawer({ id, onClose, onChanged }) {
   const [supplementNote, setSupplementNote] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get(`/immigration/admin/declarations/${id}`)
       .then((data) => setDecl(data.declaration))
@@ -207,6 +209,7 @@ function ReviewDrawer({ id, onClose, onChanged }) {
 
 export default function AdminImReview() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [counts, setCounts] = useState({});
   const [status, setStatus] = useState('pending');
@@ -215,7 +218,7 @@ export default function AdminImReview() {
   const dq = useDebouncedValue(q, 300);
   const [openId, setOpenId] = useState(null);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     const params = new URLSearchParams({ pageSize: '50' });
     if (status) params.set('status', status);
     if (dq.trim()) params.set('q', dq.trim());
@@ -227,9 +230,10 @@ export default function AdminImReview() {
       })
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [status, dq]);
+  }, [status, dq, loadError]);
 
   useEffect(load, [load]);
 

@@ -1,6 +1,7 @@
 // 使领馆/代表处展示: 代表处列表 + 详情(简介/联系方式/服务事项/公告)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Card, Drawer, Tag } from 'animal-island-ui';
 import { HomeIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -8,19 +9,22 @@ import { DipLevelTag, fmtDateTime, toastDipError } from '../../components/dip/sh
 
 export default function DipOffices() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [openCode, setOpenCode] = useState(null);
   const [detail, setDetail] = useState(null);
+    loadError.clear();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get('/dip/offices')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastDipError(t, err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(load, [load]);
 

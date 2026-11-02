@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -14,6 +15,7 @@ const DEFAULT_ENTRY_MODE = 'external';
 
 export default function AdminServices() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [services, setServices] = useState(null);
   const [permissions, setPermissions] = useState([]);
   const [editing, setEditing] = useState(null); // {} | service | null
@@ -35,12 +37,20 @@ export default function AdminServices() {
     setServices(data.items.map((s) => ({ ...s, key: s.key })));
   }, []);
 
-  useEffect(() => {
-    Promise.all([loadServices(), api.get('/roles/permissions').then((d) => setPermissions(d.items))]).catch((err) => {
+  const loadPage = useCallback(async function loadPageFn() {
+    loadError.clear();
+    try {
+      await Promise.all([loadServices(), api.get('/roles/permissions').then((d) => setPermissions(d.items))]);
+    } catch (err) {
       toastApiError(t, err);
-      setServices([]);
-    });
-  }, [loadServices, t]);
+      loadError.report(err, loadPageFn);
+      setServices((prev) => prev ?? []);
+    }
+  }, [loadServices, t, loadError]);
+
+  useEffect(() => {
+    loadPage();
+  }, [loadPage]);
 
   const openCreate = () => {
     setEditing({});

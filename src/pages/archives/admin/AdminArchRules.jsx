@@ -1,6 +1,7 @@
 // 归档规则配置 — 各记录类型是否纳档 + 保留说明(简繁两份)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, SlidersIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -9,6 +10,7 @@ import { toastSuccess } from '../../../components/toast.js';
 
 export default function AdminArchRules() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null);
   const [included, setIncluded] = useState(true);
@@ -17,15 +19,17 @@ export default function AdminArchRules() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/archives/admin/rules')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 

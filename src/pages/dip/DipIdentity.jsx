@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -85,7 +86,7 @@ function IdentityDetail({ id, onClose, onChanged }) {
   const [cardOpen, setCardOpen] = useState(false);
   const { confirm, dialog } = useConfirmAction();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get(`/dip/identities/${id}`)
       .then((data) => setIdt(data.identity))
@@ -433,14 +434,16 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
 
 export default function DipIdentity() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const { id: editing } = useParams();
   const [catalog, setCatalog] = useState({ identityTypes: [] });
   const [relations, setRelations] = useState([]);
   const [items, setItems] = useState(null);
   const [openId, setOpenId] = useState(null);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
+    loadError.clear();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get('/dip/types')
       .then((data) => setCatalog({ identityTypes: data.identityTypes ?? [] }))
@@ -454,9 +457,10 @@ export default function DipIdentity() {
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastDipError(t, err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(load, [load]);
 

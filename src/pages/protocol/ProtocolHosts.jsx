@@ -1,6 +1,7 @@
 // 接待方认证:登记、材料上传、状态追踪、认证证书与权限展示。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Select, Tag, Upload } from 'animal-island-ui';
 import { BadgeCheckIcon, EyeIcon, PlusIcon, SendIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -30,6 +31,7 @@ function cardKeyDown(handler) {
 
 export default function ProtocolHosts() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -38,15 +40,17 @@ export default function ProtocolHosts() {
   const [busy, setBusy] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/protocol/hosts');
       setItems(data.items);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

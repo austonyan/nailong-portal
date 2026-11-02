@@ -2,6 +2,7 @@
 // 同一套状态机与审核队列。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Table } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -24,6 +25,7 @@ const STATUS_FILTERS = ['', 'draft', 'pending_review', 'published', 'offline'];
 
 export default function AdminEduArticles() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [statusFilter, setStatusFilter] = useState('');
   const [q, setQ] = useState('');
@@ -35,7 +37,8 @@ export default function AdminEduArticles() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -44,9 +47,10 @@ export default function AdminEduArticles() {
       setItems(data.items ?? []);
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [dq, statusFilter, t]);
+  }, [dq, statusFilter, t, loadError]);
 
   useEffect(() => {
     load();

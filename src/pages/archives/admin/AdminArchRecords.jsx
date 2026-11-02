@@ -1,6 +1,7 @@
 // 档案查询(管理端) — 按用户/编号/类型查,脱敏展示;导出需二次确认并写审计。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -15,6 +16,7 @@ const OFFICES = [
 
 export default function AdminArchRecords() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -30,7 +32,8 @@ export default function AdminArchRecords() {
   const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
     if (userId) params.set('userId', userId);
     if (no) params.set('no', no);
@@ -47,9 +50,10 @@ export default function AdminArchRecords() {
       })
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, [page, userId, no, office, type, from, to, keyword]);
+  }, [page, userId, no, office, type, from, to, keyword, loadError]);
 
   useEffect(load, [load]);
 

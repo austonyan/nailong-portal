@@ -1,6 +1,7 @@
 // 活动签到:凭证编号核销、签到/签退与记录查询。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Pagination, Radio, Table, Tag } from 'animal-island-ui';
 import { CheckCircleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -9,6 +10,7 @@ import { toastSuccess } from '../shared.jsx';
 
 export default function AdminProtocolCheckin() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [passNo, setPassNo] = useState('');
   const [action, setAction] = useState('in');
   const [busy, setBusy] = useState(false);
@@ -19,7 +21,8 @@ export default function AdminProtocolCheckin() {
   const [q, setQ] = useState('');
   const [query, setQuery] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (query) params.set('q', query);
@@ -30,9 +33,10 @@ export default function AdminProtocolCheckin() {
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, query, t]);
+  }, [page, query, t, loadError]);
 
   useEffect(() => {
     load();

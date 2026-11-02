@@ -4346,9 +4346,55 @@
       "complaint": "僅投訴建議"
     },
     "verifyKind": {
+      "application": "申請",
+      "permit": "簽註",
+      "declaration": "入境申報",
+      "pass_code": "通關碼",
+      "entry": "入境紀錄",
+      "exit": "出境紀錄",
+      "certificate": "認證文書",
+      "relation": "建交關係",
+      "identity": "外交身分",
+      "agreement": "互免協議",
+      "card": "居民證",
+      "change": "變更申請",
+      "event": "活動",
+      "registration": "活動報名",
+      "invitation": "邀請函",
+      "pass": "活動憑證",
+      "host": "接待方",
+      "host_cert": "接待方證書",
+      "courtesy": "禮遇申請",
       "appeal": "申訴",
       "review": "複核",
-      "decision": "決定書"
+      "complaint": "投訴建議",
+      "ticket": "工單",
+      "decision": "決定書",
+      "deletion": "刪除申請",
+      "receipt": "執行回執",
+      "postcard": "明信片",
+      "notice": "公告",
+      "attraction": "景點",
+      "article": "文章",
+      "badge": "徽章",
+      "checkin": "打卡",
+      "report": "統計報告",
+      "edu_entry": "教育詞條",
+      "task": "閱讀任務"
+    },
+    "verifyOffice": {
+      "visa": "簽註申請署",
+      "immigration": "皇家口岸入境署",
+      "docs": "皇家文書與認證署",
+      "diplomacy": "皇家外交事務署",
+      "resident": "皇家居民登記署",
+      "protocol": "皇家禮賓與活動署",
+      "appeal": "皇家申訴與監察署",
+      "archives": "皇家檔案與紀錄署",
+      "postal": "皇家郵政與通信署",
+      "tourism": "皇家文化旅遊署",
+      "stats": "皇家統計署",
+      "education": "皇家教育與科學署"
     },
     "complaintKind": {
       "complaint": "投訴",
@@ -4827,17 +4873,24 @@
     },
     "verify": {
       "title": "驗真中心",
-      "headerSub": "申訴 · 複核 · 決定書驗真",
-      "tip": "輸入申訴、複核或決定書編號，或掃描決定書QR Code，核驗紀錄真實性與狀態。",
-      "placeholder": "請輸入編號",
+      "headerSub": "十二署業務編號統一核驗",
+      "tip": "輸入任一業務署簽發的編號，或掃描決定書QR Code，核驗紀錄真實性與目前狀態。",
+      "placeholder": "請輸入編號，如NLA-…、NLT-…、NLD…",
       "action": "查詢",
+      "number": "編號",
+      "office": "所屬署",
+      "status": "狀態",
+      "valid": "有效",
+      "notEffective": "未生效",
+      "issuedAt": "紀錄時間",
+      "validUntil": "有效期至",
+      "checkedAt": "查詢時間",
       "appealNo": "關聯申訴",
       "decisionType": "處理決定",
       "handledAt": "處理時間",
-      "office": "出具機關",
-      "maskTip": "為保護隱私，驗真結果僅顯示狀態與必要資訊，不含申訴內容與個人聯絡方式。",
+      "maskTip": "為保護隱私，驗真結果僅顯示編號所屬署、業務類型、狀態與必要日期，不含姓名、聯絡方式與業務內容。",
       "notFound": "未查詢到該編號",
-      "notFoundTip": "請核對編號是否完整、大小寫是否正確；多次查詢失敗請稍後再試。"
+      "notFoundTip": "請核對編號是否完整、大小寫是否正確；已刪除或已補發的歷史編號可能無法查到。"
     },
     "admin": {
       "workbenchTitle": "申訴處理工作台",
@@ -5891,6 +5944,10 @@
       "articleStatus": {
         "published": "已發布",
         "offline": "已下線"
+      },
+      "badgeStatus": {
+        "active": "啟用",
+        "inactive": "停用"
       },
       "attractions": {
         "title": "景點管理",

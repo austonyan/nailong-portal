@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Pagination, Select, Tag } from 'animal-island-ui';
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -12,6 +13,7 @@ const STATUS_FILTERS = ['', 'draft', 'pending_accept', 'accepted', 'processing',
 
 export default function AppealMyAppeals() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [status, setStatus] = useState('');
@@ -20,15 +22,17 @@ export default function AppealMyAppeals() {
   const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(status ? `/appeal/appeals?status=${status}` : '/appeal/appeals');
       setItems(data.items);
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [status, t]);
+  }, [status, t, loadError]);
 
   useEffect(() => {
     load();

@@ -253,12 +253,12 @@ LAUNCHER=$(ls -d "$HOME"/.zcode/cli/plugins/cache/impeccable/impeccable/*/skills
 
 ## Smoke scripts (this is the test suite)
 
-18 scripts, all green on 2026-11-01; per-script assertion matrix in `docs/work.md` §7:
+19 scripts, all green on 2026-11-02; per-script assertion matrix in `docs/work.md` §7:
 
 - **Self-contained** (boot their own temporary API on a fresh `NAILONG_DATA_DIR`):
   `node server/scripts/smoke-setup.mjs`, `smoke-i18n`, `smoke-messages`, `smoke-auto-approve`,
   `smoke-linkage-identity`, `smoke-archives`, `smoke-tourism`, `smoke-postal`, `smoke-stats`,
-  `smoke-education`, `smoke-offices-linkage` (same naming pattern). Immigration's smoke lives
+  `smoke-education`, `smoke-offices-linkage`, `smoke-verify-center` (same naming pattern). Immigration's smoke lives
   at `server/immigration/smoke.mjs` (self-starts, `SMOKE_PORT` overrides 3210).
 - **Need a running API + base URL argument**: `node server/scripts/smoke-visa.mjs
   http://127.0.0.1:<port>` — same for `smoke-dip`, `smoke-resident`, `smoke-protocol`,
@@ -366,11 +366,13 @@ so the per-office inbox pages and the global one never disagree.
 
 ## Current state
 
-As of 2026-11-01 the portal and all 12 offices are functional end to end (18 smoke
+As of 2026-11-02 the portal and all 12 offices are functional end to end (19 smoke
 scripts plus the immigration self-starter, all green on a fresh DB): auth, RBAC, service cards,
 profile, admin screens, 43 permission codes, cross-service linkage, per-office auto-approval,
 service mutual-recognition (`/api/recognize`, eligibility output only — it never mutates office
-state machines), cross-office inbox and the 邮政契约 notification bus. The UI is built entirely
+state machines), cross-office inbox, the 邮政契约 notification bus and the appeal office's
+unified 验真中心 (`GET /api/appeal/verify`, all 38 business number types across 12 offices,
+masked and rate-limited). The UI is built entirely
 with animal-island-ui components + `--animal-*` tokens; the 2026-10-30 UI-spec convergence batch
 is recorded in `docs/ui-spec/07-convergence-2026-10-30.md`. The `docs/work.md` §8 audit defects
 are mostly closed with smoke coverage; what remains open is P3, §8.4 (intentional), and the

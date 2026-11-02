@@ -1,6 +1,7 @@
 // 变更与升级审批:信息变更/类型升级/续期申请的审批队列。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -17,6 +18,7 @@ const CHANGE_STATUS_COLORS = {
 
 export default function AdminResChanges() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [status, setStatus] = useState('pending_review');
   const [action, setAction] = useState(null); // { kind, change }
@@ -24,15 +26,17 @@ export default function AdminResChanges() {
   const [reason, setReason] = useState('other');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/resident/admin/changes?status=${status}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [status, t]);
+  }, [status, t, loadError]);
 
   useEffect(() => {
     load();

@@ -93,7 +93,7 @@
 
 - **编号**：各署都用“前缀 + 日期 + 随机码”的不可预测编号，冲突重试 5 次：
   - 签注申请 `NLA-YYMMDD-XXXXXX`，签注 `NLT-YYMMDD-XXXXXXXX`
-  - 入境申报 `IMYYYYMMDD-XXXXXX`，通关码 `PCYYYYMMDD-XXXXXX`，出境 `EXYYYYMMDD-XXXXXX`
+  - 入境申报 `IMYYYYMMDD-XXXXXX`，通关码 `PCYYYYMMDD-XXXXXX`，入境记录 `ENYYYYMMDD-XXXXXX`，出境 `EXYYYYMMDD-XXXXXX`
   - 文书申请 `NLDA-`，证书 `NLDC-`，外交建交 `NLD`、身份 `NLE`、协议 `NLG`
   - 居民申请 `NRR-`，居民卡 `NRC-`，变更 `NRX-`
   - 活动 `NJE-`，报名 `NJR-`，邀请函 `NJI-`，凭证 `NJP-`，接待方 `NJH-`，接待方证书 `NLC-`，礼遇 `NJC-`（前缀均可在配置中修改）
@@ -101,6 +101,9 @@
   - 档案删除申请 `NAH-`（回执 `<no>-R`）
   - 明信片 `NLM`，公告 `NLQ`，文旅打卡 `NLI`，景点 `NLV`，文章 `NLH`，徽章 `NLB`
   - 统计报告 `NSR-`，教育词条 `NEE`、文章 `NEA`、任务 `NET`
+  - 以上共 38 类（37 类随机编号 + 档案执行回执派生号），全部可在申诉署公开验真中心
+    `/appeal/verify` 查到；该接口按注册表逐表精确匹配，不依赖前缀，因此管理台改前缀、
+    `NLD`/`NLDA`/`NLDC` 前缀重叠都不影响。
 - **审计**：每个署都有独立的 `*_audit*` 表；管理操作、自动审批（`detail.auto=true`）、
   跨署回写（`actor_name=皇家申诉与监察署`）都留痕。
 - **站内信**：两种实现并存。
@@ -644,8 +647,14 @@ courtesy_submitted / courtesy_approved / courtesy_rejected / checkin_done / tick
 - 监察：SLA 汇总、原始记录、报告、跨署抽样（7 类业务）。
 - 管理：公告、公示、模板、黑名单、重复件、配置、统计、审计、验真日志、CSV 导出。
 
-**公开验真**：`GET /appeal/verify` 依次按决定书 token/编号、复核编号、申诉编号查询；
-只返回编号/类型/状态/决定类型/日期；写 `appeal_verify_logs`。
+**公开验真（统一验真中心）**：`GET /appeal/verify` 先查申诉本署 5 类编号（决定书
+token/编号、复核、申诉、投诉建议、工单），未命中再查 `server/appealVerify.js` 的 33 条
+跨署注册表（签注/入境/文书/外交/居民/礼宾/档案/邮政/文旅/统计/教育），合计覆盖 38 类
+业务编号。注册表逐表精确匹配号码列，不解析前缀，因此前缀可配置、`NLD`/`NLDA`/`NLDC`
+不会串表；只返回编号、所属署、业务类型、状态、是否有效与关键日期，不含姓名、联系方式、
+业务内容或 token；限流沿用 `appeal.verify_limit`（默认 30/5min/IP），每次查询写
+`appeal_verify_logs`（`result` 形如 `office:kind:status`）。软删除记录与原地覆盖的历史
+编号按“未找到”处理。
 
 **站内信**：21 个类型，包括 `appeal_submitted/accepted/accept_rejected/
 supplement_required/supplemented/resolved/withdrawn/closed/merged/reopened`、
@@ -988,6 +997,7 @@ supplement_required/supplemented/resolved/withdrawn/closed/merged/reopened`、
 | `smoke-stats.mjs` | 自包含 | 34 | 通过 |
 | `smoke-education.mjs` | 自包含 | 46 | 通过 |
 | `smoke-offices-linkage.mjs` | 自包含 | 38 | 通过 |
+| `smoke-verify-center.mjs` | 自包含 | 157 | 通过 |
 | `smoke-visa.mjs` | 需 API | 28 | 通过 |
 | `smoke-dip.mjs` | 需 API | 50 | 通过 |
 | `smoke-resident.mjs` | 需 API | 51 | 通过 |
@@ -995,7 +1005,7 @@ supplement_required/supplemented/resolved/withdrawn/closed/merged/reopened`、
 | `smoke-appeal.mjs` | 需 API | 63 | 通过 |
 | `smoke-linkage.mjs` | 需 API | 56 | 通过 |
 | `server/immigration/smoke.mjs` | 自启动 | 27 | 通过 |
-| **合计** | | **713** | **全部通过** |
+| **合计** | | **870** | **全部通过** |
 
 前端静态检查：
 
@@ -1019,6 +1029,7 @@ node server/scripts/smoke-postal.mjs
 node server/scripts/smoke-stats.mjs
 node server/scripts/smoke-education.mjs
 node server/scripts/smoke-offices-linkage.mjs
+node server/scripts/smoke-verify-center.mjs
 
 # 入境署脚本（自带 API 启动，默认端口 3210）
 NAILONG_DATA_DIR=/tmp/nailong-imm SMOKE_PORT=3210 node server/immigration/smoke.mjs

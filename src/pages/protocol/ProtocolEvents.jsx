@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Checkbox, Input, Pagination, Progress, Select, Tag } from 'animal-island-ui';
 import { CalendarIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -21,6 +22,7 @@ function cardKeyDown(handler) {
 
 export default function ProtocolEvents() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [items, setItems] = useState(null);
@@ -42,7 +44,8 @@ export default function ProtocolEvents() {
       .catch(() => setTypes([]));
   }, []);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: '12' });
       if (type) params.set('type', type);
@@ -60,9 +63,10 @@ export default function ProtocolEvents() {
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, type, status, query, flags, t]);
+  }, [page, type, status, query, flags, t, loadError]);
 
   useEffect(() => {
     load();

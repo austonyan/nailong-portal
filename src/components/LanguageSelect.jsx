@@ -8,10 +8,10 @@ export default function LanguageSelect() {
   const { i18n, t } = useTranslation();
   const change = (lng) => {
     if (lng === i18n.language) return;
+    // 原地切换:界面文案立刻重渲染,依赖 `t` 的页面加载回调会重新拉取服务端
+    // 本地化内容(X-Nailong-Locale 取自当前 i18n.language)。不再整页刷新,
+    // 表单里未提交的草稿因此不会丢失。
     setLanguage(lng);
-    // API responses carry server-stored content localized per request, so a
-    // full reload is required to refresh data already rendered on the page.
-    window.location.reload();
   };
   return (
     <div className="language-select">

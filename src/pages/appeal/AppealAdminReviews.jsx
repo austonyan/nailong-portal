@@ -1,6 +1,7 @@
 // 复核管理:复核队列、详情、受理与复核决定(维持/撤销/变更,一次终局)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -13,6 +14,7 @@ const DECIDE_TYPES = ['maintain', 'undo', 'change'];
 
 export default function AppealAdminReviews() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [status, setStatus] = useState('pending');
   const [page, setPage] = useState(1);
@@ -23,15 +25,17 @@ export default function AppealAdminReviews() {
   const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/appeal/admin/reviews/queue${status ? `?status=${status}` : ''}`);
       setItems(data.items ?? []);
     } catch (err) {
       toastAppealError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [status, t]);
+  }, [status, t, loadError]);
 
   useEffect(() => {
     load();

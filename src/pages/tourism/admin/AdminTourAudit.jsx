@@ -1,6 +1,7 @@
 // 审计查看:景点/内容/徽章/配置与打卡的全部敏感动作记录。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Table } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -9,20 +10,23 @@ import { fmtDateTime, toastTourError } from '../shared.jsx';
 
 export default function AdminTourAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
   const [query, setQuery] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = query ? `?action=${encodeURIComponent(query)}` : '';
       const data = await api.get(`/tourism/admin/audit${params}`);
       setItems(data.items);
     } catch (err) {
       toastTourError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [query, t]);
+  }, [query, t, loadError]);
 
   useEffect(() => {
     load();

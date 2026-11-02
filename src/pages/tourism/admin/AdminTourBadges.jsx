@@ -1,6 +1,7 @@
 // 徽章管理:条件定义(打卡次数阈值)增删改、发放记录查看与回收。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -30,6 +31,7 @@ function iconOptions(t) {
 
 export default function AdminTourBadges() {
   const { t, i18n } = useTranslation();
+  const loadError = useLoadError();
   const isTw = String(i18n.language || '').startsWith('zh-TW');
   // 第二列永远显示「另一种语言」:繁中界面显示简体源(nameCn),简中界面显示繁体(nameTw)。
   const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
@@ -44,16 +46,18 @@ export default function AdminTourBadges() {
   const [revokeTarget, setRevokeTarget] = useState(null);
   const [revokeReason, setRevokeReason] = useState('');
   const [revokeBusy, setRevokeBusy] = useState(false);
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     try {
       const data = await api.get('/tourism/admin/badges');
       setItems(data.items);
     } catch (err) {
       toastTourError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   const loadAwards = useCallback(async () => {
     try {

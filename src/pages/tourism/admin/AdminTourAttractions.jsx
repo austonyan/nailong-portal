@@ -1,6 +1,7 @@
 // 景点管理:增删改查、上下线与开放状态、双语字段(简体 + 繁体成对编辑)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EditIcon, MapIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -50,6 +51,7 @@ function statusOptions(t) {
 
 export default function AdminTourAttractions() {
   const { t, i18n } = useTranslation();
+  const loadError = useLoadError();
   const isTw = String(i18n.language || '').startsWith('zh-TW');
   // 第二列永远显示「另一种语言」:繁中界面显示简体源(nameCn),简中界面显示繁体(nameTw)。
   const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
@@ -63,8 +65,9 @@ export default function AdminTourAttractions() {
   const [busy, setBusy] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -73,9 +76,10 @@ export default function AdminTourAttractions() {
       setItems(data.items);
     } catch (err) {
       toastTourError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [dq, statusFilter, t]);
+  }, [dq, statusFilter, t, loadError]);
 
   useEffect(() => {
     load();

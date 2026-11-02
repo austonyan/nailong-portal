@@ -1,6 +1,7 @@
 // 审计与合规:敏感操作审计日志查询。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -18,19 +19,22 @@ const AUDIT_ACTION_COLORS = {
 
 export default function VisaAdminAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = action.trim() ? `?action=${encodeURIComponent(action.trim())}` : '';
       const data = await api.get(`/visa/admin/audit${params}`);
       setItems(data.items);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [action, t]);
+  }, [action, t, loadError]);
 
   useEffect(() => {
     load();

@@ -1,6 +1,7 @@
 // 审计与合规:敏感操作审计日志查询与导出。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Table } from 'animal-island-ui';
 import { DownloadIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -11,20 +12,23 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminResAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState('');
   // 动作检索 300ms 防抖:避免逐键打接口。
   const actionDebounced = useDebouncedValue(action, 300);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get(`/resident/admin/audit${actionDebounced.trim() ? `?action=${encodeURIComponent(actionDebounced.trim())}` : ''}`);
       setItems(data.items);
     } catch (err) {
       toastResError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [actionDebounced, t]);
+  }, [actionDebounced, t, loadError]);
 
   useEffect(() => {
     load();

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
 import { CodeIcon, EditIcon, PlusIcon, RefreshIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -27,7 +28,7 @@ function DeclarationDetail({ id, onClose, onChanged }) {
   const [supplementText, setSupplementText] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get(`/immigration/declarations/${id}`)
       .then((data) => setDecl(data.declaration))
@@ -182,19 +183,22 @@ function DeclarationDetail({ id, onClose, onChanged }) {
 
 export default function MyDeclarations() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+    loadError.clear();
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
     api
       .get('/immigration/declarations?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 

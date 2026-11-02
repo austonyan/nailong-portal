@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Pagination, Progress, Select, Table, Tag } from 'animal-island-ui';
 import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -11,6 +12,7 @@ const RESULT_OPTIONS = ['all', 'found', 'found_self', 'not_found'];
 
 export default function DocsVerifyAdmin() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -21,7 +23,8 @@ export default function DocsVerifyAdmin() {
   const [summary, setSummary] = useState(null);
   const pageSize = 12;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page, pageSize, q: dq, result });
       const d = await api.get(`/docs/admin/verify-logs?${params.toString()}`);
@@ -29,9 +32,10 @@ export default function DocsVerifyAdmin() {
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, dq, result, t]);
+  }, [page, dq, result, t, loadError]);
 
   const loadSummary = useCallback(() => {
     api

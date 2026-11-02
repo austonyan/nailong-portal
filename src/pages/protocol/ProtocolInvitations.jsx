@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Tag } from 'animal-island-ui';
 import { CalendarIcon, CheckCircleIcon, DownloadIcon, MailIcon, SearchIcon, XCircleIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -10,20 +11,23 @@ import { toastSuccess } from './shared.jsx';
 
 export default function ProtocolInvitations() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [action, setAction] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/protocol/invitations');
       setItems(data.items);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

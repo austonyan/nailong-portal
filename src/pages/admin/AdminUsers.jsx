@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Switch, Table, Tag, useForm } from 'animal-island-ui';
 import { EditIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -9,6 +10,7 @@ import { fmtDateTime } from '../../lib/date.js';
 
 export default function AdminUsers() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const { user: me, can } = useAuth();
   const [users, setUsers] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -22,12 +24,20 @@ export default function AdminUsers() {
     setUsers(data.items.map((u) => ({ ...u, key: String(u.id) })));
   }, []);
 
-  useEffect(() => {
-    Promise.all([loadUsers(), api.get('/roles').then((d) => setRoles(d.items))]).catch((err) => {
+  const loadPage = useCallback(async function loadPageFn() {
+    loadError.clear();
+    try {
+      await Promise.all([loadUsers(), api.get('/roles').then((d) => setRoles(d.items))]);
+    } catch (err) {
       toastApiError(t, err);
-      setUsers([]);
-    });
-  }, [loadUsers, t]);
+      loadError.report(err, loadPageFn);
+      setUsers((prev) => prev ?? []);
+    }
+  }, [loadUsers, t, loadError]);
+
+  useEffect(() => {
+    loadPage();
+  }, [loadPage]);
 
   const openCreate = () => {
     setEditing({});

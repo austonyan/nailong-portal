@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Checkbox, Modal, Table, Tag } from 'animal-island-ui';
 import { ShieldIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -12,6 +13,7 @@ const ACTIVE_STATUSES = ['pending', 'reviewing', 'executing'];
 
 export default function ArchRequests() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [types, setTypes] = useState([]);
   const [open, setOpen] = useState(false);
@@ -22,19 +24,21 @@ export default function ArchRequests() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/archives/deletion-requests')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastArchError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
     api
       .get('/archives/overview')
       .then((data) => setTypes((data.recordTypes ?? []).filter((type) => type.included)))
       .catch(() => setTypes([]));
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 

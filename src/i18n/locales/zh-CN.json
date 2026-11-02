@@ -4346,9 +4346,55 @@
       "complaint": "仅投诉建议"
     },
     "verifyKind": {
+      "application": "申请",
+      "permit": "签注",
+      "declaration": "入境申报",
+      "pass_code": "通关码",
+      "entry": "入境记录",
+      "exit": "出境记录",
+      "certificate": "认证文书",
+      "relation": "建交关系",
+      "identity": "外交身份",
+      "agreement": "互免协议",
+      "card": "居民证",
+      "change": "变更申请",
+      "event": "活动",
+      "registration": "活动报名",
+      "invitation": "邀请函",
+      "pass": "活动凭证",
+      "host": "接待方",
+      "host_cert": "接待方证书",
+      "courtesy": "礼遇申请",
       "appeal": "申诉",
       "review": "复核",
-      "decision": "决定书"
+      "complaint": "投诉建议",
+      "ticket": "工单",
+      "decision": "决定书",
+      "deletion": "删除申请",
+      "receipt": "执行回执",
+      "postcard": "明信片",
+      "notice": "公告",
+      "attraction": "景点",
+      "article": "文章",
+      "badge": "徽章",
+      "checkin": "打卡",
+      "report": "统计报告",
+      "edu_entry": "教育词条",
+      "task": "阅读任务"
+    },
+    "verifyOffice": {
+      "visa": "签注申请署",
+      "immigration": "皇家口岸入境署",
+      "docs": "皇家文书与认证署",
+      "diplomacy": "皇家外交事务署",
+      "resident": "皇家居民登记署",
+      "protocol": "皇家礼宾与活动署",
+      "appeal": "皇家申诉与监察署",
+      "archives": "皇家档案与记录署",
+      "postal": "皇家邮政与通信署",
+      "tourism": "皇家文化旅游署",
+      "stats": "皇家统计署",
+      "education": "皇家教育与科学署"
     },
     "complaintKind": {
       "complaint": "投诉",
@@ -4827,17 +4873,24 @@
     },
     "verify": {
       "title": "验真中心",
-      "headerSub": "申诉 · 复核 · 决定书验真",
-      "tip": "输入申诉、复核或决定书编号，或扫描决定书二维码，核验记录真实性与状态。",
-      "placeholder": "请输入编号",
+      "headerSub": "十二署业务编号统一核验",
+      "tip": "输入任一业务署签发的编号，或扫描决定书二维码，核验记录真实性与当前状态。",
+      "placeholder": "请输入编号，如NLA-…、NLT-…、NLD…",
       "action": "查询",
+      "number": "编号",
+      "office": "所属署",
+      "status": "状态",
+      "valid": "有效",
+      "notEffective": "未生效",
+      "issuedAt": "记录时间",
+      "validUntil": "有效期至",
+      "checkedAt": "查询时间",
       "appealNo": "关联申诉",
       "decisionType": "处理决定",
       "handledAt": "处理时间",
-      "office": "出具机构",
-      "maskTip": "为保护隐私，验真结果仅展示状态与必要信息，不含申诉内容与个人联系方式。",
+      "maskTip": "为保护隐私，验真结果仅展示编号所属署、业务类型、状态与必要日期，不含姓名、联系方式与业务内容。",
       "notFound": "未查询到该编号",
-      "notFoundTip": "请核对编号是否完整、大小写是否正确；多次查询失败请稍后再试。"
+      "notFoundTip": "请核对编号是否完整、大小写是否正确；已删除或已补发的历史编号可能无法查到。"
     },
     "admin": {
       "workbenchTitle": "申诉处理工作台",
@@ -5891,6 +5944,10 @@
       "articleStatus": {
         "published": "已发布",
         "offline": "已下线"
+      },
+      "badgeStatus": {
+        "active": "启用",
+        "inactive": "停用"
       },
       "attractions": {
         "title": "景点管理",

@@ -5011,3 +5011,29 @@ h1.page-title [class*="animal-ribbon-"],
   size: A4;
   margin: 16mm;
 }
+
+/* ---------- page load error ---------- */
+
+/* 加载失败常驻条:sticky 在吸顶顶栏下方,长表格滚动后仍可见。
+   只用虚线卡 + 错误色图标,文字保持棕墨(错误色不承载正文)。 */
+.load-error {
+  position: sticky;
+  top: 64px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.load-error-icon {
+  flex: none;
+  color: var(--animal-error-color);
+}
+
+.load-error-text {
+  flex: 1;
+  margin: 0;
+  color: var(--animal-text-color);
+  font-weight: 600;
+}

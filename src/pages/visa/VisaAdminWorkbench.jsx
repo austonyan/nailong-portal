@@ -1,6 +1,7 @@
 // 审核工作台:待审队列、申请详情、通过/驳回/补件、签发与签注状态管理。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -32,6 +33,7 @@ const QUEUE_STATUS_OPTIONS = [
 
 export default function VisaAdminWorkbench() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -47,7 +49,8 @@ export default function VisaAdminWorkbench() {
   const [validDays, setValidDays] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
@@ -58,9 +61,10 @@ export default function VisaAdminWorkbench() {
       setTotal(data.total);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, typeFilter, q, t]);
+  }, [page, status, typeFilter, q, t, loadError]);
 
   useEffect(() => {
     load();

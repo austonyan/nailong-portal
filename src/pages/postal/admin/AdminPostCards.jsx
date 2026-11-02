@@ -1,6 +1,7 @@
 // 明信片管理:全量列表(含草稿/已下架)与违规下架。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -11,6 +12,7 @@ const PAGE_SIZE = 20;
 
 export default function AdminPostCards() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -21,7 +23,8 @@ export default function AdminPostCards() {
   const [takeReason, setTakeReason] = useState('');
   const [takeBusy, setTakeBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE_SIZE) });
       if (status) params.set('status', status);
@@ -31,10 +34,11 @@ export default function AdminPostCards() {
       setTotal(data.total);
     } catch (err) {
       toastPostError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
       setTotal(0);
     }
-  }, [page, query, status, t]);
+  }, [page, query, status, t, loadError]);
 
   useEffect(() => {
     load();

@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Pagination } from 'animal-island-ui';
 import { FileIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -9,13 +10,15 @@ import { toastEduError } from './shared.jsx';
 
 export default function EduArticles() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     setItems(null);
     const params = new URLSearchParams();
     params.set('page', String(page));
@@ -27,9 +30,10 @@ export default function EduArticles() {
       setTotal(data.total ?? 0);
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, q, t]);
+  }, [page, q, t, loadError]);
 
   useEffect(() => {
     load();

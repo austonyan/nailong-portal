@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { DownloadIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -14,21 +15,24 @@ function daysLeft(entry) {
 
 function EntryTab({ onReload }) {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [exitTarget, setExitTarget] = useState(null);
   const [ports, setPorts] = useState([]);
   const [exitPort, setExitPort] = useState('ROYAL_PORT');
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/records/entry')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [loadError]);
 
   useEffect(load, [load]);
 
@@ -135,17 +139,22 @@ function EntryTab({ onReload }) {
 
 function ExitTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
 
-  useEffect(() => {
+  const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/immigration/records/exit')
       .then((data) => setItems(data.items))
       .catch((err) => {
         toastApiError(err);
-        setItems([]);
+        loadError.report(err, loadFn);
+        setItems((prev) => prev ?? []);
       });
-  }, []);
+  }, [t, loadError]);
+
+  useEffect(load, [load]);
 
   const columns = [
     { title: t('imm.records.recordNo'), dataIndex: 'no', width: 190 },

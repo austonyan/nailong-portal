@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -10,21 +11,24 @@ import { fmtDateTime, toastStatError } from './shared.jsx';
 
 export default function StatsReports() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [year, setYear] = useState(String(new Date().getFullYear()));
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/stats/reports');
       setItems(data.items);
     } catch (err) {
       toastStatError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

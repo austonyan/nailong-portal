@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { RefreshIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -15,6 +16,7 @@ const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
 
 export default function DocsCertsAdmin() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -30,7 +32,8 @@ export default function DocsCertsAdmin() {
   const [busy, setBusy] = useState(false);
   const pageSize = 10;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: page, pageSize: pageSize, status: status, typeCode: typeCode, q: dq });
       const d = await api.get(`/docs/admin/certificates?${params.toString()}`);
@@ -38,9 +41,10 @@ export default function DocsCertsAdmin() {
       setTotal(d.total);
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, status, typeCode, dq, t]);
+  }, [page, status, typeCode, dq, t, loadError]);
 
   useEffect(() => {
     api.get('/docs/admin/types').then((d) => setTypes(d.items)).catch(() => setTypes([]));

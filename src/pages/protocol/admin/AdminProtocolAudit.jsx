@@ -1,6 +1,7 @@
 // 审计与合规:敏感操作日志查询、详情与导出。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Pagination, Table } from 'animal-island-ui';
 import { DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -9,6 +10,7 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminProtocolAudit() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -18,7 +20,8 @@ export default function AdminProtocolAudit() {
   const dq = useDebouncedValue(q, 300);
   const [detail, setDetail] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (action.trim()) params.set('action', action.trim());
@@ -28,9 +31,10 @@ export default function AdminProtocolAudit() {
       setTotal(data.total);
     } catch (err) {
       toastProtocolError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [page, action, dq, t]);
+  }, [page, action, dq, t, loadError]);
 
   useEffect(() => {
     load();

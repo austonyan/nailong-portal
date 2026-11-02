@@ -1,6 +1,7 @@
 // 签注管理:类型 / 公告 / 配置 / 黑名单(Tabs)。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Switch, Table, Tabs, Tag, useForm } from 'animal-island-ui';
 import { PlusIcon, TrashIcon, EditIcon, BanIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -11,20 +12,23 @@ import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
 function TypesTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null); // {} | type | null
   const [busy, setBusy] = useState(false);
+    loadError.clear();
   const [form] = useForm();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     try {
       const data = await api.get('/visa/admin/types');
       setItems(data.items);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -195,6 +199,7 @@ function TypesTab() {
 
 function NoticesTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null);
   const [title, setTitle] = useState('');
@@ -204,16 +209,18 @@ function NoticesTab() {
   const [level, setLevel] = useState('info');
   const [busy, setBusy] = useState(false);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     try {
       const data = await api.get('/visa/admin/notices');
       setItems(data.items);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();
@@ -425,21 +432,24 @@ function ConfigTab() {
 
 function BlacklistTab() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [userId, setUserId] = useState('');
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
+    loadError.clear();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
     try {
       const data = await api.get('/visa/admin/blacklist');
       setItems(data.items);
     } catch (err) {
       toastVisaError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

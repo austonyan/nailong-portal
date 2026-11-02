@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { LinkIcon } from 'naive-icons';
 import { fmtDate } from '../../lib/date.js';
@@ -35,13 +36,15 @@ const STATUS_COLOR = {
 
 export default function Certificates() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [benefits, setBenefits] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     setLoading(true);
     try {
       const safeRec = (service) => api.get(`/recognize/me/${service}`).catch(() => ({ items: [] }));
@@ -55,13 +58,12 @@ export default function Certificates() {
       setBenefits(recs.flatMap((r) => r.items ?? []).filter((i) => i.eligible));
     } catch (err) {
       toastApiError(t, err);
-      setItems([]);
-      setAlerts([]);
-      setBenefits([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

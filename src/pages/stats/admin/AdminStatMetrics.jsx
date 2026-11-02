@@ -1,6 +1,7 @@
 // 统计口径管理:指标双语定义、来源署与来源表、状态筛选、启停与软删除。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -42,6 +43,7 @@ const EMPTY_FORM = {
 
 export default function AdminStatMetrics() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [sources, setSources] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -50,16 +52,18 @@ export default function AdminStatMetrics() {
   const [removing, setRemoving] = useState(null);
   const [removeBusy, setRemoveBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/stats/admin/metrics');
       setItems(data.items);
       setSources(data.sources ?? []);
     } catch (err) {
       toastStatError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [t]);
+  }, [t, loadError]);
 
   useEffect(() => {
     load();

@@ -1,19 +1,15 @@
-// 验真中心(公开):申诉编号/复核编号/决定书编号查询,二维码 token 验真,
+// 验真中心(公开):十二署业务编号统一核验,决定书二维码 token 验真,
 // 脱敏展示,限流与防枚举提示。
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Input, Tag } from 'animal-island-ui';
 import { SearchIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import {
-  APPEAL_STATUS_COLORS,
-  DECISION_STATUS_COLORS,
-  REVIEW_STATUS_COLORS,
-  appealErrMsg,
-} from './shared.jsx';
-import { fmtDateTime } from '../../lib/date.js';
+import { appealErrMsg } from './shared.jsx';
+import { linkageStatusLabel } from '../../components/linkage/shared.js';
+import { fmtDate, fmtDateTime } from '../../lib/date.js';
 
-const KIND_COLORS = { appeal: 'app-blue', review: 'app-teal', decision: 'app-green' };
+const when = (value) => (typeof value === 'string' && value.length === 10 ? fmtDate(value) : fmtDateTime(value));
 
 export default function AppealVerify() {
   const { t } = useTranslation();
@@ -21,34 +17,57 @@ export default function AppealVerify() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const autoQueried = useRef(false);
 
-  const doVerify = async (e) => {
+  const runLookup = useCallback(
+    async (query, token = '') => {
+      const value = String(query || '').trim();
+      if (!value && !token) return;
+      setBusy(true);
+      setError('');
+      try {
+        const qs = token
+          ? `token=${encodeURIComponent(token)}`
+          : `no=${encodeURIComponent(value)}`;
+        const data = await api.get(`/appeal/verify?${qs}`);
+        setResult(data);
+      } catch (err) {
+        setResult(null);
+        setError(appealErrMsg(t, err));
+      } finally {
+        setBusy(false);
+      }
+    },
+    [t]
+  );
+
+  // 决定书二维码带 ?token=,旧的 ?no= 链接也继续支持;只自动查询一次,
+  // 避免 StrictMode 双执行重复消耗限流额度。
+  useEffect(() => {
+    if (autoQueried.current) return;
+    autoQueried.current = true;
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('no')?.trim() || '';
+    const token = params.get('token')?.trim() || '';
+    if (query) setNo(query);
+    if (query || token) runLookup(query, token);
+  }, [runLookup]);
+
+  const doVerify = (e) => {
     e?.preventDefault?.();
-    const query = no.trim();
-    if (!query) return;
-    setBusy(true);
-    setError('');
-    try {
-      const data = await api.get(`/appeal/verify?no=${encodeURIComponent(query)}`);
-      setResult(data);
-    } catch (err) {
-      setResult(null);
-      setError(appealErrMsg(t, err));
-    } finally {
-      setBusy(false);
-    }
+    runLookup(no);
   };
 
-  const statusTag = (r) => {
-    if (!r.found) return null;
-    if (r.kind === 'appeal') {
-      return <Tag color={APPEAL_STATUS_COLORS[r.status] || 'brown'} variant="soft">{t(`appeal.status.${r.status}`)}</Tag>;
-    }
-    if (r.kind === 'review') {
-      return <Tag color={REVIEW_STATUS_COLORS[r.status] || 'brown'} variant="soft">{t(`appeal.reviewStatus.${r.status}`)}</Tag>;
-    }
-    return <Tag color={DECISION_STATUS_COLORS[r.status] || 'brown'} variant="soft">{t(`appeal.decisionStatus.${r.status}`)}</Tag>;
-  };
+  const office = result ? result.office || 'appeal' : '';
+  const statusText = result ? linkageStatusLabel(t, office, result.kind, result.status) : '';
+  const kindText = result
+    ? t(`appeal.verifyKind.${result.kind}`, { defaultValue: t('common.unknown') })
+    : '';
+  const officeText = result
+    ? t(`appeal.verifyOffice.${office}`, { defaultValue: t('common.unknown') })
+    : '';
+  const issuedAt = result ? result.issuedAt || result.createdAt : null;
+  const handledAt = result ? result.effectiveAt || result.resolvedAt || result.decidedAt : null;
 
   return (
     <div className="appeal-verify-page">
@@ -88,13 +107,45 @@ export default function AppealVerify() {
           {result.found ? (
             <>
               <div className="appeal-verify-head">
-                <Tag color={KIND_COLORS[result.kind] || 'brown'} variant="soft">
-                  {t(`appeal.verifyKind.${result.kind}`)}
-                </Tag>
+                <Tag color="app-blue" variant="soft">{kindText}</Tag>
                 <strong>{result.code}</strong>
-                {statusTag(result)}
+                <Tag color={result.valid ? 'app-green' : 'brown'} variant="soft">
+                  {result.valid ? t('appeal.verify.valid') : t('appeal.verify.notEffective')}
+                </Tag>
               </div>
               <dl className="appeal-verify-rows">
+                <div>
+                  <dt>{t('appeal.verify.number')}</dt>
+                  <dd>{result.code}</dd>
+                </div>
+                <div>
+                  <dt>{t('appeal.verify.office')}</dt>
+                  <dd>{officeText}</dd>
+                </div>
+                {statusText && (
+                  <div>
+                    <dt>{t('appeal.verify.status')}</dt>
+                    <dd>{statusText}</dd>
+                  </div>
+                )}
+                {issuedAt && (
+                  <div>
+                    <dt>{t('appeal.verify.issuedAt')}</dt>
+                    <dd>{when(issuedAt)}</dd>
+                  </div>
+                )}
+                {result.validUntil && (
+                  <div>
+                    <dt>{t('appeal.verify.validUntil')}</dt>
+                    <dd>{when(result.validUntil)}</dd>
+                  </div>
+                )}
+                {result.checkedAt && (
+                  <div>
+                    <dt>{t('appeal.verify.checkedAt')}</dt>
+                    <dd>{when(result.checkedAt)}</dd>
+                  </div>
+                )}
                 {result.appealCode && (
                   <div>
                     <dt>{t('appeal.verify.appealNo')}</dt>
@@ -113,16 +164,12 @@ export default function AppealVerify() {
                     <dd>{t(`appeal.decisionType.${result.decisionType}`)}</dd>
                   </div>
                 )}
-                {(result.resolvedAt || result.decidedAt || result.effectiveAt) && (
+                {handledAt && (
                   <div>
                     <dt>{t('appeal.verify.handledAt')}</dt>
-                    <dd>{fmtDateTime(result.effectiveAt || result.resolvedAt || result.decidedAt)}</dd>
+                    <dd>{when(handledAt)}</dd>
                   </div>
                 )}
-                <div>
-                  <dt>{t('appeal.verify.office')}</dt>
-                  <dd>{t('appeal.officeName')}</dd>
-                </div>
               </dl>
               <p className="muted-text">{t('appeal.verify.maskTip')}</p>
             </>

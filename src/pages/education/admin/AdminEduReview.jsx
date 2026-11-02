@@ -2,6 +2,7 @@
 // 通过/驳回、审核历史。驳回必须填写审核意见,通过时意见可选。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, ThumbsUpIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
@@ -13,6 +14,7 @@ const TYPE_FILTERS = ['', ...CONTENT_TARGETS];
 
 export default function AdminEduReview() {
   const { t } = useTranslation();
+  const loadError = useLoadError();
   const [items, setItems] = useState(null);
   const [stats, setStats] = useState({ entry: 0, article: 0 });
   const [typeFilter, setTypeFilter] = useState('');
@@ -28,7 +30,8 @@ export default function AdminEduReview() {
   // 审核详情只回 categoryCode;名称从分类字典解析,取不到就显示「未知」。
   const [categories, setCategories] = useState([]);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams();
     if (typeFilter) params.set('targetType', typeFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -38,9 +41,10 @@ export default function AdminEduReview() {
       setStats(data.stats ?? { entry: 0, article: 0 });
     } catch (err) {
       toastEduError(t, err);
-      setItems([]);
+      loadError.report(err, loadFn);
+      setItems((prev) => prev ?? []);
     }
-  }, [dq, typeFilter, t]);
+  }, [dq, typeFilter, t, loadError]);
 
   useEffect(() => {
     load();
