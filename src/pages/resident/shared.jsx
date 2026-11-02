@@ -27,6 +27,13 @@ export const APPLICATION_STATUS_COLORS = {
   closed: 'brown',
 };
 
+export const CHANGE_STATUS_COLORS = {
+  pending_review: 'warm-peach-pink',
+  approved: 'app-green',
+  rejected: 'app-red',
+  cancelled: 'brown',
+};
+
 export const CARD_STATUS_COLORS = {
   valid: 'app-green',
   frozen: 'warm-peach-pink',

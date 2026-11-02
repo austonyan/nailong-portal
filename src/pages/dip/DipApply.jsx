@@ -156,13 +156,13 @@ export default function DipApply() {
           <div className="dip-form-row">
             <FormItem name="objectType" label={t('dip.apply.objectType')} rules={[{ required: true, message: t('dip.apply.required') }]}>
               <Select
-                options={catalog.objectTypes.map((o) => ({ key: o.code, label: `${o.name}(${t('dip.apply.open')})` }))}
+                options={catalog.objectTypes.map((o) => ({ key: o.code, label: o.name }))}
                 placeholder={t('dip.apply.objectTypePlaceholder')}
               />
             </FormItem>
             <FormItem name="relationType" label={t('dip.apply.relationType')} rules={[{ required: true, message: t('dip.apply.required') }]}>
               <Select
-                options={catalog.relationTypes.map((r) => ({ key: r.code, label: `${r.name}(${t('dip.apply.open')})` }))}
+                options={catalog.relationTypes.map((r) => ({ key: r.code, label: r.name }))}
                 placeholder={t('dip.apply.relationTypePlaceholder')}
               />
             </FormItem>

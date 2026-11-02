@@ -26,6 +26,8 @@ function DeclarationDetail({ id, onClose, onChanged }) {
   const [decl, setDecl] = useState(null);
   const [supplementText, setSupplementText] = useState('');
   const [busy, setBusy] = useState(false);
+  // 提交/撤销都要过确认弹窗:两个动作都不可逆,不能单击就发。
+  const [confirmAction, setConfirmAction] = useState(null); // 'submit' | 'withdraw'
 
   const load = useCallback(function loadFn() {
     api
@@ -149,13 +151,13 @@ function DeclarationDetail({ id, onClose, onChanged }) {
             <Link to={`/immigration/declare/${d.id}`}>
               <Button type="primary" icon={<EditIcon />} onClick={onClose}>{t('common.edit')}</Button>
             </Link>
-            <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/submit`, t('imm.declare.submitted', { no: d.no }))} disabled={busy}>
+            <Button type="primary" loading={busy} onClick={() => setConfirmAction('submit')} disabled={busy}>
               {t('imm.declare.submit')}
             </Button>
           </>
         )}
         {['pending', 'supplement'].includes(d.status) && (
-          <Button danger loading={busy} onClick={() => post(`/immigration/declarations/${d.id}/withdraw`, t('imm.mydecl.withdrawn'))} disabled={busy}>
+          <Button danger loading={busy} onClick={() => setConfirmAction('withdraw')} disabled={busy}>
             {t('imm.mydecl.withdraw')}
           </Button>
         )}
@@ -170,6 +172,48 @@ function DeclarationDetail({ id, onClose, onChanged }) {
           </Link>
         )}
       </div>
+
+      <Modal
+        maskClosable={false}
+        open={!!confirmAction}
+        title={t(confirmAction === 'submit' ? 'imm.mydecl.submitConfirmTitle' : 'imm.mydecl.withdrawConfirmTitle')}
+        typewriter={false}
+        onClose={() => {
+          if (busy) return;
+          setConfirmAction(null);
+        }}
+        footer={
+          <>
+            <Button
+              onClick={() => setConfirmAction(null)}
+              disabled={busy}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="primary"
+              danger={confirmAction === 'withdraw'}
+              loading={busy}
+              disabled={busy}
+              onClick={async () => {
+                const action = confirmAction;
+                setConfirmAction(null);
+                if (action === 'submit') {
+                  await post(`/immigration/declarations/${d.id}/submit`, t('imm.declare.submitted', { no: d.no }));
+                } else if (action === 'withdraw') {
+                  await post(`/immigration/declarations/${d.id}/withdraw`, t('imm.mydecl.withdrawn'));
+                }
+              }}
+            >
+              {confirmAction === 'submit' ? t('imm.declare.submit') : t('imm.mydecl.withdraw')}
+            </Button>
+          </>
+        }
+      >
+        {confirmAction === 'submit'
+          ? t('imm.mydecl.submitConfirmBody', { no: d.no })
+          : t('imm.mydecl.withdrawConfirmBody', { no: d.no })}
+      </Modal>
     </div>
   );
 }

@@ -23,8 +23,6 @@ const QUICK_ENTRIES = [
 
 const GUIDE_KEYS = ['conditions', 'duration', 'rights'];
 
-const FAQ_KEYS = ['realWorld', 'fee', 'howLong', 'rejected'];
-
 // Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
 function cardKeyDown(handler) {
   return (event) => {
@@ -214,20 +212,6 @@ export default function ResidentHome() {
         </div>
       </section>
 
-      <section>
-        <h2 className="section-title">{t('res.home.faq')}</h2>
-        <div className="res-faq">
-          {FAQ_KEYS.map((key) => (
-            <Collapse key={key} question={t(`res.faq.${key}.q`)} answer={t(`res.faq.${key}.a`)} />
-          ))}
-        </div>
-      </section>
-
-      <div className="res-center-btn">
-        <Button type="primary" size="large" onClick={() => navigate('/resident/apply')}>
-          {t('res.home.startApply')}
-        </Button>
-      </div>
     </div>
   );
 }

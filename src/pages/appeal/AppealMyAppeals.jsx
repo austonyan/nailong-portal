@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Pagination, Select, Tag } from 'animal-island-ui';
-import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from 'naive-icons';
+import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPEAL_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
@@ -113,9 +113,6 @@ export default function AppealMyAppeals() {
             <p className="appeal-item-reason">{a.reason}</p>
           </Link>
           <div className="appeal-item-actions">
-            <Button type="text" size="small" icon={<EyeIcon />} onClick={() => navigate(`/appeal/appeals/${a.id}`)}>
-              {t('appeal.my.view')}
-            </Button>
             {a.status === 'draft' && (
               <>
                 <Button type="text" size="small" icon={<EditIcon />} onClick={() => navigate(`/appeal/apply/${a.id}`)}>

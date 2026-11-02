@@ -69,9 +69,6 @@ export default function StatsGuide() {
                 {t(`stat.office.${metric.sourceOffice}`)}
               </Tag>
             </div>
-            <strong className={metric.available ? 'stat-metric-value' : 'stat-metric-value is-muted'}>
-              {metric.available ? metric.value : t('stat.home.unavailable')}
-            </strong>
             <p className="stat-metric-desc">{metric.description}</p>
             <p className="stat-metric-desc">
               <InfoIcon size={13} /> {t('stat.guide.formula')}: {metric.formula || '-'}

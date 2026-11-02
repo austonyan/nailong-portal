@@ -7,7 +7,7 @@ import { CheckCircleIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { profileIdentity } from '../../lib/profileIdentity.js';
-import { PURPOSES, TextArea, resToast, toastResError, toastResSuccess } from './shared.jsx';
+import { PURPOSES, TextArea, toastResError, toastResSuccess } from './shared.jsx';
 
 // Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
 function cardKeyDown(handler) {
@@ -50,6 +50,7 @@ function ResidentApplyScreen() {
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [purposes, setPurposes] = useState([]);
+  const [purposesError, setPurposesError] = useState(false);
   const [submitted, setSubmitted] = useState(null);
   const createdRef = useRef(false);
 
@@ -127,7 +128,8 @@ function ResidentApplyScreen() {
     try {
       await form.validateFields();
       if (!purposes.length) {
-        resToast('error', t('res.form.purposesRequired'));
+        // 校验错误留在字段旁,不弹 toast(与整页 FormItem 错误行为一致)。
+        setPurposesError(true);
         return;
       }
       await saveDraft(true);
@@ -186,14 +188,18 @@ function ResidentApplyScreen() {
       )}
       {typeInfo && <p className="muted-text">{typeInfo.description}</p>}
 
-      {(profile.realName || profile.email || profile.address) && (
-        <Card type="dashed">
-          <p>{t('res.form.profilePrefill')}</p>
+      <Card type="dashed">
+        <p>{t('res.form.profilePrefill')}</p>
+        {profile.realName || profile.email || profile.address ? (
           <p className="muted-text">
             {t('res.form.profilePrefillIncomplete')} <Link to="/profile">{t('profile.openProfile')}</Link>
           </p>
-        </Card>
-      )}
+        ) : (
+          <p className="muted-text">
+            {t('res.form.profileEmpty')} <Link to="/profile">{t('profile.openProfile')}</Link>
+          </p>
+        )}
+      </Card>
 
       <Card className="res-form-card">
         <Form form={form} layout="vertical" requiredMark>
@@ -230,8 +236,12 @@ function ResidentApplyScreen() {
             <Checkbox
               options={PURPOSES.map((p) => ({ label: t(`res.purpose.${p}`), value: p }))}
               value={purposes}
-              onChange={setPurposes}
+              onChange={(next) => {
+                setPurposes(next);
+                if (next.length) setPurposesError(false);
+              }}
             />
+            {purposesError && <p className="res-field-error">{t('res.form.purposesRequired')}</p>}
           </div>
           <FormItem name="bio" label={`${t('res.form.bio')}(${t('common.optional')})`}>
             <TextArea maxLength={500} placeholder={t('res.form.bioPlaceholder')} />

@@ -123,8 +123,12 @@ export default function VisaVerify() {
           ) : (
             <div className="visa-verify-missing">
               <ShieldIcon size={28} />
-              <p>{t('visa.verify.notFound')}</p>
-              {result.limited && <p className="muted-text">{t('visa.verify.limitTip')}</p>}
+              {/* 被限流时不显示「未找到」误导文案,只给重试提示 */}
+              {result.limited ? (
+                <p>{t('visa.verify.retryLater')}</p>
+              ) : (
+                <p>{t('visa.verify.notFound')}</p>
+              )}
             </div>
           )}
         </Card>

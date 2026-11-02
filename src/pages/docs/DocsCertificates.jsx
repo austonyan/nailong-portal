@@ -11,8 +11,7 @@ import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
 
-// 证书状态配色按 UI 规范收敛:已过期用中性棕(共享表仍是 default)。
-const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+// 证书状态配色直接用共享表(CERT_STATUS_COLORS 的 expired 已是中性棕,无需覆盖)。
 
 export default function DocsCertificates() {
   const { t } = useTranslation();
@@ -56,7 +55,7 @@ export default function DocsCertificates() {
       width: 100,
       render: (v, row) => (
         <span className="docs-cert-status">
-          <Tag color={STATUS_COLORS[v] || 'brown'} variant="soft">
+          <Tag color={CERT_STATUS_COLORS[v] || 'brown'} variant="soft">
             {t(`docs.certStatus.${v}`)}
           </Tag>
           {expiringSoon(row) && (

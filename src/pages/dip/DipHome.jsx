@@ -9,7 +9,6 @@ import {
   CompassIcon,
   FileIcon,
   FlagIcon,
-  MailIcon,
   MapIcon,
   SearchIcon,
   UsersIcon,
@@ -28,14 +27,6 @@ const SERVICE_CARDS = [
 ];
 
 const GUIDE_CARDS = ['conditions', 'duration', 'courtesy'];
-
-const QUICK_LINKS = [
-  { to: '/dip/apply', key: 'apply' },
-  { to: '/dip/identity', key: 'myIdentity' },
-  { to: '/dip/relations', key: 'myRelations' },
-  { to: '/dip-verify', key: 'verify' },
-  { to: '/dip/agreements#faq', key: 'faq' },
-];
 
 export default function DipHome() {
   const { t } = useTranslation();
@@ -107,14 +98,6 @@ export default function DipHome() {
       </div>
 
       <div className="dip-section">
-        <h2 className="section-title">{t('dip.home.quickTitle')}</h2>
-        <div className="dip-quick-row">
-          {QUICK_LINKS.map(({ to, key }) => (
-            <Link key={key} to={to}>
-              <Button type="default" icon={<MailIcon />}>{t(`dip.home.quick.${key}`)}</Button>
-            </Link>
-          ))}
-        </div>
         {data && (
           <p className="muted-text dip-home-stats">
             <UsersIcon size={14} /> {t('dip.home.myStats', {

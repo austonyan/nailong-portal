@@ -50,7 +50,6 @@ export default function TourismBadges() {
                 </span>
                 <div>
                   <div className="tour-badge-name">{badge.name}</div>
-                  <div className="tour-meta-line">{badge.no}</div>
                 </div>
               </div>
               <p className="tour-card-summary">{badge.description}</p>

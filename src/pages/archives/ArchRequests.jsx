@@ -136,7 +136,7 @@ export default function ArchRequests() {
           <RequestStatusTag value={active.status} />
           <Link to={`/archives/requests/${active.id}`}>
             <Button type="text" size="small">
-              {t('arch.home.viewProgress')}
+              {t('arch.request.progress')}
             </Button>
           </Link>
         </Card>
@@ -187,7 +187,9 @@ export default function ArchRequests() {
         {step === 1 ? (
           <>
             <p className="arch-note">{t('arch.request.scopeTip')}</p>
-            <p className="arch-field-label">{t('arch.request.scope')}</p>
+            <p className="arch-field-label">
+              {t('arch.request.scope')} <Tag color="app-red" variant="soft" size="small">{t('common.required')}</Tag>
+            </p>
             <Checkbox
               options={types.map((type) => ({ label: type.name, value: type.code }))}
               value={selected}

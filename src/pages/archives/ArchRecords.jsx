@@ -108,7 +108,6 @@ export default function ArchRecords() {
     { title: t('arch.catalog.no'), dataIndex: 'no', width: 170 },
     { title: t('arch.catalog.date'), dataIndex: 'date', width: 105 },
     { title: t('common.status'), dataIndex: 'status', width: 100, render: (v) => <RecordStatusTag value={v} /> },
-    { title: t('arch.catalog.contact'), dataIndex: 'contact', width: 150, render: (v) => v || <span className="muted-text">-</span> },
     {
       title: t('common.actions'),
       dataIndex: 'actions',
@@ -133,8 +132,8 @@ export default function ArchRecords() {
         <div className="arch-toolbar">
           <Select value={office} onChange={(v) => { setOffice(v); setType(''); setPage(1); }} options={OFFICES.map((o) => ({ key: o.key, label: t(o.labelKey) }))} />
           <Select value={type} onChange={(v) => { setType(v); setPage(1); }} options={typeOptions} />
-          <Input value={from} onChange={(e) => setFrom(e.target.value)} placeholder={t('arch.catalog.from')} maxLength={10} />
-          <Input value={to} onChange={(e) => setTo(e.target.value)} placeholder={t('arch.catalog.to')} maxLength={10} />
+          <Input value={from} onChange={(e) => setFrom(e.target.value)} placeholder={t('arch.catalog.fromExample')} maxLength={10} />
+          <Input value={to} onChange={(e) => setTo(e.target.value)} placeholder={t('arch.catalog.toExample')} maxLength={10} />
           <Input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder={t('arch.catalog.keyword')} allowClear maxLength={60} />
           <Button type="primary" icon={<SearchIcon />} onClick={search}>
             {t('common.search')}
@@ -152,9 +151,6 @@ export default function ArchRecords() {
           emptyText={t('arch.catalog.empty')}
         />
         <div className="arch-tag-row arch-export-row">
-          <Tag color="brown" variant="soft" size="small">
-            {t('arch.catalog.readOnlyTip')}
-          </Tag>
           <Button type="text" size="small" icon={<DownloadIcon />} onClick={() => setExportOpen(true)} disabled={!items?.length}>
             {t('arch.catalog.export')}
           </Button>

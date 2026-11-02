@@ -125,7 +125,7 @@ export default function EduMy() {
 
       <div className="edu-section">
         <div className="edu-section-head">
-          <h2 className="block-heading">{t('edu.my.continueReading')}</h2>
+          <h2 className="block-heading">{t('edu.my.explore')}</h2>
         </div>
         <div className="edu-meta">
           <Link to="/education/entries" className="edu-link">

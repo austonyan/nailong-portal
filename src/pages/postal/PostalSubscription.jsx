@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title, Card, Switch, Tag } from 'animal-island-ui';
-import { BellIcon, BellOffIcon, RssIcon } from 'naive-icons';
+import { RssIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
 import { POSTAL_SOURCES, sourceLabel, toastPostError } from './shared.jsx';
@@ -97,7 +97,6 @@ export default function PostalSubscription() {
                   </div>
                 </div>
                 <div className="postal-msg-actions">
-                  {enabled ? <BellIcon size={18} /> : <BellOffIcon size={18} />}
                   <Switch
                     checked={enabled}
                     loading={busyKey === source}

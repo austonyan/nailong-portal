@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { RefreshIcon, PrinterIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import {
@@ -10,13 +10,13 @@ import {
   PERMIT_STATUS_COLORS,
   REVIEW_ACTION_COLORS,
   TextArea,
+  WITHDRAWABLE,
+  VisaWithdrawModal,
   fmtDate,
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
-
-const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
 export default function VisaApplicationDetail() {
   const { t } = useTranslation();
@@ -105,6 +105,9 @@ export default function VisaApplicationDetail() {
           {t(`visa.status.${app.status}`)}
         </Tag>
       </div>
+
+      {/* 流程位置:一句话说清当前状态意味着什么、下一步是什么(词典 visa.detail.nextStep.*)。 */}
+      <p className="muted-text">{t(`visa.detail.nextStep.${app.status}`)}</p>
 
       {app.status === 'rejected' && (
         <Card pattern="app-red" className="visa-reject-banner">
@@ -207,23 +210,13 @@ export default function VisaApplicationDetail() {
         </Button>
       </div>
 
-      <Modal
-        maskClosable={false}
+      <VisaWithdrawModal
         open={withdrawOpen}
-        title={t('visa.my.withdrawConfirmTitle')}
+        appNo={app.appNo}
+        busy={busy}
         onClose={() => setWithdrawOpen(false)}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={() => setWithdrawOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={withdraw} disabled={busy}>
-              {t('visa.my.withdraw')}
-            </Button>
-          </>
-        }
-      >
-        {t('visa.my.withdrawConfirmBody', { no: app.appNo })}
-      </Modal>
+        onConfirm={withdraw}
+      />
     </div>
   );
 }

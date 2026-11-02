@@ -199,19 +199,11 @@ export default function TourismHome() {
         <Card>
           <b>{t('tour.home.rulesTitle')}</b>
           <p className="tour-card-summary">
-            {t('tour.home.rulePerAttraction')}
-          </p>
-          <p className="tour-card-summary">
-            {t('tour.home.ruleDaily', { limit: rules.dailyLimit ?? 10 })}
+            {t('tour.home.rulePerAttraction')} {t('tour.home.ruleDaily', { limit: rules.dailyLimit ?? 10 })}
           </p>
         </Card>
       </section>
 
-      <div className="tour-center-btn">
-        <Button type="primary" size="large" onClick={() => navigate('/tourism/attractions')}>
-          {t('tour.home.startCheckin')}
-        </Button>
-      </div>
     </div>
   );
 }

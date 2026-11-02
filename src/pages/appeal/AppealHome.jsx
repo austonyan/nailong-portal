@@ -46,8 +46,8 @@ export default function AppealHome() {
     );
   }
 
+  // 「我要申诉」只保留 hero 的 primary 入口;服务卡区不再复制同一路径。
   const services = [
-    { key: 'apply', icon: <SendIcon size={26} />, color: 'app-yellow', onClick: () => navigate('/appeal/apply') },
     { key: 'my', icon: <FolderIcon size={26} />, color: 'app-blue', onClick: () => navigate('/appeal/my') },
     { key: 'review', icon: <FileIcon size={26} />, color: 'app-green', onClick: () => navigate('/appeal/reviews') },
     { key: 'complaint', icon: <MailIcon size={26} />, color: 'app-pink', onClick: () => navigate('/appeal/complaints') },
@@ -166,7 +166,7 @@ export default function AppealHome() {
       <section className="appeal-section">
         <h2 className="section-title">{t('appeal.home.faq')}</h2>
         <div className="appeal-faq">
-          {['duration', 'effect', 'fee', 'review', 'anonymous'].map((key) => (
+          {['duration', 'effect', 'review', 'anonymous'].map((key) => (
             <Collapse key={key} question={t(`appeal.faq.${key}.q`)} answer={t(`appeal.faq.${key}.a`)} />
           ))}
         </div>

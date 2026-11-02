@@ -199,7 +199,7 @@ export default function AppealComplaints() {
             <p className="muted-text appeal-anon-tip">{t('appeal.complaint.anonymousTip')}</p>
           ) : (
             <>
-              <p>{t('appeal.complaint.contactLabel')}</p>
+              <p>{t('appeal.complaint.contactLabel')} <em className="appeal-required-mark">*</em></p>
               <Input
                 size="large"
                 allowClear

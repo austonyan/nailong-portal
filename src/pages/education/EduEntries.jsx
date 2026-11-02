@@ -83,8 +83,8 @@ export default function EduEntries() {
           }}
         />
         <Button
-          type="primary"
-          icon={<BookIcon />}
+          type="default"
+          icon={<SearchIcon />}
           onClick={() => {
             setPage(1);
             load();

@@ -216,7 +216,7 @@ export default function ProtocolCourtesy() {
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setApplyOpen(false)}>{t('protocol.action.back')}</Button>
+            <Button onClick={() => setApplyOpen(false)}>{t('common.cancel')}</Button>
             <Button type="primary" loading={busy} disabled={!basisNo.trim() || !typeCode} onClick={apply}>
               {t('protocol.action.submit')}
             </Button>
@@ -231,6 +231,7 @@ export default function ProtocolCourtesy() {
           <label className="protocol-field">
             <span>{t('protocol.field.basis')}</span>
             <Input value={`${t(`protocol.basisType.${basisType}`)} · ${basisNo}`} disabled />
+            {!basisNo.trim() && <small className="muted-text">{t('protocol.courtesy.needBasis')}</small>}
           </label>
           <label className="protocol-field">
             <span>{t('protocol.field.note')}</span>
@@ -247,7 +248,7 @@ export default function ProtocolCourtesy() {
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setCancelTarget(null)}>{t('protocol.action.back')}</Button>
+            <Button onClick={() => setCancelTarget(null)}>{t('common.cancel')}</Button>
             <Button type="primary" danger loading={busy} onClick={cancel} disabled={busy}>
               {t('protocol.action.confirmCancel')}
             </Button>

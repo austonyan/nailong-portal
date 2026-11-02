@@ -1,6 +1,6 @@
 // 我的年度报告:生成(按年度)、列表与查看入口。
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Modal, Select, Table, Tag } from 'animal-island-ui';
@@ -12,9 +12,11 @@ import { fmtDateTime, toastStatError } from './shared.jsx';
 export default function StatsReports() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [items, setItems] = useState(null);
   const loadError = useLoadError((items ?? []).length > 0);
-  const [modalOpen, setModalOpen] = useState(false);
+  // 首页「生成年度报告」直接带 ?generate=1 过来,弹窗立即打开,不用再点一次。
+  const [modalOpen, setModalOpen] = useState(searchParams.get('generate') === '1');
   const [year, setYear] = useState(String(new Date().getFullYear()));
   const [busy, setBusy] = useState(false);
 
@@ -72,7 +74,6 @@ export default function StatsReports() {
       width: 110,
       render: (v) => <Tag variant="soft" color="app-blue">{v}</Tag>,
     },
-    { title: t('stat.reports.reportNo'), dataIndex: 'no', width: 200 },
     { title: t('stat.reports.generatedAt'), dataIndex: 'generatedAt', width: 150, render: fmtDateTime },
     {
       title: t('common.actions'),

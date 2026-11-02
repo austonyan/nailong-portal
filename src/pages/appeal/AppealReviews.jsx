@@ -97,10 +97,6 @@ export default function AppealReviews() {
         </div>
       </div>
 
-      <Card pattern="app-yellow" className="appeal-review-tip">
-        <p className="muted-text">{t('appeal.review.finalTip')}</p>
-      </Card>
-
       {items === null && (
         <Card type="dashed">
           <p className="muted-text">{t('common.loading')}</p>
@@ -157,6 +153,7 @@ export default function AppealReviews() {
         }
       >
         <div className="appeal-review-form">
+          <p className="muted-text">{t('appeal.review.finalTip')}</p>
           <p className="muted-text">{t('appeal.review.pickAppeal')}</p>
           <Select
             value={appealId ? String(appealId) : ''}

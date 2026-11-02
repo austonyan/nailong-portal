@@ -62,8 +62,6 @@ export default function VisaHome() {
     );
   }
 
-  const touristType = home.types.find((tp) => tp.code === 'TOURIST');
-
   // 类型卡/推荐卡是 div 上的 role="button":Enter/Space 与点击同一路径,
   // Space 必须 preventDefault,否则页面会跟着滚动。
   const openByKey = (event, action) => {
@@ -210,12 +208,6 @@ export default function VisaHome() {
             <h3>{t('visa.home.guideDuration', { hours: home.reviewHoursHint })}</h3>
             <p>{t('visa.home.guideDurationBody', { hours: home.reviewHoursHint })}</p>
           </Card>
-          {touristType && (
-            <Card className="visa-guide-card">
-              <h3>{t('visa.home.guideValidity', { days: touristType.validDays })}</h3>
-              <p>{t('visa.home.guideValidityBody', { days: touristType.validDays, stay: touristType.stayDays })}</p>
-            </Card>
-          )}
         </div>
       </section>
 

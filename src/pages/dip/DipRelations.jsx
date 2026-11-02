@@ -138,6 +138,15 @@ function RelationDetail({ id, onClose, onChanged }) {
         </ul>
       </Card>
 
+      {r.status === 'established' && (
+        <Input
+          size="large"
+          value={severText}
+          onChange={(e) => setSeverText(e.target.value)}
+          placeholder={t('dip.relation.severReasonPlaceholder')}
+          maxLength={300}
+        />
+      )}
       <div className="dip-detail-actions">
         {r.status === 'draft' && (
           <>
@@ -193,15 +202,6 @@ function RelationDetail({ id, onClose, onChanged }) {
           </Link>
         )}
       </div>
-      {r.status === 'established' && (
-        <Input
-          size="large"
-          value={severText}
-          onChange={(e) => setSeverText(e.target.value)}
-          placeholder={t('dip.relation.severReasonPlaceholder')}
-          maxLength={300}
-        />
-      )}
       {dialog}
     </div>
   );

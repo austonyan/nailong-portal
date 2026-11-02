@@ -72,12 +72,6 @@ export default function ProtocolHome() {
     { key: 'verify', to: '/protocol/verify', icon: SearchIcon },
   ];
 
-  const guides = [
-    { key: 'apply', to: '/protocol/events' },
-    { key: 'invitation', to: '/protocol/invitations' },
-    { key: 'pass', to: '/protocol/passes' },
-  ];
-
   const faqs = ['fee', 'real', 'deadline', 'waitlist', 'identity'];
 
   return (
@@ -288,31 +282,10 @@ export default function ProtocolHome() {
             );
           })}
         </div>
-      </section>
-
-      <section className="protocol-section">
-        <h2 className="section-title">{t('protocol.home.guide')}</h2>
-        <div className="protocol-guide-grid">
-          {guides.map((g) => (
-            <Card
-              key={g.key}
-              className="protocol-guide-card"
-              hoverable
-              role="button"
-              tabIndex={0}
-              onClick={() => navigate(g.to)}
-              onKeyDown={cardKeyDown(() => navigate(g.to))}
-            >
-              <h3>{t(`protocol.home.guide_${g.key}`)}</h3>
-              <p>{t(`protocol.home.guide_${g.key}_body`)}</p>
-              <span className="protocol-link">{t('protocol.home.learnMore')}</span>
-            </Card>
-          ))}
-          <Card className="protocol-guide-card">
-            <h3>{t('protocol.home.guide_rules')}</h3>
-            <p>{t('protocol.home.guide_rules_body')}</p>
-          </Card>
-        </div>
+        <Card className="protocol-guide-card" type="dashed">
+          <h3>{t('protocol.home.guide_rules')}</h3>
+          <p>{t('protocol.home.guide_rules_body')}</p>
+        </Card>
       </section>
 
       <Divider type="wave-yellow" />

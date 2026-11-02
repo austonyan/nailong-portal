@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Title, Button, Card, Input, Modal, Radio } from 'animal-island-ui';
@@ -42,6 +42,7 @@ export default function DocsApply() {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     let cancelled = false;
@@ -94,8 +95,15 @@ export default function DocsApply() {
     };
   }, [draftParam, navigate, t, profile.realName, profile.email]);
 
-  const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
-  const setFormField = (key, value) => setForm((f) => ({ ...f, formData: { ...f.formData, [key]: value } }));
+  // 任一字段被编辑时清掉对应错误;错误在提交时统一收集,就近显示在字段下方。
+  const setField = (key, value) => {
+    setFieldErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
+    setForm((f) => ({ ...f, [key]: value }));
+  };
+  const setFormField = (key, value) => {
+    setFieldErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
+    setForm((f) => ({ ...f, formData: { ...f.formData, [key]: value } }));
+  };
 
   const payload = useCallback(
     () => ({
@@ -134,20 +142,20 @@ export default function DocsApply() {
     [appId, payload, type, t]
   );
 
-  const validateForSubmit = () => {
-    if (!type) return t('docs.apply.needType');
-    if (!form.nickname.trim()) return t('docs.apply.nicknameRequired');
-    if (type.bizRequired && !form.bizNo.trim()) return t('docs.apply.bizRequired', { label: type.bizNoLabel });
-    for (const f of type.formFields || []) {
-      if (f.required && !String(form.formData[f.key] || '').trim()) return t('docs.apply.fieldRequired', { label: f.label });
+  const collectFieldErrors = () => {
+    const errs = {};
+    if (!form.nickname.trim()) errs.nickname = t('docs.apply.nicknameRequired');
+    if (type?.bizRequired && !form.bizNo.trim()) errs.bizNo = t('docs.apply.bizRequired', { label: type.bizNoLabel });
+    for (const f of type?.formFields || []) {
+      if (f.required && !String(form.formData[f.key] || '').trim()) errs[f.key] = t('docs.apply.fieldRequired', { label: f.label });
     }
-    return null;
+    return errs;
   };
 
   const submit = async () => {
-    const problem = validateForSubmit();
-    if (problem) {
-      toastWarning(problem);
+    const errs = collectFieldErrors();
+    if (Object.keys(errs).length) {
+      setFieldErrors(errs);
       setConfirming(false);
       return;
     }
@@ -213,6 +221,7 @@ export default function DocsApply() {
               key={tp.code}
               type="button"
               className={tp.code === typeCode ? 'docs-type-option active' : 'docs-type-option'}
+              disabled={!!appId}
               onClick={() => pickType(tp.code)}
             >
               <strong>{tp.name}</strong>
@@ -220,6 +229,7 @@ export default function DocsApply() {
             </button>
           ))}
         </div>
+        {appId && <p className="muted-text docs-field-hint">{t('docs.apply.typeLocked')}</p>}
       </Card>
 
       {type && (
@@ -241,6 +251,7 @@ export default function DocsApply() {
                   disabled={!!profile.realName}
                 />
                 {profile.realName && <small className="muted-text">{t('profile.fromProfile')}</small>}
+                {fieldErrors.nickname && <small className="docs-field-error">{fieldErrors.nickname}</small>}
               </label>
               <label className="docs-field">
                 <span className="docs-field-label">{t('docs.apply.contact')}</span>
@@ -263,6 +274,7 @@ export default function DocsApply() {
                     onChange={(next) => setField('bizNo', String(next || '').toUpperCase())}
                   />
                   <span className="muted-text docs-field-hint">{t('docs.apply.bizHint', { label: type.bizNoLabel })}</span>
+                  {fieldErrors.bizNo && <small className="docs-field-error">{fieldErrors.bizNo}</small>}
                 </div>
               )}
               {(type.formFields || []).map((f) => (
@@ -277,6 +289,7 @@ export default function DocsApply() {
                     maxLength={Number(f.max) || 120}
                     allowClear
                   />
+                  {fieldErrors[f.key] && <small className="docs-field-error">{fieldErrors[f.key]}</small>}
                 </label>
               ))}
               <div className="docs-field">
@@ -291,6 +304,7 @@ export default function DocsApply() {
           </Card>
 
           <Card className="docs-block">
+            <h3 className="docs-block-title">{t('docs.apply.step3')}</h3>
             <div className="docs-apply-actions">
               <Button onClick={() => saveDraft()} loading={saving} icon={<SaveIcon />} disabled={saving}>
                 {t('docs.apply.saveDraft')}
@@ -340,6 +354,12 @@ export default function DocsApply() {
                   <dd>{form.bizNo || '—'}</dd>
                 </>
               )}
+              {(type.formFields || []).map((f) => (
+                <Fragment key={f.key}>
+                  <dt>{f.label}</dt>
+                  <dd>{String(form.formData[f.key] || '') || '—'}</dd>
+                </Fragment>
+              ))}
             </dl>
           </div>
         )}

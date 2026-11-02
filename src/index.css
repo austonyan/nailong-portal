@@ -2343,6 +2343,12 @@ body {
   font-style: normal;
 }
 
+.docs-field-error {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--animal-error-color);
+}
+
 .docs-field-hint {
   font-size: 12px;
 }
@@ -3934,6 +3940,12 @@ body.docs-printing .doc-cert {
   color: var(--animal-error-color);
 }
 
+.res-field-error {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--animal-error-color);
+}
+
 .res-textarea {
   width: 100%;
   border: var(--animal-border-width) solid var(--animal-border-color);
@@ -4731,6 +4743,11 @@ body.docs-printing .doc-cert {
 .appeal-anon-tip {
   font-size: 12px;
   color: var(--animal-text-color);
+}
+
+.appeal-required-mark {
+  color: var(--animal-error-color);
+  font-style: normal;
 }
 
 .appeal-ticket-thread {

@@ -46,9 +46,7 @@ export default function TourismMy() {
 
   const columns = [
     { title: t('tour.collection.attraction'), dataIndex: 'attractionName' },
-    { title: t('tour.collection.checkinNo'), dataIndex: 'no', width: 190 },
-    { title: t('tour.collection.date'), dataIndex: 'checkinDate', width: 110 },
-    { title: t('tour.collection.time'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
+    { title: t('tour.collection.date'), dataIndex: 'checkinDate', width: 120 },
   ];
 
   return (
@@ -123,10 +121,8 @@ export default function TourismMy() {
                 <StampIcon style={stamp.stampStyle} />
               </span>
               <div>
-                <div className="tour-stamp-name">{stamp.no}</div>
-                <div className="tour-meta-line">
-                  {stamp.portName || t('tour.collection.unknownPort')} · {stamp.entryDate}
-                </div>
+                <div className="tour-stamp-name">{stamp.portName || t('tour.collection.unknownPort')}</div>
+                <div className="tour-meta-line">{stamp.entryDate}</div>
               </div>
             </Card>
           ))}

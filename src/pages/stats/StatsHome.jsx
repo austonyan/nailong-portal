@@ -101,16 +101,13 @@ export default function StatsHome() {
                 >
                   {t('stat.home.openLatest')}
                 </Button>
-                <Button icon={<FileIcon />} onClick={() => navigate('/stats/reports')}>
-                  {t('stat.nav.reports')}
-                </Button>
               </div>
             </>
           ) : (
             <>
               <p className="muted-text">{t('stat.home.latestEmpty')}</p>
               <div className="stat-hero-actions">
-                <Button type="primary" icon={<StarIcon />} onClick={() => navigate('/stats/reports')}>
+                <Button type="primary" icon={<StarIcon />} onClick={() => navigate('/stats/reports?generate=1')}>
                   {t('stat.reports.generate')}
                 </Button>
               </div>

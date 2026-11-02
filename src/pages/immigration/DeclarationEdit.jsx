@@ -9,8 +9,7 @@ import { profileIdentity } from '../../lib/profileIdentity.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { pickLocalized } from '../../components/immigration/shared.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
-import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
-import { toastSuccess, toastWarning, toastError } from '../../components/toast.js';
+import { toastSuccess, toastWarning } from '../../components/toast.js';
 
 const PURPOSES = ['fun', 'visit', 'business', 'show', 'other'];
 const ITEM_KEYS = ['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card'];
@@ -102,6 +101,13 @@ export default function DeclarationEdit() {
     }
   }, [id, fromId, visaNoParam, applyDeclaration]);
 
+  // 数值字段范围校验:库不拦 min/max 原生属性,统一在这里拦;空值交给 required 规则。
+  const rangeRule = (value, min, max, message) => {
+    if (value === undefined || value === null || String(value).trim() === '') return undefined;
+    const n = Number(value);
+    return Number.isInteger(n) && n >= min && n <= max ? undefined : message;
+  };
+
   const checkVisa = async (codeArg) => {
     const visaNo = codeArg || form.getFieldValue('visaNo');
     if (!visaNo) {
@@ -184,20 +190,6 @@ export default function DeclarationEdit() {
     }
   };
 
-  const fillFromResident = (data) => {
-    if (!data) return;
-    // 身份接口只提供证件号,本表单没有对应字段:只写确实带回的值,不要清空用户已填内容。
-    const patch = {};
-    if (data.nickname) patch.nickname = data.nickname;
-    if (data.contact) patch.contact = data.contact;
-    if (data.address) patch.address = data.address;
-    if (!Object.keys(patch).length) {
-      toastError(t('residentPrefill.nothing'));
-      return;
-    }
-    form.setFieldsValue(patch);
-    toastSuccess(t('residentPrefill.filled'));
-  };
 
   const openConfirm = async () => {
     if (itemKeys.length === 0) {
@@ -221,7 +213,6 @@ export default function DeclarationEdit() {
       </div>
 
       <Card>
-        <ResidentPrefill onFill={fillFromResident} fields={['nickname', 'contact', 'address']} />
         <Form form={form} layout="vertical" onFinish={openConfirm}>
           <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true, message: t('common.required') }]}>
             <Select
@@ -238,7 +229,12 @@ export default function DeclarationEdit() {
           >
             <Input size="large" placeholder={t('imm.declare.nicknamePlaceholder')} allowClear maxLength={40} disabled={!!profile.realName} />
           </FormItem>
-          <FormItem name="contact" label={t('imm.declare.contact')} rules={[{ required: true, message: t('imm.declare.required') }]}>
+          <FormItem
+            name="contact"
+            label={t('imm.declare.contact')}
+            help={profile.email ? t('profile.fromProfile') : undefined}
+            rules={[{ required: true, message: t('imm.declare.required') }]}
+          >
             <Input size="large" placeholder={t('imm.declare.contactPlaceholder')} allowClear maxLength={60} />
           </FormItem>
           <FormItem name="purpose" label={t('imm.declare.purpose')} rules={[{ required: true, message: t('common.required') }]}>
@@ -248,14 +244,30 @@ export default function DeclarationEdit() {
             <Input size="large" maxLength={200} placeholder={t('imm.declare.purposeNotePlaceholder')} />
           </FormItem>
           <div className="im-form-row">
-            <FormItem name="stayDays" label={t('imm.declare.stayDays')} rules={[{ required: true, message: t('imm.declare.required') }]}>
+            <FormItem
+              name="stayDays"
+              label={t('imm.declare.stayDays')}
+              rules={[
+                { required: true, message: t('imm.declare.required') },
+                // 库不拦 min/max,原生属性只挡键盘;范围在这里统一拦。
+                { validator: (_r, v) => rangeRule(v, 1, 90, t('imm.declare.stayDaysRange')) },
+              ]}
+            >
               <Input size="large" type="number" min={1} max={90} placeholder="1-90" />
             </FormItem>
-            <FormItem name="companions" label={t('imm.declare.companions')}>
+            <FormItem
+              name="companions"
+              label={t('imm.declare.companions')}
+              rules={[{ validator: (_r, v) => rangeRule(v, 0, 20, t('imm.declare.companionsRange')) }]}
+            >
               <Input size="large" type="number" min={0} max={20} placeholder="0" />
             </FormItem>
           </div>
-          <FormItem name="address" label={`${t('imm.declare.address')}(${t('common.optional')})`}>
+          <FormItem
+            name="address"
+            label={`${t('imm.declare.address')}(${t('common.optional')})`}
+            help={profile.address ? t('profile.fromProfile') : undefined}
+          >
             <Input size="large" maxLength={120} placeholder={t('imm.declare.addressPlaceholder')} />
           </FormItem>
 

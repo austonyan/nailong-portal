@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Input, Pagination, Select, Tabs, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Pagination, Select, Tabs, Tag } from 'animal-island-ui';
 import { BellIcon, FolderPlusIcon, InboxIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastSuccess } from '../../components/toast.js';
@@ -91,6 +91,9 @@ export default function PostalMessages() {
     }
   };
 
+  // 全量操作是半破坏性的(一口气改掉所有消息状态),先进确认弹窗。
+  const [confirmAll, setConfirmAll] = useState(null); // { path, doneMessage, title }
+
   const runAll = async (path, doneMessage) => {
     setBusy(true);
     try {
@@ -177,7 +180,7 @@ export default function PostalMessages() {
           size="small"
           icon={<InboxIcon />}
           disabled={busy}
-          onClick={() => runAll('/postal/messages/read-all', t('post.messages.readAllDone'))}
+          onClick={() => setConfirmAll({ path: '/postal/messages/read-all', doneMessage: t('post.messages.readAllDone'), title: t('post.messages.readAll') })}
         >
           {t('post.messages.readAll')}
         </Button>
@@ -186,7 +189,7 @@ export default function PostalMessages() {
           size="small"
           icon={<FolderPlusIcon />}
           disabled={busy}
-          onClick={() => runAll('/postal/messages/archive-all', t('post.messages.archiveAllDone'))}
+          onClick={() => setConfirmAll({ path: '/postal/messages/archive-all', doneMessage: t('post.messages.archiveAllDone'), title: t('post.messages.archiveAll') })}
         >
           {t('post.messages.archiveAll')}
         </Button>
@@ -272,6 +275,38 @@ export default function PostalMessages() {
           { key: 'archived', label: t('post.messages.archivedTab'), children: messagePane },
         ]}
       />
+
+      <Modal
+        maskClosable={false}
+        open={!!confirmAll}
+        title={confirmAll?.title || ''}
+        typewriter={false}
+        onClose={() => {
+          if (busy) return;
+          setConfirmAll(null);
+        }}
+        footer={
+          <>
+            <Button disabled={busy} onClick={() => setConfirmAll(null)}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="primary"
+              loading={busy}
+              disabled={busy}
+              onClick={async () => {
+                const action = confirmAll;
+                setConfirmAll(null);
+                if (action) await runAll(action.path, action.doneMessage);
+              }}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      >
+        {t('post.messages.confirmAllBody')}
+      </Modal>
     </div>
   );
 }

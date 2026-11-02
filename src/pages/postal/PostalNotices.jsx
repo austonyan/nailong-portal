@@ -8,6 +8,11 @@ import { ArrowLeftIcon, RssIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { NOTICE_LEVELS, NOTICE_LEVEL_COLORS, fmtDateTime, toastPostError } from './shared.jsx';
 
+function excerpt(text, max = 110) {
+  const t = String(text || '');
+  return t.length > max ? `${t.slice(0, max)}…` : t;
+}
+
 const PAGE_SIZE = 10;
 
 export default function PostalNotices() {
@@ -173,7 +178,7 @@ export default function PostalNotices() {
                 </Tag>
                 <b>{notice.title}</b>
               </div>
-              <p className="postal-notice-body">{notice.body}</p>
+              <p className="postal-notice-body">{excerpt(notice.body)}</p>
               <div className="postal-notice-meta">
                 <span>{notice.no}</span>
                 <span>{fmtDateTime(notice.publishedAt || notice.createdAt)}</span>

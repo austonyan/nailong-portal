@@ -8,14 +8,10 @@ import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS, normalizeDocNo } from '.
 import { toastError, toastWarning } from '../../components/toast.js';
 import { fmtDate, fmtDateTime } from '../../lib/date.js';
 
-// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿与已过期中性棕(共享表仍是旧色)。
-const APP_TAG_COLORS = {
-  ...APPLICATION_STATUS_COLORS,
-  draft: 'brown',
-  pending: 'warm-peach-pink',
-  supplementing: 'warm-peach-pink',
-};
-const CERT_TAG_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿与已过期中性棕(共享表已是该值,
+// 这里直接用共享表,不再各页复制一份)。
+const APP_TAG_COLORS = APPLICATION_STATUS_COLORS;
+const CERT_TAG_COLORS = CERT_STATUS_COLORS;
 
 function ResultCard({ result }) {
   const { t } = useTranslation();

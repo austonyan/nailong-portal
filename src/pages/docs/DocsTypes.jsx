@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Title, Button, Card, Collapse, Divider, Modal, Tag } from 'animal-island-ui';
 import { ClipboardIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -18,6 +18,7 @@ function cardKeyDown(handler) {
 
 export default function DocsTypes() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [types, setTypes] = useState(null);
   const [focus, setFocus] = useState(null); // focused type object for the modal
@@ -120,7 +121,7 @@ export default function DocsTypes() {
                 icon={<ClipboardIcon />}
                 onClick={() => {
                   setFocus(null);
-                  window.location.assign(`/docs/apply?type=${focus.code}`);
+                  navigate(`/docs/apply?type=${focus.code}`);
                 }}
               >
                 {t('docs.apply.start')}

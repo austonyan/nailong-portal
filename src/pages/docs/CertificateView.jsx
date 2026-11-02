@@ -4,8 +4,7 @@ import { CERT_STATUS_COLORS } from '../../api/docs.js';
 import { Tag } from 'animal-island-ui';
 import { fmtDate } from '../../lib/date.js';
 
-// 证书状态配色按 UI 规范收敛:已过期用中性棕(共享表仍是 default)。
-const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
+// 证书状态配色直接用共享表(CERT_STATUS_COLORS 的 expired 已是中性棕,无需覆盖)。
 
 // 电子文书: 印章为装饰。
 export default function CertificateView({ cert, typeName, bizNoLabel, issuer, sealEnabled }) {
@@ -53,7 +52,7 @@ export default function CertificateView({ cert, typeName, bizNoLabel, issuer, se
         </div>
       )}
       <footer className="doc-cert-foot">
-        <Tag color={STATUS_COLORS[cert.status] || 'brown'} variant="soft">
+        <Tag color={CERT_STATUS_COLORS[cert.status] || 'brown'} variant="soft">
           {t(`docs.certStatus.${cert.status}`)}
         </Tag>
       </footer>

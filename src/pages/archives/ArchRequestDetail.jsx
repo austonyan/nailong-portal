@@ -75,17 +75,20 @@ export default function ArchRequestDetail() {
                   <span>{request.reason}</span>
                 </div>
               )}
-              {request.reviewNote && (
-                <div className="arch-summary-row">
-                  <span>{t('arch.request.reviewNote')}</span>
-                  <span>{request.reviewNote}</span>
-                </div>
-              )}
-              {request.status === 'rejected' && request.rejectReason && (
-                <div className="arch-summary-row">
-                  <span>{t('arch.request.rejectReason')}</span>
-                  <span>{request.rejectReason}</span>
-                </div>
+              {request.status === 'rejected' ? (
+                (request.rejectReason || request.reviewNote) && (
+                  <div className="arch-summary-row">
+                    <span>{t('arch.request.decisionNote')}</span>
+                    <span>{[request.rejectReason, request.reviewNote].filter(Boolean).join(' — ')}</span>
+                  </div>
+                )
+              ) : (
+                request.reviewNote && (
+                  <div className="arch-summary-row">
+                    <span>{t('arch.request.reviewNote')}</span>
+                    <span>{request.reviewNote}</span>
+                  </div>
+                )
               )}
               {request.status === 'completed' && (
                 <>

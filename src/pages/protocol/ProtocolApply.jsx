@@ -343,7 +343,7 @@ const saved = formFromRegistration(reg);
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setConfirmOpen(false)}>{t('protocol.action.back')}</Button>
+            <Button onClick={() => setConfirmOpen(false)}>{t('common.cancel')}</Button>
             <Button type="primary" loading={busy} onClick={submit} disabled={busy}>
               {t('protocol.action.confirmSubmit')}
             </Button>

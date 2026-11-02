@@ -59,8 +59,8 @@ export default function EduArticles() {
           }}
         />
         <Button
-          type="primary"
-          icon={<FileIcon />}
+          type="default"
+          icon={<SearchIcon />}
           onClick={() => {
             setPage(1);
             load();

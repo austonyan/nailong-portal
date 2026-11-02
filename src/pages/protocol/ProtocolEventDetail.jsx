@@ -107,9 +107,6 @@ export default function ProtocolEventDetail() {
                 {full && event.waitlistEnabled ? t('protocol.eventDetail.joinWaitlist') : t('protocol.action.applyNow')}
               </Button>
             )}
-            <Button type="default" size="large" icon={<MailIcon />} onClick={() => navigate('/protocol/invitations')}>
-              {t('protocol.eventDetail.inviteEntry')}
-            </Button>
             <Button type="dashed" size="large" icon={<SearchIcon />} onClick={() => navigate(`/protocol/verify?no=${encodeURIComponent(myPass?.passNo || '')}`)}>
               {t('protocol.action.verify')}
             </Button>

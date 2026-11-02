@@ -8,9 +8,6 @@ import { CERT_STATUS_COLORS, exportCertificatePng } from '../../api/docs.js';
 import CertificateView from './CertificateView.jsx';
 import { toastSuccess, toastError, toastWarning } from '../../components/toast.js';
 
-// 证书状态配色按 UI 规范收敛:已过期用中性棕(共享表仍是 default)。
-const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
-
 export default function DocsCertificateDetail() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -70,7 +67,7 @@ export default function DocsCertificateDetail() {
       <div className="page-header docs-cert-header">
         <div className="docs-cert-title">
           <h1 className="page-title"><Title size="middle" color="brown">{t('docs.certDetail.title')}</Title></h1>
-          <Tag color={STATUS_COLORS[item.status] || 'brown'} variant="soft">
+          <Tag color={CERT_STATUS_COLORS[item.status] || 'brown'} variant="soft">
             {t(`docs.certStatus.${item.status}`)}
           </Tag>
         </div>
@@ -104,7 +101,7 @@ export default function DocsCertificateDetail() {
           >
             {t('docs.cert.downloadPng')}
           </Button>
-          <Button icon={<PrinterIcon />} onClick={() => setPrinting(true)}>
+          <Button icon={<PrinterIcon />} onClick={() => setPrinting(true)} title={t('docs.certDetail.tip2')}>
             {t('docs.cert.downloadPdf')}
           </Button>
           <Button type="primary" icon={<SearchIcon />} onClick={() => navigate(`/docs/verify?no=${encodeURIComponent(item.certNo)}`)}>
@@ -130,13 +127,6 @@ export default function DocsCertificateDetail() {
         </Card>
       )}
 
-      <Card className="docs-block">
-        <h2 className="docs-block-title">{t('docs.certDetail.tipsTitle')}</h2>
-        <ul className="docs-tips">
-          <li>{t('docs.certDetail.tip1')}</li>
-          <li>{t('docs.certDetail.tip2')}</li>
-        </ul>
-      </Card>
     </div>
   );
 }

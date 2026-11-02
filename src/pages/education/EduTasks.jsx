@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Card, Progress, Tag } from 'animal-island-ui';
-import { BulbIcon, StarIcon, TrophyIcon } from 'naive-icons';
+import { BulbIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { fmtDateTime, pct, toastEduError } from './shared.jsx';
 
@@ -75,25 +75,6 @@ export default function EduTasks() {
             </p>
           </Card>
         )}
-      </div>
-
-      <div className="edu-section">
-        <div className="edu-section-head">
-          <h2 className="block-heading">{t('edu.badges.title')}</h2>
-          <Link to="/education/my" className="edu-link">
-            {t('edu.badges.viewAll')}
-          </Link>
-        </div>
-        <div className="edu-badge-grid">
-          {data.badges.map((badge) => (
-            <span key={badge.code} className="edu-badge-card">
-              <StarIcon size={16} />
-              {badge.name}
-              <small>{fmtDateTime(badge.grantedAt)}</small>
-            </span>
-          ))}
-          {data.badges.length === 0 && <p className="edu-empty">{t('edu.badges.empty')}</p>}
-        </div>
       </div>
     </div>
   );

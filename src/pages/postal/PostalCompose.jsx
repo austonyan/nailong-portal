@@ -46,7 +46,7 @@ export default function PostalCompose() {
   const search = async () => {
     const q = keyword.trim();
     if (!q) {
-      toastError(t('common.required'));
+      toastError(t('post.compose.needKeyword'));
       return;
     }
     setSearching(true);
@@ -63,8 +63,16 @@ export default function PostalCompose() {
   };
 
   const submit = async (sendNow) => {
-    if (!templateCode || !recipient || !blessing.trim()) {
-      toastError(t('common.required'));
+    if (!templateCode) {
+      toastError(t('post.compose.needTemplate'));
+      return;
+    }
+    if (!recipient) {
+      toastError(t('post.compose.needRecipient'));
+      return;
+    }
+    if (!blessing.trim()) {
+      toastError(t('post.compose.needBlessing'));
       return;
     }
     if (sendNow && quota.usedToday >= quota.dailyLimit) {

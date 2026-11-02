@@ -7,7 +7,6 @@ import {
   BadgeCheckIcon,
   CalendarIcon,
   ClipboardIcon,
-  HelpCircleIcon,
   SearchIcon,
 } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -56,7 +55,6 @@ export default function DocsHome() {
     { key: 'apply', icon: ClipboardIcon, to: '/docs/apply', color: 'app-teal' },
     { key: 'certificates', icon: BadgeCheckIcon, to: '/docs/certificates', color: 'app-yellow' },
     { key: 'verify', icon: SearchIcon, to: '/docs/verify', color: 'app-blue' },
-    { key: 'faq', icon: HelpCircleIcon, to: '/docs#faq', color: 'purple' },
   ];
 
   const guides = [

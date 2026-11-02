@@ -246,7 +246,7 @@ export default function AppealTickets() {
               <div className="appeal-ticket-reply-box">
                 <TextArea rows={3} maxLength={2000} value={reply} onChange={(e) => setReply(e.target.value)} placeholder={t('appeal.ticket.replyPlaceholder')} />
                 <div className="table-actions">
-                  <Button danger onClick={askClose}>
+                  <Button type="text" danger onClick={askClose}>
                     {t('appeal.ticket.close')}
                   </Button>
                   <Button type="primary" loading={replyBusy} disabled={replyBusy || (!reply.trim())} onClick={doReply}>

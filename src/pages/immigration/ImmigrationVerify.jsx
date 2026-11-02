@@ -7,14 +7,8 @@ import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { RefreshIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
+import { StatusTag } from '../../components/immigration/shared.jsx';
 import { fmtDate } from '../../lib/date.js';
-
-const STATUS_COLOR = {
-  unused: 'app-green',
-  used: 'app-green',
-  expired: 'brown',
-  voided: 'app-red',
-};
 
 export default function ImmigrationVerify() {
   const { t } = useTranslation();
@@ -80,9 +74,7 @@ export default function ImmigrationVerify() {
         {resultIsPass && (
           <div className="im-verify-result">
             <p className="im-verify-code">{result.codeNo}</p>
-            <Tag color={STATUS_COLOR[result.status] ?? 'brown'} variant="soft">
-              {t(`imm.status.${result.status}`, { defaultValue: t('common.unknown') })}
-            </Tag>
+            <StatusTag value={result.status} />
             <p className="muted-text">
               {result.portName} · {t('imm.pass.validUntil')}: {fmtDate(result.validUntil)}
             </p>

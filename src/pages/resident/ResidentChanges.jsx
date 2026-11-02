@@ -7,14 +7,7 @@ import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Tabs, Tag, u
 import { SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
-import { CHANGE_TYPES, StatusTag, TextArea, fmtDate, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
-
-const CHANGE_STATUS_COLORS = {
-  pending_review: 'warm-peach-pink',
-  approved: 'app-green',
-  rejected: 'app-red',
-  cancelled: 'brown',
-};
+import { CHANGE_STATUS_COLORS, CHANGE_TYPES, StatusTag, TextArea, fmtDate, fmtDateTime, toastResError, toastResSuccess } from './shared.jsx';
 
 export default function ResidentChanges() {
   const { t } = useTranslation();

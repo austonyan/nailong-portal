@@ -228,10 +228,15 @@ function VisaApplyScreen() {
             >
               <Input size="large" allowClear maxLength={40} disabled={!!profile.realName} placeholder={t('visa.form.nicknamePlaceholder')} />
             </FormItem>
-            <FormItem name="contact" label={t('visa.form.contact')} rules={[{ required: true, message: t('visa.form.contact') }]}>
+            <FormItem
+              name="contact"
+              label={t('visa.form.contact')}
+              help={profile.email ? t('profile.fromProfile') : undefined}
+              rules={[{ required: true, message: t('visa.form.contact') }]}
+            >
               <Input size="large" allowClear maxLength={100} placeholder={t('visa.form.contactPlaceholder')} />
             </FormItem>
-            <FormItem name="virtualId" label={t('visa.form.virtualId')}>
+            <FormItem name="virtualId" label={`${t('visa.form.virtualId')}(${t('common.optional')})`}>
               <Input size="large" allowClear maxLength={200} placeholder={t('visa.form.virtualIdPlaceholder')} />
             </FormItem>
           </div>
@@ -315,10 +320,19 @@ function VisaApplyScreen() {
         }
       >
         <div className="visa-confirm-body">
+          <p className="muted-text">{t('visa.form.confirmHint', { hours: reviewHours })}</p>
           <dl className="visa-confirm-list">
+            <div>
+              <dt>{t('visa.field.type')}</dt>
+              <dd>{typeInfo?.name || typeCode}</dd>
+            </div>
             <div>
               <dt>{t('visa.form.nickname')}</dt>
               <dd>{form.getFieldValue('nickname')}</dd>
+            </div>
+            <div>
+              <dt>{t('visa.form.contact')}</dt>
+              <dd>{form.getFieldValue('contact')}</dd>
             </div>
             <div>
               <dt>{t('visa.form.planArrive')}</dt>

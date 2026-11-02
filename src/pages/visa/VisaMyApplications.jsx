@@ -3,14 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Modal, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Table, Tag } from 'animal-island-ui';
 import { DownloadIcon, FileIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { downloadVisaFile } from '../../api/visa.js';
-import { APPLICATION_STATUS_COLORS, fmtDateTime, toastVisaError } from './shared.jsx';
+import { APPLICATION_STATUS_COLORS, fmtDateTime, toastVisaError, WITHDRAWABLE, VisaWithdrawModal } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
-
-const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
 export default function VisaMyApplications() {
   const { t } = useTranslation();
@@ -81,7 +79,6 @@ export default function VisaMyApplications() {
         </Tag>
       ),
     },
-    { title: t('visa.field.submittedAt'), dataIndex: 'submittedAt', width: 160, render: fmtDateTime },
     { title: t('visa.field.updatedAt'), dataIndex: 'updatedAt', width: 160, render: fmtDateTime },
     {
       title: t('common.actions'),
@@ -135,25 +132,13 @@ export default function VisaMyApplications() {
         />
       </Card>
 
-      <Modal
-        maskClosable={false}
+      <VisaWithdrawModal
         open={withdrawTarget !== null}
-        title={t('visa.my.withdrawConfirmTitle')}
+        appNo={withdrawTarget?.appNo}
+        busy={busy}
         onClose={() => setWithdrawTarget(null)}
-        typewriter={false}
-        footer={
-          <>
-            <Button onClick={() => setWithdrawTarget(null)}>{t('common.cancel')}</Button>
-            <Button type="primary" danger loading={busy} onClick={confirmWithdraw} disabled={busy}>
-              {t('visa.my.withdraw')}
-            </Button>
-          </>
-        }
-      >
-        {withdrawTarget
-          ? t('visa.my.withdrawConfirmBody', { no: withdrawTarget.appNo })
-          : ''}
-      </Modal>
+        onConfirm={confirmWithdraw}
+      />
     </div>
   );
 }

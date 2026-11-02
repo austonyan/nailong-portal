@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Tabs, Tag } from 'animal-island-ui';
-import { DownloadIcon, PrinterIcon, SearchIcon } from 'naive-icons';
+import { CopyIcon, PrinterIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { PERMIT_STATUS_COLORS, fmtDate, fmtDateTime } from './shared.jsx';
+import { PERMIT_STATUS_COLORS, fmtDate } from './shared.jsx';
 import { toastSuccess, toastInfo } from '../../components/toast.js';
 
 export default function VisaPermits() {
@@ -79,10 +79,7 @@ export default function VisaPermits() {
             <Button type="primary" icon={<PrinterIcon />} onClick={() => window.print()}>
               {t('visa.permit.print')}
             </Button>
-            <Button icon={<SearchIcon />} onClick={() => window.open(`/visa/verify?token=${selected.verifyToken}`, '_blank')}>
-              {t('visa.permit.verifyLink')}
-            </Button>
-            <Button icon={<DownloadIcon />} onClick={copyVerifyLink}>
+            <Button icon={<CopyIcon />} onClick={copyVerifyLink}>
               {t('visa.permit.copyLink')}
             </Button>
             {selected.status === 'valid' && (
@@ -91,10 +88,6 @@ export default function VisaPermits() {
               </Button>
             )}
           </Card>
-
-          <p className="muted-text visa-permit-meta">
-            {t('visa.permit.meta', { time: fmtDateTime(selected.issuedAt) })}
-          </p>
         </>
       )}
     </div>

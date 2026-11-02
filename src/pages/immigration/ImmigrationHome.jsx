@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Background, Button, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
+import { Title, Background, Card, Collapse, Divider, Tag, Typewriter } from 'animal-island-ui';
 import { BellIcon, CodeIcon, CompassIcon, FileIcon, ListIcon, MapIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { useAuth } from '../../auth/AuthContext.jsx';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { AnnouncementLevelTag, CrowdMeter, StatusTag } from '../../components/immigration/shared.jsx';
 import { fmtDate } from '../../lib/date.js';
@@ -22,7 +21,6 @@ const FAQ_KEYS = ['visaInvalid', 'passUsage', 'recordsWhere', 'fee'];
 export default function ImmigrationHome() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [overview, setOverview] = useState(null);
 
   useEffect(() => {
@@ -42,7 +40,6 @@ export default function ImmigrationHome() {
   }, []);
 
   const port = overview?.ports?.[0];
-  const displayName = user?.displayName || user?.username || '';
 
   return (
     <div className="im-page">
@@ -51,7 +48,6 @@ export default function ImmigrationHome() {
         <Typewriter speed={35}>
           <p className="im-hero-sub">{t('imm.home.tagline')}</p>
         </Typewriter>
-        <p className="muted-text">{t('auth.welcomeBack', { name: displayName })}</p>
       </Background>
 
       <section className="im-home-status">
@@ -171,12 +167,6 @@ export default function ImmigrationHome() {
           {t('imm.fraud.more')}
         </Link>
       </Card>
-
-      <div className="im-center-btn">
-        <Button type="primary" size="large" onClick={() => navigate('/immigration/declare')}>
-          {t('imm.home.startDeclare')}
-        </Button>
-      </div>
     </div>
   );
 }

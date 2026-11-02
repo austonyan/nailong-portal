@@ -36,11 +36,9 @@ export default function TourismCollection() {
   const counts = data?.counts ?? { checkins: 0, visited: 0, stamps: 0 };
 
   const columns = [
-    { title: t('tour.collection.checkinNo'), dataIndex: 'no', width: 190 },
     { title: t('tour.collection.attraction'), dataIndex: 'attractionName' },
-    { title: t('tour.collection.date'), dataIndex: 'checkinDate', width: 110 },
+    { title: t('tour.collection.date'), dataIndex: 'checkinDate', width: 120 },
     { title: t('tour.collection.note'), dataIndex: 'note', render: (v) => v || '-' },
-    { title: t('tour.collection.time'), dataIndex: 'createdAt', width: 150, render: fmtDateTime },
   ];
 
   return (
@@ -77,10 +75,8 @@ export default function TourismCollection() {
                 <StampIcon style={stamp.stampStyle} />
               </span>
               <div>
-                <div className="tour-stamp-name">{stamp.no}</div>
-                <div className="tour-meta-line">
-                  {stamp.portName || t('tour.collection.unknownPort')} · {stamp.entryDate}
-                </div>
+                <div className="tour-stamp-name">{stamp.portName || t('tour.collection.unknownPort')}</div>
+                <div className="tour-meta-line">{stamp.entryDate}</div>
                 <div className="tour-card-meta">
                   <Tag size="small" color="app-teal" variant="soft">
                     {t(`tour.stamp.style.${stamp.stampStyle}`)}
@@ -118,7 +114,6 @@ export default function TourismCollection() {
         </Card>
       </section>
 
-      <p className="muted-text tour-section">{t('tour.collection.footnote')}</p>
     </div>
   );
 }

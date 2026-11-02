@@ -137,7 +137,7 @@ export default function ProtocolInvitations() {
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setAction(null)}>{t('protocol.action.back')}</Button>
+            <Button onClick={() => setAction(null)}>{t('common.cancel')}</Button>
             <Button type="primary" danger={action?.kind === 'decline'} loading={busy} onClick={runAction} disabled={busy}>
               {t('protocol.action.confirm')}
             </Button>

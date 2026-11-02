@@ -326,7 +326,7 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
         <div className="dip-form-row">
           <FormItem name="identityType" label={t('dip.identity.type')} rules={[{ required: true, message: t('dip.apply.required') }]}>
             <Select
-              options={catalog.identityTypes.map((o) => ({ key: o.code, label: `${o.name}(${t('dip.apply.open')})` }))}
+              options={catalog.identityTypes.map((o) => ({ key: o.code, label: o.name }))}
               placeholder={t('dip.identity.typePlaceholder')}
             />
           </FormItem>
@@ -346,7 +346,12 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
           >
             <Input size="large" placeholder={t('dip.identity.holderPlaceholder')} allowClear maxLength={40} disabled={!!profile.realName} />
           </FormItem>
-          <FormItem name="contact" label={t('dip.identity.contact')} rules={[{ required: true, message: t('dip.apply.required') }]}>
+          <FormItem
+            name="contact"
+            label={t('dip.identity.contact')}
+            help={profile.email ? t('profile.fromProfile') : undefined}
+            rules={[{ required: true, message: t('dip.apply.required') }]}
+          >
             <Input size="large" placeholder={t('dip.identity.contactPlaceholder')} allowClear maxLength={60} />
           </FormItem>
         </div>
@@ -420,7 +425,15 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
         width={520}
         typewriter={false}
       >
-        <p>{t('dip.identity.confirmTip')}</p>
+        <p className="muted-text">{t('dip.identity.confirmTip')}</p>
+        <div className="dip-confirm-list">
+          <p><b>{t('dip.identity.type')}:</b> {form.getFieldValue('identityType') ? catalog.identityTypes.find((o) => o.code === form.getFieldValue('identityType'))?.name || form.getFieldValue('identityType') : '-'}</p>
+          <p><b>{t('dip.identity.relation')}:</b> {established.find((r) => String(r.id) === String(form.getFieldValue('relationId')))?.entityName || '-'}</p>
+          <p><b>{t('dip.identity.holder')}:</b> {form.getFieldValue('nickname') || '-'}</p>
+          <p><b>{t('dip.identity.contact')}:</b> {form.getFieldValue('contact') || '-'}</p>
+          <p><b>{t('dip.identity.title')}:</b> {form.getFieldValue('title') || '-'}</p>
+          <p><b>{t('dip.identity.termStart')} ~ {t('dip.identity.termEnd')}:</b> {form.getFieldValue('termStart') || '-'} ~ {form.getFieldValue('termEnd') || '-'}</p>
+        </div>
       </Modal>
     </Card>
   );

@@ -3,21 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { useNavigate } from 'react-router-dom';
 import { Title, Button, Card, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
-import { EyeIcon, PencilIcon, TrashIcon } from 'naive-icons';
+import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS } from '../../api/docs.js';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'draft', 'pending', 'supplementing', 'approved', 'rejected', 'withdrawn'];
-
-// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿中性棕(共享表仍是旧色)。
-const STATUS_COLORS = {
-  ...APPLICATION_STATUS_COLORS,
-  draft: 'brown',
-  pending: 'warm-peach-pink',
-  supplementing: 'warm-peach-pink',
-};
 
 export default function DocsApplications() {
   const { t } = useTranslation();
@@ -66,13 +58,13 @@ export default function DocsApplications() {
       dataIndex: 'status',
       width: 100,
       render: (v) => (
-        <Tag color={STATUS_COLORS[v] || 'brown'} variant="soft">
+        <Tag color={APPLICATION_STATUS_COLORS[v] || 'brown'} variant="soft">
           {t(`docs.status.${v}`)}
         </Tag>
       ),
     },
     { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => fmtDate(v) },
-    { title: t('common.createdAt'), dataIndex: 'updatedAt', width: 110, render: (v) => fmtDate(v) },
+    { title: t('docs.appList.updatedAt'), dataIndex: 'updatedAt', width: 110, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
       width: 150,
@@ -86,7 +78,9 @@ export default function DocsApplications() {
               <Button size="small" icon={<PencilIcon />} onClick={() => navigate(`/docs/apply?draft=${row.id}`)}>
                 {t('common.edit')}
               </Button>
-              <Button size="small" danger icon={<TrashIcon />} onClick={() => setDeleteTarget(row)} />
+              <Button size="small" danger icon={<TrashIcon />} onClick={() => setDeleteTarget(row)}>
+                {t('common.delete')}
+              </Button>
             </>
           )}
         </div>
@@ -98,7 +92,7 @@ export default function DocsApplications() {
     <div>
       <div className="page-header">
         <h1 className="page-title"><Title size="middle" color="brown">{t('docs.appList.title')}</Title></h1>
-        <div className="docs-filter">
+        <div className="docs-filter table-actions">
           <Select
             value={status}
             onChange={(v) => {
@@ -107,6 +101,9 @@ export default function DocsApplications() {
             }}
             options={STATUS_OPTIONS.map((s) => ({ key: s, label: s === 'all' ? t('docs.filter.all') : t(`docs.status.${s}`) }))}
           />
+          <Button type="primary" icon={<PlusIcon />} onClick={() => navigate('/docs/apply')}>
+            {t('docs.home.quick.apply')}
+          </Button>
         </div>
       </div>
       <Card>
@@ -115,7 +112,7 @@ export default function DocsApplications() {
           dataSource={items || []}
           rowKey="id"
           loading={items === null}
-          emptyText={t('common.empty')}
+          emptyText={t('docs.appList.empty')}
           pagination={false}
         />
         {total > pageSize && (

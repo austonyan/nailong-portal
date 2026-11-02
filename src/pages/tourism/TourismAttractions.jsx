@@ -97,7 +97,6 @@ export default function TourismAttractions() {
               </div>
             </div>
             <p className="tour-card-summary">{item.summary}</p>
-            <p className="tour-meta-line">{item.no}</p>
           </Card>
         ))}
         {items === null && (

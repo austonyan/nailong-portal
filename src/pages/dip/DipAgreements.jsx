@@ -6,7 +6,7 @@ import { Title, Button, Card, Collapse, Input, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { StatusTag, fmtDate, toastDipError } from '../../components/dip/shared.jsx';
-import { toastSuccess, toastWarning } from '../../components/toast.js';
+import { toastWarning } from '../../components/toast.js';
 
 const FAQ_KEYS = ['effect', 'fee', 'reality'];
 
@@ -38,9 +38,6 @@ export default function DipAgreements() {
     try {
       const data = await api.post('/dip/agreements/eligibility', { code: code.trim() });
       setResult(data);
-      toastSuccess(
-        data.items.length ? t('dip.agreement.hit', { count: data.items.length }) : t('dip.agreement.noHit')
-      );
     } catch (err) {
       setResult(null);
       toastDipError(t, err);

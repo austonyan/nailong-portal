@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Tag } from 'animal-island-ui';
-import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DECISION_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime } from './shared.jsx';
 
@@ -66,10 +65,7 @@ export default function AppealDecisions() {
             <p className="appeal-item-reason">{d.reason}</p>
           </Link>
           <div className="appeal-item-actions">
-            <Button type="text" size="small" icon={<EyeIcon />} onClick={() => navigate(`/appeal/decisions/${d.code}`)}>
-              {t('appeal.decision.view')}
-            </Button>
-            <Button type="text" size="small" onClick={() => navigate('/appeal/verify')}>
+            <Button type="text" size="small" onClick={() => navigate(`/appeal/verify?no=${encodeURIComponent(d.code)}`)}>
               {t('appeal.decision.verify')}
             </Button>
           </div>

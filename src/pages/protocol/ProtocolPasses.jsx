@@ -6,7 +6,7 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { CalendarIcon, CreditCardIcon, DownloadIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { PASS_STATUS_COLORS, ProtocolQr, StatusTag, downloadProtocolFile, fmtDateTime, toastProtocolError } from './shared.jsx';
+import { PASS_STATUS_COLORS, ProtocolQr, downloadProtocolFile, fmtDateTime, toastProtocolError } from './shared.jsx';
 
 export default function ProtocolPasses() {
   const { t } = useTranslation();
@@ -55,7 +55,6 @@ export default function ProtocolPasses() {
                 <div className="protocol-pass-issuer">{t('protocol.officeName')}</div>
                 <div className="protocol-pass-kind">{t('protocol.passes.kind')}</div>
               </div>
-              <StatusTag status={pass.status} />
             </div>
             <div className="protocol-pass-body">
               <div className="protocol-pass-info">

@@ -53,7 +53,7 @@ function PassCodeModal({ passCode, onClose }) {
         <div ref={canvasHostRef} className={`im-pass-qr-wrap${usable ? '' : ' im-pass-qr-disabled'}`}>
           <PassQr value={verifyUrl} />
         </div>
-        {!usable && <StatusTag value={passCode.status} />}
+        {!usable && <span className="muted-text">{t('imm.pass.qrDisabled')}</span>}
         <div className="im-pass-meta">
           <p><b>{passCode.codeNo}</b></p>
           <p>{t('imm.mydecl.no')}: {passCode.declarationNo}</p>

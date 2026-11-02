@@ -662,7 +662,7 @@
     },
     "home": {
       "heroTitle": "欢迎来到签注申请署",
-      "heroSub": "办好虚拟签注，奶龙岛说走就走。当前开放：旅游签注",
+      "heroSub": "办好虚拟签注，奶龙岛说走就走。",
       "applyEntry": "开始申请",
       "progressEntry": "我的申请",
       "verifyEntry": "验真中心",
@@ -672,13 +672,11 @@
       "types": "签注类型",
       "guide": "办事指南",
       "guideCondition": "申请条件",
-      "guideConditionBody": "持奶龙统一门户账号即可申请。本平台不核验真实身份，请用昵称与虚构信息填写。",
+      "guideConditionBody": "持奶龙统一门户账号即可申请。姓名与联系方式会自动带出门户档案，全程虚构玩法，不核验现实身份。",
       "guideMaterials": "需要准备什么",
-      "guideMaterialsBody": "填写行程说明与虚拟身份编号即可，门户不接受任何照片或文件。",
+      "guideMaterialsBody": "需要联系方式、访问目的、行程日期与行程说明；虚拟身份编号为选填。门户不接受任何照片或文件。",
       "guideDuration": "审核时长",
       "guideDurationBody": "提交后约{{hours}}小时内完成审核，请留意站内信通知。",
-      "guideValidity": "有效期说明",
-      "guideValidityBody": "签发后{{days}}天内有效，单次最长停留{{stay}}天，过期自动失效。",
       "faq": "常见问题",
       "supportTip": "还有疑问？给署里发一封站内信吧：",
       "tourismTitle": "岛上游玩推荐",
@@ -733,30 +731,10 @@
       "pickType": "选择签注类型",
       "pickTypeTip": "先选一种签注类型，再阅读申请条件与材料清单。",
       "typeUnavailable": "该签注类型暂未开放，先看看其他类型吧",
-      "quizTitle": "申请资格自检",
-      "quizHint": "趣味三连问，答完就能出发（本平台不核验真实身份）",
-      "quizDone": "自检完成，看起来你很适合来奶龙岛！",
       "agreementTitle": "隐私政策与用户协议",
       "agreePrivacy": "我已阅读并同意《隐私政策》",
       "agreeTerms": "我已阅读并同意《用户协议》",
       "start": "开始填写申请"
-    },
-    "quiz": {
-      "identity": {
-        "q": "你准备以什么身份来到奶龙国？",
-        "yes": "一个可爱的虚构角色",
-        "no": "我就是现实中的我"
-      },
-      "verification": {
-        "q": "你了解本平台不核验真实身份吗？",
-        "yes": "了解，这是娱乐平台",
-        "no": "以为要查户口"
-      },
-      "usage": {
-        "q": "你承诺不会把签注用于现实用途吗？",
-        "yes": "承诺，只在奶龙国玩",
-        "no": "想拿去机场试试"
-      }
     },
     "form": {
       "title": "在线申请表",
@@ -766,7 +744,7 @@
       "contact": "联系方式",
       "contactPlaceholder": "站内信或邮箱",
       "virtualId": "虚拟身份信息",
-      "virtualIdPlaceholder": "例如：NL-8888（选填）",
+      "virtualIdPlaceholder": "例如：NL-8888",
       "purpose": "访问目的",
       "purposePlaceholder": "观光 / 度假 / 打卡奶龙雕像…",
       "planArrive": "计划抵达",
@@ -779,13 +757,12 @@
       "inviterContact": "邀请人联系方式",
       "companions": "随行人员",
       "companionsPlaceholder": "例如：奶龙宝宝 ×2（选填）",
-      "avatarRequired": "请先上传头像材料，再提交申请",
-      "draftPreparing": "草稿准备中，稍候即可上传材料…",
       "saveDraft": "保存草稿",
       "draftSaved": "草稿已保存",
       "submit": "提交申请",
       "submitSuccess": "申请已提交",
       "confirmTitle": "提交前确认",
+      "confirmHint": "提交后申请进入审核队列，审核期间不可修改；预计{{hours}}小时内出结果。",
       "submittedTitle": "提交成功！",
       "submittedNo": "申请编号：{{no}}",
       "submittedHint": "预计{{hours}}小时内完成审核，结果将通过站内信通知。请保存好申请编号，可在验真中心查询进度。",
@@ -857,7 +834,17 @@
       "submitSupplement": "提交补件",
       "supplementSent": "补件已提交，重新进入审核",
       "reapply": "重新申请",
-      "print": "打印 / 导出PDF"
+      "print": "打印 / 导出PDF",
+      "nextStep": {
+      "draft": "这是一份草稿，填完信息即可提交。",
+      "pending_review": "署员正在审核，结果会通过站内信通知你。",
+      "supplement_required": "请在补件卡填写说明并提交，逾期申请会自动关闭。",
+      "approved": "审核已通过，电子签注签发后会出现在「我的许可」。",
+      "issued": "电子签注已签发，可在「我的许可」查看、打印并去口岸通关。",
+      "rejected": "按驳回原因调整后，可以重新申请。",
+      "closed": "申请已关闭，可按原类型重新申请。",
+      "withdrawn": "申请已撤销，需要时可以重新发起。"
+      }
     },
     "permit": {
       "title": "我的签注",
@@ -870,11 +857,9 @@
       "validUntil": "有效期至",
       "issuer": "签发机构",
       "print": "打印 / 保存PDF",
-      "verifyLink": "打开验真链接",
       "copyLink": "复制验真链接",
       "toImmigration": "去入境申报",
-      "linkCopied": "验真链接已复制",
-      "meta": "本签注由奶龍國簽註申請署于{{time}}签发，验真请前往验真中心。"
+      "linkCopied": "验真链接已复制"
     },
     "verify": {
       "title": "签注验真中心",
@@ -882,6 +867,7 @@
       "placeholder": "例如：NLT-261025-XXXXXXXX",
       "action": "验真",
       "limitTip": "为防枚举，同一来源每5分钟最多查询30次",
+      "retryLater": "查询次数已达上限，请5分钟后再试。",
       "notFound": "没有查到对应签注。请核对编号，或联系持有人确认。"
     },
     "msgType": {
@@ -1203,6 +1189,7 @@
       "start": "去申请认证",
       "step1": "第1步 · 选择文书类型",
       "step2": "第2步 · 填写申请信息",
+      "step3": "第3步 · 保存或提交",
       "nickname": "申请人姓名",
       "nicknamePh": "将展示在认证文书上",
       "contact": "联系方式",
@@ -1232,8 +1219,10 @@
       "appNo": "申请编号",
       "type": "文书类型",
       "submittedAt": "提交时间",
+      "updatedAt": "最后更新",
       "deleteConfirm": "确定删除草稿{{no}}吗？",
-      "deleted": "草稿已删除"
+      "deleted": "草稿已删除",
+      "empty": "还没有认证申请，去申请第一份认证吧"
     },
     "detail": {
       "title": "认证申请{{no}}",
@@ -1247,7 +1236,14 @@
       "supplementDeadline": "补件截止：",
       "resubmit": "补交完成，重新提交",
       "resubmitted": "已重新进入认证队列",
-      "withdraw": "撤销申请",
+      "nextStep": {
+        "draft": "这是一份草稿，点「编辑」继续填写。",
+        "pending": "认证员正在审核，结果会通过站内信通知你。",
+        "supplementing": "请在补件卡按认证员要求补充信息，逾期申请会自动关闭。",
+        "approved": "认证已通过，电子文书已发放，可在「我的证书」查看。",
+        "rejected": "按不予认证原因调整后，可以重新申请。",
+        "withdrawn": "申请已撤销，需要时可以重新发起。"
+      },      "withdraw": "撤销申请",
       "withdrawConfirmTitle": "撤销认证申请",
       "withdrawConfirmBody": "确定撤销申请{{no}}吗？撤销后不可恢复，如需认证请重新申请。",
       "withdrawn": "申请已撤销",
@@ -1697,6 +1693,8 @@
       "addressPlaceholder": "例如：奶龙湾3号沙滩",
       "visaNo": "关联签注编号",
       "visaTip": "支持签注署真实编号NLT-日期-编号，以及演示编号NL-1234-ABCD",
+      "stayDaysRange": "请输入1-90的整数",
+      "companionsRange": "请输入0-20的整数",
       "checkVisa": "校验",
       "visaFirst": "请先输入签注编号",
       "visaOk": "签注有效，放心提交",
@@ -1753,6 +1751,10 @@
       "timeline": "进度记录",
       "withdraw": "撤销申报",
       "withdrawn": "申报已撤销",
+      "withdrawConfirmTitle": "撤销申报",
+      "withdrawConfirmBody": "确定要撤销申报{{no}}吗？撤销后不能恢复。",
+      "submitConfirmTitle": "提交申报",
+      "submitConfirmBody": "确定要提交申报{{no}}吗？提交后进入待检队列，信息不可再修改。",
       "viewPass": "查看通关码"
     },
     "event": {
@@ -1781,7 +1783,8 @@
       "view": "查看",
       "detailTitle": "通关码",
       "download": "下载二维码",
-      "qrTip": "二维码内容仅为随机验真令牌，不含个人信息；核验通过后立即失效。"
+      "qrTip": "二维码内容仅为随机验真令牌，不含个人信息；核验通过后立即失效。",
+      "qrDisabled": "该通关码已不可用，状态见下方信息。"
     },
     "records": {
       "title": "我的出入境记录",
@@ -2221,6 +2224,7 @@
       "submittedHint": "预计{{hours}}小时内完成审核，结果将通过站内信通知。",
       "viewMyApplications": "查看我的登记",
       "profilePrefill": "持卡人姓名、联系方式与地址已按门户个人资料预填；未检测到的项目请手动填写。",
+      "profileEmpty": "你的个人资料还没填邮箱和虚拟地址；先去补全，登记时会自动带出。",
       "profilePrefillIncomplete": "如需补全或更正，请前往",
       "nickname": "持卡人姓名",
       "nicknamePlaceholder": "请填写真实姓名",
@@ -2260,8 +2264,8 @@
       "withdraw": "撤销申请",
       "withdrawn": "申请已撤销",
       "reapply": "重新申请",
-      "withdrawTitle": "撤回申请",
-      "withdrawConfirm": "撤回后本次申请作废，如需办理需重新提交。确定撤回{{no}}吗？",
+      "withdrawTitle": "撤销申请",
+      "withdrawConfirm": "撤销后本次申请作废，如需办理需重新提交。确定撤销{{no}}吗？",
       "supplementMaterialConfirm": "确定删除补件材料「{{name}}」吗？删除后需重新上传。"
     },
     "reviewAction": {
@@ -2817,7 +2821,7 @@
       "holderPlaceholder": "外交身份上的名字",
       "contact": "联系方式",
       "contactPlaceholder": "虚构联系方式即可",
-      "title": "职务（虚构）",
+      "title": "职务",
       "titlePlaceholder": "例如：驻奶龙国非常驻使节",
       "termStart": "任期开始",
       "termEnd": "任期结束",
@@ -3656,6 +3660,7 @@
       "basisPlaceholder_invitation": "邀请函编号（如NJI…）",
       "types": "礼遇类型",
       "applyTitle": "申请礼遇",
+      "needBasis": "还没有可用的礼遇资格；先在上方查询资格，再在这里提交申请。",
       "applyEntry": "申请礼遇",
       "applySuccess": "礼遇申请已提交",
       "notePlaceholder": "说明用途或补充信息（虚构）",
@@ -4354,10 +4359,6 @@
         "q": "申诉成功会改变原结果吗？",
         "a": "处理决定为撤销或变更时，申诉署会联动业务署重新处理该业务，并以新决定书为准。"
       },
-      "fee": {
-        "q": "提交申诉需要费用吗？",
-        "a": "不需要。本署所有申诉、复核、投诉建议与工单服务均免费。"
-      },
       "review": {
         "q": "申诉和复核有什么区别？",
         "a": "申诉针对业务处理结果；复核针对申诉处理决定，须在复核窗口内提出，且为一次终局。"
@@ -4390,6 +4391,7 @@
       "submittedTitle": "申诉提交成功",
       "submittedNo": "申诉编号：{{no}}",
       "submittedHint": "我们将在{{hours}}小时内完成受理，请留意站内信。",
+      "formLocked": "完成第一步核验业务编号并创建草稿后，这里会解锁。",
       "viewMy": "查看我的申诉"
     },
     "my": {
@@ -4410,8 +4412,7 @@
       "submitSupplement": "提交补件",
       "supplementDone": "补件已提交",
       "supplementDeadline": "补件截止",
-      "supplementNoteLabel": "补件说明",
-      "withdraw": "撤回申诉",
+            "withdraw": "撤回申诉",
       "withdrawDone": "申诉已撤回",
       "evaluate": "评价处理结果",
       "evaluateTitle": "服务评价",
@@ -4436,7 +4437,7 @@
       "pickAppeal": "选择要复核的申诉",
       "noCandidates": "暂无可复核的申诉（仅已处理或已驳回且未复核的申诉可申请）。",
       "reasonLabel": "复核理由",
-      "reasonPlaceholder": "请说明对处理决定的具体异议与依据",
+      "reasonPlaceholder": "请说明对处理决定的具体异议与依据（至少10字）",
       "submitDone": "复核申请已提交",
       "forAppeal": "关联申诉{{no}}",
       "appealLabel": "关联申诉",
@@ -4469,7 +4470,7 @@
       "titleLabel": "标题",
       "titlePlaceholder": "一句话概括问题",
       "contentLabel": "问题描述",
-      "contentPlaceholder": "请描述问题现象、出现时间与已尝试的操作",
+      "contentPlaceholder": "请描述问题现象、出现时间与已尝试的操作（至少5字）",
       "submit": "提交",
       "submitDone": "工单{{no}}已提交",
       "threadTitle": "沟通记录",
@@ -5102,11 +5103,11 @@
       "exportQuota": "今日导出余量",
       "quickEntries": "快捷入口",
       "activeRequest": "有一个删除申请正在处理中",
-      "viewProgress": "查看进度",
       "unreadTip": "你有{{count}}条未读档案消息",
       "catalog": "服务目录",
       "noTypes": "当前没有纳入归档的记录类型",
       "guides": "办事指南",
+      "moreGuides": "更多指南见办事指南页",
       "noGuides": "暂无办事指南",
       "noteTitle": "温馨提示",
       "noteBody": "本署不复制业务主数据：档案详情与导出一律脱敏展示，如需办理业务请前往原署页面。"
@@ -5117,6 +5118,8 @@
       "allTypes": "全部类型",
       "from": "开始日期",
       "to": "结束日期",
+      "fromExample": "开始日期（如2026-01-01）",
+      "toExample": "结束日期（如2026-01-31）",
       "keyword": "编号关键字",
       "reset": "重置",
       "typeName": "记录类型",
@@ -5168,6 +5171,7 @@
       "progress": "查看进度",
       "detailTitle": "申请详情",
       "notFound": "申请不存在，或已被清理。",
+      "decisionNote": "处理意见",
       "reviewNote": "受理意见",
       "rejectReason": "不予处理理由",
       "receipt": "执行回执",
@@ -5462,6 +5466,7 @@
       "readAll": "全部标为已读",
       "readAllDone": "已全部标为已读",
       "archiveAll": "归档全部已读",
+      "confirmAllBody": "将一次性处理当前筛选下的全部消息，确定继续吗？",
       "archiveAllDone": "已归档全部已读消息",
       "markRead": "标为已读",
       "markUnread": "标为未读",
@@ -5485,7 +5490,7 @@
       "title": "我的明信片",
       "write": "写一张",
       "quota": "今日已寄{{used}} / {{limit}}张",
-      "quotaTip": "每人每天最多寄出10张明信片。",
+      "quotaTip": "每人每天最多寄出{{limit}}张明信片。",
       "inbox": "收件箱",
       "sent": "寄件记录",
       "favorites": "收藏夹",
@@ -5506,6 +5511,10 @@
       "deleteTip": "明信片会从你的列表中隐藏，另一侧仍保留记录；此操作不可恢复。"
     },
     "compose": {
+      "needKeyword": "先输入要搜索的用户名或昵称",
+      "needTemplate": "先挑选一张明信片模板",
+      "needRecipient": "先选择一位收件人",
+      "needBlessing": "还没写祝福语",
       "title": "写一张明信片",
       "back": "返回明信片",
       "pickTemplate": "挑选模板",
@@ -6440,7 +6449,7 @@
       "unavailable": "暂不可读",
       "historyEmpty": "还没有阅读记录，打开一篇词条或文章就会出现在这里。",
       "favoritesEmpty": "还没有收藏，详情页里点「收藏」即可保存。",
-      "continueReading": "继续阅读"
+      "explore": "去逛逛"
     },
     "admin": {
       "allStatus": "全部状态",

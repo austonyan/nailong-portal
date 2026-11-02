@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Modal } from 'animal-island-ui';
-import { PrinterIcon, RefreshIcon, SearchIcon, ShieldIcon } from 'naive-icons';
+import { CopyIcon, PrinterIcon, RefreshIcon, ShieldIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CARD_STATUS_COLORS, ResQr, StatusTag, fmtDate, fmtDateTime, resToast, toastResError, toastResSuccess } from './shared.jsx';
 
@@ -114,10 +114,6 @@ export default function ResidentCard() {
               <span className="res-card-value">{fmtDate(card.validUntil)}</span>
             </div>
             <div>
-              <span className="res-card-label">{t('res.card.statusLabel')}</span>
-              <span className="res-card-value">{t(`res.cardStatus.${card.status}`)}</span>
-            </div>
-            <div>
               <span className="res-card-label">{t('res.card.issuer')}</span>
               <span className="res-card-value">{t('res.officeName')}</span>
             </div>
@@ -148,10 +144,7 @@ export default function ResidentCard() {
         <Button type="primary" icon={<PrinterIcon />} onClick={() => window.print()}>
           {t('res.card.print')}
         </Button>
-        <Button icon={<SearchIcon />} onClick={() => window.open(`/resident/verify?token=${card.verifyToken}`, '_blank')}>
-          {t('res.card.verifyLink')}
-        </Button>
-        <Button icon={<SearchIcon />} onClick={copyVerifyLink}>
+        <Button icon={<CopyIcon />} onClick={copyVerifyLink}>
           {t('res.card.copyLink')}
         </Button>
         <Button icon={<RefreshIcon />} onClick={() => setReissueOpen(true)}>

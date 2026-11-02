@@ -24,8 +24,8 @@ export default function AppealGuide() {
               className="appeal-biz-card"
               role="button"
               tabIndex={0}
-              onClick={() => navigate('/appeal/apply')}
-              onKeyDown={(e) => activateByKey(e, () => navigate('/appeal/apply'))}
+              onClick={() => navigate(`/appeal/apply?biz=${b}`)}
+              onKeyDown={(e) => activateByKey(e, () => navigate(`/appeal/apply?biz=${b}`))}
             >
               <Tag color="app-teal" variant="soft">
                 {t(`appeal.bizType.${b}`)}

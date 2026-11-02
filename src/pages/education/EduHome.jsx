@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Background, Button, Card, Progress, Tag } from 'animal-island-ui';
-import { BookIcon, BulbIcon, FileIcon, StarIcon, TrophyIcon } from 'naive-icons';
+import { BookIcon, BulbIcon, FileIcon, TrophyIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { pct, toastEduError } from './shared.jsx';
 
@@ -53,12 +53,6 @@ export default function EduHome() {
           <Button type="primary" size="large" icon={<BookIcon />} onClick={() => navigate('/education/entries')}>
             {t('edu.home.entryCta')}
           </Button>
-          <Button type="default" size="large" icon={<FileIcon />} onClick={() => navigate('/education/articles')}>
-            {t('edu.home.articleCta')}
-          </Button>
-          <Button type="dashed" size="large" icon={<TrophyIcon />} onClick={() => navigate('/education/tasks')}>
-            {t('edu.home.taskCta')}
-          </Button>
         </div>
         <div className="edu-hero-stats">
           <Tag color="app-blue" variant="soft">
@@ -66,12 +60,6 @@ export default function EduHome() {
           </Tag>
           <Tag color="app-teal" variant="soft">
             {t('edu.home.countArticles', { count: data.counts.articles ?? 0 })}
-          </Tag>
-          <Tag color="app-blue" variant="soft">
-            {t('edu.home.countReads', { count: data.counts.reads ?? 0 })}
-          </Tag>
-          <Tag color="purple" variant="soft">
-            {t('edu.home.countBadges', { count: (data.badges ?? []).length })}
           </Tag>
         </div>
       </Background>
@@ -176,41 +164,6 @@ export default function EduHome() {
         </div>
       </div>
 
-      <div className="edu-section">
-        <div className="edu-section-head">
-          <h2 className="section-title">{t('edu.home.myTitle')}</h2>
-          <Link to="/education/my" className="edu-link">
-            {t('edu.home.viewAll')}
-          </Link>
-        </div>
-        <div className="edu-stat-grid">
-          <Card className="edu-stat-card">
-            <span className="edu-stat-value">{data.counts.reads ?? 0}</span>
-            <span className="edu-stat-label">{t('edu.home.myReads')}</span>
-          </Card>
-          <Card className="edu-stat-card">
-            <span className="edu-stat-value">{data.counts.favorites ?? 0}</span>
-            <span className="edu-stat-label">{t('edu.home.myFavorites')}</span>
-          </Card>
-          <Card className="edu-stat-card">
-            <span className="edu-stat-value">{data.counts.completedTasks ?? 0}</span>
-            <span className="edu-stat-label">{t('edu.home.myCompleted')}</span>
-          </Card>
-          <Card className="edu-stat-card">
-            <span className="edu-stat-value">{(data.badges ?? []).length}</span>
-            <span className="edu-stat-label">{t('edu.home.myBadges')}</span>
-          </Card>
-        </div>
-        <div className="edu-badge-grid">
-          {(data.badges ?? []).map((badge) => (
-            <span key={badge.code} className="edu-badge-card">
-              <StarIcon size={16} />
-              {badge.name}
-              <small>{badge.code}</small>
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

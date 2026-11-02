@@ -113,11 +113,6 @@ export default function ResidentBenefits() {
           )}
         </div>
       </section>
-
-      <Card pattern="app-yellow" className="res-fraud-card">
-        <b>{t('res.benefits.achievements')}</b>
-        <p>{t('res.benefits.achievementsTip')}</p>
-      </Card>
     </div>
   );
 }

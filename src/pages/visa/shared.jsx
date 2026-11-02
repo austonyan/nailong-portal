@@ -2,6 +2,8 @@
 // textarea and error-toast helpers. 日期、多行输入与错误提示的实现各自只有一份
 // (src/lib/date.js、src/components/TextArea.jsx、src/components/toast.js),
 // 这里只做转出,保证署内调用点仍然从 './shared.jsx' 取。
+import { useTranslation } from 'react-i18next';
+import { Button, Modal } from 'animal-island-ui';
 import { apiErrorMessage, toastApiError } from '../../components/toast.js';
 import SharedTextArea from '../../components/TextArea.jsx';
 
@@ -56,8 +58,36 @@ export function toastVisaError(t, err) {
 // 驳回原因码 → i18n key(visa.rejectReason.*)
 export const REJECT_REASONS = ['incomplete_materials', 'false_info', 'type_mismatch', 'duplicate', 'other'];
 
-// 多行输入统一用共享 TextArea(原生属性透传,FormItem 注入的 value/onChange 可直接用);
-// 额外带上 visa-textarea 类名,沿用本署在 index.css 里的描边/圆角版式。
+// 多行输入控件统一用共享 TextArea(原生属性透传, animal-island-ui 的 FormItem 注入的
+// value/onChange 可以直接透传);额外带上 visa-textarea 类名,沿用本署在 index.css 里的描边/圆角版式。
 export function TextArea(props) {
   return <SharedTextArea className="visa-textarea" {...props} />;
+}
+
+// 可撤销的状态集合:列表页与详情页共用同一份定义,避免两处各自维护后漂移。
+export const WITHDRAWABLE = ['pending_review', 'supplement_required'];
+
+// 撤销确认弹窗:列表页(VisaMyApplications)与详情页(VisaApplicationDetail)共用一份,
+// 文案与 busy 行为保持一致;成功后的刷新由调用方在 onConfirm 里自行 load。
+export function VisaWithdrawModal({ open, appNo, busy, onClose, onConfirm }) {
+  const { t } = useTranslation();
+  return (
+    <Modal
+      maskClosable={false}
+      open={open}
+      title={t('visa.my.withdrawConfirmTitle')}
+      onClose={onClose}
+      typewriter={false}
+      footer={
+        <>
+          <Button onClick={onClose}>{t('common.cancel')}</Button>
+          <Button type="primary" danger loading={busy} onClick={onConfirm} disabled={busy}>
+            {t('visa.my.withdraw')}
+          </Button>
+        </>
+      }
+    >
+      {appNo ? t('visa.my.withdrawConfirmBody', { no: appNo }) : ''}
+    </Modal>
+  );
 }

@@ -4,18 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Title, Button, Card, Countdown, Modal, Tag } from 'animal-island-ui';
 import { ArrowRightIcon, ClockIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../api/docs.js';
+import { APPLICATION_STATUS_COLORS } from '../../api/docs.js';
 import DocsTextarea from '../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import { fmtDateTime } from '../../lib/date.js';
-
-// 状态配色按 UI 规范收敛:待处理/补件暖粉、草稿中性棕(共享表仍是旧色)。
-const STATUS_COLORS = {
-  ...APPLICATION_STATUS_COLORS,
-  draft: 'brown',
-  pending: 'warm-peach-pink',
-  supplementing: 'warm-peach-pink',
-};
 
 export default function DocsApplicationDetail() {
   const { t } = useTranslation();
@@ -89,10 +81,13 @@ export default function DocsApplicationDetail() {
     <div className="docs-detail">
       <div className="page-header">
         <h1 className="page-title"><Title size="middle" color="brown">{t('docs.detail.title', { no: item.appNo })}</Title></h1>
-        <Tag color={STATUS_COLORS[item.status] || 'brown'} variant="soft">
+        <Tag color={APPLICATION_STATUS_COLORS[item.status] || 'brown'} variant="soft">
           {t(`docs.status.${item.status}`)}
         </Tag>
       </div>
+
+      {/* 流程位置:一句话说清当前状态意味着什么、下一步是什么(词典 docs.detail.nextStep.*)。 */}
+      <p className="muted-text">{t(`docs.detail.nextStep.${item.status}`)}</p>
 
       {cert && (
         <Card pattern="app-teal" className="docs-cert-banner">

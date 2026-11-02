@@ -87,7 +87,7 @@ export default function ArchHome() {
               <span>{t('arch.home.activeRequest')}</span>
               <RequestStatusTag value={data.activeRequest.status} />
               <Button type="text" size="small" onClick={() => navigate(`/archives/requests/${data.activeRequest.id}`)}>
-                {t('arch.home.viewProgress')}
+                {t('arch.request.progress')}
               </Button>
             </>
           ) : (
@@ -160,9 +160,14 @@ export default function ArchHome() {
       <section>
         <h2 className="section-title">{t('arch.home.guides')}</h2>
         <div className="arch-guide-list">
-          {(data?.guides ?? []).map((guide) => (
+          {(data?.guides ?? []).slice(0, 2).map((guide) => (
             <Collapse key={guide.code} question={guide.title} answer={guide.body} />
           ))}
+          {(data?.guides ?? []).length > 2 && (
+            <Button type="text" size="small" onClick={() => navigate('/archives/help')}>
+              {t('arch.home.moreGuides')}
+            </Button>
+          )}
           {data && data.guides.length === 0 && (
             <Card type="dashed">
               <p className="arch-empty">{t('arch.home.noGuides')}</p>

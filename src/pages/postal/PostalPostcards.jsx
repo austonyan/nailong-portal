@@ -211,7 +211,7 @@ export default function PostalPostcards() {
         <Tag color="app-blue" variant="soft">
           {t('post.postcards.quota', { used: data?.usedToday ?? 0, limit: data?.dailyLimit ?? 10 })}
         </Tag>
-        <span>{t('post.postcards.quotaTip')}</span>
+        <span>{t('post.postcards.quotaTip', { limit: data?.dailyLimit ?? 10 })}</span>
       </div>
 
       <Tabs
@@ -287,12 +287,20 @@ export default function PostalPostcards() {
               <p className="muted-text">{t('post.postcards.takedownReason', { reason: detail.takedownReason })}</p>
             )}
             <div className="postal-kv">
-              <span className="muted-text">{t('post.postcards.sentAt')}</span>
-              <span>{fmtDateTime(detail.sentAt)}</span>
+              {detail.sentAt && (
+                <>
+                  <span className="muted-text">{t('post.postcards.sentAt')}</span>
+                  <span>{fmtDateTime(detail.sentAt)}</span>
+                </>
+              )}
             </div>
             <div className="postal-kv">
-              <span className="muted-text">{t('post.postcards.receivedAt')}</span>
-              <span>{fmtDateTime(detail.receivedAt)}</span>
+              {detail.receivedAt && (
+                <>
+                  <span className="muted-text">{t('post.postcards.receivedAt')}</span>
+                  <span>{fmtDateTime(detail.receivedAt)}</span>
+                </>
+              )}
             </div>
           </div>
         )}

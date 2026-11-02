@@ -106,7 +106,7 @@ export default function ProtocolMyRegistrations() {
               {t('protocol.action.edit')}
             </Button>
           )}
-          {['draft', 'pending_review', 'approved', 'waitlisted'].includes(record.status) && (
+          {['pending_review', 'approved', 'waitlisted'].includes(record.status) && (
             <Button type="text" size="small" danger icon={<BanIcon />} onClick={() => setCancelTarget(record)}>
               {t('protocol.action.cancelReg')}
             </Button>
@@ -248,7 +248,7 @@ export default function ProtocolMyRegistrations() {
         typewriter={false}
         footer={
           <>
-            <Button onClick={() => setCancelTarget(null)}>{t('protocol.action.back')}</Button>
+            <Button onClick={() => setCancelTarget(null)}>{t('common.cancel')}</Button>
             <Button type="primary" danger loading={busy} onClick={doCancel} disabled={busy}>
               {t('protocol.action.confirmCancel')}
             </Button>

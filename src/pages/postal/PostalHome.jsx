@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Tag } from 'animal-island-ui';
-import { BellIcon, InboxIcon, MailIcon, RssIcon, SendIcon } from 'naive-icons';
+import { InboxIcon, RssIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { NOTICE_LEVEL_COLORS, POSTCARD_STATUS_COLORS, fmtDate, fmtDateTime, toastPostError } from './shared.jsx';
 
@@ -178,21 +178,13 @@ export default function PostalHome() {
         <h2 className="section-title">{t('post.home.cardHall')}</h2>
         <div className="postal-card-grid">
           {home.templates.map((tpl) => (
-            <Card key={tpl.id} pattern={tpl.color} className="postal-card-tile" hoverable>
+            <Card key={tpl.id} pattern={tpl.color} className="postal-card-tile">
               <div className="postal-card-preview">
                 <span className="postal-card-name">{tpl.name}</span>
                 <span className="postal-card-desc">{tpl.description}</span>
               </div>
             </Card>
           ))}
-        </div>
-        <div className="postal-hero-actions">
-          <Button type="primary" icon={<MailIcon />} onClick={() => navigate('/postal/postcards/new')}>
-            {t('post.home.writeCard')}
-          </Button>
-          <Button type="text" icon={<BellIcon />} onClick={() => navigate('/postal/subscription')}>
-            {t('post.home.openSubscription')}
-          </Button>
         </div>
       </div>
     </div>

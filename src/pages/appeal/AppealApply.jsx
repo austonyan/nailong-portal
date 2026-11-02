@@ -1,7 +1,7 @@
 // 结果申诉表单:选择业务与编号 → 建草稿 → 填写理由/期望/联系方式 →
 // 提交前确认(预览)→ 生成申诉编号。/appeal/apply/:id 编辑草稿。
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Form, FormItem, Input, Modal, Select, Tag, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, SaveIcon, SendIcon } from 'naive-icons';
@@ -9,20 +9,25 @@ import { api } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { profileIdentity } from '../../lib/profileIdentity.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
-import { BIZ_TYPES, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
+import { APPEAL_STATUS_COLORS, BIZ_TYPES, TextArea, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 export default function AppealApply() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   // 联系方式默认取门户身份档案邮箱。
   const profile = profileIdentity(user);
   const draftId = params.id ? Number(params.id) : null;
   const [form] = useForm();
   const [appeal, setAppeal] = useState(null);
-  const [bizType, setBizType] = useState('visa');
+  // 办事指南的业务卡会带 ?biz= 预选类型,避免「点了档案申诉却默认签注」的错位。
+  const [bizType, setBizType] = useState(() => {
+    const fromQuery = searchParams.get('biz');
+    return BIZ_TYPES.includes(fromQuery) ? fromQuery : 'visa';
+  });
   const [bizCode, setBizCode] = useState('');
   const [hints, setHints] = useState({ supplementDays: 7, reviewDays: 15, acceptSlaHours: 48 });
   const [busy, setBusy] = useState(false);
@@ -132,7 +137,10 @@ export default function AppealApply() {
       <h1 className="page-title"><Title size="middle" color="yellow-green">{t('appeal.apply.title')}</Title></h1>
       {appeal && (
         <p className="muted-text">
-          {t('appeal.apply.draftNo', { no: appeal.code })} · {t(`appeal.status.${appeal.status}`)}
+          {t('appeal.apply.draftNo', { no: appeal.code })} ·{' '}
+          <Tag color={APPEAL_STATUS_COLORS[appeal.status] || 'brown'} variant="soft">
+            {t(`appeal.status.${appeal.status}`)}
+          </Tag>
         </p>
       )}
 
@@ -176,6 +184,7 @@ export default function AppealApply() {
       </Card>
 
       <Card className="appeal-form-card">
+        {!appeal && <p className="muted-text">{t('appeal.apply.formLocked')}</p>}
         <Form form={form} layout="vertical" requiredMark>
           <FormItem name="reason" label={t('appeal.apply.reason')} rules={[{ required: true, message: t('appeal.apply.reason') }]}>
             <TextArea maxLength={2000} placeholder={t('appeal.apply.reasonPlaceholder')} disabled={!appeal} />
@@ -183,7 +192,12 @@ export default function AppealApply() {
           <FormItem name="expected" label={t('appeal.apply.expected')} rules={[{ required: true, message: t('appeal.apply.expected') }]}>
             <TextArea rows={3} maxLength={500} placeholder={t('appeal.apply.expectedPlaceholder')} disabled={!appeal} />
           </FormItem>
-          <FormItem name="contact" label={t('appeal.apply.contact')} rules={[{ required: true, message: t('appeal.apply.contact') }]}>
+          <FormItem
+            name="contact"
+            label={t('appeal.apply.contact')}
+            help={profile.email ? t('profile.fromProfile') : undefined}
+            rules={[{ required: true, message: t('appeal.apply.contact') }]}
+          >
             <Input size="large" allowClear maxLength={100} placeholder={t('appeal.apply.contactPlaceholder')} disabled={!appeal} />
           </FormItem>
         </Form>

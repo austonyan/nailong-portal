@@ -146,14 +146,6 @@ export default function AppealAppealDetail() {
             <dt>{t('appeal.my.submittedAtLabel')}</dt>
             <dd>{fmtDateTime(appeal.submittedAt || appeal.createdAt)}</dd>
           </div>
-          {appeal.status === 'supplement_required' && (
-            <div>
-              <dt>{t('appeal.detail.supplementDeadline')}</dt>
-              <dd>
-                {fmtDateTime(appeal.supplementDeadline)} — {t('appeal.detail.supplementNoteLabel')}: {appeal.supplementNote}
-              </dd>
-            </div>
-          )}
           {appeal.mergedInto && (
             <div>
               <dt>{t('appeal.detail.mergedInto')}</dt>
@@ -161,29 +153,6 @@ export default function AppealAppealDetail() {
             </div>
           )}
         </dl>
-        <div className="table-actions appeal-detail-actions">
-          {WITHDRAWABLE.includes(appeal.status) && (
-            <Button danger onClick={askWithdraw}>
-              {t('appeal.detail.withdraw')}
-            </Button>
-          )}
-          {appeal.status === 'resolved' && !appeal.evaluationRating && (
-            <Button onClick={openEvaluate}>{t('appeal.detail.evaluate')}</Button>
-          )}
-          {appeal.review && (
-            <Button type="default" onClick={() => navigate(`/appeal/reviews`)}>
-              {t('appeal.detail.viewReview')}
-            </Button>
-          )}
-          {canReview && (
-            <Button type="primary" onClick={() => navigate('/appeal/reviews')}>
-              {t('appeal.detail.applyReview')}
-            </Button>
-          )}
-          {canReview && deadline && (
-            <span className="muted-text">{t('appeal.detail.reviewWindow', { date: fmtDate(deadline) })}</span>
-          )}
-        </div>
       </Card>
 
       {appeal.decisionType && (
@@ -209,6 +178,9 @@ export default function AppealAppealDetail() {
       {appeal.status === 'supplement_required' && (
         <Card pattern="app-orange" className="appeal-supplement-card">
           <h2 className="block-heading">{t('appeal.detail.supplementTitle')}</h2>
+          {appeal.supplementDeadline && (
+            <p className="muted-text">{t('appeal.detail.supplementDeadline')}: {fmtDateTime(appeal.supplementDeadline)}</p>
+          )}
           <p className="muted-text">{t('appeal.detail.supplementTip')}</p>
           <TextArea rows={3} maxLength={500} value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} placeholder={t('appeal.detail.supplementPlaceholder')} />
           <Button type="primary" icon={<SendIcon />} loading={supplementBusy} disabled={supplementBusy || (!supplementNote.trim())} onClick={submitSupplement}>
@@ -232,6 +204,30 @@ export default function AppealAppealDetail() {
           ))}
         </ul>
       </Card>
+
+      <div className="table-actions appeal-detail-actions">
+        {WITHDRAWABLE.includes(appeal.status) && (
+          <Button danger onClick={askWithdraw}>
+            {t('appeal.detail.withdraw')}
+          </Button>
+        )}
+        {appeal.status === 'resolved' && !appeal.evaluationRating && (
+          <Button onClick={openEvaluate}>{t('appeal.detail.evaluate')}</Button>
+        )}
+        {appeal.review && (
+          <Button type="default" onClick={() => navigate(`/appeal/reviews`)}>
+            {t('appeal.detail.viewReview')}
+          </Button>
+        )}
+        {canReview && (
+          <Button type="primary" onClick={() => navigate('/appeal/reviews')}>
+            {t('appeal.detail.applyReview')}
+          </Button>
+        )}
+        {canReview && deadline && (
+          <span className="muted-text">{t('appeal.detail.reviewWindow', { date: fmtDate(deadline) })}</span>
+        )}
+      </div>
 
       <Modal
         maskClosable={false}

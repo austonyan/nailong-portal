@@ -1,20 +1,17 @@
-// 申请前引导:类型说明、资格自检(趣味化)、协议确认。只收文本,无需准备文件。
+// 申请前引导:类型说明与协议确认。只收文本,无需准备文件。
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Checkbox, Radio, Tag } from 'animal-island-ui';
-import { CheckCircleIcon, HelpCircleIcon, AirplaneIcon } from 'naive-icons';
+import { Title, Button, Card, Checkbox, Tag } from 'animal-island-ui';
+import { AirplaneIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastVisaError } from './shared.jsx';
-
-const QUIZ = ['identity', 'verification', 'usage'];
 
 export default function VisaApplyGuide() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { typeCode } = useParams();
   const [types, setTypes] = useState(null);
-  const [quiz, setQuiz] = useState({});
   const [agreed, setAgreed] = useState([]);
 
   useEffect(() => {
@@ -103,12 +100,11 @@ export default function VisaApplyGuide() {
     );
   }
 
-  const quizDone = QUIZ.every((q) => quiz[q] !== undefined);
   const agreementOptions = [
     { label: t('visa.applyGuide.agreePrivacy'), value: 'privacy' },
     { label: t('visa.applyGuide.agreeTerms'), value: 'terms' },
   ];
-  const canStart = quizDone && agreed.length === agreementOptions.length;
+  const canStart = agreed.length === agreementOptions.length;
 
   return (
     <div className="visa-guide-page">
@@ -122,32 +118,6 @@ export default function VisaApplyGuide() {
           <Tag variant="outlined">{t('visa.typeMeta.valid', { days: type.validDays })}</Tag>
           <Tag variant="outlined">{t(`visa.typeMeta.renewable.${type.renewable ? 'yes' : 'no'}`)}</Tag>
         </div>
-      </Card>
-
-      <Card className="visa-guide-quiz">
-        <h2 className="block-heading">
-          <HelpCircleIcon size={18} /> {t('visa.applyGuide.quizTitle')}
-        </h2>
-        <p className="muted-text">{t('visa.applyGuide.quizHint')}</p>
-        {QUIZ.map((key) => (
-          <div key={key} className="visa-quiz-item">
-            <p>{t(`visa.quiz.${key}.q`)}</p>
-            <Radio
-              value={quiz[key]}
-              onChange={(v) => setQuiz((prev) => ({ ...prev, [key]: v }))}
-              options={[
-                { label: t(`visa.quiz.${key}.yes`), value: 'yes' },
-                { label: t(`visa.quiz.${key}.no`), value: 'no' },
-              ]}
-            />
-          </div>
-        ))}
-        {quizDone && (
-          <div className="visa-quiz-result">
-            <CheckCircleIcon size={18} />
-            <span>{t('visa.applyGuide.quizDone')}</span>
-          </div>
-        )}
       </Card>
 
       <Card className="visa-guide-agreement">
