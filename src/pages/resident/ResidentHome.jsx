@@ -21,7 +21,7 @@ const QUICK_ENTRIES = [
   { to: '/resident/guide', key: 'guide', icon: HelpCircleIcon, color: 'app-orange' },
 ];
 
-const GUIDE_KEYS = ['conditions', 'materials', 'duration', 'rights'];
+const GUIDE_KEYS = ['conditions', 'duration', 'rights'];
 
 const FAQ_KEYS = ['realWorld', 'fee', 'howLong', 'rejected'];
 

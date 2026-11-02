@@ -1,11 +1,10 @@
-// 登记申请详情:表单数据、材料、审核记录、补件通知与在线补交、驳回原因、撤销与重新申请。
+// 登记申请详情:表单数据、审核记录、补件说明与在线补交、驳回原因、撤销与重新申请。
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Modal, Tag, Upload } from 'animal-island-ui';
-import { AlertTriangleIcon, PaperclipIcon, TrashIcon } from 'naive-icons';
+import { Title, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { AlertTriangleIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { uploadResidentMaterial } from '../../api/resident.js';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastError } from '../../components/toast.js';
 import {
@@ -30,7 +29,6 @@ export default function ResidentApplicationDetail() {
   const [app, setApp] = useState(null);
   const [supplementOpen, setSupplementOpen] = useState(false);
   const [supplementNote, setSupplementNote] = useState('');
-  const [supplementMaterials, setSupplementMaterials] = useState([]);
   // 撤回与补充材料各自一份 busy:共用一个状态会让点「撤回」时「提交补充材料」按钮也在转圈
   const [supplementBusy, setSupplementBusy] = useState(false);
   const { confirm, dialog } = useConfirmAction();
@@ -58,7 +56,6 @@ export default function ResidentApplicationDetail() {
   }
 
   const canWithdraw = ['pending_review', 'supplement_required'].includes(app.status);
-  const canSupplement = app.status === 'supplement_required';
   const canReapply = ['rejected', 'closed', 'withdrawn'].includes(app.status);
 
   const askWithdraw = () => confirm({
@@ -71,27 +68,14 @@ export default function ResidentApplicationDetail() {
     onError: (err) => toastResError(t, err),
   });
 
-  const uploadSupplement = ({ file, onProgress, onSuccess, onError }) => {
-    uploadResidentMaterial({ applicationId: app.id, kind: 'other', file, onProgress })
-      .then((material) => {
-        setSupplementMaterials((prev) => [...prev, material]);
-        onSuccess(material);
-      })
-      .catch((err) => {
-        toastResError(t, err);
-        onError(err);
-      });
-  };
-
   const closeSupplement = () => {
     setSupplementOpen(false);
-    // 取消 / 重开时清空,避免上次的留言与材料残留
+    // 取消 / 重开时清空,避免上次的补充说明残留
     setSupplementNote('');
-    setSupplementMaterials([]);
   };
 
   const submitSupplement = async () => {
-    if (!supplementMaterials.length && !supplementNote.trim()) {
+    if (!supplementNote.trim()) {
       toastError(t('common.required'));
       return;
     }
@@ -107,16 +91,6 @@ export default function ResidentApplicationDetail() {
       setSupplementBusy(false);
     }
   };
-
-  const askRemoveSupplement = (material) => confirm({
-    title: t('common.confirmDeleteTitle'),
-    tip: t('res.detail.supplementMaterialConfirm', { name: material.filename }),
-    confirmText: t('common.delete'),
-    action: () => api.del(`/resident/materials/${material.id}`),
-    success: t('common.deleted'),
-    onDone: () => setSupplementMaterials((prev) => prev.filter((m) => m.id !== material.id)),
-    onError: (err) => toastResError(t, err),
-  });
 
   return (
     <div className="res-app-detail">
@@ -189,28 +163,6 @@ export default function ResidentApplicationDetail() {
       </Card>
 
       <Card className="res-info-card">
-        <h2>
-          <PaperclipIcon size={18} /> {t('res.detail.materialsTitle')}
-        </h2>
-        {app.materials.length === 0 ? (
-          <p className="muted-text">{t('common.empty')}</p>
-        ) : (
-          <div className="res-materials-section">
-            {app.materials.map((m) => (
-              <div key={m.id} className="res-material-row">
-                <Tag variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'}>
-                  {t(`res.materialKind.${m.kind}`)}
-                  {m.origin === 'supplement' ? ` · ${t('res.materialOrigin.supplement')}` : ''}
-                </Tag>
-                <span className="res-material-name">{m.filename}</span>
-                <span className="muted-text">{fmtDateTime(m.createdAt)}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
-
-      <Card className="res-info-card">
         <h2>{t('res.detail.recordsTitle')}</h2>
         {app.reviews.length === 0 ? (
           <p className="muted-text">{t('res.detail.noRecords')}</p>
@@ -263,7 +215,7 @@ export default function ResidentApplicationDetail() {
             <Button
               type="primary"
               loading={supplementBusy}
-              disabled={supplementBusy || (supplementMaterials.length === 0 && !supplementNote.trim())}
+              disabled={supplementBusy || !supplementNote.trim()}
               onClick={submitSupplement}
             >
               {t('res.detail.supplementSubmit')}
@@ -273,20 +225,6 @@ export default function ResidentApplicationDetail() {
       >
         <div className="res-supplement-body">
           <p className="muted-text">{t('res.detail.supplementTip')}</p>
-          <Upload accept="image/*,application/pdf" maxCount={6} showUploadList={false} customRequest={uploadSupplement}>
-            {t('res.form.uploadOther')}
-          </Upload>
-          {supplementMaterials.map((m) => (
-            <div key={m.id} className="res-material-row">
-              <Tag variant="soft" color="warm-peach-pink">
-                {t('res.materialOrigin.supplement')}
-              </Tag>
-              <span className="res-material-name">{m.filename}</span>
-              <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => askRemoveSupplement(m)}>
-                {t('common.delete')}
-              </Button>
-            </div>
-          ))}
           <TextArea rows={3} maxLength={500} placeholder={t('res.detail.supplementNotePlaceholder')} value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} />
         </div>
       </Modal>

@@ -90,11 +90,6 @@ function relationDetail(row) {
          WHERE e.owner_type = 'relation' AND e.owner_id = ? ORDER BY e.id`
       )
       .all(row.id),
-    materials: db
-      .prepare(
-        'SELECT id, kind, origin, filename, mime, size, created_at FROM dip_materials WHERE owner_type = ? AND owner_id = ? AND deleted_at IS NULL ORDER BY id'
-      )
-      .all('relation', row.id),
   };
 }
 
@@ -372,11 +367,6 @@ function identityDetail(row) {
          WHERE e.owner_type = 'identity' AND e.owner_id = ? ORDER BY e.id`
       )
       .all(row.id),
-    materials: db
-      .prepare(
-        'SELECT id, kind, origin, filename, mime, size, created_at FROM dip_materials WHERE owner_type = ? AND owner_id = ? AND deleted_at IS NULL ORDER BY id'
-      )
-      .all('identity', row.id),
   };
 }
 

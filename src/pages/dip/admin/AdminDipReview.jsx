@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tag } from 'animal-island-ui';
-import { api, getAccessToken } from '../../../api/client.js';
+import { api } from '../../../api/client.js';
 import { useConfirmAction } from '../../../components/ConfirmAction.jsx';
 import { StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../../components/dip/shared.jsx';
 import { toastSuccess, toastWarning } from '../../../components/toast.js';
@@ -40,41 +40,6 @@ function ActionButton({ danger, loading, onClick, children }) {
     <Button type="default" size="small" danger={danger} loading={loading} disabled={loading} onClick={onClick}>
       {children}
     </Button>
-  );
-}
-
-function MaterialLinks({ materials }) {
-  const { t } = useTranslation();
-  if (!materials?.length) return <p className="muted-text">{t('dip.material.empty')}</p>;
-  const download = async (e, m) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`/api/dip/materials/${m.id}/download`, {
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-      });
-      if (!res.ok) throw new Error(res.status);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = m.filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      toastDipError(t, { code: 'FORBIDDEN' });
-    }
-  };
-  return (
-    <ul className="dip-material-links">
-      {materials.map((m) => (
-        <li key={m.id}>
-          <a href={`/api/dip/materials/${m.id}/download`} onClick={(e) => download(e, m)}>
-            {m.filename}
-          </a>
-          <span className="muted-text"> · {t(`dip.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
-        </li>
-      ))}
-    </ul>
   );
 }
 
@@ -147,11 +112,6 @@ function RelationDrawer({ id, onChanged }) {
         </InfoRow>
         {r.supplementNote && <InfoRow label={t('dip.relation.supplementRequired')}>{r.supplementNote}</InfoRow>}
         {r.severReason && <InfoRow label={t('dip.relation.severRequest')}>{r.severReason}</InfoRow>}
-      </Card>
-
-      <Card>
-        <b>{t('dip.material.title')}</b>
-        <MaterialLinks materials={r.materials} />
       </Card>
 
       <Card>
@@ -367,11 +327,6 @@ function IdentityDrawer({ id, onChanged }) {
         <InfoRow label={t('dip.identity.title')}>{d.title || '-'}</InfoRow>
         <InfoRow label={t('dip.identity.term')}>{fmtDate(d.termStart)} ~ {fmtDate(d.termEnd)}</InfoRow>
         {d.inactiveReason && <InfoRow label={t('dip.identity.inactiveReason')}>{d.inactiveReason}</InfoRow>}
-      </Card>
-
-      <Card>
-        <b>{t('dip.material.title')}</b>
-        <MaterialLinks materials={d.materials} />
       </Card>
 
       <Card>

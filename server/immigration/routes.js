@@ -1,10 +1,5 @@
 // 皇家口岸入境署 — user-facing API (portal side).
-import path from 'node:path';
-import fs from 'node:fs';
-import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
 import { Router } from 'express';
-import multer from 'multer';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, notFound, readString, forbidden } from '../http.js';
@@ -32,29 +27,11 @@ ensureImmigrationSchema();
 const VISA_RESULT_CN = { valid: '有效', invalid: '无效', expired: '已过期', revoked: '已注销', used: '已使用', not_found: '未找到' };
 const VISA_RESULT_TW = { valid: '有效', invalid: '無效', expired: '已過期', revoked: '已註銷', used: '已使用', not_found: '未找到' };
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.join(
-  process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data'),
-  'uploads',
-  'immigration'
-);
-fs.mkdirSync(uploadDir, { recursive: true });
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadDir),
-    filename: (_req, file, cb) =>
-      cb(null, `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname)}`),
-  }),
-  limits: { fileSize: 5 * 1024 * 1024, files: 1 },
-});
-
 const router = Router();
 const portalOnly = [authenticate, requirePermission('imm:portal')];
 
 const FUN_ITEM_KEYS = new Set(['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card']);
 const PURPOSES = new Set(['fun', 'visit', 'business', 'show', 'other']);
-const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
 
 function parseItems(value) {
   if (value === undefined || value === null || value === '') return [];
@@ -150,9 +127,6 @@ function serializeDeclaration(row, { detail = false } = {}) {
        FROM im_declaration_events e LEFT JOIN users u ON u.id = e.actor_id
        WHERE e.declaration_id = ? ORDER BY e.id`
     )
-    .all(row.id);
-  base.attachments = db
-    .prepare('SELECT id, filename, size, mime, created_at FROM im_attachments WHERE declaration_id = ? AND deleted_at IS NULL ORDER BY id')
     .all(row.id);
   const pass = db
     .prepare('SELECT id, code_no, status, valid_until FROM im_pass_codes WHERE declaration_id = ?')
@@ -452,62 +426,6 @@ router.post('/declarations/:id/supplement', ...portalOnly, (req, res) => {
   logEvent(row.id, 'supplement_submit', req.user.id, content);
   notify(req.user.id, 'supplement_received', { no: row.no }, { declarationNo: row.no });
   res.json({ declaration: serializeDeclaration(declarationRow(row.id), { detail: true }) });
-});
-
-// ---------------------------------------------------------------------------
-// Attachments (private storage, permission-checked downloads)
-// ---------------------------------------------------------------------------
-
-router.post('/declarations/:id/attachments', ...portalOnly, (req, res) => {
-  const row = ownDeclaration(req, req.params.id);
-  if (!['draft', 'pending', 'supplement'].includes(row.status)) {
-    throw badRequest('IMM_INVALID_STATE', 'Attachments are closed for this declaration');
-  }
-  upload.single('file')(req, res, (err) => {
-    if (err) {
-      const code = err?.code === 'LIMIT_FILE_SIZE' ? 'IMM_FILE_TOO_LARGE' : 'IMM_FILE_TYPE';
-      return res.status(400).json({ code, message: code === 'IMM_FILE_TOO_LARGE' ? 'File exceeds 5MB' : 'Upload failed' });
-    }
-    if (!req.file) return res.status(400).json({ code: 'VALIDATION_ERROR', message: 'file is required' });
-    if (!ALLOWED_MIME.includes(req.file.mimetype)) {
-      fs.unlinkSync(req.file.path);
-      return res.status(400).json({ code: 'IMM_FILE_TYPE', message: 'Only images and PDF are allowed' });
-    }
-    const info = db
-      .prepare(
-        `INSERT INTO im_attachments (declaration_id, filename, stored_name, mime, size, uploaded_by, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`
-      )
-      .run(row.id, req.file.originalname.slice(0, 120), req.file.filename, req.file.mimetype, req.file.size, req.user.id, now());
-    res.status(201).json({
-      attachment: { id: info.lastInsertRowid, filename: req.file.originalname, size: req.file.size, mime: req.file.mimetype },
-    });
-  });
-});
-
-router.get('/attachments/:id/download', authenticate, (req, res) => {
-  const att = db.prepare('SELECT * FROM im_attachments WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
-  if (!att) throw notFound('Attachment not found');
-  const decl = db.prepare('SELECT user_id, no, status FROM im_declarations WHERE id = ?').get(att.declaration_id);
-  const owned = decl?.user_id === req.user.id;
-  const canInspect = req.user.permissions.includes('imm:inspect') || req.user.permissions.includes('imm:admin');
-  if (!owned && !canInspect) throw forbidden('FORBIDDEN', 'No access to this file');
-  const filePath = path.join(uploadDir, att.stored_name);
-  if (!fs.existsSync(filePath)) throw notFound('File missing on disk');
-  audit(req.user.id, 'im:file.access', 'attachment', att.id, { declarationNo: decl?.no, name: att.filename });
-  res.download(filePath, att.filename);
-});
-
-router.delete('/attachments/:id', ...portalOnly, (req, res) => {
-  const att = db.prepare('SELECT * FROM im_attachments WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
-  if (!att) throw notFound('Attachment not found');
-  const decl = db.prepare('SELECT user_id, status FROM im_declarations WHERE id = ?').get(att.declaration_id);
-  if (decl.user_id !== req.user.id) throw forbidden('FORBIDDEN', 'Not your attachment');
-  if (!['draft', 'pending', 'supplement'].includes(decl.status)) {
-    throw badRequest('IMM_INVALID_STATE', 'Attachments are locked for this declaration');
-  }
-  db.prepare('UPDATE im_attachments SET deleted_at = ? WHERE id = ?').run(now(), att.id);
-  res.json({ ok: true });
 });
 
 // ---------------------------------------------------------------------------

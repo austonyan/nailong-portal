@@ -45,18 +45,6 @@ const CARD_STATUSES = new Set(['valid', 'frozen', 'expired', 'voided']);
 function applicationWithMeta(row) {
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(row.type_code);
   const user = db.prepare('SELECT username, display_name FROM users WHERE id = ?').get(row.user_id);
-  const materials = db
-    .prepare('SELECT * FROM res_materials WHERE application_id = ? ORDER BY id')
-    .all(row.id)
-    .map((m) => ({
-      id: m.id,
-      kind: m.kind,
-      origin: m.origin,
-      filename: m.filename,
-      mime: m.mime,
-      size: m.size,
-      createdAt: m.created_at,
-    }));
   const reviews = db
     .prepare('SELECT * FROM res_reviews WHERE application_id = ? ORDER BY id')
     .all(row.id)
@@ -80,7 +68,6 @@ function applicationWithMeta(row) {
     validYears: typeRow?.valid_years ?? null,
     username: user?.username ?? '',
     displayName: user?.display_name ?? '',
-    materials,
     reviews,
     pastApplications: pastCount,
     blacklisted: blacklist,
@@ -174,9 +161,6 @@ function approveApplicationCore(app, actor, { comment = '', auto = false } = {})
   if (liveCard) throw conflict('RES_CARD_EXISTS', `User already has a live resident card: ${liveCard.card_no}`);
   const ts = now();
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(app.type_code);
-  const avatar = db
-    .prepare("SELECT id FROM res_materials WHERE application_id = ? AND kind = 'avatar' ORDER BY id DESC LIMIT 1")
-    .get(app.id);
   const validUntil = new Date(Date.now() + (typeRow?.valid_years || 1) * 365 * 24 * 60 * 60 * 1000).toISOString();
 
   const info = db
@@ -193,13 +177,13 @@ function approveApplicationCore(app, actor, { comment = '', auto = false } = {})
   if (existing) {
     db.prepare(
       `UPDATE res_residents SET application_id = ?, type_code = ?, nickname = ?, contact = ?, virtual_address = ?,
-       bio = ?, avatar_material_id = ?, updated_at = ? WHERE id = ?`
-    ).run(app.id, app.type_code, app.nickname, app.contact, app.virtual_address, app.bio, avatar?.id ?? null, ts, existing.id);
+       bio = ?, updated_at = ? WHERE id = ?`
+    ).run(app.id, app.type_code, app.nickname, app.contact, app.virtual_address, app.bio, ts, existing.id);
   } else {
     db.prepare(
-      `INSERT INTO res_residents (user_id, application_id, type_code, nickname, contact, virtual_address, bio, avatar_material_id, since, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).run(app.user_id, app.id, app.type_code, app.nickname, app.contact, app.virtual_address, app.bio, avatar?.id ?? null, ts, ts, ts);
+      `INSERT INTO res_residents (user_id, application_id, type_code, nickname, contact, virtual_address, bio, since, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(app.user_id, app.id, app.type_code, app.nickname, app.contact, app.virtual_address, app.bio, ts, ts, ts);
   }
 
   // 电子居民卡(登记通过即生成)
@@ -616,8 +600,6 @@ function validateTypeBody(body, { partial = false } = {}) {
   if (body.duties !== undefined) out.duties = String(body.duties).trim().slice(0, 1000);
   if (body.dutiesTw !== undefined) out.duties_tw = String(body.dutiesTw || '').trim().slice(0, 1000) || null;
   if (body.validYears !== undefined) out.valid_years = Math.min(100, Math.max(1, Number(body.validYears) || 1));
-  if (body.requireAvatar !== undefined) out.require_avatar = body.requireAvatar ? 1 : 0;
-  if (body.requireAddressProof !== undefined) out.require_address_proof = body.requireAddressProof ? 1 : 0;
   if (body.enabled !== undefined) out.enabled = body.enabled ? 1 : 0;
   if (body.sortOrder !== undefined) out.sort_order = Number(body.sortOrder) || 0;
   return out;
@@ -628,13 +610,13 @@ router.post('/types', (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO res_types (code, name, name_tw, description, description_tw, guide, guide_tw, benefits, benefits_tw, duties, duties_tw, valid_years, require_avatar, require_address_proof, enabled, sort_order, created_at, updated_at)
-       VALUES (@code, @name, @name_tw, @description, @description_tw, @guide, @guide_tw, @benefits, @benefits_tw, @duties, @duties_tw, @valid_years, @require_avatar, @require_address_proof, @enabled, @sort_order, @ts, @ts)`
+      `INSERT INTO res_types (code, name, name_tw, description, description_tw, guide, guide_tw, benefits, benefits_tw, duties, duties_tw, valid_years, enabled, sort_order, created_at, updated_at)
+       VALUES (@code, @name, @name_tw, @description, @description_tw, @guide, @guide_tw, @benefits, @benefits_tw, @duties, @duties_tw, @valid_years, @enabled, @sort_order, @ts, @ts)`
     )
     .run({
       description: '', guide: '', benefits: '', duties: '',
       name_tw: null, description_tw: null, guide_tw: null, benefits_tw: null, duties_tw: null,
-      valid_years: 1, require_avatar: 1, require_address_proof: 0, enabled: 1, sort_order: 0,
+      valid_years: 1, enabled: 1, sort_order: 0,
       ...data, ts,
     });
   audit(req.user, 'create_resident_type', 'res_type', data.code);

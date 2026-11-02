@@ -31,10 +31,6 @@ async function api(path, { method = 'GET', token, body } = {}) {
 }
 
 // 1x1 PNG
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
 
 const stamp = Date.now().toString(36);
 const userName = `smoke_ap_${stamp}`;
@@ -54,17 +50,6 @@ async function login(username) {
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;
-}
-
-async function upload(token, ownerType, ownerId, kind, filename, mime = 'image/png') {
-  const form = new FormData();
-  form.append('ownerType', ownerType);
-  form.append('ownerId', String(ownerId));
-  form.append('kind', kind);
-  form.append('file', new Blob([PNG], { type: mime }), filename);
-  const res = await fetch(`${base}/api/appeal/materials`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form });
-  const data = await res.json().catch(() => ({}));
-  return { status: res.status, data };
 }
 
 const FIELDS = {
@@ -98,12 +83,6 @@ async function main() {
   const put = await api(`/appeal/appeals/${appealId}`, { method: 'PUT', token: userToken, body: FIELDS });
   check('保存申诉信息', put.status === 200);
 
-  const up = await upload(userToken, 'appeal', appealId, 'screenshot', 'reject.png');
-  check('上传材料', up.status === 201 && up.data.material?.origin === 'initial', JSON.stringify(up.data));
-  const badFile = await upload(userToken, 'appeal', appealId, 'other', 'evil.bin', 'application/octet-stream');
-  check('拒绝非白名单类型', badFile.status === 400, JSON.stringify(badFile.data));
-
-
   const submitted = await api(`/appeal/appeals/${appealId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('提交成功进入待受理', submitted.status === 200 && submitted.data.appeal.status === 'pending_accept');
 
@@ -120,12 +99,6 @@ async function main() {
   const visaApp = await api('/visa/applications', { method: 'POST', token: user2Token, body: { typeCode: 'TOURIST' } });
   check('创建签注申请草稿', visaApp.status === 201 && !!visaApp.data.application?.id, JSON.stringify(visaApp.data).slice(0, 200));
   const visaAppId = visaApp.data.application.id;
-  const visaForm = new FormData();
-  visaForm.append('applicationId', String(visaAppId));
-  visaForm.append('kind', 'avatar');
-  visaForm.append('file', new Blob([PNG], { type: 'image/png' }), 'avatar.png');
-  const visaUp = await fetch(`${base}/api/visa/materials`, { method: 'POST', headers: { Authorization: `Bearer ${user2Token}` }, body: visaForm });
-  check('签注申请头像上传', visaUp.ok, JSON.stringify(await visaUp.json().catch(() => ({}))).slice(0, 200));
   const visaPut = await api(`/visa/applications/${visaAppId}`, {
     method: 'PUT', token: user2Token,
     body: { nickname: '冒烟入境者', contact: 'visa@example.com', purpose: '旅游观光', itinerary: '环岛三日游', planArrive: '2026-12-01', planLeave: '2026-12-08' },
@@ -151,8 +124,6 @@ async function main() {
   });
   check('要求补件', supp.status === 200 && supp.data.appeal.status === 'supplement_required');
 
-  const upSup = await upload(userToken, 'appeal', appealId, 'proof', 'extra.png');
-  check('补交材料', upSup.status === 201 && upSup.data.material.origin === 'supplement');
   const suppSubmit = await api(`/appeal/appeals/${appealId}/supplement`, { method: 'POST', token: userToken, body: { note: '材料已补齐' } });
   check('补件后重新处理', suppSubmit.status === 200 && suppSubmit.data.appeal.status === 'processing');
 
@@ -184,7 +155,6 @@ async function main() {
 
   const rQueue = await api('/appeal/admin/reviews/queue?status=pending', { token: adminToken });
   check('复核队列可见', rQueue.data.items.some((r) => r.id === reviewId));
-  await upload(userToken, 'review', reviewId, 'proof', 'evidence.png');
 
   const rAccept = await api(`/appeal/admin/reviews/${reviewId}/accept`, { method: 'POST', token: adminToken, body: {} });
   check('复核受理', rAccept.status === 200 && rAccept.data.review.status === 'reviewing');

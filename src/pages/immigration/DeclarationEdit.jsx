@@ -6,7 +6,6 @@ import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { pickLocalized } from '../../components/immigration/shared.jsx';
-import Attachments from '../../components/immigration/Attachments.jsx';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 import { toastSuccess, toastWarning, toastError } from '../../components/toast.js';
@@ -31,13 +30,11 @@ export default function DeclarationEdit() {
   const [quantities, setQuantities] = useState({});
   const [itemsError, setItemsError] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const [attachments, setAttachments] = useState([]);
 
   const applyDeclaration = useCallback(
     (d) => {
       setDecl(d);
       setVisaState(d.visaResult ? { result: d.visaResult } : null);
-      setAttachments(d.attachments ?? []);
       const qty = {};
       for (const item of d.items ?? []) qty[item.key] = item.qty;
       setQuantities(qty);
@@ -79,7 +76,7 @@ export default function DeclarationEdit() {
       api
         .get(`/immigration/declarations/${fromId}`)
         .then((data) => {
-          applyDeclaration({ ...data.declaration, id: undefined, no: undefined, status: 'draft', attachments: [] });
+          applyDeclaration({ ...data.declaration, id: undefined, no: undefined, status: 'draft' });
           setDecl(null);
         })
         .catch(toastApiError);
@@ -309,20 +306,6 @@ export default function DeclarationEdit() {
           </FormItem>
         </Form>
       </Card>
-
-      {decl?.id && (
-        <Card className="im-decl-attachments">
-          <b>{t('imm.attachments.title')}</b>
-          <Attachments
-            declarationId={decl.id}
-            attachments={attachments}
-            canUpload
-            onChanged={(att) => {
-              setAttachments((list) => (att.removed ? list.filter((a) => a.id !== att.id) : [...list, att]));
-            }}
-          />
-        </Card>
-      )}
 
       <Modal
         maskClosable={false}

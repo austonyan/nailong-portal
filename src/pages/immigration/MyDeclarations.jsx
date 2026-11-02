@@ -7,7 +7,6 @@ import { CodeIcon, EditIcon, PlusIcon, RefreshIcon, TrashIcon } from 'naive-icon
 import { api } from '../../api/client.js';
 import { toastApiError } from '../../components/immigration/apiError.js';
 import { StatusTag } from '../../components/immigration/shared.jsx';
-import Attachments from '../../components/immigration/Attachments.jsx';
 import { toastSuccess } from '../../components/toast.js';
 import { fmtDateTime } from '../../lib/date.js';
 
@@ -20,8 +19,8 @@ function InfoRow({ label, children }) {
   );
 }
 
-// Self-contained drawer body: pulls the full declaration (events, attachments,
-// pass code summary) from the detail endpoint.
+// Self-contained drawer body: pulls the full declaration (events, pass code
+// summary) from the detail endpoint.
 function DeclarationDetail({ id, onClose, onChanged }) {
   const { t } = useTranslation();
   const [decl, setDecl] = useState(null);
@@ -53,7 +52,6 @@ function DeclarationDetail({ id, onClose, onChanged }) {
 
   if (!decl) return <p className="muted-text">{t('common.loading')}</p>;
   const d = decl;
-  const canUpload = ['draft', 'pending', 'supplement'].includes(d.status);
 
   return (
     <div className="im-decl-detail">
@@ -131,11 +129,6 @@ function DeclarationDetail({ id, onClose, onChanged }) {
           </Button>
         </Card>
       )}
-
-      <Card>
-        <b>{t('imm.attachments.title')}</b>
-        <Attachments declarationId={d.id} attachments={d.attachments ?? []} canUpload={canUpload} onChanged={load} />
-      </Card>
 
       <Card>
         <b>{t('imm.mydecl.timeline')}</b>

@@ -1,11 +1,10 @@
-// 在线申请表单:草稿保存、材料上传、提交前确认(预览)。
+// 在线申请表单:草稿保存与提交前确认(预览)。只收文本字段,没有附件上传。
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, DatePicker, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
-import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
+import { Title, Button, Card, DatePicker, Form, FormItem, Input, Modal, useForm } from 'animal-island-ui';
+import { CheckCircleIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api, ApiError } from '../../api/client.js';
-import { uploadVisaMaterial } from '../../api/visa.js';
 import { TextArea, fmtDate, toastVisaError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
@@ -13,7 +12,7 @@ import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 // 路由 /visa/apply/:typeCode/form 与 /visa/applications/:id/edit 复用同一个组件:React
 // Router 按树位置+组件类型复用实例,useState 只在首次挂载时读路由参数。不加 key 重挂载,
 // 从 TOURIST 表单切到 BUSINESS 表单、或从草稿 12 的编辑页切到草稿 15,会沿用上一条草稿的
-// appId/typeCode/材料/表单值(居民署 ResidentApply 同一写法)。
+// appId/typeCode/表单值(居民署 ResidentApply 同一写法)。
 export default function VisaApplyForm() {
   const params = useParams();
   const routeKey = params.id
@@ -35,7 +34,6 @@ function VisaApplyScreen() {
   const [appNo, setAppNo] = useState(null);
   const [typeCode, setTypeCode] = useState(params.typeCode || null);
   const [typeInfo, setTypeInfo] = useState(null);
-  const [materials, setMaterials] = useState([]);
   const [reviewHours, setReviewHours] = useState(72);
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -70,7 +68,6 @@ function VisaApplyScreen() {
             inviterContact: app.inviterContact,
             companions: app.companions,
           });
-          setMaterials(app.materials || []);
         })
         .catch((err) => toastVisaError(t, err));
     } else if (!createdRef.current && typeCode) {
@@ -133,46 +130,11 @@ function VisaApplyScreen() {
     }
   };
 
-  const uploadMaterial = (kind) => ({ file, onProgress, onSuccess, onError }) => {
-    if (!appId) {
-      // 草稿还没建好(POST /visa/applications 尚未返回):报错误码,让 i18n 出简繁文案,
-      // 不要把原始英文 'draft not ready' 抛给用户。
-      const err = new ApiError(409, 'VISA_DRAFT_NOT_READY');
-      toastVisaError(t, err);
-      onError(err);
-      return;
-    }
-    uploadVisaMaterial({ applicationId: appId, kind, file, onProgress })
-      .then((material) => {
-        setMaterials((prev) => [...prev.filter((m) => !(kind === 'avatar' && m.kind === 'avatar')), material]);
-        onSuccess(material);
-      })
-      .catch((err) => {
-        toastVisaError(t, err);
-        onError(err);
-      });
-  };
-
-  const removeMaterial = async (material) => {
-    try {
-      await api.del(`/visa/materials/${material.id}`);
-      setMaterials((prev) => prev.filter((m) => m.id !== material.id));
-    } catch (err) {
-      toastVisaError(t, err);
-    }
-  };
-
   const openConfirm = async () => {
     try {
       await form.validateFields();
     } catch {
       // 表单校验失败,FormItem 已显示错误
-      return;
-    }
-    // 文案与《申请指南》都写着「头像必传」,服务端提交时也是 400 VISA_AVATAR_REQUIRED;
-    // 以前这里只 validateFields(),用户填完确认完才被服务端打回,现在先在前端拦住。
-    if (!materials.some((m) => m.kind === 'avatar')) {
-      toastError(t('visa.form.avatarRequired'));
       return;
     }
     if (!appId) {
@@ -232,9 +194,6 @@ function VisaApplyScreen() {
       </div>
     );
   }
-
-  const avatarMaterial = materials.find((m) => m.kind === 'avatar');
-  const otherMaterials = materials.filter((m) => m.kind !== 'avatar');
 
   return (
     <div className="visa-form-page">
@@ -310,68 +269,6 @@ function VisaApplyScreen() {
         </Form>
       </Card>
 
-      <Card className="visa-form-card">
-        <h2>
-          <PaperclipIcon size={18} /> {t('visa.form.materialsTitle')}
-        </h2>
-        <p className="muted-text">{t('visa.form.materialsTip')}</p>
-        {!appId ? (
-          // 草稿号还没回来时不渲染上传入口:内层触发器禁用了也能拖文件,
-          // 而且用户看不出为什么不能传。这里直接给「准备中」状态。
-          <Card type="dashed">
-            <p className="muted-text">{t('visa.form.draftPreparing')}</p>
-          </Card>
-        ) : (
-        <div className="visa-materials-section">
-          <div className="visa-materials-block">
-            <h3>{t('visa.form.materialAvatar')}</h3>
-            <Upload
-              accept="image/*,application/pdf"
-              maxCount={1}
-              showUploadList={false}
-              customRequest={uploadMaterial('avatar')}
-            >
-              {t('visa.form.uploadAvatar')}
-            </Upload>
-            {avatarMaterial && (
-              <div className="visa-material-row">
-                <Tag color="app-teal" variant="soft">
-                  {t(`visa.materialKind.${avatarMaterial.kind}`)}
-                </Tag>
-                <span className="visa-material-name">{avatarMaterial.filename}</span>
-                <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(avatarMaterial)}>
-                  {t('common.delete')}
-                </Button>
-              </div>
-            )}
-          </div>
-          <div className="visa-materials-block">
-            <h3>{t('visa.form.materialOther')}</h3>
-            <Upload
-              drag
-              accept="image/*,application/pdf"
-              maxCount={6}
-              showUploadList={false}
-              customRequest={uploadMaterial('other')}
-            >
-              <div style={{ padding: 24 }}>{t('visa.form.uploadOther')}</div>
-            </Upload>
-            {otherMaterials.map((m) => (
-              <div key={m.id} className="visa-material-row">
-                <Tag variant="soft" color="app-blue">
-                  {t(`visa.materialKind.${m.kind}`)}
-                </Tag>
-                <span className="visa-material-name">{m.filename}</span>
-                <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(m)}>
-                  {t('common.delete')}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-        )}
-      </Card>
-
       <div className="visa-guide-actions">
         <Button onClick={() => navigate('/visa/applications')}>{t('visa.back')}</Button>
         <Button icon={<SaveIcon />} loading={busy} onClick={() => saveDraft(false)} disabled={busy}>
@@ -416,10 +313,6 @@ function VisaApplyScreen() {
             <div>
               <dt>{t('visa.form.purpose')}</dt>
               <dd>{form.getFieldValue('purpose')}</dd>
-            </div>
-            <div>
-              <dt>{t('visa.form.materialsTitle')}</dt>
-              <dd>{t('visa.form.materialsCount', { count: materials.length })}</dd>
             </div>
           </dl>
         </div>

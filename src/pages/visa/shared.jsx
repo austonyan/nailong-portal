@@ -53,9 +53,7 @@ export function toastVisaError(t, err) {
   toastApiError(t, err);
 }
 
-// 材料类型 → i18n key(visa.materialKind.*)
-export const MATERIAL_KINDS = ['avatar', 'invitation', 'proof', 'other'];
-
+// 驳回原因码 → i18n key(visa.rejectReason.*)
 export const REJECT_REASONS = ['incomplete_materials', 'false_info', 'type_mismatch', 'duplicate', 'other'];
 
 // 多行输入统一用共享 TextArea(原生属性透传,FormItem 注入的 value/onChange 可直接用);

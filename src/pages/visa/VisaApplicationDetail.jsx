@@ -1,11 +1,10 @@
-// 申请详情:表单信息、材料、审核记录、补件与撤销。
+// 申请详情:表单信息、审核记录、补件与撤销。只收文本,没有材料附件。
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Modal, Tag, Upload } from 'animal-island-ui';
-import { EyeIcon, RefreshIcon, PrinterIcon } from 'naive-icons';
+import { Title, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { RefreshIcon, PrinterIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { openVisaMaterial, uploadVisaMaterial } from '../../api/visa.js';
 import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
@@ -15,7 +14,7 @@ import {
   fmtDateTime,
   toastVisaError,
 } from './shared.jsx';
-import { toastSuccess, toastError } from '../../components/toast.js';
+import { toastSuccess } from '../../components/toast.js';
 
 const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
@@ -78,20 +77,7 @@ export default function VisaApplicationDetail() {
     );
   }
 
-  const supplementMaterials = app.materials.filter((m) => m.origin === 'supplement');
   const canSupplement = app.status === 'supplement_required';
-
-  const uploadSupplement = ({ file, onProgress, onSuccess, onError }) => {
-    uploadVisaMaterial({ applicationId: app.id, kind: 'other', file, onProgress })
-      .then((material) => {
-        setApp((prev) => ({ ...prev, materials: [...prev.materials, material] }));
-        onSuccess(material);
-      })
-      .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-        onError(err);
-      });
-  };
 
   const rows = [
     [t('visa.field.appNo'), app.appNo],
@@ -175,21 +161,6 @@ export default function VisaApplicationDetail() {
           <p className="muted-text">
             {t('visa.detail.supplementAsk')} {app.reviews.filter((r) => r.action === 'require_supplement').at(-1)?.comment}
           </p>
-          <Upload drag accept="image/*,application/pdf" showUploadList={false} customRequest={uploadSupplement}>
-            <div style={{ padding: 24 }}>{t('visa.detail.uploadSupplement')}</div>
-          </Upload>
-          {supplementMaterials.length > 0 && (
-            <ul className="visa-material-list">
-              {supplementMaterials.map((m) => (
-                <li key={m.id}>
-                  <span>{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openVisaMaterial(m.id)}>
-                    {t('visa.my.preview')}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
           <TextArea value={suppNote} onChange={(e) => setSuppNote(e.target.value)} placeholder={t('visa.detail.supplementNotePlaceholder')} />
           <div className="visa-guide-actions">
             <Button type="primary" loading={busy} onClick={submitSupplement} disabled={busy}>
@@ -198,24 +169,6 @@ export default function VisaApplicationDetail() {
           </div>
         </Card>
       )}
-
-      <Card className="visa-detail-card">
-        <h2>{t('visa.detail.materials')}</h2>
-        {app.materials.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
-        <ul className="visa-material-list">
-          {app.materials.map((m) => (
-            <li key={m.id}>
-              <Tag size="small" variant="soft" color={m.kind === 'avatar' ? 'app-teal' : 'app-blue'}>
-                {t(`visa.materialKind.${m.kind}`)}
-              </Tag>
-              <span>{m.filename}</span>
-              <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openVisaMaterial(m.id)}>
-                {t('visa.my.preview')}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </Card>
 
       <Card className="visa-detail-card">
         <h2>{t('visa.detail.reviews')}</h2>

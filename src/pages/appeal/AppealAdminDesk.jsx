@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Drawer, Input, Modal, Select, Table, Tabs, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { openAppealMaterial } from '../../api/appeal.js';
 import { TextArea, COMPLAINT_STATUS_COLORS, TICKET_STATUS_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
@@ -262,15 +261,6 @@ export default function AppealAdminDesk() {
                     </div>
                   )}
                 </dl>
-                <ul className="appeal-material-list">
-                  {(detail.data.materials ?? []).map((m) => (
-                    <li key={m.id}>
-                      <Tag variant="soft" color="app-blue" size="small">{t(`appeal.materialKind.${m.kind}`)}</Tag>
-                      <span>{m.filename}</span>
-                      <Button type="text" size="small" onClick={() => openAppealMaterial(m.id)}>{t('appeal.my.preview')}</Button>
-                    </li>
-                  ))}
-                </ul>
                 <div className="table-actions appeal-admin-actions">
                   {detail.data.status === 'pending_accept' && (
                     <Button type="primary" disabled={busy} onClick={() => openAction('accept')}>{t('appeal.admin.action.accept')}</Button>

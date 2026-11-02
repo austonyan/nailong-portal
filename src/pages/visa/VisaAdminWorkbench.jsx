@@ -5,7 +5,6 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { openVisaMaterial } from '../../api/visa.js';
 import {
   APPLICATION_STATUS_COLORS,
   PERMIT_STATUS_COLORS,
@@ -246,21 +245,6 @@ export default function VisaAdminWorkbench() {
                 </div>
               ))}
             </dl>
-
-            <h2>{t('visa.detail.materials')}</h2>
-            <ul className="visa-material-list">
-              {detail.materials.map((m) => (
-                <li key={m.id}>
-                  <Tag size="small" variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'}>
-                    {t(`visa.materialKind.${m.kind}`)}
-                  </Tag>
-                  <span>{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openVisaMaterial(m.id)}>
-                    {t('visa.my.preview')}
-                  </Button>
-                </li>
-              ))}
-            </ul>
 
             <h2>{t('visa.detail.reviews')}</h2>
             <ul className="visa-review-timeline">

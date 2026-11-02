@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Modal, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Modal } from 'animal-island-ui';
 import { PrinterIcon, RefreshIcon, SearchIcon, ShieldIcon } from 'naive-icons';
-import { api, requestBlob } from '../../api/client.js';
+import { api } from '../../api/client.js';
 import { CARD_STATUS_COLORS, ResQr, StatusTag, fmtDate, fmtDateTime, resToast, toastResError, toastResSuccess } from './shared.jsx';
 
 export default function ResidentCard() {
@@ -14,7 +14,6 @@ export default function ResidentCard() {
   const [missing, setMissing] = useState(false);
   const [reissueOpen, setReissueOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -29,24 +28,6 @@ export default function ResidentCard() {
   useEffect(() => {
     load();
   }, [load]);
-
-  // 头像走受限下载,拿 blob 展示
-  useEffect(() => {
-    let url = null;
-    if (data?.resident?.avatarMaterialId) {
-      requestBlob(`/resident/materials/${data.resident.avatarMaterialId}`)
-        .then((blob) => {
-          url = URL.createObjectURL(blob);
-          setAvatarUrl(url);
-        })
-        .catch(() => setAvatarUrl(null));
-    } else {
-      setAvatarUrl(null);
-    }
-    return () => {
-      if (url) URL.revokeObjectURL(url);
-    };
-  }, [data?.resident?.avatarMaterialId]);
 
   if (missing) {
     return (
@@ -110,11 +91,7 @@ export default function ResidentCard() {
         <div className="res-card-body">
           <div className="res-card-grid">
             <div className="res-card-holder">
-              {avatarUrl ? (
-                <img className="res-card-avatar" src={avatarUrl} alt={card.nickname} />
-              ) : (
-                <span className="res-card-avatar res-card-avatar-empty">{(card.nickname || '?').slice(0, 1)}</span>
-              )}
+              <span className="res-card-avatar res-card-avatar-empty">{(card.nickname || '?').slice(0, 1)}</span>
               <div>
                 <span className="res-card-label">{t('res.card.holder')}</span>
                 <span className="res-card-value">{card.nickname || '-'}</span>

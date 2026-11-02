@@ -97,7 +97,7 @@ user asks. §9.1 is the checklist for adding a new office — follow it in order
 
 - `server/` — Express 5 API. `server/db.js` holds the core SQLite schema (WAL, foreign keys
   on) and seeds permissions/roles/demo services; DB file lives in `NAILONG_DATA_DIR`
-  (default `server/data/`, gitignored — contains `nailong.db*`, uploads and `.jwt-secret`).
+  (default `server/data/`, gitignored — contains `nailong.db*` and `.jwt-secret`).
 - Newer offices live in `server/<office>/` (`schema.js` self-registers its tables, permission
   codes, roles and service-card seed; plus `routes.js` / `admin.js` / `util.js`, some
   `inter.js`); visa/docs/appeal use the older `server/<name>.js` + `server/routes/<name>*.js`
@@ -153,8 +153,10 @@ Shared shape across the 12 offices (per-office detail lives in `docs/work.md` §
 - **Numbering** — unpredictable prefixed numbers (`NLA-…`, `NLT-…`, `IM…`, `NRC-…`, …) with
   conflict retry; public `verify` endpoints are rate-limited (in-process or DB table;
   in-process counters reset on restart) and mask holder data.
-- **Private uploads** via multer land in `server/data/uploads/<office>/<id>/` (gitignored);
-  downloads only through the office's authenticated file route.
+- **Text only — no file uploads.** Every office form, supplement request and admin screen
+  stores text/data only: no multer, no attachment tables, no `server/data/uploads/`. Forms
+  describe what to write instead of asking for a scan; `server/cleanupLegacyUploads.js` drops
+  the retired tables/columns and deletes the old upload tree on boot.
 - Visa specifics worth knowing: application states
   `draft → pending_review → approved | rejected | supplement_required | withdrawn`,
   `approved → issued`, supplement deadline → `closed`; permit

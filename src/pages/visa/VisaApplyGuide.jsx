@@ -1,9 +1,9 @@
-// 申请前引导:类型说明、材料清单、资格自检(趣味化)、协议确认。
+// 申请前引导:类型说明、资格自检(趣味化)、协议确认。只收文本,无需准备文件。
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Checkbox, Radio, Tag } from 'animal-island-ui';
-import { CheckCircleIcon, FileIcon, HelpCircleIcon } from 'naive-icons';
+import { CheckCircleIcon, HelpCircleIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { toastVisaError } from './shared.jsx';
 
@@ -61,18 +61,6 @@ export default function VisaApplyGuide() {
           <Tag variant="outlined">{t('visa.typeMeta.valid', { days: type.validDays })}</Tag>
           <Tag variant="outlined">{t(`visa.typeMeta.renewable.${type.renewable ? 'yes' : 'no'}`)}</Tag>
         </div>
-      </Card>
-
-      <Card className="visa-guide-materials">
-        <h2 className="block-heading">
-          <FileIcon size={18} /> {t('visa.applyGuide.materialsTitle')}
-        </h2>
-        <ul className="visa-material-list">
-          <li>{t('visa.applyGuide.materialAvatar')}</li>
-          <li>{t('visa.applyGuide.materialItinerary')}</li>
-          <li>{t('visa.applyGuide.materialInvitation')}</li>
-          <li>{t('visa.applyGuide.materialFormat')}</li>
-        </ul>
       </Card>
 
       <Card className="visa-guide-quiz">

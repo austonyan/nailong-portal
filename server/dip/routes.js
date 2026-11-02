@@ -1,10 +1,5 @@
 // 奶龙国皇家外交事务署 — user-facing API (portal side).
-import path from 'node:path';
-import fs from 'node:fs';
-import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
 import { Router } from 'express';
-import multer from 'multer';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, notFound, readString, forbidden } from '../http.js';
@@ -30,23 +25,6 @@ import { reqLocale, pickText } from '../locale.js';
 
 ensureDipSchema();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.join(
-  process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data'),
-  'uploads',
-  'diplomacy'
-);
-fs.mkdirSync(uploadDir, { recursive: true });
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadDir),
-    filename: (_req, file, cb) =>
-      cb(null, `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname)}`),
-  }),
-  limits: { fileSize: 5 * 1024 * 1024, files: 1 },
-});
-
 const router = Router();
 const portalOnly = [authenticate, requirePermission('dip:portal')];
 
@@ -54,8 +32,6 @@ const OBJECT_TYPES = new Set(['VIRTUAL_NATION', 'CITY_STATE', 'FAN_COMMUNITY', '
 const RELATION_TYPES = new Set(['FORMAL', 'FRIENDLY', 'OBSERVER']);
 const IDENTITY_TYPES = new Set(['ENVOY', 'DIPLOMAT', 'HONORARY_CONSUL', 'FOREIGN_GUEST', 'OBSERVER']);
 const PURPOSES = new Set(['display', 'cooperation', 'visa_channel']);
-const MATERIAL_KINDS = new Set(['intro', 'proof', 'community', 'appointment', 'letter', 'other']);
-const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
 const MAX_TERM_DAYS = 365;
 
 function parseCourtesies(value) {
@@ -92,20 +68,6 @@ function serializeNotice(row) {
     bodyTw: row.body_tw,
     level: row.level,
     publishedAt: row.published_at,
-  };
-}
-
-function serializeMaterial(row) {
-  return {
-    id: row.id,
-    ownerType: row.owner_type,
-    ownerId: row.owner_id,
-    kind: row.kind,
-    origin: row.origin,
-    filename: row.filename,
-    mime: row.mime,
-    size: row.size,
-    createdAt: row.created_at,
   };
 }
 
@@ -147,12 +109,6 @@ function serializeRelation(row, { detail = false } = {}) {
        WHERE e.owner_type = 'relation' AND e.owner_id = ? ORDER BY e.id`
     )
     .all(row.id);
-  base.materials = db
-    .prepare(
-      `SELECT * FROM dip_materials WHERE owner_type = 'relation' AND owner_id = ? AND deleted_at IS NULL ORDER BY id`
-    )
-    .all(row.id)
-    .map(serializeMaterial);
   return base;
 }
 
@@ -193,12 +149,6 @@ function serializeIdentity(row, { detail = false } = {}) {
        WHERE e.owner_type = 'identity' AND e.owner_id = ? ORDER BY e.id`
     )
     .all(row.id);
-  base.materials = db
-    .prepare(
-      `SELECT * FROM dip_materials WHERE owner_type = 'identity' AND owner_id = ? AND deleted_at IS NULL ORDER BY id`
-    )
-    .all(row.id)
-    .map(serializeMaterial);
   return base;
 }
 
@@ -395,10 +345,6 @@ router.post('/relations/:id/submit', ...portalOnly, (req, res) => {
   if (!row.object_type || !row.relation_type) throw badRequest('DIP_INCOMPLETE', 'Choose object type and relation type first');
   enabledType('dip_object_types', row.object_type, OBJECT_TYPES, 'objectType');
   enabledType('dip_relation_types', row.relation_type, RELATION_TYPES, 'relationType');
-  const materials = db
-    .prepare("SELECT COUNT(*) AS n FROM dip_materials WHERE owner_type = 'relation' AND owner_id = ? AND deleted_at IS NULL")
-    .get(row.id).n;
-  if (materials < 1) throw badRequest('DIP_MATERIAL_REQUIRED', 'At least one supporting material is required');
   const ts = now();
   db.prepare(
     "UPDATE dip_relations SET status = 'pending_review', submitted_at = ?, updated_at = ? WHERE id = ?"
@@ -615,10 +561,6 @@ router.post('/identities/:id/submit', ...portalOnly, (req, res) => {
   if (row.term_end <= row.term_start) throw badRequest('VALIDATION_ERROR', 'termEnd must be after termStart');
   const termDays = Math.round((new Date(row.term_end) - new Date(row.term_start)) / 86400000);
   if (termDays > MAX_TERM_DAYS) throw badRequest('DIP_TERM_TOO_LONG', `Term cannot exceed ${MAX_TERM_DAYS} days`);
-  const materials = db
-    .prepare("SELECT COUNT(*) AS n FROM dip_materials WHERE owner_type = 'identity' AND owner_id = ? AND deleted_at IS NULL")
-    .get(row.id).n;
-  if (materials < 1) throw badRequest('DIP_MATERIAL_REQUIRED', 'At least one supporting material (appointment letter) is required');
   const ts = now();
   db.prepare(
     "UPDATE dip_identities SET status = 'pending_review', submitted_at = ?, updated_at = ? WHERE id = ?"
@@ -658,72 +600,6 @@ router.post('/identities/:id/supplement', ...portalOnly, (req, res) => {
   logEvent('identity', row.id, 'supplement_submit', req.user.id, content);
   notify(req.user.id, 'identity_supplement_received', { no: row.no }, { identityNo: row.no });
   res.json({ identity: serializeIdentity(identityRow(row.id), { detail: true }) });
-});
-
-// ---------------------------------------------------------------------------
-// Materials (私有存储,受控下载)
-// ---------------------------------------------------------------------------
-
-function ownerForMaterial(req, ownerType, ownerId) {
-  if (ownerType === 'relation') return ownRelation(req, ownerId);
-  if (ownerType === 'identity') return ownIdentity(req, ownerId);
-  throw badRequest('VALIDATION_ERROR', 'Invalid owner type');
-}
-
-router.post('/materials/:ownerType/:ownerId', ...portalOnly, (req, res) => {
-  const owner = ownerForMaterial(req, req.params.ownerType, Number(req.params.ownerId));
-  if (!['draft', 'pending_review', 'supplement_required'].includes(owner.status)) {
-    throw badRequest('DIP_INVALID_STATE', 'Materials are closed for this application');
-  }
-  upload.single('file')(req, res, (err) => {
-    if (err) {
-      const code = err?.code === 'LIMIT_FILE_SIZE' ? 'DIP_FILE_TOO_LARGE' : 'DIP_FILE_TYPE';
-      return res.status(400).json({ code, message: code === 'DIP_FILE_TOO_LARGE' ? 'File exceeds 5MB' : 'Upload failed' });
-    }
-    if (!req.file) return res.status(400).json({ code: 'VALIDATION_ERROR', message: 'file is required' });
-    if (!ALLOWED_MIME.includes(req.file.mimetype)) {
-      fs.unlinkSync(req.file.path);
-      return res.status(400).json({ code: 'DIP_FILE_TYPE', message: 'Only images and PDF are allowed' });
-    }
-    const kind = MATERIAL_KINDS.has(req.body?.kind) ? req.body.kind : 'other';
-    const origin = owner.status === 'supplement_required' ? 'supplement' : 'initial';
-    const info = db
-      .prepare(
-        `INSERT INTO dip_materials (owner_type, owner_id, user_id, kind, origin, filename, mime, size, path, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      )
-      .run(req.params.ownerType, owner.id, req.user.id, kind, origin, req.file.originalname.slice(0, 120), req.file.mimetype, req.file.size, req.file.filename, now());
-    res.status(201).json({
-      material: serializeMaterial(
-        db.prepare('SELECT * FROM dip_materials WHERE id = ?').get(info.lastInsertRowid)
-      ),
-    });
-  });
-});
-
-router.get('/materials/:id/download', authenticate, (req, res) => {
-  const mat = db.prepare('SELECT * FROM dip_materials WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
-  if (!mat) throw notFound('Material not found');
-  const table = mat.owner_type === 'relation' ? 'dip_relations' : 'dip_identities';
-  const owner = db.prepare(`SELECT user_id, no FROM ${table} WHERE id = ?`).get(mat.owner_id);
-  const owned = owner?.user_id === req.user.id;
-  const canReview = req.user.permissions.includes('dip:review') || req.user.permissions.includes('dip:admin');
-  if (!owned && !canReview) throw forbidden('FORBIDDEN', 'No access to this file');
-  const filePath = path.join(uploadDir, mat.path);
-  if (!fs.existsSync(filePath)) throw notFound('File missing on disk');
-  audit(req.user.id, 'dip:file.access', 'material', mat.id, { ownerNo: owner?.no, name: mat.filename });
-  res.download(filePath, mat.filename);
-});
-
-router.delete('/materials/:id', ...portalOnly, (req, res) => {
-  const mat = db.prepare('SELECT * FROM dip_materials WHERE id = ? AND deleted_at IS NULL').get(Number(req.params.id));
-  if (!mat) throw notFound('Material not found');
-  const owner = ownerForMaterial(req, mat.owner_type, mat.owner_id);
-  if (!['draft', 'pending_review', 'supplement_required'].includes(owner.status)) {
-    throw badRequest('DIP_INVALID_STATE', 'Materials are locked for this application');
-  }
-  db.prepare('UPDATE dip_materials SET deleted_at = ? WHERE id = ?').run(now(), mat.id);
-  res.json({ ok: true });
 });
 
 // ---------------------------------------------------------------------------

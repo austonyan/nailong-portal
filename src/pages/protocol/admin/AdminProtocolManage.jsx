@@ -10,7 +10,6 @@ import { TextArea, fmtDateTime, toastProtocolError } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
 import AdminProtocolRisk from './AdminProtocolRisk.jsx';
 
-const MATERIAL_KINDS = ['intro', 'letter', 'proof', 'community', 'other'];
 const FIELD_OPTIONS = ['nickname', 'contact'];
 const LEVELS = ['info', 'policy', 'event'];
 const CONFIG_KEYS = [
@@ -35,7 +34,6 @@ const EMPTY_TYPE = {
   description: '',
   guide: '',
   requiredFields: ['nickname', 'contact'],
-  materials: [],
   allowCompanions: true,
   maxCompanions: 2,
   defaultCapacity: 100,
@@ -191,7 +189,6 @@ export default function AdminProtocolManage() {
               guide: row.guideCn ?? row.guide,
               guideTw: row.guideTw ?? '',
               requiredFields: row.requiredFields,
-              materials: row.materials.map((m) => m.kind),
               allowCompanions: row.allowCompanions,
               maxCompanions: row.maxCompanions,
               defaultCapacity: row.defaultCapacity,
@@ -387,12 +384,6 @@ export default function AdminProtocolManage() {
             options={FIELD_OPTIONS.map((f) => ({ label: t(`protocol.field.${f}`), value: f }))}
             value={typeForm.requiredFields}
             onChange={(v) => setTypeForm((p) => ({ ...p, requiredFields: v.map(String) }))}
-          />
-          <h2 className="block-heading">{t('protocol.admin.materialsConfig')}</h2>
-          <Checkbox
-            options={MATERIAL_KINDS.map((m) => ({ label: t(`protocol.materialKind.${m}`), value: m }))}
-            value={typeForm.materials}
-            onChange={(v) => setTypeForm((p) => ({ ...p, materials: v.map(String) }))}
           />
           <div className="protocol-switch-grid">
             <label>

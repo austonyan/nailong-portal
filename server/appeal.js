@@ -355,21 +355,6 @@ export function serializeDecision(row) {
   };
 }
 
-export function serializeMaterial(row) {
-  if (!row) return null;
-  return {
-    id: row.id,
-    ownerType: row.owner_type,
-    ownerId: row.owner_id,
-    kind: row.kind,
-    origin: row.origin,
-    filename: row.filename,
-    mime: row.mime,
-    size: row.size,
-    createdAt: row.created_at,
-  };
-}
-
 export function serializeMessage(row) {
   if (!row) return null;
   return {
@@ -415,12 +400,8 @@ export function serializePublicity(row) {
   };
 }
 
-// 决定书材料上传目录:server/data/uploads/appeal/<ownerType>-<ownerId>/
-export const APPEAL_UPLOAD_KINDS = new Set(['screenshot', 'proof', 'other']);
-export const MATERIAL_ORIGINS = new Set(['initial', 'supplement']);
-
 // ---------------------------------------------------------------------------
-// 验真(公开、脱敏):绝不包含申诉人身份/理由/材料内容。
+// 验真(公开、脱敏):绝不包含申诉人身份/理由/文字内容。
 // 支持:决定书编号或二维码 token、复核、申诉、投诉建议、工单。
 // 其余 11 个署的编号由 server/appealVerify.js 的统一注册表处理。
 // ---------------------------------------------------------------------------

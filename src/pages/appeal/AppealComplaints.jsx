@@ -1,14 +1,13 @@
 // 投诉建议:类型选择(投诉/建议)、分类、匿名开关、内容、状态追踪、
-// 处理结果查看与满意度评价。材料在详情页待受理阶段补传。
+// 处理结果查看与满意度评价。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Checkbox, Drawer, Input, Modal, Rate, Radio, Select, Tag, Upload } from 'animal-island-ui';
+import { Title, Button, Card, Checkbox, Drawer, Input, Modal, Rate, Radio, Select, Tag } from 'animal-island-ui';
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
 import { TextArea, COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
-import { toastSuccess, toastError } from '../../components/toast.js';
+import { toastSuccess } from '../../components/toast.js';
 
 export default function AppealComplaints() {
   const { t } = useTranslation();
@@ -97,18 +96,6 @@ export default function AppealComplaints() {
     } finally {
       setBusy(false);
     }
-  };
-
-  const uploadToDetail = ({ file, onProgress, onSuccess, onError }) => {
-    uploadAppealMaterial({ ownerType: 'complaint', ownerId: detail.id, kind: 'proof', file, onProgress })
-      .then((m) => {
-        onSuccess(m);
-        openDetail(detail);
-      })
-      .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-        onError(err);
-      });
   };
 
   const isAnonymous = anonymous.length > 0;
@@ -258,26 +245,6 @@ export default function AppealComplaints() {
                 </div>
               )}
             </dl>
-            {detail.status === 'pending_accept' && (
-              <div className="appeal-materials-section">
-                <Upload accept="image/*,application/pdf" showUploadList={false} customRequest={uploadToDetail}>
-                  {t('appeal.detail.uploadSupplement')}
-                </Upload>
-              </div>
-            )}
-            <ul className="appeal-material-list">
-              {(detail.materials ?? []).map((m) => (
-                <li key={m.id}>
-                  <Tag variant="soft" color="app-blue" size="small">
-                    {t(`appeal.materialKind.${m.kind}`)}
-                  </Tag>
-                  <span>{m.filename}</span>
-                  <Button type="text" size="small" onClick={() => openAppealMaterial(m.id)}>
-                    {t('appeal.my.preview')}
-                  </Button>
-                </li>
-              ))}
-            </ul>
             {['replied', 'closed'].includes(detail.status) && !detail.rating && (
               <Button onClick={openEvaluate}>{t('appeal.detail.evaluate')}</Button>
             )}

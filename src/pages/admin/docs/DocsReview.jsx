@@ -5,7 +5,6 @@ import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, T
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { APPLICATION_STATUS_COLORS, REJECT_REASON_KEYS } from '../../../api/docs.js';
-import MaterialList from '../../docs/MaterialList.jsx';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 import { fmtDate, fmtDateTime } from '../../../lib/date.js';
@@ -118,7 +117,6 @@ export default function DocsReview() {
         </Tag>
       ),
     },
-    { title: t('docs.admin.review.materials'), dataIndex: 'materialCount', width: 80, align: 'center' },
     { title: t('docs.appList.submittedAt'), dataIndex: 'submittedAt', width: 110, render: (v) => fmtDate(v) },
     {
       title: t('common.actions'),
@@ -207,9 +205,6 @@ export default function DocsReview() {
                   <dd key={`${k}-v`}>{v}</dd>,
                 ])}
             </dl>
-
-            <h2>{t('docs.detail.materialsTitle')}</h2>
-            <MaterialList materials={detail.materials} type={detail.type} />
 
             <h2>{t('docs.detail.recordsTitle')}</h2>
             <ul className="docs-timeline">

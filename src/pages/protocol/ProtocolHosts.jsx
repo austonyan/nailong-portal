@@ -1,19 +1,11 @@
-// 接待方认证:登记、材料上传、状态追踪、认证证书与权限展示。
+// 接待方认证:登记、状态追踪、认证证书与权限展示。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Drawer, Input, Modal, Select, Tag, Upload } from 'animal-island-ui';
-import { BadgeCheckIcon, EyeIcon, PlusIcon, SendIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
+import { Title, Button, Card, Drawer, Input, Modal, Select, Tag } from 'animal-island-ui';
+import { BadgeCheckIcon, PlusIcon, SendIcon, TrashIcon, UserPlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import {
-  StatusTag,
-  TextArea,
-  fmtDate,
-  fmtDateTime,
-  openProtocolMaterial,
-  toastProtocolError,
-  uploadProtocolMaterial,
-} from './shared.jsx';
+import { StatusTag, TextArea, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
 import { toastSuccess } from './shared.jsx';
 
 const HOST_TYPES = ['organizer', 'community', 'diplomatic', 'resident_group'];
@@ -35,8 +27,6 @@ export default function ProtocolHosts() {
   const [items, setItems] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
-  const [materials, setMaterials] = useState([]);
-  const [kind, setKind] = useState('intro');
   const [busy, setBusy] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -59,7 +49,6 @@ export default function ProtocolHosts() {
   const openNew = () => {
     setEditing('new');
     setForm(EMPTY);
-    setMaterials([]);
   };
 
   const openEdit = async (host) => {
@@ -74,18 +63,9 @@ export default function ProtocolHosts() {
         contact: h.contact || '',
         intro: h.intro || '',
       });
-      setMaterials(h.materials || []);
     } catch (err) {
       toastProtocolError(t, err);
     }
-  };
-
-  const refresh = async (hostId) => {
-    const data = await api.get(`/protocol/hosts/${hostId}`);
-    setEditing(data.host);
-    setMaterials(data.host.materials || []);
-    await load();
-    return data.host;
   };
 
   const saveDraft = async ({ silent = false } = {}) => {
@@ -98,7 +78,6 @@ export default function ProtocolHosts() {
           : await api.patch(`/protocol/hosts/${editing.id}`, body);
       const host = data.host;
       setEditing(host);
-      setMaterials(host.materials || []);
       await load();
       if (!silent) toastSuccess(t('protocol.hosts.draftSaved'));
       return host;
@@ -129,15 +108,6 @@ export default function ProtocolHosts() {
       toastProtocolError(t, err);
     } finally {
       setBusy(false);
-    }
-  };
-
-  const removeMaterial = async (materialId) => {
-    try {
-      await api.del(`/protocol/materials/${materialId}`);
-      await refresh(editing.id);
-    } catch (err) {
-      toastProtocolError(t, err);
     }
   };
 
@@ -286,55 +256,6 @@ export default function ProtocolHosts() {
               <span>{t('protocol.field.intro')}</span>
               <TextArea rows={4} value={form.intro} onChange={(e) => setForm((p) => ({ ...p, intro: e.target.value }))} placeholder={t('protocol.hosts.introPlaceholder')} disabled={!editable} />
             </label>
-
-            {editable && editing === 'new' && <p className="protocol-status-note">{t('protocol.hosts.saveFirst')}</p>}
-            {editable && editing !== 'new' && (
-              <div className="protocol-upload-row">
-                <Select
-                  value={kind}
-                  onChange={setKind}
-                  options={['intro', 'letter', 'proof', 'community', 'other'].map((code) => ({ key: code, label: t(`protocol.materialKind.${code}`) }))}
-                />
-                <Upload
-                  accept=".png,.jpg,.jpeg,.webp,.pdf"
-                  maxCount={1}
-                  showUploadList={false}
-                  customRequest={({ file, onSuccess, onError }) => {
-                    uploadProtocolMaterial({ ownerType: 'host', ownerId: editing.id, kind, file })
-                      .then(async () => {
-                        onSuccess();
-                        await refresh(editing.id);
-                        toastSuccess(t('protocol.apply.uploadDone'));
-                      })
-                      .catch((err) => {
-                        onError(err);
-                        toastProtocolError(t, err);
-                      });
-                  }}
-                >
-                  <Button type="dashed" icon={<PlusIcon />}>{t('protocol.apply.uploadMaterial')}</Button>
-                </Upload>
-              </div>
-            )}
-            <ul className="protocol-material-list">
-              {materials.map((m) => (
-                <li key={m.id}>
-                  <Tag size="small" variant="soft" color="app-blue">
-                    {t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}
-                  </Tag>
-                  <span className="protocol-material-name">{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
-                    {t('protocol.action.preview')}
-                  </Button>
-                  {editable && (
-                    <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(m.id)}>
-                      {t('protocol.action.delete')}
-                    </Button>
-                  )}
-                </li>
-              ))}
-              {materials.length === 0 && <li className="muted-text">{t('protocol.hosts.materialTip')}</li>}
-            </ul>
 
             {editing !== 'new' && editing.rejectComment && (
               <Card pattern="app-red">

@@ -1,12 +1,11 @@
-// 申诉详情:表单信息、材料、操作时间线、补件通知与在线补交、撤回、评价、
+// 申诉详情:表单信息、操作时间线、补件通知与在线补交(文字说明)、撤回、评价、
 // 处理决定与决定书、复核入口。
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Modal, Rate, Tag, Upload } from 'animal-island-ui';
-import { EyeIcon, PaperclipIcon, SendIcon } from 'naive-icons';
+import { Title, Button, Card, Modal, Rate, Tag } from 'animal-island-ui';
+import { EyeIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
 import {
   APPEAL_STATUS_COLORS,
   DECISION_TYPE_COLORS,
@@ -76,18 +75,6 @@ export default function AppealAppealDetail() {
     } finally {
       setSupplementBusy(false);
     }
-  };
-
-  const uploadSupplement = ({ file, onProgress, onSuccess, onError }) => {
-    uploadAppealMaterial({ ownerType: 'appeal', ownerId: appeal.id, kind: 'proof', file, onProgress })
-      .then((m) => {
-        onSuccess(m);
-        load();
-      })
-      .catch((err) => {
-        toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-        onError(err);
-      });
   };
 
   const openEvaluate = () => {
@@ -224,34 +211,11 @@ export default function AppealAppealDetail() {
           <h2 className="block-heading">{t('appeal.detail.supplementTitle')}</h2>
           <p className="muted-text">{t('appeal.detail.supplementTip')}</p>
           <TextArea rows={3} maxLength={500} value={supplementNote} onChange={(e) => setSupplementNote(e.target.value)} placeholder={t('appeal.detail.supplementPlaceholder')} />
-          <div className="appeal-materials-section">
-            <Upload accept="image/*,application/pdf" showUploadList={false} customRequest={uploadSupplement}>
-              {t('appeal.detail.uploadSupplement')}
-            </Upload>
-          </div>
           <Button type="primary" icon={<SendIcon />} loading={supplementBusy} disabled={supplementBusy || (!supplementNote.trim())} onClick={submitSupplement}>
             {t('appeal.detail.submitSupplement')}
           </Button>
         </Card>
       )}
-
-      <Card className="appeal-detail-card">
-        <h2 className="block-heading"><PaperclipIcon size={18} /> {t('appeal.detail.materials')}</h2>
-        {appeal.materials.length === 0 && <p className="muted-text">{t('common.empty')}</p>}
-        <ul className="appeal-material-list">
-          {appeal.materials.map((m) => (
-            <li key={m.id}>
-              <Tag color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'} variant="soft">
-                {t(`appeal.materialKind.${m.kind}`)}
-              </Tag>
-              <span>{m.filename}</span>
-              <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openAppealMaterial(m.id)}>
-                {t('appeal.my.preview')}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </Card>
 
       <Card className="appeal-detail-card">
         <h2 className="block-heading">{t('appeal.detail.records')}</h2>

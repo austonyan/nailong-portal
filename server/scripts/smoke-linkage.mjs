@@ -37,12 +37,6 @@ async function api(path, { method = 'GET', token, body, form } = {}) {
   return { status: res.status, data };
 }
 
-// 1x1 PNG
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
-
 const stamp = Date.now().toString(36);
 const password = 'smoke-pass-123';
 
@@ -77,20 +71,11 @@ function visaForm(displayName) {
   };
 }
 
-async function uploadVisaAvatar(token, appId) {
-  const form = new FormData();
-  form.append('applicationId', String(appId));
-  form.append('kind', 'avatar');
-  form.append('file', new Blob([PNG], { type: 'image/png' }), 'avatar.png');
-  return api('/visa/materials', { method: 'POST', token, form });
-}
-
 async function issueVisaFor(userToken, adminToken, displayName) {
   const created = await api('/visa/applications', { method: 'POST', token: userToken, body: { typeCode: 'TOURIST' } });
   const appId = created.data.application.id;
   const appNo = created.data.application.appNo;
   await api(`/visa/applications/${appId}`, { method: 'PUT', token: userToken, body: visaForm(displayName) });
-  await uploadVisaAvatar(userToken, appId);
   const submitted = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: visaForm(displayName) });
   check('签注申请提交', submitted.status === 200, JSON.stringify(submitted.data));
   const approve = await api(`/visa/admin/applications/${appId}/approve`, { method: 'POST', token: adminToken, body: { comment: '联动验收通过' } });
@@ -231,11 +216,6 @@ async function main() {
       formData: { visit_note: '联动验收' },
     },
   });
-  const docUpload = new FormData();
-  docUpload.append('kind', 'proof');
-  docUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'visa.png');
-  const docMat = await api(`/docs/applications/${docId}/materials`, { method: 'POST', token: userA.token, form: docUpload });
-  check('上传签注截图', docMat.status === 200, JSON.stringify(docMat.data));
   const docSubmit = await api(`/docs/applications/${docId}/submit`, { method: 'POST', token: userA.token });
   check(
     '文书署实时核验签注编号',
@@ -255,10 +235,6 @@ async function main() {
     token: userB.token,
     body: { nickname: `联动乙${stamp}`, contact: 'b@example.com', bizNo: visaA.visaNo, purpose: 'display', formData: { visit_note: 'x' } },
   });
-  const docBUpload = new FormData();
-  docBUpload.append('kind', 'proof');
-  docBUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'visa.png');
-  await api(`/docs/applications/${docBId}/materials`, { method: 'POST', token: userB.token, form: docBUpload });
   const docBSubmit = await api(`/docs/applications/${docBId}/submit`, { method: 'POST', token: userB.token });
   check(
     '非本人签注不能认证',
@@ -273,7 +249,6 @@ async function main() {
   const visaBId = visaB.data.application.id;
   const visaBNo = visaB.data.application.appNo;
   await api(`/visa/applications/${visaBId}`, { method: 'PUT', token: userB.token, body: visaForm(`联动乙${stamp}`) });
-  await uploadVisaAvatar(userB.token, visaBId);
   await api(`/visa/applications/${visaBId}/submit`, { method: 'POST', token: userB.token, body: visaForm(`联动乙${stamp}`) });
   const rejected = await api(`/visa/admin/applications/${visaBId}/reject`, {
     method: 'POST',
@@ -349,10 +324,6 @@ async function main() {
       formData: { case_note: '决定书认证联动验收' },
     },
   });
-  const decUpload = new FormData();
-  decUpload.append('kind', 'proof');
-  decUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'decision.png');
-  await api(`/docs/applications/${decDocId}/materials`, { method: 'POST', token: userB.token, form: decUpload });
   const decSubmit = await api(`/docs/applications/${decDocId}/submit`, { method: 'POST', token: userB.token });
   check(
     '文书署实时核验决定书编号',
@@ -379,12 +350,6 @@ async function main() {
     purposes: ['collect', 'visa_fast'],
   };
   await api(`/resident/applications/${resAppId}`, { method: 'PUT', token: userA.token, body: resFields });
-  const resUpload = new FormData();
-  resUpload.append('applicationId', String(resAppId));
-  resUpload.append('kind', 'avatar');
-  resUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'avatar.png');
-  const resMat = await api('/resident/materials', { method: 'POST', token: userA.token, form: resUpload });
-  check('上传居民头像', resMat.status === 201, JSON.stringify(resMat.data));
   const resSubmit = await api(`/resident/applications/${resAppId}/submit`, { method: 'POST', token: userA.token, body: resFields });
   check('居民登记提交', resSubmit.status === 200, JSON.stringify(resSubmit.data).slice(0, 200));
   const resApprove = await api(`/resident/admin/applications/${resAppId}/approve`, { method: 'POST', token: adminToken, body: { comment: '联动验收' } });
@@ -413,10 +378,6 @@ async function main() {
       formData: { district: '南瓜街' },
     },
   });
-  const optUpload = new FormData();
-  optUpload.append('kind', 'proof');
-  optUpload.append('file', new Blob([PNG], { type: 'image/png' }), 'resident.png');
-  await api(`/docs/applications/${optDocId}/materials`, { method: 'POST', token: userB.token, form: optUpload });
   const optSubmit = await api(`/docs/applications/${optDocId}/submit`, { method: 'POST', token: userB.token });
   check(
     '可选关联类型也拒绝非本人编号',

@@ -81,7 +81,6 @@ export const COMPLAINT_CATEGORIES = {
 };
 export const TICKET_CATEGORIES = ['consult', 'account', 'bug'];
 export const TICKET_PRIORITIES = ['low', 'normal', 'high'];
-export const MATERIAL_KINDS = ['screenshot', 'proof', 'other'];
 
 export function appealErrMsg(t, err) {
   return apiErrorMessage(t, err);

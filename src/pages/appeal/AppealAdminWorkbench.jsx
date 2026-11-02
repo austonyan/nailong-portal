@@ -6,7 +6,6 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { openAppealMaterial } from '../../api/appeal.js';
 import {
   APPEAL_STATUS_COLORS,
   BIZ_TYPES,
@@ -308,22 +307,6 @@ export default function AppealAdminWorkbench() {
                 </div>
               )}
             </dl>
-
-            <h2 className="block-heading">{t('appeal.detail.materials')}</h2>
-            <ul className="appeal-material-list">
-              {detail.materials.map((m) => (
-                <li key={m.id}>
-                  <Tag variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'} size="small">
-                    {t(`appeal.materialKind.${m.kind}`)}
-                  </Tag>
-                  <span>{m.filename}</span>
-                  <Button type="text" size="small" onClick={() => openAppealMaterial(m.id)}>
-                    {t('appeal.my.preview')}
-                  </Button>
-                </li>
-              ))}
-              {detail.materials.length === 0 && <li className="muted-text">{t('common.empty')}</li>}
-            </ul>
 
             <h2 className="block-heading">{t('appeal.admin.bizLink')}</h2>
             {detail.bizLink?.integrated && detail.bizLink.found ? (

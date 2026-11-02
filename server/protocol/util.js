@@ -227,7 +227,6 @@ export function serializeType(row) {
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean),
-    materials: safeJson(row.materials, []),
     allowCompanions: !!row.allow_companions,
     maxCompanions: row.max_companions,
     defaultCapacity: row.default_capacity,
@@ -272,7 +271,6 @@ export function serializeEvent(row, { withCounts = true } = {}) {
     endsAt: row.ends_at,
     conditions: row.conditions,
     conditionsTw: row.conditions_tw,
-    materials: safeJson(row.materials, []),
     notice: row.notice,
     noticeTw: row.notice_tw,
     coverColor: row.cover_color,
@@ -283,18 +281,6 @@ export function serializeEvent(row, { withCounts = true } = {}) {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     url: `/protocol/events/${row.event_no}`,
-  };
-}
-
-export function serializeMaterial(row) {
-  return {
-    id: row.id,
-    kind: row.kind,
-    filename: row.filename,
-    mime: row.mime,
-    size: row.size,
-    createdAt: row.created_at,
-    url: `/api/protocol/materials/${row.id}/file`,
   };
 }
 

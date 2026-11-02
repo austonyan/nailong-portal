@@ -14,14 +14,6 @@ const QUEUE_STATUSES = ['pending', 'supplement', 'approved', 'rejected', 'entere
 const REJECT_REASONS = ['visa_invalid', 'incomplete', 'duplicate', 'port_closed', 'other'];
 const ITEM_KEYS = ['plush', 'snacks', 'stickers', 'pillow', 'balloon', 'photo_card'];
 
-// 附件大小按 KB / MB 显示,规则与 components/immigration/Attachments.jsx 一致。
-function fmtSize(bytes) {
-  if (bytes == null) return '-';
-  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`;
-  return `${bytes} B`;
-}
-
 function InfoRow({ label, children }) {
   return (
     <p className="im-info-row">
@@ -119,17 +111,6 @@ function ReviewDrawer({ id, onClose, onChanged }) {
           <InfoRow label={t('imm.mydecl.supplementSubmitted')}>{d.supplementContent}</InfoRow>
         )}
       </Card>
-
-      {(d.attachments ?? []).length > 0 && (
-        <Card>
-          <b>{t('imm.attachments.title')}</b>
-          {(d.attachments ?? []).map((att) => (
-            <p key={att.id} className="im-attachment-row">
-              {att.filename} <span className="muted-text">{fmtSize(att.size)}</span>
-            </p>
-          ))}
-        </Card>
-      )}
 
       <Card>
         <b>{t('imm.mydecl.timeline')}</b>

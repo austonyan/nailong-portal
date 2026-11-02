@@ -30,18 +30,6 @@ const REJECT_CODES = new Set(['incomplete_materials', 'false_info', 'type_mismat
 function applicationWithMeta(row) {
   const typeRow = db.prepare('SELECT * FROM visa_types WHERE code = ?').get(row.type_code);
   const user = db.prepare('SELECT username, display_name FROM users WHERE id = ?').get(row.user_id);
-  const materials = db
-    .prepare('SELECT * FROM visa_materials WHERE application_id = ? ORDER BY id')
-    .all(row.id)
-    .map((m) => ({
-      id: m.id,
-      kind: m.kind,
-      origin: m.origin,
-      filename: m.filename,
-      mime: m.mime,
-      size: m.size,
-      createdAt: m.created_at,
-    }));
   const reviews = db
     .prepare('SELECT * FROM visa_reviews WHERE application_id = ? ORDER BY id')
     .all(row.id)
@@ -63,7 +51,6 @@ function applicationWithMeta(row) {
     stayDays: typeRow?.stay_days ?? null,
     username: user?.username ?? '',
     displayName: user?.display_name ?? '',
-    materials,
     reviews,
   };
 }

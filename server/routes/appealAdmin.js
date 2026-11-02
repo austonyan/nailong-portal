@@ -51,10 +51,6 @@ function appealAdminMeta(row) {
     ...serializeAppeal(row),
     username: user?.username ?? '',
     displayName: user?.display_name ?? '',
-    materials: db
-      .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'appeal' AND owner_id = ? ORDER BY id")
-      .all(row.id)
-      .map((m) => ({ id: m.id, kind: m.kind, origin: m.origin, filename: m.filename, mime: m.mime, size: m.size, createdAt: m.created_at })),
     records: recordsFor('appeal', row.id),
     review: serializeReview(db.prepare('SELECT * FROM appeal_reviews WHERE appeal_id = ? ORDER BY id DESC').get(row.id)),
     decision: serializeDecision(db.prepare('SELECT * FROM appeal_decisions WHERE appeal_id = ? ORDER BY id DESC').get(row.id)),
@@ -308,10 +304,6 @@ function complaintAdminMeta(row) {
     // 匿名投诉:不向处理员展示账号身份,由前端渲染 common.anonymous
     username: row.anonymous ? '' : user?.username ?? '',
     displayName: row.anonymous ? '' : user?.display_name ?? '',
-    materials: db
-      .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'complaint' AND owner_id = ? ORDER BY id")
-      .all(row.id)
-      .map((m) => ({ id: m.id, kind: m.kind, origin: m.origin, filename: m.filename, mime: m.mime, size: m.size, createdAt: m.created_at })),
     records: recordsFor('complaint', row.id),
   };
 }
@@ -516,10 +508,6 @@ function reviewAdminMeta(row) {
     ...serializeReview(row),
     username: user?.username ?? '',
     displayName: user?.display_name ?? '',
-    materials: db
-      .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'review' AND owner_id = ? ORDER BY id")
-      .all(row.id)
-      .map((m) => ({ id: m.id, kind: m.kind, origin: m.origin, filename: m.filename, mime: m.mime, size: m.size, createdAt: m.created_at })),
     records: recordsFor('review', row.id),
     appeal: serializeAppeal(db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(row.appeal_id)),
     decision: serializeDecision(db.prepare('SELECT * FROM appeal_decisions WHERE review_id = ? ORDER BY id DESC').get(row.id)),

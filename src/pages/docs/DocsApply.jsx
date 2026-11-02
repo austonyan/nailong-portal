@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Title, Button, Card, Input, Modal, Radio, Tag, Upload } from 'animal-island-ui';
-import { PaperclipIcon, SaveIcon, SendIcon } from 'naive-icons';
-import { api, requestForm } from '../../api/client.js';
-import { downloadMaterial, formatBytes, PURPOSE_KEYS } from '../../api/docs.js';
+import { Title, Button, Card, Input, Modal, Radio } from 'animal-island-ui';
+import { SaveIcon, SendIcon } from 'naive-icons';
+import { api } from '../../api/client.js';
+import { PURPOSE_KEYS } from '../../api/docs.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
 import { DOC_BIZ_SOURCE } from '../../components/linkage/shared.js';
@@ -34,7 +34,6 @@ export default function DocsApply() {
   const [form, setForm] = useState(emptyForm);
   const [appId, setAppId] = useState(null);
   const [appNo, setAppNo] = useState('');
-  const [materials, setMaterials] = useState([]); // server-known materials
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -76,7 +75,6 @@ export default function DocsApply() {
         setTypeCode(item.typeCode);
         setAppId(item.id);
         setAppNo(item.appNo);
-        setMaterials(item.materials || []);
         setForm({
           nickname: item.nickname || '',
           contact: item.contact || '',
@@ -106,8 +104,6 @@ export default function DocsApply() {
     [typeCode, form]
   );
 
-  const materialsOf = useCallback((kind) => materials.filter((m) => m.kind === kind), [materials]);
-
   const saveDraft = useCallback(
     async ({ silent = false } = {}) => {
       if (!type) return null;
@@ -121,7 +117,6 @@ export default function DocsApply() {
         const d = await api.post('/docs/applications', payload());
         setAppId(d.item.id);
         setAppNo(d.item.appNo);
-        setMaterials(d.item.materials || []);
         if (!silent) toastSuccess(t('docs.apply.draftSaved'));
         return d.item.id;
       } catch (err) {
@@ -134,41 +129,12 @@ export default function DocsApply() {
     [appId, payload, type, t]
   );
 
-  const uploadConf = async (conf, file) => {
-    let id = appId;
-    if (!id) {
-      id = await saveDraft({ silent: true });
-      if (!id) return;
-    }
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('kind', conf.key);
-    try {
-      const d = await requestForm(`/docs/applications/${id}/materials`, fd);
-      setMaterials((list) => [...list, d.item]);
-    } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-    }
-  };
-
-  const removeMaterial = async (m) => {
-    try {
-      await api.del(`/docs/materials/${m.id}`);
-      setMaterials((list) => list.filter((x) => x.id !== m.id));
-    } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
-    }
-  };
-
   const validateForSubmit = () => {
     if (!type) return t('docs.apply.needType');
     if (!form.nickname.trim()) return t('docs.apply.nicknameRequired');
     if (type.bizRequired && !form.bizNo.trim()) return t('docs.apply.bizRequired', { label: type.bizNoLabel });
     for (const f of type.formFields || []) {
       if (f.required && !String(form.formData[f.key] || '').trim()) return t('docs.apply.fieldRequired', { label: f.label });
-    }
-    for (const m of type.materials || []) {
-      if (m.required && materialsOf(m.key).length === 0) return t('docs.apply.materialRequired', { label: m.label });
     }
     return null;
   };
@@ -312,75 +278,6 @@ export default function DocsApply() {
           </Card>
 
           <Card className="docs-block">
-            <h3 className="docs-block-title">{t('docs.apply.step3')}</h3>
-            {(type.materials || []).map((m) => (
-              <div className="docs-upload-group" key={m.key}>
-                <div className="docs-upload-head">
-                  <strong>{m.label}</strong>
-                  {m.required ? (
-                    <Tag size="small" color="app-red" variant="soft">
-                      {t('docs.apply.required')}
-                    </Tag>
-                  ) : (
-                    <Tag size="small" color="brown" variant="soft">
-                      {t('common.optional')}
-                    </Tag>
-                  )}
-                  <span className="muted-text">{t('docs.types.materialRule', { count: m.max_count, mb: m.max_mb })}</span>
-                </div>
-                <Upload
-                  accept={m.accept}
-                  maxCount={m.max_count}
-                  showUploadList={false}
-                  customRequest={({ file }) => uploadConf(m, file)}
-                  fileList={materialsOf(m.key).map((mat) => ({
-                    uid: String(mat.id),
-                    name: mat.filename,
-                    size: mat.size,
-                    status: 'done',
-                  }))}
-                  beforeUpload={(file) => {
-                    const okType = String(m.accept)
-                      .split(',')
-                      .some((rule) => {
-                        const r = rule.trim();
-                        if (r.endsWith('/*')) return file.type.startsWith(r.slice(0, -1));
-                        return file.type === r;
-                      });
-                    const okSize = file.size <= (Number(m.max_mb) || 10) * 1024 * 1024;
-                    if (!okType) toastError(t('docs.apply.fileTypeBad', { accept: m.accept }));
-                    if (!okSize) toastError(t('docs.apply.fileTooLarge', { mb: m.max_mb }));
-                    return okType && okSize;
-                  }}
-                >
-                  <Button type="dashed" icon={<PaperclipIcon />}>
-                    {t('docs.apply.upload')}
-                  </Button>
-                </Upload>
-                <ul className="docs-mat-list">
-                  {materialsOf(m.key).map((mat) => (
-                    <li key={mat.id}>
-                      <PaperclipIcon size={14} />
-                      <button type="button" className="docs-mat-name" onClick={() => downloadMaterial(mat.id, mat.filename)}>
-                        {mat.filename}
-                      </button>
-                      <span className="muted-text">{formatBytes(mat.size)}</span>
-                      {mat.origin === 'supplement' && (
-                        <Tag size="small" color="warm-peach-pink" variant="soft">
-                          {t('docs.apply.supplementOrigin')}
-                        </Tag>
-                      )}
-                      <Button type="text" size="small" onClick={() => removeMaterial(mat)}>
-                        {t('common.delete')}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </Card>
-
-          <Card className="docs-block">
             <div className="docs-apply-actions">
               <Button onClick={() => saveDraft()} loading={saving} icon={<SaveIcon />} disabled={saving}>
                 {t('docs.apply.saveDraft')}
@@ -430,8 +327,6 @@ export default function DocsApply() {
                   <dd>{form.bizNo || '—'}</dd>
                 </>
               )}
-              <dt>{t('docs.apply.materialsCount')}</dt>
-              <dd>{materials.length}</dd>
             </dl>
           </div>
         )}

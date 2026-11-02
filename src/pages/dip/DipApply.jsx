@@ -1,4 +1,4 @@
-// 建交申请: 类型选择 → 信息表单 → 材料 → 确认 → 提交。
+// 建交申请: 类型选择 → 信息表单 → 确认 → 提交。
 // 支持草稿保存/编辑,支持 ?from=<id> 预填重新申请。
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Radio, Select, Tag, useForm } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { TextArea, toastDipError } from '../../components/dip/shared.jsx';
-import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
 const PURPOSES = ['display', 'cooperation', 'visa_channel'];
@@ -24,7 +23,6 @@ export default function DipApply() {
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [courtesies, setCourtesies] = useState([]);
-  const [materials, setMaterials] = useState([]);
 
   const loadCatalog = useCallback(() => {
     api
@@ -44,7 +42,6 @@ export default function DipApply() {
   const applyRelation = useCallback(
     (r) => {
       setDecl(r);
-      setMaterials(r.materials ?? []);
       setCourtesies(r.courtesies ?? []);
       form.setFieldsValue({
         objectType: r.objectType,
@@ -70,7 +67,7 @@ export default function DipApply() {
       api
         .get(`/dip/relations/${fromId}`)
         .then((data) => {
-          applyRelation({ ...data.relation, id: undefined, no: undefined, status: 'draft', materials: [] });
+          applyRelation({ ...data.relation, id: undefined, no: undefined, status: 'draft' });
           setDecl(null);
         })
         .catch((err) => toastDipError(t, err));
@@ -203,22 +200,6 @@ export default function DipApply() {
         </Form>
       </Card>
 
-      {decl?.id && (
-        <Card className="dip-apply-materials">
-          <b>{t('dip.material.title')}</b>
-          <p className="muted-text">{t('dip.material.tip')}</p>
-          <DipMaterials
-            ownerType="relation"
-            ownerId={decl.id}
-            materials={materials}
-            canUpload
-            onChanged={(mat) => {
-              setMaterials((list) => (mat.removed ? list.filter((m) => m.id !== mat.id) : [...list, mat]));
-            }}
-          />
-        </Card>
-      )}
-
       <Modal
         maskClosable={false}
         open={confirming}
@@ -244,7 +225,6 @@ export default function DipApply() {
           <p><b>{t('dip.apply.reason')}:</b> {preview.reason}</p>
           <p><b>{t('dip.apply.purpose')}:</b> {t(`dip.purpose.${preview.purpose ?? 'display'}`)}</p>
           <p><b>{t('dip.apply.courtesies')}:</b> {(courtesies.length ? courtesies.map((c) => t(`dip.courtesy.${c}`, { defaultValue: t('common.unknown') })).join('、') : '-')}</p>
-          <p><b>{t('dip.material.title')}:</b> {t('dip.apply.materialCount', { count: materials.length })}</p>
         </div>
       </Modal>
     </div>

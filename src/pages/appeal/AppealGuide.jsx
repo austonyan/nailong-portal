@@ -50,7 +50,7 @@ export default function AppealGuide() {
       <Card className="appeal-guide-block">
         <h2><FileIcon size={18} /> {t('appeal.guide.materialsTitle')}</h2>
         <ul className="appeal-list">
-          {['code', 'reason', 'expected', 'contact', 'screenshot', 'proof'].map((k) => (
+          {['code', 'reason', 'expected', 'contact'].map((k) => (
             <li key={k}>
               <strong>{t(`appeal.guide.materials.${k}.t`)}</strong> — {t(`appeal.guide.materials.${k}.d`)}
             </li>

@@ -1,18 +1,12 @@
-// 活动报名:填写信息、身份类型、随行人员、材料上传、保存草稿与提交确认。
-import { useCallback, useEffect, useMemo, useState } from 'react';
+// 活动报名:填写信息、身份类型、随行人员、备注、保存草稿与提交确认。
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Input, Modal, Radio, Select, Tag, Upload } from 'animal-island-ui';
-import { EyeIcon, PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
+import { Title, Button, Card, Input, Modal, Radio } from 'animal-island-ui';
+import { PlusIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import LinkageField from '../../components/linkage/LinkageField.jsx';
-import {
-  TextArea,
-  fmtDateTime,
-  openProtocolMaterial,
-  toastProtocolError,
-  uploadProtocolMaterial,
-} from './shared.jsx';
+import { TextArea, fmtDateTime, toastProtocolError } from './shared.jsx';
 import { toastSuccess, toastError } from './shared.jsx';
 
 const EMPTY_FORM = {
@@ -43,11 +37,8 @@ export default function ProtocolApply() {
   const { no, id } = useParams();
   const [event, setEvent] = useState(null);
   const [type, setType] = useState(null);
-  const [materialsRequired, setMaterialsRequired] = useState([]);
   const [draft, setDraft] = useState(null);
-  const [materials, setMaterials] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
-  const [kind, setKind] = useState('other');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loadError, setLoadError] = useState('');
@@ -58,8 +49,6 @@ export default function ProtocolApply() {
   const applyEventData = (data) => {
     setEvent(data.event ?? data.registration?.event ?? null);
     setType(data.type ?? null);
-    setMaterialsRequired(data.materialsRequired ?? []);
-    if (data.materials) setMaterials(data.materials);
   };
 
   useEffect(() => {
@@ -73,7 +62,7 @@ export default function ProtocolApply() {
           if (cancelled) return;
           setDraft(reg);
           setForm(formFromRegistration(reg));
-          applyEventData({ ...full, materials: reg.materials });
+          applyEventData(full);
         } else {
           const data = await api.get(`/protocol/events/${encodeURIComponent(no)}`);
           if (cancelled) return;
@@ -95,23 +84,6 @@ export default function ProtocolApply() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, no, t]);
 
-  const kindOptions = useMemo(() => {
-    const seen = new Set(['other']);
-    const list = [{ key: 'other', label: t('protocol.materialKind.other') }];
-    for (const m of materialsRequired) {
-      if (seen.has(m.kind)) continue;
-      seen.add(m.kind);
-      list.push({ key: m.kind, label: t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') }) });
-    }
-    return list;
-  }, [materialsRequired, t]);
-
-  const refreshMaterials = useCallback(async (regId) => {
-    const data = await api.get(`/protocol/registrations/${regId}`);
-    setMaterials(data.registration.materials);
-    setDraft(data.registration);
-  }, []);
-
   const payload = () => ({
     ...form,
     partySize,
@@ -126,7 +98,6 @@ export default function ProtocolApply() {
         ? await api.patch(`/protocol/registrations/${draft.id}`, body)
         : await api.post('/protocol/registrations', { eventId: event.id, ...body });
       setDraft(data.registration);
-      setMaterials(data.registration.materials);
       if (!silent) toastSuccess(t('protocol.apply.draftSaved'));
       return data.registration;
     } catch (err) {
@@ -180,15 +151,6 @@ export default function ProtocolApply() {
 
   const removeCompanion = (index) => {
     update({ companions: form.companions.filter((_, i) => i !== index) });
-  };
-
-  const removeMaterial = async (materialId) => {
-    try {
-      await api.del(`/protocol/materials/${materialId}`);
-      await refreshMaterials(draft.id);
-    } catch (err) {
-      toastProtocolError(t, err);
-    }
   };
 
   if (!event) {
@@ -321,67 +283,6 @@ export default function ProtocolApply() {
               disabled={readOnly}
             />
           </Card>
-
-          <Card className="protocol-form-card">
-            <h2>{t('protocol.apply.materialsSection')}</h2>
-            <p className="muted-text">{t('protocol.apply.materialsHint')}</p>
-            {materialsRequired.length > 0 && (
-              <ul className="protocol-material-req">
-                {materialsRequired.map((m) => (
-                  <li key={`${m.kind}-${m.required ? 1 : 0}`}>
-                    <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
-                    <Tag color={m.required ? 'warm-peach-pink' : 'brown'} size="small" variant="soft">
-                      {m.required ? t('protocol.common.required') : t('protocol.common.optional')}
-                    </Tag>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {!draft && <p className="protocol-status-note">{t('protocol.apply.saveFirstForUpload')}</p>}
-            {draft && !readOnly && (
-              <div className="protocol-upload-row">
-                <Select value={kind} onChange={setKind} options={kindOptions} placeholder={t('protocol.apply.materialKind')} />
-                <Upload
-                  accept=".png,.jpg,.jpeg,.webp,.pdf"
-                  maxCount={1}
-                  showUploadList={false}
-                  customRequest={({ file, onSuccess, onError }) => {
-                    uploadProtocolMaterial({ ownerType: 'registration', ownerId: draft.id, kind, file })
-                      .then(async () => {
-                        onSuccess();
-                        await refreshMaterials(draft.id);
-                        toastSuccess(t('protocol.apply.uploadDone'));
-                      })
-                      .catch((err) => {
-                        onError(err);
-                        toastProtocolError(t, err);
-                      });
-                  }}
-                >
-                  <Button type="dashed" icon={<PlusIcon />}>{t('protocol.apply.uploadMaterial')}</Button>
-                </Upload>
-              </div>
-            )}
-            <ul className="protocol-material-list">
-              {materials.map((m) => (
-                <li key={m.id}>
-                  <Tag size="small" variant="soft" color="app-blue">
-                    {t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}
-                  </Tag>
-                  <span className="protocol-material-name">{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
-                    {t('protocol.action.preview')}
-                  </Button>
-                  {!readOnly && (
-                    <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(m.id)}>
-                      {t('protocol.action.delete')}
-                    </Button>
-                  )}
-                </li>
-              ))}
-              {materials.length === 0 && <li className="muted-text">{t('protocol.apply.noMaterials')}</li>}
-            </ul>
-          </Card>
         </div>
 
         <aside className="protocol-apply-side">
@@ -398,10 +299,6 @@ export default function ProtocolApply() {
             <div className="protocol-summary-row">
               <span>{t('protocol.field.invitationNo')}</span>
               <strong>{form.invitationNo || '-'}</strong>
-            </div>
-            <div className="protocol-summary-row">
-              <span>{t('protocol.field.materials')}</span>
-              <strong>{materials.length}</strong>
             </div>
             <p className="muted-text">{t('protocol.apply.summaryTip')}</p>
             {!readOnly && (
@@ -439,7 +336,6 @@ export default function ProtocolApply() {
           <div className="protocol-summary-row"><span>{t('protocol.field.identityType')}</span><strong>{t(`protocol.identity.${form.identityType}`)}</strong></div>
           <div className="protocol-summary-row"><span>{t('protocol.field.partySize')}</span><strong>{partySize}</strong></div>
           <div className="protocol-summary-row"><span>{t('protocol.field.companions')}</span><strong>{form.companions.map((c) => c.nickname).filter(Boolean).join('、') || '-'}</strong></div>
-          <div className="protocol-summary-row"><span>{t('protocol.field.materials')}</span><strong>{materials.length}</strong></div>
           {form.note && <p className="protocol-preline">{form.note}</p>}
         </div>
       </Modal>

@@ -55,9 +55,6 @@ export const toastResSuccess = (message) => toastSuccess(message);
 
 export const toastResError = toastApiError;
 
-// 材料类型 → i18n key(res.materialKind.*)
-export const MATERIAL_KINDS = ['avatar', 'address_proof', 'other'];
-
 export const REJECT_REASONS = ['incomplete', 'false_info', 'duplicate', 'type_mismatch', 'other'];
 
 export const PURPOSES = ['collect', 'activity', 'visa_fast', 'other'];

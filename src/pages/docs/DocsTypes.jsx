@@ -134,27 +134,6 @@ export default function DocsTypes() {
             <p>{focus.description}</p>
             <h2>{t('docs.types.guideTitle')}</h2>
             <p className="docs-guide-text">{focus.guide || t('docs.types.guideEmpty')}</p>
-            <h2>{t('docs.types.materialsTitle')}</h2>
-            <ul className="docs-material-list">
-              {(focus.materials || []).map((m) => (
-                <li key={m.key}>
-                  <strong>{m.label}</strong>
-                  {m.required ? (
-                    <Tag size="small" color="app-red" variant="soft">
-                      {t('docs.apply.required')}
-                    </Tag>
-                  ) : (
-                    <Tag size="small" color="brown" variant="soft">
-                      {t('common.optional')}
-                    </Tag>
-                  )}
-                  <span className="muted-text">
-                    {t('docs.types.materialRule', { count: m.max_count, mb: m.max_mb })}
-                  </span>
-                </li>
-              ))}
-              {(focus.materials || []).length === 0 && <li className="muted-text">{t('docs.types.materialsEmpty')}</li>}
-            </ul>
             <h2>{t('docs.types.formTitle')}</h2>
             <ul className="docs-material-list">
               <li>

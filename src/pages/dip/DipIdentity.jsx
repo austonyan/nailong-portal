@@ -1,4 +1,4 @@
-// 外交身份登记: 关联已建交关系 → 登记信息 + 任命书材料 → 审核 → 外交身份卡。
+// 外交身份登记: 关联已建交关系 → 登记信息 → 审核 → 外交身份卡。
 // 含外交签注通道(联动预留:跳转签注申请署)。
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -8,7 +8,6 @@ import { Title, Button, Card, Drawer, Form, FormItem, Input, Modal, Select, Tabl
 import { EditIcon, PrinterIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { DipQr, StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
-import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess } from '../../components/toast.js';
 
@@ -123,7 +122,6 @@ function IdentityDetail({ id, onClose, onChanged }) {
 
   if (!idt) return <p className="muted-text">{t('common.loading')}</p>;
   const d = idt;
-  const canUpload = ['draft', 'pending_review', 'supplement_required'].includes(d.status);
 
   return (
     <div className="dip-detail">
@@ -178,11 +176,6 @@ function IdentityDetail({ id, onClose, onChanged }) {
           </Button>
         </Card>
       )}
-
-      <Card>
-        <b>{t('dip.material.title')}</b>
-        <DipMaterials ownerType="identity" ownerId={d.id} materials={d.materials ?? []} canUpload={canUpload} onChanged={load} />
-      </Card>
 
       <Card>
         <b>{t('dip.relation.timeline')}</b>
@@ -245,7 +238,6 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
   const [decl, setDecl] = useState(null);
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const [materials, setMaterials] = useState([]);
 
   const established = relations.filter((r) => r.status === 'established');
 
@@ -256,7 +248,6 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
       .then((data) => {
         const d = data.identity;
         setDecl(d);
-        setMaterials(d.materials ?? []);
         form.setFieldsValue({
           identityType: d.identityType,
           relationId: d.relationId ? String(d.relationId) : undefined,
@@ -392,22 +383,6 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
           </div>
         </FormItem>
       </Form>
-
-      {decl?.id && (
-        <div className="dip-apply-materials">
-          <b>{t('dip.material.title')}</b>
-          <p className="muted-text">{t('dip.identity.materialTip')}</p>
-          <DipMaterials
-            ownerType="identity"
-            ownerId={decl.id}
-            materials={materials}
-            canUpload
-            onChanged={(mat) => {
-              setMaterials((list) => (mat.removed ? list.filter((m) => m.id !== mat.id) : [...list, mat]));
-            }}
-          />
-        </div>
-      )}
 
       <Modal
         maskClosable={false}

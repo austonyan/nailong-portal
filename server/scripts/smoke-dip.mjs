@@ -32,25 +32,6 @@ async function api(path, { method = 'GET', token, body, headers = {} } = {}) {
   return { status: res.status, data };
 }
 
-// 1x1 PNG
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
-
-async function upload(token, ownerType, ownerId, filename = 'intro.png') {
-  const form = new FormData();
-  form.append('kind', ownerType === 'identity' ? 'appointment' : 'intro');
-  form.append('file', new Blob([PNG], { type: 'image/png' }), filename);
-  const res = await fetch(`${base}/api/dip/materials/${ownerType}/${ownerId}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
-  });
-  const data = await res.json().catch(() => ({}));
-  return { status: res.status, data };
-}
-
 const stamp = Date.now().toString(36);
 const ENTITY = `喵星联合王国${stamp}`;
 const password = 'smoke-pass-123';
@@ -97,21 +78,10 @@ const created = await api('/dip/relations', {
 check('创建建交草稿', created.status === 201 && /^NLD/.test(created.data.relation?.no || ''), JSON.stringify(created.data).slice(0, 200));
 const rel = created.data.relation;
 
-const up = await upload(userToken, 'relation', rel.id);
-check('上传建交材料', up.status === 201 && up.data.material?.origin === 'initial', JSON.stringify(up.data).slice(0, 150));
-
-const badTypeRes = await fetch(`${base}/api/dip/materials/relation/${rel.id}`, {
-  method: 'POST',
-  headers: { Authorization: `Bearer ${userToken}` },
-  body: (() => { const f = new FormData(); f.append('file', new Blob([Buffer.from('MZ')], { type: 'application/octet-stream' }), 'evil.bin'); return f; })(),
-});
-check('拒绝非白名单文件类型', badTypeRes.status === 400, String(badTypeRes.status));
-
 const submitted = await api(`/dip/relations/${rel.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('提交进入待审核', submitted.status === 200 && submitted.data.relation.status === 'pending_review');
 
 const dup = await api('/dip/relations', { method: 'POST', token: userToken, body: { objectType: 'VIRTUAL_NATION', relationType: 'FORMAL', entityName: `${ENTITY}2`, repNickname: '喵大使', contact: 'cat@example.com', reason: 'x', purpose: 'display' } });
-await upload(userToken, 'relation', dup.data.relation.id);
 const dupSubmit = await api(`/dip/relations/${dup.data.relation.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('重复在途申请被拦截', dupSubmit.status === 409 && dupSubmit.data.code === 'DIP_DUPLICATE', JSON.stringify(dupSubmit.data));
 
@@ -121,8 +91,6 @@ check('审核队列可见', queue.data.items.some((r) => r.no === rel.no));
 const supp = await api(`/dip/admin/relations/${rel.id}/supplement`, { method: 'POST', token: adminToken, body: { note: '请补充社区证明' } });
 check('要求补件', supp.status === 200 && supp.data.relation.status === 'supplement_required');
 
-const upSup = await upload(userToken, 'relation', rel.id, 'community.png');
-check('补交材料标记 supplement', upSup.status === 201 && upSup.data.material.origin === 'supplement');
 const suppSubmit = await api(`/dip/relations/${rel.id}/supplement`, { method: 'POST', token: userToken, body: { content: '社区证明已补' } });
 check('补件后重新送审', suppSubmit.status === 200 && suppSubmit.data.relation.status === 'pending_review');
 
@@ -143,10 +111,6 @@ const idtCreated = await api('/dip/identities', {
 check('创建身份草稿', idtCreated.status === 201 && /^NLE/.test(idtCreated.data.identity?.no || '') && idtCreated.data.identity.entityName === ENTITY);
 const idt = idtCreated.data.identity;
 
-const idtNoMat = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: {} });
-check('缺任命书拒绝提交', idtNoMat.status === 400 && idtNoMat.data.code === 'DIP_MATERIAL_REQUIRED');
-
-await upload(userToken, 'identity', idt.id, 'appointment.png');
 const idtSubmitted = await api(`/dip/identities/${idt.id}/submit`, { method: 'POST', token: userToken, body: {} });
 check('身份提交进入待审核', idtSubmitted.status === 200 && idtSubmitted.data.identity.status === 'pending_review');
 
@@ -241,7 +205,6 @@ check('失效身份验真为无效', verifyAfter.data.found && verifyAfter.data.
 
 // --- 驳回路径(用户 B) ------------------------------------------------------
 const relB = await api('/dip/relations', { method: 'POST', token: user2Token, body: { objectType: 'VIRTUAL_NATION', relationType: 'FORMAL', entityName: `汪星共和国${stamp}`, repNickname: '汪大使', contact: 'dog@example.com', reason: '汪!', purpose: 'display' } });
-await upload(user2Token, 'relation', relB.data.relation.id);
 await api(`/dip/relations/${relB.data.relation.id}/submit`, { method: 'POST', token: user2Token, body: {} });
 const reject = await api(`/dip/admin/relations/${relB.data.relation.id}/reject`, {
   method: 'POST',

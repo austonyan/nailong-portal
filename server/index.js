@@ -42,6 +42,7 @@ import eduAdminRoutes from './education/admin.js';
 import { ApiError } from './http.js';
 import { db } from './db.js';
 import { backfillContentTranslations } from './content-i18n.js';
+import { dropLegacyUploadSchema, removeLegacyUploads } from './cleanupLegacyUploads.js';
 import { localeMiddleware } from './locale.js';
 import { startAutoApproveScheduler } from './autoApprove.js';
 
@@ -99,8 +100,10 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/education/admin', eduAdminRoutes);
 app.use('/api/education', eduRoutes);
 
-// All office schemas are ensured by the route imports above; fill Traditional
-// copies for built-in catalogs/notices before serving requests.
+// All office schemas are ensured by the route imports above. Retire the old
+// upload schema/files before filling Traditional copies for built-in content.
+dropLegacyUploadSchema(db);
+removeLegacyUploads();
 backfillContentTranslations(db);
 
 app.use('/api', (_req, res) => res.status(404).json({ code: 'NOT_FOUND', message: 'Unknown API endpoint' }));
