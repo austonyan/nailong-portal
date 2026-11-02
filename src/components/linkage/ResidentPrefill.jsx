@@ -1,6 +1,6 @@
 // 居民证预填提示:检测到本人持有有效居民证时,提供"使用居民证信息"一键预填。
-// 只回填服务端确认为真实值的字段(居民证件号 → 虚拟身份信息);持卡人姓名在
-// 联动接口里是脱敏的,联系方式不下发,这两项一律不预填。
+// 证件号来自联动接口;持卡人姓名、邮箱与地址来自当前账户的门户身份档案
+// (个人资料页),都是本人数据、无需脱敏。档案里为空的字段不预填。
 // `fields` 声明目标表单真正能接收的字段:卡片里没有任何可写字段时不再渲染一个
 // 按了没反应的按钮,改为直接说明"请手动填写"。
 import { useEffect, useState } from 'react';
@@ -8,10 +8,13 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Title } from 'animal-island-ui';
 import { UsersIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { fmtDate } from '../../lib/date.js';
 
 export default function ResidentPrefill({ onFill, fields = null, className = '' }) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [identity, setIdentity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dismissed, setDismissed] = useState(false);
@@ -32,9 +35,18 @@ export default function ResidentPrefill({ onFill, fields = null, className = '' 
       : null;
   if (!card || loading) return null;
 
-  // 只有证件号是真实值;holder 是 maskName 后的「奶***」,联系方式接口不下发。
-  const available = { virtualId: card.cardNo };
-  const writable = fields ? Object.fromEntries(Object.entries(available).filter(([k]) => fields.includes(k))) : available;
+  // 证件号是真实值;holder 在联动接口里是 maskName 后的「奶***」,不能用。
+  // 姓名/邮箱/地址改从门户身份档案取,保证与个人资料一致。
+  const profile = profileIdentity(user);
+  const available = {
+    virtualId: card.cardNo,
+    nickname: profile.realName,
+    contact: profile.email,
+    address: profile.address,
+  };
+  const writable = Object.fromEntries(
+    Object.entries(available).filter(([k, v]) => v && (!fields || fields.includes(k)))
+  );
   const fillable = Object.keys(writable).length > 0;
 
   const handleFill = () => {

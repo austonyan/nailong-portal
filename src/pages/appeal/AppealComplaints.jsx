@@ -7,17 +7,22 @@ import { Title, Button, Card, Checkbox, Drawer, Input, Modal, Rate, Radio, Selec
 import { PlusIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { openAppealMaterial, uploadAppealMaterial } from '../../api/appeal.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { TextArea, COMPLAINT_CATEGORIES, COMPLAINT_KINDS, COMPLAINT_STATUS_COLORS, activateByKey, fmtDateTime, toastAppealError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AppealComplaints() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  // 联系方式默认取门户身份档案邮箱(匿名投诉时不提交)。
+  const profile = profileIdentity(user);
   const [items, setItems] = useState(null);
   const loadError = useLoadError((items ?? []).length > 0);
   const [kind, setKind] = useState('complaint');
   const [category, setCategory] = useState('attitude');
   const [content, setContent] = useState('');
-  const [contact, setContact] = useState('');
+  const [contact, setContact] = useState(profile.email);
   const [anonymous, setAnonymous] = useState([]);
   const [createOpen, setCreateOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -58,7 +63,7 @@ export default function AppealComplaints() {
       toastSuccess(t('appeal.complaint.submitDone', { no: data.complaint.code }));
       setCreateOpen(false);
       setContent('');
-      setContact('');
+      setContact(profile.email);
       setAnonymous([]);
       await load();
     } catch (err) {

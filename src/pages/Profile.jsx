@@ -16,13 +16,15 @@ export default function Profile() {
 
   if (!user) return null;
 
+  // 真实姓名是门户身份档案的主键,只在注册/管理员建号时确定,这里只读。
+  // 邮箱与地址供各署申请表单自动填充,并用于居民证持卡人信息预填。
   const saveProfile = async (values) => {
     if (profileBusy) return;
     setProfileBusy(true);
     try {
       await api.patch('/auth/profile', {
-        displayName: values.displayName?.trim(),
         email: values.email?.trim() || '',
+        address: values.address?.trim() || '',
       });
       await reload();
       toastSuccess(t('profile.updateSuccess'));
@@ -71,12 +73,37 @@ export default function Profile() {
 
       <Card>
         <h2 className="block-heading">{t('profile.basic')}</h2>
-        <Form form={profileForm} layout="vertical" onFinish={saveProfile} initialValues={{ displayName: user.displayName, email: user.email ?? '' }}>
-          <FormItem name="displayName" label={t('auth.displayName')} rules={[{ required: true, message: t('common.required') }]}>
-            <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear />
+        <Form
+          form={profileForm}
+          layout="vertical"
+          onFinish={saveProfile}
+          initialValues={{
+            realName: user.displayName || user.username,
+            email: user.email ?? '',
+            address: user.address ?? '',
+          }}
+        >
+          <FormItem name="realName" label={t('profile.realName')} help={t('profile.realNameLocked')}>
+            <Input size="large" disabled />
           </FormItem>
-          <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('auth.emailRule') }]}>
+          <FormItem
+            name="email"
+            label={t('profile.email')}
+            help={t('profile.emailHint')}
+            rules={[
+              { required: true, message: t('common.required') },
+              { type: 'email', message: t('auth.emailRule') },
+            ]}
+          >
             <Input size="large" type="email" placeholder={t('auth.emailPlaceholder')} allowClear />
+          </FormItem>
+          <FormItem
+            name="address"
+            label={t('profile.address')}
+            help={t('profile.addressHint')}
+            rules={[{ required: true, message: t('common.required') }]}
+          >
+            <Input size="large" maxLength={200} placeholder={t('profile.addressPlaceholder')} allowClear />
           </FormItem>
           <FormItem>
             <Button type="primary" htmlType="submit" loading={profileBusy} disabled={profileBusy}>

@@ -40,7 +40,10 @@ router.post('/register', (req, res) => {
   const body = req.body || {};
   assertUsername(body.username);
   assertNewPassword(body.password);
+  // display_name 是门户身份档案里的真实姓名,注册时必填;之后只能由管理员更正,
+  // 用户本人在个人资料页不能改(全门户身份一致性)。
   const displayName = typeof body.displayName === 'string' ? body.displayName.trim().slice(0, 40) : '';
+  if (!displayName) throw badRequest('REAL_NAME_REQUIRED', 'Real name is required');
   const email = typeof body.email === 'string' && body.email.trim() ? body.email.trim() : null;
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw badRequest('VALIDATION_ERROR', 'Invalid email');
@@ -52,7 +55,7 @@ router.post('/register', (req, res) => {
       .prepare(
         'INSERT INTO users (username, display_name, email, password_hash, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
       )
-      .run(body.username, displayName || body.username, email, hashPassword(body.password), 'active', ts, ts);
+      .run(body.username, displayName, email, hashPassword(body.password), 'active', ts, ts);
     const role = defaultUserRole();
     db.prepare('INSERT OR IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)').run(info.lastInsertRowid, role.id);
     return info.lastInsertRowid;
@@ -117,11 +120,9 @@ router.patch('/profile', authenticate, (req, res) => {
   const updates = [];
   const params = [];
 
+  // 真实姓名是身份档案主键:个人资料页只读,只能由管理员在用户管理里更正。
   if (body.displayName !== undefined) {
-    const displayName = String(body.displayName).trim().slice(0, 40);
-    if (!displayName) throw badRequest('VALIDATION_ERROR', 'Display name cannot be empty');
-    updates.push('display_name = ?');
-    params.push(displayName);
+    throw badRequest('PROFILE_NAME_IMMUTABLE', 'Display name is bound to the portal identity and cannot be changed here');
   }
 
   if (body.email !== undefined) {
@@ -134,6 +135,12 @@ router.patch('/profile', authenticate, (req, res) => {
     }
     updates.push('email = ?');
     params.push(email || null);
+  }
+
+  if (body.address !== undefined) {
+    const address = String(body.address ?? '').trim().slice(0, 200);
+    updates.push('address = ?');
+    params.push(address);
   }
 
   if (!updates.length) throw badRequest('VALIDATION_ERROR', 'Nothing to update');

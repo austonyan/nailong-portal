@@ -6,6 +6,8 @@ import { Title, Button, Card, DatePicker, Form, FormItem, Input, Modal, Tag, Upl
 import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api, ApiError } from '../../api/client.js';
 import { uploadVisaMaterial } from '../../api/visa.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { profileIdentity } from '../../lib/profileIdentity.js';
 import { TextArea, fmtDate, toastVisaError } from './shared.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import ResidentPrefill from '../../components/linkage/ResidentPrefill.jsx';
@@ -28,6 +30,9 @@ function VisaApplyScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
+  const { user } = useAuth();
+  // 申请人姓名与联系方式跟门户身份档案保持一致;档案里没有的字段才手动填写。
+  const profile = profileIdentity(user);
   // 新申请:/visa/apply/:typeCode/form;编辑草稿:/visa/applications/:id/edit
   const draftId = params.id ? Number(params.id) : null;
   const [form] = useForm();
@@ -59,8 +64,8 @@ function VisaApplyScreen() {
           setAppNo(app.appNo);
           setTypeCode(app.typeCode);
           form.setFieldsValue({
-            nickname: app.nickname,
-            contact: app.contact,
+            nickname: profile.realName || app.nickname,
+            contact: profile.email || app.contact,
             virtualId: app.virtualId,
             purpose: app.purpose,
             planArrive: app.planArrive,
@@ -80,13 +85,19 @@ function VisaApplyScreen() {
         .then((data) => {
           setAppId(data.application.id);
           setAppNo(data.application.appNo);
+          const app = data.application;
+          form.setFieldsValue({
+            nickname: profile.realName || app.nickname,
+            contact: profile.email || app.contact,
+          });
         })
         .catch((err) => {
           toastVisaError(t, err);
           navigate('/visa/apply');
         });
     }
-  }, [draftId, typeCode, form, t, navigate]);
+    // profile 每次渲染都是新对象,依赖拆成原始值。
+  }, [draftId, typeCode, form, t, navigate, profile.realName, profile.email]);
 
   // 类型说明
   useEffect(() => {
@@ -250,8 +261,13 @@ function VisaApplyScreen() {
         <ResidentPrefill onFill={fillFromResident} fields={['virtualId']} />
         <Form form={form} layout="vertical" requiredMark>
           <div className="visa-form-grid">
-            <FormItem name="nickname" label={t('visa.form.nickname')} rules={[{ required: true, message: t('visa.form.nickname') }]}>
-              <Input size="large" allowClear maxLength={40} placeholder={t('visa.form.nicknamePlaceholder')} />
+            <FormItem
+              name="nickname"
+              label={t('visa.form.nickname')}
+              help={profile.realName ? t('profile.fromProfile') : undefined}
+              rules={[{ required: true, message: t('visa.form.nickname') }]}
+            >
+              <Input size="large" allowClear maxLength={40} disabled={!!profile.realName} placeholder={t('visa.form.nicknamePlaceholder')} />
             </FormItem>
             <FormItem name="contact" label={t('visa.form.contact')} rules={[{ required: true, message: t('visa.form.contact') }]}>
               <Input size="large" allowClear maxLength={100} placeholder={t('visa.form.contactPlaceholder')} />
