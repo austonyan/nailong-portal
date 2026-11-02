@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
-import { RefreshIcon, SearchIcon } from 'naive-icons';
+import { RefreshIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../../api/docs.js';
 import { toastSuccess, toastError } from '../../../components/toast.js';
@@ -16,8 +16,8 @@ const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
 
 export default function DocsCertsAdmin() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('all');
@@ -40,7 +40,6 @@ export default function DocsCertsAdmin() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -144,17 +143,35 @@ export default function DocsCertsAdmin() {
     <div>
       <div className="page-header">
         <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.certs.title')}</Title></h1>
-      </div>
-      <Card className="docs-filter-card">
-        <div className="docs-filter-row">
-          <Select value={status} onChange={(v) => { setStatus(v); setPage(1); }} options={STATUS_OPTIONS.map((s) => ({ key: s, label: s === 'all' ? t('docs.filter.all') : t(`docs.certStatus.${s}`) }))} />
-          <Select value={typeCode} onChange={(v) => { setTypeCode(v); setPage(1); }} options={[{ key: 'all', label: t('docs.filter.allTypes') }, ...types.map((tp) => ({ key: tp.code, label: tp.name }))]} />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.admin.certs.searchPh')} allowClear />
-          <Button type="primary" icon={<SearchIcon />} onClick={() => { setPage(1); load(); }}>
-            {t('common.search')}
-          </Button>
+        <div className="docs-filter-row docs-filter-inline">
+          <Select
+            value={status}
+            onChange={(v) => {
+              setStatus(v);
+              setPage(1);
+            }}
+            options={STATUS_OPTIONS.map((s) => ({
+              key: s,
+              label: s === 'all' ? t('docs.filter.all') : t(`docs.certStatus.${s}`),
+            }))}
+          />
+          <Select
+            value={typeCode}
+            onChange={(v) => {
+              setTypeCode(v);
+              setPage(1);
+            }}
+            options={[{ key: 'all', label: t('docs.filter.allTypes') }, ...types.map((tp) => ({ key: tp.code, label: tp.name }))]}
+          />
+          <Input
+            size="middle"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t('docs.admin.certs.searchPh')}
+            allowClear
+          />
         </div>
-      </Card>
+      </div>
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
         {total > pageSize && (

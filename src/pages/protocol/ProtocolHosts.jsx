@@ -31,8 +31,8 @@ function cardKeyDown(handler) {
 
 export default function ProtocolHosts() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [materials, setMaterials] = useState([]);
@@ -46,7 +46,6 @@ export default function ProtocolHosts() {
       const data = await api.get('/protocol/hosts');
       setItems(data.items);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

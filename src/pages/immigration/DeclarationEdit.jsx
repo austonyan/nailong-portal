@@ -196,6 +196,8 @@ export default function DeclarationEdit() {
   };
 
   const preview = form.getFieldsValue();
+  // 确认页只给中文口岸名,不把内部口岸代码(如 ROYAL_PORT)摆到用户面前。
+  const previewPortName = ports.find((p) => p.code === preview.portCode)?.name ?? preview.portCode;
   const selectedQtyItems = itemKeys.map((key) => ({ key, qty: quantities[key] ?? 1 }));
 
   return (
@@ -210,7 +212,7 @@ export default function DeclarationEdit() {
         <Form form={form} layout="vertical" onFinish={openConfirm}>
           <FormItem name="portCode" label={t('imm.declare.port')} rules={[{ required: true, message: t('common.required') }]}>
             <Select
-              options={ports.map((p) => ({ key: p.code, label: `${p.name} (${p.code})` }))}
+              options={ports.map((p) => ({ key: p.code, label: p.name }))}
               placeholder={t('imm.declare.portPlaceholder')}
               disabled={!!decl?.id}
             />
@@ -341,7 +343,7 @@ export default function DeclarationEdit() {
         typewriter={false}
       >
         <div className="im-confirm-list">
-          <p><b>{t('imm.declare.port')}:</b> {preview.portCode}</p>
+          <p><b>{t('imm.declare.port')}:</b> {previewPortName}</p>
           <p><b>{t('imm.declare.nickname')}:</b> {preview.nickname}</p>
           <p><b>{t('imm.declare.contact')}:</b> {preview.contact}</p>
           <p><b>{t('imm.declare.purpose')}:</b> {t(`imm.purpose.${preview.purpose ?? 'fun'}`)}{preview.purposeNote ? ` (${preview.purposeNote})` : ''}</p>

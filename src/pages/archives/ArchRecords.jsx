@@ -17,10 +17,10 @@ const OFFICES = [
 
 export default function ArchRecords() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [office, setOffice] = useState(searchParams.get('office') || '');
@@ -48,7 +48,6 @@ export default function ArchRecords() {
         setTotal(data.total);
       })
       .catch((err) => {
-        toastArchError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

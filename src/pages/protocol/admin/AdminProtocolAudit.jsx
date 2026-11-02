@@ -10,8 +10,8 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminProtocolAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [action, setAction] = useState('');
@@ -30,7 +30,6 @@ export default function AdminProtocolAudit() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

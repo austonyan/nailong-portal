@@ -11,9 +11,9 @@ import { toastSuccess } from '../../components/toast.js';
 
 export default function AppealReviews() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [status, setStatus] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
   const [candidates, setCandidates] = useState([]);
@@ -28,7 +28,6 @@ export default function AppealReviews() {
       const data = await api.get('/appeal/reviews');
       setItems(data.items);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

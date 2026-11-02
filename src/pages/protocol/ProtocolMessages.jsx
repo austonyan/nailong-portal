@@ -46,9 +46,9 @@ function MessageList({ items, t, onRead, onArchive }) {
 
 export default function ProtocolMessages() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [tab, setTab] = useState('inbox');
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [archived, setArchived] = useState(null);
   const [unread, setUnread] = useState(0);
   const [tickets, setTickets] = useState([]);
@@ -70,7 +70,6 @@ export default function ProtocolMessages() {
       setArchived(arch.items);
       setTickets(support.items);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

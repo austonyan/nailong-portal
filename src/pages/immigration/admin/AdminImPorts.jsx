@@ -283,8 +283,8 @@ function PortsTab() {
 
 function AnnouncementsTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [ports, setPorts] = useState([]);
   const [editing, setEditing] = useState(null);
   const [offlineTarget, setOfflineTarget] = useState(null);
@@ -299,7 +299,6 @@ function AnnouncementsTab() {
       .get('/immigration/admin/announcements')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

@@ -12,8 +12,8 @@ import { toastSuccess, toastError } from '../../components/toast.js';
 
 export default function AppealComplaints() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [kind, setKind] = useState('complaint');
   const [category, setCategory] = useState('attitude');
   const [content, setContent] = useState('');
@@ -32,7 +32,6 @@ export default function AppealComplaints() {
       const data = await api.get('/appeal/complaints');
       setItems(data.items);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

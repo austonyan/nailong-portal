@@ -19,8 +19,8 @@ const CHANGE_STATUS_COLORS = {
 
 export default function AdminResResidents() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:避免每敲一个字都打一次接口。
   const dq = useDebouncedValue(q, 300);
@@ -34,7 +34,6 @@ export default function AdminResResidents() {
       const data = await api.get(`/resident/admin/residents?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

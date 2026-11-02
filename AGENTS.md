@@ -193,6 +193,17 @@ short version:
 - Prefer library components over raw HTML controls (`<button>`, `<input>`, `<select>`, …).
 - No dark mode: the library has no dark token set; don't attempt one.
 
+### 平台优先级（2026-11-02 起：桌面优先，移动端待排期）
+
+- **验收基准是桌面：** 1440px 为设计基准，1024px 为最低桌面宽度；1440 / 1024 下不出现横向滚动，
+  长编号完整换行。
+- **移动端不是当前门槛：** 360px 及以下的验收已排期延后，不作为发布阻塞项或缺陷 P0/P1 的定级
+  依据。现有窄屏样式（≤640 重排、≤480 表格压缩、`.table-actions` 换行）保留为 best-effort，
+  允许回归；重新排期移动端时再恢复 360 硬验收。
+- **已知缺口（重排移动端时先清）：** 360 下管理表格竖排单字、`/immigration/declare` 主操作按钮
+  溢出、`/dip/identity/:id` 关闭状态抽屉产生幽灵横向滚动。
+- `check:ui` 的 `.table-fit` / `.table-actions` 规则仍按桌面执行；不要因为移动端延期就移除它们。
+
 ### 前端交互约定（`check:ui` 强制）
 
 - **不要使用 `animal-island-ui` 的 `Notification`**：它在 React 19 下从 `react-dom` 主入口取

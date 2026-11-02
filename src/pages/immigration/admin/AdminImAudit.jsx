@@ -11,8 +11,8 @@ import { fmtDate, fmtDateTime } from '../../../lib/date.js';
 
 function AuditTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [actionFilter, setActionFilter] = useState('');
@@ -32,7 +32,6 @@ function AuditTab() {
         if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
       })
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
@@ -124,8 +123,8 @@ function AuditTab() {
 
 function BlacklistTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [adding, setAdding] = useState(false);
   const [userId, setUserId] = useState('');
   const [level, setLevel] = useState('warn');
@@ -138,7 +137,6 @@ function BlacklistTab() {
       .get('/immigration/admin/blacklist')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
@@ -226,8 +224,8 @@ function BlacklistTab() {
 
 function TemplatesTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -242,7 +240,6 @@ function TemplatesTab() {
       .get('/immigration/admin/templates')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
@@ -337,8 +334,8 @@ function TemplatesTab() {
 
 function SendLogTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -352,11 +349,10 @@ function SendLogTab() {
         setTotal(data.total);
       })
       .catch((err) => {
-        toastApiError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });
-  }, [page, t, loadError]);
+  }, [page, loadError]);
 
   useEffect(load, [load]);
 

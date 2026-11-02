@@ -1390,7 +1390,7 @@
       },
       "review": {
         "title": "认证审核工作台",
-        "active": "待处理（pending+补件）",
+        "active": "待处理（待认证 + 补件中）",
         "queueEmpty": "队列为空，喝杯椰子休息一下吧！",
         "review": "审核",
         "detailTitle": "申请详情",
@@ -2601,6 +2601,7 @@
         "sortOrder": "排序"
       },
       "notices": {
+        "pageTitle": "通知管理",
         "title": "标题",
         "tabNotices": "公告",
         "tabTemplates": "消息模板",
@@ -5763,6 +5764,7 @@
       "allStatus": "全部状态",
       "searchPlaceholder": "搜索编号、标题或关键词",
       "notices": {
+        "pageTitle": "公告管理",
         "title": "标题",
         "create": "新建公告",
         "edit": "编辑公告",
@@ -5954,6 +5956,7 @@
         "tip": "只有「已上线」的景点会出现在用户端；下线不会删除打卡记录。",
         "create": "新建景点",
         "edit": "编辑景点",
+        "detail": "景点详情",
         "searchPlaceholder": "搜索名称或编号",
         "empty": "还没有景点，先建一个吧",
         "namePlaceholder": "景点的简体名称",
@@ -6748,12 +6751,13 @@
   "residentPrefill": {
     "title": "使用居民证信息",
     "body": "检测到你持有有效居民证{{cardNo}}，是否用居民证持卡人信息预填本表单？",
+    "bodyNoFields": "检测到你持有有效居民证{{cardNo}}，但本表单没有可预填的字段，请手动填写。",
+        "nothing": "居民证没有可直接预填的字段，请手动填写",
     "holder": "持卡人{{name}}",
     "type": "类型{{type}}",
     "validUntil": "有效期至{{date}}",
     "fill": "使用居民证信息",
     "skip": "暂不使用",
-    "nothing": "居民证没有可直接预填的字段，请手动填写",
     "filled": "已从居民证预填"
   }
 }

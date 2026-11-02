@@ -26,8 +26,8 @@ const REVIEW_ACTION_I18N = {
 
 export default function AdminResReview() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
@@ -56,7 +56,6 @@ export default function AdminResReview() {
       // total 缩小后分页器虽然不渲染,page 仍可能 >1:夹回合法页码,别把人困在空表。
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

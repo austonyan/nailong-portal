@@ -41,11 +41,11 @@ function statusOptions(t) {
 
 export default function AdminTourArticles() {
   const { t, i18n } = useTranslation();
-  const loadError = useLoadError();
   const isTw = String(i18n.language || '').startsWith('zh-TW');
   // 第二列永远显示「另一种语言」:繁中界面显示简体源(titleCn),简中界面显示繁体(titleTw)。
   const otherLangLabel = isTw ? t('common.simplified') : t('common.traditional');
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
   const dq = useDebouncedValue(q, 300);
@@ -55,9 +55,8 @@ export default function AdminTourArticles() {
   const [busy, setBusy] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
-    loadError.clear();
-
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (dq.trim()) params.set('q', dq.trim());
@@ -65,7 +64,6 @@ export default function AdminTourArticles() {
       const data = await api.get(`/tourism/admin/articles?${params.toString()}`);
       setItems(data.items);
     } catch (err) {
-      toastTourError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

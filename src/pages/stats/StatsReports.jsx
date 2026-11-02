@@ -11,9 +11,9 @@ import { fmtDateTime, toastStatError } from './shared.jsx';
 
 export default function StatsReports() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [modalOpen, setModalOpen] = useState(false);
   const [year, setYear] = useState(String(new Date().getFullYear()));
   const [busy, setBusy] = useState(false);
@@ -24,7 +24,6 @@ export default function StatsReports() {
       const data = await api.get('/stats/reports');
       setItems(data.items);
     } catch (err) {
-      toastStatError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

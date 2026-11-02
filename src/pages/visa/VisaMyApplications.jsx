@@ -14,9 +14,9 @@ const WITHDRAWABLE = ['pending_review', 'supplement_required'];
 
 export default function VisaMyApplications() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [withdrawTarget, setWithdrawTarget] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -26,7 +26,6 @@ export default function VisaMyApplications() {
       const data = await api.get('/visa/applications');
       setItems(data.items);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

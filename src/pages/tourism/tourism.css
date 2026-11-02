@@ -348,11 +348,65 @@
   }
 }
 
-/* 360px 验收宽度:景点表 9 列压不进容器,「另一语言名称」列(第 3 列)在窄屏整列隐藏;
-   该语言版本的完整编辑仍在表单里,列表保留主语言名称。 */
-@media (max-width: 480px) {
-  .tour-attractions-table th:nth-child(3),
-  .tour-attractions-table td:nth-child(3) {
-    display: none;
-  }
+
+/* 景点详情抽屉:标签 + 值两列,长文本按语言成对排列。 */
+.tour-detail-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.tour-detail-list > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.tour-detail-list dt {
+  color: var(--animal-text-color-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tour-detail-list dd {
+  margin: 0;
+  color: var(--animal-text-color);
+  font-size: 14px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.tour-detail-section {
+  margin-top: 24px;
+}
+
+.tour-detail-section h3 {
+  margin: 0 0 8px;
+  color: var(--animal-text-color);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tour-detail-pair {
+  display: grid;
+  gap: 8px;
+}
+
+.tour-detail-pair p {
+  margin: 0;
+  color: var(--animal-text-color);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.tour-detail-lang {
+  display: inline-block;
+  min-width: 48px;
+  margin-right: 8px;
+  color: var(--animal-text-color-secondary);
+  font-size: 12px;
 }

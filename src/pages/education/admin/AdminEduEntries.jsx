@@ -27,8 +27,8 @@ const STATUS_FILTERS = ['', 'draft', 'pending_review', 'published', 'offline'];
 
 export default function AdminEduEntries() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [categories, setCategories] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
   const [q, setQ] = useState('');
@@ -51,7 +51,6 @@ export default function AdminEduEntries() {
       const data = await api.get(`/education/admin/entries?${params.toString()}`);
       setItems(data.items ?? []);
     } catch (err) {
-      toastEduError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

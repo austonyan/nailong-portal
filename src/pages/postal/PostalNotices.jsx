@@ -12,10 +12,10 @@ const PAGE_SIZE = 10;
 
 export default function PostalNotices() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const { id } = useParams();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [level, setLevel] = useState('');
@@ -34,7 +34,6 @@ export default function PostalNotices() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastPostError(t, err);
       loadError.report(err, loadListFn);
       setItems((prev) => prev ?? []);
       setTotal((prev) => prev ?? 0);

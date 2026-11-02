@@ -5,7 +5,7 @@ import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Select, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { fmtDateTime, toastArchError } from '../shared.jsx';
+import { fmtDateTime } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 const ACTION_OPTIONS = [
@@ -29,8 +29,8 @@ const ACTION_TAG = {
 
 export default function AdminArchAccess() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [userId, setUserId] = useState('');
@@ -56,7 +56,6 @@ export default function AdminArchAccess() {
         if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
       })
       .catch((err) => {
-        toastArchError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

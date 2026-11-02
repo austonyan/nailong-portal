@@ -24,8 +24,8 @@ const EMPTY_FORM = {
 
 export default function AdminEduTasks() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
@@ -41,7 +41,6 @@ export default function AdminEduTasks() {
       const data = await api.get('/education/admin/tasks');
       setItems(data.items ?? []);
     } catch (err) {
-      toastEduError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

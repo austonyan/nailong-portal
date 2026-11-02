@@ -434,16 +434,15 @@ function IdentityForm({ catalog, relations, editing, onSaved }) {
 
 export default function DipIdentity() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const { id: editing } = useParams();
   const [catalog, setCatalog] = useState({ identityTypes: [] });
   const [relations, setRelations] = useState([]);
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [openId, setOpenId] = useState(null);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
-    loadError.clear();
-
   const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/dip/types')
       .then((data) => setCatalog({ identityTypes: data.identityTypes ?? [] }))
@@ -456,7 +455,6 @@ export default function DipIdentity() {
       .get('/dip/identities?pageSize=100')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastDipError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

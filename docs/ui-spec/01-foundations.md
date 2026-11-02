@@ -316,7 +316,7 @@ font-family: var(--animal-font-family);
 | 语言 | `document.documentElement.lang` 随 `zh-CN`/`zh-TW` 切换；中文/繁体都要测试 |
 | 表单 | 每个输入有可见 label；必填有文字说明；错误贴近字段；`autocomplete` 正确（username/current-password/new-password） |
 | 图片 | 有信息量的图必须有 `alt`；装饰图 `alt=""`；二维码旁必须有可读编号 |
-| 缩放 | 200% 浏览器缩放 + 320px 宽不丢内容、不横向滚动 |
+| 缩放 | 200% 浏览器缩放 + 1024px 桌面宽不丢内容、不横向滚动（360px 移动端待排期） |
 | 动效 | 尊重 reduced motion；无自动播放的闪烁/循环装饰 |
 | 悬停 | 悬停不能是唯一入口；触摸设备没有 hover，关键信息/操作必须在点击/聚焦时也能获得 |
 | 错误 | 不只靠红色；文字说明“发生了什么 + 怎么改”；未知错误码回退到通用文案，不显示原始 key |

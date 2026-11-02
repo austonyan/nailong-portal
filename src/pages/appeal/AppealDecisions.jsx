@@ -6,13 +6,13 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Tag } from 'animal-island-ui';
 import { EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { DECISION_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime, toastAppealError } from './shared.jsx';
+import { DECISION_STATUS_COLORS, DECISION_TYPE_COLORS, fmtDateTime } from './shared.jsx';
 
 export default function AppealDecisions() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
 
   const load = useCallback(async function loadFn() {
     loadError.clear();
@@ -20,7 +20,6 @@ export default function AppealDecisions() {
       const data = await api.get('/appeal/decisions');
       setItems(data.items);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

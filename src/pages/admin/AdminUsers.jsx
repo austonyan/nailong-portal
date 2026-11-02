@@ -10,9 +10,9 @@ import { fmtDateTime } from '../../lib/date.js';
 
 export default function AdminUsers() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const { user: me, can } = useAuth();
   const [users, setUsers] = useState(null);
+  const loadError = useLoadError((users ?? []).length > 0);
   const [roles, setRoles] = useState([]);
   const [editing, setEditing] = useState(null); // null | {} (create) | user (edit)
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -29,7 +29,6 @@ export default function AdminUsers() {
     try {
       await Promise.all([loadUsers(), api.get('/roles').then((d) => setRoles(d.items))]);
     } catch (err) {
-      toastApiError(t, err);
       loadError.report(err, loadPageFn);
       setUsers((prev) => prev ?? []);
     }

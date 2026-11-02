@@ -13,8 +13,8 @@ const ACTIVE_STATUSES = ['pending', 'reviewing', 'executing'];
 
 export default function ArchRequests() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [types, setTypes] = useState([]);
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
@@ -30,7 +30,6 @@ export default function ArchRequests() {
       .get('/archives/deletion-requests')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastArchError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

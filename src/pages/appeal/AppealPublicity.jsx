@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Card, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
-import { fmtDateTime, toastAppealError } from './shared.jsx';
+import { fmtDateTime } from './shared.jsx';
 
 const PCT = (v) => `${Math.round((v || 0) * 100)}%`;
 
 export default function AppealPublicity() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [stats, setStats] = useState(null);
 
   const load = useCallback(function loadFn() {
@@ -21,7 +21,6 @@ export default function AppealPublicity() {
       .get('/appeal/publicity')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastAppealError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

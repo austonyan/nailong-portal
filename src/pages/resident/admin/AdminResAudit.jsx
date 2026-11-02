@@ -12,8 +12,8 @@ import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
 export default function AdminResAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [action, setAction] = useState('');
   // 动作检索 300ms 防抖:避免逐键打接口。
   const actionDebounced = useDebouncedValue(action, 300);
@@ -24,7 +24,6 @@ export default function AdminResAudit() {
       const data = await api.get(`/resident/admin/audit${actionDebounced.trim() ? `?action=${encodeURIComponent(actionDebounced.trim())}` : ''}`);
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

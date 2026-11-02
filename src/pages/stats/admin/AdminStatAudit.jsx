@@ -6,15 +6,15 @@ import { Title, Button, Card, Select, Table, Tag } from 'animal-island-ui';
 import { RefreshIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 
-import { fmtDateTime, toastStatError } from '../shared.jsx';
+import { fmtDateTime } from '../shared.jsx';
 
 // 与服务端 admin.js 实际写入的 action 一一对应。
 const ACTIONS = ['metric_create', 'metric_update', 'metric_delete', 'export', 'report_generate'];
 
 export default function AdminStatAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [action, setAction] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +26,6 @@ export default function AdminStatAudit() {
       const data = await api.get(`/stats/admin/audit${query}`);
       setItems(data.items);
     } catch (err) {
-      toastStatError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     } finally {

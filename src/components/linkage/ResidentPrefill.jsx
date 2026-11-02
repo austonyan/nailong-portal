@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Card, Title } from 'animal-island-ui';
 import { UsersIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
+import { fmtDate } from '../../lib/date.js';
 
 export default function ResidentPrefill({ onFill, fields = null, className = '' }) {
   const { t } = useTranslation();
@@ -56,19 +57,17 @@ export default function ResidentPrefill({ onFill, fields = null, className = '' 
       <div className="resident-prefill-body">
         <UsersIcon />
         <div className="resident-prefill-text">
-          <p>{t('residentPrefill.body', { cardNo: card.cardNo })}</p>
+          <p>{t(fillable ? 'residentPrefill.body' : 'residentPrefill.bodyNoFields', { cardNo: card.cardNo })}</p>
           <p className="muted-text">
             {t('residentPrefill.holder', { name: card.holder })} · {t('residentPrefill.type', { type: card.typeName })} ·{' '}
-            {t('residentPrefill.validUntil', { date: card.validUntil })}
+            {t('residentPrefill.validUntil', { date: fmtDate(card.validUntil) })}
           </p>
         </div>
         <div className="resident-prefill-actions">
-          {fillable ? (
+          {fillable && (
             <Button type="primary" onClick={handleFill}>
               {t('residentPrefill.fill')}
             </Button>
-          ) : (
-            <span className="muted-text">{t('residentPrefill.nothing')}</span>
           )}
           <Button type="text" onClick={() => setDismissed(true)}>
             {t('residentPrefill.skip')}

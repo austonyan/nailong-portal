@@ -20,10 +20,15 @@ const LoadErrorStateContext = createContext(null);
 export function LoadErrorProvider({ children, resetKey }) {
   const [failure, setFailure] = useState(null); // { error, retry }
   const [retrying, setRetrying] = useState(false);
+  const [hasData, setHasData] = useState(false);
 
   const clear = useCallback(() => {
     setFailure(null);
     setRetrying(false);
+  }, []);
+
+  const markData = useCallback((present) => {
+    setHasData(Boolean(present));
   }, []);
 
   // retry 由页面在 report 时传入,避免每个页面再注册一次回跳。
@@ -34,6 +39,7 @@ export function LoadErrorProvider({ children, resetKey }) {
 
   useEffect(() => {
     clear();
+    setHasData(false);
   }, [resetKey, clear]);
 
   const retry = useCallback(async () => {
@@ -46,10 +52,10 @@ export function LoadErrorProvider({ children, resetKey }) {
     }
   }, [failure]);
 
-  const actions = useMemo(() => ({ clear, report }), [clear, report]);
+  const actions = useMemo(() => ({ clear, report, markData }), [clear, report, markData]);
   const state = useMemo(
-    () => ({ error: failure?.error ?? null, retry, retrying }),
-    [failure, retry, retrying]
+    () => ({ error: failure?.error ?? null, retry, retrying, hasData }),
+    [failure, retry, retrying, hasData]
   );
 
   return (
@@ -59,9 +65,23 @@ export function LoadErrorProvider({ children, resetKey }) {
   );
 }
 
-export function useLoadError() {
+// 首次加载失败且页面没有可保留的数据时,把页面内容藏起来(仍保持挂载,
+// 重试成功后原地恢复,不丢筛选/滚动),只用错误卡说话——避免下面继续渲染
+// 「没有记录」造成“加载失败 = 真的没数据”的误读。有旧数据时保留页面,
+// 错误条浮在上方,用户还能继续查看上次结果。
+export function LoadErrorGate({ children }) {
+  const state = useContext(LoadErrorStateContext);
+  const hidden = Boolean(state?.error && !state.hasData);
+  return <div className={hidden ? 'load-error-hidden' : undefined}>{children}</div>;
+}
+
+export function useLoadError(hasData = false) {
   const ctx = useContext(LoadErrorActionsContext);
   if (!ctx) throw new Error('useLoadError must be used inside LoadErrorProvider');
+  const present = Boolean(hasData);
+  useEffect(() => {
+    ctx.markData(present);
+  }, [present, ctx]);
   return ctx;
 }
 
@@ -70,10 +90,14 @@ export function PageLoadError() {
   const actions = useContext(LoadErrorActionsContext);
   const state = useContext(LoadErrorStateContext);
   if (!actions || !state?.error) return null;
+  // 服务端错误码优先(403/429 等能说清原因),未知码回落到通用文案。
+  const message = state.error.code
+    ? t(`api.${state.error.code}`, { defaultValue: t('common.loadFailed') })
+    : t('common.loadFailed');
   return (
     <Card type="dashed" className="load-error" role="alert">
       <AlertCircleIcon size={22} className="load-error-icon" aria-hidden="true" />
-      <p className="load-error-text">{t('common.loadFailed')}</p>
+      <p className="load-error-text">{message}</p>
       <Button
         type="default"
         size="small"
