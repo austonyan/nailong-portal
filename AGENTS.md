@@ -1,405 +1,278 @@
 # AGENTS.md
 
-## Hard rule (non-negotiable): i18n must always ship Simplified AND Traditional Chinese
+奶龙统一门户: Vite + React 19 SPA + Express 5 API + SQLite (better-sqlite3)。纯 JavaScript
+(JSX + ESM),无 TypeScript、无测试框架,前端用 `animal-island-ui` 2.3.0。SPA 内含 12 个业务署:
+visa 签注、immigration 入境、docs 文书、dip 外交、resident 居民、protocol 礼宾、appeal 申诉、
+archives 档案、postal 邮政、tourism 文旅、stats 统计、education 教育。
 
-This portal uses **react-i18next** (docs: https://react.i18next.com/). The i18n layer
-(`src/i18n/index.js`) enforces the rule — do not weaken it:
+**动某个署之前先读 `docs/work.md`**:各署端点、状态机、权限码、编号前缀、站内信类型、跨署链路、
+自动审批矩阵、smoke 跑法都在里面(§3 各署、§7 smoke、§8 审计缺陷)。§8.1/§8.2 大部分已修并有
+smoke 断言;仍未修的是 P3、§8.4(有意设计)和五个 §8.2 子项(protocol `required_fields`、
+`dip_relation_types.validity_days` 关系过期、archives 隐藏仅限本署、postal `post_settings`
+管理 API、education 文章草稿)。不要重查已修项,也不要顺手「修」未修项——除非用户要求。
+新增署按 §9.1 顺序做:schema/routes/mount/linkage/auto-approve/nav/locales/smoke。
 
-- `REQUIRED_LOCALES = ['zh-CN', 'zh-TW']` is the only language whitelist. `zh-CN` and `zh-TW`
-  resource files under `src/i18n/locales/` must always both exist and stay key-identical;
-  `assertRequiredLocales()` throws at startup if they drift. Adding a language means adding
-  the new locale AND keeping both Chinese files complete.
-- Never hardcode user-visible strings in JSX — every string goes through `t(...)`.
-- Server error codes (`src/api/client.js` `ApiError.code`) are translated via the `api.*`
-  keys; map unknown codes to a generic fallback, never show raw keys.
-- `npm run check:i18n` scans every `t('...')` / `` t(`prefix.${...}`) `` call against the two
-  locale files and fails on missing keys, dead dynamic prefixes and uncovered enum values.
-  `npm run build` runs it first. Dynamic keys built from a runtime variable must either carry
-  a `defaultValue` or be added to the enum whitelist in `scripts/check-i18n.mjs`; admin-office
-  keys live under `<namespace>.admin.*` (e.g. `imm.admin.review.*`), never a bare page prefix.
-- The language switcher must offer exactly these two locales.
-- **zh-TW has its own font layer** (`src/index.css`, top of file): when `html[lang=zh-TW]`,
-  CJK glyphs switch to Ming/Song faces — body/interface text (weight ≤600) uses the
-  Education Standard Song, headings/display (≥700) use the bold Song. Both weight bands are
-  registered as one family `NL TW Serif` and split by `font-weight` automatically; sizes,
-  line heights and spacing stay identical to zh-CN (简繁同构). The shipped web artifacts are
-  `font/edusong-web.woff2` and `font/MTRSungBold-web.woff2`; the raw `font/edusong_Unicode.ttf`
-  / `font/MTRSungBold.otf` are sources only and must be rebuilt through
-  `pyftsubset --desubroutinize --flavor=woff2` if updated (FontForge subroutinized CFF is
-  rejected by browser OTS). Fonts are referenced only in the zh-TW scope: zh-CN downloads
-  nothing, the first switch fetches once and browser cache takes over.
+## 硬规则(不可谈判):i18n 永远同时出简体和繁体
 
-Server-stored content (catalogs, notices, message templates, event fields) follows the same
-rule through **bilingual columns**, not i18n keys:
+用 **react-i18next**。`src/i18n/index.js` 是执行层,不许弱化:
 
-- Every display column has a nullable `_tw` sibling (`name_tw`, `title_tw`, …). Migrations are
-  additive (`server/migrate.js` `ensureColumn` / `ensureTwColumns`), so old databases gain the
-  columns on boot. No column drops, no type changes, no rollback scripts — back up the data
-  directory before upgrading.
-- `src/api/client.js` sends `X-Nailong-Locale` with every request; `server/locale.js`
-  (`localeMiddleware`) rewrites JSON so `name` is the requested language, `nameTw` is the
-  Traditional value and (for zh-TW) `nameCn` is the Simplified source. Nested JSON keys such
-  as `labelTw` / `placeholderTw` / `titleTw` are localized too.
-- Admin forms edit both languages: bind the Simplified input to `fieldCn ?? field`, the
-  Traditional input to `fieldTw`, and submit `field` + `fieldTw`. An empty Traditional value
-  falls back to Simplified at read time.
-- Built-in seed content is translated in `server/content-i18n.js` (backfill by code or title,
-  never overwriting a non-empty admin value). Admin-created content stays single-language until
-  an admin fills the Traditional field; free-text business content (nicknames, comments,
-  reasons) is never machine-translated.
-- When adding a display column: add the `_tw` column to `CREATE TABLE`, add it to the office's
-  `ensureTwColumns` call, expose `fieldTw` from the serializer (or rely on the raw `_tw`
-  column), and add the paired input to the admin form.
+- `REQUIRED_LOCALES = ['zh-CN', 'zh-TW']` 是唯一语言白名单。`src/i18n/locales/` 下两个资源文件
+  必须都存在且 key 完全一致,`assertRequiredLocales()` 在启动时对不上就抛错。加语言 = 加新 locale
+  且保持两个中文文件完整。
+- JSX 里不许硬编码用户可见文案,一切走 `t(...)`。`src/api/client.js` 的 `ApiError.code` 用
+  `api.*` 翻译,未知 code 落到通用文案,绝不显示原始 key。
+- `npm run check:i18n`(build 第一步)扫描所有 `t('...')` / `` t(`prefix.${...}`) ``,缺 key、死动态
+  前缀、未覆盖枚举都失败。运行时变量拼的 key 要么带 `defaultValue`,要么加进
+  `scripts/check-i18n.mjs` 的枚举白名单;署管理台 key 放 `<namespace>.admin.*`(如
+  `imm.admin.review.*`),不要裸页面前缀。
+- 语言切换器只提供这两个 locale。
+- **zh-TW 有自己的字体层**(`src/index.css` 顶部):`html[lang=zh-TW]` 时正文(≤600)用教育标准
+  宋体、标题(≥700)用粗宋,两档同注册为 `NL TW Serif` 由 `font-weight` 自动分档;字号/行高/间距
+  与 zh-CN 完全一致(简繁同构)。线上产物 `font/edusong-web.woff2`、`font/MTRSungBold-web.woff2`;
+  `font/edusong_Unicode.ttf` / `MTRSungBold.otf` 只是源文件,更新需
+  `pyftsubset --desubroutinize --flavor=woff2` 重建(FontForge 子程序化 CFF 会被浏览器 OTS 拒绝)。
+  字体只在
+  zh-TW 作用域引用:zh-CN 不下载,首次切换拉一次后走缓存。
 
-## What this workspace is
+服务端存储内容(目录、通知、消息模板、活动字段)靠**双语列**而不是 i18n key:
 
-奶龙统一门户 (Nailong unified portal): a Vite + React 19 SPA frontend plus a Node/Express API
-server with SQLite (better-sqlite3). Plain JavaScript (JSX + ESM) — no TypeScript, no test
-runner. Frontend consumes the published `animal-island-ui` npm package (v2.3.0). The portal
-hosts **12 business offices (署)** as in-SPA services: visa (签注), immigration (入境), docs
-(文书), dip (外交), resident (居民), protocol (礼宾), appeal (申诉), archives (档案), postal
-(邮政), tourism (文旅), stats (统计), education (教育).
+- 每个展示列都有可空 `_tw` 兄弟列(`name_tw`、`title_tw` …)。迁移只增不删
+  (`server/migrate.js` 的 `ensureColumn` / `ensureTwColumns`),老库启动时补列;不删列、不改类型、
+  不写回滚脚本——升级前先备份数据目录。
+- `src/api/client.js` 每个请求带 `X-Nailong-Locale`;`server/locale.js` 的 `localeMiddleware` 重写
+  JSON:`name` 是请求语言、`nameTw` 是繁体、(zh-TW 时)`nameCn` 是简体源;`labelTw` /
+  `placeholderTw` / `titleTw` 等嵌套 key 同样本地化。
+- 管理表单双语编辑:简体输入绑定 `fieldCn ?? field`,繁体绑定 `fieldTw`,提交 `field` + `fieldTw`;
+  繁体为空时读取回退简体。
+- 内置种子内容在 `server/content-i18n.js` 翻译(按 code 或 title 回填,绝不覆盖管理员已填的非空值)。
+  管理员新建内容在填繁体前保持单语;自由文本业务内容(昵称、评论、理由)不做机翻。
+- 新增展示列:建表加 `_tw`、加进该署 `ensureTwColumns`、序列化输出 `fieldTw`(或直接用 `_tw` 列)、
+  管理表单加对应输入框。
 
-## Read `docs/work.md` before touching an office
+## 命令
 
-`docs/work.md` (2026-11-01 full-repo audit on this branch) is the single source for how the
-system actually works: per-office endpoints, state machines, permission codes, number prefixes,
-message types, cross-office chains, the auto-approval matrix, and exact smoke-run commands.
-Its §8 lists the defects the audit found. **§8.1 (P1) and most of §8.2 (P2) have since been
-fixed** in the same branch, with smoke assertions added for each; what is still open is P3,
-§8.4 (intentional-by-design behavior), and the §8.2 sub-items the fix round did not cover
-(protocol `required_fields` enforcement, `dip_relation_types.validity_days` relation expiry,
-archives hiding staying office-local, postal `post_settings` admin API, education article
-drafts). Don't rediscover the fixed ones, and don't "fix" an open one as a drive-by unless the
-user asks. §9.1 is the checklist for adding a new office — follow it in order
-(schema/routes/mount/linkage/auto-approve/nav/locales/smoke).
+- `npm run dev` — Vite HMR(`/api` 代理到 :3001);`npm run dev:server` — API :3001 watch;
+  `npm run dev:all` — 同时起。
+- `npm run build` — `check:i18n` → `check:ui` → `check:tokens` → `check:copy` → `vite build`,
+  任一检查失败即中止;`npm run start` — API(有 `dist/` 时一并托管)。
+- `npm run check:i18n` — i18n key 两语齐全;`npm run check:ui` — 下方前端交互约定。
+- `npm run check:tokens` — `src/**/*.css` 只能引用已安装库 CSS 里存在的 `--animal-*`(未知 token
+  = build 错);裸 hex/rgb 是警告,`@media print` 和二维码/票据/证书白纸选择器内豁免。
+- `npm run check:copy` — 文案排版(ui-spec 01-foundations §2.3):中文值里紧邻中文(或插值)的
+  `,` `:` `;` `?` `!` 和 `(…)` 必须全角;中文与英文/数字/插值间不手动加空格;省略号用 `…`;
+  敬语统一「你」,「您」即违规。`node scripts/check-copy.mjs --fix` 幂等归一(保护插值与 URL)。
+- `npm run lint` — **oxlint**(`.oxlintrc.json`),不是 ESLint。
+- 没有 test/typecheck/format 脚本。验证 = 静态检查 + smoke 脚本。
 
-## Commands
+## 架构
 
-- `npm run dev` — Vite dev server with HMR (proxies `/api` to :3001)
-- `npm run dev:server` — API server on http://localhost:3001 with watch
-- `npm run dev:all` — both at once (concurrently)
-- `npm run build` — runs `check:i18n` → `check:ui` → `check:tokens` → `check:copy` → `vite build`
-  (any check failure aborts the build); `npm run start` — API server (also serves `dist/` if present)
-- `npm run check:i18n` — every referenced i18n key has zh-CN + zh-TW entries
-- `npm run check:copy` — locale 文案排版规则(ui-spec 01-foundations §2.3):含中文的值里,邻中文
-  (或插值)的 `,` `:` `;` `?` `!` 与 `(…)` 必须用全角;中文与英文/数字/插值之间不手动加空格;
-  省略号用 `…`;敬语统一「你」,出现「您」即违规。`node scripts/check-copy.mjs --fix` 幂等归一
-  (插值与 URL 自动保护)。
-- `npm run check:ui` — the frontend interaction conventions below
-- `npm run check:tokens` — `src/**/*.css` may only reference `--animal-*` names that exist in
-  the installed library CSS (unknown token = build error); raw hex/rgb are warnings, exempt
-  inside `@media print` and QR/ticket/certificate white-paper selectors
-- `npm run lint` — **oxlint** (config in `.oxlintrc.json`; not ESLint)
-- No test, typecheck, or format scripts exist. Verification = static checks + smoke scripts.
+- `server/` — Express 5。`server/db.js` 是核心 SQLite schema(WAL、外键开启)并播种权限/角色/示例
+  服务;库文件在 `NAILONG_DATA_DIR`(默认 `server/data/`,gitignore,含 `nailong.db*` 与 `.jwt-secret`)。
+- 新署在 `server/<office>/`:`schema.js` 自带建表、权限码、角色、服务卡种子,另有
+  `routes.js` / `admin.js` / `util.js`,部分有 `inter.js`;visa/docs/appeal 是旧的
+  `server/<name>.js` + `server/routes/<name>*.js` 拆分。照抄你正在改的那个署。
+- `server/index.js` 每署按 **`inter` → `admin` → 用户路由** 挂载,顺序不能乱:具体前缀必须先挂,
+  否则被署级鉴权中间件吞掉。
+- 错误:抛 `server/http.js` 的 `ApiError(status, code, message)`,错误处理器输出 `{code, message}`,
+  SPA 映射到 `api.*`。
+- 鉴权:JWT access token(30 分钟,客户端内存)+ refresh token(7 天,httpOnly cookie,作用域
+  `/api/auth`),`sessions` 表保证 refresh 轮换、重放被拒;bcryptjs 哈希。
+- 首次启动:空库**没有用户**。`GET /api/setup/status` 返回 `required: true`,SPA 全路由跳 `/setup`,
+  `POST /api/setup/admin` 建首个管理员并登录。完成状态锁在 `app_meta.setup.completed_at`,之后再调
+  该 POST 返回 409 `SETUP_COMPLETE`;已有管理员的老库启动时自动上锁。首启设 `ADMIN_PASSWORD` 则走
+  非交互 `admin` 播种、跳过向导。
+- RBAC:43 个权限码(部分在 `server/db.js`,部分在各署 schema),中间件
+  `requirePermission('x:y')` 在 `server/auth.js`;系统角色权限每次启动追加回填。
+- 服务注册表 `services`:`GET /api/services` 按 `enabled` + `required_permission` 过滤;
+  `services.entry_mode`(`external` | `internal` | `internal_sso`)决定门户怎么开卡;
+  `POST /api/auth/introspect` 供外部服务校验 access token。
+- 环境变量(完整表在 README.md):`PORT`、`JWT_SECRET`、`ADMIN_PASSWORD`、`ACCESS_TOKEN_TTL`、
+  `REFRESH_TOKEN_TTL_DAYS`、`AUTO_APPROVE_INTERVAL_MS`、`NAILONG_DATA_DIR`,以及各署
+  `VISA_/DIP_/RESIDENT_/PROTOCOL_INTER_SERVICE_TOKEN`(未设时 inter 路由返回 `SERVICE_DISABLED`)。
 
-## Architecture
+## 身份档案与跨署预填
 
-- `server/` — Express 5 API. `server/db.js` holds the core SQLite schema (WAL, foreign keys
-  on) and seeds permissions/roles/demo services; DB file lives in `NAILONG_DATA_DIR`
-  (default `server/data/`, gitignored — contains `nailong.db*` and `.jwt-secret`).
-- Newer offices live in `server/<office>/` (`schema.js` self-registers its tables, permission
-  codes, roles and service-card seed; plus `routes.js` / `admin.js` / `util.js`, some
-  `inter.js`); visa/docs/appeal use the older `server/<name>.js` + `server/routes/<name>*.js`
-  split. Follow the pattern of the office you are editing.
-- `server/index.js` mounts each office **`inter` → `admin` → user routes** — the order matters,
-  the specific prefixes must be mounted before the user router or office auth middleware
-  would swallow them.
-- Errors: throw `ApiError(status, code, message)` from `server/http.js`; the error handler
-  serializes `{code, message}` and the SPA maps codes to `api.*` i18n keys.
-- Auth: JWT access token (30 min, in-memory on the client) + refresh token (7 days) in an
-  httpOnly cookie scoped to `/api/auth`, with a `sessions` table so refresh tokens rotate and
-  replay is rejected. Password hashing via bcryptjs.
-- First-run setup: a fresh database has **no users**. `GET /api/setup/status` reports
-  `required: true`, the SPA redirects every route to `/setup`, and `POST /api/setup/admin`
-  creates the first admin and signs them in. Completion is latched in `app_meta`
-  (`setup.completed_at`): afterwards that POST returns 409 `SETUP_COMPLETE`. Existing
-  databases with an admin are latched on boot. Setting `ADMIN_PASSWORD` on a first boot
-  keeps the non-interactive `admin` seeding path and skips the wizard.
-- RBAC: 43 permission codes across portal + 12 offices (seeded partly in `server/db.js`,
-  partly per office schema); middleware `requirePermission('x:y')` in `server/auth.js`.
-  System-role permission lists are backfilled on every boot (add-only).
-- Services registry (`services` table): `GET /api/services` filters by `enabled` +
-  `required_permission`; `services.entry_mode` (`external` | `internal` | `internal_sso`)
-  decides how the portal opens a card. `POST /api/auth/introspect` lets other services verify
-  access tokens.
-- Env vars (full table in README.md): `PORT`, `JWT_SECRET`, `ADMIN_PASSWORD`,
-  `ACCESS_TOKEN_TTL`, `REFRESH_TOKEN_TTL_DAYS`, `AUTO_APPROVE_INTERVAL_MS`, `NAILONG_DATA_DIR`,
-  and per-office `VISA_/DIP_/RESIDENT_/PROTOCOL_INTER_SERVICE_TOKEN` (inter routes return
-  `SERVICE_DISABLED` when unset).
+`users` 的 `display_name`(真实姓名)、`email`、`address` 是全门户唯一身份来源(旧库由
+`server/db.js` 的 `ensureColumn` 补列)。注册必须填真实姓名;`PATCH /api/auth/profile` 只接受
+`email` / `address`,`displayName` 一律返回 `PROFILE_NAME_IMMUTABLE`(仅管理员可在用户管理更正);
+资料页邮箱与地址必填。
 
-## 门户身份档案(个人资料)与跨署预填
+各署表单必须从这里预填,不能让用户重复录入:`src/lib/profileIdentity.js` 提供
+`{ realName, email, address }`;姓名输入在档案有值时禁用并显示「来自个人资料」,邮箱与地址按需预填,
+档案没有的字段才允许手填。居民登记是强约束:服务端在建草稿、保存、提交时用 `applyProfileIdentity`
+覆盖 `nickname` / `contact` / `virtualAddress`,变更审批通过后把地址(及形如邮箱的 contact)回写
+`users`。新署/新表单按同一约定接入。
 
-`users` 上的三列是全门户唯一的身份来源:`display_name`(真实姓名)、`email`、`address`
-(旧库由 `server/db.js` 的 `ensureColumn` 补列)。注册必须填写真实姓名;个人资料页
-`PATCH /api/auth/profile` 只接受 `email` / `address`,`displayName` 一律返回
-`PROFILE_NAME_IMMUTABLE`(只有管理员能在用户管理里更正)。邮箱与地址在个人资料页必填。
+## 署服务模式(12 署共用)
 
-各署申请表单必须从这里预填,而不是让用户重复录入:`src/lib/profileIdentity.js` 提供
-`{ realName, email, address }`;姓名输入框在档案有值时禁用并显示「来自个人资料」,邮箱与
-地址按需预填。档案里没有的字段才允许手动填写。居民登记是强约束:服务端在创建草稿、
-保存和提交时用 `applyProfileIdentity` 覆盖 `nickname` / `contact` / `virtualAddress`,
-变更审批通过后把地址(以及形如邮箱的 contact)回写 `users`。新增署/新表单按同一约定接入。
-
-## Office (署) service pattern
-
-Shared shape across the 12 offices (per-office detail lives in `docs/work.md` §3):
-
-- **SSO entry** — office cards are `internal_sso`: entering shows the portal identity-confirm
-  dialog once per browser tab (`sessionStorage 'nailong.<office>.sso'`), and the office's
-  `*Shell.jsx` re-enforces it for direct URLs. When seeding a service row **always write
-  `entry_mode`** — the column defaults to `external`, and a missed value silently opens the
-  card as an external service (immigration shipped this way; `server/db.js` now corrects it on
-  boot, but new offices must get it right in the seed).
-- **Pages** in `src/pages/<office>/`, per-office helpers in `shared.jsx`; the portal shell and
-  immigration use the shared `src/lib/date.js` dayjs formatters (invalid dates render `-`).
-- **站内信 — two schemes coexist; new message types must follow their office's scheme.**
-  visa/docs/appeal/archives store only `type` + JSON params, rendered client-side via
-  `visa.msg.*` / `docMsg.*` / `appeal.msg.*` / `arch.msg.*` (add both locales AND the enum in
-  `scripts/check-i18n.mjs`). immigration/dip/resident/protocol/postal render server-side from
-  editable bilingual templates in `*_message_templates`.
-- **Postal contract** — tourism/stats/education/archives-mirror notifications go through
-  `sendPostalMessage({userId, source, type, params})` (`server/postal/notify.js`), which
-  honors `post_preferences` and writes `post_messages`.
-- **Lazy sweeps** — deadline closes, expiry scans and status advances run inline on relevant
-  reads; there are no cron jobs. The auto-approve scheduler is the only resident timer.
-- **Numbering** — unpredictable prefixed numbers (`NLA-…`, `NLT-…`, `IM…`, `NRC-…`, …) with
-  conflict retry; public `verify` endpoints are rate-limited (in-process or DB table;
-  in-process counters reset on restart) and mask holder data.
-- **Text only — no file uploads.** Every office form, supplement request and admin screen
-  stores text/data only: no multer, no attachment tables, no `server/data/uploads/`. Forms
-  describe what to write instead of asking for a scan; `server/cleanupLegacyUploads.js` drops
-  the retired tables/columns and deletes the old upload tree on boot.
-- Visa specifics worth knowing: application states
+- **SSO 进入** — 服务卡是 `internal_sso`:每个浏览器标签页首次进入弹一次门户身份确认
+  (`sessionStorage 'nailong.<office>.sso'`),各署 `*Shell.jsx` 对直链再强制一次。播种服务行**必须
+  写 `entry_mode`**——该列默认 `external`,漏写会让卡片静默当外部服务打开(immigration 曾如此,
+  `server/db.js` 现在启动时纠正;新署要在种子里写对)。
+- **页面** — `src/pages/<office>/`,署内辅助放 `shared.jsx`;门户壳与 immigration 用共享的
+  `src/lib/date.js` dayjs 格式化(非法日期显示 `-`)。
+- **站内信 — 两套方案并存,新消息类型必须跟随本署方案。** visa/docs/appeal/archives 只存
+  `type` + JSON params,前端用 `visa.msg.*` / `docMsg.*` / `appeal.msg.*` / `arch.msg.*` 渲染(两语
+  都要加,且加进 `scripts/check-i18n.mjs` 枚举);immigration/dip/resident/protocol/postal 服务端用
+  `*_message_templates` 里的可编辑双语模板渲染。
+- **邮政契约** — tourism/stats/education/archives 镜像通知走
+  `sendPostalMessage({userId, source, type, params})`(`server/postal/notify.js`),它读取
+  `post_preferences` 并写 `post_messages`。
+- **惰性扫描** — 截止关闭、过期扫描、状态推进都在相关读取时内联执行,没有 cron;常驻定时器只有
+  自动审批调度器。
+- **编号** — 不可预测的前缀号(`NLA-…`、`NLT-…`、`IM…`、`NRC-…` 等)带冲突重试;公开 `verify`
+  端点限流(进程内或 DB,进程内计数重启即清)并遮蔽持有人信息。
+- **只收文本,不存文件。** 所有表单、补件、管理页只存文本/数据:没有 multer、没有附件表、没有
+  `server/data/uploads/`。表单写「该写什么」而不是要扫描件;`server/cleanupLegacyUploads.js`
+  启动时删旧表和旧上传目录。
+- Visa 要点:申请态
   `draft → pending_review → approved | rejected | supplement_required | withdrawn`,
-  `approved → issued`, supplement deadline → `closed`; permit
-  `valid → used | voided | expired`. The e-visa "PDF" is print CSS + `window.print()`, not a
-  generated file.
+  `approved → issued`,补件超期 → `closed`;许可 `valid → used | voided | expired`。
+  电子签「PDF」是打印 CSS + `window.print()`,不生成文件。
 
-## docs/ mixes upstream and project-owned files — know which is which
+## docs/ 上游文件与本项目文件
 
-- **Project-owned, authoritative:** `docs/ui-spec/` (this repo's UI spec: six layers, DTCG
-  `tokens.json`, contrast measurements, deviation register), `docs/work.md`, `docs/newcontent.md`.
-- **Upstream-derived, reference only:** `docs/design-system/`, `docs/adr/`, `docs/development/`
-  were authored for the [animal-island-ui library repo](https://github.com/guokaigdg/animal-island-ui).
-  Their token values lag the installed 2.3.0 runtime; the structures and scripts they document —
-  `src/components/<Name>/`, `test/`, `demo/`, Vitest, ESLint, alias `@/*`, `npm run ci` /
-  `test:a11y` / `check:docs` — **do not exist here**. Don't try to run them.
-- Conflict-resolution order for UI values: runtime
-  `node_modules/animal-island-ui/dist/index.css` + `dist/types` → `docs/ui-spec/` →
-  `docs/design-system/`. **Never copy a hex out of design-system docs.**
+- **本项目权威:** `docs/ui-spec/`(UI 规范:六层、DTCG `tokens.json`、对比度实测、偏差登记)、
+  `docs/work.md`、`docs/newcontent.md`。
+- **上游参考:** `docs/design-system/`、`docs/adr/`、`docs/development/` 属于
+  [animal-island-ui 库仓库](https://github.com/guokaigdg/animal-island-ui),token 值落后于已装的
+  2.3.0;其中描述的 `src/components/<Name>/`、`test/`、`demo/`、Vitest、ESLint、`@/*` 别名、
+  `npm run ci` / `test:a11y` / `check:docs` **这里都不存在**,不要跑。
+- UI 取值冲突顺序:运行时 `node_modules/animal-island-ui/dist/index.css` + `dist/types` →
+  `docs/ui-spec/` → `docs/design-system/`。**绝不从 design-system 文档抄色值。**
 
-## Building UI here
+## 写 UI
 
-Read `.agents/skills/animal-island-ui-style/SKILL.md` (and its `references/`) before writing
-any page or component — it carries the component catalog and the library's hard rules. The
-short version:
+先读 `.agents/skills/animal-island-ui-style/SKILL.md` 及其 `references/`(组件目录 + 库硬规则),要点:
 
-- Import the stylesheet exactly once at the app entry: `import 'animal-island-ui/style'`.
-- Never invent props — check the catalog references in the skill, or the package's
-  TypeScript declarations in `node_modules/animal-island-ui/dist/types`.
-- Import only from the package root and `animal-island-ui/style` — no deep imports.
-- Style custom elements with `var(--animal-*)` tokens; never hard-code colors or override a
-  component's colors/radii/shadows via `className`/`style`. Layout constants may use `--nl-*`.
-- Palette bans: pure black text, cold gray backgrounds, cold blue focus rings. Focus is warm
-  yellow (`#ffcc00` on inputs) or mint. Buttons and inputs are 50px pills; nothing interactive
-  below 12px radius.
-- Icons come from `naive-icons` — never emoji, Unicode symbols, or hand-rolled SVG.
-- Prefer library components over raw HTML controls (`<button>`, `<input>`, `<select>`, …).
-- No dark mode: the library has no dark token set; don't attempt one.
+- 样式表只在入口引入一次:`import 'animal-island-ui/style'`;只从包根和
+  `animal-island-ui/style` 引入,不许深路径。
+- 不自造 prop——查技能里的目录或 `node_modules/animal-island-ui/dist/types`。
+- 自定义元素用 `var(--animal-*)` token;不硬编码颜色,不用 `className`/`style` 覆盖组件的颜色/
+  圆角/阴影。布局常量可用 `--nl-*`。
+- 禁用:纯黑文字、冷灰背景、冷蓝 focus ring。Focus 用暖黄(输入框 `#ffcc00`)或薄荷绿。
+  按钮/输入框是 50px 药丸,任何可交互元素圆角不低于 12px。
+- 图标用 `naive-icons`,不用 emoji、Unicode 符号、手写 SVG。
+- 优先库组件,不用裸 `<button>` / `<input>` / `<select>` 等。
+- 无暗色模式(库没有暗色 token),不要尝试。
+- 平台优先级:**桌面优先**。1440px 设计基准、1024px 最低桌面宽,这两个宽度不许横向滚动,长编号
+  完整换行;移动端(≤360)验收已延期,不作为发布阻塞或 P0/P1 定级依据,现有窄屏样式保留为
+  best-effort、允许回归。重排移动端时先清三个已知缺口:360 下管理表格竖排单字、
+  `/immigration/declare` 主按钮溢出、`/dip/identity/:id` 关闭态抽屉产生幽灵横向滚动。
+  `check:ui` 的 `.table-fit` / `.table-actions` 仍按桌面执行,不因移动端延期删除。
 
-### 平台优先级（2026-11-02 起：桌面优先，移动端待排期）
+### 前端交互约定(`check:ui` 强制)
 
-- **验收基准是桌面：** 1440px 为设计基准，1024px 为最低桌面宽度；1440 / 1024 下不出现横向滚动，
-  长编号完整换行。
-- **移动端不是当前门槛：** 360px 及以下的验收已排期延后，不作为发布阻塞项或缺陷 P0/P1 的定级
-  依据。现有窄屏样式（≤640 重排、≤480 表格压缩、`.table-actions` 换行）保留为 best-effort，
-  允许回归；重新排期移动端时再恢复 360 硬验收。
-- **已知缺口（重排移动端时先清）：** 360 下管理表格竖排单字、`/immigration/declare` 主操作按钮
-  溢出、`/dip/identity/:id` 关闭状态抽屉产生幽灵横向滚动。
-- `check:ui` 的 `.table-fit` / `.table-actions` 规则仍按桌面执行；不要因为移动端延期就移除它们。
+- **不用 `animal-island-ui` 的 `Notification`**:React 19 下它从 `react-dom` 主入口取 `createRoot`
+  会抛异常,事件处理器停在提示行,后续关窗/刷新都不执行。统一用 `src/components/toast.js` 的
+  `toastSuccess / toastError / toastInfo / toastWarning / toastApiError`,任何提示辅助都委托给它。
+- 每个 `<Table>` 必须 `className="table-fit"`:靠自动列宽 + 表头/长文本换行压进容器,**不加横向
+  滚动**,不传 `size`,列不写 `ellipsis`;操作列用 `.table-actions`(≥901px 不换行,≤900px 才换行)。
+- **弹窗只能显式关闭**:每个 `<Modal>` / `<Drawer>` 必写 `maskClosable={false}`(库默认 `true`,
+  误点会丢整张表单);关闭入口是取消/关闭按钮、抽屉右上 ×、Esc;`footer={null}` 的弹窗要自带
+  取消/关闭按钮(用 `.form-actions` 排版)。
+- 异步弹窗必须有 `busy`:提交/确认 `loading={busy} disabled={busy}`,`onClose` 在 busy 时直接
+  return。成功先关窗/重置表单,再 toast,再 `await load()`;失败留在弹窗并 toast 错误;
+  取消/重开清空表单。
+- `Switch` 用 `checked`,不用 `value`(库不支持,显示会与服务器状态相反)。
+- `<Tabs>` 传了 `activeKey` 就必须同时传 `onChange`(受控后库内部 state 失效,漏了页签点不动);
+  只定初始页签用 `defaultActiveKey`。
+- `<Select>` 面板由 `src/components/selectFloat.js`(CSS `selectFloat.css`,`main.jsx` 装一次)
+  全局接管:库默认画在触发器右侧且只按视口判断,弹窗/抽屉/卡片里会被 `overflow` 裁掉;接管后
+  统一下方展开、空间不足上翻、收进最近裁剪容器并自带滚动,面板打开时 Esc 只收面板。
+  **不要在页面里另写定位覆盖。**
+- 必填项提交前校验(用 `common.required`),空值不可提交;删除/作废/吊销等不可逆操作要有确认、
+  `busy` 和成功提示,删除成功文案用 `common.deleted`。
 
-### 前端交互约定（`check:ui` 强制）
+### 设计检测(改完前端必跑)
 
-- **不要使用 `animal-island-ui` 的 `Notification`**：它在 React 19 下从 `react-dom` 主入口取
-  `createRoot` 会抛异常，事件处理器会停在提示这一行，后续关弹窗/刷新都不执行。统一用
-  `src/components/toast.js` 的 `toastSuccess / toastError / toastInfo / toastWarning /
-  toastApiError`；任何提示辅助函数都委托给它。
-- 每个 `<Table>` 必须带 `className="table-fit"`。表格靠自动列宽 + 表头/长文本换行压缩进
-  容器，**不要加横向滚动**；不要给 Table 传 `size`，不要给列写 `ellipsis`。操作列用
-  `.table-actions`（≥901px 不换行，≤900px 才换行）。
-- **弹窗只能显式关闭**：每个 `<Modal>` / `<Drawer>` 都必须写 `maskClosable={false}`，点遮罩
-  不再关闭（库默认是 `true`，误点一下就会丢掉整张表单）。关闭入口是「取消/关闭」按钮、抽屉
-  右上角的 ×，或 Esc。`footer={null}` 的弹窗要自带取消/关闭按钮（用 `.form-actions` 排版）。
-- 异步弹窗必须有 `busy`：提交/确认按钮 `loading={busy} disabled={busy}`，
-  `onClose` 在 busy 时直接返回。成功后先关窗/重置表单，再 toast，再 `await load()`；
-  失败保持弹窗并 toast 错误。取消/重开时清空表单。
-- `Switch` 用 `checked`，不要用 `value`（库不支持，会让显示与服务器状态相反）。
-- `<Tabs>` 传了 `activeKey` 就必须同时传 `onChange`：受控状态下库内部 state 不再生效，
-  漏了 `onChange` 页签会一直停在初始页（表现为「点不动」）。只想定初始页签就用
-  `defaultActiveKey`。
-- `<Select>` 的选项面板由 `src/components/selectFloat.js`（CSS 在 `selectFloat.css`，在
-  `main.jsx` 里安装一次）全局接管：库默认把面板画在触发器**右侧**且只按视口判断，弹窗、
-  抽屉、卡片里会被 `overflow` 裁掉。接管后统一在触发器下方展开、空间不足时上翻，宽高收进
-  最近的裁剪容器并自带滚动；面板打开时 Esc 只收起面板、不会连带关闭外层弹窗。
-  **不要在页面里为下拉框另写定位覆盖**；新增页面无需改动即可生效。
-- 必填字段在提交前校验（用 `common.required`），空值不可提交；删除/作废/吊销等不可逆操作
-  要有确认、busy 和成功提示，删除成功文案用 `common.deleted`。
-- `npm run check:ui` 扫描以上约定并已接入 `npm run build`。
-
-### 设计检测（改完前端必跑，强规则）
-
-每次改完前端文件（`src/` 下的 `.jsx` / `.js` / `.css`，以及改到的 `index.html`），在继续下一步
-或汇报之前，**必须**对本轮改过的每个文件直接跑一次 Impeccable 设计检测，把发现项当作设计提醒：
+每轮改完 `src/` 下的 `.jsx` / `.js` / `.css`(以及改到的 `index.html`),在继续或汇报前**必须**
+对每个改过的文件跑一次 Impeccable 检测:
 
 ```bash
 "$HOME/.zcode/cli/plugins/cache/impeccable/impeccable/4.8.0/skills/impeccable/scripts/impeccable" detect src/pages/Foo.jsx src/components/Bar.jsx
 ```
 
-同一轮的多个文件可以一次传入。插件升级后版本目录会变；上面路径不存在时，先取当前安装的
-launcher 再跑：
+同轮多文件可一次传入。插件升级后版本目录会变,路径不存在时取最新 launcher:
 
 ```bash
 LAUNCHER=$(ls -d "$HOME"/.zcode/cli/plugins/cache/impeccable/impeccable/*/skills/impeccable/scripts/impeccable | sort -V | tail -1)
 "$LAUNCHER" detect <改过的文件...>
 ```
 
-检测自动读取项目 `.impeccable/config.json` 的忽略项。**退出码不代表有无问题**，要读输出里的
-`[rule]` 行和说明。结果按三类处理：
+检测读项目 `.impeccable/config.json` 的忽略项。**退出码不代表有无问题**,要读输出里的 `[rule]`
+行。三类处理:真问题当场修,不用 ignore 绕过;确认误报/项目既有约定,用最窄忽略并写理由
+(`"$LAUNCHER" hooks ignore-value <rule> <value> --reason "..."`),文件级或整条规则级忽略先问
+用户;拿不准的保留并在回复里提出。单文件扫描对 `.jsx` / `.js` / `.css` 只做正则,对比度、字号等
+元素级规则不跑,结果是下限;要全量先 `npm run dev`,再 `"$LAUNCHER" detect http://localhost:5173`。
+汇报写清扫了哪些文件、发现什么、修了什么/为什么保留。
 
-- **真问题**：当场修掉，不要用 ignore 绕过。
-- **确认误报 / 项目已有明确约定**：用最窄的忽略持久化并说明理由，例如
-  `"$LAUNCHER" hooks ignore-value <rule> <value> --reason "..."`；文件级或整条规则级忽略先问用户。
-- **拿不准**：保留发现项，在回复里提出来。
+## Smoke 脚本(这就是测试套件)
 
-单文件扫描对 `.jsx` / `.js` / `.css` 只做正则匹配，对比度、字号这类元素级规则不会跑，结果是
-下限而不是「干净」结论；需要全量检查时先 `npm run dev`，再对 dev server 跑
-`"$LAUNCHER" detect http://localhost:5173`。汇报时写清本轮扫了哪些文件、发现什么、
-修了什么 / 为什么保留。
+19 个脚本,2026-11-02 全绿;逐个断言矩阵在 `docs/work.md` §7。
 
-## Smoke scripts (this is the test suite)
+- **自包含**(自建临时 API + 全新 `NAILONG_DATA_DIR`):`node server/scripts/smoke-setup.mjs`,
+  以及同目录 `smoke-i18n`、`smoke-messages`、`smoke-auto-approve`、`smoke-linkage-identity`、
+  `smoke-archives`、`smoke-tourism`、`smoke-postal`、`smoke-stats`、`smoke-education`、
+  `smoke-offices-linkage`、`smoke-verify-center`。immigration 的在 `server/immigration/smoke.mjs`
+  (自启,`SMOKE_PORT` 覆盖 3210)。
+- **需要已运行 API + base URL**:`node server/scripts/smoke-visa.mjs http://127.0.0.1:<port>`,
+  同理 `smoke-dip`、`smoke-resident`、`smoke-protocol`、`smoke-appeal`、`smoke-linkage`。服务器用
+  全新 `NAILONG_DATA_DIR` 并按流程设好 `*_INTER_SERVICE_TOKEN`。docs 没有专属脚本,由
+  `smoke-linkage` + `smoke-auto-approve` 覆盖。
+- 脚本用**固定用户名**:数据目录绝不跨轮复用。它们通过 `server/scripts/bootstrap-admin.mjs` 的
+  `ensureAdmin()` 建首个管理员(密码取 `ADMIN_PASSWORD`,否则开发默认值)。
 
-19 scripts, all green on 2026-11-02; per-script assertion matrix in `docs/work.md` §7:
+## 跨署系统
 
-- **Self-contained** (boot their own temporary API on a fresh `NAILONG_DATA_DIR`):
-  `node server/scripts/smoke-setup.mjs`, `smoke-i18n`, `smoke-messages`, `smoke-auto-approve`,
-  `smoke-linkage-identity`, `smoke-archives`, `smoke-tourism`, `smoke-postal`, `smoke-stats`,
-  `smoke-education`, `smoke-offices-linkage`, `smoke-verify-center` (same naming pattern). Immigration's smoke lives
-  at `server/immigration/smoke.mjs` (self-starts, `SMOKE_PORT` overrides 3210).
-- **Need a running API + base URL argument**: `node server/scripts/smoke-visa.mjs
-  http://127.0.0.1:<port>` — same for `smoke-dip`, `smoke-resident`, `smoke-protocol`,
-  `smoke-appeal`, `smoke-linkage`. Start the server with a fresh `NAILONG_DATA_DIR` and the
-  `*_INTER_SERVICE_TOKEN` vars the flow needs. The docs office has no dedicated smoke script —
-  it is covered by `smoke-linkage` + `smoke-auto-approve`.
-- Scripts use **fixed usernames**: never reuse a data dir across runs. They bootstrap the
-  first admin through `ensureAdmin()` from `server/scripts/bootstrap-admin.mjs` (password
-  from `ADMIN_PASSWORD`, else a dev default).
+- **链路** `server/linkage.js`:各署共用一个 SQLite,内部检查直接读写对方表而非 HTTP 自调
+  (visa 许可 ↔ immigration 核验/回写、docs 五署业务号核验 + appeal 裁定、appeal 校验/快照/回写/
+  抽检、protocol 身份与礼遇核验、resident 福利通道、dip 签证资格与身份失效作废许可)。各署
+  `/api/*/inter` 仍保留给独立部署调用方,仍需服务令牌。面向用户的 `/api/linkage` **绑定身份**,
+  只列调用者自己的记录(`listOwnedRecords` 按 `users.id`),首次抓取前由
+  `src/components/linkage/LinkageConsentModal.jsx` 取会话级同意并展示身份依据,每次抓取/核验写
+  `linkage_access_logs`。归属严格:无主或他人记录 `owned:false`,非属主隐藏标题/详情,docs 拒绝
+  未找到或非属主的业务号(`DOC_BIZ_NOT_OWNED`)。新 UI 用
+  `src/components/linkage/LinkageField.jsx`,不写裸号码输入框。appeal 回写
+  (`writebackBusiness`)只重开被拒/关闭记录,已发许可、证件、证书按设计只审计。
+- **自动审批** `server/autoApprove.js`:`service_auto_approve` 每署一行
+  (`off` | `immediate` | `delayed`,延迟 1–10080 分钟),单调度器每 5 秒一跳
+  (`AUTO_APPROVE_INTERVAL_MS` 供测试覆盖;每队列每跳最多 20 行)。9 个署注册处理器(visa、
+  immigration、docs、dip、resident、protocol、appeal、archives、education),处理器调**与手动端点
+  相同的审批核心**,状态、审核记录、审计、站内信、下游凭证、跨署检查不会漂移。设置端点
+  `GET/PATCH /api/auto-approve/:service`,用该署管理权限(`visa:manage`、`imm:admin`、
+  `docs:manage`、`dip:admin`、`res:manage`、`evt:manage`、`appeal:manage`、`arch:manage`、
+  `edu:manage`),各署管理设置页嵌 `src/components/AutoApproveSettings.jsx`。自动决定用 `system`
+  身份、`detail.auto = true`。设计边界:visa 审批不发许可、appeal 只受理不裁定、education 只批不拒、
+  archives 一跳内完成受理→批准→执行。
+- **外壳与侧栏** `src/components/AppLayout.jsx` 是唯一登录后外壳。管理员:侧栏
+  `src/components/Sidebar.jsx`(260px、sticky、独立滚动)含门户首页/12 署/个人资料/系统管理,细
+  头部放面包屑、收件铃、语言、头像、退出;≤1025px 侧栏进左侧 `Drawer`(`maskClosable={false}`)。
+  非管理员:无侧栏,头部保留品牌与账号操作,从门户卡片进服务,署内用各自的横向页签。
+  "管理员" = `hasRole('admin')` 或有任一管理权限,规则在 `src/nav/navConfig.js` 的
+  `isPortalAdmin()`;该文件是侧栏/面包屑的唯一来源
+  (`{ key, base, labelKey, icon, permission, admin: { base, entries } }`,首个有权的管理台落地页
+  生效),侧栏只到「署 → 管理台」,不要重复署内页签。`navConfig.js` 必须零依赖:
+  `scripts/check-i18n.mjs` 会 import 它校验每个 `NAV_LABEL_KEYS` 两语齐全。新增署要加进
+  `OFFICE_NAV`、两语 `nav.*` 标签和 admin entries。
+- **跨署收件箱** `server/routes/messages.js`:聚合 `visa_messages`、`doc_messages`、
+  `appeal_messages`、`arch_messages`、`im_messages`、`dip_messages`、`res_messages`、
+  `pro_messages`、`post_messages`,**只读这些表**——不建新表、不双写,标记已读写回源表,署内收件箱
+  与全局永不打架。`GET /api/messages?status=all|unread&office=&limit=50` →
+  `{ items, unread: { total, byOffice }, offices }`;`GET /api/messages/unread` 供头部角标轮询;
+  `POST /api/messages/read` `{ office, id }` 与 `POST /api/messages/read-all` `{ office? }` 回写。
+  按各署门户权限(`visa:apply`、`imm:portal` …)决定可见性。注意:`arch_messages` 没有
+  `archived` 列;archives 同时镜像到 `post_messages`(`archives_` 前缀),邮政扫描按
+  `source = 'archives'` 排除以免重复计数;tourism/education/stats 通知也存 `post_messages`
+  (邮政契约),所以这三署没有自己的收件箱表。标题:immigration/dip/resident/protocol 返回服务端
+  渲染的 `title`/`body`(带 `*Tw` 供 `localeMiddleware` 本地化),visa/docs/appeal/archives/postal
+  返回 `type` + `params`,由 `src/components/InboxDrawer.jsx` 用 `visa.msg.*` / `docMsg.*` /
+  `appeal.msg.*` / `arch.msg.*` / `post.msg.*` 渲染。
 
-## Cross-service linkage
+## 当前状态
 
-`server/linkage.js` is the in-process cross-office bus. All offices share one SQLite DB, so
-internal checks read/write each other's tables directly instead of doing HTTP to self:
-visa permit ↔ immigration check/writeback, docs business-number verification across the
-five offices (plus appeal decisions), appeal validate/snapshot/writeback/inspection
-sampling, protocol identity/courtesy checks, resident benefit channels, and diplomatic
-visa eligibility + permit void-on-identity-loss. The per-office `/api/*/inter` routes
-remain for independently deployed callers and still require their service tokens.
-
-User-facing linkage is **identity-bound**: `/api/linkage` (any authenticated user)
-lists only the caller's own records (`listOwnedRecords`, filtered by `users.id`), so the
-five entry points (docs apply, immigration declaration, protocol courtesy/registration,
-appeal apply) can offer "fetch my record" instead of copy-pasting a number. Before the
-first fetch per service+source in a browser tab, `src/components/linkage/LinkageConsentModal.jsx`
-asks for session-scoped consent and shows the identity basis (resident card when one
-exists, otherwise the portal account). Every fetch/verify writes `linkage_access_logs`.
-Ownership is strict: `verifyBusinessRecord` treats ownerless records and other users' records
-as `owned:false`, hides title/detail for non-owners, and docs rejects any typed business
-number that is not found+owned (`DOC_BIZ_NOT_OWNED`). New UI must use
-`src/components/linkage/LinkageField.jsx` rather than a bare number input.
-Appeal write-back (`writebackBusiness`) only reopens rejected/closed records — issued permits,
-cards and certificates are audit-only by design.
-
-## Cross-service auto-approval
-
-`server/autoApprove.js` owns the `service_auto_approve` table (one row per office:
-`off` | `immediate` | `delayed`, delay 1–10080 minutes) and one in-process scheduler
-that ticks every 5 seconds (`AUTO_APPROVE_INTERVAL_MS` overrides the interval for
-tests; max 20 rows per queue per tick). **Nine** offices register a processor (visa,
-immigration, docs, dip, resident, protocol, appeal, archives, education); the processor
-calls the **same approval core** as the manual endpoint, so status transitions, review
-records, audit, messages, downstream credentials and cross-office checks never drift.
-Settings live at `GET/PATCH /api/auto-approve/:service`, guarded by that office's manage
-permission (`visa:manage`, `imm:admin`, `docs:manage`, `dip:admin`, `res:manage`,
-`evt:manage`, `appeal:manage`, `arch:manage`, `edu:manage`); every office admin settings
-page embeds `src/components/AutoApproveSettings.jsx`. Automatic decisions use the `system`
-actor and `detail.auto = true`. Limits by design: visa approval never issues the permit,
-appeal only accepts (never decides), education only approves (never rejects), archives
-runs accept→approve→execute in one tick.
-
-## App shell and the admin sidebar
-
-`src/components/AppLayout.jsx` is the only authenticated shell. It renders two
-different layouts:
-
-- **Admin** — `src/components/Sidebar.jsx` (260 px, sticky, own scroll) with
-  门户首页 / 12 offices / 个人资料 / 系统管理, plus a slim header holding the
-  breadcrumb, the inbox bell, language, avatar and logout. Below 1025 px the
-  sidebar moves into a left `Drawer` opened by a menu button (the drawer is
-  `maskClosable={false}` like every other dialog).
-- **Everyone else** — no sidebar at all: the header keeps the brand and the
-  account actions, and services are entered from the portal cards, with each
-  office's own horizontal tab bar (署内导航) once inside.
-
-"Admin" means `hasRole('admin')` or holding any management permission; the rule
-lives in `isPortalAdmin()` in `src/nav/navConfig.js`. That file is the single
-source for the sidebar/breadcrumb: `{ key, base, labelKey, icon, permission,
-admin: { base, entries } }` per office, where `admin.entries` lists candidate
-管理台 landings and the first permitted one wins. Sidebar depth stops at
-「署 → 管理台」 — do not duplicate the in-office tab rows there.
-
-`navConfig.js` must stay dependency-free: `scripts/check-i18n.mjs` imports it and
-verifies every `NAV_LABEL_KEYS` entry exists in both locales (those keys reach
-`t()` through a variable, so the normal source scan cannot see them). Adding an
-office means adding it to `OFFICE_NAV`, its `nav.*` label to both locale files,
-and its admin entries.
-
-## Cross-service inbox (`/api/messages`)
-
-`server/routes/messages.js` aggregates every office mailbox for the signed-in
-user: `visa_messages`, `doc_messages`, `appeal_messages`, `arch_messages`,
-`im_messages`, `dip_messages`, `res_messages`, `pro_messages` and
-`post_messages`. It is deliberately **read-only over existing tables** — no new
-table, no dual writes — and marking read writes back to the originating table,
-so the per-office inbox pages and the global one never disagree.
-
-- `GET /api/messages?status=all|unread&office=&limit=50` →
-  `{ items, unread: { total, byOffice }, offices }`; `GET /api/messages/unread` is
-  the header-badge poll; `POST /api/messages/read` `{ office, id }` and
-  `POST /api/messages/read-all` `{ office? }` write back to the source table.
-- Inclusion is gated by each office's portal permission (`visa:apply`,
-  `imm:portal`, …), so the aggregate never shows a mailbox the caller could not
-  open.
-- Normalizations to keep in mind: `arch_messages` has no `archived` column, and
-  archives also mirrors notifications into `post_messages` (types prefixed
-  `archives_`) — the postal sweep excludes `source = 'archives'` so nothing is
-  counted twice. `post_messages` also carries tourism/education/stats notices
-  (postal contract), which is why those three offices need no mailbox of their own.
-- Titles: immigration/dip/resident/protocol return server-rendered `title`/`body`
-  (plus `*Tw` so `localeMiddleware` localizes them); visa/docs/appeal/archives/postal
-  return `type` + `params` and `src/components/InboxDrawer.jsx` renders them with
-  the office's existing `visa.msg.*` / `docMsg.*` / `appeal.msg.*` / `arch.msg.*` /
-  `post.msg.*` keys.
-
-## Current state
-
-As of 2026-11-02 the portal and all 12 offices are functional end to end (19 smoke
-scripts plus the immigration self-starter, all green on a fresh DB): auth, RBAC, service cards,
-profile, admin screens, 43 permission codes, cross-service linkage, per-office auto-approval,
-service mutual-recognition (`/api/recognize`, eligibility output only — it never mutates office
-state machines), cross-office inbox, the 邮政契约 notification bus and the appeal office's
-unified 验真中心 (`GET /api/appeal/verify`, all 38 business number types across 12 offices,
-masked and rate-limited). The UI is built entirely
-with animal-island-ui components + `--animal-*` tokens; the 2026-10-30 UI-spec convergence batch
-is recorded in `docs/ui-spec/07-convergence-2026-10-30.md`. The `docs/work.md` §8 audit defects
-are mostly closed with smoke coverage; what remains open is P3, §8.4 (intentional), and the
-five §8.2 sub-items named at the top of this file — check there before reporting one as new.
+门户与 12 署端到端可用(19 个 smoke + immigration 自启脚本,新库全绿):鉴权、RBAC、服务卡、
+个人资料、管理页、43 权限码、跨署链路、分署自动审批、服务互认(`/api/recognize`,只出资格、
+不改任何署状态机)、跨署收件箱、邮政契约通知总线、appeal 统一验真中心
+(`GET /api/appeal/verify`,覆盖 12 署 38 类业务号,遮蔽 + 限流)。UI 全部用 animal-island-ui
+组件 + `--animal-*` token;2026-10-30 UI 规范收敛批次见 `docs/ui-spec/07-convergence-2026-10-30.md`。
