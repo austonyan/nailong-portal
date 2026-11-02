@@ -7,7 +7,7 @@ import { db, now } from '../db.js';
 import { authenticate } from '../auth.js';
 import { ApiError, badRequest, conflict, forbidden, notFound } from '../http.js';
 import { reqLocale, pickText } from '../locale.js';
-import { ensureProtocolSchema, getConfig, getConfigInt, setConfig } from './schema.js';
+import { ensureProtocolSchema, getConfigInt, setConfig } from './schema.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
 import {
   assertTransition,
@@ -23,7 +23,6 @@ import {
   serializeEvent,
   serializeHost,
   serializeInvitation,
-  serializeMaterial,
   serializePass,
   serializeRegistration,
   serializeType,
@@ -138,26 +137,17 @@ function registrationFull(row) {
   const event = db.prepare('SELECT * FROM pro_events WHERE id = ?').get(row.event_id);
   const user = userBrief(row.user_id);
   const pass = db.prepare('SELECT * FROM pro_passes WHERE registration_id = ? ORDER BY id DESC LIMIT 1').get(row.id);
-  const materials = db
-    .prepare("SELECT * FROM pro_materials WHERE owner_type = 'registration' AND owner_id = ? ORDER BY id")
-    .all(row.id)
-    .map(serializeMaterial);
   return {
     ...serializeRegistration(row),
     event: serializeEvent(event),
     user,
     pass: serializePass(pass),
-    materials,
   };
 }
 
 function hostFull(row) {
   const user = userBrief(row.user_id);
-  const materials = db
-    .prepare("SELECT * FROM pro_materials WHERE owner_type = 'host' AND owner_id = ? ORDER BY id")
-    .all(row.id)
-    .map(serializeMaterial);
-  return { ...serializeHost(row), user, materials };
+  return { ...serializeHost(row), user };
 }
 
 // ---------------------------------------------------------------------------
@@ -193,9 +183,9 @@ router.post('/types', manager, (req, res) => {
   const ts = now();
   const info = db
     .prepare(
-      `INSERT INTO pro_event_types (code, name, name_tw, description, description_tw, guide, guide_tw, required_fields, materials, allow_companions, max_companions,
+      `INSERT INTO pro_event_types (code, name, name_tw, description, description_tw, guide, guide_tw, required_fields, allow_companions, max_companions,
          default_capacity, enabled, sort_order, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       code,
@@ -206,7 +196,6 @@ router.post('/types', manager, (req, res) => {
       str(req.body?.guide, 2000),
       str(req.body?.guideTw, 2000) || null,
       Array.isArray(req.body?.requiredFields) ? req.body.requiredFields.join(',') : 'nickname,contact',
-      JSON.stringify(jsonArray(req.body?.materials)),
       intBool(req.body?.allowCompanions ?? true),
       Math.max(0, num(req.body?.maxCompanions, 2)),
       Math.max(1, num(req.body?.defaultCapacity, 100)),
@@ -223,7 +212,7 @@ router.patch('/types/:id', manager, (req, res) => {
   const row = db.prepare('SELECT * FROM pro_event_types WHERE id = ?').get(Number(req.params.id));
   if (!row) throw notFound('Type not found');
   db.prepare(
-    `UPDATE pro_event_types SET name = ?, name_tw = ?, description = ?, description_tw = ?, guide = ?, guide_tw = ?, required_fields = ?, materials = ?,
+    `UPDATE pro_event_types SET name = ?, name_tw = ?, description = ?, description_tw = ?, guide = ?, guide_tw = ?, required_fields = ?,
        allow_companions = ?, max_companions = ?, default_capacity = ?, enabled = ?, sort_order = ?, updated_at = ? WHERE id = ?`
   ).run(
     str(req.body?.name, 60, row.name),
@@ -233,7 +222,6 @@ router.patch('/types/:id', manager, (req, res) => {
     str(req.body?.guide, 2000, row.guide),
     str(req.body?.guideTw, 2000, row.guide_tw) || null,
     Array.isArray(req.body?.requiredFields) ? req.body.requiredFields.join(',') : row.required_fields,
-    req.body?.materials !== undefined ? JSON.stringify(jsonArray(req.body.materials)) : row.materials,
     req.body?.allowCompanions !== undefined ? intBool(req.body.allowCompanions) : row.allow_companions,
     req.body?.maxCompanions !== undefined ? Math.max(0, num(req.body.maxCompanions, row.max_companions)) : row.max_companions,
     req.body?.defaultCapacity !== undefined ? Math.max(1, num(req.body.defaultCapacity, row.default_capacity)) : row.default_capacity,
@@ -284,8 +272,8 @@ router.post('/events', manager, (req, res) => {
     .prepare(
       `INSERT INTO pro_events (event_no, type_code, title, title_tw, subtitle, subtitle_tw, description, description_tw, schedule, venue_name, venue_name_tw, venue_note, venue_note_tw,
          capacity, waitlist_enabled, status, resident_only, diplomatic_only, registration_deadline, starts_at, ends_at,
-         conditions, conditions_tw, materials, notice, notice_tw, cover_color, created_by, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+         conditions, conditions_tw, notice, notice_tw, cover_color, created_by, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       eventNo,
@@ -310,7 +298,6 @@ router.post('/events', manager, (req, res) => {
       endsAt,
       str(req.body?.conditions, 2000),
       str(req.body?.conditionsTw, 2000) || null,
-      JSON.stringify(jsonArray(req.body?.materials)),
       str(req.body?.notice, 1000),
       str(req.body?.noticeTw, 1000) || null,
       str(req.body?.coverColor, 30, 'app-teal'),
@@ -331,7 +318,7 @@ router.patch('/events/:id', manager, (req, res) => {
   db.prepare(
     `UPDATE pro_events SET title = ?, title_tw = ?, subtitle = ?, subtitle_tw = ?, description = ?, description_tw = ?, schedule = ?, venue_name = ?, venue_name_tw = ?, venue_note = ?, venue_note_tw = ?,
        capacity = ?, waitlist_enabled = ?, resident_only = ?, diplomatic_only = ?, registration_deadline = ?,
-       starts_at = ?, ends_at = ?, conditions = ?, conditions_tw = ?, materials = ?, notice = ?, notice_tw = ?, cover_color = ?, updated_at = ? WHERE id = ?`
+       starts_at = ?, ends_at = ?, conditions = ?, conditions_tw = ?, notice = ?, notice_tw = ?, cover_color = ?, updated_at = ? WHERE id = ?`
   ).run(
     str(req.body?.title, 120, event.title),
     str(req.body?.titleTw, 120, event.title_tw) || null,
@@ -355,7 +342,6 @@ router.patch('/events/:id', manager, (req, res) => {
     endsAt,
     str(req.body?.conditions, 2000, event.conditions),
     str(req.body?.conditionsTw, 2000, event.conditions_tw) || null,
-    req.body?.materials !== undefined ? JSON.stringify(jsonArray(req.body.materials)) : event.materials,
     str(req.body?.notice, 1000, event.notice),
     str(req.body?.noticeTw, 1000, event.notice_tw) || null,
     str(req.body?.coverColor, 30, event.cover_color),

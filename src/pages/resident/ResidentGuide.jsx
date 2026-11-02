@@ -6,7 +6,7 @@ import { Title, Button, Card, Collapse, Divider, Tag } from 'animal-island-ui';
 import { api } from '../../api/client.js';
 import { fmtDate, toastResError } from './shared.jsx';
 
-const INFO_KEYS = ['nickname', 'contact', 'address', 'bio', 'purposes', 'avatar', 'proof'];
+const INFO_KEYS = ['nickname', 'contact', 'address', 'bio', 'purposes'];
 
 const FAQ_KEYS = ['realWorld', 'fee', 'howLong', 'rejected'];
 

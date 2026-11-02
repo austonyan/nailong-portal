@@ -3,18 +3,10 @@
 // sweeps and rate limiting. Kept separate from db.js/visa.js so parallel
 // service tracks never collide — only `db`/`now` are shared.
 import crypto from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { db, now } from './db.js';
 import { ensureTwColumns } from './migrate.js';
 import { BIZ_SOURCE_TO_TYPE, attachDecisionCertificate, verifyBusinessRecord } from './linkage.js';
 export { attachDecisionCertificate };
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, 'data');
-export const uploadDir = path.join(dataDir, 'uploads', 'docs');
-fs.mkdirSync(uploadDir, { recursive: true });
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS doc_types (
@@ -32,7 +24,6 @@ CREATE TABLE IF NOT EXISTS doc_types (
   biz_source     TEXT NOT NULL DEFAULT '',
   validity_days  INTEGER NOT NULL DEFAULT 365,
   form_fields    TEXT NOT NULL DEFAULT '[]',
-  materials      TEXT NOT NULL DEFAULT '[]',
   enabled        INTEGER NOT NULL DEFAULT 1,
   sort_order     INTEGER NOT NULL DEFAULT 0,
   created_at     TEXT NOT NULL,
@@ -67,20 +58,6 @@ CREATE TABLE IF NOT EXISTS doc_applications (
 );
 CREATE INDEX IF NOT EXISTS idx_doc_app_user ON doc_applications (user_id, status);
 CREATE INDEX IF NOT EXISTS idx_doc_app_status ON doc_applications (status, submitted_at);
-
-CREATE TABLE IF NOT EXISTS doc_materials (
-  id             INTEGER PRIMARY KEY AUTOINCREMENT,
-  application_id INTEGER NOT NULL REFERENCES doc_applications(id) ON DELETE CASCADE,
-  user_id        INTEGER NOT NULL,
-  kind           TEXT NOT NULL DEFAULT 'main',
-  origin         TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial','supplement')),
-  filename       TEXT NOT NULL,
-  mime           TEXT NOT NULL,
-  size           INTEGER NOT NULL,
-  path           TEXT NOT NULL,
-  created_at     TEXT NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_doc_mat_app ON doc_materials (application_id);
 
 -- 认证记录 / 操作日志(申请与文书共用一条时间线)
 CREATE TABLE IF NOT EXISTS doc_records (
@@ -273,11 +250,9 @@ function seedDocs() {
 
     if (db.prepare('SELECT COUNT(*) AS n FROM doc_types').get().n === 0) {
       const insertType = db.prepare(
-        `INSERT INTO doc_types (code, name, description, guide, biz_no_label, biz_required, biz_source, validity_days, form_fields, materials, enabled, sort_order, created_at, updated_at)
-         VALUES (@code, @name, @description, @guide, @biz_no_label, @biz_required, @biz_source, @validity_days, @form_fields, @materials, @enabled, @sort_order, @now, @now)`
+        `INSERT INTO doc_types (code, name, description, guide, biz_no_label, biz_required, biz_source, validity_days, form_fields, enabled, sort_order, created_at, updated_at)
+         VALUES (@code, @name, @description, @guide, @biz_no_label, @biz_required, @biz_source, @validity_days, @form_fields, @enabled, @sort_order, @now, @now)`
       );
-      const mat = (key, label, required, accept = 'image/*,application/pdf', max_count = 3) =>
-        JSON.stringify([{ key, label, required, accept, max_mb: 10, max_count }]);
       const fields = (list) => JSON.stringify(list);
       const ts = now();
       const types = [
@@ -286,13 +261,12 @@ function seedDocs() {
           name: '签注证明认证',
           description: '对奶龍國簽註申請署签发的电子签注出具认证证明',
           guide:
-            '用途:为已签发的电子签注出具纸质感的认证证明,可用于展示与收藏。需要材料:签注详情页截图;身份说明选填。关联业务:填写签注编号(如 NLT-260101-XXXXXX)。认证后 180 天内有效。',
+            '用途:为已签发的电子签注出具纸质感的认证证明,可用于展示与收藏。身份说明选填。关联业务:填写签注编号(如 NLT-260101-XXXXXX)。认证后 180 天内有效。',
           biz_no_label: '签注编号',
           biz_required: 1,
           biz_source: 'visa',
           validity_days: 180,
           form_fields: fields([{ key: 'visit_note', label: '行程补充说明', required: 0, max: 200, placeholder: '选填,一句话描述这次旅行' }]),
-          materials: mat('proof', '签注详情截图', 1),
           sort_order: 0,
         },
         {
@@ -300,7 +274,7 @@ function seedDocs() {
           name: '邀请函认证',
           description: '认证奶龙国居民或机构发出的邀请函',
           guide:
-            '用途:验证邀请函真实性,常用于活动报名与入境申报辅助。需要材料:邀请函扫描件;身份说明选填。关联业务:填写邀请函编号(由礼宾与活动署签发,已与本署实时联动校验)。认证后 180 天内有效。',
+            '用途:验证邀请函真实性,常用于活动报名与入境申报辅助。身份说明选填。关联业务:填写邀请函编号(由礼宾与活动署签发,已与本署实时联动校验)。认证后 180 天内有效。',
           biz_no_label: '邀请函编号',
           biz_required: 0,
           biz_source: 'protocol',
@@ -309,7 +283,6 @@ function seedDocs() {
             { key: 'inviter_name', label: '邀请人', required: 1, max: 60, placeholder: '邀请你的居民或机构名称' },
             { key: 'occasion', label: '邀请事由', required: 1, max: 120, placeholder: '例如:奶龙节开幕式' },
           ]),
-          materials: mat('main', '邀请函扫描件', 1),
           sort_order: 1,
         },
         {
@@ -317,13 +290,12 @@ function seedDocs() {
           name: '入境记录证明',
           description: '为入境署受理的入境申报出具记录证明',
           guide:
-            '用途:证明某次入境申报真实存在,用于回溯行程。需要材料:入境申报回执截图。关联业务:填写申报编号(由入境署生成,已与本署实时联动校验)。认证后 90 天内有效。',
+            '用途:证明某次入境申报真实存在,用于回溯行程。关联业务:填写申报编号(由入境署生成,已与本署实时联动校验)。认证后 90 天内有效。',
           biz_no_label: '申报编号',
           biz_required: 0,
           biz_source: 'entry',
           validity_days: 90,
           form_fields: fields([{ key: 'entry_port', label: '入境口岸', required: 1, max: 60, placeholder: '例如:贝壳湾口岸' }]),
-          materials: mat('proof', '入境申报回执截图', 1),
           sort_order: 2,
         },
         {
@@ -331,16 +303,12 @@ function seedDocs() {
           name: '居民卡认证',
           description: '对居民登记署登记的居民身份出具认证文书',
           guide:
-            '用途:为居民编号出具认证文书,是最常用的身份类娱乐文书。需要材料:居民登记页截图;头像照片选填。关联业务:填写居民编号(由居民登记署生成,已与本署实时联动校验)。认证后 365 天内有效。',
+            '用途:为居民编号出具认证文书,是最常用的身份类娱乐文书。关联业务:填写居民编号(由居民登记署生成,已与本署实时联动校验)。认证后 365 天内有效。',
           biz_no_label: '居民编号',
           biz_required: 0,
           biz_source: 'resident',
           validity_days: 365,
           form_fields: fields([{ key: 'district', label: '居住街区', required: 1, max: 60, placeholder: '例如:南瓜街' }]),
-          materials: JSON.stringify([
-            { key: 'proof', label: '居民登记页截图', required: 1, accept: 'image/*,application/pdf', max_mb: 10, max_count: 3 },
-            { key: 'avatar', label: '头像照片', required: 0, accept: 'image/*', max_mb: 10, max_count: 1 },
-          ]),
           sort_order: 3,
         },
         {
@@ -348,13 +316,12 @@ function seedDocs() {
           name: '活动凭证认证',
           description: '认证活动参与凭证,如奶龙节、演唱会的参与证明',
           guide:
-            '用途:为活动凭证背书,可用于收藏或下次活动的快速报名。需要材料:活动凭证截图(门票、参与码等)。关联业务:填写活动编号(由礼宾与活动署生成,已与本署实时联动校验)。认证后 90 天内有效。',
+            '用途:为活动凭证背书,可用于收藏或下次活动的快速报名。关联业务:填写活动编号(由礼宾与活动署生成,已与本署实时联动校验)。认证后 90 天内有效。',
           biz_no_label: '活动编号',
           biz_required: 0,
           biz_source: 'protocol',
           validity_days: 90,
           form_fields: fields([{ key: 'event_name', label: '活动名称', required: 1, max: 80, placeholder: '例如:奶龙节·星火之夜' }]),
-          materials: mat('voucher', '活动凭证截图', 1),
           sort_order: 4,
         },
         {
@@ -362,13 +329,12 @@ function seedDocs() {
           name: '外交文书认证',
           description: '认证外交事务署往来文书与建交文件',
           guide:
-            '用途:认证使团往来文书、建交纪念文件。需要材料:外交文书扫描件。关联业务:填写外交编号(由外交事务署生成,已与本署实时联动校验)。认证后 365 天内有效。仅限使团渠道提交。',
+            '用途:认证使团往来文书、建交纪念文件。关联业务:填写外交编号(由外交事务署生成,已与本署实时联动校验)。认证后 365 天内有效。仅限使团渠道提交。',
           biz_no_label: '外交编号',
           biz_required: 0,
           biz_source: 'foreign',
           validity_days: 365,
           form_fields: fields([{ key: 'mission', label: '使团名称', required: 1, max: 80, placeholder: '例如:南瓜使团' }]),
-          materials: mat('doc', '外交文书扫描件', 1),
           sort_order: 5,
         },
       ];
@@ -379,16 +345,15 @@ function seedDocs() {
     // 旧库也会补上(INSERT OR IGNORE),不影响管理员已改的类型配置。
     db.prepare(
       `INSERT OR IGNORE INTO doc_types
-       (code, name, description, guide, biz_no_label, biz_required, biz_source, validity_days, form_fields, materials, enabled, sort_order, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 1, 'appeal', 365, ?, ?, 1, 6, ?, ?)`
+       (code, name, description, guide, biz_no_label, biz_required, biz_source, validity_days, form_fields, enabled, sort_order, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, 1, 'appeal', 365, ?, 1, 6, ?, ?)`
     ).run(
       'APPEAL_DECISION',
       '申诉决定书认证',
       '对皇家申诉与监察署出具的决定书进行背书认证',
-      '用途:为申诉/复核决定书出具认证文书,可用于展示、收藏或作为后续申诉的佐证。需要材料:决定书截图;关联业务:填写决定书编号(如 NAD-…),系统会实时校验归属与有效性。认证后 365 天内有效。',
+      '用途:为申诉/复核决定书出具认证文书,可用于展示、收藏或作为后续申诉的佐证。关联业务:填写决定书编号(如 NAD-…),系统会实时校验归属与有效性。认证后 365 天内有效。',
       '决定书编号',
       JSON.stringify([{ key: 'case_note', label: '案件补充说明', required: 0, max: 200, placeholder: '选填,一句话描述这份决定书' }]),
-      JSON.stringify([{ key: 'proof', label: '决定书截图', required: 1, accept: 'image/*,application/pdf', max_mb: 10, max_count: 3 }]),
       now(),
       now()
     );
@@ -425,7 +390,6 @@ function seedDocs() {
       'docs.review_hours_hint': '72',
       'docs.verify_limit_per_5min': '20',
       'docs.apply_daily_limit': '10',
-      'docs.upload_max_mb': '10',
       'docs.seal_enabled': '1',
       'docs.issuer_name': '奶龙国皇家文书与认证署',
       'docs.issuer_name_tw': '奶龍國皇家文書與認證署',
@@ -699,7 +663,6 @@ export function serializeType(row, { withConfig = true } = {}) {
   };
   if (withConfig) {
     out.formFields = parseMaybeJson(row.form_fields, []);
-    out.materials = parseMaybeJson(row.materials, []);
   }
   return out;
 }
@@ -726,20 +689,6 @@ export function serializeApplication(row) {
     submittedAt: row.submitted_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-  };
-}
-
-export function serializeMaterial(row) {
-  if (!row) return null;
-  return {
-    id: row.id,
-    applicationId: row.application_id,
-    kind: row.kind,
-    origin: row.origin,
-    filename: row.filename,
-    mime: row.mime,
-    size: row.size,
-    createdAt: row.created_at,
   };
 }
 

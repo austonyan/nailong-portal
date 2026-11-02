@@ -6,15 +6,7 @@ import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, T
 import { CheckCircleIcon, DownloadIcon, EyeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { useAuth } from '../../../auth/AuthContext.jsx';
-import {
-  DescList,
-  StatusTag,
-  TextArea,
-  exportProtocolCsv,
-  fmtDateTime,
-  openProtocolMaterial,
-  toastProtocolError,
-} from '../shared.jsx';
+import { DescList, StatusTag, TextArea, exportProtocolCsv, fmtDateTime, toastProtocolError } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
@@ -245,19 +237,6 @@ export default function AdminProtocolReview() {
                 [t('protocol.field.submittedAt'), fmtDateTime(detail.submittedAt)],
               ]}
             />
-            <h2 className="block-heading">{t('protocol.field.materials')}</h2>
-            <ul className="protocol-material-list">
-              {detail.materials.map((m) => (
-                <li key={m.id}>
-                  <Tag size="small" variant="soft" color="app-blue">{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</Tag>
-                  <span className="protocol-material-name">{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
-                    {t('protocol.action.preview')}
-                  </Button>
-                </li>
-              ))}
-              {detail.materials.length === 0 && <li className="muted-text">{t('protocol.apply.noMaterials')}</li>}
-            </ul>
             {detail.rejectComment && (
               <Card pattern="app-red">
                 <strong>{t('protocol.field.rejectReason')}</strong>

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Title, Button, Card, Countdown, Modal, Tag, Upload } from 'animal-island-ui';
-import { ArrowRightIcon, ClockIcon, PaperclipIcon, SendIcon } from 'naive-icons';
-import { api, requestForm } from '../../api/client.js';
+import { Title, Button, Card, Countdown, Modal, Tag } from 'animal-island-ui';
+import { ArrowRightIcon, ClockIcon, SendIcon } from 'naive-icons';
+import { api } from '../../api/client.js';
 import { APPLICATION_STATUS_COLORS, CERT_STATUS_COLORS } from '../../api/docs.js';
-import MaterialList from './MaterialList.jsx';
+import DocsTextarea from '../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../components/toast.js';
 import { fmtDateTime } from '../../lib/date.js';
 
@@ -23,6 +23,7 @@ export default function DocsApplicationDetail() {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [resubNote, setResubNote] = useState('');
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(() => {
@@ -54,28 +55,20 @@ export default function DocsApplicationDetail() {
   };
 
   const resubmit = async () => {
+    if (!resubNote.trim()) {
+      toastError(t('docs.detail.resubmitNoteRequired'));
+      return;
+    }
     setBusy(true);
     try {
-      await api.post(`/docs/applications/${id}/resubmit`);
+      await api.post(`/docs/applications/${id}/resubmit`, { note: resubNote });
       toastSuccess(t('docs.detail.resubmitted'));
+      setResubNote('');
       load();
     } catch (err) {
       toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     } finally {
       setBusy(false);
-    }
-  };
-
-  const uploadSupplement = async (conf, file) => {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('kind', conf.key);
-    try {
-      await requestForm(`/docs/applications/${id}/materials`, fd);
-      toastSuccess(t('docs.detail.uploaded'));
-      load();
-    } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
     }
   };
 
@@ -136,21 +129,12 @@ export default function DocsApplicationDetail() {
               <Countdown value={deadline} format={t('docs.detail.countdownFormat')} size="small" />
             </p>
           )}
-          <div className="docs-supplement-upload">
-            {(type.materials || []).map((m) => (
-              <Upload
-                key={m.key}
-                accept={m.accept}
-                maxCount={m.max_count}
-                showUploadList={false}
-                customRequest={({ file }) => uploadSupplement(m, file)}
-              >
-                <Button size="small" type="dashed" icon={<PaperclipIcon />}>
-                  {t('docs.detail.uploadFor', { label: m.label })}
-                </Button>
-              </Upload>
-            ))}
-          </div>
+          <DocsTextarea
+            value={resubNote}
+            onChange={setResubNote}
+            placeholder={t('docs.detail.resubmitNotePlaceholder')}
+            maxLength={500}
+          />
           <Button type="primary" loading={busy} icon={<SendIcon />} onClick={resubmit} disabled={busy}>
             {t('docs.detail.resubmit')}
           </Button>
@@ -232,11 +216,6 @@ export default function DocsApplicationDetail() {
           </ul>
         </Card>
       </div>
-
-      <Card className="docs-block">
-        <h3 className="docs-block-title">{t('docs.detail.materialsTitle')}</h3>
-        <MaterialList materials={item.materials} type={type} />
-      </Card>
 
       <div className="docs-apply-actions">
         {(item.status === 'pending' || isSupplementing) && (

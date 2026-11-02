@@ -34,10 +34,6 @@ async function api(path, { method = 'GET', token, body, raw } = {}) {
 }
 
 // 1x1 PNG
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
 
 const stamp = Date.now().toString(36);
 const userName = `res_smoke_${stamp}`;
@@ -57,16 +53,6 @@ async function login(username) {
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;
-}
-
-async function upload(token, applicationId, kind, filename, mime = 'image/png') {
-  const form = new FormData();
-  form.append('applicationId', String(applicationId));
-  form.append('kind', kind);
-  form.append('file', new Blob([PNG], { type: mime }), filename);
-  const res = await fetch(`${base}/api/resident/materials`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form });
-  const data = await res.json().catch(() => ({}));
-  return { status: res.status, data };
 }
 
 const FIELDS = {
@@ -94,15 +80,6 @@ async function fullFlow(adminToken, userToken) {
   const put = await api(`/resident/applications/${appId}`, { method: 'PUT', token: userToken, body: FIELDS });
   check('保存申请信息', put.status === 200);
 
-  const missingAvatar = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
-  check('缺头像时拒绝提交', missingAvatar.status === 400 && missingAvatar.data.code === 'RES_AVATAR_REQUIRED');
-
-  const up = await upload(userToken, appId, 'avatar', 'avatar.png');
-  check('上传头像', up.status === 201, JSON.stringify(up.data));
-
-  const badType = await upload(userToken, appId, 'other', 'evil.bin', 'application/octet-stream');
-  check('拒绝非白名单类型', badType.status === 400 || badType.status === 413, JSON.stringify(badType.data));
-
   const noPurpose = await api(`/resident/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS, purposes: [] } });
   check('缺少登记用途拒绝提交', noPurpose.status === 400 && noPurpose.data.code === 'RES_PURPOSE_REQUIRED');
 
@@ -121,8 +98,6 @@ async function fullFlow(adminToken, userToken) {
   });
   check('要求补件', supp.status === 200 && supp.data.application.status === 'supplement_required');
 
-  const upSup = await upload(userToken, appId, 'address_proof', 'map.png');
-  check('补交材料', upSup.status === 201 && upSup.data.material.origin === 'supplement');
   const suppSubmit = await api(`/resident/applications/${appId}/supplement`, { method: 'POST', token: userToken, body: { note: '手绘地图已补' } });
   check('补件后重新送审', suppSubmit.status === 200 && suppSubmit.data.application.status === 'pending_review');
 
@@ -183,7 +158,6 @@ async function fullFlow(adminToken, userToken) {
   const user2Token = await register('b');
   const app2 = await api('/resident/applications', { method: 'POST', token: user2Token, body: { typeCode: 'TEMPORARY' } });
   const app2Id = app2.data.application.id;
-  await upload(user2Token, app2Id, 'avatar', 'a.png');
   await api(`/resident/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS, nickname: `岛民乙${stamp}` } });
   const reject = await api(`/resident/admin/applications/${app2Id}/reject`, {
     method: 'POST', token: adminToken, body: { reasonCode: 'false_info', comment: '简介与用途不符' },
@@ -264,7 +238,6 @@ async function fullFlow(adminToken, userToken) {
   for (const suffix of ['1', '2']) {
     const created = await api('/resident/applications', { method: 'POST', token: dupToken, body: { typeCode: 'TEMPORARY' } });
     const id = created.data.application?.id;
-    await upload(dupToken, id, 'avatar', 'a.png');
     if (suffix === '2') {
       // 提交限流 1 次/60 秒:等窗口翻页后再提交第二份
       console.log('  ... 等待提交限流窗口(61s)');

@@ -292,8 +292,6 @@
     "VISA_NOT_EDITABLE": "当前状态不能再修改",
     "VISA_RATE_LIMITED": "操作太频繁，请稍等一分钟再试",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在审核中的申请",
-    "VISA_AVATAR_REQUIRED": "需要至少上传一张头像",
-    "VISA_DRAFT_NOT_READY": "草稿还没建好，请稍候再上传材料",
     "VISA_INVALID_TRANSITION": "当前状态无法执行该操作",
     "VISA_SUPPLEMENT_EXPIRED": "补件期限已过",
     "DOC_SUPPLEMENT_EXPIRED": "补件期限已过，无法再补交",
@@ -302,10 +300,7 @@
     "APPEAL_MERGE_MISMATCH": "两件申诉不属于同一用户，不能合并",
     "RES_CARD_EXISTS": "该用户已有有效居民卡，请先驳回重复的申请",
     "EVT_CHECKIN_TOO_EARLY": "活动尚未开始，暂不能签到入场",
-    "VISA_SUPPLEMENT_EMPTY": "请先上传补件材料或填写说明",
-    "VISA_FILE_TOO_LARGE": "文件太大，单个不超过5MB",
-    "VISA_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或PDF",
-    "VISA_TOO_MANY_FILES": "材料数量已达上限（6个）",
+    "VISA_SUPPLEMENT_EMPTY": "请填写补件说明",
     "VISA_BLACKLISTED": "该账号已被限制申请",
     "VISA_VERIFY_LIMITED": "验真请求太频繁，请稍后再试",
     "VISA_REASON_REQUIRED": "请选择驳回原因",
@@ -319,10 +314,6 @@
     "DOC_BLACKLISTED": "账号已被限制申请认证，请联系管理员",
     "DOC_NOT_EDITABLE": "当前状态不可编辑",
     "DOC_INVALID_STATE": "当前状态不允许此操作",
-    "DOC_MATERIAL_REQUIRED": "还有必传材料未上传",
-    "DOC_FILE_TOO_LARGE": "文件太大，超出大小限制",
-    "DOC_FILE_TYPE_REJECTED": "文件类型不被支持",
-    "DOC_FILE_COUNT_EXCEEDED": "材料数量超出上限",
     "DOC_VERIFY_LIMIT": "查询太频繁，请稍后再试",
     "DOC_TYPE_CODE_TAKEN": "类型编码已存在",
     "IMM_PORT_CLOSED": "口岸当前不开放申报，请稍后再来",
@@ -337,12 +328,9 @@
     "IMM_VISA_NOT_FOUND": "签注署暂无此签注记录",
     "IMM_VISA_REQUIRED": "请先关联有效签注",
     "IMM_INCOMPLETE": "申报信息不完整，请补全后再提交",
-    "IMM_FILE_TOO_LARGE": "文件超过5MB上限",
-    "IMM_FILE_TYPE": "仅支持图片与PDF文件",
     "DIP_RATE_LIMITED": "操作太频繁，请稍后再试",
     "DIP_INVALID_STATE": "当前状态不允许该操作",
     "DIP_INCOMPLETE": "申请信息不完整",
-    "DIP_MATERIAL_REQUIRED": "请至少上传一份材料",
     "DIP_TYPE_CLOSED": "该类型暂未开放申请",
     "DIP_DUPLICATE": "已有进行中的申请，请勿重复提交",
     "DIP_BLACKLISTED": "该账号当前被限制提交申请",
@@ -351,8 +339,6 @@
     "DIP_TERM_REQUIRED": "请填写任期起止",
     "DIP_TERM_TOO_LONG": "任期最长365天",
     "DIP_IDENTITY_LIMIT": "同时持有的外交身份已达上限",
-    "DIP_FILE_TOO_LARGE": "文件超过5MB",
-    "DIP_FILE_TYPE": "仅支持图片与PDF",
     "DIP_NOT_ELIGIBLE": "当前编号不具备资格",
     "RES_FIELD_REQUIRED": "还有必填信息没有填写",
     "RES_PURPOSE_REQUIRED": "请至少选择一个登记用途",
@@ -361,15 +347,10 @@
     "RES_BLACKLISTED": "该账号已被限制登记",
     "RES_IDENTITY_EXISTS": "该账号已持有居民身份",
     "RES_TOO_MANY_ACTIVE": "你有太多进行中的申请",
-    "RES_AVATAR_REQUIRED": "需要至少上传一张头像",
-    "RES_PROOF_REQUIRED": "该类型需要上传地址证明",
     "RES_RATE_LIMITED": "操作太频繁，请稍等一分钟再试",
     "RES_INVALID_TRANSITION": "当前状态无法执行该操作",
     "RES_SUPPLEMENT_EXPIRED": "补件期限已过",
-    "RES_SUPPLEMENT_EMPTY": "请先上传补件材料或填写说明",
-    "RES_FILE_TOO_LARGE": "文件太大，单个不超过5MB",
-    "RES_FILE_TYPE": "仅支持图片(PNG/JPG/WebP)或PDF",
-    "RES_TOO_MANY_FILES": "材料数量已达上限（6个）",
+    "RES_SUPPLEMENT_EMPTY": "请填写补件说明",
     "RES_VERIFY_LIMITED": "验真请求太频繁，请稍后再试",
     "RES_REASON_REQUIRED": "请填写原因",
     "RES_ERASE_BLOCKED": "请先撤销进行中的申请",
@@ -377,9 +358,6 @@
     "RES_CHANGE_EMPTY": "没有需要变更的内容",
     "RES_UPGRADE_SAME_TYPE": "已经是该居民类型",
     "RES_TOO_MANY_CHANGES": "待审核的变更申请太多",
-    "EVT_FILE_TOO_LARGE": "文件超过5 MB限制",
-    "EVT_TOO_MANY_FILES": "材料数量超过上限",
-    "EVT_FILE_TYPE": "不支持的文件类型（仅PNG/JPG/WebP/PDF）",
     "EVT_NOT_EDITABLE": "当前状态不可修改",
     "EVT_EVENT_CLOSED": "活动不在报名时间内",
     "EVT_EVENT_FULL": "活动名额已满",
@@ -392,7 +370,6 @@
     "EVT_INVITATION_INVALID": "邀请函无效或已使用",
     "EVT_INVITATION_EVENT": "邀请函不属于该活动",
     "EVT_INVITATION_TYPE": "邀请函类型与活动不匹配",
-    "EVT_MATERIAL_REQUIRED": "缺少活动要求的材料",
     "EVT_EVENT_NOT_FOUND": "活动不存在或已被删除，请刷新后重试",
     "EVT_INVITEE_NOT_FOUND": "被邀请人的门户账号不存在，请核对用户名",
     "EVT_DUPLICATE": "已存在进行中的记录",
@@ -422,8 +399,6 @@
     "APPEAL_DUPLICATE": "该业务编号已有在办或已办申诉。",
     "APPEAL_ERASE_BLOCKED": "存在未完成的申诉或工单，暂不能注销或擦除数据。",
     "APPEAL_FIELD_REQUIRED": "请填写必填项。",
-    "APPEAL_FILE_TOO_LARGE": "文件超过大小限制。",
-    "APPEAL_FILE_TYPE": "文件类型不支持。",
     "APPEAL_INVALID_TRANSITION": "当前状态不允许该操作。",
     "APPEAL_NOT_EDITABLE": "仅草稿可编辑。",
     "APPEAL_RATE_LIMITED": "操作过于频繁，请稍后再试。",
@@ -435,7 +410,6 @@
     "APPEAL_SUPPLEMENT_EXPIRED": "补件期限已过。",
     "APPEAL_TICKET_CATEGORY": "工单分类无效。",
     "APPEAL_TOO_MANY_ACTIVE": "在办申诉过多，请先完成现有申诉。",
-    "APPEAL_TOO_MANY_FILES": "材料数量超过限制。",
     "APPEAL_VERIFY_LIMITED": "查询过于频繁，请稍后再试。",
     "SETUP_COMPLETE": "首次启动引导已完成，入口已关闭。",
     "ARCH_CONFIRM_REQUIRED": "该操作需要二次确认",
@@ -699,8 +673,8 @@
       "guide": "办事指南",
       "guideCondition": "申请条件",
       "guideConditionBody": "持奶龙统一门户账号即可申请。本平台不核验真实身份，请用昵称与虚构信息填写。",
-      "guideMaterials": "所需材料",
-      "guideMaterialsBody": "头像照片（必传）、行程说明（必填）、邀请函或活动凭证（选填，图片或PDF）。",
+      "guideMaterials": "需要准备什么",
+      "guideMaterialsBody": "填写行程说明与虚拟身份编号即可，门户不接受任何照片或文件。",
       "guideDuration": "审核时长",
       "guideDurationBody": "提交后约{{hours}}小时内完成审核，请留意站内信通知。",
       "guideValidity": "有效期说明",
@@ -759,11 +733,6 @@
       "pickType": "选择签注类型",
       "pickTypeTip": "先选一种签注类型，再阅读申请条件与材料清单。",
       "typeUnavailable": "该签注类型暂未开放，先看看其他类型吧",
-      "materialsTitle": "材料清单",
-      "materialAvatar": "头像照片1张（必传，图片格式）",
-      "materialItinerary": "行程说明（必填，写清楚打算去哪玩）",
-      "materialInvitation": "邀请函 / 活动凭证（选填，后续开放邀请方功能）",
-      "materialFormat": "支持PNG / JPG / WebP / PDF，单个不超过5MB，最多6个文件",
       "quizTitle": "申请资格自检",
       "quizHint": "趣味三连问，答完就能出发（本平台不核验真实身份）",
       "quizDone": "自检完成，看起来你很适合来奶龙岛！",
@@ -810,30 +779,17 @@
       "inviterContact": "邀请人联系方式",
       "companions": "随行人员",
       "companionsPlaceholder": "例如：奶龙宝宝 ×2（选填）",
-      "materialsTitle": "材料上传",
-      "materialsTip": "头像必传；其余材料可选。支持图片与PDF，单个不超过5MB。",
       "avatarRequired": "请先上传头像材料，再提交申请",
       "draftPreparing": "草稿准备中，稍候即可上传材料…",
-      "materialAvatar": "头像",
-      "materialOther": "其他材料（邀请函、活动凭证等）",
-      "uploadAvatar": "上传头像",
-      "uploadOther": "点击或拖拽上传，支持多份",
       "saveDraft": "保存草稿",
       "draftSaved": "草稿已保存",
       "submit": "提交申请",
       "submitSuccess": "申请已提交",
       "confirmTitle": "提交前确认",
-      "materialsCount": "已上传{{count}}份材料",
       "submittedTitle": "提交成功！",
       "submittedNo": "申请编号：{{no}}",
       "submittedHint": "预计{{hours}}小时内完成审核，结果将通过站内信通知。请保存好申请编号，可在验真中心查询进度。",
       "viewMyApplications": "查看我的申请"
-    },
-    "materialKind": {
-      "avatar": "头像",
-      "invitation": "邀请函",
-      "proof": "活动凭证",
-      "other": "其他材料"
     },
     "field": {
       "appNo": "申请编号",
@@ -892,13 +848,11 @@
       "closedTitle": "申请已关闭",
       "closedBody": "补件期限已过，申请自动关闭。可以按原类型重新申请。",
       "permitReady": "电子签注已签发",
-      "materials": "材料",
       "reviews": "审核记录",
       "noReviews": "还没有审核记录",
       "supplementTitle": "补件",
       "supplementDeadline": "补件截止：{{time}}",
       "supplementAsk": "审核员要求：",
-      "uploadSupplement": "点击或拖拽上传补件材料",
       "supplementNotePlaceholder": "补件说明（选填）",
       "submitSupplement": "提交补件",
       "supplementSent": "补件已提交，重新进入审核",
@@ -953,7 +907,7 @@
       },
       "supplement_required": {
         "title": "申请{{appNo}}需要补件",
-        "body": "审核员留言：{{comment}}。请在{{deadline}}前补交材料，超时申请将自动关闭。"
+        "body": "审核员留言：{{comment}}。请在{{deadline}}前提交补件说明，超时申请将自动关闭。"
       },
       "approved": {
         "title": "申请{{appNo}}审核通过",
@@ -1218,13 +1172,13 @@
       "catalog": "服务目录",
       "guide": "办事指南与常见问题",
       "faq1q": "哪些文书可以认证？",
-      "faq1a": "目前开放七类：签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书与申诉决定书。进入\"文书类型\"页可以查看每类的适用场景、所需材料与有效期。",
-      "faq2q": "认证需要准备什么材料？",
-      "faq2a": "通常需要对应业务的凭证截图（如签注详情页、活动门票），部分类型需要邀请函扫描件。全部材料仅支持图片或PDF，单个不超过10MB。",
+      "faq1a": "目前开放七类：签注证明、邀请函、入境记录证明、居民卡、活动凭证、外交文书与申诉决定书。进入「文书类型」页可以查看每类的适用场景与有效期。",
+      "faq2q": "认证需要准备什么？",
+      "faq2a": "不用上传任何文件：填写业务编号与简短说明即可，系统会实时核验编号。",
       "faq3q": "认证通过后有什么用？",
       "faq3a": "你会获得一份带唯一编号与电子印章的认证文书，可以在验真中心被任何人查验，用于展示、收藏或作为其他活动的报名凭证（娱乐用途）。",
       "faq4q": "认证大概需要多久？",
-      "faq4a": "提交后进入待认证队列，材料齐全通常72小时内完成；如需补件会发送站内信，请在7天内补交，逾期申请将自动关闭。"
+      "faq4a": "提交后进入待认证队列，通常72小时内完成；如需补件会发送站内信，请在7天内提交说明，逾期申请将自动关闭。"
     },
     "types": {
       "title": "文书类型",
@@ -1232,9 +1186,6 @@
       "bizLabel": "关联{{label}}",
       "guideTitle": "办事指南",
       "guideEmpty": "该类型指南整理中。",
-      "materialsTitle": "材料清单",
-      "materialRule": "最多{{count}}个，单个 ≤ {{mb}}MB，图片或PDF",
-      "materialsEmpty": "该类型无需上传材料。",
       "formTitle": "需要填写的信息",
       "noBiz": "无需关联业务编号",
       "shownTitle": "认证后展示的字段",
@@ -1252,7 +1203,6 @@
       "start": "去申请认证",
       "step1": "第1步 · 选择文书类型",
       "step2": "第2步 · 填写申请信息",
-      "step3": "第3步 · 上传材料",
       "nickname": "申请人姓名",
       "nicknamePh": "将展示在认证文书上",
       "contact": "联系方式",
@@ -1261,8 +1211,6 @@
       "bizHint": "可在对应业务署的详情页找到；提交时会与对应业务署实时校验。",
       "purpose": "认证用途",
       "required": "必填",
-      "upload": "上传材料",
-      "materialsCount": "材料数量",
       "saveDraft": "保存草稿",
       "submit": "提交认证",
       "draftSaved": "草稿已保存",
@@ -1272,14 +1220,11 @@
       "nicknameRequired": "请填写申请人昵称",
       "bizRequired": "请填写{{label}}",
       "fieldRequired": "请填写「{{label}}」",
-      "materialRequired": "请上传「{{label}}」",
       "typeLocked": "草稿已创建，类型不可更改；如需其他类型请新建申请。",
       "confirmTitle": "提交前确认",
       "confirmTip": "请核对以下信息；提交后将进入认证队列，草稿信息将被锁定。",
       "confirmSubmit": "确认提交",
       "type": "文书类型",
-      "fileTypeBad": "文件类型不符，仅支持：{{accept}}",
-      "fileTooLarge": "文件超过{{mb}}MB限制",
       "supplementOrigin": "补件"
     },
     "appList": {
@@ -1294,14 +1239,12 @@
       "title": "认证申请{{no}}",
       "infoTitle": "申请信息",
       "recordsTitle": "认证记录",
-      "materialsTitle": "申请材料",
       "certReady": "认证已通过，文书编号{{no}}",
       "certReadyTip": "点击查看并下载你的认证文书。",
       "rejectedTitle": "申请被驳回",
       "reapply": "按此类型重新申请",
       "supplementTitle": "认证员要求补件",
       "supplementDeadline": "补件截止：",
-      "uploadFor": "补交：{{label}}",
       "resubmit": "补交完成，重新提交",
       "resubmitted": "已重新进入认证队列",
       "withdraw": "撤销申请",
@@ -1309,17 +1252,13 @@
       "withdrawConfirmBody": "确定撤销申请{{no}}吗？撤销后不可恢复，如需认证请重新申请。",
       "withdrawn": "申请已撤销",
       "bizReserved": "历史记录未校验",
-      "uploaded": "材料已上传",
       "bizVerified": "已与业务署核验",
       "bizNotOwned": "编号非本人业务",
       "bizNotFound": "未查询到该业务编号",
       "bizUnavailable": "该业务署暂不支持在线核验",
-      "countdownFormat": "DD天HH:mm:ss"
-    },
-    "materials": {
-      "empty": "暂无材料",
-      "preview": "预览",
-      "download": "下载"
+      "countdownFormat": "DD天HH:mm:ss",
+      "resubmitNoteRequired": "请填写补件说明",
+      "resubmitNotePlaceholder": "说明需要补充的信息，例如行程安排"
     },
     "cert": {
       "certNo": "文书编号",
@@ -1409,7 +1348,6 @@
         "detailTitle": "申请详情",
         "applicant": "申请人",
         "username": "账号",
-        "materials": "材料数",
         "searchPh": "搜索申请编号/昵称",
         "approve": "通过并签发",
         "approveConfirmTitle": "通过认证",
@@ -1423,7 +1361,7 @@
         "supplementTitle": "要求补件",
         "supplementTip": "请写明需要补充的材料与要求；系统会按署设置给用户补件期限。",
         "supplementSend": "发送补件要求",
-        "supplementPh": "例如：邀请函扫描件不清晰，请重新上传",
+        "supplementPh": "例如：行程说明过于简略，请补充具体安排",
         "commentPh": "认证意见（选填）",
         "done": "操作成功",
         "waitingResubmit": "等待用户补件并重新提交。"
@@ -1435,17 +1373,14 @@
         "code": "类型编码",
         "validity": "有效期（天）",
         "fields": "表单字段",
-        "materialsCol": "材料要求",
         "guide": "办事指南",
-        "guidePh": "用途、材料、注意事项……",
+        "guidePh": "用途、注意事项……",
         "bizLabel": "关联业务编号名称",
         "bizLabelPh": "如：签注编号",
         "bizSource": "关联业务署",
         "bizRequired": "业务编号必填",
         "sort": "排序",
-        "addMaterial": "添加材料要求",
         "addField": "添加表单字段",
-        "materialLabel": "材料名称",
         "fieldLabel": "字段名称",
         "codePh": "类型编码，如INVITE",
         "materialKeyPh": "材料标识，如photo",
@@ -1534,7 +1469,6 @@
           "blacklist_add": "加入黑名单",
           "blacklist_remove": "移出黑名单",
           "verify_rate_limited": "验真限流触发",
-          "material_download": "下载材料",
           "auto_expire_certificate": "文书到期失效",
           "auto_close_supplement_timeout": "补件超时关闭"
         },
@@ -1558,7 +1492,6 @@
         "supplementDays": "补件期限（天）",
         "reviewHours": "审核时长提示（小时）",
         "applyDailyLimit": "每人每日提交上限",
-        "uploadMaxMb": "单文件上限(MB)",
         "verifySection": "验真与展示",
         "verifyLimit": "验真限流（次/5分钟/IP）",
         "verifyLimitTip": "防止枚举扫描的查询频率上限",
@@ -1715,7 +1648,7 @@
       },
       "privacy": {
         "q": "我的申报信息安全吗？",
-        "a": "申报与附件仅本人和边检员可见；通关码二维码只包含随机验真令牌，不含个人信息。"
+        "a": "申报信息仅本人和边检员可见；通关码二维码只包含随机验真令牌，不含个人信息。"
       },
       "realEffect": {
         "q": "这些记录有现实效力吗？",
@@ -1803,12 +1736,6 @@
       "not_found": "未查到该签注",
       "validUntil": "有效期至{{date}}"
     },
-    "attachments": {
-      "title": "附件材料",
-      "empty": "暂无附件",
-      "upload": "上传附件",
-      "limit": "仅图片/PDF，单个 ≤5MB"
-    },
     "mydecl": {
       "title": "我的申报",
       "no": "申报编号",
@@ -1833,7 +1760,7 @@
       "approve": "审核通过",
       "reject": "审核拒绝",
       "require_supplement": "要求补件",
-      "supplement_submit": "补交材料",
+      "supplement_submit": "补交说明",
       "withdraw": "撤销申报",
       "enter": "入境盖章",
       "exit": "出境登记"
@@ -2197,10 +2124,7 @@
           "q": "登记条件是什么？",
           "a": "年满0岁的奶龙爱好者即可登记临时居民；遵守《奶龙岛居民友好公约》，保持快乐。"
         },
-        "materials": {
-          "q": "需要准备哪些信息与材料？",
-          "a": "必填：昵称、联系方式、奶龙国虚构地址；选填：个人简介。材料：头像（必传）、虚拟地址证明（趣味化，选填）。"
-        },
+        "materials": {},
         "duration": {
           "q": "审核要多久？",
           "a": "提交后预计72小时内完成审核，结果会通过站内信通知。"
@@ -2251,10 +2175,6 @@
       "purposes": {
         "label": "登记用途",
         "desc": "收藏、活动报名、签注快捷通道等，可多选"
-      },
-      "avatar": {
-        "label": "头像",
-        "desc": "图片(PNG/JPG/WebP)或PDF，不超过5MB，必传"
       },
       "proof": {
         "label": "虚拟地址证明",
@@ -2311,16 +2231,7 @@
       "purposes": "登记用途",
       "bio": "个人简介",
       "bioPlaceholder": "介绍一下你和奶龙的故事",
-      "materialsTitle": "登记材料",
-      "materialsTip": "支持图片(PNG/JPG/WebP)或PDF，单个不超过5MB，最多6个文件。",
-      "materialAvatar": "头像",
-      "materialProof": "虚拟地址证明",
-      "materialOther": "其他材料",
-      "uploadAvatar": "上传头像",
-      "uploadProof": "上传地址证明",
-      "uploadOther": "点击或拖拽上传其他材料",
       "confirmTitle": "提交前确认",
-      "materialsCount": "共{{count}}个材料",
       "purposesRequired": "请至少选择一项登记用途。"
     },
     "myApps": {
@@ -2333,18 +2244,17 @@
       "notFound": "申请不存在或无权查看",
       "submittedAt": "提交于{{time}}",
       "supplementRequired": "需要补件",
-      "supplementNoNote": "审核员没有留言，请尽量补齐材料。",
+      "supplementNoNote": "审核员没有留言，请把缺少的信息写清楚。",
       "supplementDeadline": "补件截止：{{time}}，逾期申请将自动关闭",
       "supplementNow": "在线补件",
       "supplementSent": "补件已提交，重新进入待审核",
       "supplementModalTitle": "在线补件",
       "supplementSubmit": "提交补件",
-      "supplementTip": "上传补件材料或填写说明（至少一项）。",
+      "supplementTip": "填写补件说明后提交。",
       "supplementNotePlaceholder": "给审核员留言，说明补件情况",
       "rejectedTitle": "申请未通过",
       "rejectReason": "驳回原因",
       "infoTitle": "登记信息",
-      "materialsTitle": "登记材料",
       "recordsTitle": "审核记录",
       "noRecords": "暂无审核记录",
       "withdraw": "撤销申请",
@@ -2371,14 +2281,6 @@
       "info": "通知",
       "policy": "政策",
       "event": "活动"
-    },
-    "materialKind": {
-      "avatar": "头像",
-      "address_proof": "地址证明",
-      "other": "其他材料"
-    },
-    "materialOrigin": {
-      "supplement": "补件"
     },
     "card": {
       "title": "我的居民卡",
@@ -2604,15 +2506,12 @@
         "title": "居民类型与规则配置",
         "create": "新增类型",
         "edit": "编辑类型",
-        "tip": "配置类型开放状态、有效期与材料要求；表单字段说明会展示在办事指南。",
+        "tip": "配置类型开放状态与有效期；表单字段说明会展示在办事指南。",
         "code": "类型编码",
         "name": "类型名称",
         "description": "适用场景",
         "validYears": "有效期（年）",
-        "materials": "材料要求",
         "enabled": "是否开放",
-        "requireAvatar": "头像必传",
-        "requireProof": "地址证明必传",
         "sortOrder": "排序"
       },
       "notices": {
@@ -2846,22 +2745,6 @@
       "cooperation": "活动合作",
       "visa_channel": "外交签注通道"
     },
-    "materialKind": {
-      "intro": "虚构介绍",
-      "proof": "活动凭证",
-      "community": "社区证明",
-      "appointment": "任命书",
-      "letter": "介绍信",
-      "other": "其他"
-    },
-    "material": {
-      "title": "申请材料",
-      "tip": "支持图片与PDF，单个文件不超过5MB；材料仅审核人员可见。",
-      "upload": "上传材料",
-      "empty": "暂无材料",
-      "limit": "图片 / PDF · ≤5MB",
-      "supplementOrigin": "补件"
-    },
     "apply": {
       "title": "建交申请",
       "editTitle": "编辑建交申请",
@@ -2887,8 +2770,7 @@
       "confirmTitle": "提交前确认",
       "submit": "提交申请",
       "submitted": "已提交，建交申请编号{{no}}",
-      "required": "必填",
-      "materialCount": "{{count}}份"
+      "required": "必填"
     },
     "relation": {
       "title": "我的建交",
@@ -2903,7 +2785,7 @@
       "supplementRequired": "需要补件",
       "supplementDeadline": "请在{{date}}前补交",
       "supplementSubmitted": "已补交",
-      "supplementPlaceholder": "填写补充说明，并可上传补件材料",
+      "supplementPlaceholder": "填写补充说明",
       "supplementSent": "补件已提交",
       "submitSupplement": "提交补件",
       "withdraw": "撤销申请",
@@ -2951,7 +2833,6 @@
       "print": "下载 / 打印",
       "scanVerify": "扫码验真",
       "no": "身份编号",
-      "materialTip": "需上传任命书（虚构）或介绍信等材料，图片/PDF,≤5MB。",
       "confirmTip": "提交后将进入外交审核队列，审核时将校验关联建交关系的有效性。",
       "visaChannelTitle": "外交签注通道",
       "visaChannelTip": "持外交身份者可申请虚拟外交签注：申请与提交时会校验外交身份有效性；身份失效后已签发的外交签注将同步注销。",
@@ -2977,7 +2858,7 @@
       "create": "创建草稿",
       "submit": "提交申请",
       "withdraw": "撤销申请",
-      "supplement_submit": "补交材料",
+      "supplement_submit": "补交说明",
       "require_supplement": "要求补件",
       "establish": "建交通过",
       "reject": "驳回",
@@ -3113,13 +2994,11 @@
       "guide": "办事指南",
       "guideTitle": {
         "conditions": "建交条件",
-        "materials": "所需材料",
         "duration": "审核时长",
         "courtesy": "虚拟礼遇说明"
       },
       "guideBody": {
         "conditions": "拥有虚构世界观的国家、城邦、社区、组织或活动团体均可申请；当前开放「虚构国家 × 正式建交」。",
-        "materials": "虚构介绍、活动凭证或社区证明等，图片/PDF，单个不超过5MB。",
         "duration": "预计{{hours}}小时内完成审核；如需补件将站内信通知。",
         "courtesy": "入境礼遇通道、活动优先邀请、优先审核均为趣味化礼遇，不承诺现实礼遇。"
       },
@@ -3492,13 +3371,6 @@
       "change": "变更",
       "cancel": "取消"
     },
-    "materialKind": {
-      "intro": "介绍信",
-      "letter": "邀请函 / 介绍信",
-      "proof": "证明材料",
-      "community": "社区证明",
-      "other": "其他材料"
-    },
     "history": {
       "registration_draft": "保存草稿",
       "registration_submit": "提交报名",
@@ -3507,8 +3379,7 @@
       "registration_waitlist": "进入候补",
       "registration_cancel": "取消报名",
       "registration_promote": "候补转正",
-      "registration_delete": "删除草稿",
-      "material_upload": "上传材料"
+      "registration_delete": "删除草稿"
     },
     "field": {
       "account": "账号",
@@ -3550,7 +3421,6 @@
       "invitee": "被邀请人账号",
       "issuer": "签发机构",
       "level": "级别",
-      "materials": "材料",
       "maxCompanions": "最大随行人数",
       "name": "名称",
       "nickname": "姓名",
@@ -3628,7 +3498,7 @@
       },
       "guide": "办事指南",
       "guide_apply": "如何报名",
-      "guide_apply_body": "选择活动 → 填写信息与随行人员 → 上传材料 → 提交确认。名额已满时可进入候补。",
+      "guide_apply_body": "选择活动 → 填写信息与随行人员 → 提交确认。名额已满时可进入候补。",
       "guide_invitation": "邀请函怎么用",
       "guide_invitation_body": "收到邀请后可接受或拒绝，下载打印版；报名时填写邀请函编号，亦可作为签注材料。",
       "guide_pass": "活动凭证怎么验",
@@ -3666,8 +3536,6 @@
       "schedule": "活动日程",
       "conditions": "报名条件",
       "noConditions": "无额外条件，持门户账号即可报名。",
-      "materials": "所需材料",
-      "noMaterials": "本活动无需上传材料。",
       "notices": "活动公告与变更通知",
       "venue": "虚构地点示意图",
       "venueMock": "示意图仅为虚构设定，不指向真实地点"
@@ -3690,13 +3558,6 @@
       "invitationNoPlaceholder": "选填，填写邀请函编号",
       "noteSection": "备注",
       "notePlaceholder": "可选：饮食偏好、无障碍需求或其他虚构说明",
-      "materialsSection": "报名材料",
-      "materialsHint": "支持PNG / JPG / WebP / PDF，单个文件不超过5 MB，最多6个。",
-      "saveFirstForUpload": "请先保存草稿，再上传材料。",
-      "uploadMaterial": "上传材料",
-      "materialKind": "材料类型",
-      "uploadDone": "材料已上传",
-      "noMaterials": "尚未上传材料",
       "summary": "报名摘要",
       "summaryTip": "提交前请核对信息；提交后将进入待审核队列。",
       "requiredHint": "请填写昵称与联系方式",
@@ -3706,7 +3567,7 @@
     },
     "my": {
       "title": "我的报名",
-      "subtitle": "查看报名状态、材料、审核记录与活动凭证。",
+      "subtitle": "查看报名状态、审核记录与活动凭证。",
       "empty": "还没有报名记录",
       "eventInfo": "活动信息",
       "formInfo": "报名信息",
@@ -3759,8 +3620,6 @@
       "contactNicknamePlaceholder": "联系人昵称",
       "contactPlaceholder": "邮箱或虚构联系方式",
       "introPlaceholder": "介绍你的团体、活动计划与社区证明（虚构）",
-      "materialTip": "请至少上传1份介绍信、活动计划或社区证明。",
-      "saveFirst": "请先保存草稿，再上传材料并提交审核。",
       "draftSaved": "草稿已保存",
       "submitted": "已提交审核",
       "deleteConfirm": "确定删除这份接待方草稿吗？",
@@ -3771,7 +3630,7 @@
       "canPublish": "可发布活动",
       "canInvite": "可发起邀请函",
       "rulesTitle": "认证规则",
-      "rules": "认证免费，材料仅用于虚构审核；认证后如违反规则可被冻结或撤销。接待方编号与证书可在验真中心查询。"
+      "rules": "认证免费；认证后如违反规则可被冻结或撤销。接待方编号与证书可在验真中心查询。"
     },
     "courtesy": {
       "title": "礼宾服务",
@@ -3831,10 +3690,10 @@
       "ticket_open": "处理中",
       "ticket_closed": "已回复",
       "privacyTitle": "隐私与数据删除",
-      "privacyTip": "联系方式、随行人员与材料仅用于本次活动流程。你可以申请匿名化个人报名数据。",
+      "privacyTip": "联系方式与随行人员仅用于本次活动流程。你可以申请匿名化个人报名数据。",
       "eraseData": "申请删除个人数据",
       "eraseTitle": "确认删除个人数据",
-      "eraseTip": "删除后昵称、联系方式、随行人员、身份编号与材料将被清空，编号与状态轨迹保留用于审计。存在进行中的报名或认证时无法删除。",
+      "eraseTip": "删除后昵称、联系方式、随行人员与身份编号将被清空，编号与状态轨迹保留用于审计。存在进行中的报名或认证时无法删除。",
       "eraseDone": "个人数据已匿名化"
     },
     "help": {
@@ -3844,7 +3703,7 @@
       "scamBody": "活动报名、接待方认证与礼遇申请全部免费。不要向任何人支付“名额费”“内部通道费”，也不要相信“保证现实入场”。",
       "faqTitle": "常见问题",
       "browseTitle": "浏览活动",
-      "browseBody": "按类型、时间与身份要求查找活动，查看日程、地点与所需材料。",
+      "browseBody": "按类型、时间与身份要求查找活动，查看日程与地点。",
       "supportTitle": "联系客服",
       "supportBody": "提交工单后，礼宾与活动署会在虚构工作时间内回复。",
       "supportEntry": "去提交工单",
@@ -4008,7 +3867,6 @@
       "riskTab": "验真与风控",
       "configHint": "修改后立即生效；编号前缀变更只影响新生成的编号。",
       "requiredFields": "报名必填字段",
-      "materialsConfig": "材料要求",
       "allowCompanions": "允许随行人员",
       "waitlistEnabled": "开放候补",
       "templateHint": "模板中的{{变量}}会在发送站内信时替换。",
@@ -4309,11 +4167,6 @@
       "voided": "已撤销",
       "expired": "已失效"
     },
-    "materialKind": {
-      "screenshot": "截图",
-      "proof": "证明材料",
-      "other": "其他"
-    },
     "ownerType": {
       "appeal": "申诉",
       "review": "复核",
@@ -4471,8 +4324,8 @@
         "publicity": "处理公示"
       },
       "serviceDesc": {
-        "apply": "对七类业务结果提交申诉并上传材料。",
-        "my": "查看进度、补充材料、撤回与结果。",
+        "apply": "对七类业务结果提交申诉并说明情况。",
+        "my": "查看进度、补充说明、撤回与结果。",
         "review": "对处理决定申请一次终局复核。",
         "complaint": "反映服务问题或提出改进建议。",
         "ticket": "咨询账号、系统与使用问题。",
@@ -4482,8 +4335,8 @@
       "guide": "办事指南",
       "guideScope": "可申诉范围",
       "guideScopeBody": "签注、入境、居民登记、外交事务、文书认证、档案与礼宾活动的处理结果，均可在规定时效内申诉。",
-      "guideMaterials": "所需材料",
-      "guideMaterialsBody": "业务编号、申诉理由、期望结果与联系方式；截图或证明材料可选传。",
+      "guideMaterials": "需要填写什么",
+      "guideMaterialsBody": "业务编号、申诉理由、期望结果与联系方式；无需上传截图或证明。",
       "guideSla": "受理与处理时限",
       "guideSlaBody": "受理时限{{accept}}小时，处理时限{{resolve}}小时，超时将进入监察关注。",
       "guideReview": "复核窗口",
@@ -4530,11 +4383,6 @@
       "expectedPlaceholder": "请说明你希望得到的处理结果",
       "contact": "联系方式",
       "contactPlaceholder": "手机号或邮箱",
-      "materialsTitle": "证明材料",
-      "materialsTip": "支持图片或PDF，每类最多6份；补件时可再上传。",
-      "uploadScreenshot": "上传截图",
-      "uploadProof": "上传证明",
-      "materialsCount": "共{{count}}份材料",
       "saveDraft": "保存草稿",
       "submit": "提交申诉",
       "confirmTitle": "请确认申诉信息",
@@ -4550,18 +4398,15 @@
       "submittedAt": "提交于{{time}}",
       "submittedAtLabel": "提交时间",
       "view": "查看详情",
-      "preview": "预览",
       "deleteTitle": "删除申诉草稿",
       "deleteTip": "确定要删除草稿{{no}}吗？删除后不可恢复。"
     },
     "detail": {
       "records": "处理记录",
       "systemActor": "系统",
-      "materials": "材料",
       "supplementTitle": "补件通知",
-      "supplementTip": "请在补件截止前提交说明并上传材料；逾期申诉将自动关闭。",
+      "supplementTip": "请在补件截止前提交说明；逾期申诉将自动关闭。",
       "supplementPlaceholder": "请说明补交内容",
-      "uploadSupplement": "上传补件材料",
       "submitSupplement": "提交补件",
       "supplementDone": "补件已提交",
       "supplementDeadline": "补件截止",
@@ -4649,7 +4494,7 @@
         },
         "slow": {
           "q": "页面加载很慢怎么办？",
-          "a": "请先刷新页面并检查网络；若持续出现，请提交\"故障报修\"工单并附上截图。"
+          "a": "请先刷新页面并检查网络；若持续出现，请提交「故障报修」工单并写明现象。"
         },
         "display": {
           "q": "页面显示异常怎么办？",
@@ -4726,7 +4571,7 @@
       },
       "appeal_supplemented": {
         "title": "申诉{{code}}补件已提交",
-        "body": "你补交的材料已随申诉重新进入处理流程。"
+        "body": "你补交的说明已随申诉重新进入处理流程。"
       },
       "appeal_resolved": {
         "title": "申诉{{code}}已有处理决定",
@@ -4825,7 +4670,7 @@
           "d": "咨询、投诉或与处理结果无关的诉求。"
         }
       },
-      "materialsTitle": "材料清单",
+      "materialsTitle": "需填写的信息",
       "materials": {
         "code": {
           "t": "业务编号",
@@ -4842,14 +4687,6 @@
         "contact": {
           "t": "联系方式",
           "d": "便于受理与补件通知的手机号或邮箱。"
-        },
-        "screenshot": {
-          "t": "截图",
-          "d": "能反映处理结果的页面截图（选填）。"
-        },
-        "proof": {
-          "t": "证明材料",
-          "d": "支持申诉理由的证明文件（选填）。"
         }
       },
       "slaTitle": "时效说明",
@@ -4867,7 +4704,7 @@
       "faqItem": {
         "how": {
           "q": "如何提交申诉？",
-          "a": "先选择业务类型并填写业务编号，系统核验通过后填写理由与期望结果，上传材料并提交。"
+          "a": "先选择业务类型并填写业务编号，系统核验通过后填写理由与期望结果并提交。"
         },
         "change": {
           "q": "申诉过程中可以修改内容吗？",
@@ -4882,8 +4719,8 @@
           "a": "业务编号对应的本人账号；他人业务需由本人提交。"
         },
         "docs": {
-          "q": "需要哪些材料？",
-          "a": "业务编号、申诉理由、期望结果与联系方式为必填；截图与证明可选。"
+          "q": "需要填写哪些信息？",
+          "a": "业务编号、申诉理由、期望结果与联系方式为必填。"
         }
       }
     },
@@ -5171,7 +5008,7 @@
         "create_appeal_draft": "创建申诉草稿",
         "submit_appeal": "提交申诉",
         "withdraw_appeal": "撤回申诉",
-        "supplement_appeal": "补交材料",
+        "supplement_appeal": "补交说明",
         "evaluate_appeal": "评价申诉",
         "submit_review": "提交复核申请",
         "submit_complaint": "提交投诉建议",

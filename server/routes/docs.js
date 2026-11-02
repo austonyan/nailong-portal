@@ -1,14 +1,12 @@
 // 奶龍國皇家文書與認證署 — API routes.
 // Queue isolation: /admin/* review endpoints need docs:certify; registry /
 // verify-config / stats / audit need docs:manage. Users need docs:apply.
+// The portal accepts text fields only: no applicant files are uploaded or stored.
 import crypto from 'node:crypto';
 import express from 'express';
-import fs from 'node:fs';
 import jwt from 'jsonwebtoken';
-import multer from 'multer';
-import path from 'node:path';
 import { authenticate, requirePermission, JWT_SECRET } from '../auth.js';
-import { loadUserAccess, db, now } from '../db.js';
+import { db, now } from '../db.js';
 import { badRequest, conflict, forbidden, notFound } from '../http.js';
 import * as D from '../docs.js';
 import { registerAutoApprover, safeAutoApprove } from '../autoApprove.js';
@@ -19,68 +17,9 @@ const router = express.Router();
 // Middleware helpers
 // ---------------------------------------------------------------------------
 
-// File downloads are used by <a href>/<img>, which cannot attach headers, so
-// the access token may arrive as ?token= instead.
-function fileAuth(req, res, next) {
-  const token = req.query.token;
-  if (token && !req.headers.authorization) {
-    try {
-      const payload = jwt.verify(String(token), JWT_SECRET);
-      const user = loadUserAccess(Number(payload.sub));
-      if (user && user.status === 'active') {
-        req.user = user;
-        return next();
-      }
-    } catch {
-      // invalid query token → fall through to the standard 401
-    }
-  }
-  return authenticate(req, res, next);
-}
-
 const applyAuth = [authenticate, requirePermission('docs:apply')];
 const certifyAuth = [authenticate, requirePermission('docs:certify')];
 const manageAuth = [authenticate, requirePermission('docs:manage')];
-
-// ---------------------------------------------------------------------------
-// Uploads (private storage under server/data/uploads/docs)
-// ---------------------------------------------------------------------------
-
-const ALLOWED_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.pdf']);
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, D.uploadDir),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname || '').toLowerCase();
-    cb(null, `${crypto.randomUUID()}${ALLOWED_EXT.has(ext) ? ext : '.bin'}`);
-  },
-});
-const upload = multer({
-  storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // hard cap; per-type limit checked below
-  files: 1,
-});
-
-function mimeAllowed(accept, mime) {
-  if (!accept) return true;
-  return String(accept)
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .some((rule) => {
-      if (rule.endsWith('/*')) return mime.startsWith(rule.slice(0, -1));
-      return mime === rule;
-    });
-}
-
-function materialsConfig(typeRow) {
-  try {
-    const list = JSON.parse(typeRow.materials || '[]');
-    return Array.isArray(list) ? list : [];
-  } catch {
-    return [];
-  }
-}
 
 function formFieldsConfig(typeRow) {
   try {
@@ -122,16 +61,12 @@ function assertOwnerOrReviewer(app, req) {
 
 function serializeApplicationDetail(row) {
   const type = D.serializeType(D.getTypeRow(row.type_code));
-  const materials = db
-    .prepare('SELECT * FROM doc_materials WHERE application_id = ? ORDER BY created_at, id')
-    .all(row.id)
-    .map(D.serializeMaterial);
   const records = db
     .prepare('SELECT * FROM doc_records WHERE application_id = ? ORDER BY created_at, id')
     .all(row.id)
     .map(D.serializeRecord);
   const certificate = D.serializeCertificate(D.getCertRowByApplication(row.id));
-  return { ...D.serializeApplication(row), type, materials, records, certificate };
+  return { ...D.serializeApplication(row), type, records, certificate };
 }
 
 // ---------------------------------------------------------------------------
@@ -271,11 +206,6 @@ function validatePayload(typeRow, body, { forSubmit }) {
   return { nickname, contact, bizNo, purpose, formData };
 }
 
-function materialCounts(appId) {
-  const rows = db.prepare('SELECT kind, COUNT(*) AS n FROM doc_materials WHERE application_id = ? GROUP BY kind').all(appId);
-  return Object.fromEntries(rows.map((r) => [r.kind, r.n]));
-}
-
 router.post('/applications', applyAuth, (req, res) => {
   const typeRow = D.getTypeRow(String(req.body?.typeCode || ''));
   if (!typeRow || !typeRow.enabled) throw badRequest('DOC_TYPE_UNAVAILABLE', 'Document type unavailable');
@@ -367,14 +297,6 @@ router.post('/applications/:id/submit', applyAuth, (req, res) => {
   const body = { ...req.body, nickname: req.body?.nickname ?? app.nickname, contact: req.body?.contact ?? app.contact, bizNo: req.body?.bizNo ?? app.biz_no, purpose: req.body?.purpose ?? app.purpose, formData: req.body?.formData ?? JSON.parse(app.form_data || '{}') };
   const payload = validatePayload(typeRow, body, { forSubmit: true });
 
-  // 必传材料检查
-  const counts = materialCounts(app.id);
-  for (const conf of materialsConfig(typeRow)) {
-    if (conf.required && !(counts[conf.key] > 0)) {
-      throw badRequest('DOC_MATERIAL_REQUIRED', `${conf.label} is required`);
-    }
-  }
-
   // 关联业务校验(已联动) — 结果缓存进 biz_check。
   // 只要填了编号,就必须是当前账户自己的真实记录;必填类型还必须可认证。
   const bizCheck = D.checkBizNo(typeRow, payload.bizNo, req.user.id);
@@ -420,9 +342,7 @@ router.delete('/applications/:id', applyAuth, (req, res) => {
   const app = loadApplication(req.params.id);
   if (app.user_id !== req.user.id) throw forbidden('FORBIDDEN', 'Not your application');
   if (app.status !== 'draft') throw conflict('DOC_NOT_EDITABLE', 'Only drafts can be deleted');
-  const files = db.prepare('SELECT path FROM doc_materials WHERE application_id = ?').all(app.id);
   const info = db.prepare('DELETE FROM doc_applications WHERE id = ?').run(app.id);
-  for (const f of files) fs.promises.unlink(f.path).catch(() => {});
   D.audit(req.user, 'application_delete_draft', 'application', app.app_no);
   res.json({ deleted: info.changes > 0 });
 });
@@ -485,86 +405,13 @@ router.post('/applications/:id/resubmit', applyAuth, (req, res) => {
   if (app.supplement_deadline && app.supplement_deadline < now()) {
     throw badRequest('DOC_SUPPLEMENT_EXPIRED', 'The supplement deadline has passed');
   }
-  const supplements = db
-    .prepare("SELECT COUNT(*) AS n FROM doc_materials WHERE application_id = ? AND origin = 'supplement'")
-    .get(app.id).n;
-  if (supplements === 0) throw badRequest('DOC_MATERIAL_REQUIRED', 'Upload supplement materials first');
+  const note = sanitizeText(req.body?.note, 500);
+  if (!note) throw badRequest('VALIDATION_ERROR', 'Supplement note is required');
   db.prepare("UPDATE doc_applications SET status = 'pending', updated_at = ? WHERE id = ?").run(now(), app.id);
-  D.addRecord(app.id, req.user, 'resubmitted');
+  D.addRecord(app.id, req.user, 'resubmitted', { comment: note });
   D.sendMsg(app.user_id, app.id, 'supplemented', { appNo: app.app_no });
   D.audit(req.user, 'application_resubmit', 'application', app.app_no);
   res.json({ item: serializeApplicationDetail(loadApplication(app.id)) });
-});
-
-// ---------------------------------------------------------------------------
-// Materials
-// ---------------------------------------------------------------------------
-
-router.post('/applications/:id/materials', applyAuth, upload.single('file'), (req, res) => {
-  const app = loadApplication(req.params.id);
-  if (app.user_id !== req.user.id) throw forbidden('FORBIDDEN', 'Not your application');
-  if (app.status !== 'draft' && app.status !== 'supplementing') {
-    throw conflict('DOC_INVALID_STATE', 'Materials can only be added to drafts or supplementing applications');
-  }
-  if (D.rateLimit(`doc-upload:${req.user.id}`, 60, 60 * 60 * 1000) === false) {
-    throw badRequest('DOC_RATE_LIMITED', 'Too many uploads, try later');
-  }
-  const typeRow = D.getTypeRow(app.type_code);
-  const conf = materialsConfig(typeRow).find((m) => m.key === req.body?.kind);
-  if (!conf) throw badRequest('VALIDATION_ERROR', 'Unknown material kind');
-  const file = req.file;
-  if (!file) throw badRequest('VALIDATION_ERROR', 'file is required');
-
-  const globalMax = D.getConfigNumber('docs.upload_max_mb', 10) * 1024 * 1024;
-  const typeMax = (Number(conf.max_mb) || 10) * 1024 * 1024;
-  if (file.size > Math.min(globalMax, typeMax)) {
-    fs.promises.unlink(file.path).catch(() => {});
-    throw badRequest('DOC_FILE_TOO_LARGE', `File exceeds ${Math.min(globalMax, typeMax) / 1024 / 1024}MB`);
-  }
-  if (!mimeAllowed(conf.accept, file.mimetype)) {
-    fs.promises.unlink(file.path).catch(() => {});
-    throw badRequest('DOC_FILE_TYPE_REJECTED', `Only ${conf.accept} allowed`);
-  }
-  const counts = materialCounts(app.id);
-  if ((counts[conf.key] || 0) >= (Number(conf.max_count) || 1)) {
-    fs.promises.unlink(file.path).catch(() => {});
-    throw conflict('DOC_FILE_COUNT_EXCEEDED', `At most ${conf.max_count} file(s) for ${conf.label}`);
-  }
-
-  const origin = app.status === 'supplementing' ? 'supplement' : 'initial';
-  const info = db
-    .prepare(
-      'INSERT INTO doc_materials (application_id, user_id, kind, origin, filename, mime, size, path, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    )
-    .run(app.id, req.user.id, conf.key, origin, sanitizeText(file.originalname, 200), file.mimetype, file.size, file.path, now());
-  const row = db.prepare('SELECT * FROM doc_materials WHERE id = ?').get(info.lastInsertRowid);
-  res.json({ item: D.serializeMaterial(row) });
-});
-
-router.delete('/materials/:id', applyAuth, (req, res) => {
-  const row = db.prepare('SELECT * FROM doc_materials WHERE id = ?').get(Number(req.params.id));
-  if (!row) throw notFound('Material not found');
-  if (row.user_id !== req.user.id) throw forbidden('FORBIDDEN', 'Not your material');
-  const app = loadApplication(row.application_id);
-  if (app.status !== 'draft' && app.status !== 'supplementing') {
-    throw conflict('DOC_INVALID_STATE', 'Materials are locked after submission');
-  }
-  db.prepare('DELETE FROM doc_materials WHERE id = ?').run(row.id);
-  fs.promises.unlink(row.path).catch(() => {});
-  res.json({ deleted: true });
-});
-
-router.get('/materials/:id/file', fileAuth, (req, res) => {
-  const row = db.prepare('SELECT * FROM doc_materials WHERE id = ?').get(Number(req.params.id));
-  if (!row) throw notFound('Material not found');
-  const app = D.getApplicationRow(row.application_id);
-  const owned = new Set(req.user.permissions || []);
-  if (row.user_id !== req.user.id && !owned.has('docs:certify')) throw forbidden('FORBIDDEN', 'Not your material');
-  if (!fs.existsSync(row.path)) throw notFound('File missing');
-  D.audit(req.user, 'material_download', 'material', String(row.id), { appNo: app?.app_no });
-  res.setHeader('Content-Type', row.mime);
-  res.setHeader('Content-Disposition', `inline; filename="material-${row.id}"`);
-  fs.createReadStream(row.path).pipe(res);
 });
 
 // ---------------------------------------------------------------------------
@@ -703,7 +550,6 @@ router.get('/admin/queue', certifyAuth, (req, res) => {
       typeName: row.type_name ?? row.type_code,
       typeNameTw: row.type_name_tw ?? null,
       username: row.username,
-      materialCount: db.prepare('SELECT COUNT(*) AS n FROM doc_materials WHERE application_id = ?').get(row.id).n,
     }));
   res.json({ items, total, page, pageSize });
 });
@@ -882,22 +728,6 @@ function validateTypePayload(body, { partial = false } = {}) {
       })).filter((f) => f.key && f.label)
     );
   } else if (!partial) out.form_fields = '[]';
-
-  // 材料要求配置: [{key,label,required,accept,max_mb,max_count}]
-  if (body.materials !== undefined) {
-    const mats = Array.isArray(body.materials) ? body.materials : [];
-    out.materials = JSON.stringify(
-      mats.slice(0, 6).map((m) => ({
-        key: sanitizeText(m.key, 30).replace(/[^a-zA-Z0-9_]/g, ''),
-        label: sanitizeText(m.label, 60),
-        labelTw: sanitizeText(m.labelTw, 60),
-        required: m.required ? 1 : 0,
-        accept: sanitizeText(m.accept, 200) || 'image/*,application/pdf',
-        max_mb: Math.min(20, Math.max(1, Number(m.max_mb) || 10)),
-        max_count: Math.min(5, Math.max(1, Number(m.max_count) || 1)),
-      })).filter((m) => m.key && m.label)
-    );
-  } else if (!partial) out.materials = '[]';
 
   return out;
 }
@@ -1137,7 +967,6 @@ const CONFIG_WHITELIST = new Set([
   'docs.review_hours_hint',
   'docs.verify_limit_per_5min',
   'docs.apply_daily_limit',
-  'docs.upload_max_mb',
   'docs.seal_enabled',
   'docs.issuer_name',
   'docs.issuer_name_tw',
@@ -1276,14 +1105,10 @@ router.get('/admin/audit', manageAuth, (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// Multer error mapping — keep API error shape consistent.
+// Body parsing errors — keep API error shape consistent.
 // ---------------------------------------------------------------------------
 
 router.use((err, _req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    const code = err.code === 'LIMIT_FILE_SIZE' ? 'DOC_FILE_TOO_LARGE' : 'VALIDATION_ERROR';
-    return res.status(400).json({ code, message: err.message });
-  }
   if (err instanceof Error && err.type === 'entity.parse.failed') {
     return res.status(400).json({ code: 'VALIDATION_ERROR', message: 'Invalid JSON body' });
   }

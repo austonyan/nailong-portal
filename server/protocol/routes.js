@@ -1,13 +1,7 @@
-// 奶龙国皇家礼宾与活动署 — user-facing API. Private materials live under the
-// data dir and are only reachable through the authenticated download route;
-// the verify center is public, rate limited, masked and never returns personal
-// data (contact, companions, identity numbers).
+// 奶龙国皇家礼宾与活动署 — user-facing API. 门户只接收文字信息,不保存申请人
+// 文件; the verify center is public, rate limited, masked and never returns
+// personal data (contact, companions, identity numbers).
 import { Router } from 'express';
-import multer from 'multer';
-import fs from 'node:fs';
-import path from 'node:path';
-import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
 import QRCode from 'qrcode';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
@@ -35,7 +29,6 @@ import {
   serializeEvent,
   serializeHost,
   serializeInvitation,
-  serializeMaterial,
   serializeMessage,
   serializeNotice,
   serializePass,
@@ -47,60 +40,15 @@ import {
 
 ensureProtocolSchema();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data');
-export const protocolUploadsRoot = path.join(dataDir, 'uploads', 'protocol');
-fs.mkdirSync(protocolUploadsRoot, { recursive: true });
-
 const router = Router();
-const MAX_MATERIAL_BYTES = 5 * 1024 * 1024;
-const MAX_MATERIALS = 6;
-const ALLOWED_MIMES = new Set(['image/png', 'image/jpeg', 'image/webp', 'application/pdf']);
 const IDENTITY_TYPES = new Set(['ordinary', 'resident', 'diplomatic', 'foreign']);
 const BASIS_TYPES = new Set(['resident', 'diplomatic', 'invitation']);
 const HOST_TYPES = new Set(['organizer', 'community', 'diplomatic', 'resident_group']);
 const PUBLIC_STATUSES = ['registration', 'registration_closed', 'ongoing', 'ended'];
 
-// ---------------------------------------------------------------------------
-// Uploads (private storage)
-// ---------------------------------------------------------------------------
-
-const tmpDir = path.join(protocolUploadsRoot, 'tmp');
-fs.mkdirSync(tmpDir, { recursive: true });
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, tmpDir),
-    filename(_req, file, cb) {
-      const ext = path.extname(file.originalname || '').toLowerCase().slice(0, 10);
-      cb(null, `${crypto.randomUUID()}${ext}`);
-    },
-  }),
-  limits: { fileSize: MAX_MATERIAL_BYTES, files: 1 },
-});
-
-function mapMulterError(err, _req, _res, next) {
-  if (err instanceof multer.MulterError) {
-    const code = err.code === 'LIMIT_FILE_SIZE' ? 'EVT_FILE_TOO_LARGE' : 'VALIDATION_ERROR';
-    return next(badRequest(code, err.message));
-  }
-  next(err);
-}
-
 function canReview(user) {
   const perms = user?.permissions || [];
   return perms.includes('evt:review') || perms.includes('evt:manage');
-}
-
-function deleteMaterialFile(material) {
-  fs.rm(path.join(protocolUploadsRoot, material.path), { force: true }, () => {});
-}
-
-function materialList(ownerType, ownerId) {
-  return db
-    .prepare('SELECT * FROM pro_materials WHERE owner_type = ? AND owner_id = ? ORDER BY id')
-    .all(ownerType, ownerId)
-    .map(serializeMaterial);
 }
 
 function eventNotices(eventId) {
@@ -137,7 +85,6 @@ function registrationDetail(row) {
   return {
     ...serializeRegistration(row),
     event: serializeEvent(event),
-    materials: materialList('registration', row.id),
     pass: serializePass(pass),
     history: registrationHistory(row.reg_no),
   };
@@ -146,7 +93,6 @@ function registrationDetail(row) {
 function hostDetail(row) {
   return {
     ...serializeHost(row),
-    materials: materialList('host', row.id),
     history: db
       .prepare("SELECT * FROM pro_audit WHERE target_type = 'host' AND target_id = ? ORDER BY id")
       .all(row.host_no)
@@ -166,17 +112,6 @@ function loadOwnHost(req) {
   if (!row) throw notFound('Host application not found');
   if (row.user_id !== req.user.id) throw forbidden('FORBIDDEN', 'Not your host application');
   return row;
-}
-
-function eventMaterials(event, type) {
-  const merged = [...(event?.materials ? JSON.parse(event.materials) : []), ...(type?.materials ? JSON.parse(type.materials) : [])];
-  const seen = new Set();
-  return merged.filter((m) => {
-    const key = `${m.kind}:${m.required ? 1 : 0}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 function applyFields(row, body) {
@@ -353,7 +288,6 @@ router.get('/events/:no', (req, res) => {
   res.json({
     event: serializeEvent(event),
     type: serializeType(type),
-    materialsRequired: eventMaterials(event, type),
     notices: eventNotices(event.id),
     myRegistration: mine ? serializeRegistration(mine) : null,
     myPass: serializePass(pass),
@@ -485,10 +419,6 @@ router.patch('/registrations/:id', (req, res) => {
 router.delete('/registrations/:id', (req, res) => {
   const reg = loadOwnRegistration(req);
   if (reg.status !== 'draft') throw conflict('EVT_NOT_EDITABLE', 'Only drafts can be deleted');
-  for (const m of db.prepare("SELECT * FROM pro_materials WHERE owner_type = 'registration' AND owner_id = ?").all(reg.id)) {
-    deleteMaterialFile(m);
-  }
-  db.prepare("DELETE FROM pro_materials WHERE owner_type = 'registration' AND owner_id = ?").run(reg.id);
   db.prepare('DELETE FROM pro_registrations WHERE id = ?').run(reg.id);
   audit(req.user, 'registration_delete', 'registration', reg.reg_no, {});
   res.json({ ok: true });
@@ -533,16 +463,6 @@ router.post('/registrations/:id/submit', (req, res) => {
     if (invitation.event_id !== event.id) throw conflict('EVT_INVITATION_EVENT', 'Invitation belongs to another event');
     if (invitation.status !== 'valid') throw conflict('EVT_INVITATION_INVALID', `Invitation is ${invitation.status}`);
     if (invitation.valid_until && invitation.valid_until < now()) throw conflict('EVT_INVITATION_INVALID', 'Invitation expired');
-  }
-
-  // Material requirements (event + type level).
-  const requiredMaterials = eventMaterials(event, type).filter((m) => m.required);
-  const present = db
-    .prepare("SELECT kind, COUNT(*) AS n FROM pro_materials WHERE owner_type = 'registration' AND owner_id = ? GROUP BY kind")
-    .all(reg.id);
-  const presentMap = new Map(present.map((p) => [p.kind, p.n]));
-  for (const req2 of requiredMaterials) {
-    if (!presentMap.get(req2.kind)) throw badRequest('EVT_MATERIAL_REQUIRED', `Material required: ${req2.kind}`);
   }
 
   if (!event.waitlist_enabled && eventCountsApproved(event.id) >= event.capacity) {
@@ -601,90 +521,6 @@ router.post('/registrations/:id/cancel', (req, res) => {
   audit(req.user, 'registration_cancel', 'registration', reg.reg_no, { previousStatus: reg.status });
   if (['approved', 'checked_in'].includes(reg.status)) promoteWaitlist(reg.event_id, req.user);
   res.json({ ok: true });
-});
-
-// ---------------------------------------------------------------------------
-// Materials (private upload / restricted download)
-// ---------------------------------------------------------------------------
-
-router.post('/materials', upload.single('file'), mapMulterError, (req, res) => {
-  const ownerType = String(req.body?.ownerType || '');
-  const ownerId = Number(req.body?.ownerId);
-  if (!['registration', 'host'].includes(ownerType)) throw badRequest('VALIDATION_ERROR', 'Bad owner type');
-  const file = req.file;
-  if (!file) throw badRequest('VALIDATION_ERROR', 'file is required');
-  const fail = (err) => {
-    fs.rm(file.path, { force: true }, () => {});
-    throw err;
-  };
-  if (!ALLOWED_MIMES.has(file.mimetype)) fail(badRequest('EVT_FILE_TYPE', `Unsupported file type: ${file.mimetype}`));
-  let editable = false;
-  let ownerLabel = '';
-  if (ownerType === 'registration') {
-    const reg = db.prepare('SELECT * FROM pro_registrations WHERE id = ?').get(ownerId);
-    if (!reg || reg.user_id !== req.user.id) fail(notFound('Registration not found'));
-    editable = reg.status === 'draft';
-    ownerLabel = reg.reg_no;
-  } else {
-    const host = db.prepare('SELECT * FROM pro_hosts WHERE id = ? AND deleted_at IS NULL').get(ownerId);
-    if (!host || host.user_id !== req.user.id) fail(notFound('Host application not found'));
-    editable = ['draft', 'supplement_required'].includes(host.status);
-    ownerLabel = host.host_no;
-  }
-  if (!editable) fail(conflict('EVT_NOT_EDITABLE', 'Materials are locked in current status'));
-  const count = db.prepare('SELECT COUNT(*) AS n FROM pro_materials WHERE owner_type = ? AND owner_id = ?').get(ownerType, ownerId).n;
-  if (count >= MAX_MATERIALS) fail(badRequest('EVT_TOO_MANY_FILES', `At most ${MAX_MATERIALS} files`));
-  const kind = String(req.body?.kind || 'other').slice(0, 30) || 'other';
-  const dirName = `${ownerType}-${ownerId}`;
-  const targetDir = path.join(protocolUploadsRoot, dirName);
-  fs.mkdirSync(targetDir, { recursive: true });
-  fs.renameSync(file.path, path.join(targetDir, file.filename));
-  const info = db
-    .prepare(
-      `INSERT INTO pro_materials (owner_type, owner_id, user_id, kind, filename, mime, size, path, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    )
-    .run(
-      ownerType,
-      ownerId,
-      req.user.id,
-      kind,
-      (file.originalname || 'file').slice(0, 120),
-      file.mimetype,
-      file.size,
-      path.join(dirName, file.filename),
-      now()
-    );
-  audit(req.user, 'material_upload', ownerType, ownerLabel, { kind, size: file.size });
-  res.status(201).json({ material: serializeMaterial(db.prepare('SELECT * FROM pro_materials WHERE id = ?').get(info.lastInsertRowid)) });
-});
-
-router.delete('/materials/:id', (req, res) => {
-  const material = db.prepare('SELECT * FROM pro_materials WHERE id = ?').get(Number(req.params.id));
-  if (!material || material.user_id !== req.user.id) throw notFound('Material not found');
-  if (material.owner_type === 'registration') {
-    const reg = db.prepare('SELECT * FROM pro_registrations WHERE id = ?').get(material.owner_id);
-    if (!reg || reg.status !== 'draft') throw conflict('EVT_NOT_EDITABLE', 'Materials are locked');
-  } else {
-    const host = db.prepare('SELECT * FROM pro_hosts WHERE id = ?').get(material.owner_id);
-    if (!host || !['draft', 'supplement_required'].includes(host.status)) throw conflict('EVT_NOT_EDITABLE', 'Materials are locked');
-  }
-  deleteMaterialFile(material);
-  db.prepare('DELETE FROM pro_materials WHERE id = ?').run(material.id);
-  res.json({ ok: true });
-});
-
-router.get('/materials/:id/file', (req, res) => {
-  const material = db.prepare('SELECT * FROM pro_materials WHERE id = ?').get(Number(req.params.id));
-  if (!material) throw notFound('Material not found');
-  const isOwner = material.user_id === req.user.id;
-  if (!isOwner && !canReview(req.user)) throw forbidden('FORBIDDEN', 'No access to this file');
-  const full = path.resolve(protocolUploadsRoot, material.path);
-  if (!full.startsWith(protocolUploadsRoot) || !fs.existsSync(full)) throw notFound('File missing');
-  audit(req.user, 'material_access', 'material', material.id, { ownerType: material.owner_type, ownerId: material.owner_id });
-  res.setHeader('Content-Type', material.mime);
-  res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(material.filename)}`);
-  fs.createReadStream(full).pipe(res);
 });
 
 // ---------------------------------------------------------------------------
@@ -889,10 +725,6 @@ router.patch('/hosts/:id', (req, res) => {
 router.delete('/hosts/:id', (req, res) => {
   const host = loadOwnHost(req);
   if (host.status !== 'draft') throw conflict('EVT_NOT_EDITABLE', 'Only drafts can be deleted');
-  for (const m of db.prepare("SELECT * FROM pro_materials WHERE owner_type = 'host' AND owner_id = ?").all(host.id)) {
-    deleteMaterialFile(m);
-  }
-  db.prepare("DELETE FROM pro_materials WHERE owner_type = 'host' AND owner_id = ?").run(host.id);
   db.prepare('DELETE FROM pro_hosts WHERE id = ?').run(host.id);
   audit(req.user, 'host_delete', 'host', host.host_no, {});
   res.json({ ok: true });
@@ -904,8 +736,6 @@ router.post('/hosts/:id/submit', (req, res) => {
   const host = loadOwnHost(req);
   if (!['draft', 'supplement_required'].includes(host.status)) throw conflict('EVT_NOT_EDITABLE', 'Host application already submitted');
   if (!host.name || !host.contact_nickname || !host.contact) throw badRequest('EVT_FIELD_REQUIRED', 'name and contact are required');
-  const materialCount = db.prepare("SELECT COUNT(*) AS n FROM pro_materials WHERE owner_type = 'host' AND owner_id = ?").get(host.id).n;
-  if (!materialCount) throw badRequest('EVT_MATERIAL_REQUIRED', 'At least one supporting material is required');
   const ts = now();
   db.prepare(
     "UPDATE pro_hosts SET status = 'pending_review', submitted_at = COALESCE(submitted_at, ?), updated_at = ? WHERE id = ?"
@@ -1044,8 +874,6 @@ router.post('/privacy/erase', (req, res) => {
     .prepare("SELECT COUNT(*) AS n FROM pro_hosts WHERE user_id = ? AND status IN ('pending_review','certified','frozen')")
     .get(req.user.id).n;
   if (hosts > 0) throw badRequest('EVT_ERASE_BLOCKED', 'Active host certifications must be revoked first');
-  for (const m of db.prepare('SELECT * FROM pro_materials WHERE user_id = ?').all(req.user.id)) deleteMaterialFile(m);
-  db.prepare('DELETE FROM pro_materials WHERE user_id = ?').run(req.user.id);
   db.prepare(
     `UPDATE pro_registrations SET nickname = '', contact = '', identity_no = '', companions = '[]', note = '',
        invitation_no = '', updated_at = ? WHERE user_id = ?`

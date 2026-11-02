@@ -292,8 +292,6 @@
     "VISA_NOT_EDITABLE": "目前狀態不能再修改",
     "VISA_RATE_LIMITED": "操作太頻繁，請稍等一分鐘再試",
     "VISA_TOO_MANY_ACTIVE": "你有太多正在審核中的申請",
-    "VISA_AVATAR_REQUIRED": "需要至少上傳一張頭像",
-    "VISA_DRAFT_NOT_READY": "草稿還沒建好，請稍候再上傳材料",
     "VISA_INVALID_TRANSITION": "目前狀態無法執行該操作",
     "VISA_SUPPLEMENT_EXPIRED": "補件期限已過",
     "DOC_SUPPLEMENT_EXPIRED": "補件期限已過，無法再補交",
@@ -302,10 +300,7 @@
     "APPEAL_MERGE_MISMATCH": "兩件申訴不屬於同一使用者，不能合併",
     "RES_CARD_EXISTS": "該使用者已有有效居民卡，請先駁回重複的申請",
     "EVT_CHECKIN_TOO_EARLY": "活動尚未開始，暫不能簽到入場",
-    "VISA_SUPPLEMENT_EMPTY": "請先上傳補件材料或填寫說明",
-    "VISA_FILE_TOO_LARGE": "檔案太大，單個不超過5MB",
-    "VISA_FILE_TYPE": "僅支援圖片(PNG/JPG/WebP)或PDF",
-    "VISA_TOO_MANY_FILES": "材料數量已達上限（6個）",
+    "VISA_SUPPLEMENT_EMPTY": "請填寫補件說明",
     "VISA_BLACKLISTED": "該帳號已被限制申請",
     "VISA_VERIFY_LIMITED": "驗真請求太頻繁，請稍後再試",
     "VISA_REASON_REQUIRED": "請選擇駁回原因",
@@ -319,10 +314,6 @@
     "DOC_BLACKLISTED": "帳號已被限制申請認證，請聯絡管理員",
     "DOC_NOT_EDITABLE": "目前狀態不可編輯",
     "DOC_INVALID_STATE": "目前狀態不允許此操作",
-    "DOC_MATERIAL_REQUIRED": "還有必傳材料未上傳",
-    "DOC_FILE_TOO_LARGE": "檔案太大，超出大小限制",
-    "DOC_FILE_TYPE_REJECTED": "檔案類型不被支援",
-    "DOC_FILE_COUNT_EXCEEDED": "材料數量超出上限",
     "DOC_VERIFY_LIMIT": "查詢太頻繁，請稍後再試",
     "DOC_TYPE_CODE_TAKEN": "類型編碼已存在",
     "IMM_PORT_CLOSED": "口岸目前不開放申報，請稍後再來",
@@ -337,12 +328,9 @@
     "IMM_VISA_NOT_FOUND": "簽注署暫無此簽注記錄",
     "IMM_VISA_REQUIRED": "請先關聯有效簽注",
     "IMM_INCOMPLETE": "申報資訊不完整，請補全後再提交",
-    "IMM_FILE_TOO_LARGE": "檔案超過5MB上限",
-    "IMM_FILE_TYPE": "僅支援圖片與PDF檔案",
     "DIP_RATE_LIMITED": "操作太頻繁，請稍後再試",
     "DIP_INVALID_STATE": "目前狀態不允許該操作",
     "DIP_INCOMPLETE": "申請資訊不完整",
-    "DIP_MATERIAL_REQUIRED": "請至少上傳一份材料",
     "DIP_TYPE_CLOSED": "該類型暫未開放申請",
     "DIP_DUPLICATE": "已有進行中的申請，請勿重複提交",
     "DIP_BLACKLISTED": "該帳號目前被限制提交申請",
@@ -351,8 +339,6 @@
     "DIP_TERM_REQUIRED": "請填寫任期起訖",
     "DIP_TERM_TOO_LONG": "任期最長365天",
     "DIP_IDENTITY_LIMIT": "同時持有的外交身分已達上限",
-    "DIP_FILE_TOO_LARGE": "檔案超過5MB",
-    "DIP_FILE_TYPE": "僅支援圖片與PDF",
     "DIP_NOT_ELIGIBLE": "目前編號不具備資格",
     "RES_FIELD_REQUIRED": "還有必填資訊沒有填寫",
     "RES_PURPOSE_REQUIRED": "請至少選擇一個登記用途",
@@ -361,15 +347,10 @@
     "RES_BLACKLISTED": "該帳號已被限制登記",
     "RES_IDENTITY_EXISTS": "該帳號已持有居民身分",
     "RES_TOO_MANY_ACTIVE": "你有太多進行中的申請",
-    "RES_AVATAR_REQUIRED": "需要至少上傳一張頭像",
-    "RES_PROOF_REQUIRED": "該類型需要上傳地址證明",
     "RES_RATE_LIMITED": "操作太頻繁，請稍等一分鐘再試",
     "RES_INVALID_TRANSITION": "目前狀態無法執行該操作",
     "RES_SUPPLEMENT_EXPIRED": "補件期限已過",
-    "RES_SUPPLEMENT_EMPTY": "請先上傳補件材料或填寫說明",
-    "RES_FILE_TOO_LARGE": "檔案太大，單個不超過5MB",
-    "RES_FILE_TYPE": "僅支援圖片(PNG/JPG/WebP)或PDF",
-    "RES_TOO_MANY_FILES": "材料數量已達上限（6個）",
+    "RES_SUPPLEMENT_EMPTY": "請填寫補件說明",
     "RES_VERIFY_LIMITED": "驗真請求太頻繁，請稍後再試",
     "RES_REASON_REQUIRED": "請填寫原因",
     "RES_ERASE_BLOCKED": "請先撤銷進行中的申請",
@@ -377,9 +358,6 @@
     "RES_CHANGE_EMPTY": "沒有需要變更的內容",
     "RES_UPGRADE_SAME_TYPE": "已經是該居民類型",
     "RES_TOO_MANY_CHANGES": "待審核的變更申請太多",
-    "EVT_FILE_TOO_LARGE": "檔案超過5 MB限制",
-    "EVT_TOO_MANY_FILES": "材料數量超過上限",
-    "EVT_FILE_TYPE": "不支援的檔案型別（僅PNG/JPG/WebP/PDF）",
     "EVT_NOT_EDITABLE": "當前狀態不可修改",
     "EVT_EVENT_CLOSED": "活動不在報名時間內",
     "EVT_EVENT_FULL": "活動名額已滿",
@@ -392,7 +370,6 @@
     "EVT_INVITATION_INVALID": "邀請函無效或已使用",
     "EVT_INVITATION_EVENT": "邀請函不屬於該活動",
     "EVT_INVITATION_TYPE": "邀請函型別與活動不匹配",
-    "EVT_MATERIAL_REQUIRED": "缺少活動要求的材料",
     "EVT_EVENT_NOT_FOUND": "活動不存在或已被刪除，請重新整理後再試",
     "EVT_INVITEE_NOT_FOUND": "被邀請人的門戶帳號不存在，請核對使用者名稱",
     "EVT_DUPLICATE": "已存在進行中的記錄",
@@ -422,8 +399,6 @@
     "APPEAL_DUPLICATE": "該業務編號已有在辦或已辦申訴。",
     "APPEAL_ERASE_BLOCKED": "存在未完成的申訴或工單，暫不能註銷或清除資料。",
     "APPEAL_FIELD_REQUIRED": "請填寫必填欄位。",
-    "APPEAL_FILE_TOO_LARGE": "檔案超過大小限制。",
-    "APPEAL_FILE_TYPE": "檔案類型不支援。",
     "APPEAL_INVALID_TRANSITION": "目前狀態不允許該操作。",
     "APPEAL_NOT_EDITABLE": "僅草稿可編輯。",
     "APPEAL_RATE_LIMITED": "操作過於頻繁，請稍後再試。",
@@ -435,7 +410,6 @@
     "APPEAL_SUPPLEMENT_EXPIRED": "補件期限已過。",
     "APPEAL_TICKET_CATEGORY": "工單分類無效。",
     "APPEAL_TOO_MANY_ACTIVE": "在辦申訴過多，請先完成現有申訴。",
-    "APPEAL_TOO_MANY_FILES": "材料數量超過限制。",
     "APPEAL_VERIFY_LIMITED": "查詢過於頻繁，請稍後再試。",
     "SETUP_COMPLETE": "首次啟動引導已完成，入口已關閉。",
     "ARCH_CONFIRM_REQUIRED": "該操作需要再次確認",
@@ -699,8 +673,8 @@
       "guide": "辦事指南",
       "guideCondition": "申請條件",
       "guideConditionBody": "持奶龍統一門戶帳號即可申請。本平台不核驗真實身份，請用暱稱與虛構資訊填寫。",
-      "guideMaterials": "所需材料",
-      "guideMaterialsBody": "頭像照片（必傳）、行程說明（必填）、邀請函或活動憑證（選填，圖片或PDF）。",
+      "guideMaterials": "需要準備什麼",
+      "guideMaterialsBody": "填寫行程說明與虛擬身分編號即可，入口不接受任何照片或檔案。",
       "guideDuration": "審核時長",
       "guideDurationBody": "提交後約{{hours}}小時內完成審核，請留意站內信通知。",
       "guideValidity": "有效期說明",
@@ -759,11 +733,6 @@
       "pickType": "選擇簽註類型",
       "pickTypeTip": "先選一種簽註類型，再閱讀申請條件與材料清單。",
       "typeUnavailable": "該簽註類型暫未開放，先看看其他類型吧",
-      "materialsTitle": "材料清單",
-      "materialAvatar": "頭像照片1張（必傳，圖片格式）",
-      "materialItinerary": "行程說明（必填，寫清楚打算去哪玩）",
-      "materialInvitation": "邀請函 / 活動憑證（選填，後續開放邀請方功能）",
-      "materialFormat": "支援PNG / JPG / WebP / PDF，單個不超過5MB，最多6個檔案",
       "quizTitle": "申請資格自檢",
       "quizHint": "趣味三連問，答完就能出發（本平台不核驗真實身份）",
       "quizDone": "自檢完成，看起來你很適合來奶龍島！",
@@ -810,30 +779,17 @@
       "inviterContact": "邀請人聯絡方式",
       "companions": "隨行人員",
       "companionsPlaceholder": "例如：奶龍寶寶 ×2（選填）",
-      "materialsTitle": "材料上傳",
-      "materialsTip": "頭像必傳；其餘材料可選。支援圖片與PDF，單個不超過5MB。",
       "avatarRequired": "請先上傳頭像材料，再提交申請",
       "draftPreparing": "草稿準備中，稍候即可上傳材料…",
-      "materialAvatar": "頭像",
-      "materialOther": "其他材料（邀請函、活動憑證等）",
-      "uploadAvatar": "上傳頭像",
-      "uploadOther": "點擊或拖曳上傳，支援多份",
       "saveDraft": "儲存草稿",
       "draftSaved": "草稿已儲存",
       "submit": "提交申請",
       "submitSuccess": "申請已提交",
       "confirmTitle": "提交前確認",
-      "materialsCount": "已上傳{{count}}份材料",
       "submittedTitle": "提交成功！",
       "submittedNo": "申請編號：{{no}}",
       "submittedHint": "預計{{hours}}小時內完成審核，結果將透過站內信通知。請保存好申請編號，可在驗真中心查詢進度。",
       "viewMyApplications": "查看我的申請"
-    },
-    "materialKind": {
-      "avatar": "頭像",
-      "invitation": "邀請函",
-      "proof": "活動憑證",
-      "other": "其他材料"
     },
     "field": {
       "appNo": "申請編號",
@@ -892,13 +848,11 @@
       "closedTitle": "申請已關閉",
       "closedBody": "補件期限已過，申請自動關閉。可以按原類型重新申請。",
       "permitReady": "電子簽註已簽發",
-      "materials": "材料",
       "reviews": "審核記錄",
       "noReviews": "還沒有審核記錄",
       "supplementTitle": "補件",
       "supplementDeadline": "補件截止：{{time}}",
       "supplementAsk": "審核員要求：",
-      "uploadSupplement": "點擊或拖曳上傳補件材料",
       "supplementNotePlaceholder": "補件說明（選填）",
       "submitSupplement": "提交補件",
       "supplementSent": "補件已提交，重新進入審核",
@@ -953,7 +907,7 @@
       },
       "supplement_required": {
         "title": "申請{{appNo}}需要補件",
-        "body": "審核員留言：{{comment}}。請在{{deadline}}前補交材料，超時申請將自動關閉。"
+        "body": "審核員留言：{{comment}}。請在{{deadline}}前提交補件說明，超時申請將自動關閉。"
       },
       "approved": {
         "title": "申請{{appNo}}審核通過",
@@ -1218,13 +1172,13 @@
       "catalog": "服務目錄",
       "guide": "辦事指南與常見問題",
       "faq1q": "哪些文書可以認證？",
-      "faq1a": "目前開放七類：簽註證明、邀請函、入境記錄證明、居民卡、活動憑證、外交文書與申訴決定書。進入「文書類型」頁可以查看每類的適用場景、所需材料與有效期。",
-      "faq2q": "認證需要準備什麼材料？",
-      "faq2a": "通常需要對應業務的憑證截圖（如簽註詳情頁、活動門票），部分類型需要邀請函掃描件。全部材料僅支援圖片或PDF，單個不超過10MB。",
+      "faq1a": "目前開放七類：簽註證明、邀請函、入境記錄證明、居民卡、活動憑證、外交文書與申訴決定書。進入「文書類型」頁可以查看每類的適用場景與有效期。",
+      "faq2q": "認證需要準備什麼？",
+      "faq2a": "不用上傳任何檔案：填寫業務編號與簡短說明即可，系統會即時校驗編號。",
       "faq3q": "認證通過後有什麼用？",
       "faq3a": "你會獲得一份帶唯一編號與電子印章的認證文書，可以在驗真中心被任何人查驗，用於展示、收藏或作為其他活動的報名憑證（娛樂用途）。",
       "faq4q": "認證大概需要多久？",
-      "faq4a": "提交後進入待認證佇列，材料齊全通常72小時內完成；如需補件會發送站內訊息，請在7天內補交，逾期申請將自動關閉。"
+      "faq4a": "提交後進入待認證佇列，通常72小時內完成；如需補件會發送站內訊息，請在7天內提交說明，逾期申請將自動關閉。"
     },
     "types": {
       "title": "文書類型",
@@ -1232,9 +1186,6 @@
       "bizLabel": "關聯{{label}}",
       "guideTitle": "辦事指南",
       "guideEmpty": "該類型指南整理中。",
-      "materialsTitle": "材料清單",
-      "materialRule": "最多{{count}}個，單個 ≤ {{mb}}MB，圖片或PDF",
-      "materialsEmpty": "該類型無需上傳材料。",
       "formTitle": "需要填寫的資訊",
       "noBiz": "無需關聯業務編號",
       "shownTitle": "認證後展示的欄位",
@@ -1252,7 +1203,6 @@
       "start": "去申請認證",
       "step1": "第1步 · 選擇文書類型",
       "step2": "第2步 · 填寫申請資訊",
-      "step3": "第3步 · 上傳材料",
       "nickname": "申請人姓名",
       "nicknamePh": "將展示在認證文書上",
       "contact": "聯絡方式",
@@ -1261,8 +1211,6 @@
       "bizHint": "可在對應業務署的詳情頁找到；提交時會與對應業務署即時校驗。",
       "purpose": "認證用途",
       "required": "必填",
-      "upload": "上傳材料",
-      "materialsCount": "材料數量",
       "saveDraft": "儲存草稿",
       "submit": "提交認證",
       "draftSaved": "草稿已儲存",
@@ -1272,14 +1220,11 @@
       "nicknameRequired": "請填寫申請人暱稱",
       "bizRequired": "請填寫{{label}}",
       "fieldRequired": "請填寫「{{label}}」",
-      "materialRequired": "請上傳「{{label}}」",
       "typeLocked": "草稿已建立，類型不可更改；如需其他類型請新建申請。",
       "confirmTitle": "提交前確認",
       "confirmTip": "請核對以下資訊；提交後將進入認證佇列，草稿資訊將被鎖定。",
       "confirmSubmit": "確認提交",
       "type": "文書類型",
-      "fileTypeBad": "檔案類型不符，僅支援：{{accept}}",
-      "fileTooLarge": "檔案超過{{mb}}MB限制",
       "supplementOrigin": "補件"
     },
     "appList": {
@@ -1294,14 +1239,12 @@
       "title": "認證申請{{no}}",
       "infoTitle": "申請資訊",
       "recordsTitle": "認證記錄",
-      "materialsTitle": "申請材料",
       "certReady": "認證已通過，文書編號{{no}}",
       "certReadyTip": "點擊查看並下載你的認證文書。",
       "rejectedTitle": "申請被駁回",
       "reapply": "按此類型重新申請",
       "supplementTitle": "認證員要求補件",
       "supplementDeadline": "補件截止：",
-      "uploadFor": "補交：{{label}}",
       "resubmit": "補交完成，重新提交",
       "resubmitted": "已重新進入認證佇列",
       "withdraw": "撤銷申請",
@@ -1309,17 +1252,13 @@
       "withdrawConfirmBody": "確定撤銷申請{{no}}嗎？撤銷後不可恢復，如需認證請重新申請。",
       "withdrawn": "申請已撤銷",
       "bizReserved": "歷史記錄未校驗",
-      "uploaded": "材料已上傳",
       "bizVerified": "已與業務署校驗",
       "bizNotOwned": "編號非本人業務",
       "bizNotFound": "未查詢到該業務編號",
       "bizUnavailable": "該業務署暫不支援線上校驗",
-      "countdownFormat": "DD天HH:mm:ss"
-    },
-    "materials": {
-      "empty": "暫無材料",
-      "preview": "預覽",
-      "download": "下載"
+      "countdownFormat": "DD天HH:mm:ss",
+      "resubmitNoteRequired": "請填寫補件說明",
+      "resubmitNotePlaceholder": "說明需要補充的資訊，例如行程安排"
     },
     "cert": {
       "certNo": "文書編號",
@@ -1409,7 +1348,6 @@
         "detailTitle": "申請詳情",
         "applicant": "申請人",
         "username": "帳號",
-        "materials": "材料數",
         "searchPh": "搜尋申請編號/暱稱",
         "approve": "通過並簽發",
         "approveConfirmTitle": "通過認證",
@@ -1423,7 +1361,7 @@
         "supplementTitle": "要求補件",
         "supplementTip": "請寫明需要補充的材料與要求；系統會按署設定給使用者補件期限。",
         "supplementSend": "發送補件要求",
-        "supplementPh": "例如：邀請函掃描件不清晰，請重新上傳",
+        "supplementPh": "例如：行程說明過於簡略，請補充具體安排",
         "commentPh": "認證意見（選填）",
         "done": "操作成功",
         "waitingResubmit": "等待使用者補件並重新提交。"
@@ -1435,17 +1373,14 @@
         "code": "類型編碼",
         "validity": "有效期（天）",
         "fields": "表單欄位",
-        "materialsCol": "材料要求",
         "guide": "辦事指南",
-        "guidePh": "用途、材料、注意事項……",
+        "guidePh": "用途、注意事項……",
         "bizLabel": "關聯業務編號名稱",
         "bizLabelPh": "如：簽註編號",
         "bizSource": "關聯業務署",
         "bizRequired": "業務編號必填",
         "sort": "排序",
-        "addMaterial": "新增材料要求",
         "addField": "新增表單欄位",
-        "materialLabel": "材料名稱",
         "fieldLabel": "欄位名稱",
         "codePh": "類型編碼，如INVITE",
         "materialKeyPh": "材料標識，如photo",
@@ -1534,7 +1469,6 @@
           "blacklist_add": "加入黑名單",
           "blacklist_remove": "移出黑名單",
           "verify_rate_limited": "驗真限流觸發",
-          "material_download": "下載材料",
           "auto_expire_certificate": "文書到期失效",
           "auto_close_supplement_timeout": "補件逾時關閉"
         },
@@ -1558,7 +1492,6 @@
         "supplementDays": "補件期限（天）",
         "reviewHours": "審核時長提示（小時）",
         "applyDailyLimit": "每人每日提交上限",
-        "uploadMaxMb": "單檔案上限(MB)",
         "verifySection": "驗真與展示",
         "verifyLimit": "驗真限流（次/5分鐘/IP）",
         "verifyLimitTip": "防止列舉掃描的查詢頻率上限",
@@ -1715,7 +1648,7 @@
       },
       "privacy": {
         "q": "我的申報資訊安全嗎？",
-        "a": "申報與附件僅本人和邊檢員可見；通關碼QR碼只包含隨機驗真權杖，不含個人資訊。"
+        "a": "申報資訊僅本人和邊檢員可見；通關碼QR碼只包含隨機驗真權杖，不含個人資訊。"
       },
       "realEffect": {
         "q": "這些記錄有現實效力嗎？",
@@ -1803,12 +1736,6 @@
       "not_found": "未查到該簽注",
       "validUntil": "有效期至{{date}}"
     },
-    "attachments": {
-      "title": "附件材料",
-      "empty": "暫無附件",
-      "upload": "上傳附件",
-      "limit": "僅圖片/PDF，單個 ≤5MB"
-    },
     "mydecl": {
       "title": "我的申報",
       "no": "申報編號",
@@ -1833,7 +1760,7 @@
       "approve": "審核通過",
       "reject": "審核拒絕",
       "require_supplement": "要求補件",
-      "supplement_submit": "補交材料",
+      "supplement_submit": "補交說明",
       "withdraw": "撤銷申報",
       "enter": "入境蓋章",
       "exit": "出境登記"
@@ -2197,10 +2124,7 @@
           "q": "登記條件是什麼？",
           "a": "年滿0歲的奶龍愛好者即可登記臨時居民；遵守《奶龍島居民友好公約》，保持快樂。"
         },
-        "materials": {
-          "q": "需要準備哪些資訊與材料？",
-          "a": "必填：暱稱、聯絡方式、奶龍國虛構地址；選填：個人簡介。材料：頭像（必傳）、虛擬地址證明（趣味化，選填）。"
-        },
+        "materials": {},
         "duration": {
           "q": "審核要多久？",
           "a": "提交後預計72小時內完成審核，結果會透過站內信通知。"
@@ -2251,10 +2175,6 @@
       "purposes": {
         "label": "登記用途",
         "desc": "收藏、活動報名、簽注快捷通道等，可多選"
-      },
-      "avatar": {
-        "label": "頭像",
-        "desc": "圖片(PNG/JPG/WebP)或PDF，不超過5MB，必傳"
       },
       "proof": {
         "label": "虛擬地址證明",
@@ -2311,16 +2231,7 @@
       "purposes": "登記用途",
       "bio": "個人簡介",
       "bioPlaceholder": "介紹你和奶龍的故事",
-      "materialsTitle": "登記材料",
-      "materialsTip": "支援圖片(PNG/JPG/WebP)或PDF，單個不超過5MB，最多6個檔案。",
-      "materialAvatar": "頭像",
-      "materialProof": "虛擬地址證明",
-      "materialOther": "其他材料",
-      "uploadAvatar": "上傳頭像",
-      "uploadProof": "上傳地址證明",
-      "uploadOther": "點擊或拖曳上傳其他材料",
       "confirmTitle": "提交前確認",
-      "materialsCount": "共{{count}}個材料",
       "purposesRequired": "請至少選擇一項登記用途。"
     },
     "myApps": {
@@ -2333,18 +2244,17 @@
       "notFound": "申請不存在或無權查看",
       "submittedAt": "提交於{{time}}",
       "supplementRequired": "需要補件",
-      "supplementNoNote": "審核員沒有留言，請盡量補齊材料。",
+      "supplementNoNote": "審核員沒有留言，請把缺少的資訊寫清楚。",
       "supplementDeadline": "補件截止：{{time}}，逾期申請將自動關閉",
       "supplementNow": "線上補件",
       "supplementSent": "補件已提交，重新進入待審核",
       "supplementModalTitle": "線上補件",
       "supplementSubmit": "提交補件",
-      "supplementTip": "上傳補件材料或填寫說明（至少一項）。",
+      "supplementTip": "填寫補件說明後提交。",
       "supplementNotePlaceholder": "給審核員留言，說明補件情況",
       "rejectedTitle": "申請未通過",
       "rejectReason": "駁回原因",
       "infoTitle": "登記資訊",
-      "materialsTitle": "登記材料",
       "recordsTitle": "審核紀錄",
       "noRecords": "暫無審核紀錄",
       "withdraw": "撤銷申請",
@@ -2371,14 +2281,6 @@
       "info": "通知",
       "policy": "政策",
       "event": "活動"
-    },
-    "materialKind": {
-      "avatar": "頭像",
-      "address_proof": "地址證明",
-      "other": "其他材料"
-    },
-    "materialOrigin": {
-      "supplement": "補件"
     },
     "card": {
       "title": "我的居民卡",
@@ -2604,15 +2506,12 @@
         "title": "居民類型與規則配置",
         "create": "新增類型",
         "edit": "編輯類型",
-        "tip": "配置類型開放狀態、有效期與材料要求；表單欄位說明會顯示在辦事指南。",
+        "tip": "配置類型開放狀態與有效期；表單欄位說明會顯示在辦事指南。",
         "code": "類型編碼",
         "name": "類型名稱",
         "description": "適用場景",
         "validYears": "有效期（年）",
-        "materials": "材料要求",
         "enabled": "是否開放",
-        "requireAvatar": "頭像必傳",
-        "requireProof": "地址證明必傳",
         "sortOrder": "排序"
       },
       "notices": {
@@ -2846,22 +2745,6 @@
       "cooperation": "活動合作",
       "visa_channel": "外交簽注通道"
     },
-    "materialKind": {
-      "intro": "虛構介紹",
-      "proof": "活動憑證",
-      "community": "社區證明",
-      "appointment": "任命書",
-      "letter": "介紹信",
-      "other": "其他"
-    },
-    "material": {
-      "title": "申請材料",
-      "tip": "支援圖片與PDF，單一檔案不超過5MB；材料僅審核人員可見。",
-      "upload": "上傳材料",
-      "empty": "暫無材料",
-      "limit": "圖片 / PDF · ≤5MB",
-      "supplementOrigin": "補件"
-    },
     "apply": {
       "title": "建交申請",
       "editTitle": "編輯建交申請",
@@ -2887,8 +2770,7 @@
       "confirmTitle": "提交前確認",
       "submit": "提交申請",
       "submitted": "已提交，建交申請編號{{no}}",
-      "required": "必填",
-      "materialCount": "{{count}}份"
+      "required": "必填"
     },
     "relation": {
       "title": "我的建交",
@@ -2903,7 +2785,7 @@
       "supplementRequired": "需要補件",
       "supplementDeadline": "請在{{date}}前補交",
       "supplementSubmitted": "已補交",
-      "supplementPlaceholder": "填寫補充說明，並可上傳補件材料",
+      "supplementPlaceholder": "填寫補充說明",
       "supplementSent": "補件已提交",
       "submitSupplement": "提交補件",
       "withdraw": "撤銷申請",
@@ -2951,7 +2833,6 @@
       "print": "下載 / 列印",
       "scanVerify": "掃碼驗真",
       "no": "身分編號",
-      "materialTip": "需上傳任命書（虛構）或介紹信等材料，圖片/PDF,≤5MB。",
       "confirmTip": "提交後將進入外交審核佇列，審核時將校驗關聯建交關係的有效性。",
       "visaChannelTitle": "外交簽注通道",
       "visaChannelTip": "持外交身分者可申請虛擬外交簽注：申請與提交時會校驗外交身分有效性；身分失效後已簽發的外交簽注將同步註銷。",
@@ -2977,7 +2858,7 @@
       "create": "建立草稿",
       "submit": "提交申請",
       "withdraw": "撤銷申請",
-      "supplement_submit": "補交材料",
+      "supplement_submit": "補交說明",
       "require_supplement": "要求補件",
       "establish": "建交通過",
       "reject": "駁回",
@@ -3113,13 +2994,11 @@
       "guide": "辦事指南",
       "guideTitle": {
         "conditions": "建交條件",
-        "materials": "所需材料",
         "duration": "審核時長",
         "courtesy": "虛擬禮遇說明"
       },
       "guideBody": {
         "conditions": "擁有虛構世界觀的國家、城邦、社區、組織或活動團體均可申請；目前開放「虛構國家 × 正式建交」。",
-        "materials": "虛構介紹、活動憑證或社區證明等，圖片/PDF，單一不超過5MB。",
         "duration": "預計{{hours}}小時內完成審核；如需補件將以站內信通知。",
         "courtesy": "入境禮遇通道、活動優先邀請、優先審核均為趣味化禮遇，不承諾現實禮遇。"
       },
@@ -3492,13 +3371,6 @@
       "change": "變更",
       "cancel": "取消"
     },
-    "materialKind": {
-      "intro": "介紹信",
-      "letter": "邀請函 / 介紹信",
-      "proof": "證明材料",
-      "community": "社群證明",
-      "other": "其他材料"
-    },
     "history": {
       "registration_draft": "儲存草稿",
       "registration_submit": "提交報名",
@@ -3507,8 +3379,7 @@
       "registration_waitlist": "進入候補",
       "registration_cancel": "取消報名",
       "registration_promote": "候補轉正",
-      "registration_delete": "刪除草稿",
-      "material_upload": "上傳材料"
+      "registration_delete": "刪除草稿"
     },
     "field": {
       "account": "賬號",
@@ -3550,7 +3421,6 @@
       "invitee": "被邀請人賬號",
       "issuer": "簽發機構",
       "level": "級別",
-      "materials": "材料",
       "maxCompanions": "最大隨行人數",
       "name": "名稱",
       "nickname": "姓名",
@@ -3628,7 +3498,7 @@
       },
       "guide": "辦事指南",
       "guide_apply": "如何報名",
-      "guide_apply_body": "選擇活動 → 填寫資訊與隨行人員 → 上傳材料 → 提交確認。名額已滿時可進入候補。",
+      "guide_apply_body": "選擇活動 → 填寫資訊與隨行人員 → 提交確認。名額已滿時可進入候補。",
       "guide_invitation": "邀請函怎麼用",
       "guide_invitation_body": "收到邀請後可接受或拒絕，下載列印版；報名時填寫邀請函編號，亦可作為簽註材料。",
       "guide_pass": "活動憑證怎麼驗",
@@ -3666,8 +3536,6 @@
       "schedule": "活動日程",
       "conditions": "報名條件",
       "noConditions": "無額外條件，持門戶帳號即可報名。",
-      "materials": "所需材料",
-      "noMaterials": "本活動無需上傳材料。",
       "notices": "活動公告與變更通知",
       "venue": "虛構地點示意圖",
       "venueMock": "示意圖僅為虛構設定，不指向真實地點"
@@ -3690,13 +3558,6 @@
       "invitationNoPlaceholder": "選填，填寫邀請函編號",
       "noteSection": "備註",
       "notePlaceholder": "可選：飲食偏好、無障礙需求或其他虛構說明",
-      "materialsSection": "報名材料",
-      "materialsHint": "支援PNG / JPG / WebP / PDF，單個檔案不超過5 MB，最多6個。",
-      "saveFirstForUpload": "請先儲存草稿，再上傳材料。",
-      "uploadMaterial": "上傳材料",
-      "materialKind": "材料型別",
-      "uploadDone": "材料已上傳",
-      "noMaterials": "尚未上傳材料",
       "summary": "報名摘要",
       "summaryTip": "提交前請核對資訊；提交後將進入待審核佇列。",
       "requiredHint": "請填寫暱稱與聯絡方式",
@@ -3706,7 +3567,7 @@
     },
     "my": {
       "title": "我的報名",
-      "subtitle": "檢視報名狀態、材料、審核記錄與活動憑證。",
+      "subtitle": "檢視報名狀態、審核記錄與活動憑證。",
       "empty": "還沒有報名記錄",
       "eventInfo": "活動資訊",
       "formInfo": "報名資訊",
@@ -3759,8 +3620,6 @@
       "contactNicknamePlaceholder": "聯絡人暱稱",
       "contactPlaceholder": "郵箱或虛構聯絡方式",
       "introPlaceholder": "介紹你的團體、活動計劃與社群證明（虛構）",
-      "materialTip": "請至少上傳1份介紹信、活動計劃或社群證明。",
-      "saveFirst": "請先儲存草稿，再上傳材料並提交審核。",
       "draftSaved": "草稿已儲存",
       "submitted": "已提交審核",
       "deleteConfirm": "確定刪除這份接待方草稿嗎？",
@@ -3771,7 +3630,7 @@
       "canPublish": "可發布活動",
       "canInvite": "可發起邀請函",
       "rulesTitle": "認證規則",
-      "rules": "認證免費，材料僅用於虛構審核；認證後如違反規則可被凍結或撤銷。接待方編號與證書可在驗真中心查詢。"
+      "rules": "認證免費；認證後如違反規則可被凍結或撤銷。接待方編號與證書可在驗真中心查詢。"
     },
     "courtesy": {
       "title": "禮賓服務",
@@ -3831,10 +3690,10 @@
       "ticket_open": "處理中",
       "ticket_closed": "已回覆",
       "privacyTitle": "隱私與資料刪除",
-      "privacyTip": "聯絡方式、隨行人員與材料僅用於本次活動流程。你可以申請匿名化個人報名資料。",
+      "privacyTip": "聯絡方式與隨行人員僅用於本次活動流程。你可以申請匿名化個人報名資料。",
       "eraseData": "申請刪除個人資料",
       "eraseTitle": "確認刪除個人資料",
-      "eraseTip": "刪除後暱稱、聯絡方式、隨行人員、身份編號與材料將被清空，編號與狀態軌跡保留用於審計。存在進行中的報名或認證時無法刪除。",
+      "eraseTip": "刪除後暱稱、聯絡方式、隨行人員與身分編號將被清空，編號與狀態軌跡保留用於審計。存在進行中的報名或認證時無法刪除。",
       "eraseDone": "個人資料已匿名化"
     },
     "help": {
@@ -3844,7 +3703,7 @@
       "scamBody": "活動報名、接待方認證與禮遇申請全部免費。不要向任何人支付“名額費”“內部通道費”，也不要相信“保證現實入場”。",
       "faqTitle": "常見問題",
       "browseTitle": "瀏覽活動",
-      "browseBody": "按型別、時間與身份要求查詢活動，檢視日程、地點與所需材料。",
+      "browseBody": "按型別、時間與身分要求查詢活動，檢視日程與地點。",
       "supportTitle": "聯絡客服",
       "supportBody": "提交工單後，禮賓與活動署會在虛構工作時間內回覆。",
       "supportEntry": "去提交工單",
@@ -4008,7 +3867,6 @@
       "riskTab": "驗真與風控",
       "configHint": "修改後立即生效；編號字首變更隻影響新生成的編號。",
       "requiredFields": "報名必填欄位",
-      "materialsConfig": "材料要求",
       "allowCompanions": "允許隨行人員",
       "waitlistEnabled": "開放候補",
       "templateHint": "模板中的{{變數}}會在傳送站內信時替換。",
@@ -4309,11 +4167,6 @@
       "voided": "已撤銷",
       "expired": "已失效"
     },
-    "materialKind": {
-      "screenshot": "截圖",
-      "proof": "證明材料",
-      "other": "其他"
-    },
     "ownerType": {
       "appeal": "申訴",
       "review": "複核",
@@ -4471,8 +4324,8 @@
         "publicity": "處理公示"
       },
       "serviceDesc": {
-        "apply": "對七類業務結果提交申訴並上傳材料。",
-        "my": "檢視進度、補充材料、撤回與結果。",
+        "apply": "對七類業務結果提交申訴並說明情況。",
+        "my": "檢視進度、補充說明、撤回與結果。",
         "review": "對處理決定申請一次終局複核。",
         "complaint": "反映服務問題或提出改進建議。",
         "ticket": "諮詢帳號、系統與使用問題。",
@@ -4482,8 +4335,8 @@
       "guide": "辦事指南",
       "guideScope": "可申訴範圍",
       "guideScopeBody": "簽註、入境、居民登記、外交事務、文書認證、檔案與禮賓活動的處理結果，均可在規定期效內申訴。",
-      "guideMaterials": "所需材料",
-      "guideMaterialsBody": "業務編號、申訴理由、期望結果與聯絡方式；截圖或證明材料可選傳。",
+      "guideMaterials": "需要填寫什麼",
+      "guideMaterialsBody": "業務編號、申訴理由、期望結果與聯絡方式；無需上傳截圖或證明。",
       "guideSla": "受理與處理時限",
       "guideSlaBody": "受理時限{{accept}}小時，處理時限{{resolve}}小時，逾時將進入監察關注。",
       "guideReview": "複核視窗",
@@ -4530,11 +4383,6 @@
       "expectedPlaceholder": "請說明你希望得到的處理結果",
       "contact": "聯絡方式",
       "contactPlaceholder": "手機號碼或電子郵件",
-      "materialsTitle": "證明材料",
-      "materialsTip": "支援圖片或PDF，每類最多6份；補件時可再上傳。",
-      "uploadScreenshot": "上傳截圖",
-      "uploadProof": "上傳證明",
-      "materialsCount": "共{{count}}份材料",
       "saveDraft": "儲存草稿",
       "submit": "提交申訴",
       "confirmTitle": "請確認申訴資訊",
@@ -4550,18 +4398,15 @@
       "submittedAt": "提交於{{time}}",
       "submittedAtLabel": "提交時間",
       "view": "檢視詳情",
-      "preview": "預覽",
       "deleteTitle": "刪除申訴草稿",
       "deleteTip": "確定要刪除草稿{{no}}嗎？刪除後不可復原。"
     },
     "detail": {
       "records": "處理紀錄",
       "systemActor": "系統",
-      "materials": "材料",
       "supplementTitle": "補件通知",
-      "supplementTip": "請在補件截止前提交說明並上傳材料；逾期申訴將自動關閉。",
+      "supplementTip": "請在補件截止前提交說明；逾期申訴將自動關閉。",
       "supplementPlaceholder": "請說明補交內容",
-      "uploadSupplement": "上傳補件材料",
       "submitSupplement": "提交補件",
       "supplementDone": "補件已提交",
       "supplementDeadline": "補件截止",
@@ -4649,7 +4494,7 @@
         },
         "slow": {
           "q": "頁面載入很慢怎麼辦？",
-          "a": "請先重新整理頁面並檢查網路；若持續出現，請提交「故障報修」工單並附上截圖。"
+          "a": "請先重新整理頁面並檢查網路；若持續出現，請提交「故障報修」工單並寫明現象。"
         },
         "display": {
           "q": "頁面顯示異常怎麼辦？",
@@ -4726,7 +4571,7 @@
       },
       "appeal_supplemented": {
         "title": "申訴{{code}}補件已提交",
-        "body": "你補交的材料已隨申訴重新進入處理流程。"
+        "body": "你補交的說明已隨申訴重新進入處理流程。"
       },
       "appeal_resolved": {
         "title": "申訴{{code}}已有處理決定",
@@ -4825,7 +4670,7 @@
           "d": "諮詢、投訴或與處理結果無關的訴求。"
         }
       },
-      "materialsTitle": "材料清單",
+      "materialsTitle": "需填寫的資訊",
       "materials": {
         "code": {
           "t": "業務編號",
@@ -4842,14 +4687,6 @@
         "contact": {
           "t": "聯絡方式",
           "d": "便於受理與補件通知的手機號碼或電子郵件。"
-        },
-        "screenshot": {
-          "t": "截圖",
-          "d": "能反映處理結果的頁面截圖（選填）。"
-        },
-        "proof": {
-          "t": "證明材料",
-          "d": "支援申訴理由的證明檔案（選填）。"
         }
       },
       "slaTitle": "時效說明",
@@ -4867,7 +4704,7 @@
       "faqItem": {
         "how": {
           "q": "如何提交申訴？",
-          "a": "先選擇業務類型並填寫業務編號，系統校驗通過後填寫理由與期望結果，上傳材料並提交。"
+          "a": "先選擇業務類型並填寫業務編號，系統校驗通過後填寫理由與期望結果並提交。"
         },
         "change": {
           "q": "申訴過程中可以修改內容嗎？",
@@ -4882,8 +4719,8 @@
           "a": "業務編號對應的本人帳號；他人業務需由本人提交。"
         },
         "docs": {
-          "q": "需要哪些材料？",
-          "a": "業務編號、申訴理由、期望結果與聯絡方式為必填；截圖與證明可選。"
+          "q": "需要填寫哪些資訊？",
+          "a": "業務編號、申訴理由、期望結果與聯絡方式為必填。"
         }
       }
     },
@@ -5171,7 +5008,7 @@
         "create_appeal_draft": "創建申訴草稿",
         "submit_appeal": "提交申訴",
         "withdraw_appeal": "撤回申訴",
-        "supplement_appeal": "補交材料",
+        "supplement_appeal": "補交說明",
         "evaluate_appeal": "評價申訴",
         "submit_review": "提交覆核申請",
         "submit_complaint": "提交投訴建議",

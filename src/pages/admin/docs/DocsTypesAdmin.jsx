@@ -7,7 +7,6 @@ import { api } from '../../../api/client.js';
 import DocsTextarea from '../../../components/DocsTextarea.jsx';
 import { toastSuccess, toastError } from '../../../components/toast.js';
 
-const emptyMaterial = { key: '', label: '', required: true, accept: 'image/*,application/pdf', max_mb: 10, max_count: 3 };
 const emptyField = { key: '', label: '', required: false, max: 120, placeholder: '' };
 
 function ListEditor({ labelKey, rows, setRows, makeEmpty, columns }) {
@@ -33,7 +32,6 @@ export default function DocsTypesAdmin() {
   const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null); // null | {} create | type object
   const [form, setForm] = useState(null);
-  const [materials, setMaterials] = useState([]);
   const [fields, setFields] = useState([]);
   const [busy, setBusy] = useState(false);
   const load = useCallback(async function loadFn() {
@@ -54,7 +52,6 @@ export default function DocsTypesAdmin() {
   const openCreate = () => {
     setEditing({});
     setForm({ code: '', name: '', description: '', guide: '', biz_no_label: '', biz_source: '', biz_required: false, validity_days: 365, sort_order: 0, enabled: true });
-    setMaterials([]);
     setFields([]);
   };
 
@@ -76,7 +73,6 @@ export default function DocsTypesAdmin() {
       sort_order: item.sortOrder,
       enabled: item.enabled,
     });
-    setMaterials((item.materials || []).map((m) => ({ ...m })));
     setFields((item.formFields || []).map((f) => ({ ...f })));
   };
 
@@ -87,7 +83,7 @@ export default function DocsTypesAdmin() {
     }
     setBusy(true);
     try {
-      const body = { ...form, materials, formFields: fields };
+      const body = { ...form, formFields: fields };
       if (editing?.id) await api.patch(`/docs/admin/types/${editing.id}`, body);
       else await api.post('/docs/admin/types', body);
       toastSuccess(t('common.save'));
@@ -108,7 +104,6 @@ export default function DocsTypesAdmin() {
     { title: t('common.description'), dataIndex: 'description', render: (v) => <span className="docs-cell-clip">{v}</span> },
     { title: t('docs.admin.types.validity'), dataIndex: 'validityDays', width: 90, render: (v) => t('docs.types.validityDays', { days: v }) },
     { title: t('docs.admin.types.fields'), width: 90, align: 'center', render: (_, r) => (r.formFields || []).length },
-    { title: t('docs.admin.types.materialsCol'), width: 90, align: 'center', render: (_, r) => (r.materials || []).length },
     {
       title: t('common.status'),
       dataIndex: 'enabled',
@@ -218,28 +213,6 @@ export default function DocsTypesAdmin() {
                 <Input type="number" value={form.sort_order} onChange={(e) => setF('sort_order', Number(e.target.value))} />
               </label>
             </div>
-
-            <h2>{t('docs.admin.types.materialsCol')}</h2>
-            <ListEditor
-              labelKey={t('docs.admin.types.addMaterial')}
-              rows={materials}
-              setRows={setMaterials}
-              makeEmpty={() => ({ ...emptyMaterial })}
-              columns={(row, set) => (
-                <>
-                  <Input value={row.key} onChange={(e) => set({ key: e.target.value })} placeholder={t('docs.admin.types.materialKeyPh')} className="docs-editor-key" />
-                  <Input value={row.label} onChange={(e) => set({ label: e.target.value })} placeholder={t('docs.admin.types.materialLabel')} />
-                  <Input value={row.labelTw ?? ''} onChange={(e) => set({ labelTw: e.target.value })} placeholder={t('common.twOptional')} />
-                  <label className="docs-editor-check">
-                    <Switch size="small" checked={!!row.required} onChange={(v) => set({ required: v })} />
-                    <span>{t('docs.apply.required')}</span>
-                  </label>
-                  <Input value={row.accept} onChange={(e) => set({ accept: e.target.value })} placeholder={t('docs.admin.types.acceptPh')} className="docs-editor-accept" />
-                  <Input type="number" value={row.max_mb} onChange={(e) => set({ max_mb: Number(e.target.value) })} className="docs-editor-num" />
-                  <Input type="number" value={row.max_count} onChange={(e) => set({ max_count: Number(e.target.value) })} className="docs-editor-num" />
-                </>
-              )}
-            />
 
             <h2>{t('docs.admin.types.fields')}</h2>
             <ListEditor

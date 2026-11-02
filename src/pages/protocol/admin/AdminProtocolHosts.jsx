@@ -1,4 +1,4 @@
-// 接待方认证管理:队列、材料、通过/驳回/补件、冻结/撤销与权限配置。
+// 接待方认证管理:队列、通过/驳回/补件、冻结/撤销与权限配置。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
@@ -6,14 +6,7 @@ import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Switch, 
 import { BanIcon, CheckCircleIcon, EyeIcon, LockIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import { useAuth } from '../../../auth/AuthContext.jsx';
-import {
-  DescList,
-  StatusTag,
-  TextArea,
-  fmtDateTime,
-  openProtocolMaterial,
-  toastProtocolError,
-} from '../shared.jsx';
+import { DescList, StatusTag, TextArea, fmtDateTime, toastProtocolError } from '../shared.jsx';
 import { toastSuccess } from '../shared.jsx';
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 
@@ -216,19 +209,6 @@ export default function AdminProtocolHosts() {
                 [t('protocol.field.reviewNote'), detail.reviewNote || '-'],
               ]}
             />
-            <h2 className="block-heading">{t('protocol.field.materials')}</h2>
-            <ul className="protocol-material-list">
-              {detail.materials.map((m) => (
-                <li key={m.id}>
-                  <Tag size="small" variant="soft" color="app-blue">{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</Tag>
-                  <span className="protocol-material-name">{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
-                    {t('protocol.action.preview')}
-                  </Button>
-                </li>
-              ))}
-              {detail.materials.length === 0 && <li className="muted-text">{t('protocol.apply.noMaterials')}</li>}
-            </ul>
             {detail.rejectComment && (
               <Card pattern="app-red">
                 <strong>{t('protocol.field.rejectReason')}</strong>

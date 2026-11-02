@@ -1,17 +1,10 @@
-// 奶龍國皇家申訴與監察署 — user-facing endpoints. Materials live under the
-// private data dir and are reachable only through the authenticated download
-// route. 公共验真接口注册在鉴权段之前,保持匿名。
+// 奶龍國皇家申訴與監察署 — user-facing endpoints. 公共验真接口注册在鉴权段
+// 之前,保持匿名。门户只接收文字信息,申诉署不保存申请人文件。
 import { Router } from 'express';
-import multer from 'multer';
-import fs from 'node:fs';
-import path from 'node:path';
-import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, forbidden, notFound } from '../http.js';
 import {
-  APPEAL_UPLOAD_KINDS,
   BIZ_TYPES,
   audit,
   classifyBizStatus,
@@ -28,7 +21,6 @@ import {
   serializeAppeal,
   serializeComplaint,
   serializeDecision,
-  serializeMaterial,
   serializeMessage,
   serializeNotice,
   serializePublicity,
@@ -39,15 +31,7 @@ import {
 } from '../appeal.js';
 import { lookupBusinessNumber } from '../appealVerify.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data');
-export const appealUploadsRoot = path.join(dataDir, 'uploads', 'appeal');
-fs.mkdirSync(appealUploadsRoot, { recursive: true });
-
 const router = Router();
-const MAX_MATERIAL_BYTES = 5 * 1024 * 1024;
-const MAX_MATERIALS_PER_OWNER = 6;
-const ALLOWED_MIMES = new Set(['image/png', 'image/jpeg', 'image/webp', 'application/pdf']);
 const BIZ_KEYS = new Set(BIZ_TYPES.map((b) => b.key));
 const APPEAL_OPEN = "('pending_accept','accepted','processing','supplement_required')";
 const COMPLAINT_CATEGORIES = {
@@ -56,52 +40,6 @@ const COMPLAINT_CATEGORIES = {
 };
 const TICKET_CATEGORIES = new Set(['consult', 'account', 'bug']);
 const TICKET_PRIORITIES = new Set(['low', 'normal', 'high']);
-
-// ---------------------------------------------------------------------------
-// Uploads (private storage)
-// ---------------------------------------------------------------------------
-
-const tmpDir = path.join(appealUploadsRoot, 'tmp');
-fs.mkdirSync(tmpDir, { recursive: true });
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, tmpDir),
-    filename(_req, file, cb) {
-      const ext = path.extname(file.originalname || '').toLowerCase().slice(0, 10);
-      cb(null, `${crypto.randomUUID()}${ext}`);
-    },
-  }),
-  limits: { fileSize: MAX_MATERIAL_BYTES, files: 1 },
-});
-
-function mapMulterError(err, _req, _res, next) {
-  if (err instanceof multer.MulterError) {
-    const code = err.code === 'LIMIT_FILE_SIZE' ? 'APPEAL_FILE_TOO_LARGE' : 'VALIDATION_ERROR';
-    return next(badRequest(code, err.message));
-  }
-  next(err);
-}
-
-const OWNER_TABLES = {
-  appeal: { table: 'appeal_appeals', editable: ['draft', 'supplement_required'] },
-  review: { table: 'appeal_reviews', editable: ['pending'] },
-  complaint: { table: 'appeal_complaints', editable: ['pending_accept'] },
-  ticket: { table: 'appeal_tickets', editable: ['pending', 'processing'] },
-};
-
-function loadOwnOwner(req, ownerType, ownerId) {
-  const meta = OWNER_TABLES[ownerType];
-  if (!meta) throw badRequest('VALIDATION_ERROR', 'Unknown owner type');
-  const row = db.prepare(`SELECT * FROM ${meta.table} WHERE id = ?`).get(Number(ownerId));
-  if (!row || row.user_id !== req.user.id) throw notFound('Owner record not found');
-  return { row, meta };
-}
-
-function deleteMaterialFile(material) {
-  const full = path.join(appealUploadsRoot, material.path);
-  fs.rm(full, { force: true }, () => {});
-}
 
 // 操作时间线(用户可见的处理记录)
 export function recordsFor(targetType, targetId) {
@@ -126,16 +64,11 @@ export function record(targetType, targetId, actor, action, comment = '') {
 }
 
 function appealWithMeta(row) {
-  const materials = db
-    .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'appeal' AND owner_id = ? ORDER BY id")
-    .all(row.id)
-    .map(serializeMaterial);
   const records = recordsFor('appeal', row.id);
   const review = db.prepare('SELECT * FROM appeal_reviews WHERE appeal_id = ? ORDER BY id DESC').get(row.id);
   const decision = db.prepare('SELECT * FROM appeal_decisions WHERE appeal_id = ? ORDER BY id DESC').get(row.id);
   return {
     ...serializeAppeal(row),
-    materials,
     records,
     review: review ? serializeReview(review) : null,
     decision: decision ? serializeDecision(decision) : null,
@@ -291,11 +224,8 @@ router.delete('/appeals/:id', (req, res) => {
   const row = db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(Number(req.params.id));
   if (!row || row.user_id !== req.user.id) throw notFound('Appeal not found');
   if (row.status !== 'draft') throw badRequest('APPEAL_NOT_EDITABLE', 'Only drafts can be deleted');
-  for (const m of db.prepare("SELECT * FROM appeal_materials WHERE owner_type = 'appeal' AND owner_id = ?").all(row.id)) deleteMaterialFile(m);
-  db.prepare("DELETE FROM appeal_materials WHERE owner_type = 'appeal' AND owner_id = ?").run(row.id);
   db.prepare('DELETE FROM appeal_records WHERE target_type = ? AND target_id = ?').run('appeal', row.id);
   db.prepare('DELETE FROM appeal_appeals WHERE id = ?').run(row.id);
-  fs.rm(path.join(appealUploadsRoot, `appeal-${row.id}`), { recursive: true, force: true }, () => {});
   res.json({ ok: true });
 });
 
@@ -374,14 +304,11 @@ router.post('/appeals/:id/supplement', (req, res) => {
     throw badRequest('APPEAL_SUPPLEMENT_EXPIRED', 'Supplement deadline has passed');
   }
   const note = String(req.body?.note || '').trim().slice(0, 500);
-  const pending = db
-    .prepare("SELECT COUNT(*) AS n FROM appeal_materials WHERE owner_type = 'appeal' AND owner_id = ? AND origin = 'supplement'")
-    .get(row.id).n;
-  if (pending === 0 && !note) throw badRequest('APPEAL_SUPPLEMENT_EMPTY', 'Nothing to supplement');
+  if (!note) throw badRequest('APPEAL_SUPPLEMENT_EMPTY', 'Supplement note is required');
   db.prepare("UPDATE appeal_appeals SET status = 'processing', updated_at = ? WHERE id = ?").run(now(), row.id);
   record('appeal', row.id, req.user, 'supplement_submit', note);
   sendMsg(req.user.id, 'appeal', row.id, 'appeal_supplemented', { code: row.code });
-  audit(req.user, 'supplement_appeal', 'appeal', row.code, { materials: pending });
+  audit(req.user, 'supplement_appeal', 'appeal', row.code);
   res.json({ appeal: appealWithMeta(db.prepare('SELECT * FROM appeal_appeals WHERE id = ?').get(row.id)) });
 });
 
@@ -410,15 +337,7 @@ router.post('/appeals/:id/evaluate', (req, res) => {
 
 router.get('/reviews', (req, res) => {
   const rows = db.prepare('SELECT * FROM appeal_reviews WHERE user_id = ? ORDER BY id DESC LIMIT 100').all(req.user.id);
-  res.json({
-    items: rows.map((r) => ({
-      ...serializeReview(r),
-      materials: db
-        .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'review' AND owner_id = ? ORDER BY id")
-        .all(r.id)
-        .map(serializeMaterial),
-    })),
-  });
+  res.json({ items: rows.map((r) => serializeReview(r)) });
 });
 
 router.post('/reviews', (req, res) => {
@@ -468,10 +387,6 @@ router.get('/reviews/:id', (req, res) => {
   res.json({
     review: {
       ...serializeReview(row),
-      materials: db
-        .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'review' AND owner_id = ? ORDER BY id")
-        .all(row.id)
-        .map(serializeMaterial),
       records: recordsFor('review', row.id),
       decision: decision ? serializeDecision(decision) : null,
       appealSummary: appeal
@@ -487,15 +402,7 @@ router.get('/reviews/:id', (req, res) => {
 
 router.get('/complaints', (req, res) => {
   const rows = db.prepare('SELECT * FROM appeal_complaints WHERE user_id = ? ORDER BY id DESC LIMIT 100').all(req.user.id);
-  res.json({
-    items: rows.map((r) => ({
-      ...serializeComplaint(r),
-      materials: db
-        .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'complaint' AND owner_id = ? ORDER BY id")
-        .all(r.id)
-        .map(serializeMaterial),
-    })),
-  });
+  res.json({ items: rows.map((r) => serializeComplaint(r)) });
 });
 
 router.post('/complaints', (req, res) => {
@@ -539,10 +446,6 @@ router.get('/complaints/:id', (req, res) => {
   res.json({
     complaint: {
       ...serializeComplaint(row),
-      materials: db
-        .prepare("SELECT * FROM appeal_materials WHERE owner_type = 'complaint' AND owner_id = ? ORDER BY id")
-        .all(row.id)
-        .map(serializeMaterial),
       records: recordsFor('complaint', row.id),
     },
   });
@@ -753,8 +656,6 @@ router.post('/privacy/erase', (req, res) => {
       .get(req.user.id).n +
     db.prepare("SELECT COUNT(*) AS n FROM appeal_tickets WHERE user_id = ? AND status IN ('pending','processing')").get(req.user.id).n;
   if (active > 0) throw badRequest('APPEAL_ERASE_BLOCKED', 'Close active appeals/complaints/tickets before requesting deletion');
-  for (const m of db.prepare('SELECT * FROM appeal_materials WHERE user_id = ?').all(req.user.id)) deleteMaterialFile(m);
-  db.prepare('DELETE FROM appeal_materials WHERE user_id = ?').run(req.user.id);
   db.prepare(
     `UPDATE appeal_appeals SET reason = '', expected = '', contact = '', evaluation_comment = '', updated_at = ? WHERE user_id = ?`
   ).run(now(), req.user.id);
@@ -775,95 +676,6 @@ router.post('/privacy/erase', (req, res) => {
   db.prepare('UPDATE appeal_messages SET archived = 1, read = 1 WHERE user_id = ?').run(req.user.id);
   audit(req.user, 'privacy_erase', 'user', req.user.id);
   res.json({ ok: true });
-});
-
-// ---------------------------------------------------------------------------
-// Materials(申诉/复核/投诉/工单通用)
-// ---------------------------------------------------------------------------
-
-function uploadMaterial(req, res, next) {
-  upload.single('file')(req, res, (err) => {
-    if (err) return mapMulterError(err, req, res, next);
-    next();
-  });
-}
-
-router.post('/materials', uploadMaterial, (req, res) => {
-  const ownerType = String(req.body?.ownerType || '');
-  let owner;
-  try {
-    owner = loadOwnOwner(req, ownerType, req.body?.ownerId);
-  } catch (err) {
-    if (req.file) fs.rm(req.file.path, { force: true }, () => {});
-    throw err;
-  }
-  const { row, meta } = owner;
-  if (!meta.editable.includes(row.status)) {
-    if (req.file) fs.rm(req.file.path, { force: true }, () => {});
-    throw badRequest('APPEAL_NOT_EDITABLE', 'Materials are locked in current status');
-  }
-  const file = req.file;
-  if (!file) throw badRequest('VALIDATION_ERROR', 'file is required');
-  if (!ALLOWED_MIMES.has(file.mimetype)) {
-    fs.rm(file.path, { force: true }, () => {});
-    throw badRequest('APPEAL_FILE_TYPE', `Unsupported file type: ${file.mimetype}`);
-  }
-  const kind = APPEAL_UPLOAD_KINDS.has(req.body?.kind) ? req.body.kind : 'other';
-  const count = db
-    .prepare('SELECT COUNT(*) AS n FROM appeal_materials WHERE owner_type = ? AND owner_id = ?')
-    .get(ownerType, row.id).n;
-  if (count >= MAX_MATERIALS_PER_OWNER) {
-    fs.rm(file.path, { force: true }, () => {});
-    throw badRequest('APPEAL_TOO_MANY_FILES', `At most ${MAX_MATERIALS_PER_OWNER} files per record`);
-  }
-  const ownerDir = path.join(appealUploadsRoot, `${ownerType}-${row.id}`);
-  fs.mkdirSync(ownerDir, { recursive: true });
-  fs.renameSync(file.path, path.join(ownerDir, file.filename));
-  const info = db
-    .prepare(
-      `INSERT INTO appeal_materials (owner_type, owner_id, user_id, kind, origin, filename, mime, size, path, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    )
-    .run(
-      ownerType,
-      row.id,
-      req.user.id,
-      kind,
-      ownerType === 'appeal' && row.status === 'supplement_required' ? 'supplement' : 'initial',
-      (file.originalname || 'file').slice(0, 120),
-      file.mimetype,
-      file.size,
-      path.join(`${ownerType}-${row.id}`, file.filename),
-      now()
-    );
-  res.status(201).json({ material: serializeMaterial(db.prepare('SELECT * FROM appeal_materials WHERE id = ?').get(info.lastInsertRowid)) });
-});
-
-router.delete('/materials/:id', (req, res) => {
-  const material = db.prepare('SELECT * FROM appeal_materials WHERE id = ?').get(Number(req.params.id));
-  if (!material || material.user_id !== req.user.id) throw notFound('Material not found');
-  const meta = OWNER_TABLES[material.owner_type];
-  const owner = db.prepare(`SELECT * FROM ${meta.table} WHERE id = ?`).get(material.owner_id);
-  if (!owner || !meta.editable.includes(owner.status)) {
-    throw badRequest('APPEAL_NOT_EDITABLE', 'Materials are locked in current status');
-  }
-  deleteMaterialFile(material);
-  db.prepare('DELETE FROM appeal_materials WHERE id = ?').run(material.id);
-  res.json({ ok: true });
-});
-
-// 受限下载:本人或申诉署工作人员;绝不暴露静态目录
-router.get('/materials/:id/file', (req, res) => {
-  const material = db.prepare('SELECT * FROM appeal_materials WHERE id = ?').get(Number(req.params.id));
-  if (!material) throw notFound('Material not found');
-  const isOwner = material.user_id === req.user.id;
-  const isStaff = ['appeal:process', 'appeal:review', 'appeal:inspect', 'appeal:manage'].some((p) => (req.user.permissions || []).includes(p));
-  if (!isOwner && !isStaff) throw forbidden('FORBIDDEN', 'No access to this file');
-  const full = path.resolve(appealUploadsRoot, material.path);
-  if (!full.startsWith(appealUploadsRoot) || !fs.existsSync(full)) throw notFound('File missing');
-  res.setHeader('Content-Type', material.mime);
-  res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(material.filename)}`);
-  fs.createReadStream(full).pipe(res);
 });
 
 export default router;

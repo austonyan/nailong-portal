@@ -258,40 +258,33 @@ const PRO_COURTESY_TYPES = {
 const DOC_TYPE_FIELDS = {
   VISA_CERT: {
     fields: { visit_note: { label: '行程補充說明', placeholder: '選填,一句話描述這次旅行' } },
-    materials: { proof: { label: '簽註詳情截圖' } },
   },
   INVITE: {
     fields: {
       inviter_name: { label: '邀請人', placeholder: '邀請你的居民或機構名稱' },
       occasion: { label: '邀請事由', placeholder: '例如:奶龍節開幕式' },
     },
-    materials: { main: { label: '邀請函掃描件' } },
   },
   ENTRY_CERT: {
     fields: { entry_port: { label: '入境口岸', placeholder: '例如:貝殼灣口岸' } },
-    materials: { proof: { label: '入境申報回執截圖' } },
   },
   RESIDENT_CARD: {
     fields: { district: { label: '居住街區', placeholder: '例如:南瓜街' } },
-    materials: { proof: { label: '居民登記頁截圖' }, avatar: { label: '頭像照片' } },
   },
   EVENT_PASS: {
     fields: { event_name: { label: '活動名稱', placeholder: '例如:奶龍節·星火之夜' } },
-    materials: { voucher: { label: '活動憑證截圖' } },
   },
   DIPLOMATIC: {
     fields: { mission: { label: '使團名稱', placeholder: '例如:南瓜使團' } },
-    materials: { doc: { label: '外交文書掃描件' } },
   },
   APPEAL_DECISION: {
     fields: { case_note: { label: '案件補充說明', placeholder: '選填,一句話描述這份決定書' } },
-    materials: { proof: { label: '決定書截圖' } },
   },
 };
 
 function backfillDocTypeNested(db, rows) {
-  const select = db.prepare('SELECT id, form_fields, materials FROM doc_types WHERE code = ?');
-  const update = db.prepare('UPDATE doc_types SET form_fields = ?, materials = ? WHERE id = ?');
+  const select = db.prepare('SELECT id, form_fields FROM doc_types WHERE code = ?');
+  const update = db.prepare('UPDATE doc_types SET form_fields = ? WHERE id = ?');
   let changed = 0;
   for (const [code, values] of Object.entries(rows)) {
     const row = select.get(code);
@@ -314,17 +307,14 @@ function backfillDocTypeNested(db, rows) {
       return list;
     };
     let fields = [];
-    let materials = [];
     try {
       fields = JSON.parse(row.form_fields || '[]');
-      materials = JSON.parse(row.materials || '[]');
     } catch {
       continue;
     }
     addTw(fields, values.fields);
-    addTw(materials, values.materials);
     if (dirty) {
-      changed += update.run(JSON.stringify(fields), JSON.stringify(materials), row.id).changes;
+      changed += update.run(JSON.stringify(fields), row.id).changes;
     }
   }
   return changed;

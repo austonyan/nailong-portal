@@ -1,15 +1,7 @@
-// 文书认证署前端辅助: 材料下载/预览、字节格式化、状态元数据。
-import { requestBlob, getAccessToken } from './client.js';
+// 文书认证署前端辅助: 状态元数据与证书导出(纯文本模型,无材料下载/预览)。
 import { fmtDate } from '../lib/date.js';
 
 export { fmtDate, fmtDateTime } from '../lib/date.js';
-
-export function formatBytes(size) {
-  const n = Number(size) || 0;
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  return `${(n / 1024 / 1024).toFixed(2)} MB`;
-}
 
 function saveBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
@@ -20,26 +12,6 @@ function saveBlob(blob, filename) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
-}
-
-export async function downloadMaterial(id, filename) {
-  const blob = await requestBlob(`/docs/materials/${id}/file`);
-  saveBlob(blob, filename);
-}
-
-const previewCache = new Map();
-
-// 图片材料预览: 拉取私有文件生成 objectURL(带缓存)。
-export async function materialPreviewUrl(id) {
-  if (previewCache.has(id)) return previewCache.get(id);
-  const blob = await requestBlob(`/docs/materials/${id}/file`);
-  const url = URL.createObjectURL(blob);
-  previewCache.set(id, url);
-  return url;
-}
-
-export function isImageMime(mime) {
-  return String(mime || '').startsWith('image/');
 }
 
 // 申请/文书状态 → 标签配色

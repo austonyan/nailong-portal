@@ -160,19 +160,6 @@ CREATE TABLE IF NOT EXISTS visa_applications (
 CREATE INDEX IF NOT EXISTS idx_visa_app_user ON visa_applications (user_id, status);
 CREATE INDEX IF NOT EXISTS idx_visa_app_status ON visa_applications (status, submitted_at);
 
-CREATE TABLE IF NOT EXISTS visa_materials (
-  id             INTEGER PRIMARY KEY AUTOINCREMENT,
-  application_id INTEGER NOT NULL REFERENCES visa_applications(id) ON DELETE CASCADE,
-  user_id        INTEGER NOT NULL,
-  kind           TEXT NOT NULL DEFAULT 'other' CHECK (kind IN ('avatar','invitation','proof','other')),
-  origin         TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial','supplement')),
-  filename       TEXT NOT NULL,
-  mime           TEXT NOT NULL,
-  size           INTEGER NOT NULL,
-  path           TEXT NOT NULL,
-  created_at     TEXT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS visa_reviews (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   application_id INTEGER NOT NULL REFERENCES visa_applications(id) ON DELETE CASCADE,
@@ -304,22 +291,6 @@ CREATE TABLE IF NOT EXISTS appeal_appeals (
 CREATE INDEX IF NOT EXISTS idx_appeal_app_user ON appeal_appeals (user_id, status);
 CREATE INDEX IF NOT EXISTS idx_appeal_app_status ON appeal_appeals (status, submitted_at);
 CREATE INDEX IF NOT EXISTS idx_appeal_app_dup ON appeal_appeals (user_id, biz_type, biz_code);
-
-CREATE TABLE IF NOT EXISTS appeal_materials (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  owner_type TEXT NOT NULL CHECK (owner_type IN ('appeal','review','complaint','ticket')),
-  owner_id   INTEGER NOT NULL,
-  user_id    INTEGER NOT NULL,
-  kind       TEXT NOT NULL DEFAULT 'other' CHECK (kind IN ('screenshot','proof','other')),
-  origin     TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial','supplement')),
-  filename   TEXT NOT NULL,
-  mime       TEXT NOT NULL,
-  size       INTEGER NOT NULL,
-  path       TEXT NOT NULL,
-  created_at TEXT NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_appeal_mat_owner ON appeal_materials (owner_type, owner_id);
-CREATE INDEX IF NOT EXISTS idx_appeal_mat_user ON appeal_materials (user_id);
 
 CREATE TABLE IF NOT EXISTS appeal_reviews (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -27,7 +27,7 @@ const SERVICE_CARDS = [
   { to: '/dip-verify', icon: SearchIcon, key: 'verify' },
 ];
 
-const GUIDE_CARDS = ['conditions', 'materials', 'duration', 'courtesy'];
+const GUIDE_CARDS = ['conditions', 'duration', 'courtesy'];
 
 const QUICK_LINKS = [
   { to: '/dip/apply', key: 'apply' },

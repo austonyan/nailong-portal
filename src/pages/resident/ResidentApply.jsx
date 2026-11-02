@@ -1,11 +1,10 @@
-// 居民登记申请:选择类型 → 填写信息(草稿/材料)→ 提交前确认(预览)。
+// 居民登记申请:选择类型 → 填写信息(草稿)→ 提交前确认(预览)。
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Tag, Upload, useForm } from 'animal-island-ui';
-import { CheckCircleIcon, PaperclipIcon, SaveIcon, SendIcon, TrashIcon } from 'naive-icons';
+import { Title, Button, Card, Checkbox, Form, FormItem, Input, Modal, Tag, useForm } from 'animal-island-ui';
+import { CheckCircleIcon, SaveIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { uploadResidentMaterial } from '../../api/resident.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { profileIdentity } from '../../lib/profileIdentity.js';
 import { PURPOSES, TextArea, resToast, toastResError, toastResSuccess } from './shared.jsx';
@@ -47,7 +46,6 @@ function ResidentApplyScreen() {
   const [appNo, setAppNo] = useState(null);
   const [typeCode, setTypeCode] = useState(params.typeCode ? String(params.typeCode).toUpperCase() : null);
   const [typeInfo, setTypeInfo] = useState(null);
-  const [materials, setMaterials] = useState([]);
   const [reviewHours, setReviewHours] = useState(72);
   const [busy, setBusy] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -78,7 +76,6 @@ function ResidentApplyScreen() {
             bio: app.bio,
           });
           setPurposes(app.purposes || []);
-          setMaterials(app.materials || []);
         })
         .catch((err) => toastResError(t, err));
     } else if (!createdRef.current && typeCode) {
@@ -123,31 +120,6 @@ function ResidentApplyScreen() {
       if (!silent) toastResError(t, err);
     } finally {
       setBusy(false);
-    }
-  };
-
-  const uploadMaterial = (kind) => ({ file, onProgress, onSuccess, onError }) => {
-    if (!appId) {
-      onError(new Error('draft not ready'));
-      return;
-    }
-    uploadResidentMaterial({ applicationId: appId, kind, file, onProgress })
-      .then((material) => {
-        setMaterials((prev) => [...prev.filter((m) => !(kind === 'avatar' && m.kind === 'avatar')), material]);
-        onSuccess(material);
-      })
-      .catch((err) => {
-        toastResError(t, err);
-        onError(err);
-      });
-  };
-
-  const removeMaterial = async (material) => {
-    try {
-      await api.del(`/resident/materials/${material.id}`);
-      setMaterials((prev) => prev.filter((m) => m.id !== material.id));
-    } catch (err) {
-      toastResError(t, err);
     }
   };
 
@@ -202,10 +174,6 @@ function ResidentApplyScreen() {
       </div>
     );
   }
-
-  const avatarMaterial = materials.find((m) => m.kind === 'avatar');
-  const proofMaterial = materials.find((m) => m.kind === 'address_proof');
-  const otherMaterials = materials.filter((m) => m.kind !== 'avatar' && m.kind !== 'address_proof');
 
   return (
     <div className="res-form-page">
@@ -271,72 +239,6 @@ function ResidentApplyScreen() {
         </Form>
       </Card>
 
-      <Card className="res-form-card">
-        <h2 className="block-heading">
-          <PaperclipIcon size={18} /> {t('res.form.materialsTitle')}
-        </h2>
-        <p className="muted-text">{t('res.form.materialsTip')}</p>
-        <div className="res-materials-section">
-          <div className="res-materials-block">
-            <h3>
-              {t('res.form.materialAvatar')}
-              {typeInfo?.requireAvatar ? <Tag color="app-red" variant="soft" size="small">{t('common.required')}</Tag> : null}
-            </h3>
-            <Upload accept="image/*,application/pdf" maxCount={1} showUploadList={false} customRequest={uploadMaterial('avatar')} disabled={!appId}>
-              {t('res.form.uploadAvatar')}
-            </Upload>
-            {avatarMaterial && (
-              <div className="res-material-row">
-                <Tag color="app-green" variant="soft">
-                  {t(`res.materialKind.${avatarMaterial.kind}`)}
-                </Tag>
-                <span className="res-material-name">{avatarMaterial.filename}</span>
-                <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(avatarMaterial)}>
-                  {t('common.delete')}
-                </Button>
-              </div>
-            )}
-          </div>
-          <div className="res-materials-block">
-            <h3>
-              {t('res.form.materialProof')}
-              {typeInfo?.requireAddressProof ? <Tag color="app-red" variant="soft" size="small">{t('common.required')}</Tag> : null}
-            </h3>
-            <Upload accept="image/*,application/pdf" maxCount={1} showUploadList={false} customRequest={uploadMaterial('address_proof')} disabled={!appId}>
-              {t('res.form.uploadProof')}
-            </Upload>
-            {proofMaterial && (
-              <div className="res-material-row">
-                <Tag color="app-blue" variant="soft">
-                  {t(`res.materialKind.${proofMaterial.kind}`)}
-                </Tag>
-                <span className="res-material-name">{proofMaterial.filename}</span>
-                <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(proofMaterial)}>
-                  {t('common.delete')}
-                </Button>
-              </div>
-            )}
-          </div>
-          <div className="res-materials-block">
-            <h3>{t('res.form.materialOther')}</h3>
-            <Upload drag accept="image/*,application/pdf" maxCount={6} showUploadList={false} customRequest={uploadMaterial('other')} disabled={!appId}>
-              <div style={{ padding: 24 }}>{t('res.form.uploadOther')}</div>
-            </Upload>
-            {otherMaterials.map((m) => (
-              <div key={m.id} className="res-material-row">
-                <Tag variant="soft" color="app-blue">
-                  {t(`res.materialKind.${m.kind}`)}
-                </Tag>
-                <span className="res-material-name">{m.filename}</span>
-                <Button type="text" size="small" danger icon={<TrashIcon />} onClick={() => removeMaterial(m)}>
-                  {t('common.delete')}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Card>
-
       <div className="res-guide-actions">
         <Button onClick={() => navigate('/resident/applications')}>{t('res.back')}</Button>
         <Button icon={<SaveIcon />} loading={busy} onClick={() => saveDraft(false)} disabled={busy}>
@@ -380,10 +282,6 @@ function ResidentApplyScreen() {
             <div>
               <dt>{t('res.form.purposes')}</dt>
               <dd>{purposes.map((p) => t(`res.purpose.${p}`)).join('、')}</dd>
-            </div>
-            <div>
-              <dt>{t('res.form.materialsTitle')}</dt>
-              <dd>{t('res.form.materialsCount', { count: materials.length })}</dd>
             </div>
           </dl>
         </div>

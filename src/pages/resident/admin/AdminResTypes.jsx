@@ -1,8 +1,8 @@
-// 居民类型与规则配置:类型 CRUD、材料要求、有效期与开放状态。
+// 居民类型与规则配置:类型 CRUD、有效期与开放状态。
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Checkbox, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, Input, Modal, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 
@@ -18,8 +18,6 @@ const EMPTY_FORM = {
   benefits: '',
   duties: '',
   validYears: '1',
-  requireAvatar: true,
-  requireAddressProof: false,
   enabled: true,
   sortOrder: '0',
 };
@@ -67,8 +65,6 @@ export default function AdminResTypes() {
       duties: row.dutiesCn ?? row.duties,
       dutiesTw: row.dutiesTw ?? '',
       validYears: String(row.validYears),
-      requireAvatar: row.requireAvatar,
-      requireAddressProof: row.requireAddressProof,
       enabled: row.enabled,
       sortOrder: String(row.sortOrder),
     });
@@ -91,8 +87,6 @@ export default function AdminResTypes() {
         duties: form.duties,
         dutiesTw: form.dutiesTw,
         validYears: Number(form.validYears) || 1,
-        requireAvatar: form.requireAvatar,
-        requireAddressProof: form.requireAddressProof,
         enabled: form.enabled,
         sortOrder: Number(form.sortOrder) || 0,
       };
@@ -113,17 +107,6 @@ export default function AdminResTypes() {
     { title: t('res.admin.types.name'), dataIndex: 'name', width: 120 },
     { title: t('res.admin.types.description'), dataIndex: 'description', render: (v) => v || '-' },
     { title: t('res.admin.types.validYears'), dataIndex: 'validYears', width: 90 },
-    {
-      title: t('res.admin.types.materials'),
-      dataIndex: 'requireAvatar',
-      width: 170,
-      render: (_, row) => (
-        <div className="res-type-reqs">
-          {row.requireAvatar && <Tag size="small" variant="soft" color="app-teal">{t('res.materialKind.avatar')}</Tag>}
-          {row.requireAddressProof && <Tag size="small" variant="soft" color="app-blue">{t('res.materialKind.address_proof')}</Tag>}
-        </div>
-      ),
-    },
     {
       title: t('res.admin.types.enabled'),
       dataIndex: 'enabled',
@@ -236,16 +219,6 @@ export default function AdminResTypes() {
             </label>
           </div>
           <div className="res-type-switches">
-            <Checkbox
-              options={[{ label: t('res.admin.types.requireAvatar'), value: 'avatar' }]}
-              value={form.requireAvatar ? ['avatar'] : []}
-              onChange={(vals) => setForm({ ...form, requireAvatar: vals.includes('avatar') })}
-            />
-            <Checkbox
-              options={[{ label: t('res.admin.types.requireProof'), value: 'proof' }]}
-              value={form.requireAddressProof ? ['proof'] : []}
-              onChange={(vals) => setForm({ ...form, requireAddressProof: vals.includes('proof') })}
-            />
             <div className="res-type-switch">
               <span>{t('res.admin.types.enabled')}</span>
               <Switch checked={!!form.enabled} onChange={(v) => setForm({ ...form, enabled: v })} />

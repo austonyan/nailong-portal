@@ -9,7 +9,7 @@ export const setAccessToken = (token) => {
   accessToken = token;
 };
 
-// Upload components (XHR) need the in-memory token at request time.
+// Authenticated download helpers need the in-memory token at request time.
 export const getAccessToken = () => accessToken;
 
 export class ApiError extends Error {
@@ -91,7 +91,7 @@ export const api = {
   refreshSession,
 };
 
-// --- multipart / binary helpers (shared; do not alter JSON paths above) ---
+// --- authenticated binary helpers (shared; do not alter JSON paths above) ---
 
 function authHeaders(extra = {}) {
   return accessToken
@@ -111,22 +111,7 @@ async function withRetry(fn) {
   }
 }
 
-// POST FormData (file uploads) with the standard 401-refresh retry.
-export function requestForm(path, formData, { method = 'POST' } = {}) {
-  return withRetry(async () => {
-    let res;
-    try {
-      res = await fetch(`/api${path}`, { method, headers: authHeaders(), credentials: 'include', body: formData });
-    } catch {
-      throw new ApiError(0, 'NETWORK_ERROR');
-    }
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new ApiError(res.status, data.code || 'INTERNAL_ERROR', data.message);
-    return data;
-  });
-}
-
-// GET a private file as a Blob (authenticated downloads/previews).
+// GET a file as a Blob (authenticated CSV exports).
 export async function requestBlob(path) {
   return withRetry(async () => {
     let res;

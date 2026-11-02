@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Checkbox, DatePicker, Drawer, Input, Modal, Pagination, Select, Switch, Table, Tag } from 'animal-island-ui';
+import { Title, Button, Card, DatePicker, Drawer, Input, Modal, Pagination, Select, Switch, Table, Tag } from 'animal-island-ui';
 import { EditIcon, PlusIcon, SearchIcon, SendIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
 import {
@@ -15,7 +15,6 @@ import {
 import { toastError, toastSuccess } from '../shared.jsx';
 
 const STATUSES = ['draft', 'pending_publish', 'registration', 'registration_closed', 'ongoing', 'ended', 'cancelled'];
-const MATERIAL_KINDS = ['intro', 'letter', 'proof', 'community', 'other'];
 const COLORS = ['app-teal', 'app-orange', 'app-pink', 'app-blue', 'purple', 'app-green', 'app-yellow'];
 const EMPTY_FORM = {
   typeCode: 'CULTURE',
@@ -42,7 +41,6 @@ const EMPTY_FORM = {
   notice: '',
   noticeTw: '',
   coverColor: 'app-teal',
-  requiredMaterials: [],
 };
 
 function eventToForm(ev) {
@@ -71,7 +69,6 @@ function eventToForm(ev) {
     notice: ev.noticeCn ?? ev.notice,
     noticeTw: ev.noticeTw ?? '',
     coverColor: ev.coverColor,
-    requiredMaterials: ev.materials.map((m) => m.kind),
   };
 }
 
@@ -187,7 +184,6 @@ export default function AdminProtocolEvents() {
         notice: form.notice,
         noticeTw: form.noticeTw,
         coverColor: form.coverColor,
-        materials: form.requiredMaterials.map((kind) => ({ kind, required: 1 })),
       };
       if (editing === 'new') {
         const data = await api.post('/protocol/admin/events', body);
@@ -498,13 +494,6 @@ export default function AdminProtocolEvents() {
             <span>{t('protocol.field.notice')} · {t('common.traditional')}</span>
             <TextArea rows={2} value={form.noticeTw ?? ''} placeholder={t('common.twOptional')} onChange={(e) => setForm((p) => ({ ...p, noticeTw: e.target.value }))} />
           </label>
-
-          <h2 className="block-heading">{t('protocol.admin.materialsConfig')}</h2>
-          <Checkbox
-            options={MATERIAL_KINDS.map((kind) => ({ label: t(`protocol.materialKind.${kind}`), value: kind }))}
-            value={form.requiredMaterials}
-            onChange={(values) => setForm((p) => ({ ...p, requiredMaterials: values.map(String) }))}
-          />
 
           <div className="protocol-switch-grid">
             <label>

@@ -1,19 +1,12 @@
-// 我的报名与进度:列表、详情、状态轨迹、材料、活动凭证与取消报名。
+// 我的报名与进度:列表、详情、状态轨迹、活动凭证与取消报名。
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Modal, Table, Tag } from 'animal-island-ui';
-import { BanIcon, EyeIcon, FileIcon, SendIcon } from 'naive-icons';
+import { BanIcon, EyeIcon, SendIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import {
-  DescList,
-  StatusTag,
-  TextArea,
-  fmtDateTime,
-  openProtocolMaterial,
-  toastProtocolError,
-} from './shared.jsx';
+import { DescList, StatusTag, TextArea, fmtDateTime, toastProtocolError } from './shared.jsx';
 import { toastSuccess } from './shared.jsx';
 
 // Card 只是带 onClick 的 div:补 role/tabIndex 后由这里接住 Enter/Space。
@@ -204,20 +197,6 @@ export default function ProtocolMyRegistrations() {
                 </ul>
               </>
             )}
-
-            <h2 className="block-heading">{t('protocol.field.materials')}</h2>
-            <ul className="protocol-material-list">
-              {detail.materials.map((m) => (
-                <li key={m.id}>
-                  <FileIcon size={15} />
-                  <span className="protocol-material-name">{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openProtocolMaterial(m.id)}>
-                    {t('protocol.action.preview')}
-                  </Button>
-                </li>
-              ))}
-              {detail.materials.length === 0 && <li className="muted-text">{t('protocol.apply.noMaterials')}</li>}
-            </ul>
 
             {detail.rejectComment && (
               <Card pattern="app-red">

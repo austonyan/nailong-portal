@@ -387,9 +387,6 @@ function serializeAdminDeclaration(row) {
          WHERE e.declaration_id = ? ORDER BY e.id`
       )
       .all(row.id),
-    attachments: db
-      .prepare('SELECT id, filename, size, mime, created_at FROM im_attachments WHERE declaration_id = ? AND deleted_at IS NULL ORDER BY id')
-      .all(row.id),
   };
 }
 

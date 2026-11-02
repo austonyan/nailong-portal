@@ -205,23 +205,6 @@ export function ensureDipSchema() {
     deleted_at   TEXT
   );
 
-  CREATE TABLE IF NOT EXISTS dip_materials (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    owner_type  TEXT NOT NULL CHECK (owner_type IN ('relation', 'identity')),
-    owner_id    INTEGER NOT NULL,
-    user_id     INTEGER NOT NULL,
-    kind        TEXT NOT NULL DEFAULT 'other'
-                CHECK (kind IN ('intro','proof','community','appointment','letter','other')),
-    origin      TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial', 'supplement')),
-    filename    TEXT NOT NULL,
-    mime        TEXT NOT NULL,
-    size        INTEGER NOT NULL,
-    path        TEXT NOT NULL,
-    created_at  TEXT NOT NULL,
-    deleted_at  TEXT
-  );
-  CREATE INDEX IF NOT EXISTS idx_dip_mat_owner ON dip_materials (owner_type, owner_id);
-
   CREATE TABLE IF NOT EXISTS dip_events (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     owner_type  TEXT NOT NULL CHECK (owner_type IN ('relation', 'identity')),

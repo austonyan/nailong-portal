@@ -115,7 +115,6 @@ export default function DocsSettings() {
           {numField('docs.supplement_days', t('docs.admin.settings.supplementDays'))}
           {numField('docs.review_hours_hint', t('docs.admin.settings.reviewHours'))}
           {numField('docs.apply_daily_limit', t('docs.admin.settings.applyDailyLimit'))}
-          {numField('docs.upload_max_mb', t('docs.admin.settings.uploadMaxMb'))}
         </div>
       </Card>
 

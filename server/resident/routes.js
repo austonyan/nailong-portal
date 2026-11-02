@@ -1,12 +1,7 @@
-// 奶龙国皇家居民登记署 — user-facing endpoints. Materials live under the
-// private data dir and are only reachable through the authenticated download
-// route; the verify center is public (rate limited, masked, no personal data).
-import { Router } from 'express';
-import multer from 'multer';
-import fs from 'node:fs';
-import path from 'node:path';
+// 奶龙国皇家居民登记署 — user-facing endpoints. 门户只接收文字信息,不保存
+// 申请人文件; the verify center is public (rate limited, masked, no personal data).
 import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
+import { Router } from 'express';
 import { db, now } from '../db.js';
 import { authenticate, requirePermission } from '../auth.js';
 import { badRequest, forbidden, notFound } from '../http.js';
@@ -28,7 +23,6 @@ import {
   serializeApplication,
   serializeCard,
   serializeChange,
-  serializeMaterial,
   serializeMessage,
   serializeResident,
   serializeType,
@@ -36,47 +30,11 @@ import {
 } from './util.js';
 import { residentChannels } from '../linkage.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 ensureResidentSchema();
-const dataDir = process.env.NAILONG_DATA_DIR || path.join(__dirname, '..', 'data');
-export const residentUploadsRoot = path.join(dataDir, 'uploads', 'resident');
-fs.mkdirSync(residentUploadsRoot, { recursive: true });
 
 const router = Router();
-const MAX_MATERIAL_BYTES = 5 * 1024 * 1024;
-const MAX_MATERIALS_PER_APP = 6;
-const ALLOWED_MIMES = new Set(['image/png', 'image/jpeg', 'image/webp', 'application/pdf']);
-const KINDS = new Set(['avatar', 'address_proof', 'other']);
 const PURPOSES = new Set(['collect', 'activity', 'visa_fast', 'other']);
 const CHANGE_TYPES = new Set(['info', 'upgrade', 'renewal']);
-
-// ---------------------------------------------------------------------------
-// Uploads (private storage)
-// ---------------------------------------------------------------------------
-
-const tmpDir = path.join(residentUploadsRoot, 'tmp');
-fs.mkdirSync(tmpDir, { recursive: true });
-
-// Multer 只负责把文件安全落到临时目录:applicationId 在 multipart 文本字段里,
-// 要等 multer 解析完 req.body 才拿得到,之后再校验并把文件挪进申请目录。
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, tmpDir),
-    filename(_req, file, cb) {
-      const ext = path.extname(file.originalname || '').toLowerCase().slice(0, 10);
-      cb(null, `${crypto.randomUUID()}${ext}`);
-    },
-  }),
-  limits: { fileSize: MAX_MATERIAL_BYTES, files: 1 },
-});
-
-function mapMulterError(err, _req, _res, next) {
-  if (err instanceof multer.MulterError) {
-    const code = err.code === 'LIMIT_FILE_SIZE' ? 'RES_FILE_TOO_LARGE' : 'VALIDATION_ERROR';
-    return next(badRequest(code, err.message));
-  }
-  next(err);
-}
 
 function loadOwnApplication(req) {
   const row = db.prepare('SELECT * FROM res_applications WHERE id = ?').get(Number(req.params.id));
@@ -85,17 +43,8 @@ function loadOwnApplication(req) {
   return row;
 }
 
-function deleteMaterialFile(material) {
-  const full = path.join(residentUploadsRoot, material.path);
-  fs.rm(full, { force: true }, () => {});
-}
-
 function applicationWithMeta(row) {
   const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(row.type_code);
-  const materials = db
-    .prepare('SELECT * FROM res_materials WHERE application_id = ? ORDER BY id')
-    .all(row.id)
-    .map(serializeMaterial);
   const reviews = db
     .prepare('SELECT * FROM res_reviews WHERE application_id = ? ORDER BY id')
     .all(row.id)
@@ -113,7 +62,6 @@ function applicationWithMeta(row) {
     typeName: typeRow?.name ?? row.type_code,
     typeNameTw: typeRow?.name_tw ?? null,
     validYears: typeRow?.valid_years ?? null,
-    materials,
     reviews,
     card: serializeCard(card),
   };
@@ -335,11 +283,7 @@ router.put('/applications/:id', (req, res) => {
 router.delete('/applications/:id', (req, res) => {
   const app = loadOwnApplication(req);
   if (app.status !== 'draft') throw badRequest('RES_NOT_EDITABLE', 'Only drafts can be deleted');
-  const materials = db.prepare('SELECT * FROM res_materials WHERE application_id = ?').all(app.id);
-  for (const m of materials) deleteMaterialFile(m);
-  db.prepare('DELETE FROM res_materials WHERE application_id = ?').run(app.id);
   db.prepare('DELETE FROM res_applications WHERE id = ?').run(app.id);
-  fs.rm(path.join(residentUploadsRoot, String(app.id)), { recursive: true, force: true }, () => {});
   res.json({ ok: true });
 });
 
@@ -348,19 +292,11 @@ router.post('/applications/:id/submit', (req, res) => {
   const app = loadOwnApplication(req);
   if (app.status !== 'draft') throw badRequest('RES_NOT_EDITABLE', 'Application already submitted');
   assertCanApply(req.user.id, { excludeDrafts: true });
-  const typeRow = db.prepare('SELECT * FROM res_types WHERE code = ?').get(app.type_code);
-  const fields = validateApplicationFields(
+const fields = validateApplicationFields(
     applyProfileIdentity(req.user.id, { ...serializeApplication(app), ...req.body })
   );
   const purposes = fields.purposes ?? JSON.parse(app.purposes || '[]');
   if (!purposes.length) throw badRequest('RES_PURPOSE_REQUIRED', 'Pick at least one purpose');
-  const materials = db.prepare('SELECT * FROM res_materials WHERE application_id = ?').all(app.id);
-  if (typeRow?.require_avatar && !materials.some((m) => m.kind === 'avatar')) {
-    throw badRequest('RES_AVATAR_REQUIRED', 'An avatar image is required');
-  }
-  if (typeRow?.require_address_proof && !materials.some((m) => m.kind === 'address_proof')) {
-    throw badRequest('RES_PROOF_REQUIRED', 'An address proof file is required');
-  }
   if (!fields.virtualAddress && !app.virtual_address) {
     throw badRequest('RES_FIELD_REQUIRED', 'Missing required field: virtualAddress');
   }
@@ -407,16 +343,13 @@ router.post('/applications/:id/supplement', (req, res) => {
     throw badRequest('RES_SUPPLEMENT_EXPIRED', 'Supplement deadline has passed');
   }
   const note = String(req.body?.note || '').trim().slice(0, 500);
-  const pending = db
-    .prepare("SELECT COUNT(*) AS n FROM res_materials WHERE application_id = ? AND origin = 'supplement'")
-    .get(app.id).n;
-  if (pending === 0 && !note) throw badRequest('RES_SUPPLEMENT_EMPTY', 'Nothing to supplement');
+  if (!note) throw badRequest('RES_SUPPLEMENT_EMPTY', 'Supplement note is required');
   db.prepare(
     `UPDATE res_applications SET supplement_note = CASE WHEN ? != '' THEN ? ELSE supplement_note END,
      status = 'pending_review', updated_at = ? WHERE id = ?`
   ).run(note, note, now(), app.id);
   notify(req.user.id, 'supplement_received', { no: app.app_no }, { appNo: app.app_no });
-  audit(req.user, 'supplement_application', 'application', app.app_no, { materials: pending });
+  audit(req.user, 'supplement_application', 'application', app.app_no);
   res.json({ application: applicationWithMeta(db.prepare('SELECT * FROM res_applications WHERE id = ?').get(app.id)) });
 });
 
@@ -424,94 +357,6 @@ router.get('/applications/:id', (req, res) => {
   sweepAll();
   const app = loadOwnApplication(req);
   res.json({ application: applicationWithMeta(app) });
-});
-
-// ---------------------------------------------------------------------------
-// Materials
-// ---------------------------------------------------------------------------
-
-function uploadMaterial(req, res, next) {
-  upload.single('file')(req, res, (err) => {
-    if (err) return mapMulterError(err, req, res, next);
-    next();
-  });
-}
-
-router.post('/materials', uploadMaterial, (req, res) => {
-  const app = db.prepare('SELECT * FROM res_applications WHERE id = ?').get(Number(req.body?.applicationId));
-  if (!app || app.user_id !== req.user.id) {
-    if (req.file) fs.rm(req.file.path, { force: true }, () => {});
-    throw notFound('Application not found');
-  }
-  if (!['draft', 'supplement_required'].includes(app.status)) {
-    if (req.file) fs.rm(req.file.path, { force: true }, () => {});
-    throw badRequest('RES_NOT_EDITABLE', 'Materials can only be added to drafts or during supplement');
-  }
-  const kind = KINDS.has(req.body?.kind) ? req.body.kind : 'other';
-  const file = req.file;
-  if (!file) throw badRequest('VALIDATION_ERROR', 'file is required');
-  if (!ALLOWED_MIMES.has(file.mimetype)) {
-    fs.rm(file.path, { force: true }, () => {});
-    throw badRequest('RES_FILE_TYPE', `Unsupported file type: ${file.mimetype}`);
-  }
-  const count = db.prepare('SELECT COUNT(*) AS n FROM res_materials WHERE application_id = ?').get(app.id).n;
-  if (count >= MAX_MATERIALS_PER_APP) {
-    fs.rm(file.path, { force: true }, () => {});
-    throw badRequest('RES_TOO_MANY_FILES', `At most ${MAX_MATERIALS_PER_APP} files per application`);
-  }
-  // 头像只保留一张:新头像顶替旧头像
-  if (kind === 'avatar') {
-    for (const old of db.prepare("SELECT * FROM res_materials WHERE application_id = ? AND kind = 'avatar'").all(app.id)) {
-      deleteMaterialFile(old);
-      db.prepare('DELETE FROM res_materials WHERE id = ?').run(old.id);
-    }
-  }
-  const appDir = path.join(residentUploadsRoot, String(app.id));
-  fs.mkdirSync(appDir, { recursive: true });
-  fs.renameSync(file.path, path.join(appDir, file.filename));
-  const info = db
-    .prepare(
-      `INSERT INTO res_materials (application_id, user_id, kind, origin, filename, mime, size, path, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    )
-    .run(
-      app.id,
-      req.user.id,
-      kind,
-      app.status === 'supplement_required' ? 'supplement' : 'initial',
-      (file.originalname || 'file').slice(0, 120),
-      file.mimetype,
-      file.size,
-      path.join(String(app.id), file.filename),
-      now()
-    );
-  res.status(201).json({ material: serializeMaterial(db.prepare('SELECT * FROM res_materials WHERE id = ?').get(info.lastInsertRowid)) });
-});
-
-router.delete('/materials/:id', (req, res) => {
-  const material = db.prepare('SELECT * FROM res_materials WHERE id = ?').get(Number(req.params.id));
-  if (!material || material.user_id !== req.user.id) throw notFound('Material not found');
-  const app = db.prepare('SELECT * FROM res_applications WHERE id = ?').get(material.application_id);
-  if (!app || !['draft', 'supplement_required'].includes(app.status)) {
-    throw badRequest('RES_NOT_EDITABLE', 'Materials are locked in current status');
-  }
-  deleteMaterialFile(material);
-  db.prepare('DELETE FROM res_materials WHERE id = ?').run(material.id);
-  res.json({ ok: true });
-});
-
-// 受限下载:本人或持审核权限者;绝不暴露静态目录
-router.get('/materials/:id/file', (req, res) => {
-  const material = db.prepare('SELECT * FROM res_materials WHERE id = ?').get(Number(req.params.id));
-  if (!material) throw notFound('Material not found');
-  const isOwner = material.user_id === req.user.id;
-  const isReviewer = (req.user.permissions || []).includes('res:review');
-  if (!isOwner && !isReviewer) throw forbidden('FORBIDDEN', 'No access to this file');
-  const full = path.resolve(residentUploadsRoot, material.path);
-  if (!full.startsWith(residentUploadsRoot) || !fs.existsSync(full)) throw notFound('File missing');
-  res.setHeader('Content-Type', material.mime);
-  res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(material.filename)}`);
-  fs.createReadStream(full).pipe(res);
 });
 
 // ---------------------------------------------------------------------------
@@ -710,16 +555,11 @@ router.post('/privacy/erase', (req, res) => {
     )
     .get(req.user.id).n;
   if (active > 0) throw badRequest('RES_ERASE_BLOCKED', 'Withdraw active applications before requesting deletion');
-  const materials = db
-    .prepare('SELECT rm.* FROM res_materials rm JOIN res_applications ra ON ra.id = rm.application_id WHERE ra.user_id = ?')
-    .all(req.user.id);
-  for (const m of materials) deleteMaterialFile(m);
-  db.prepare('DELETE FROM res_materials WHERE user_id = ?').run(req.user.id);
   db.prepare(
     `UPDATE res_applications SET nickname='', contact='', virtual_address='', bio='', updated_at = ? WHERE user_id = ?`
   ).run(now(), req.user.id);
   db.prepare(
-    `UPDATE res_residents SET nickname='', contact='', virtual_address='', bio='', avatar_material_id = NULL, updated_at = ? WHERE user_id = ?`
+    `UPDATE res_residents SET nickname='', contact='', virtual_address='', bio='', updated_at = ? WHERE user_id = ?`
   ).run(now(), req.user.id);
   db.prepare("UPDATE res_cards SET nickname = '', updated_at = ? WHERE user_id = ?").run(now(), req.user.id);
   db.prepare('UPDATE res_messages SET archived = 1, read = 1 WHERE user_id = ?').run(req.user.id);

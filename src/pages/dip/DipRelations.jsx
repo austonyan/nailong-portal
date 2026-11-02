@@ -7,7 +7,6 @@ import { Title, Button, Card, Drawer, Input, Table, Tag } from 'animal-island-ui
 import { EditIcon, PlusIcon, TrashIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { StatusTag, TextArea, fmtDate, fmtDateTime, toastDipError } from '../../components/dip/shared.jsx';
-import DipMaterials from '../../components/dip/DipMaterials.jsx';
 import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 import { toastSuccess, toastWarning } from '../../components/toast.js';
 
@@ -65,7 +64,6 @@ function RelationDetail({ id, onClose, onChanged }) {
 
   if (!rel) return <p className="muted-text">{t('common.loading')}</p>;
   const r = rel;
-  const canUpload = ['draft', 'pending_review', 'supplement_required'].includes(r.status);
 
   return (
     <div className="dip-detail">
@@ -126,17 +124,6 @@ function RelationDetail({ id, onClose, onChanged }) {
           </Button>
         </Card>
       )}
-
-      <Card>
-        <b>{t('dip.material.title')}</b>
-        <DipMaterials
-          ownerType="relation"
-          ownerId={r.id}
-          materials={r.materials ?? []}
-          canUpload={canUpload}
-          onChanged={load}
-        />
-      </Card>
 
       <Card>
         <b>{t('dip.relation.timeline')}</b>

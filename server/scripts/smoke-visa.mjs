@@ -32,10 +32,6 @@ async function api(path, { method = 'GET', token, body, raw } = {}) {
 }
 
 // 1x1 PNG
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
 
 const stamp = Date.now().toString(36);
 const userName = `smoke_${stamp}`;
@@ -55,16 +51,6 @@ async function login(username) {
   const r = await api('/auth/login', { method: 'POST', body: { username, password: username === 'admin' ? 'admin123' : password } });
   check(`登录 ${username}`, !!r.data.accessToken);
   return r.data.accessToken;
-}
-
-async function upload(token, applicationId, kind, filename, mime = 'image/png') {
-  const form = new FormData();
-  form.append('applicationId', String(applicationId));
-  form.append('kind', kind);
-  form.append('file', new Blob([PNG], { type: mime }), filename);
-  const res = await fetch(`${base}/api/visa/materials`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form });
-  const data = await res.json().catch(() => ({}));
-  return { status: res.status, data };
 }
 
 const FIELDS = {
@@ -91,15 +77,6 @@ async function fullFlow(adminToken, userToken) {
   const put = await api(`/visa/applications/${appId}`, { method: 'PUT', token: userToken, body: FIELDS });
   check('保存申请信息', put.status === 200);
 
-  const missingAvatar = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
-  check('缺头像时拒绝提交', missingAvatar.status === 400 && missingAvatar.data.code === 'VISA_AVATAR_REQUIRED');
-
-  const up = await upload(userToken, appId, 'avatar', 'avatar.png');
-  check('上传头像', up.status === 201, JSON.stringify(up.data));
-
-  const badType = await upload(userToken, appId, 'other', 'evil.bin', 'application/octet-stream');
-  check('拒绝非白名单类型', badType.status === 400 || badType.status === 413, JSON.stringify(badType.data));
-
   const submitted = await api(`/visa/applications/${appId}/submit`, { method: 'POST', token: userToken, body: { ...FIELDS } });
   check('提交成功进入待审核', submitted.status === 200 && submitted.data.application.status === 'pending_review');
 
@@ -115,8 +92,6 @@ async function fullFlow(adminToken, userToken) {
   });
   check('要求补件', supp.status === 200 && supp.data.application.status === 'supplement_required');
 
-  const upSup = await upload(userToken, appId, 'proof', 'ticket.png');
-  check('补交材料', upSup.status === 201 && upSup.data.material.origin === 'supplement');
   const suppSubmit = await api(`/visa/applications/${appId}/supplement`, { method: 'POST', token: userToken, body: { note: '凭证已补' } });
   check('补件后重新送审', suppSubmit.status === 200 && suppSubmit.data.application.status === 'pending_review');
 
@@ -148,7 +123,6 @@ async function fullFlow(adminToken, userToken) {
   const user2Token = await register('b');
   const app2 = await api('/visa/applications', { method: 'POST', token: user2Token, body: { typeCode: 'TOURIST' } });
   const app2Id = app2.data.application.id;
-  await upload(user2Token, app2Id, 'avatar', 'a.png');
   await api(`/visa/applications/${app2Id}/submit`, { method: 'POST', token: user2Token, body: { ...FIELDS } });
   const reject = await api(`/visa/admin/applications/${app2Id}/reject`, {
     method: 'POST', token: adminToken, body: { reasonCode: 'false_info', comment: '行程描述与目的不符' },

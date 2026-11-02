@@ -22,7 +22,6 @@ export function ensureProtocolSchema() {
     guide            TEXT NOT NULL DEFAULT '',
     guide_tw         TEXT,
     required_fields  TEXT NOT NULL DEFAULT 'nickname,contact',
-    materials        TEXT NOT NULL DEFAULT '[]',
     allow_companions INTEGER NOT NULL DEFAULT 1,
     max_companions   INTEGER NOT NULL DEFAULT 3,
     default_capacity INTEGER NOT NULL DEFAULT 100,
@@ -60,7 +59,6 @@ export function ensureProtocolSchema() {
     ends_at               TEXT,
     conditions            TEXT NOT NULL DEFAULT '',
     conditions_tw         TEXT,
-    materials             TEXT NOT NULL DEFAULT '[]',
     notice                TEXT NOT NULL DEFAULT '',
     notice_tw             TEXT,
     cover_color           TEXT NOT NULL DEFAULT 'app-teal',
@@ -121,20 +119,6 @@ export function ensureProtocolSchema() {
   CREATE INDEX IF NOT EXISTS idx_pro_reg_user ON pro_registrations (user_id, status);
   CREATE INDEX IF NOT EXISTS idx_pro_reg_event ON pro_registrations (event_id, status);
   CREATE INDEX IF NOT EXISTS idx_pro_reg_queue ON pro_registrations (status, submitted_at);
-
-  CREATE TABLE IF NOT EXISTS pro_materials (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    owner_type TEXT NOT NULL CHECK (owner_type IN ('registration','host')),
-    owner_id   INTEGER NOT NULL,
-    user_id    INTEGER NOT NULL,
-    kind       TEXT NOT NULL DEFAULT 'other',
-    filename   TEXT NOT NULL,
-    mime       TEXT NOT NULL,
-    size       INTEGER NOT NULL,
-    path       TEXT NOT NULL,
-    created_at TEXT NOT NULL
-  );
-  CREATE INDEX IF NOT EXISTS idx_pro_mat_owner ON pro_materials (owner_type, owner_id);
 
   -- 邀请函状态机: valid → (used | expired | revoked)
   CREATE TABLE IF NOT EXISTS pro_invitations (
@@ -488,13 +472,13 @@ function seedProtocol() {
     // --- event types -------------------------------------------------------
     if (db.prepare('SELECT COUNT(*) AS n FROM pro_event_types').get().n === 0) {
       const insertType = db.prepare(
-        `INSERT INTO pro_event_types (code, name, description, guide, required_fields, materials, allow_companions, max_companions, default_capacity, enabled, sort_order, created_at, updated_at)
-         VALUES (@code, @name, @description, @guide, @required_fields, @materials, @allow_companions, @max_companions, @default_capacity, @enabled, @sort_order, @ts, @ts)`
+        `INSERT INTO pro_event_types (code, name, description, guide, required_fields, allow_companions, max_companions, default_capacity, enabled, sort_order, created_at, updated_at)
+         VALUES (@code, @name, @description, @guide, @required_fields, @allow_companions, @max_companions, @default_capacity, @enabled, @sort_order, @ts, @ts)`
       );
       [
         { code: 'CULTURE', name: '文化交流', description: '故事会、语言角与虚构文化沙龙', guide: '文化交流活动欢迎所有岛民:填写昵称与联系方式即可报名,最多可携带 2 位随行伙伴。' },
         { code: 'FESTIVAL', name: '庆典', description: '奶龙节巡游、烟花与岛上庆典', guide: '庆典人流量较大,报名后请留意活动公告与变更通知。' },
-        { code: 'EXHIBITION', name: '展览', description: '虚构手作、绘画与岛屿记忆展', guide: '展览类活动可能需要上传介绍信或过往参与凭证,以活动详情为准。' },
+        { code: 'EXHIBITION', name: '展览', description: '虚构手作、绘画与岛屿记忆展', guide: '展览类活动以活动详情中的说明为准,报名时填写文字信息即可。' },
         { code: 'COMMUNITY', name: '社区活动', description: '邻里共创、花园维护与社区茶会', guide: '社区活动面向所有注册用户,欢迎带上邻居一起参加。' },
         { code: 'DIPLOMATIC', name: '外交活动', description: '使团联谊、外交礼遇与接待仪式', guide: '外交活动仅限已完成外交身份登记的来宾报名,报名时需填写外交身份编号。' },
         { code: 'RESIDENT', name: '居民专属', description: '仅面向奶龙国居民开放的专属活动', guide: '居民专属活动需填写居民编号,并与居民登记署校验通过后方可报名。' },
@@ -502,7 +486,6 @@ function seedProtocol() {
         insertType.run({
           ...t,
           required_fields: 'nickname,contact',
-          materials: '[]',
           allow_companions: 1,
           max_companions: 2,
           default_capacity: 100,
@@ -520,10 +503,10 @@ function seedProtocol() {
       const insertEvent = db.prepare(
         `INSERT INTO pro_events (event_no, type_code, title, subtitle, description, schedule, venue_name, venue_note,
            capacity, waitlist_enabled, status, resident_only, diplomatic_only, registration_deadline, starts_at, ends_at,
-           conditions, materials, notice, cover_color, created_by, published_at, created_at, updated_at)
+           conditions, notice, cover_color, created_by, published_at, created_at, updated_at)
          VALUES (@event_no, @type_code, @title, @subtitle, @description, @schedule, @venue_name, @venue_note,
            @capacity, 1, 'registration', @resident_only, @diplomatic_only, @registration_deadline, @starts_at, @ends_at,
-           @conditions, @materials, @notice, @cover_color, NULL, @ts, @ts, @ts)`
+           @conditions, @notice, @cover_color, NULL, @ts, @ts, @ts)`
       );
       const schedule = (rows) => JSON.stringify(rows);
       const events = [
@@ -534,7 +517,7 @@ function seedProtocol() {
           schedule: schedule([{ time: 'D1 10:00', title: '开场故事会' }, { time: 'D1 14:00', title: '语言角:奶龙语入门' }, { time: 'D2 10:00', title: '手作交换市集' }, { time: 'D3 15:00', title: '闭幕分享会' }]),
           venue_name: '中央广场故事亭(虚构)', venue_note: '位于奶龙雕像东侧 30 米,现场有蓝色气球指引。',
           capacity: 60, registration_deadline: addDays(5, 18), starts_at: addDays(7), ends_at: addDays(9, 18),
-          conditions: '所有门户注册用户;填写昵称与联系方式即可。', materials: '[]',
+          conditions: '所有门户注册用户;填写昵称与联系方式即可。',
           notice: '请自备水杯与好心情;活动全程禁止投喂奶龙。', cover_color: 'app-teal',
         },
         {
@@ -544,7 +527,7 @@ function seedProtocol() {
           schedule: schedule([{ time: 'D1 16:00', title: '巡游集合' }, { time: 'D1 18:00', title: '庆典广场合唱' }, { time: 'D1 20:00', title: '虚构烟花秀' }]),
           venue_name: '中央大街 → 庆典广场(虚构)', venue_note: '建议提前 30 分钟到场,沿街均有工作人员指引。',
           capacity: 120, registration_deadline: addDays(15, 18), starts_at: addDays(18, 16), ends_at: addDays(18, 22),
-          conditions: '所有门户注册用户;未成年人需随行成年人陪同(虚构要求)。', materials: '[]',
+          conditions: '所有门户注册用户;未成年人需随行成年人陪同(虚构要求)。',
           notice: '现场不燃放烟花。', cover_color: 'app-orange',
         },
         {
@@ -554,8 +537,7 @@ function seedProtocol() {
           schedule: schedule([{ time: 'Daily 10:00-18:00', title: '自由观展' }, { time: 'Weekend 14:00', title: '作者见面会' }]),
           venue_name: '海港仓库 A 馆(虚构)', venue_note: '南港码头 3 号门进入,馆内禁止饮食。',
           capacity: 40, registration_deadline: addDays(2, 18), starts_at: addDays(3), ends_at: addDays(12, 18),
-          conditions: '所有门户注册用户;报名时请上传一张观展介绍信或过往活动凭证(图片/PDF,可选)。',
-          materials: JSON.stringify([{ kind: 'intro', label: '介绍信', required: 0 }]),
+          conditions: '所有门户注册用户;填写昵称与联系方式即可报名。',
           notice: '请勿触摸展品。', cover_color: 'app-blue',
         },
         {
@@ -565,7 +547,7 @@ function seedProtocol() {
           schedule: schedule([{ time: '09:30', title: '集合与工具领取' }, { time: '10:00', title: '花园共创' }, { time: '15:00', title: '欢迎茶会' }]),
           venue_name: '海风社区花园(虚构)', venue_note: '社区中心后门进入,工具由主办方提供。',
           capacity: 30, registration_deadline: addDays(10, 18), starts_at: addDays(13), ends_at: addDays(13, 17),
-          conditions: '所有门户注册用户;欢迎携带 2 位随行伙伴。', materials: '[]',
+          conditions: '所有门户注册用户;欢迎携带 2 位随行伙伴。',
           notice: '请穿耐脏的鞋子,现场提供手套。', cover_color: 'app-green',
         },
         {
@@ -575,7 +557,7 @@ function seedProtocol() {
           schedule: schedule([{ time: '18:00', title: '礼宾通道入场' }, { time: '18:30', title: '晚宴与交流' }, { time: '20:30', title: '纪念徽章颁发' }]),
           venue_name: '皇家礼宾厅(虚构)', venue_note: '凭邀请函或外交身份编号从东侧礼宾通道入场。',
           capacity: 24, registration_deadline: addDays(24, 18), starts_at: addDays(28, 18), ends_at: addDays(28, 21),
-          conditions: '仅限已完成外交身份登记的来宾;报名时填写外交身份编号。', materials: '[]',
+          conditions: '仅限已完成外交身份登记的来宾;报名时填写外交身份编号。',
           notice: '仅限受邀使团成员参加,凭邀请函或外交身份编号入场。', cover_color: 'purple',
           diplomatic_only: 1,
         },
@@ -586,7 +568,7 @@ function seedProtocol() {
           schedule: schedule([{ time: '19:00', title: '夜市开市' }, { time: '20:00', title: '居民才艺秀' }, { time: '21:30', title: '收市' }]),
           venue_name: '居民区灯笼街(虚构)', venue_note: '从居民中心步行 5 分钟,凭居民编号核验入场。',
           capacity: 50, registration_deadline: addDays(8, 18), starts_at: addDays(11, 19), ends_at: addDays(11, 22),
-          conditions: '仅限已完成居民登记的居民;报名时填写居民编号。', materials: '[]',
+          conditions: '仅限已完成居民登记的居民;报名时填写居民编号。',
           notice: '摊位仅接受虚构货币,不收现实费用。', cover_color: 'app-yellow',
           resident_only: 1,
         },

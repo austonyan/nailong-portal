@@ -27,8 +27,6 @@ export function ensureResidentSchema() {
     duties               TEXT NOT NULL DEFAULT '',
     duties_tw            TEXT,
     valid_years          INTEGER NOT NULL DEFAULT 1,
-    require_avatar       INTEGER NOT NULL DEFAULT 1,
-    require_address_proof INTEGER NOT NULL DEFAULT 0,
     enabled              INTEGER NOT NULL DEFAULT 1,
     sort_order           INTEGER NOT NULL DEFAULT 0,
     created_at           TEXT NOT NULL,
@@ -63,19 +61,6 @@ export function ensureResidentSchema() {
   CREATE INDEX IF NOT EXISTS idx_res_app_user ON res_applications (user_id, status);
   CREATE INDEX IF NOT EXISTS idx_res_app_status ON res_applications (status, submitted_at);
 
-  CREATE TABLE IF NOT EXISTS res_materials (
-    id             INTEGER PRIMARY KEY AUTOINCREMENT,
-    application_id INTEGER NOT NULL REFERENCES res_applications(id) ON DELETE CASCADE,
-    user_id        INTEGER NOT NULL,
-    kind           TEXT NOT NULL DEFAULT 'other' CHECK (kind IN ('avatar','address_proof','other')),
-    origin         TEXT NOT NULL DEFAULT 'initial' CHECK (origin IN ('initial','supplement')),
-    filename       TEXT NOT NULL,
-    mime           TEXT NOT NULL,
-    size           INTEGER NOT NULL,
-    path           TEXT NOT NULL,
-    created_at     TEXT NOT NULL
-  );
-
   CREATE TABLE IF NOT EXISTS res_reviews (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     application_id INTEGER NOT NULL REFERENCES res_applications(id) ON DELETE CASCADE,
@@ -97,7 +82,6 @@ export function ensureResidentSchema() {
     contact            TEXT NOT NULL DEFAULT '',
     virtual_address    TEXT NOT NULL DEFAULT '',
     bio                TEXT NOT NULL DEFAULT '',
-    avatar_material_id INTEGER,
     since              TEXT NOT NULL,
     created_at         TEXT NOT NULL,
     updated_at         TEXT NOT NULL
@@ -311,20 +295,18 @@ function seedResident() {
     // --- resident types (MVP 只开放临时居民) ---------------------------------
     if (db.prepare('SELECT COUNT(*) AS n FROM res_types').get().n === 0) {
       const insertType = db.prepare(
-        `INSERT INTO res_types (code, name, description, guide, benefits, duties, valid_years, require_avatar, require_address_proof, enabled, sort_order, created_at, updated_at)
-         VALUES (@code, @name, @description, @guide, @benefits, @duties, @valid_years, @require_avatar, @require_address_proof, @enabled, @sort_order, @ts, @ts)`
+        `INSERT INTO res_types (code, name, description, guide, benefits, duties, valid_years, enabled, sort_order, created_at, updated_at)
+         VALUES (@code, @name, @description, @guide, @benefits, @duties, @valid_years, @enabled, @sort_order, @ts, @ts)`
       );
       insertType.run({
         code: 'TEMPORARY',
         name: '临时居民',
         description: '刚登上奶龙岛的新朋友,先以临时居民的身份开始岛上生活',
         guide:
-          '登记条件:年满 0 岁的奶龙爱好者;所需信息:昵称、联系方式、奶龙国虚构地址(选填)、个人简介;登记材料:头像(必传)、地址证明(选填,趣味化即可);审核时长:预计 72 小时。',
+          '登记条件:年满 0 岁的奶龙爱好者;所需信息:昵称、联系方式、奶龙国虚构地址(选填)、个人简介;审核时长:预计 72 小时。',
         benefits: '专属居民公告推送;居民编号验真;未来可享签注快捷通道、入境居民通道与活动优先报名(陆续开放)。',
         duties: '遵守《奶龙岛居民友好公约》:不投喂过量零食、见到奶龙要打招呼、保持快乐。',
         valid_years: 1,
-        require_avatar: 1,
-        require_address_proof: 0,
         enabled: 1,
         sort_order: 0,
         ts,
@@ -343,8 +325,6 @@ function seedResident() {
       ].forEach((t, i) =>
         insertType.run({
           guide: '',
-          require_avatar: 1,
-          require_address_proof: 0,
           enabled: 0,
           sort_order: i + 1,
           ts,

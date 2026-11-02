@@ -5,7 +5,6 @@ import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Drawer, Input, Modal, Pagination, Select, Table, Tag } from 'animal-island-ui';
 import { BanIcon, CheckCircleIcon, EyeIcon, SearchIcon, SendIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { openResidentMaterial } from '../../../api/resident.js';
 
 import {
   APPLICATION_STATUS_COLORS,
@@ -256,22 +255,6 @@ export default function AdminResReview() {
                 </div>
               ))}
             </dl>
-
-            <h2 className="block-heading">{t('res.detail.materialsTitle')}</h2>
-            <ul className="res-material-list">
-              {detail.materials.map((m) => (
-                <li key={m.id}>
-                  <Tag size="small" variant="soft" color={m.origin === 'supplement' ? 'warm-peach-pink' : 'app-blue'}>
-                    {t(`res.materialKind.${m.kind}`)}
-                  </Tag>
-                  <span>{m.filename}</span>
-                  <Button type="text" size="small" icon={<EyeIcon />} onClick={() => openResidentMaterial(m.id)}>
-                    {t('res.admin.preview')}
-                  </Button>
-                </li>
-              ))}
-              {detail.materials.length === 0 && <li className="muted-text">{t('common.empty')}</li>}
-            </ul>
 
             <h2 className="block-heading">{t('res.detail.recordsTitle')}</h2>
             <ul className="res-review-timeline">

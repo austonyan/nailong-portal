@@ -226,18 +226,6 @@ export function ensureImmigrationSchema() {
     PRIMARY KEY (actor, action)
   );
 
-  CREATE TABLE IF NOT EXISTS im_attachments (
-    id             INTEGER PRIMARY KEY AUTOINCREMENT,
-    declaration_id INTEGER NOT NULL REFERENCES im_declarations(id) ON DELETE CASCADE,
-    filename       TEXT NOT NULL,
-    stored_name    TEXT NOT NULL UNIQUE,
-    mime           TEXT NOT NULL DEFAULT 'application/octet-stream',
-    size           INTEGER NOT NULL DEFAULT 0,
-    uploaded_by    INTEGER NOT NULL REFERENCES users(id),
-    created_at     TEXT NOT NULL,
-    deleted_at     TEXT
-  );
-
   CREATE TABLE IF NOT EXISTS im_settings (
     key        TEXT PRIMARY KEY,
     value      TEXT NOT NULL,

@@ -30,25 +30,6 @@ async function api(path, { method = 'GET', token, body, raw } = {}) {
   return { status: res.status, data };
 }
 
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
-
-async function upload(token, ownerType, ownerId, kind, filename, mime = 'image/png') {
-  const form = new FormData();
-  form.append('ownerType', ownerType);
-  form.append('ownerId', String(ownerId));
-  form.append('kind', kind);
-  form.append('file', new Blob([PNG], { type: mime }), filename);
-  const res = await fetch(`${base}/api/protocol/materials`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
-  });
-  return { status: res.status, data: await res.json().catch(() => ({})) };
-}
-
 const stamp = Date.now().toString(36);
 const username = `proto_${stamp}`;
 const password = 'smoke-pass-123';
@@ -87,11 +68,6 @@ const draft = await api('/protocol/registrations', {
 check('创建报名草稿', draft.status === 201 && /^NJR/.test(draft.data.registration?.regNo || ''), JSON.stringify(draft.data));
 const regId = draft.data.registration.id;
 const regNo = draft.data.registration.regNo;
-
-const up = await upload(token, 'registration', regId, 'other', 'note.png');
-check('上传报名材料', up.status === 201, JSON.stringify(up.data));
-const badFile = await upload(token, 'registration', regId, 'other', 'evil.bin', 'application/octet-stream');
-check('拒绝非白名单文件', badFile.status === 400 && badFile.data.code === 'EVT_FILE_TYPE');
 
 const submitted = await api(`/protocol/registrations/${regId}/submit`, { method: 'POST', token, body: {} });
 check('提交报名进入待审核', submitted.status === 200 && submitted.data.registration.status === 'pending_review');
@@ -188,8 +164,6 @@ const host = await api('/protocol/hosts', {
 });
 check('创建接待方草稿', host.status === 201 && /^NJH/.test(host.data.host?.hostNo || ''), JSON.stringify(host.data));
 const hostId = host.data.host.id;
-const hostUp = await upload(token, 'host', hostId, 'intro', 'intro.png');
-check('上传接待方材料', hostUp.status === 201, JSON.stringify(hostUp.data));
 const hostSubmit = await api(`/protocol/hosts/${hostId}/submit`, { method: 'POST', token });
 check('提交接待方审核', hostSubmit.status === 200 && hostSubmit.data.host.status === 'pending_review');
 const hostApprove = await api(`/protocol/admin/hosts/${hostId}/approve`, { method: 'POST', token: adminToken, body: { comment: 'ok' } });

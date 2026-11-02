@@ -211,8 +211,6 @@ export function serializeType(row) {
     duties: row.duties,
     dutiesTw: row.duties_tw,
     validYears: row.valid_years,
-    requireAvatar: !!row.require_avatar,
-    requireAddressProof: !!row.require_address_proof,
     enabled: !!row.enabled,
     sortOrder: row.sort_order,
   };
@@ -287,7 +285,6 @@ export function serializeResident(row) {
     contact: row.contact,
     virtualAddress: row.virtual_address,
     bio: row.bio,
-    avatarMaterialId: row.avatar_material_id,
     since: row.since,
   };
 }

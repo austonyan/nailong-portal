@@ -271,7 +271,7 @@
 6. `POST /api/visa/applications/:id/submit` — 仅草稿；黑名单拦截；同一用户
    `pending_review + supplement_required` ≥3 拒绝；必须有头像；限流 1 次/60 秒；
    → `pending_review`，发 `submitted`。
-7. 补件：管理员要求补件后进入 `supplement_required`，用户可上传补件材料并
+7. 补件：管理员要求补件后进入 `supplement_required`，用户可提交补件说明并
    `POST .../supplement` 回到 `pending_review`；超过 `supplement_deadline` 由扫描自动 `closed`。
 8. `POST .../withdraw` — `pending_review/supplement_required` → `withdrawn`。
 9. `GET /api/visa/permits`、`/permits/:visaNo` — 本人签注与验真 token。
@@ -333,7 +333,7 @@ expired / closed / withdrawn / expiry_reminder / diplomatic_voided / appeal_reop
    必须填签注号且实时校验为 `valid`；→ `pending`，发 `submit_success`。
 7. 补件：管理员要求补件 → `supplement`；用户 `POST .../supplement` 回到 `pending`。
 8. `POST .../withdraw` — `pending` → `withdrawn`（`supplement` 不能撤回）。
-9. 附件：`POST /declarations/:id/attachments`（≤5 MB，png/jpeg/webp/gif/pdf）。
+9. 门户只收文本：申报不再接收附件（`/attachments` 路由已移除）。
 10. `GET /pass-codes`、`/records/entry`、`/records/exit`；`POST /records/entry/:id/exit`
     登记出境，生成 `EX` 编号，申报 → `exited`。
 11. 公开 `GET /api/immigration/verify?token=` 验通关码。
@@ -379,9 +379,9 @@ pass_code / entry_record / exit_reminder / appeal_reopened`。其中 `exit_remin
 2. `POST /applications {typeCode}` — 建草稿；黑名单/限流；生成 `NLDA-`。
 3. `PATCH /applications/:id` — 仅草稿（注意：整表覆盖语义，见 8.2）。
 4. `POST /materials` — 仅草稿或补件中；按类型配置限制 `kind`、大小、数量、MIME。
-5. `POST /applications/:id/submit` — 仅草稿；必填表单字段与必交材料校验；关联业务编号
+5. `POST /applications/:id/submit` — 仅草稿；必填表单字段校验；关联业务编号
    必须 `checked/found/owned`，必填类型还要求 `certifiable`；→ `pending`，发 `submitted`。
-6. 补件：`supplementing` 状态下上传补件材料并 `POST .../resubmit` 回到 `pending`。
+6. 补件：`supplementing` 状态下提交补件说明并 `POST .../resubmit` 回到 `pending`。
 7. `POST .../withdraw` — `pending/supplementing` → `withdrawn`。
 8. `GET /certificates`、`/certificates/:id` — 本人证书；先执行到期扫描。
 9. 公开 `POST /api/docs/verify {no}` — 证书号公开验真；带 JWT 时也可查本人申请号。
@@ -426,8 +426,8 @@ closed / expired / expiry_reminder / revoked / regenerated / appeal_reopened`。
 
 1. `GET /overview` — 公告、类型、协议数、审核提示、本人统计。
 2. 建交：`POST /relations`（对象类型、建交类型、实体名、代表、联系方式、理由、目的、
-   礼遇）→ 草稿；`PATCH/DELETE` 仅草稿；上传材料；`submit`（黑名单、限流 5 次/日、
-   同用户只能有一条在途建交、至少 1 份材料）→ `pending_review`。
+   礼遇）→ 草稿；`PATCH/DELETE` 仅草稿；`submit`（黑名单、限流 5 次/日、
+   同用户只能有一条在途建交）→ `pending_review`。
 3. 建交状态：`established` 后可 `POST /relations/:id/sever` 申请断交 →
    `sever_requested`，管理员复核后 `severed` 并级联身份失效。
 4. 外交身份：`POST /identities`（类型、关联建交、昵称、联系方式、职务、任期）→ 草稿；
@@ -489,10 +489,10 @@ agreement_effective / appeal_reopened`。
    居民档案拒绝；在途申请上限默认 1；生成 `NRR-`。
 3. `PUT /applications/:id` — 仅草稿；昵称/联系方式/虚拟地址/简介/用途（`collect|activity|
    visa_fast|other`，必须非空）。
-4. 上传头像/地址证明/其他材料（≤5 MB、最多 6 份）。
-5. `POST .../submit` — 仅草稿；按类型要求头像/地址证明；虚拟地址必填；限流 1 次/60 秒；
+4. 门户只收文本：不再上传头像/地址证明/其他材料。
+5. `POST .../submit` — 仅草稿；虚拟地址必填；限流 1 次/60 秒；
    → `pending_review`，发 `submitted`。
-6. 补件：`supplement_required` → 上传补件材料 + `POST .../supplement` → `pending_review`；
+6. 补件：`supplement_required` → 提交补件说明 + `POST .../supplement` → `pending_review`；
    超时扫描 `closed`。
 7. `POST .../withdraw` — `pending_review/supplement_required` → `withdrawn`。
 8. 居民卡：`GET /card`；`POST /card/reissue`（仅换 `verify_token`，卡号不变）。
@@ -552,7 +552,7 @@ appeal_reopened`。
    ongoing/ended`）。
 3. `POST /registrations {eventId}` — 活动必须开放报名；同活动不能重复报名；活跃报名 ≤5；
    生成 `NJR-`。
-4. `PATCH/DELETE /registrations/:id` — 仅草稿；上传材料。
+4. `PATCH/DELETE /registrations/:id` — 仅草稿；不再收材料。
 5. `POST .../submit` — 仅草稿；活动仍开放且未过截止；必填字段；随行人/人数一致；
    居民/外交专属校验（读居民卡/外交身份）；邀请函归属/活动/有效期；必传材料；容量；
    → `pending_review`；使用邀请函时置 `used`。
@@ -616,7 +616,7 @@ courtesy_submitted / courtesy_approved / courtesy_rejected / checkin_done / tick
 2. 申诉：`POST /appeals {bizType,bizCode}` → 草稿（生成 `NAA-`）；`PUT` 保存理由/期望/
    联系方式/材料；`submit`（黑名单、同业务编号不能重复在途、在途 ≤3、业务件必须属于本人；
    `not_found` 允许进入人工核验）→ `pending_accept`，发 `appeal_submitted`。
-3. 补件：`supplement_required` 状态下上传补件材料并提交 → `processing`。
+3. 补件：`supplement_required` 状态下提交补件说明并提交 → `processing`。
 4. `POST /appeals/:id/withdraw` — 受理中/处理中可撤回（补件中不可）。
 5. 评价：`resolved` 后可评分 1–5。
 6. 复核：`POST /reviews {appealId,reason}` — 原申诉必须 `resolved/rejected`、未申请过复核、
@@ -1260,8 +1260,7 @@ node server/scripts/smoke-linkage.mjs http://127.0.0.1:3101
   基本是展示字段；验真只返回 `status/valid`，`used` 与 `voided` 都是 `valid:false`。
 - **入境**：提交限流在校验前消耗，失败提交也计入 5 次/天；`im_settings` 表无调用方；
   公开验真不写独立日志，只消耗限流表。
-- **文书**：上传失败可能留下孤儿文件；`verify_token` 只生成不读取；上传 multer 硬上限
-  20 MB 与可配置 `docs.upload_max_mb` 不一致；`DIPLOMATIC` 类型“仅限使团渠道”只写在
+- **文书**：`verify_token` 只生成不读取；`DIPLOMATIC` 类型“仅限使团渠道”只写在
   guide 文案；可选关联类型不检查 `certifiable`；`DOC_CERT_APPEALABLE` 使用不存在的
   `voided` 状态，`revoked` 证书不可申诉。
 - **外交**：验真按可配置前缀分流，改前缀后历史编号按编号验真失效（token 不受影响）；

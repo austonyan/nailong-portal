@@ -1,4 +1,4 @@
-// 活动详情:介绍、日程、虚构地点示意图、报名条件、所需材料、公告与变更通知。
+// 活动详情:介绍、日程、虚构地点示意图、报名条件、公告与变更通知。
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,6 @@ import {
   CalendarIcon,
   CheckCircleIcon,
   ClockIcon,
-  FileIcon,
   HomeIcon,
   MailIcon,
   SearchIcon,
@@ -54,7 +53,7 @@ export default function ProtocolEventDetail() {
     );
   }
 
-  const { event, notices, materialsRequired, myRegistration, myInvitation, myPass } = data;
+  const { event, notices, myRegistration, myInvitation, myPass } = data;
   const full = event.seatsLeft <= 0;
   const canApply = event.status === 'registration' && !myRegistration && (!full || event.waitlistEnabled);
   const applyDisabledTip = full
@@ -166,24 +165,6 @@ export default function ProtocolEventDetail() {
           <h2 className="section-title">{t('protocol.eventDetail.conditions')}</h2>
           <Card>
             <p className="protocol-preline">{event.conditions || t('protocol.eventDetail.noConditions')}</p>
-          </Card>
-        </section>
-
-        <section className="protocol-section">
-          <h2 className="section-title">{t('protocol.eventDetail.materials')}</h2>
-          <Card>
-            {materialsRequired.length === 0 && <p className="muted-text">{t('protocol.eventDetail.noMaterials')}</p>}
-            <ul className="protocol-material-req">
-              {materialsRequired.map((m) => (
-                <li key={`${m.kind}-${m.required ? 1 : 0}`}>
-                  <FileIcon size={16} />
-                  <span>{t(`protocol.materialKind.${m.kind}`, { defaultValue: t('common.unknown') })}</span>
-                  <Tag color={m.required ? 'warm-peach-pink' : 'brown'} variant="soft" size="small">
-                    {m.required ? t('protocol.common.required') : t('protocol.common.optional')}
-                  </Tag>
-                </li>
-              ))}
-            </ul>
           </Card>
         </section>
       </div>

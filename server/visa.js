@@ -207,20 +207,6 @@ export function serializePermit(row) {
   };
 }
 
-export function serializeMaterial(row) {
-  if (!row) return null;
-  return {
-    id: row.id,
-    applicationId: row.application_id,
-    kind: row.kind,
-    origin: row.origin,
-    filename: row.filename,
-    mime: row.mime,
-    size: row.size,
-    createdAt: row.created_at,
-  };
-}
-
 export function serializeMessage(row) {
   if (!row) return null;
   return {
