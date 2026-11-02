@@ -39,3 +39,8 @@ server/data
 .impeccable/config.local.json
 .impeccable/hook.cache.json
 .impeccable/critique/
+
+# impeccable 开发期产物:截图与决策手牌不入库
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/decision/

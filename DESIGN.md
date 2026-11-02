@@ -373,6 +373,13 @@ components:
 - **入口分工：** 市民页签只放办理功能；管理功能一律从侧栏「管理台」进入，不在署内页签里复制。
 - **SSO：** 首次进入某署时用 blob 弹窗确认一次门户身份（每个浏览器标签页一次），弹窗沿用 Modal 的签名形状与 `maskClosable={false}`。
 
+### Portal Gate（登录门面，2026-11-03）
+登录、注册、首启三页共用 `src/components/PortalGate.jsx`——「办事大厅 · 十二窗口」：未登录的门面就是把办事大厅画出来。顶细条（徽记 + 国名行 + 语言）→ 叙事行（全页唯一 `h1`「欢迎来到 + brown 飘带门户名」+ Typewriter tagline，本页唯一动效时刻）→ 窗口房网格 → 发丝边页脚（国训「一个身份，十二个窗口」+ 版权）。
+
+- **综合窗口：** 薄荷浅底 + 2px 薄荷边 + 24px 圆角的大卡（`综合窗口` 徽章），login 变体占 2×2、register/setup 变体占 3×3，承载三页全部表单；一页仍只有一个 primary。
+- **窗口铭牌：** 12 个皇家署取自 `navConfig` 的 `OFFICE_NAV`（真实署名 + 署徽 + `窗口NN` 编号），次级纸底 + 发丝边、静态不可点；login 变体第 12 署占宽格，wide 变体底部补一块 2px 虚线国训牌。铭牌不带假状态、不编造营业时间。
+- **网格与响应：** 6 列命名区域模板在 `src/index.css`（`gate-hall--login/--wide`），≤1200px 柜台脱离网格居中（`grid-column: 1/-1 !important` 压过内联 gridArea）、窗口房退居 4 列，≤640px 两列；页面按内容自然滚动，桌面宽度不横滚。
+
 ### Modals & Drawers
 - 必须 `maskClosable={false}`：点遮罩不关闭。关闭入口是取消/关闭按钮、抽屉右上角 ×、或 Esc。
 - 宽度只有 460 / 560 / 640 / 720 四档，且必须显式传 `width`；Modal 保留 blob 剪裁。长表单改 Drawer 或独立页。

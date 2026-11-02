@@ -33,7 +33,8 @@ import {
 
 // 署徽映射与 Sidebar.jsx 同一套:navConfig 只存 naive-icons 的图标名,这里按名取组件。
 // AnchorIcon / FolderIcon 不在 icons.js 的服务卡图标表里,所以与侧栏一样自带映射。
-const OFFICE_ICONS = {
+// 登录门面(PortalGate)的窗口铭牌也用它,与侧栏/署徽保持同一套署所图标。
+export const OFFICE_ICONS = {
   BadgeCheckIcon,
   AnchorIcon,
   CompassIcon,

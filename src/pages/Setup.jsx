@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Form, FormItem, Input, Progress, Tag, useForm } from 'animal-island-ui';
-import { CheckCircleIcon, KeyIcon, LockIcon, ShieldIcon, SailboatIcon } from 'naive-icons';
-import AuthLayout from '../components/AuthLayout.jsx';
-import LanguageSelect from '../components/LanguageSelect.jsx';
+import { Button, Form, FormItem, Input, Progress, Tag, useForm } from 'animal-island-ui';
+import { CheckCircleIcon, KeyIcon, LockIcon, ShieldIcon } from 'naive-icons';
+import PortalGate from '../components/PortalGate.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { useSetup } from '../setup/SetupContext.jsx';
 import { toastSuccess, toastError, toastApiError } from '../components/toast.js';
@@ -89,21 +88,15 @@ export default function Setup() {
   };
 
   return (
-    <AuthLayout width={580}>
-      <div className="setup-language">
-        <LanguageSelect />
-      </div>
-      <Card>
+    <PortalGate variant="wide" badge={t('gate.counterBadge')}>
+      <div className="gate-counter-inner">
         <div className="setup-head">
-          <span className="setup-mark">
-            <SailboatIcon size={30} />
-          </span>
           <Tag color="app-teal" variant="soft">
             {t('setup.badge')}
           </Tag>
         </div>
-        <h1 className="page-title"><Title size="middle" color="brown">{titles[step]}</Title></h1>
-        <p className="muted-text auth-subtitle">{subtitles[step]}</p>
+        <h2 className="gate-counter-title">{titles[step]}</h2>
+        <p className="muted-text gate-counter-sub">{subtitles[step]}</p>
 
         {step !== 'done' && (
           <div className="setup-progress">
@@ -269,7 +262,7 @@ export default function Setup() {
             </Button>
           </div>
         )}
-      </Card>
-    </AuthLayout>
+      </div>
+    </PortalGate>
   );
 }

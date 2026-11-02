@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Title, Button, Card, Form, FormItem, Input, useForm } from 'animal-island-ui';
-import AuthLayout from '../components/AuthLayout.jsx';
-import LanguageSelect from '../components/LanguageSelect.jsx';
+import { Button, Form, FormItem, Input, useForm } from 'animal-island-ui';
+import PortalGate from '../components/PortalGate.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { toastSuccess, toastApiError } from '../components/toast.js';
 
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,32}$/;
 
+// 注册门面:与登录同一座办事大厅(variant=wide,综合窗口加高),表单逻辑不变。
 export default function Register() {
   const { t } = useTranslation();
   const { register, user } = useAuth();
@@ -37,14 +37,10 @@ export default function Register() {
   };
 
   return (
-    <AuthLayout width={440}>
-      {/* 注册页同样需要语言入口:未登录用户无法从顶栏切换。 */}
-      <div className="setup-language">
-        <LanguageSelect />
-      </div>
-      <Card>
-        <h1 className="page-title"><Title size="middle" color="brown">{t('auth.registerTitle')}</Title></h1>
-        <p className="muted-text auth-subtitle">{t('auth.registerSubtitle')}</p>
+    <PortalGate variant="wide" badge={t('gate.counterBadge')}>
+      <div className="gate-counter-inner">
+        <h2 className="gate-counter-title">{t('auth.registerTitle')}</h2>
+        <p className="gate-counter-sub">{t('auth.registerSubtitle')}</p>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <FormItem
             name="username"
@@ -63,7 +59,11 @@ export default function Register() {
           >
             <Input size="large" placeholder={t('auth.displayNamePlaceholder')} allowClear maxLength={40} />
           </FormItem>
-          <FormItem name="email" label={`${t('auth.email')}(${t('common.optional')})`} rules={[{ type: 'email', message: t('api.VALIDATION_ERROR') }]}>
+          <FormItem
+            name="email"
+            label={`${t('auth.email')}(${t('common.optional')})`}
+            rules={[{ type: 'email', message: t('api.VALIDATION_ERROR') }]}
+          >
             <Input size="large" type="email" placeholder={t('auth.emailPlaceholder')} allowClear />
           </FormItem>
           <FormItem
@@ -96,10 +96,10 @@ export default function Register() {
             </Button>
           </FormItem>
         </Form>
-        <div className="auth-links">
+        <div className="gate-counter-link">
           <Link to="/login">{t('auth.toLogin')}</Link>
         </div>
-      </Card>
-    </AuthLayout>
+      </div>
+    </PortalGate>
   );
 }

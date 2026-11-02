@@ -95,6 +95,7 @@ h3 {
 /* hero 标题:28px/800,不随页面标题降档 */
 .nl-hero h1.page-title,
 .portal-hero .page-title,
+.gate-hero .page-title,
 .visa-hero .page-title,
 .docs-home-hero .page-title,
 .im-hero .page-title,
@@ -368,7 +369,6 @@ html {
   background: var(--animal-primary-color-bg);
 }
 
-
 .sider-link.active,
 .sider-sublink.active {
   color: var(--animal-text-color);
@@ -421,7 +421,6 @@ html {
   }
 }
 
-
 /* 账号操作条:基础间距 10px。必须写在下面的 @media 之前 —— 同特异性的后续声明
    会盖掉媒体查询里的值(.header-right 的窄屏 gap 曾因此长期失效)。 */
 .header-right,
@@ -455,7 +454,6 @@ html {
     padding-right: 8px;
   }
 }
-
 
 .visa-admin-detail-head,
 .docs-cert-title,
@@ -695,7 +693,6 @@ html {
   }
 }
 
-
 /* 共享多行输入(src/components/TextArea.jsx):库内没有 Textarea 组件,外观统一由
    `.nl-textarea` 提供令牌化样式;署内需要差异时再在组件上追加自己的类名覆盖。 */
 .nl-textarea {
@@ -868,43 +865,277 @@ html {
   }
 }
 
+/* ---------- portal gate(登录门面)---------- */
 
-/* ---------- auth ---------- */
-
-.auth-card {
-  max-width: 100%;
+.gate {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--animal-bg-color);
 }
 
-.auth-subtitle {
-  margin: 4px 0 20px;
+.gate-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--animal-border-color-light);
 }
 
-.auth-links {
-  margin-top: 8px;
+.gate-emblem {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--animal-primary-color-bg);
+  border: 2px solid var(--animal-primary-color);
+  color: var(--animal-text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.gate-country {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--animal-text-color);
+}
+
+.gate-topbar-lang {
+  margin-left: auto;
+}
+
+.gate-hero {
+  padding: 26px 32px 20px;
+}
+
+.gate-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gate-tagline {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+}
+
+.gate-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 32px 28px;
+}
+
+.gate-hall {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: minmax(150px, auto);
+}
+
+.gate-hall--login {
+  grid-template-areas:
+    'w1 w2 w3 w4 gate gate'
+    'w5 w6 w7 w8 gate gate'
+    'w9 w10 w11 w12 w12 w12';
+}
+
+.gate-hall--wide {
+  grid-template-areas:
+    'w1 w2 w3 gate gate gate'
+    'w4 w5 w6 gate gate gate'
+    'w7 w8 w9 gate gate gate'
+    'w10 w11 w12 motto motto motto';
+}
+
+.gate-counter {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--animal-primary-color-bg);
+  border: 2px solid var(--animal-primary-color);
+  border-radius: 24px;
+  padding: 24px 28px;
+}
+
+.gate-counter-inner {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.gate-counter-badge {
+  align-self: flex-start;
+  background: var(--animal-bg-color);
+  border: 1.5px solid var(--animal-primary-color);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--animal-text-color);
+}
+
+.gate-counter-title {
+  margin: 14px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--animal-text-color);
+}
+
+.gate-counter-sub {
+  margin: 4px 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+}
+
+.gate-counter-link {
+  margin-top: 14px;
   text-align: center;
 }
 
-.auth-links a {
+.gate-counter-link a {
   color: var(--animal-text-color);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   text-decoration: underline;
 }
 
-.auth-links a:hover,
-.service-url:hover,
-.im-link:hover,
-.res-link:hover {
-  text-decoration: underline;
-}
-
-/* ---------- first-run setup ---------- */
-
-.setup-language {
+.gate-window {
+  min-width: 0;
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--animal-bg-color-secondary);
+  border: 1.5px solid var(--animal-border-color-light);
+  border-radius: 18px;
+  padding: 14px 16px;
 }
+
+.gate-window-no {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--animal-text-color-secondary);
+}
+
+.gate-window-name {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gate-window-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--animal-primary-color-bg);
+  color: var(--animal-text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.gate-window-name-text {
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.gate-motto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--animal-border-color);
+  border-radius: 18px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--animal-text-color);
+}
+
+.gate-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  border-top: 1px solid var(--animal-border-color-light);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+}
+
+/* 桌面 ≤1200px:柜台离开网格居中,窗口房退到柜台下方排 4 列 */
+@media (max-width: 1200px) {
+  .gate-hall {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .gate-hall--login,
+  .gate-hall--wide {
+    grid-template-areas: none;
+  }
+
+  /* 小屏模板弃用命名区域,内联 gridArea 一并用 auto 放开 */
+  .gate-counter,
+  .gate-window,
+  .gate-motto {
+    grid-area: auto !important;
+  }
+
+  .gate-counter {
+    grid-column: 1 / -1 !important;
+    max-width: 640px;
+    width: 100%;
+    justify-self: center;
+  }
+
+  .gate-hall {
+    align-content: start;
+  }
+
+  .gate-motto {
+    grid-column: span 2;
+  }
+}
+
+/* ≤640px:两列窗口,页面留白收到 16px */
+@media (max-width: 640px) {
+  .gate-topbar,
+  .gate-hero,
+  .gate-main,
+  .gate-foot {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .gate-hero {
+    padding-top: 20px;
+    padding-bottom: 14px;
+  }
+
+  .gate-hall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gate-counter {
+    padding: 20px 18px;
+  }
+}
+/* ---------- first-run setup ---------- */
 
 .setup-head {
   display: flex;
@@ -1343,7 +1574,6 @@ html {
   margin-left: 6px;
 }
 
-
 .visa-section,
 .res-fraud-card {
   margin-top: 22px;
@@ -1441,7 +1671,6 @@ html {
   gap: 6px;
   flex-wrap: wrap;
 }
-
 
 .visa-guide-card :is(h3, h4),
 .appeal-stats-table h4 {
@@ -1833,7 +2062,6 @@ html {
   font-size: 12px;
   color: var(--animal-text-color-muted);
 }
-
 
 .evisa-grid {
   display: grid;
@@ -2682,7 +2910,6 @@ body.docs-printing .doc-cert {
     box-shadow: none;
   }
 }
-
 
 /* verify */
 
@@ -3826,7 +4053,6 @@ body.docs-printing .doc-cert {
   }
 }
 
-
 /* ---------- 奶龙国皇家居民登记署 (resident service) ---------- */
 
 .res-page,
@@ -4410,7 +4636,6 @@ body.docs-printing .doc-cert {
   }
 }
 
-
 .appeal-hero-counts {
   margin-top: 14px;
   font-size: 13px;
@@ -4541,7 +4766,6 @@ body.docs-printing .doc-cert {
     grid-template-columns: 1fr;
   }
 }
-
 
 .appeal-list {
   list-style: none;
@@ -4959,7 +5183,6 @@ body.docs-printing .doc-cert {
   }
 }
 
-
 /* ---------- 各署统计卡:容器间距与「不可用」 ----------
    字号/字重/颜色的收敛规则已并入上面的统计卡一组(父级类选择器保证特异性)。 */
 
@@ -5013,7 +5236,6 @@ h1.page-title [class*="animal-ribbon-"],
     padding: 24px 16px;
   }
 }
-
 
 /* ---------- dialog actions ---------- */
 

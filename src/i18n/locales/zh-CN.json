@@ -147,6 +147,13 @@
     "confirmRule": "两次输入的密码不一致",
     "emailPlaceholder": "请输入邮箱地址"
   },
+  "gate": {
+    "country": "奶龙国 · 国家门户",
+    "welcome": "欢迎来到",
+    "counterBadge": "综合窗口",
+    "windowLabel": "窗口",
+    "motto": "一个身份，十二个窗口"
+  },
   "setup": {
     "checking": "正在检查首次启动状态…",
     "badge": "首次启动",
