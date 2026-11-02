@@ -48,7 +48,9 @@
     "loadFailed": "站內信載入失敗",
     "fallbackTitle": "你有一則新訊息",
     "fallbackBody": "請前往對應服務查看詳情。",
-    "allOffices": "全部署"
+    "allOffices": "全部署",
+    "today": "今天",
+    "yesterday": "昨天"
   },
   "common": {
     "actions": "操作",
@@ -145,7 +147,15 @@
     "passwordRule": "密碼為8-72位字元",
     "emailRule": "請填寫有效的電子郵件地址",
     "confirmRule": "兩次輸入的密碼不一致",
-    "emailPlaceholder": "請輸入電子郵件地址"
+    "emailPlaceholder": "請輸入電子郵件地址",
+    "pwCheck": {
+      "length": "至少8位",
+      "letter": "包含英文字母",
+      "digit": "包含數字",
+      "match": "兩次輸入一致",
+      "mismatch": "兩次輸入不一致"
+    },
+    "optionalFields": "選填資訊"
   },
   "gate": {
     "country": "奶龍國 · 國家門戶",
@@ -843,14 +853,14 @@
       "reapply": "重新申請",
       "print": "列印 / 匯出PDF",
       "nextStep": {
-      "draft": "這是一份草稿，填完資訊即可提交。",
-      "pending_review": "署員正在審核，結果會透過站內信通知你。",
-      "supplement_required": "請在補件卡填寫說明並提交，逾期申請會自動關閉。",
-      "approved": "審核已通過，電子簽註簽發後會出現在「我的許可」。",
-      "issued": "電子簽註已簽發，可在「我的許可」查看、列印並去口岸通關。",
-      "rejected": "按駁回原因調整後，可以重新申請。",
-      "closed": "申請已關閉，可按原類型重新申請。",
-      "withdrawn": "申請已撤銷，需要時可以重新發起。"
+        "draft": "這是一份草稿，填完資訊即可提交。",
+        "pending_review": "署員正在審核，結果會透過站內信通知你。",
+        "supplement_required": "請在補件卡填寫說明並提交，逾期申請會自動關閉。",
+        "approved": "審核已通過，電子簽註簽發後會出現在「我的許可」。",
+        "issued": "電子簽註已簽發，可在「我的許可」查看、列印並去口岸通關。",
+        "rejected": "按駁回原因調整後，可以重新申請。",
+        "closed": "申請已關閉，可按原類型重新申請。",
+        "withdrawn": "申請已撤銷，需要時可以重新發起。"
       }
     },
     "permit": {
@@ -1250,7 +1260,8 @@
         "approved": "認證已通過，電子文書已發放，可在「我的證書」查看。",
         "rejected": "按不予認證原因調整後，可以重新申請。",
         "withdrawn": "申請已撤銷，需要時可以重新發起。"
-      },      "withdraw": "撤銷申請",
+      },
+      "withdraw": "撤銷申請",
       "withdrawConfirmTitle": "撤銷認證申請",
       "withdrawConfirmBody": "確定撤銷申請{{no}}嗎？撤銷後不可恢復，如需認證請重新申請。",
       "withdrawn": "申請已撤銷",
@@ -4419,7 +4430,7 @@
       "submitSupplement": "提交補件",
       "supplementDone": "補件已提交",
       "supplementDeadline": "補件截止",
-            "withdraw": "撤回申訴",
+      "withdraw": "撤回申訴",
       "withdrawDone": "申訴已撤回",
       "evaluate": "評價處理結果",
       "evaluateTitle": "服務評價",
@@ -6620,7 +6631,7 @@
     "title": "使用居民證資訊",
     "body": "偵測到你持有有效居民證{{cardNo}}，是否用居民證持卡人資訊預填本表單？",
     "bodyNoFields": "偵測到你持有有效居民證{{cardNo}}，但本表單沒有可預填的欄位，請手動填寫。",
-        "nothing": "居民證沒有可直接預填的欄位，請手動填寫",
+    "nothing": "居民證沒有可直接預填的欄位，請手動填寫",
     "holder": "持卡人{{name}}",
     "type": "類型{{type}}",
     "validUntil": "有效期至{{date}}",

@@ -1135,6 +1135,68 @@ html {
     padding: 20px 18px;
   }
 }
+.pw-check {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 12px;
+}
+
+.pw-check li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--animal-text-color-secondary);
+}
+
+.pw-check li svg {
+  flex: none;
+}
+
+.pw-check li.pass {
+  color: color-mix(in srgb, var(--animal-success-color) 30%, var(--animal-text-color));
+}
+
+.pw-check li.err {
+  color: color-mix(in srgb, var(--animal-error-color) 40%, var(--animal-text-color));
+}
+
+.pw-check-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+}
+
+.form-optional-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 4px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--animal-border-color);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--animal-text-color-secondary);
+}
+
+.inbox-day {
+  margin: 6px 0 2px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--animal-text-color-secondary);
+}
+
+.inbox-day-group + .inbox-day-group .inbox-day {
+  margin-top: 14px;
+}
+
 /* ---------- first-run setup ---------- */
 
 .setup-head {

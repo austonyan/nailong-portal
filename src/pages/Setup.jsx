@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Form, FormItem, Input, Progress, Tag, useForm } from 'animal-island-ui';
 import { CheckCircleIcon, KeyIcon, LockIcon, ShieldIcon } from 'naive-icons';
 import PortalGate from '../components/PortalGate.jsx';
+import PasswordChecklist from '../components/PasswordChecklist.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { useSetup } from '../setup/SetupContext.jsx';
 import { toastSuccess, toastError, toastApiError } from '../components/toast.js';
@@ -26,6 +27,7 @@ export default function Setup() {
   const [step, setStep] = useState('welcome');
   const [draft, setDraft] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [pw, setPw] = useState({ password: '', confirm: '' });
 
   useEffect(() => {
     if (step === 'account' && draft) form.setFieldsValue(draft);
@@ -130,7 +132,14 @@ export default function Setup() {
         )}
 
         {step === 'account' && (
-          <Form form={form} layout="vertical" requiredMark initialValues={draft ?? undefined} onFinish={finishAccount}>
+          <Form
+            form={form}
+            layout="vertical"
+            requiredMark
+            initialValues={draft ?? undefined}
+            onFinish={finishAccount}
+            onValuesChange={(_, all) => setPw({ password: all.password || '', confirm: all.confirmPassword || '' })}
+          >
             <FormItem
               name="username"
               label={t('auth.username')}
@@ -184,6 +193,15 @@ export default function Setup() {
             >
               <Input size="large" type="password" placeholder={t('setup.passwordHint')} autoComplete="new-password" />
             </FormItem>
+            <PasswordChecklist
+              value={pw.password}
+              confirm={pw.confirm}
+              rules={[
+                { key: 'length', label: t('auth.pwCheck.length'), test: (v) => v.length >= 8 },
+                { key: 'letter', label: t('auth.pwCheck.letter'), test: (v) => /[A-Za-z]/.test(v) },
+                { key: 'digit', label: t('auth.pwCheck.digit'), test: (v) => /[0-9]/.test(v) },
+              ]}
+            />
             <FormItem
               name="confirmPassword"
               label={t('auth.confirmPassword')}

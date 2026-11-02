@@ -187,6 +187,38 @@ export default function InboxDrawer() {
     return [...set];
   }, [offices, office]);
 
+  // 各署未读数(byOffice 行的 office 键):筛选签上直接亮出未读量,
+  // 不点开抽屉也知道未读堆在哪个署;筛选到某署时「全部标已读」按钮同源。
+  const unreadByOffice = useMemo(() => {
+    const map = new Map();
+    (unread.byOffice || []).forEach((row) => map.set(row.office, row.unread || 0));
+    return map;
+  }, [unread.byOffice]);
+
+  // 信息流按日分组:今天/昨天有名字,更早给日期;服务端按时间倒序,组头天然有序。
+  const dayGroups = useMemo(() => {
+    const today = dayjs().format('YYYY-MM-DD');
+    const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+    const groups = [];
+    let current = null;
+    items.forEach((item) => {
+      const day = item.createdAt ? dayjs(item.createdAt).format('YYYY-MM-DD') : '';
+      const label = !day
+        ? ''
+        : day === today
+          ? t('inbox.today')
+          : day === yesterday
+            ? t('inbox.yesterday')
+            : day;
+      if (!current || current.label !== label) {
+        current = { label, items: [] };
+        groups.push(current);
+      }
+      current.items.push(item);
+    });
+    return groups;
+  }, [items, t]);
+
   // 筛选项用 Button(Tag 不透传 aria-pressed):原生 button 天然可键盘聚焦、
   // 回车触发,aria-pressed 让读屏能报出当前选中的筛选项。
   const filterChip = (label, selected, onSelect, key) => (
@@ -255,14 +287,17 @@ export default function InboxDrawer() {
           </div>
           <div className="inbox-filters" role="group" aria-label={t('inbox.filterOffice')}>
             {filterChip(t('inbox.allOffices'), !office, () => setOffice(''))}
-            {officeChips.map((key) =>
-              filterChip(
-                officeLabel(t, { office: key }),
+            {officeChips.map((key) => {
+              const officeUnread = unreadByOffice.get(key) || 0;
+              return filterChip(
+                officeUnread > 0
+                  ? `${officeLabel(t, { office: key })} ${officeUnread}`
+                  : officeLabel(t, { office: key }),
                 office === key,
                 () => setOffice(office === key ? '' : key),
                 key,
-              ),
-            )}
+              );
+            })}
           </div>
         </div>
 
@@ -279,31 +314,36 @@ export default function InboxDrawer() {
 
         {!loading && !failed && items.length > 0 && (
           <div className="inbox-list">
-            {items.map((item) => {
-              const text = messageText(t, item);
-              return (
-                <Card
-                  key={`${item.office}:${item.id}`}
-                  className={`inbox-item${item.read ? '' : ' unread'}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${officeLabel(t, item)} · ${text.title} · ${t(item.read ? 'common.readState' : 'common.unreadState')}`}
-                  onClick={() => openMessage(item)}
-                  onKeyDown={(e) => openByKey(e, item)}
-                >
-                  <div className="inbox-item-head">
-                    <Tag size="small" variant="soft" color="app-teal">{officeLabel(t, item)}</Tag>
-                    {!item.read && <span className="inbox-dot" aria-hidden="true" />}
-                    {!item.read && <span className="muted-text inbox-time">{t('common.unreadState')}</span>}
-                    <span className="muted-text inbox-time">
-                      {item.createdAt ? dayjs(item.createdAt).format('YYYY-MM-DD HH:mm') : ''}
-                    </span>
-                  </div>
-                  <div className="inbox-item-title">{text.title}</div>
-                  {text.body && <p className="inbox-item-body">{text.body}</p>}
-                </Card>
-              );
-            })}
+            {dayGroups.map((group) => (
+              <div className="inbox-day-group" key={group.label || 'nodate'}>
+                {group.label && <div className="inbox-day">{group.label}</div>}
+                {group.items.map((item) => {
+                  const text = messageText(t, item);
+                  return (
+                    <Card
+                      key={`${item.office}:${item.id}`}
+                      className={`inbox-item${item.read ? '' : ' unread'}`}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${officeLabel(t, item)} · ${text.title} · ${t(item.read ? 'common.readState' : 'common.unreadState')}`}
+                      onClick={() => openMessage(item)}
+                      onKeyDown={(e) => openByKey(e, item)}
+                    >
+                      <div className="inbox-item-head">
+                        <Tag size="small" variant="soft" color="app-teal">{officeLabel(t, item)}</Tag>
+                        {!item.read && <span className="inbox-dot" aria-hidden="true" />}
+                        {!item.read && <span className="muted-text inbox-time">{t('common.unreadState')}</span>}
+                        <span className="muted-text inbox-time">
+                          {item.createdAt ? dayjs(item.createdAt).format('YYYY-MM-DD HH:mm') : ''}
+                        </span>
+                      </div>
+                      <div className="inbox-item-title">{text.title}</div>
+                      {text.body && <p className="inbox-item-body">{text.body}</p>}
+                    </Card>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         )}
       </Drawer>

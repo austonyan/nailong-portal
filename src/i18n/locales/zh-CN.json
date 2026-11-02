@@ -48,7 +48,9 @@
     "loadFailed": "站内信加载失败",
     "fallbackTitle": "你有一条新消息",
     "fallbackBody": "请前往对应服务查看详情。",
-    "allOffices": "全部署"
+    "allOffices": "全部署",
+    "today": "今天",
+    "yesterday": "昨天"
   },
   "common": {
     "actions": "操作",
@@ -145,7 +147,15 @@
     "passwordRule": "密码为8-72位字符",
     "emailRule": "请填写有效的邮箱地址",
     "confirmRule": "两次输入的密码不一致",
-    "emailPlaceholder": "请输入邮箱地址"
+    "emailPlaceholder": "请输入邮箱地址",
+    "pwCheck": {
+      "length": "至少8位",
+      "letter": "包含英文字母",
+      "digit": "包含数字",
+      "match": "两次输入一致",
+      "mismatch": "两次输入不一致"
+    },
+    "optionalFields": "选填信息"
   },
   "gate": {
     "country": "奶龙国 · 国家门户",
@@ -843,14 +853,14 @@
       "reapply": "重新申请",
       "print": "打印 / 导出PDF",
       "nextStep": {
-      "draft": "这是一份草稿，填完信息即可提交。",
-      "pending_review": "署员正在审核，结果会通过站内信通知你。",
-      "supplement_required": "请在补件卡填写说明并提交，逾期申请会自动关闭。",
-      "approved": "审核已通过，电子签注签发后会出现在「我的许可」。",
-      "issued": "电子签注已签发，可在「我的许可」查看、打印并去口岸通关。",
-      "rejected": "按驳回原因调整后，可以重新申请。",
-      "closed": "申请已关闭，可按原类型重新申请。",
-      "withdrawn": "申请已撤销，需要时可以重新发起。"
+        "draft": "这是一份草稿，填完信息即可提交。",
+        "pending_review": "署员正在审核，结果会通过站内信通知你。",
+        "supplement_required": "请在补件卡填写说明并提交，逾期申请会自动关闭。",
+        "approved": "审核已通过，电子签注签发后会出现在「我的许可」。",
+        "issued": "电子签注已签发，可在「我的许可」查看、打印并去口岸通关。",
+        "rejected": "按驳回原因调整后，可以重新申请。",
+        "closed": "申请已关闭，可按原类型重新申请。",
+        "withdrawn": "申请已撤销，需要时可以重新发起。"
       }
     },
     "permit": {
@@ -1250,7 +1260,8 @@
         "approved": "认证已通过，电子文书已发放，可在「我的证书」查看。",
         "rejected": "按不予认证原因调整后，可以重新申请。",
         "withdrawn": "申请已撤销，需要时可以重新发起。"
-      },      "withdraw": "撤销申请",
+      },
+      "withdraw": "撤销申请",
       "withdrawConfirmTitle": "撤销认证申请",
       "withdrawConfirmBody": "确定撤销申请{{no}}吗？撤销后不可恢复，如需认证请重新申请。",
       "withdrawn": "申请已撤销",
@@ -4419,7 +4430,7 @@
       "submitSupplement": "提交补件",
       "supplementDone": "补件已提交",
       "supplementDeadline": "补件截止",
-            "withdraw": "撤回申诉",
+      "withdraw": "撤回申诉",
       "withdrawDone": "申诉已撤回",
       "evaluate": "评价处理结果",
       "evaluateTitle": "服务评价",
@@ -6620,7 +6631,7 @@
     "title": "使用居民证信息",
     "body": "检测到你持有有效居民证{{cardNo}}，是否用居民证持卡人信息预填本表单？",
     "bodyNoFields": "检测到你持有有效居民证{{cardNo}}，但本表单没有可预填的字段，请手动填写。",
-        "nothing": "居民证没有可直接预填的字段，请手动填写",
+    "nothing": "居民证没有可直接预填的字段，请手动填写",
     "holder": "持卡人{{name}}",
     "type": "类型{{type}}",
     "validUntil": "有效期至{{date}}",
