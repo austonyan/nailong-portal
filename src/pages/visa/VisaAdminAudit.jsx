@@ -5,7 +5,7 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { fmtDateTime, toastVisaError } from './shared.jsx';
+import { fmtDateTime } from './shared.jsx';
 
 const AUDIT_ACTION_COLORS = {
   approve_application: 'app-green',
@@ -19,8 +19,8 @@ const AUDIT_ACTION_COLORS = {
 
 export default function VisaAdminAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [action, setAction] = useState('');
 
   const load = useCallback(async function loadFn() {
@@ -30,7 +30,6 @@ export default function VisaAdminAudit() {
       const data = await api.get(`/visa/admin/audit${params}`);
       setItems(data.items);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

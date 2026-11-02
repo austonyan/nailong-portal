@@ -22,8 +22,8 @@ const STATUS_COLORS = {
 // 认证审核工作台: 队列隔离,认证员只处理文书认证队列。
 export default function DocsReview() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('pending,supplementing');
@@ -58,7 +58,6 @@ export default function DocsReview() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -135,9 +134,7 @@ export default function DocsReview() {
     <div>
       <div className="page-header">
         <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.review.title')}</Title></h1>
-      </div>
-      <Card className="docs-filter-card">
-        <div className="docs-filter-row">
+        <div className="docs-filter-row docs-filter-inline">
           <Select
             value={status}
             onChange={(v) => {
@@ -159,12 +156,16 @@ export default function DocsReview() {
             }}
             options={[{ key: 'all', label: t('docs.filter.allTypes') }, ...types.map((tp) => ({ key: tp.code, label: tp.name }))]}
           />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.admin.review.searchPh')} allowClear />
-          <Button type="primary" icon={<SearchIcon />} onClick={() => { setPage(1); load(); }}>
-            {t('common.search')}
-          </Button>
+          <Input
+            size="middle"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t('docs.admin.review.searchPh')}
+            prefix={<SearchIcon size={14} />}
+            allowClear
+          />
         </div>
-      </Card>
+      </div>
 
       <Card>
         <Table className="table-fit"

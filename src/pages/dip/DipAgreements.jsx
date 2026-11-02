@@ -12,8 +12,8 @@ const FAQ_KEYS = ['effect', 'fee', 'reality'];
 
 export default function DipAgreements() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [code, setCode] = useState('');
   const [result, setResult] = useState(null);
 
@@ -23,7 +23,6 @@ export default function DipAgreements() {
       .get('/dip/agreements')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastDipError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

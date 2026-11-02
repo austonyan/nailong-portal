@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
-import { SearchIcon } from 'naive-icons';
+import { Title, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { api } from '../../../api/client.js';
-import { toastError } from '../../../components/toast.js';
+
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 import { fmtDateTime } from '../../../lib/date.js';
 
@@ -41,8 +40,8 @@ const DETAIL_FIELDS = {
 
 export default function DocsAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [action, setAction] = useState('');
@@ -93,7 +92,6 @@ export default function DocsAudit() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -133,16 +131,23 @@ export default function DocsAudit() {
     <div>
       <div className="page-header">
         <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.audit.title')}</Title></h1>
-      </div>
-      <Card className="docs-filter-card">
-        <div className="docs-filter-row">
-          <Input value={action} onChange={(e) => setAction(e.target.value)} placeholder={t('docs.admin.audit.actionPh')} allowClear />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.admin.audit.targetPh')} allowClear />
-          <Button type="primary" icon={<SearchIcon />} onClick={() => { setPage(1); load(); }}>
-            {t('common.search')}
-          </Button>
+        <div className="docs-filter-row docs-filter-inline">
+          <Input
+            size="middle"
+            value={action}
+            onChange={(e) => setAction(e.target.value)}
+            placeholder={t('docs.admin.audit.actionPh')}
+            allowClear
+          />
+          <Input
+            size="middle"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t('docs.admin.audit.targetPh')}
+            allowClear
+          />
         </div>
-      </Card>
+      </div>
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />
         {total > pageSize && (

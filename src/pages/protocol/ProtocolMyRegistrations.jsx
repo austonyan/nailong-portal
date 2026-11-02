@@ -28,10 +28,10 @@ function cardKeyDown(handler) {
 
 export default function ProtocolMyRegistrations() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const { id } = useParams();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [detail, setDetail] = useState(null);
   const [cancelTarget, setCancelTarget] = useState(null);
   const [reason, setReason] = useState('');
@@ -43,7 +43,6 @@ export default function ProtocolMyRegistrations() {
       const data = await api.get('/protocol/registrations');
       setItems(data.items);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

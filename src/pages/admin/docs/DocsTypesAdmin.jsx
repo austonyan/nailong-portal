@@ -29,21 +29,19 @@ function ListEditor({ labelKey, rows, setRows, makeEmpty, columns }) {
 
 export default function DocsTypesAdmin() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null); // null | {} create | type object
   const [form, setForm] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [fields, setFields] = useState([]);
   const [busy, setBusy] = useState(false);
-    loadError.clear();
-
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const d = await api.get('/docs/admin/types');
       setItems(d.items);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

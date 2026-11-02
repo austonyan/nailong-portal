@@ -24,9 +24,9 @@ const IDENTITY_OPTIONS = ['ordinary', 'resident', 'diplomatic', 'foreign'];
 
 export default function AdminProtocolReview() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const { can } = useAuth();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('pending_review');
@@ -51,7 +51,6 @@ export default function AdminProtocolReview() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

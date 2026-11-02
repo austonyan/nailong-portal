@@ -6,7 +6,7 @@ import { Title, Button, Card, Pagination, Select, Table, Tag } from 'animal-isla
 import { BellIcon, EyeIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
 import { CERT_STATUS_COLORS } from '../../api/docs.js';
-import { toastError } from '../../components/toast.js';
+
 import { fmtDate } from '../../lib/date.js';
 
 const STATUS_OPTIONS = ['all', 'valid', 'used', 'expired', 'revoked'];
@@ -16,9 +16,9 @@ const STATUS_COLORS = { ...CERT_STATUS_COLORS, expired: 'brown' };
 
 export default function DocsCertificates() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('all');
@@ -31,7 +31,6 @@ export default function DocsCertificates() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

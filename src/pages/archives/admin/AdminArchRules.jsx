@@ -10,8 +10,8 @@ import { toastSuccess } from '../../../components/toast.js';
 
 export default function AdminArchRules() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null);
   const [included, setIncluded] = useState(true);
   const [retention, setRetention] = useState('');
@@ -25,7 +25,6 @@ export default function AdminArchRules() {
       .get('/archives/admin/rules')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastArchError(err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

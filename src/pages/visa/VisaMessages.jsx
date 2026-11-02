@@ -24,9 +24,9 @@ const MESSAGE_COLORS = {
 
 export default function VisaMessages() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [archivedView, setArchivedView] = useState(false);
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [unread, setUnread] = useState(0);
 
   const load = useCallback(async function loadFn() {
@@ -36,7 +36,6 @@ export default function VisaMessages() {
       setItems(data.items);
       setUnread(data.unread);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

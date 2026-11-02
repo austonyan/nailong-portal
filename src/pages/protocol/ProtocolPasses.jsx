@@ -10,9 +10,9 @@ import { PASS_STATUS_COLORS, ProtocolQr, StatusTag, downloadProtocolFile, fmtDat
 
 export default function ProtocolPasses() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
 
   const load = useCallback(function loadFn() {
     loadError.clear();
@@ -20,7 +20,6 @@ export default function ProtocolPasses() {
       .get('/protocol/passes')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastProtocolError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

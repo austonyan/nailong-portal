@@ -12,8 +12,8 @@ const LEVEL_COLORS = { info: 'app-red', policy: 'app-teal', event: 'app-blue' };
 
 export default function DocsNotices() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null); // null | {} | notice
   const [form, setForm] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -26,7 +26,6 @@ export default function DocsNotices() {
       const d = await api.get('/docs/admin/notices');
       setItems(d.items);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

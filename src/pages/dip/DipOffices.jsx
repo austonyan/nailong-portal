@@ -9,18 +9,16 @@ import { DipLevelTag, fmtDateTime, toastDipError } from '../../components/dip/sh
 
 export default function DipOffices() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [openCode, setOpenCode] = useState(null);
   const [detail, setDetail] = useState(null);
-    loadError.clear();
-
   const load = useCallback(function loadFn() {
+    loadError.clear();
     api
       .get('/dip/offices')
       .then((data) => setItems(data.items))
       .catch((err) => {
-        toastDipError(t, err);
         loadError.report(err, loadFn);
         setItems((prev) => prev ?? []);
       });

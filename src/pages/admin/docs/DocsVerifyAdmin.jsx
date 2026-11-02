@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
-import { Title, Button, Card, Input, Pagination, Progress, Select, Table, Tag } from 'animal-island-ui';
-import { AlertTriangleIcon, SearchIcon } from 'naive-icons';
+import { Title, Card, Input, Pagination, Progress, Select, Table, Tag } from 'animal-island-ui';
+import { AlertTriangleIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { toastError } from '../../../components/toast.js';
+
 import { useDebouncedValue } from '../../../lib/useDebouncedValue.js';
 import { fmtDateTime } from '../../../lib/date.js';
 
@@ -12,8 +12,8 @@ const RESULT_OPTIONS = ['all', 'found', 'found_self', 'not_found'];
 
 export default function DocsVerifyAdmin() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
@@ -31,7 +31,6 @@ export default function DocsVerifyAdmin() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -73,6 +72,26 @@ export default function DocsVerifyAdmin() {
     <div>
       <div className="page-header">
         <h1 className="page-title"><Title size="middle" color="brown">{t('docs.admin.verify.title')}</Title></h1>
+        <div className="docs-filter-row docs-filter-inline">
+          <Input
+            size="middle"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t('docs.admin.verify.searchPh')}
+            allowClear
+          />
+          <Select
+            value={result}
+            onChange={(v) => {
+              setResult(v);
+              setPage(1);
+            }}
+            options={RESULT_OPTIONS.map((r) => ({
+              key: r,
+              label: r === 'all' ? t('docs.filter.all') : t(`docs.verify.result.${r}`, { defaultValue: t('common.unknown') }),
+            }))}
+          />
+        </div>
       </div>
 
       {summary?.alerts?.length > 0 && (
@@ -109,16 +128,6 @@ export default function DocsVerifyAdmin() {
           </ul>
         </Card>
       </div>
-
-      <Card className="docs-filter-card">
-        <div className="docs-filter-row">
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('docs.admin.verify.searchPh')} allowClear />
-          <Select value={result} onChange={(v) => { setResult(v); setPage(1); }} options={RESULT_OPTIONS.map((r) => ({ key: r, label: r === 'all' ? t('docs.filter.all') : t(`docs.verify.result.${r}`, { defaultValue: t('common.unknown') }) }))} />
-          <Button type="primary" icon={<SearchIcon />} onClick={() => { setPage(1); load(); }}>
-            {t('common.search')}
-          </Button>
-        </div>
-      </Card>
 
       <Card>
         <Table className="table-fit" columns={columns} dataSource={items || []} rowKey="id" loading={items === null} emptyText={t('common.empty')} pagination={false} />

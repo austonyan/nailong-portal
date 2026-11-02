@@ -15,8 +15,8 @@ const DEFAULT_ENTRY_MODE = 'external';
 
 export default function AdminServices() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [services, setServices] = useState(null);
+  const loadError = useLoadError((services ?? []).length > 0);
   const [permissions, setPermissions] = useState([]);
   const [editing, setEditing] = useState(null); // {} | service | null
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -42,7 +42,6 @@ export default function AdminServices() {
     try {
       await Promise.all([loadServices(), api.get('/roles/permissions').then((d) => setPermissions(d.items))]);
     } catch (err) {
-      toastApiError(t, err);
       loadError.report(err, loadPageFn);
       setServices((prev) => prev ?? []);
     }

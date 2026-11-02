@@ -5,14 +5,14 @@ import { useLoadError } from '../../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Pagination, Table, Tag } from 'animal-island-ui';
 import { SearchIcon } from 'naive-icons';
 import { api } from '../../../api/client.js';
-import { fmtDateTime, toastPostError } from '../shared.jsx';
+import { fmtDateTime } from '../shared.jsx';
 
 const PAGE_SIZE = 30;
 
 export default function AdminPostAudit() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState('');
@@ -27,7 +27,6 @@ export default function AdminPostAudit() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastPostError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
       setTotal(0);

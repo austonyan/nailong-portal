@@ -13,9 +13,9 @@ const STATUS_FILTERS = ['', 'draft', 'pending_accept', 'accepted', 'processing',
 
 export default function AppealMyAppeals() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
   const [delTarget, setDelTarget] = useState(null);
@@ -28,7 +28,6 @@ export default function AppealMyAppeals() {
       const data = await api.get(status ? `/appeal/appeals?status=${status}` : '/appeal/appeals');
       setItems(data.items);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

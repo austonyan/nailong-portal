@@ -33,9 +33,9 @@ const MSG_ICONS = {
 
 export default function DocsMessages() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [box, setBox] = useState('inbox');
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -47,7 +47,6 @@ export default function DocsMessages() {
       setItems(d.items);
       setTotal(d.total);
     } catch (err) {
-      toastError(t(`api.${err.code}`, { defaultValue: t('api.INTERNAL_ERROR') }));
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

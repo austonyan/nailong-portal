@@ -12,8 +12,8 @@ import { useConfirmAction } from '../../components/ConfirmAction.jsx';
 
 function TypesTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null); // {} | type | null
   const [busy, setBusy] = useState(false);
     loadError.clear();
@@ -24,7 +24,6 @@ function TypesTab() {
       const data = await api.get('/visa/admin/types');
       setItems(data.items);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -199,8 +198,8 @@ function TypesTab() {
 
 function NoticesTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [editing, setEditing] = useState(null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -209,14 +208,12 @@ function NoticesTab() {
   const [level, setLevel] = useState('info');
   const [busy, setBusy] = useState(false);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
-    loadError.clear();
-
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/visa/admin/notices');
       setItems(data.items);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }
@@ -432,20 +429,18 @@ function ConfigTab() {
 
 function BlacklistTab() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [userId, setUserId] = useState('');
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const { confirm, dialog: confirmDialog } = useConfirmAction();
-    loadError.clear();
-
   const load = useCallback(async function loadFn() {
+    loadError.clear();
     try {
       const data = await api.get('/visa/admin/blacklist');
       setItems(data.items);
     } catch (err) {
-      toastVisaError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

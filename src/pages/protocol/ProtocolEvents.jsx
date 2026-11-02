@@ -6,7 +6,7 @@ import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Checkbox, Input, Pagination, Progress, Select, Tag } from 'animal-island-ui';
 import { CalendarIcon, HomeIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
-import { StatusTag, fmtDate, fmtDateTime, toastProtocolError } from './shared.jsx';
+import { StatusTag, fmtDate, fmtDateTime } from './shared.jsx';
 
 const PUBLIC_STATUSES = ['registration', 'registration_closed', 'ongoing', 'ended'];
 
@@ -22,10 +22,10 @@ function cardKeyDown(handler) {
 
 export default function ProtocolEvents() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [types, setTypes] = useState([]);
@@ -62,7 +62,6 @@ export default function ProtocolEvents() {
       // 避免用户停在空表且无法返回。
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

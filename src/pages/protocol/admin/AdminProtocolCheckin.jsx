@@ -10,12 +10,12 @@ import { toastSuccess } from '../shared.jsx';
 
 export default function AdminProtocolCheckin() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [passNo, setPassNo] = useState('');
   const [action, setAction] = useState('in');
   const [busy, setBusy] = useState(false);
   const [last, setLast] = useState(null);
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
@@ -32,7 +32,6 @@ export default function AdminProtocolCheckin() {
       setTotal(data.total);
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

@@ -26,8 +26,8 @@ const EMPTY_FORM = {
 
 export default function AdminResTypes() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
@@ -38,7 +38,6 @@ export default function AdminResTypes() {
       const data = await api.get('/resident/admin/types');
       setItems(data.items);
     } catch (err) {
-      toastResError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

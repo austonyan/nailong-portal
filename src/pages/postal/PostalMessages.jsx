@@ -2,6 +2,7 @@
 // 消息正文由 post.msg.<type> 渲染(管理端启用模板时优先用模板渲染结果)。
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLoadError } from '../../components/LoadErrorBanner.jsx';
 import { Title, Button, Card, Input, Pagination, Select, Tabs, Tag } from 'animal-island-ui';
 import { BellIcon, FolderPlusIcon, InboxIcon, SearchIcon } from 'naive-icons';
 import { api } from '../../api/client.js';
@@ -19,10 +20,12 @@ export default function PostalMessages() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [data, setData] = useState(null);
+  const loadError = useLoadError((data?.items ?? []).length > 0);
   const [selected, setSelected] = useState([]);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
+    loadError.clear();
     try {
       const params = new URLSearchParams({ box, page: String(page), pageSize: String(PAGE_SIZE), status });
       if (source) params.set('source', source);
@@ -30,10 +33,10 @@ export default function PostalMessages() {
       const result = await api.get(`/postal/messages?${params.toString()}`);
       setData(result);
     } catch (err) {
-      toastPostError(t, err);
-      setData({ items: [], total: 0, unread: 0, sources: [] });
+      loadError.report(err, load);
+      setData((prev) => prev ?? { items: [], total: 0, unread: 0, sources: [] });
     }
-  }, [box, page, query, source, status, t]);
+  }, [box, page, query, source, status, t, loadError]);
 
   useEffect(() => {
     setSelected([]);

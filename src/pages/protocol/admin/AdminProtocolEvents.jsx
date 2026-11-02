@@ -81,8 +81,8 @@ function dateAt(date, hour) {
 
 export default function AdminProtocolEvents() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
@@ -114,7 +114,6 @@ export default function AdminProtocolEvents() {
       // total 缩小后分页器消失但 page 仍 >1:夹回合法页码,避免空表卡死。
       if (rows.length === 0 && page > 1) setPage(Math.max(1, page - 1));
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

@@ -10,9 +10,9 @@ import { fmtDateTime, toastAppealError } from './shared.jsx';
 
 export default function AppealMessages() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const navigate = useNavigate();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [archived, setArchived] = useState(false);
   const [unread, setUnread] = useState(0);
 
@@ -23,7 +23,6 @@ export default function AppealMessages() {
       setItems(data.items);
       setUnread(data.unread);
     } catch (err) {
-      toastAppealError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

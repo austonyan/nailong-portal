@@ -22,9 +22,9 @@ const REASONS = ['info_missing', 'material_invalid', 'qualification', 'duplicate
 
 export default function AdminProtocolHosts() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const { can } = useAuth();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('pending_review');
@@ -50,7 +50,6 @@ export default function AdminProtocolHosts() {
       setItems(data.items);
       setTotal(data.total);
     } catch (err) {
-      toastProtocolError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

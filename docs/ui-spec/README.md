@@ -2,6 +2,8 @@
 
 **版本** 1.1.1 · **生效日期** 2026-10-30 · **适用** `src/` 全部 SPA 页面与 `animal-island-ui` 组合层
 
+> **平台状态（2026-11-02）：** 桌面优先——1440px 是验收基准，1024px 是最低桌面宽度；360px 移动端验收已排期延后，相关条目仅作 best-effort。
+
 > 这是**本项目自己的** UI 规范。`docs/design-system/` 描述的是上游组件库
 > [animal-island-ui](https://github.com/guokaigdg/animal-island-ui)，其中的部分数值已经落后于
 > 当前安装的 `animal-island-ui@2.3.0`；两者冲突时，以运行时包和本规范为准。

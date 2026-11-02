@@ -25,8 +25,8 @@ const STATUS_FILTERS = ['', 'draft', 'pending_review', 'published', 'offline'];
 
 export default function AdminEduArticles() {
   const { t } = useTranslation();
-  const loadError = useLoadError();
   const [items, setItems] = useState(null);
+  const loadError = useLoadError((items ?? []).length > 0);
   const [statusFilter, setStatusFilter] = useState('');
   const [q, setQ] = useState('');
   // 检索词 300ms 防抖:逐键输入不再每字打一次接口。
@@ -46,7 +46,6 @@ export default function AdminEduArticles() {
       const data = await api.get(`/education/admin/articles?${params.toString()}`);
       setItems(data.items ?? []);
     } catch (err) {
-      toastEduError(t, err);
       loadError.report(err, loadFn);
       setItems((prev) => prev ?? []);
     }

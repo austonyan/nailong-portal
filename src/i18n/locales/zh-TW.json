@@ -1390,7 +1390,7 @@
       },
       "review": {
         "title": "認證審核工作台",
-        "active": "待處理（pending+補件）",
+        "active": "待處理（待認證 + 補件中）",
         "queueEmpty": "佇列為空，喝杯椰子休息一下吧！",
         "review": "審核",
         "detailTitle": "申請詳情",
@@ -2601,6 +2601,7 @@
         "sortOrder": "排序"
       },
       "notices": {
+        "pageTitle": "通知管理",
         "title": "標題",
         "tabNotices": "公告",
         "tabTemplates": "訊息範本",
@@ -5763,6 +5764,7 @@
       "allStatus": "全部狀態",
       "searchPlaceholder": "搜尋編號、標題或關鍵字",
       "notices": {
+        "pageTitle": "公告管理",
         "title": "標題",
         "create": "新增公告",
         "edit": "編輯公告",
@@ -5954,6 +5956,7 @@
         "tip": "只有「已上線」的景點會出現在使用者端；下線不會刪除打卡紀錄。",
         "create": "新增景點",
         "edit": "編輯景點",
+        "detail": "景點詳情",
         "searchPlaceholder": "搜尋名稱或編號",
         "empty": "還沒有景點，先建一個吧",
         "namePlaceholder": "景點的簡體名稱",
@@ -6748,12 +6751,13 @@
   "residentPrefill": {
     "title": "使用居民證資訊",
     "body": "偵測到你持有有效居民證{{cardNo}}，是否用居民證持卡人資訊預填本表單？",
+    "bodyNoFields": "偵測到你持有有效居民證{{cardNo}}，但本表單沒有可預填的欄位，請手動填寫。",
+        "nothing": "居民證沒有可直接預填的欄位，請手動填寫",
     "holder": "持卡人{{name}}",
     "type": "類型{{type}}",
     "validUntil": "有效期至{{date}}",
     "fill": "使用居民證資訊",
     "skip": "暫不使用",
-    "nothing": "居民證沒有可直接預填的欄位，請手動填寫",
     "filled": "已從居民證預填"
   }
 }
