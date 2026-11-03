@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { Badge, Button, Card, Drawer, Tag } from 'animal-island-ui';
+import { Badge, Button, Card, Drawer, Select, Tag } from 'animal-island-ui';
 import { BellIcon } from 'naive-icons';
 import { api } from '../api/client.js';
 import { toastApiError, toastSuccess } from './toast.js';
@@ -242,6 +242,21 @@ export default function InboxDrawer() {
     }
   };
 
+  // 署别筛选收进一个 Select:十二个署的筛选签会把抽屉顶部挤成一堵墙,
+  // 状态筛选保持两个并列按钮,署别交给下拉。
+  const officeOptions = [
+    { key: 'all', label: t('inbox.allOffices') },
+    ...officeChips.map((key) => {
+      const officeUnread = unreadByOffice.get(key) || 0;
+      return {
+        key,
+        label: officeUnread > 0
+          ? `${officeLabel(t, { office: key })} ${officeUnread}`
+          : officeLabel(t, { office: key }),
+      };
+    }),
+  ];
+
   return (
     <>
       <Badge count={unread.total || 0} size="small">
@@ -276,7 +291,7 @@ export default function InboxDrawer() {
           </div>
         }
       >
-        <div className="inbox-toolbar">
+        <div className="inbox-toolbar inbox-toolbar--lean">
           <div className="inbox-filters" role="group" aria-label={t('inbox.filterStatus')}>
             {filterChip(t('inbox.all'), status === 'all', () => setStatus('all'))}
             {filterChip(
@@ -285,19 +300,13 @@ export default function InboxDrawer() {
               () => setStatus('unread'),
             )}
           </div>
-          <div className="inbox-filters" role="group" aria-label={t('inbox.filterOffice')}>
-            {filterChip(t('inbox.allOffices'), !office, () => setOffice(''))}
-            {officeChips.map((key) => {
-              const officeUnread = unreadByOffice.get(key) || 0;
-              return filterChip(
-                officeUnread > 0
-                  ? `${officeLabel(t, { office: key })} ${officeUnread}`
-                  : officeLabel(t, { office: key }),
-                office === key,
-                () => setOffice(office === key ? '' : key),
-                key,
-              );
-            })}
+          <div className="inbox-office-select">
+            <Select
+              aria-label={t('inbox.filterOffice')}
+              value={office || 'all'}
+              onChange={(value) => setOffice(value === 'all' ? '' : value)}
+              options={officeOptions}
+            />
           </div>
         </div>
 

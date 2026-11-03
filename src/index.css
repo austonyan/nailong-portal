@@ -539,6 +539,18 @@ html {
   font-size: 13px;
 }
 
+/* Saved from the notification-center distill pass: status stays as two chips,
+   office filtering lives in one Select so the toolbar reads as a single line. */
+.inbox-toolbar--lean {
+  flex-direction: row;
+  align-items: center;
+}
+
+.inbox-office-select {
+  flex: 1;
+  min-width: 0;
+}
+
 .inbox-list,
 .visa-verify-found,
 .visa-msg-list,
@@ -965,56 +977,6 @@ html {
   white-space: nowrap;
 }
 
-/* Twelve-office band: compact directory, one row on desktop. */
-.gate-band {
-  flex: none;
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 10px;
-  padding: 14px 40px;
-}
-
-.gate-band-chip {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-height: 62px;
-  padding: 8px 6px;
-  background: var(--animal-bg-color-secondary);
-  border: 1.5px solid var(--animal-border-color-light);
-  border-radius: 14px;
-  text-align: center;
-}
-
-.gate-band-no {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  color: var(--animal-text-color-secondary);
-}
-
-.gate-band-name {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--animal-text-color);
-  overflow-wrap: anywhere;
-}
-
-.gate-band-bar {
-  width: 22px;
-  height: 3px;
-  margin-top: 3px;
-  border-radius: 999px;
-  background: var(--animal-primary-color);
-}
-
-.gate-band-chip:nth-child(3n) .gate-band-bar {
-  background: var(--animal-warning-color);
-}
-
 /* Stage: dotted paper ground with one centered counter card. */
 .gate-stage {
   flex: 1;
@@ -1075,10 +1037,99 @@ html {
   text-decoration: underline;
 }
 
+/* Split counter: identity rail on the left, form body on the right. */
+.gate-card.gate-card--split {
+  display: grid;
+  grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+  width: 580px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gate-card.gate-card--split.gate-card--wide {
+  width: 680px;
+}
+
+.gate-card.gate-card--split .gc-split-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 30px 22px 24px;
+  background: var(--animal-bg-color-secondary);
+  border-right: 1px dashed var(--animal-border-color);
+}
+
+.gate-card.gate-card--split .gc-split-rail h2 {
+  margin: 0;
+  justify-content: flex-start;
+}
+
+.gate-card.gate-card--split .gc-split-rail .gate-card-sub {
+  margin: 0;
+}
+
+.gate-card.gate-card--split .gc-split-body {
+  padding: 30px 26px 24px;
+}
+
+.gate-card.gate-card--split .gc-split-body .gate-card-link {
+  margin-top: 14px;
+}
+
+/* Counter window: the twelve office names fade through the rail one at a time. */
+@keyframes gc-roll-fade {
+  0% { opacity: 0; }
+  2% { opacity: 1; }
+  8.33% { opacity: 1; }
+  11% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.gc-roll--fade {
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px dashed var(--animal-border-color);
+}
+
+.gc-roll--fade .gc-roll-stack {
+  position: relative;
+  height: 56px;
+}
+
+.gc-roll--fade .gc-roll-fade {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  animation: gc-roll-fade 36s linear infinite;
+  animation-delay: calc(var(--gc-i) * 3s);
+}
+
+.gc-roll--fade .gc-roll-name {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--animal-text-color);
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-roll--fade .gc-roll-fade {
+    animation: none;
+    opacity: 0;
+  }
+
+  .gc-roll--fade .gc-roll-fade:first-child {
+    opacity: 1;
+  }
+}
+
 .gate-foot {
   flex: none;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
   padding: 14px 40px;
@@ -1088,12 +1139,8 @@ html {
   color: var(--animal-text-color-secondary);
 }
 
-/* <=1200px: band drops to six columns, masthead keeps one row. */
+/* <=1200px: masthead keeps one row, portal tagline drops. */
 @media (max-width: 1200px) {
-  .gate-band {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
   .gate-mast-portal span {
     display: none;
   }
@@ -1118,13 +1165,8 @@ html {
   }
 }
 
-/* <=640px: four-column band, compact paddings. */
+/* <=640px: compact paddings, split card stacks. */
 @media (max-width: 640px) {
-  .gate-band {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding: 12px 16px;
-  }
-
   .gate-mast,
   .gate-stage,
   .gate-foot {
@@ -1143,6 +1185,15 @@ html {
 
   .gate-card {
     padding: 24px 20px 22px;
+  }
+
+  .gate-card.gate-card--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gate-card.gate-card--split .gc-split-rail {
+    border-right: 0;
+    border-bottom: 1px dashed var(--animal-border-color);
   }
 }
 
