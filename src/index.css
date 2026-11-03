@@ -95,7 +95,6 @@ h3 {
 /* hero 标题:28px/800,不随页面标题降档 */
 .nl-hero h1.page-title,
 .portal-hero .page-title,
-.gate-hero .page-title,
 .visa-hero .page-title,
 .docs-home-hero .page-title,
 .im-hero .page-title,
@@ -865,7 +864,7 @@ html {
   }
 }
 
-/* ---------- portal gate(登录门面)---------- */
+/* ---------- portal gate (national masthead) ---------- */
 
 .gate {
   min-height: 100vh;
@@ -874,327 +873,277 @@ html {
   background: var(--animal-bg-color);
 }
 
-.gate-topbar {
+/* National masthead: country + portal identity, motto pill, language. */
+.gate-mast {
+  flex: none;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 32px;
-  border-bottom: 1px solid var(--animal-border-color-light);
+  gap: 22px;
+  padding: 26px 40px;
+  background: var(--animal-bg-color-secondary);
+  border-bottom: 2px solid var(--animal-text-color-secondary);
 }
 
 .gate-emblem {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 16px;
   background: var(--animal-primary-color-bg);
   border: 2px solid var(--animal-primary-color);
   color: var(--animal-text-color);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: none;
 }
 
-.gate-country {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.gate-mast-country {
+  min-width: 0;
+}
+
+.gate-mast-country h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
   color: var(--animal-text-color);
 }
 
-.gate-topbar-lang {
-  margin-left: auto;
-}
-
-.gate-hero {
-  padding: 26px 32px 20px;
-}
-
-.gate-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.gate-tagline {
-  margin: 8px 0 0;
-  font-size: 14px;
-  font-weight: 500;
+.gate-mast-country p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
   color: var(--animal-text-color-secondary);
 }
 
-.gate-main {
-  flex: 1;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 24px 32px 28px;
+.gate-mast-rule {
+  width: 2px;
+  height: 58px;
+  flex: none;
+  background: var(--animal-text-color-secondary);
 }
 
-.gate-hall {
-  display: grid;
-  gap: 14px;
-  width: 100%;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-auto-rows: minmax(150px, auto);
-}
-
-.gate-hall--login {
-  grid-template-areas:
-    'w1 w2 w3 w4 gate gate'
-    'w5 w6 w7 w8 gate gate'
-    'w9 w10 w11 w12 w12 w12';
-}
-
-.gate-hall--wide {
-  grid-template-areas:
-    'w1 w2 w3 gate gate gate'
-    'w4 w5 w6 gate gate gate'
-    'w7 w8 w9 gate gate gate'
-    'w10 w11 w12 motto motto motto';
-}
-
-.gate-counter {
-  display: flex;
-  flex-direction: column;
+.gate-mast-portal {
   min-width: 0;
-  background: var(--animal-primary-color-bg);
-  border: 2px solid var(--animal-primary-color);
-  border-radius: 24px;
-  padding: 24px 28px;
 }
 
-.gate-counter-inner {
-  width: 100%;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.gate-counter-badge {
-  align-self: flex-start;
-  background: var(--animal-bg-color);
-  border: 1.5px solid var(--animal-primary-color);
-  border-radius: 999px;
-  padding: 4px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--animal-text-color);
-}
-
-.gate-counter-title {
-  margin: 14px 0 0;
-  font-size: 20px;
+.gate-mast-portal strong {
+  display: block;
+  font-size: 16px;
   font-weight: 800;
   color: var(--animal-text-color);
 }
 
-.gate-counter-sub {
-  margin: 4px 0 4px;
+.gate-mast-portal span {
+  display: block;
+  margin-top: 5px;
   font-size: 13px;
   font-weight: 500;
   color: var(--animal-text-color-secondary);
 }
 
-.gate-counter-link {
-  margin-top: 14px;
-  text-align: center;
+.gate-mast-side {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.gate-counter-link a {
-  color: var(--animal-text-color);
-  font-weight: 600;
+.gate-motto-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border: 2px dashed var(--animal-border-color);
+  border-radius: 999px;
+  background: var(--animal-bg-color);
   font-size: 13px;
-  text-decoration: underline;
+  font-weight: 700;
+  color: var(--animal-text-color);
+  white-space: nowrap;
 }
 
-.gate-window {
+/* Twelve-office band: compact directory, one row on desktop. */
+.gate-band {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 40px;
+}
+
+.gate-band-chip {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 62px;
+  padding: 8px 6px;
   background: var(--animal-bg-color-secondary);
   border: 1.5px solid var(--animal-border-color-light);
-  border-radius: 18px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  text-align: center;
 }
 
-.gate-window-no {
+.gate-band-no {
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.14em;
   color: var(--animal-text-color-secondary);
 }
 
-.gate-window-name {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.gate-window-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: var(--animal-primary-color-bg);
-  color: var(--animal-text-color);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-
-.gate-window-name-text {
-  font-size: 14px;
+.gate-band-name {
+  font-size: 12px;
   font-weight: 700;
+  color: var(--animal-text-color);
   overflow-wrap: anywhere;
 }
 
-.gate-motto {
+.gate-band-bar {
+  width: 22px;
+  height: 3px;
+  margin-top: 3px;
+  border-radius: 999px;
+  background: var(--animal-primary-color);
+}
+
+.gate-band-chip:nth-child(3n) .gate-band-bar {
+  background: var(--animal-warning-color);
+}
+
+/* Stage: dotted paper ground with one centered counter card. */
+.gate-stage {
+  flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed var(--animal-border-color);
-  border-radius: 18px;
-  padding: 14px 20px;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  padding: 32px 40px;
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--animal-border-color) 70%, transparent) 2px,
+    transparent 2.5px
+  );
+  background-size: 26px 26px;
+}
+
+.gate-card {
+  width: 420px;
+  max-width: 100%;
+  padding: 30px 40px 28px;
+  background: var(--animal-primary-color-bg);
+  border: 2px solid var(--animal-primary-color);
+  border-radius: 24px;
+}
+
+.gate-card--wide {
+  width: 520px;
+}
+
+.gate-card h2 {
+  display: flex;
+  margin: 14px 0 0;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.3;
   color: var(--animal-text-color);
 }
 
+.gate-card-sub {
+  margin: 16px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--animal-text-color-secondary);
+}
+
+.gate-card-badge {
+  display: inline-flex;
+}
+
+.gate-card-link {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.gate-card-link a {
+  color: var(--animal-text-color);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
 .gate-foot {
-  margin-top: auto;
+  flex: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 14px 32px;
+  padding: 14px 40px;
   border-top: 1px solid var(--animal-border-color-light);
   font-size: 12px;
   font-weight: 500;
   color: var(--animal-text-color-secondary);
 }
 
-/* 桌面 ≤1200px:柜台离开网格居中,窗口房退到柜台下方排 4 列 */
+/* <=1200px: band drops to six columns, masthead keeps one row. */
 @media (max-width: 1200px) {
-  .gate-hall {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .gate-band {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
-  .gate-hall--login,
-  .gate-hall--wide {
-    grid-template-areas: none;
-  }
-
-  /* 小屏模板弃用命名区域,内联 gridArea 一并用 auto 放开 */
-  .gate-counter,
-  .gate-window,
-  .gate-motto {
-    grid-area: auto !important;
-  }
-
-  .gate-counter {
-    grid-column: 1 / -1 !important;
-    max-width: 640px;
-    width: 100%;
-    justify-self: center;
-  }
-
-  .gate-hall {
-    align-content: start;
-  }
-
-  .gate-motto {
-    grid-column: span 2;
+  .gate-mast-portal span {
+    display: none;
   }
 }
 
-/* ≤640px:两列窗口,页面留白收到 16px */
+/* <=900px: masthead wraps the pills under the identity block. */
+@media (max-width: 900px) {
+  .gate-mast {
+    flex-wrap: wrap;
+    padding: 20px 24px;
+  }
+
+  .gate-mast-rule,
+  .gate-mast-portal {
+    display: none;
+  }
+
+  .gate-mast-side {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* <=640px: four-column band, compact paddings. */
 @media (max-width: 640px) {
-  .gate-topbar,
-  .gate-hero,
-  .gate-main,
+  .gate-band {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 12px 16px;
+  }
+
+  .gate-mast,
+  .gate-stage,
   .gate-foot {
     padding-left: 16px;
     padding-right: 16px;
   }
 
-  .gate-hero {
+  .gate-mast-country h1 {
+    font-size: 24px;
+  }
+
+  .gate-stage {
     padding-top: 20px;
-    padding-bottom: 14px;
+    padding-bottom: 20px;
   }
 
-  .gate-hall {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .gate-card {
+    padding: 24px 20px 22px;
   }
-
-  .gate-counter {
-    padding: 20px 18px;
-  }
-}
-.pw-check {
-  list-style: none;
-  margin: 8px 0 0;
-  padding: 0;
-  flex: 1 1 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  font-size: 12px;
-}
-
-.pw-check li {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--animal-text-color-secondary);
-}
-
-.pw-check li svg {
-  flex: none;
-}
-
-.pw-check li.pass {
-  color: color-mix(in srgb, var(--animal-success-color) 30%, var(--animal-text-color));
-}
-
-.pw-check li.err {
-  color: color-mix(in srgb, var(--animal-error-color) 40%, var(--animal-text-color));
-}
-
-.pw-check-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  border: 1.5px solid currentColor;
-}
-
-.form-optional-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 18px 0 4px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--animal-border-color);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--animal-text-color-secondary);
-}
-
-.inbox-day {
-  margin: 6px 0 2px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--animal-text-color-secondary);
-}
-
-.inbox-day-group + .inbox-day-group .inbox-day {
-  margin-top: 14px;
 }
 
 /* ---------- first-run setup ---------- */

@@ -90,16 +90,12 @@ export default function Setup() {
   };
 
   return (
-    <PortalGate variant="wide" badge={t('gate.counterBadge')}>
-      <div className="gate-counter-inner">
-        <div className="setup-head">
-          <Tag color="app-teal" variant="soft">
-            {t('setup.badge')}
-          </Tag>
-        </div>
-        <h2 className="gate-counter-title">{titles[step]}</h2>
-        <p className="muted-text gate-counter-sub">{subtitles[step]}</p>
-
+    <PortalGate
+      variant="wide"
+      badge={<Tag color="app-teal" variant="soft">{t('setup.badge')}</Tag>}
+      title={titles[step]}
+      subtitle={subtitles[step]}
+    >
         {step !== 'done' && (
           <div className="setup-progress">
             <Progress
@@ -280,7 +276,6 @@ export default function Setup() {
             </Button>
           </div>
         )}
-      </div>
     </PortalGate>
   );
 }

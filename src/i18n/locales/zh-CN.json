@@ -159,10 +159,11 @@
   },
   "gate": {
     "country": "奶龙国 · 国家门户",
-    "welcome": "欢迎来到",
-    "counterBadge": "综合窗口",
     "windowLabel": "窗口",
-    "motto": "一个身份，十二个窗口"
+    "motto": "一个身份，十二个窗口",
+    "nation": "奶龙国",
+    "mastSub": "国家门户",
+    "bandLabel": "十二个皇家署"
   },
   "setup": {
     "checking": "正在检查首次启动状态…",

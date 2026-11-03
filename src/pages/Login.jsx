@@ -31,9 +31,7 @@ export default function Login() {
   };
 
   return (
-    <PortalGate variant="login" badge={t('gate.counterBadge')}>
-      <h2 className="gate-counter-title">{t('auth.loginTitle')}</h2>
-      <p className="gate-counter-sub">{t('auth.loginSubtitle')}</p>
+    <PortalGate title={t('auth.loginTitle')} subtitle={t('auth.loginSubtitle')}>
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <FormItem
           name="username"
@@ -55,7 +53,7 @@ export default function Login() {
           </Button>
         </FormItem>
       </Form>
-      <div className="gate-counter-link">
+      <div className="gate-card-link">
         <Link to="/register">{t('auth.toRegister')}</Link>
       </div>
     </PortalGate>

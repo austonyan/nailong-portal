@@ -159,10 +159,11 @@
   },
   "gate": {
     "country": "奶龍國 · 國家門戶",
-    "welcome": "歡迎來到",
-    "counterBadge": "綜合窗口",
     "windowLabel": "窗口",
-    "motto": "一個身份，十二個窗口"
+    "motto": "一個身份，十二個窗口",
+    "nation": "奶龍國",
+    "mastSub": "國家門戶",
+    "bandLabel": "十二個皇家署"
   },
   "setup": {
     "checking": "正在檢查首次啟動狀態…",

@@ -40,11 +40,8 @@ export default function Register() {
   };
 
   return (
-    <PortalGate variant="wide" badge={t('gate.counterBadge')}>
-      <div className="gate-counter-inner">
-        <h2 className="gate-counter-title">{t('auth.registerTitle')}</h2>
-        <p className="gate-counter-sub">{t('auth.registerSubtitle')}</p>
-        <Form
+    <PortalGate variant="wide" title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')}>
+      <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
@@ -112,10 +109,9 @@ export default function Register() {
             </Button>
           </FormItem>
         </Form>
-        <div className="gate-counter-link">
+        <div className="gate-card-link">
           <Link to="/login">{t('auth.toLogin')}</Link>
         </div>
-      </div>
     </PortalGate>
   );
 }

@@ -21,9 +21,9 @@ related_targets: ["src/pages/Register.jsx","src/pages/Setup.jsx","src/components
 
 ## Chosen direction & memorable moment
 
-- 用户在决策页/聊天中锁定 dealt lead：**办事大厅 · 十二窗口**（kind=assigned，seed:700e73671c781cdd）。
-- 命名瞬间：登录卡是办事大厅里最大的那扇「综合窗口」——薄荷浅底、2px 薄荷边，占 2×2 格；其余 11 个皇家署作为同构窗口铭牌亮在网格里，第 12 署占宽格。注册/Setup 变体下窗口计数补齐为 12 铭牌 + 国训宽牌。
-- 构图纪律：无 eyebrow（craft-floor 禁令）——国家身份由顶栏品牌位承载；h1 是唯一的；每页一个 primary。
+- 用户第二轮决策（2026-11-03）改选 dealt 第二张：**国家横幅 · 窗口带**（kind=dealt，option 2 位置，seed:700e73671c781cdd）。
+- 命名瞬间：国家门楣先把「奶龙国 / 奶龙统一门户」立起来，其下一条 12 格窗口带排开十二个皇家署，柜台卡居中压轴——横幅负责威仪，窗口带负责「十二个窗口」的规模感，卡片负责办事。
+- 构图纪律：无 eyebrow（craft-floor 禁令）；h1 只有国名一个；窗口带静态不可点、不带假状态；每页一个 primary。
 
 ## Unresolved decisions
 
@@ -31,14 +31,14 @@ related_targets: ["src/pages/Register.jsx","src/pages/Setup.jsx","src/components
 
 ## Direction contract
 
-THESIS: 登录就是走进办事大厅——十二扇真实署所的窗口一齐亮着，最大的「综合窗口」是登录口；拒绝的是悬浮居中小卡片那种「工具门」默认构图。
+THESIS: 门面先立国、再列署、后办事——满宽国家门楣 + 十二署窗口带 + 居中柜台卡；拒绝的是无品牌叙事的悬浮小卡片。
 
-OWN-WORLD: 奶油纸面（paper/paper-card）上的窗口房：窗口铭牌 = paper-card 底 + 发丝边 + 18px 圆角，编号 12px 加宽字距；综合窗口 = 薄荷浅底 + 2px 薄荷边 + 24px 圆角；主按钮保留 0 5px 0 沙色厚度；点缀只有薄荷与日光黄装饰条。
+OWN-WORLD: 次级纸门楣（2px 次级墨下边线、薄荷徽记方块、28px 国名）+ 12 列窗口 chip（次级纸底、发丝边、薄荷/日光黄装饰条）+ 薄荷柜台卡（2px 薄荷边、24px 圆角）+ 奶油主按钮的 0 5px 0 沙色厚度；点缀只用薄荷与日光黄。
 
-STORY: 访客三秒内明白「这是奶龙国的统一门户，十二个署从这一个身份出发」，然后在一个明确的窗口里完成登录/注册/首启；窗口编号与署名全部真实，登录后与门户服务卡一一对应。
+STORY: 访客先看到国名与门户名（这是奶龙国的门户），再扫到十二个署（规模与身份），最后在居中的柜台卡完成登录/注册/首启；窗口带编号与署名全部真实。
 
-FIRST VIEWPORT: 顶细条（徽记 + 国名行 + 语言）→ 叙事行（唯一 h1「欢迎来到<飘带>门户名</飘带>」+ 一句 tagline）→ 5 列窗口房网格（综合窗口 2×2 居右上承载表单，署所铭牌同构排布）→ 发丝边页脚（国训 + 署名年份）。
+FIRST VIEWPORT: 国家门楣（徽记 + 国名 h1 + 国家门户副线 + 竖分隔 + 门户名与标语 + 国训药丸 + 语言）→ 12 列窗口带 → 点纹纸舞台上的居中柜台卡（飘带标题 + 副标题 + 表单）→ 发丝边页脚（国训 + 门户名 · 年份）。
 
-FORM: dealt lead（我的结构候选第 3 名，骰子发牌 index 3 领衔）；seed:700e73671c781cdd。code-led 构建，锁定草图 `.impeccable/mocks/decision/windows-hall.html` 是构图契约（草图中的 eyebrow 行与虚构「受理中/开放中」状态按 brief 修正：无 eyebrow，铭牌不带假状态）。
+FORM: dealt 第二张（用户第二轮改选，原 dealt lead 为 windows-hall）；seed:700e73671c781cdd。code-led 构建，锁定草图 `.impeccable/mocks/decision/national-masthead.html` 为构图契约（草图里的英文副线改由「国家门户」承担；窗口带不带虚构营业状态）。
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
